@@ -172,7 +172,6 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import rx.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -275,8 +274,6 @@ class ShipmentPresenter @Inject constructor(
     private val ratesQueue: Queue<ShipmentGetCourierHolderData> = LinkedList()
 
     private val promoQueue: LinkedList<ShipmentValidatePromoHolderData> = LinkedList()
-
-    var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData> =
         HashMap()
@@ -2022,6 +2019,10 @@ class ShipmentPresenter @Inject constructor(
                     shipmentValidatePromoHolderData.cartPosition
                 )
             } else {
+                view?.setStateLoadingCourierStateAtIndex(
+                    shipmentValidatePromoHolderData.cartPosition,
+                    false
+                )
                 if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
                     val errMessage =
                         validateUsePromoRevampUiModel.message[0]
@@ -2346,9 +2347,10 @@ class ShipmentPresenter @Inject constructor(
         if (unappliedBoPromoUniqueIds.size > 0) {
             view?.renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds)
         }
+        doApplyBoNew(toBeAppliedVoucherOrders)
         for (voucherOrders in toBeAppliedVoucherOrders) {
-            doApplyBo(voucherOrders)
-            reloadedUniqueIds.add(voucherOrders.uniqueId)
+//            doApplyBo(voucherOrders)
+            reloadedUniqueIds.add(voucherOrders.cartStringGroup)
         }
         return Pair(reloadedUniqueIds, unappliedBoPromoUniqueIds)
     }
@@ -2423,24 +2425,27 @@ class ShipmentPresenter @Inject constructor(
         lastApplyData.value = lastApplyUiModel
     }
 
-    fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel) {
-        val itemAdapterPosition = view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(
-            voucherOrdersItemUiModel.cartStringGroup
-        ) ?: -1
-        val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
+    internal fun doApplyBoNew(voucherOrdersItemUiModels: List<PromoCheckoutVoucherOrdersItemUiModel>) {
         val listToProcess =
             arrayListOf<Triple<Int, PromoCheckoutVoucherOrdersItemUiModel, ShipmentCartItemModel>>()
-        if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
-            if (shipmentCartItemModel.voucherLogisticItemUiModel == null ||
-                shipmentCartItemModel.voucherLogisticItemUiModel!!.code != voucherOrdersItemUiModel.code
-            ) {
-                listToProcess.add(
-                    Triple(
-                        itemAdapterPosition,
-                        voucherOrdersItemUiModel,
-                        shipmentCartItemModel
+        for (voucherOrdersItemUiModel in voucherOrdersItemUiModels) {
+            val itemAdapterPosition =
+                view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(
+                    voucherOrdersItemUiModel.cartStringGroup
+                ) ?: -1
+            val shipmentCartItemModel = view?.getShipmentCartItemModel(itemAdapterPosition)
+            if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
+                if (shipmentCartItemModel.voucherLogisticItemUiModel == null ||
+                    shipmentCartItemModel.voucherLogisticItemUiModel!!.code != voucherOrdersItemUiModel.code
+                ) {
+                    listToProcess.add(
+                        Triple(
+                            itemAdapterPosition,
+                            voucherOrdersItemUiModel,
+                            shipmentCartItemModel
+                        )
                     )
-                )
+                }
             }
         }
         processBoPromoCourierRecommendationNew(listToProcess)
@@ -2510,7 +2515,7 @@ class ShipmentPresenter @Inject constructor(
             cartStringGroup,
             groupProducts
         )
-        val counter = if (codData == null) -1 else codData!!.counterCod
+        val counter = codData?.counterCod ?: -1
         val cornerId = this.recipientAddressModel.isCornerAddress
         val pslCode = getLogisticPromoCode(shipmentCartItemModel)
         val isLeasing = shipmentCartItemModel.isLeasingProduct
@@ -2780,7 +2785,7 @@ class ShipmentPresenter @Inject constructor(
             cartStringGroup,
             groupProducts
         )
-        val counter = if (codData == null) -1 else codData!!.counterCod
+        val counter = codData?.counterCod ?: -1
         val cornerId = this.recipientAddressModel.isCornerAddress
         val pslCode = getLogisticPromoCode(shipmentCartItemModel)
         val isLeasing = shipmentCartItemModel.isLeasingProduct
@@ -4201,7 +4206,7 @@ class ShipmentPresenter @Inject constructor(
         shippingCourierViewModelsState[orderNumber] = shippingCourierUiModelsState
     }
 
-    private fun processBoPromoCourierRecommendationNew(
+    internal fun processBoPromoCourierRecommendationNew(
         listToProcess: List<Triple<Int, PromoCheckoutVoucherOrdersItemUiModel, ShipmentCartItemModel>>
     ) {
         viewModelScope.launch(dispatchers.immediate) {

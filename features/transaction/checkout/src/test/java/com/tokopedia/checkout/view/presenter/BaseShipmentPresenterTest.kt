@@ -26,7 +26,6 @@ import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -34,7 +33,6 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
-import rx.subscriptions.CompositeSubscription
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class BaseShipmentPresenterTest {
@@ -44,9 +42,6 @@ open class BaseShipmentPresenterTest {
 
     @MockK
     lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    lateinit var compositeSubscription: CompositeSubscription
 
     @MockK
     lateinit var checkoutUseCase: CheckoutUseCase
@@ -121,33 +116,31 @@ open class BaseShipmentPresenterTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
             getShipmentAddressFormV4UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
             saveShipmentStateGqlUseCase,
+            changeShippingAddressGqlUseCase,
+            eligibleForAddressUseCase,
+            editAddressUseCase,
             getRatesUseCase,
             getRatesApiUseCase,
+            getRatesWithScheduleUseCase,
             clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
+            validateUsePromoRevampUseCase,
             releaseBookingUseCase,
             prescriptionIdsUseCase,
             epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            CoroutineTestDispatchers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase,
-            shipmentDataRequestConverter
+            checkoutUseCase,
+            shipmentDataConverter,
+            shippingCourierConverter,
+            ratesStatesConverter,
+            shipmentDataRequestConverter,
+            shipmentAnalyticsActionListener,
+            checkoutAnalytics,
+            analyticsPurchaseProtection,
+            userSessionInterface,
+            gson,
+            CoroutineTestDispatchers
         )
         presenter.attachView(view)
     }

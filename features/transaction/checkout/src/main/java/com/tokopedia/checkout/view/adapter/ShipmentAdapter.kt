@@ -727,8 +727,8 @@ class ShipmentAdapter @Inject constructor(
 
     fun resetCourier(cartPosition: Int) {
         if (shipmentDataList[cartPosition] is ShipmentCartItemModel) {
-            val shipmentCartItemModel = shipmentDataList[cartPosition] as ShipmentCartItemModel?
-            if (shipmentCartItemModel!!.selectedShipmentDetailData != null) {
+            val shipmentCartItemModel = shipmentDataList[cartPosition] as ShipmentCartItemModel
+            if (shipmentCartItemModel.selectedShipmentDetailData != null) {
                 shipmentCartItemModel.selectedShipmentDetailData = null
                 shipmentCartItemModel.voucherLogisticItemUiModel = null
                 shipmentAdapterActionListener.updateShipmentCostModel()

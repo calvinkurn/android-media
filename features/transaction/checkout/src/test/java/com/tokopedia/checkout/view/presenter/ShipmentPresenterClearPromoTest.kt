@@ -28,6 +28,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo success THEN should render success`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -39,6 +40,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -55,6 +58,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo success with ticker data THEN should render success and update ticker`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
@@ -69,6 +73,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -86,6 +92,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and it's last applied promo THEN should render success and flag last applied promo is true`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         val promoCode = "code"
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -108,6 +115,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -125,6 +134,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and still has applied merchant promo THEN should render success and flag last applied promo is false`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         val promoCode = "code"
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -146,6 +156,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -162,6 +174,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and it's last applied global promo THEN should render success and flag last applied promo is true`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         val promoCode = "code"
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -182,6 +195,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -199,6 +214,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and still has applied global promo THEN should render success and flag last applied promo is false`() {
         // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(cartStringGroup = ""))
         val promoCode = "code"
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -219,6 +235,8 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
+            "",
+            "",
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -296,7 +314,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         // Given
         val notEligiblePromos = arrayListOf(
             NotEligiblePromoHolderdata(
-                uniqueId = "1",
+                cartStringGroup = "1",
                 promoCode = "code",
                 iconType = -1
             )
@@ -671,11 +689,14 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
         )
         presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
+            "123",
+            "",
             shipmentCartItemModel
         )
 
@@ -706,11 +727,14 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
         )
         presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
+            "123",
+            "",
             shipmentCartItemModel
         )
 

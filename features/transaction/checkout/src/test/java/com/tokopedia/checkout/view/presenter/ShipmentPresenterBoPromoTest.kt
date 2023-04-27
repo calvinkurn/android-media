@@ -63,7 +63,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             uniqueId = "111-111-111"
         )
         val itemAdapterPosition = 0
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns itemAdapterPosition
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
@@ -76,7 +76,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
-        presenter.doApplyBo(voucherOrder)
+        presenter.doApplyBoNew(listOf(voucherOrder))
 
         // Then
         verify { getRatesUseCase.execute(any()) }
@@ -90,7 +90,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             code = "BOCODE"
         )
         val itemAdapterPosition = 0
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns itemAdapterPosition
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
@@ -103,7 +103,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
-        presenter.doApplyBo(voucherOrder)
+        presenter.doApplyBoNew(listOf(voucherOrder))
 
         // Then
         verify {
@@ -118,7 +118,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             uniqueId = "111-111-111",
             code = "BOCODE"
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             shopShipmentList = listOf(),
@@ -127,7 +127,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
-        presenter.doApplyBo(voucherOrder)
+        presenter.doApplyBoNew(listOf(voucherOrder))
 
         // Then
         verify(inverse = true) {
@@ -139,12 +139,12 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN apply BO promo item not found THEN don't apply BO`() {
         // Given
         val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns null
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
-        presenter.doApplyBo(voucherOrder)
+        presenter.doApplyBoNew(listOf(voucherOrder))
 
         // Then
         verify(inverse = true) {
@@ -156,12 +156,12 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN apply BO cart item found with invalid position THEN don't do apply BO`() {
         // Given
         val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartStringGroup = "")
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
 
         // When
-        presenter.doApplyBo(voucherOrder)
+        presenter.doApplyBoNew(listOf(voucherOrder))
 
         // Then
         verify(inverse = true) {
@@ -174,13 +174,14 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN unapply BO promo cart item found THEN do unapply BO promo`() {
         // Given
+        val cartStringGroup = "-111-111"
         val uniqueId = "111-111-111"
         val promoCode = "BOCODE"
 
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartStringGroup = "111-111-111",
-            cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
+            cartStringGroup = "-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "-111-111", cartStringOrder = uniqueId)),
             shipmentCartData = ShipmentCartData(
                 boMetadata = BoMetadata(boType = 1)
             )
@@ -194,11 +195,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.doUnapplyBo(uniqueId, promoCode)
+        presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)
 
         // Then
         coVerifyOrder {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
             view.getShipmentCartItemModel(any())
             view.resetCourier(any<Int>())
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
@@ -209,10 +210,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN unapply BO promo cart item not found THEN don't do unapply BO promo`() {
         // Given
+        val cartStringGroup = "-111-111"
         val uniqueId = "111-111-111"
         val promoCode = "BOCODE"
 
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns null
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
@@ -223,11 +225,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.doUnapplyBo(uniqueId, promoCode)
+        presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)
 
         // Then
         verifyOrder {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
             view.getShipmentCartItemModel(any())
         }
         coVerify(inverse = true) {
@@ -240,10 +242,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN unapply BO promo item found null THEN don't do unapply BO promo`() {
         // Given
+        val cartStringGroup = "-111-111"
         val uniqueId = "111-111-111"
         val promoCode = "BOCODE"
 
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns null
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
@@ -254,11 +257,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.doUnapplyBo(uniqueId, promoCode)
+        presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)
 
         // Then
         verifyOrder {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
             view.getShipmentCartItemModel(any())
         }
         coVerify(inverse = true) {
@@ -271,10 +274,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN unapply BO promo item found with invalid position THEN don't do unapply BO promo`() {
         // Given
+        val cartStringGroup = "-111-111"
         val uniqueId = "111-111-111"
         val promoCode = "BOCODE"
 
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(cartStringGroup = "")
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
@@ -285,11 +289,11 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.doUnapplyBo(uniqueId, promoCode)
+        presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)
 
         // Then
         verifyOrder {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
             view.getShipmentCartItemModel(any())
         }
         coVerify(inverse = true) {
@@ -328,8 +332,8 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId("111-111-111") } returns 1
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId("222-222-222") } returns 2
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup("111-111-111") } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup("222-222-222") } returns 2
         every { view.getShipmentCartItemModel(1) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -364,7 +368,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(exactly = 2) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(
                 or("111-111-111", "222-222-222")
             )
             clearCacheAutoApplyStackUseCase.setParams(match { it.orderData.orders[0].codes.contains("TESTBO1") || it.orderData.orders[0].codes.contains("TESTBO2") })
@@ -397,7 +401,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
         }
     }
 
@@ -428,7 +432,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
         }
     }
 
@@ -459,7 +463,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
         }
     }
 
@@ -490,7 +494,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
         }
     }
 
@@ -505,7 +509,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
         // Then
         verify(inverse = true) {
-            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
         }
     }
 
@@ -547,7 +551,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             voucherOrders = mutableListOf(
                 LastApplyVoucherOrdersItemUiModel(
                     code = "TESTBO",
-                    uniqueId = "111-111-111"
+                    cartStringGroup = "111-111-111"
                 )
             )
         )
@@ -721,7 +725,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -732,13 +736,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
 
         // When
         presenter.validateBoPromo(validateUsePromoRevampUiModel)
@@ -793,7 +790,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -804,13 +801,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -854,7 +844,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModels
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -865,13 +855,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -918,7 +901,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -929,13 +912,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -972,7 +948,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -983,13 +959,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1026,7 +995,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -1037,13 +1006,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1080,7 +1042,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -1091,13 +1053,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1125,7 +1080,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.shipmentCartItemModelList = listOf()
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -1136,13 +1091,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1175,7 +1123,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 voucherLogisticItemUiModel = null
             )
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -1186,13 +1134,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1215,7 +1156,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN validate BO with voucher order and cart item has same promo THEN apply BO and don't unapply BO promo`() {
         // Given
         val appliedVoucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
-            uniqueId = "111-111-111",
+            cartStringGroup = "111-111-111",
             code = "WGOIN",
             shippingId = 10,
             spId = 28,
@@ -1233,7 +1174,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
             cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
@@ -1244,13 +1185,6 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every {
-            view.renderCourierStateSuccess(
-                any(),
-                any(),
-                any()
-            )
-        } answers { presenter.logisticPromoDonePublisher?.onCompleted() }
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -1393,6 +1327,22 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
@@ -1418,18 +1368,23 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processBoPromoCourierRecommendation(
-            itemPosition,
-            voucherOrdersItemUiModel,
-            shipmentCartItemModel
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
         )
 
         // Then
         verifyOrder {
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
+            view.setSelectedCourier(itemPosition, any(), true, false)
         }
     }
 
@@ -1441,6 +1396,22 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
         )
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
 
         val isTradeInByDropOff = true
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
@@ -1451,7 +1422,7 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartStringGroup = "",
+            cartStringGroup = "1",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = ShipmentDetailData(
@@ -1466,18 +1437,23 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processBoPromoCourierRecommendation(
-            itemPosition,
-            voucherOrdersItemUiModel,
-            shipmentCartItemModel
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
         )
 
         // Then
         verifyOrder {
             getRatesApiUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
+            view.setSelectedCourier(itemPosition, any(), true, false)
         }
     }
 
@@ -1487,6 +1463,23 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
@@ -1519,19 +1512,24 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                 weightActual = 1.0
             )
         )
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processBoPromoCourierRecommendation(
-            itemPosition,
-            voucherOrdersItemUiModel,
-            shipmentCartItemModel
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
         )
 
         // Then
         verifyOrder {
             view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff)
+            view.setSelectedCourier(itemPosition, any(), true, false)
         }
     }
 }

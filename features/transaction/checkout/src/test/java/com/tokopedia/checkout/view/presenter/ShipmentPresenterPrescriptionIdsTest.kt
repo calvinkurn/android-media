@@ -411,7 +411,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN rejected consultation WHEN fetch epharmacy data THEN should set error`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val errorWording = "error wording"
         every { view.activity?.getString(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
@@ -555,7 +555,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN cannot get position WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -649,7 +649,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN approved consultation WHEN fetch epharmacy data THEN should set consultation data`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -801,7 +801,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN mixed epharmacy data WHEN fetch epharmacy data THEN should set epharmacy data correctly`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -1209,7 +1209,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN null view WHEN set mini consultation result THEN should do nothing`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val results = arrayListOf(
             EPharmacyMiniConsultationResult(
                 "123",
@@ -1271,7 +1271,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN cannot get position WHEN set mini consultation result THEN should do nothing`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         val results = arrayListOf(
             EPharmacyMiniConsultationResult(
                 "123",
@@ -1383,7 +1383,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN approved consultation WHEN set mini consultation result THEN should set correct data`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val results = arrayListOf(
             EPharmacyMiniConsultationResult(
                 "123",
@@ -1538,7 +1538,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN rejected consultation in the mixed order WHEN set mini consultation result THEN should set error`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val errorWording = "error wording"
         every { view.activity?.getString(any(), any()) } returns errorWording
         val result = arrayListOf(
@@ -1671,7 +1671,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN mixed epharmacy data WHEN set mini consultation result THEN should set epharmacy data correctly`() {
         // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val result = arrayListOf(
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "123",

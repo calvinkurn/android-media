@@ -1314,10 +1314,6 @@ class ShipmentFragment :
         }
     }
 
-    fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>) {
-        shipmentPresenter.setPromoBenefit(summariesUiModels)
-    }
-
     fun resetPromoBenefit() {
         shipmentPresenter.resetPromoBenefit()
         shipmentPresenter.updateShipmentCostModel()
@@ -1418,7 +1414,7 @@ class ShipmentFragment :
         val hasSetAllCourier = shipmentAdapter.hasSetAllCourier()
         if (hasSetAllCourier) {
             resetPromoBenefit()
-            setPromoBenefit(summariesUiModels)
+            shipmentPresenter.setPromoBenefit(summariesUiModels)
             shipmentPresenter.updateShipmentCostModel()
         }
         return hasSetAllCourier

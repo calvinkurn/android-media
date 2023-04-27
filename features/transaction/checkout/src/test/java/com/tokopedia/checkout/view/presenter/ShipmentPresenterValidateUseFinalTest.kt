@@ -146,7 +146,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
                     messageUiModel = MessageUiModel(state = "red", text = message),
-                    uniqueId = tmpCartString
+                    cartStringGroup = tmpCartString
                 )
             )
         )
@@ -394,7 +394,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         verifySequence {
             view.renderErrorCheckPromoShipmentData(message)
             view.resetPromoBenefit()
-            view.cancelAllCourierPromo()
+            view.resetAllCourier()
         }
     }
 
@@ -415,7 +415,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         verifySequence {
             view.renderErrorCheckPromoShipmentData(DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO)
             view.resetPromoBenefit()
-            view.cancelAllCourierPromo()
+            view.resetAllCourier()
         }
     }
 
@@ -461,7 +461,6 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         verifySequence {
             view.showToastError(message)
             view.resetAllCourier()
-            view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
         }
 

@@ -100,7 +100,9 @@ class ShipmentCartItemBottomViewHolder(
         shipmentCartItemModel: ShipmentCartItemModel,
         recipientAddress: RecipientAddressModel?
     ) {
-        renderShipping(shipmentCartItemModel, recipientAddress, ratesDataConverter)
+        if (recipientAddress != null) {
+            renderShipping(shipmentCartItemModel, recipientAddress, ratesDataConverter)
+        }
         renderPrioritas(shipmentCartItemModel)
         renderInsurance(shipmentCartItemModel)
         val isCornerAddress = recipientAddress != null && recipientAddress.isCornerAddress
@@ -113,7 +115,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun renderShipping(
         shipmentCartItemModel: ShipmentCartItemModel,
-        currentAddress: RecipientAddressModel?,
+        currentAddress: RecipientAddressModel,
         ratesDataConverter: RatesDataConverter
     ) {
         binding.shippingWidget.setupListener(this@ShipmentCartItemBottomViewHolder)
@@ -159,7 +161,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun renderSelectedCourier(
         shipmentCartItemModel: ShipmentCartItemModel,
-        currentAddress: RecipientAddressModel?,
+        currentAddress: RecipientAddressModel,
         selectedCourierItemData: CourierItemData
     ) {
         binding.containerShippingOptions.root.visibility = View.VISIBLE
@@ -181,21 +183,21 @@ class ShipmentCartItemBottomViewHolder(
             // Is free ongkir shipping
             renderFreeShippingCourier(
                 shipmentCartItemModel,
-                currentAddress!!,
+                currentAddress,
                 selectedCourierItemData
             )
         } else if (shipmentCartItemModel.isHideChangeCourierCard) {
             // normal shipping but not show `pilih kurir` card
             binding.shippingWidget.renderNormalShippingWithoutChooseCourierCard(
                 shipmentCartItemModel,
-                currentAddress!!,
+                currentAddress,
                 selectedCourierItemData
             )
         } else {
             // Is normal shipping
             binding.shippingWidget.renderNormalShippingCourier(
                 shipmentCartItemModel,
-                currentAddress!!,
+                currentAddress,
                 selectedCourierItemData
             )
         }
@@ -237,7 +239,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun prepareLoadCourierState(
         shipmentCartItemModel: ShipmentCartItemModel,
-        currentAddress: RecipientAddressModel?,
+        currentAddress: RecipientAddressModel,
         ratesDataConverter: RatesDataConverter,
         isTradeInDropOff: Boolean
     ) {
@@ -1075,7 +1077,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun loadCourierState(
         shipmentCartItemModel: ShipmentCartItemModel,
-        recipientAddressModel: RecipientAddressModel?,
+        recipientAddressModel: RecipientAddressModel,
         ratesDataConverter: RatesDataConverter,
         saveStateType: Int
     ) {
@@ -1101,7 +1103,7 @@ class ShipmentCartItemBottomViewHolder(
                     if (!hasLoadCourier) {
                         val tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel,
-                            recipientAddressModel!!
+                            recipientAddressModel
                         )
                         val hasLoadCourierState =
                             if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {
@@ -1153,10 +1155,10 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun shouldAutoLoadCourier(
         shipmentCartItemModel: ShipmentCartItemModel,
-        recipientAddressModel: RecipientAddressModel?
+        recipientAddressModel: RecipientAddressModel
     ): Boolean {
         return (
-            recipientAddressModel!!.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
+            recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
                 recipientAddressModel.dropOffAddressName
             ) || recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
                 recipientAddressModel.provinceName
@@ -1200,7 +1202,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun renderNoSelectedCourier(
         shipmentCartItemModel: ShipmentCartItemModel,
-        recipientAddressModel: RecipientAddressModel?,
+        recipientAddressModel: RecipientAddressModel,
         saveStateType: Int
     ) {
         when (saveStateType) {
@@ -1224,7 +1226,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun renderNoSelectedCourierTradeInDropOff(
         shipmentCartItemModel: ShipmentCartItemModel,
-        currentAddress: RecipientAddressModel?,
+        currentAddress: RecipientAddressModel,
         hasSelectTradeInLocation: Boolean
     ) {
         if (hasSelectTradeInLocation) {
@@ -1239,7 +1241,7 @@ class ShipmentCartItemBottomViewHolder(
 
     private fun renderNoSelectedCourierNormalShipping(
         shipmentCartItemModel: ShipmentCartItemModel,
-        currentAddress: RecipientAddressModel?
+        currentAddress: RecipientAddressModel
     ) {
         if (shipmentCartItemModel.isDisableChangeCourier) {
             if (shipmentCartItemModel.hasGeolocation) {
@@ -1248,18 +1250,18 @@ class ShipmentCartItemBottomViewHolder(
         } else {
             binding.shippingWidget.showLayoutNoSelectedShipping(
                 shipmentCartItemModel,
-                currentAddress!!
+                currentAddress
             )
         }
     }
 
     private fun renderFailShipmentState(
         shipmentCartItemModel: ShipmentCartItemModel,
-        recipientAddressModel: RecipientAddressModel?
+        recipientAddressModel: RecipientAddressModel
     ) {
         binding.shippingWidget.showLayoutStateFailedShipping(
             shipmentCartItemModel,
-            recipientAddressModel!!
+            recipientAddressModel
         )
     }
 

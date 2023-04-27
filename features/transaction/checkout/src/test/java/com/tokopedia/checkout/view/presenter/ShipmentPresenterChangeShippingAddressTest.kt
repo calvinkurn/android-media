@@ -7,10 +7,9 @@ import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.verifySequence
 import org.junit.Test
-import rx.Observable
 
 class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
 
@@ -38,9 +37,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
-            SetShippingAddressData(isSuccess = true)
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = true)
 
         // When
         presenter.changeShippingAddress(
@@ -68,9 +65,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
     fun changeShippingAddressFailed_ShouldShowError() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
-            SetShippingAddressData(isSuccess = false)
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = false)
 
         // When
         presenter.changeShippingAddress(
@@ -98,9 +93,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
     fun changeShippingAddressError_ShouldShowError() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(
-            Throwable()
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } throws Throwable()
 
         // When
         presenter.changeShippingAddress(
@@ -151,9 +144,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
-            SetShippingAddressData(isSuccess = true)
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = true)
 
         // When
         presenter.changeShippingAddress(
@@ -184,9 +175,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         val errorMessages = ArrayList<String>().apply {
             add("Error Message")
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
-            SetShippingAddressData(isSuccess = false, messages = errorMessages)
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = false, messages = errorMessages)
 
         // When
         presenter.changeShippingAddress(
@@ -213,9 +202,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
     fun `WHEN change shipping address get akamai error THEN should show error message`() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(
-            AkamaiErrorException("error")
-        )
+        coEvery { changeShippingAddressGqlUseCase(any()) } throws AkamaiErrorException("error")
 
         // When
         presenter.changeShippingAddress(

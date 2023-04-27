@@ -19,6 +19,7 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
             isTiering = false
             minEgoldRange = 50
             maxEgoldRange = 1000
+            isChecked = true
         }
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
@@ -38,6 +39,7 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
 
         // Then
         assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(presenter.shipmentCostModel.value.emasPrice, presenter.egoldAttributeModel.value!!.buyEgoldValue.toDouble(), 0.0)
     }
 
     @Test

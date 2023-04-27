@@ -258,9 +258,9 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val isForceReload = false
         val skipMvc = true
 
-        every { view.renderCourierStateSuccess(any(), any(), any()) } answers {
-            presenter.logisticDonePublisher!!.onCompleted()
-        }
+//        every { view.renderCourierStateSuccess(any(), any(), any()) } answers {
+//            presenter.logisticDonePublisher!!.onCompleted()
+//        }
 
         // When get first shipping
         presenter.processGetCourierRecommendation(

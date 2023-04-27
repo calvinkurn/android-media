@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.Test
@@ -39,7 +38,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartStringGroup = ""), LocationPass())
+        presenter.editAddressPinpoint(latitude, longitude, LocationPass())
 
         // Then
         verifyOrder {
@@ -84,7 +83,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartStringGroup = ""), locationPass)
+        presenter.editAddressPinpoint(latitude, longitude, locationPass)
 
         // Then
         verifyOrder {
@@ -133,7 +132,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         } returns errorMessage
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartStringGroup = ""), locationPass)
+        presenter.editAddressPinpoint(latitude, longitude, locationPass)
 
         // Then
         verifyOrder {
@@ -166,7 +165,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(cartStringGroup = ""), LocationPass())
+        presenter.editAddressPinpoint(latitude, longitude, LocationPass())
 
         // Then
         verifyOrder {
