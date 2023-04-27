@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.header
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.NestImage
 import com.tokopedia.common_compose.ui.NestTheme
 
 /**
@@ -65,35 +63,12 @@ private fun ProfileImage(headerImageSource: HeaderImageSource) {
         .size(32.dp)
         .clip(CircleShape)
 
-    when (headerImageSource) {
-        is HeaderImageSource.Remote -> {
-            NestImage(modifier = modifier, imageUrl = headerImageSource.source)
-        }
-        is HeaderImageSource.Painter -> {
-            Image(
-                modifier = modifier,
-                painter = headerImageSource.source,
-                contentScale = scale,
-                contentDescription = contentDescription
-            )
-        }
-        is HeaderImageSource.ImageBitmap -> {
-            Image(
-                modifier = modifier,
-                bitmap = headerImageSource.source,
-                contentScale = scale,
-                contentDescription = contentDescription
-            )
-        }
-        is HeaderImageSource.ImageVector -> {
-            Image(
-                modifier = modifier,
-                imageVector = headerImageSource.source,
-                contentScale = scale,
-                contentDescription = contentDescription
-            )
-        }
-    }
+    HeaderImage(
+        modifier = modifier,
+        imageSource = headerImageSource,
+        scale = scale,
+        contentDescription = contentDescription
+    )
 }
 
 @Preview

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,9 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
@@ -179,4 +182,72 @@ internal fun HeaderLocationContent(
 
         Spacer(modifier = Modifier)
     }
+}
+
+/**
+ * Header Options Button
+ */
+@Composable
+fun HeaderOptionsButton(
+    optionsButton: List<HeaderOptionals>,
+    iconColor: Color
+) {
+    if (optionsButton.isEmpty()) {
+        return
+    }
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier)
+
+        optionsButton.forEach { options ->
+            when (options) {
+                is HeaderActionButton -> {
+                    HeaderIcon(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .tag(options.contentDescription)
+                            .clickable {
+                                options.onClicked.invoke()
+                            },
+                        imageSource = options.icon,
+                        contentDescription = options.contentDescription,
+                        iconColor = iconColor
+                    )
+                }
+                is HeaderTextButton -> {
+                    NestTypography(
+                        modifier = Modifier
+                            .tag(options.contentDescription)
+                            .clickable {
+                                options.onClicked.invoke()
+                            },
+                        text = options.text,
+                        textStyle = NestTheme.typography.display2.copy(
+                            color = options.color,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+                else -> {
+                    // no-ops
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HeaderOptionsButtonPreview() {
+    HeaderOptionsButton(
+        optionsButton = listOf(
+            HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_bell))),
+            HeaderTextButton(text = "Action"),
+            HeaderTextButton(text = "Add")
+        ),
+        iconColor = NestTheme.colors.NN._900
+    )
 }

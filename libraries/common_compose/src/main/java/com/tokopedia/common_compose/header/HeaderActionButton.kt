@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.header
 
 import androidx.compose.ui.graphics.Color
+import com.tokopedia.common_compose.ui.NestGN
 
 /**
  * Created by yovi.putra on 27/04/23"
@@ -8,8 +9,8 @@ import androidx.compose.ui.graphics.Color
  **/
 
 interface HeaderOptionals {
-    val color: Color
     val onClicked: () -> Unit
+    val contentDescription: String
 }
 
 data class HeaderNotification(
@@ -18,14 +19,15 @@ data class HeaderNotification(
 )
 
 data class HeaderActionButton(
-    override val color: Color,
-    override val onClicked: () -> Unit,
-    val notification: HeaderNotification?,
-    val icon: HeaderImageSource
+    override val onClicked: () -> Unit = {},
+    override val contentDescription: String = "",
+    val notification: HeaderNotification? = null,
+    val icon: HeaderIconSource
 ) : HeaderOptionals
 
 data class HeaderTextButton(
-    override val color: Color,
-    override val onClicked: () -> Unit,
+    override val onClicked: () -> Unit = {},
+    override val contentDescription: String = "",
+    val color: Color = NestGN.light._500,
     val text: String
 ) : HeaderOptionals

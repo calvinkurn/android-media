@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.extensions
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -13,4 +14,5 @@ import androidx.compose.ui.semantics.testTag
 fun Modifier.tag(tag: String) = semantics {
     testTag = tag
     contentDescription = tag
+    layoutId(tag)
 }
