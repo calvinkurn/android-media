@@ -200,7 +200,7 @@ fun HeaderOptionsButton(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier)
+        Spacer(modifier = Modifier.width(0.dp))
 
         optionsButton.forEach { options ->
             when (options) {

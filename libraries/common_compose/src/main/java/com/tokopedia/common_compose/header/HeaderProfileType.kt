@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.iconunify.R
 
 /**
  * Created by yovi.putra on 18/04/23"
@@ -51,6 +53,8 @@ internal fun HeaderProfileType(
             )
         }
 
+        HeaderOptionsButton(optionsButton = properties.optionsButton, iconColor = iconColor)
+
         HeaderMarginArea()
     }
 }
@@ -80,7 +84,12 @@ fun HeaderProfileTypePreview() {
         HeaderProfileType(
             properties = NestHeaderType.Profile().copy(
                 title = "Tokopedia Official",
-                subTitle = "Pilih Akun"
+                subTitle = "Pilih Akun",
+                optionsButton = listOf(
+                    HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = R.drawable.iconunify_bell))),
+                    HeaderTextButton(text = "Action"),
+                    HeaderTextButton(text = "Add")
+                )
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600
@@ -115,7 +124,12 @@ fun HeaderProfileTypeOverFlowPreview() {
         HeaderProfileType(
             properties = NestHeaderType.Profile().copy(
                 title = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia ",
-                subTitle = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia "
+                subTitle = "Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia Tokopedia ",
+                optionsButton = listOf(
+                    HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = R.drawable.iconunify_bell))),
+                    HeaderTextButton(text = "Action"),
+                    HeaderTextButton(text = "Add")
+                )
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600

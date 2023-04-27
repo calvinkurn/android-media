@@ -53,6 +53,8 @@ internal fun HeaderSearchType(
             contentSecondaryColor = contentSecondaryColor
         )
 
+        HeaderOptionsButton(optionsButton = properties.optionsButton, iconColor = iconColor)
+
         HeaderMarginArea()
     }
 }
@@ -176,7 +178,12 @@ fun HeaderSearchTypeNonBackButtonPreview() {
             properties = NestHeaderType.Search().copy(
                 hint = "Cari di Tokopedia",
                 value = "",
-                showBackButton = false
+                showBackButton = false,
+                optionsButton = listOf(
+                    HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_bell))),
+                    HeaderTextButton(text = "Action"),
+                    HeaderTextButton(text = "Add")
+                )
             ),
             iconColor = NestTheme.colors.NN._900,
             contentSecondaryColor = NestTheme.colors.NN._600
