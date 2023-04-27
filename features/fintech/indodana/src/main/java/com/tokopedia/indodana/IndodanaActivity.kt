@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -15,10 +14,10 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Pair
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,7 +32,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-
 
 class IndodanaActivity : AppCompatActivity() {
 
@@ -67,16 +65,23 @@ class IndodanaActivity : AppCompatActivity() {
         }
 
         val url = intent.data?.getQueryParameter("url")
-            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in"
+            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
 
         webview.loadUrl(url)
 
         webview.addJavascriptInterface(
             WhitelabelCameraJsInterface(
-            WhitelabelCameraJsInterface.OpenCamera { docType: String?, lang: String?, _: String? ->
-                this.takePictureFromCamera(docType, lang)
-            }), "CameraPicker"
+                WhitelabelCameraJsInterface.OpenCamera { docType: String?, lang: String?, _: String? ->
+                    this.takePictureFromCamera(docType, lang)
+                }
+            ),
+            "CameraPicker"
         )
+
+//        webview.addJavascriptInterface(
+//            WebAppInterface { this.takePictureFromCamera("", "") },
+//            "CameraPicker"
+//        )
 
         requestPermission()
     }
@@ -107,7 +112,7 @@ class IndodanaActivity : AppCompatActivity() {
         }
     }
 
-    //Handler to display camera view
+    // Handler to display camera view
     private fun takePictureFromCamera(docType: String?, lang: String?) {
         val intent = RouteManager.getIntent(this, ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -135,14 +140,15 @@ class IndodanaActivity : AppCompatActivity() {
 //        }
     }
 
-    //Handler to inject image back to webview
+    // Handler to inject image back to webview
     private fun finishTakePicture(docType: String?, imageBase64: String?) {
         if (imageBase64 != null && docType != null) {
             val script = String.format(
                 "var event = new CustomEvent('cameraTriggered'," +
                     "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
                     "window.dispatchEvent(event);",
-                docType, imageBase64
+                docType,
+                imageBase64
             )
             executeJs(script)
             dismissTakeImageView()
@@ -163,7 +169,7 @@ class IndodanaActivity : AppCompatActivity() {
         }
     }
 
-    //set the cameraview to invisible after usage
+    // set the cameraview to invisible after usage
     private fun dismissTakeImageView() {
         cameraController?.onStop()
         cameraview.visibility = View.INVISIBLE
@@ -171,7 +177,7 @@ class IndodanaActivity : AppCompatActivity() {
         cameraController = null
     }
 
-    //used to calculate image cropping
+    // used to calculate image cropping
     private fun getRealScreenSize(): Pair<Int, Int>? {
         val displayMetrics = DisplayMetrics()
         this.windowManager.defaultDisplay.getRealMetrics(displayMetrics)
@@ -205,16 +211,16 @@ class IndodanaActivity : AppCompatActivity() {
         }
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false, compressCounter : Int = 0): String {
+    private fun getBase64OfPrescriptionImage(localFilePath: String, compress: Boolean = false, compressCounter: Int = 0): String {
         var prescriptionImageBitmap: Bitmap? = null
         val options: BitmapFactory.Options
         var finalEncodedString = ""
         return try {
-            prescriptionImageBitmap = if(compress){
+            prescriptionImageBitmap = if (compress) {
                 options = BitmapFactory.Options()
                 options.inSampleSize = 2 + compressCounter
                 BitmapFactory.decodeFile(localFilePath, options)
-            }else {
+            } else {
                 BitmapFactory.decodeFile(localFilePath)
             }
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
@@ -229,15 +235,15 @@ class IndodanaActivity : AppCompatActivity() {
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             finalEncodedString = encodedString
             finalEncodedString
-        }catch (e : Exception){
+        } catch (e: Exception) {
             prescriptionImageBitmap?.recycle()
-            when(e){
+            when (e) {
                 is NullPointerException -> {
-                    if((!compress) || (compress && (compressCounter < MAX_COMPRESSIONS))){
-                        finalEncodedString = if (compress && localFilePath.isNotBlank()){
-                            getBase64OfPrescriptionImage(localFilePath, true,compressCounter + 1)
-                        }else {
-                            getBase64OfPrescriptionImage(localFilePath, true,compressCounter +  1)
+                    if ((!compress) || (compress && (compressCounter < MAX_COMPRESSIONS))) {
+                        finalEncodedString = if (compress && localFilePath.isNotBlank()) {
+                            getBase64OfPrescriptionImage(localFilePath, true, compressCounter + 1)
+                        } else {
+                            getBase64OfPrescriptionImage(localFilePath, true, compressCounter + 1)
                         }
                     }
                 }
@@ -282,5 +288,15 @@ class IndodanaActivity : AppCompatActivity() {
         private const val DOCTYPE_KYC = "kyc"
         private const val MAX_COMPRESSIONS = 5
         private const val QUALITY_SAFE_FIX = 60
+    }
+}
+
+class WebAppInterface(private val openCamera: () -> Unit) {
+
+    /** Show a toast from the web page  */
+    @JavascriptInterface
+    fun takePicture(json: String) {
+        val a = json
+        openCamera.invoke()
     }
 }
