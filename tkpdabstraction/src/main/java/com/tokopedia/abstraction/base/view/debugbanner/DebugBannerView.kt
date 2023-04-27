@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.abstraction.base.view.debugbanner.BannerGravity
 import io.armcha.debugBanner.dip
 import io.armcha.debugBanner.getScreenWidth
 
@@ -60,12 +61,15 @@ internal class DebugBannerView(context: Context, attrs: AttributeSet? = null) : 
     }
 
     override fun onDraw(canvas: Canvas?) {
-        canvas?.drawPath(path.apply {
-            moveTo(width - bannerHeight, 0f)
-            lineTo(width.toFloat(), 0f)
-            lineTo(0f, height.toFloat())
-            lineTo(0f, height - bannerHeight)
-            close()
-        }, paint)
+        canvas?.drawPath(
+            path.apply {
+                moveTo(width - bannerHeight, 0f)
+                lineTo(width.toFloat(), 0f)
+                lineTo(0f, height.toFloat())
+                lineTo(0f, height - bannerHeight)
+                close()
+            },
+            paint
+        )
     }
 }

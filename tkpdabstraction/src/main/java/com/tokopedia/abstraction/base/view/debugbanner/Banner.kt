@@ -1,8 +1,6 @@
 package com.tokopedia.abstraction.base.view.debugbanner
 
 import androidx.annotation.ColorRes
-import com.tokopedia.abstraction.R
-import com.tokopedia.manageaddress.ui.debugbanner.BannerGravity
 
 data class Banner(
     val bannerGravity: BannerGravity = BannerGravity.START,

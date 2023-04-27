@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.debugbanner
+package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.app.Application
 

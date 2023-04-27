@@ -2,24 +2,20 @@ package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.app.Activity
 import android.view.ViewGroup
-import com.tokopedia.manageaddress.ui.debugbanner.BannerView
-import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
 import com.tokopedia.abstraction.R
+import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
 
 /**
  * Created by irpan on 17/04/23.
  */
 class DebugApp() {
 
-    fun initDebug(p0: Activity) {
+    fun initDebug(p0: Activity, liveStatus: String) {
         val decorView = p0.window.decorView as ViewGroup
-        val localBanner = if (p0 is BannerView) {
-            p0.createBanner()
-        } else {
-            Banner()
-        }
+        val localBanner = Banner()
+
         val debugBannerView = DebugBannerView(p0).apply {
-            updateText(localBanner.bannerText, localBanner.textColorRes)
+            updateText(liveStatus, localBanner.textColorRes)
             updateBannerColor(localBanner.bannerColorRes)
             bannerGravity = localBanner.bannerGravity
         }
@@ -28,4 +24,3 @@ class DebugApp() {
         decorView.addView(debugBannerView, params)
     }
 }
-

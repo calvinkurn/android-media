@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -92,8 +93,19 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        new DebugApp().initDebug(this);
+        TokopediaUrl.Companion.getInstance();
 
+        new DebugApp().initDebug(this, getLiveStatus());
+
+    }
+
+    private String getLiveStatus() {
+
+        if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
+            return "STAGING URL";
+        } else {
+            return "LIVE URL";
+        }
     }
 
     @Override
@@ -193,7 +205,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                        getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -213,7 +225,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public void onTimezoneError() {
 
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
-                Snackbar.LENGTH_INDEFINITE)
+                        Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_check, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -244,6 +256,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                     ((AbstractionRouter) getApplication()).onForceLogoutV2(BaseActivity.this, REDIRECTION_WEBVIEW, url);
                 }
             }
+
             @Override
             public void onSecondaryBtnClicked() {
                 if (getApplication() instanceof AbstractionRouter) {
@@ -282,9 +295,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 for (int i = 0, size = dispatchTouchListeners.size(); i < size; i++) {
                     dispatchTouchListeners.get(i).onDispatchTouch(ev);
                 }
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
             return super.dispatchTouchEvent(ev);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -331,9 +345,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         List<Fragment> list = getSupportFragmentManager().getFragments();
-        for(Fragment fragment : list) {
-            if(fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
-                boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
+        for (Fragment fragment : list) {
+            if (fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
+                boolean handled = ((TkpdBaseV4Fragment) fragment).onFragmentBackPressed();
                 if (handled) {
                     return;
                 }

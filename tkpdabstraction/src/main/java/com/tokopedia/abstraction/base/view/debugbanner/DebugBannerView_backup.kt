@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.abstraction.base.view.debugbanner.BannerGravity
 import io.armcha.debugBanner.dip
 import io.armcha.debugBanner.getScreenWidth
 
@@ -66,17 +67,20 @@ internal class DebugBannerView_backup(context: Context, attrs: AttributeSet? = n
 
     override fun onDraw(canvas: Canvas?) {
 //        canvas?.drawPath(path.apply {
-////            moveTo(width - bannerHeight, 0f)
-////            lineTo(width.toFloat(), 0f)
-////            lineTo(0f, height.toFloat())
-////            lineTo(0f, height - bannerHeight)
+// //            moveTo(width - bannerHeight, 0f)
+// //            lineTo(width.toFloat(), 0f)
+// //            lineTo(0f, height.toFloat())
+// //            lineTo(0f, height - bannerHeight)
 //            rect
 //            close()
 //        }, paint)
         canvas?.drawRect(
-            0f, 0f, getScreenWidth().toFloat(), statusBarHeight(resources).toFloat(), paint
+            0f,
+            0f,
+            getScreenWidth().toFloat(),
+            statusBarHeight(resources).toFloat(),
+            paint
         )
-
     }
 
     private fun statusBarHeight(res: Resources): Int {

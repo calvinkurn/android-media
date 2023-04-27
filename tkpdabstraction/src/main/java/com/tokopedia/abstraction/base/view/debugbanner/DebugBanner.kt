@@ -5,9 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.ViewGroup
-import com.tokopedia.manageaddress.ui.debugbanner.BannerView
 import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
-
 
 class DebugBanner constructor(app: Application, private var banner: Banner) :
     Application.ActivityLifecycleCallbacks by ActivityEmptyLifecycleCallbacks() {
@@ -24,7 +22,6 @@ class DebugBanner constructor(app: Application, private var banner: Banner) :
     }
 
     override fun onActivityCreated(p0: Activity, savedInstanceState: Bundle?) {
-
         val decorView = p0.window.decorView as ViewGroup
         val localBanner = if (p0 is BannerView) {
             p0.createBanner()
