@@ -35,7 +35,7 @@ class RemoteDataSource @Inject constructor(
         }
 
         val fileBody = file.asRequestBody(fileMime.toMediaTypeOrNull())
-        val filePart = MultipartBody.Part.createFormData("image", file.name, fileBody)
+        val filePart = MultipartBody.Part.createFormData("file_upload", file.name, fileBody)
 
         val params = HashMap<String, RequestBody>()
         params["user_id"] = userSessionInterface.userId.toRequestBody("text/plain".toMediaTypeOrNull())

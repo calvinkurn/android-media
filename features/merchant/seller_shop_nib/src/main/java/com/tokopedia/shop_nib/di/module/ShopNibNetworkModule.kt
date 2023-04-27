@@ -26,9 +26,9 @@ class ShopNibNetworkModule {
     @ShopNibScope
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val baseUrl = if (TokopediaUrl.getInstance().TYPE == Env.LIVE) {
-            "https://imagenerator.tokopedia.com/"
+            "https://toko.service.gcp-infra-staging-asia-southeast1-staging.consul:7010"
         } else {
-            "https://imagenerator-staging.tokopedia.com/"
+            "https://toko.service.gcp-infra-production-asia-southeast1-production.consul:7010/"
         }
 
         return Retrofit.Builder()

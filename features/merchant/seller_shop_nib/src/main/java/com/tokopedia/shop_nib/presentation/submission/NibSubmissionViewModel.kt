@@ -2,7 +2,6 @@ package com.tokopedia.shop_nib.presentation.submission
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop_nib.domain.usecase.SellerSubmitNIBStatusUseCase
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
@@ -19,8 +18,7 @@ import javax.inject.Inject
 
 class NibSubmissionViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val uploadFileUseCase: UploadFileUseCase,
-    private val sellerSubmitNibStatusUseCase: SellerSubmitNIBStatusUseCase
+    private val uploadFileUseCase: UploadFileUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -51,7 +49,7 @@ class NibSubmissionViewModel @Inject constructor(
     private fun handleConfirmFile(fileUri: String, fileExtension: String, fileSizeKb: Long) {
         _uiState.update {
             val fileState = validateFileInput(fileUri, fileExtension, fileSizeKb)
-            val isInputValid = validateInput(fileState)
+            val isInputValid = validateInput(currentState.selectedDate, fileState)
 
             it.copy(
                 selectedFileUri = fileUri,
@@ -64,7 +62,7 @@ class NibSubmissionViewModel @Inject constructor(
     }
 
     private fun handleConfirmDate(newDate: Date) {
-        val isInputValid = validateInput(currentState.fileState)
+        val isInputValid = validateInput(newDate, currentState.fileState)
         _uiState.update { it.copy(selectedDate = newDate, isInputValid = isInputValid) }
     }
 
@@ -107,8 +105,8 @@ class NibSubmissionViewModel @Inject constructor(
     }
 
 
-    private fun validateInput(fileState: UiState.FileState): Boolean {
-        return currentState.selectedDate != null && fileState is UiState.FileState.Valid
+    private fun validateInput(selectedDate: Date?, fileState: UiState.FileState): Boolean {
+        return selectedDate != null && fileState is UiState.FileState.Valid
     }
 
     private fun validateFileInput(fileUri: String, fileExtension: String, fileSizeKb: Long): UiState.FileState {

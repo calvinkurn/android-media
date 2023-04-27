@@ -54,8 +54,8 @@ class LandingPageActivity : BaseActivity() {
             when(result) {
                 is Success -> handleData(result.data)
                 is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(this, result.throwable)
-                    showError(errorMessage)
+                    val fragment = NibSubmissionFragment.newInstance()
+                    renderFragment(fragment)
                 }
             }
         }
