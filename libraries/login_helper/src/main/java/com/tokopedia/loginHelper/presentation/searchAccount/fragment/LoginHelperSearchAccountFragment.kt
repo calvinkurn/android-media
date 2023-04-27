@@ -1,5 +1,6 @@
 package com.tokopedia.loginHelper.presentation.searchAccount.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,10 +26,12 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.LoginHelperSearchAdapter
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.listener.LoginHelperSearchListener
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
+import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountAction
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountEvent
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountUiState
 import com.tokopedia.loginHelper.util.showToasterError
@@ -83,6 +86,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
         }
 
         observeUiState()
+        observeUiAction()
     }
 
     private fun observeUiState() {
@@ -90,6 +94,22 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
             viewModel.uiState.collect {
                     state ->
                 handleUiState(state)
+            }
+        }
+    }
+
+    private fun observeUiAction() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiAction.collect { action ->
+                handleAction(action)
+            }
+        }
+    }
+
+    private fun handleAction(action: LoginHelperSearchAccountAction) {
+        when (action) {
+            is LoginHelperSearchAccountAction.TapBackSearchAccountAction -> {
+                handleBackButtonPress()
             }
         }
     }
@@ -195,8 +215,14 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     private fun HeaderUnify.setUpHeader(headerTitle: String) {
         title = headerTitle
         setNavigationOnClickListener {
-            //     viewModel.processEvent(LoginHelperAddEditAccountEvent.TapBackButton)
+            viewModel.processEvent(LoginHelperSearchAccountEvent.TapBackButton)
         }
+    }
+
+    private fun handleBackButtonPress() {
+        val intent = Intent(activity, LoginHelperAccountSettingsActivity::class.java)
+        startActivity(intent)
+        activity?.finish()
     }
 
     override fun initInjector() {
@@ -216,7 +242,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     }
 
     override fun onEditAccount(user: UserDataUiModel) {
-        context?.let { LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(it , user.email, user.password, user.tribe) }
+        context?.let { LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(it, user.email, user.password, user.tribe) }
     }
 
     override fun onDeleteAccount(user: UserDataUiModel) {

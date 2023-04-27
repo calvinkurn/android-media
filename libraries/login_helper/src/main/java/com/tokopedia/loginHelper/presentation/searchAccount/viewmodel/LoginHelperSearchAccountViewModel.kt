@@ -49,6 +49,9 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             is LoginHelperSearchAccountEvent.QueryEmail -> {
                 queryForGivenEmail(event.email)
             }
+            is LoginHelperSearchAccountEvent.TapBackButton -> {
+                handleBackButtonTap()
+            }
         }
     }
 
@@ -133,5 +136,9 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
 
     private fun decrypt(text: String): String {
         return aesEncryptorCBC.decrypt(text, secretKey)
+    }
+
+    private fun handleBackButtonTap() {
+        _uiAction.tryEmit(LoginHelperSearchAccountAction.TapBackSearchAccountAction)
     }
 }
