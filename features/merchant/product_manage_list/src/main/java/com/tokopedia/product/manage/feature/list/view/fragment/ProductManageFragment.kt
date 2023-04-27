@@ -2148,7 +2148,11 @@ open class ProductManageFragment :
                 ProductManageTracking.eventSettingsReminder(productId)
             }
             is Delete -> {
-                showNotAllowedToDeleteProductDT(productName, productId)
+                if (product.isDTInbound){
+                    showNotAllowedToDeleteProductDT()
+                }else{
+                    clickDeleteProductMenu(productName, productId)
+                }
                 ProductManageTracking.eventSettingsDelete(productId)
             }
             is SetTopAds -> {
@@ -3451,7 +3455,7 @@ open class ProductManageFragment :
         }
     }
 
-    private fun showNotAllowedToDeleteProductDT(productName: String, productId: String) {
+    private fun showNotAllowedToDeleteProductDT() {
         context?.let { it ->
             DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
