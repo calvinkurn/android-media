@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
@@ -67,14 +66,14 @@ internal fun getHeaderElevation(
 ): Dp = if (variant == NestHeaderVariant.Transparent) 0.dp else type.elevation
 
 @Composable
-fun HeaderMarginArea(
+internal fun HeaderMarginArea(
     modifier: Modifier = Modifier
 ) {
     Spacer(modifier = modifier.width(16.dp))
 }
 
 @Composable
-fun HeaderContainer(
+internal fun HeaderContainer(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -92,7 +91,7 @@ fun HeaderContainer(
  * Header Title Component
  */
 @Composable
-fun HeaderTitle(
+internal fun HeaderTitle(
     modifier: Modifier = Modifier,
     title: String
 ) {
@@ -111,7 +110,7 @@ fun HeaderTitle(
  * Header SubTitle Component
  */
 @Composable
-fun HeaderSubTitle(
+internal fun HeaderSubTitle(
     modifier: Modifier = Modifier,
     subTitle: String,
     contentSecondaryColor: Color
@@ -131,7 +130,7 @@ fun HeaderSubTitle(
  * Header IconBack Component
  */
 @Composable
-fun HeaderIconBack(
+internal fun HeaderIconBack(
     iconColor: Color,
     onClick: () -> Unit
 ) {
@@ -188,7 +187,7 @@ internal fun HeaderLocationContent(
  * Header Options Button
  */
 @Composable
-fun HeaderOptionsButton(
+internal fun HeaderOptionsButton(
     optionsButton: List<HeaderOptionals>,
     iconColor: Color
 ) {
@@ -237,17 +236,4 @@ fun HeaderOptionsButton(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun HeaderOptionsButtonPreview() {
-    HeaderOptionsButton(
-        optionsButton = listOf(
-            HeaderActionButton(icon = HeaderIconSource.Painter(painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_bell))),
-            HeaderTextButton(text = "Action"),
-            HeaderTextButton(text = "Add")
-        ),
-        iconColor = NestTheme.colors.NN._900
-    )
 }
