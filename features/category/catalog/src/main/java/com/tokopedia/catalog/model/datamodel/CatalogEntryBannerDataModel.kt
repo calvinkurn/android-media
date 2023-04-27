@@ -2,13 +2,16 @@ package com.tokopedia.catalog.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
-import com.tokopedia.catalog.model.raw.ComparisonNewModel
+import com.tokopedia.catalog.model.raw.CatalogImage
 
-data class CatalogEntryBannerDataModel (val name : String = "", val type : String = "",
-                                        val categoryName : String? = "",
-                                        val categoryProductCount : String? = "",
-                                        val catalogs : ArrayList<ComparisonNewModel>? )
-    : BaseCatalogDataModel {
+data class CatalogEntryBannerDataModel(
+    val name: String = "",
+    val type: String = "",
+    val categoryName: String? = "",
+    val categoryProductCount: String? = "",
+    val catalogs: ArrayList<CatalogImage>?
+) :
+    BaseCatalogDataModel {
 
     override fun name(): String = name
 
@@ -25,5 +28,4 @@ data class CatalogEntryBannerDataModel (val name : String = "", val type : Strin
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {
         return null
     }
-
 }

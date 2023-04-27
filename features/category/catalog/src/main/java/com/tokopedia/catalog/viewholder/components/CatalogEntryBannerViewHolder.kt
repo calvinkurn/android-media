@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogEntryBannerDataModel
-import com.tokopedia.catalog.model.raw.ComparisonNewModel
+import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -55,8 +55,8 @@ class CatalogEntryBannerViewHolder(
         categoryName.text = view.context.getString(R.string.catalog_entry_banner_title, category)
     }
 
-    private fun renderImages(catalogs: ArrayList<ComparisonNewModel>?) {
-        val leftImageUrl = catalogs?.firstOrNull()?.imageUrl ?: ""
+    private fun renderImages(catalogs: ArrayList<CatalogImage>?) {
+        val leftImageUrl = catalogs?.firstOrNull()?.imageURL ?: ""
         if (leftImageUrl.isNotBlank()) {
             imageLeft.show()
             imageLeft.loadImage(leftImageUrl)
@@ -64,7 +64,7 @@ class CatalogEntryBannerViewHolder(
             imageLeft.hide()
         }
         if ((catalogs?.size ?: 0) > 1) {
-            val rightImageUrl = catalogs?.get(1)?.imageUrl ?: ""
+            val rightImageUrl = catalogs?.get(1)?.imageURL ?: ""
             if (rightImageUrl.isNotBlank()) {
                 imageRight.show()
                 imageRight.loadImage(rightImageUrl)
