@@ -186,4 +186,7 @@
     <string name="title_seller_mvc_create">Mvc Create</string>
     <string name="title_seller_mvc_product_create">Mvc Product Create</string>
     <string name="title_seller_mvc_detail">Mvc Detail</string>
+
+    <!-- Payment Thank You -->
+    <string name="payment_title_thank_you">Thank You Page</string>
 </resources>
