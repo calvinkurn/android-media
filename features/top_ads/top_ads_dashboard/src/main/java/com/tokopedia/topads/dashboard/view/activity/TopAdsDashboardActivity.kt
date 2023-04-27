@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -69,6 +71,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -99,6 +102,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private lateinit var ivCalendarTopAdsActionBar: ImageUnify
     private lateinit var txtBuatIklan: Typography
     var insightMultiActionButtonEnabled: Boolean = false
+    private var saranTopAdsEducationalBottomSheet: BottomSheetUnify? = null
 
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
@@ -123,6 +127,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         const val INSIGHT_PAGE = 3
         const val HEADLINE_ADS_TAB = 2
         const val IKLANKAN_PRODUK_TAB = 1
+        const val SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK = "https://seller.tokopedia.com/edu/halaman-rekomendasi-topads/"
+        const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL = "https://img.youtube.com/vi/wtXkUUsFSU4/0.jpg"
+        const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK = "https://www.youtube.com/watch?v=wtXkUUsFSU4"
     }
 
     @Inject
@@ -205,6 +212,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                             setMultiActionButtonEnabled(insightMultiActionButtonEnabled)
                             bottom?.hide()
                             hideButton(true)
+                            ivEducationTopAdsActionBar.show()
+                            txtBuatIklan.hide()
                         }
                         HEADLINE_ADS_TAB -> {
                             removeBtn()
@@ -250,7 +259,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         ivEducationTopAdsActionBar.setOnClickListener {
-            startActivity(Intent(this, TopAdsEducationActivity::class.java))
+            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == INSIGHT_PAGE){
+                openSaransTopAdsEducationalBottomsheet()
+            } else {
+                startActivity(Intent(this, TopAdsEducationActivity::class.java))
+            }
         }
 
         txtBuatIklan.setOnClickListener {
@@ -260,6 +273,37 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(CLICK_BUAT_IKLAN_1, "")
         }
+    }
+
+    private fun openSaransTopAdsEducationalBottomsheet(){
+        val view = layoutInflater.inflate(R.layout.layout_saran_topads_eductional_info_bottomsheet,null,false)
+        saranTopAdsEducationalBottomSheet = BottomSheetUnify().apply {
+            setChild(view)
+            isDragable = false
+            isHideable = true
+            showCloseIcon = true
+            showKnob = false
+            clearContentPadding = true
+            isFullpage = false
+            setTitle(this@TopAdsDashboardActivity.getString(R.string.topads_what_is_saran_topads_question))
+        }
+        val videoThumbnail = view.findViewById<ImageUnify>(R.id.video_thumbnail)
+        val readArticleCta = view.findViewById<UnifyButton>(R.id.read_articles_cta)
+        val seeSuggestionsCta = view.findViewById<UnifyButton>(R.id.topads_suggestion_cta)
+        videoThumbnail.urlSrc = SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
+        videoThumbnail.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+        readArticleCta.setOnClickListener {
+            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK)
+        }
+        seeSuggestionsCta.setOnClickListener {
+            saranTopAdsEducationalBottomSheet?.dismiss()
+        }
+        saranTopAdsEducationalBottomSheet?.show(supportFragmentManager,"educationalBottomSheet")
     }
 
     private fun initView() {
@@ -413,7 +457,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tabLayout?.addNewTab(getString(R.string.topads_dash_beranda))
         tabLayout?.addNewTab(getString(R.string.topads_dash_iklan_produck))
         tabLayout?.addNewTab(getString(R.string.topads_dash_headline_title))
-        tabLayout?.addNewTab(getString(R.string.topads_dash_recommend))
+        tabLayout?.addNewTab(getString(R.string.topads_dash_suggestion))
         tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
         list.add(
             FragmentTabItem(
@@ -435,7 +479,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         )
         list.add(
             FragmentTabItem(
-                resources.getString(R.string.topads_dash_recommend),
+                resources.getString(R.string.topads_dash_suggestion),
                 RecommendationFragment()
             )
         )

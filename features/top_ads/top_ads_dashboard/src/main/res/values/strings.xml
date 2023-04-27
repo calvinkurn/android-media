@@ -526,5 +526,10 @@
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
     <string name="topads_layout_chips_text">Semua</string>
 
+<!--    Saran Topads-->
+    <string name="topads_dash_suggestion">Saran Topads</string>
+    <string name="topads_click_saran_topads">Cek Saran TopAds</string>
+    <string name="topads_read_saran_articles">Baca Artikel</string>
+    <string name="topads_what_is_saran_topads_question">Apa itu Saran TopAds?</string>
 </resources>
 
