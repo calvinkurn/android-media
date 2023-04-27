@@ -9,7 +9,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -328,7 +328,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
                         orderQuantity = 0,
@@ -338,7 +338,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     shopType = "pm"
                 ),
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
                         orderQuantity = quantity,
@@ -435,7 +435,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         orderQuantity = 4,
                         usePreDraw = true,
@@ -445,7 +445,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     shopType = "pm"
                 ),
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         usePreDraw = true,
                         price = "0",
@@ -607,7 +607,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
                         orderQuantity = 0,
@@ -618,7 +618,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
                     ),
                 ProductCardCompactCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
                         orderQuantity = 0,
@@ -1114,7 +1114,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 channelHeaderName = "Mix Left Carousel",
                 shopId = "100",
                 channelId = "2122",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     price = "0",
                     usePreDraw = true,

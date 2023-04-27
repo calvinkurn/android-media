@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCa
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.TokoNowProductCardCarouselListener
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
@@ -110,7 +110,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      * The listener will be used when data are set outside of this widget
      */
     fun setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
+        productCardCarouselListener: ProductCardCompactCarouselListener? = null,
         headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
