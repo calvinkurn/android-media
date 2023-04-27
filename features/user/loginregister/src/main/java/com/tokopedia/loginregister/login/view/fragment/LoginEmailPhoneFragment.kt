@@ -805,17 +805,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-//    private fun checkFingerprintAvailability() {
-//        if (!GlobalConfig.isSellerApp()) {
-//            if (isEnableDirectBiometric()) {
-//                showLoadingOverlay()
-//            } else {
-//                viewModel.registerCheckFingerprint()
-//
-//            }
-//        }
-//    }
-
     private fun checkFingerprintAvailability() {
         if (!GlobalConfig.isSellerApp()) {
             viewModel.registerCheckFingerprint()
@@ -843,10 +832,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun isEnableDirectBiometric(): Boolean {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
-        return true
-    }
+    private fun isEnableDirectBiometric(): Boolean =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {

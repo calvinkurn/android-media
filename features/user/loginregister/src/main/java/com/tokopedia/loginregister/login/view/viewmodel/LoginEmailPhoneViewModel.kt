@@ -454,7 +454,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
                 val resultBiometrics = async(Dispatchers.IO) {
                     suspendCancellableCoroutine<RegisterCheckFingerprint?> { continuation ->
-                        Thread.sleep(2000)
                         registerCheckFingerprintUseCase.checkRegisteredFingerprint(
                             onSuccess = { data ->
                                 continuation.resume(data)
