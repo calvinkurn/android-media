@@ -37,7 +37,7 @@ internal fun HeaderProfileType(
             HeaderIconBack(iconColor = iconColor, onClick = properties.onBackClicked)
         }
 
-        ProfileImage(profileSource = properties.imageSource)
+        ProfileImage(headerImageSource = properties.imageSource)
 
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -58,37 +58,37 @@ internal fun HeaderProfileType(
 }
 
 @Composable
-private fun ProfileImage(profileSource: ProfileSource) {
+private fun ProfileImage(headerImageSource: HeaderImageSource) {
     val scale = ContentScale.Crop
     val contentDescription = "profile_image"
     val modifier = Modifier
         .size(32.dp)
         .clip(CircleShape)
 
-    when (profileSource) {
-        is ProfileSource.Remote -> {
-            NestImage(modifier = modifier, imageUrl = profileSource.source)
+    when (headerImageSource) {
+        is HeaderImageSource.Remote -> {
+            NestImage(modifier = modifier, imageUrl = headerImageSource.source)
         }
-        is ProfileSource.Painter -> {
+        is HeaderImageSource.Painter -> {
             Image(
                 modifier = modifier,
-                painter = profileSource.source,
+                painter = headerImageSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )
         }
-        is ProfileSource.ImageBitmap -> {
+        is HeaderImageSource.ImageBitmap -> {
             Image(
                 modifier = modifier,
-                bitmap = profileSource.source,
+                bitmap = headerImageSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )
         }
-        is ProfileSource.ImageVector -> {
+        is HeaderImageSource.ImageVector -> {
             Image(
                 modifier = modifier,
-                imageVector = profileSource.source,
+                imageVector = headerImageSource.source,
                 contentScale = scale,
                 contentDescription = contentDescription
             )

@@ -48,7 +48,7 @@ sealed interface NestHeaderType {
         override val title: String = "Title",
         override val subTitle: String = "Sub-title",
         override val onTitleClicked: () -> Unit = {},
-        val imageSource: ProfileSource = ProfileSource.Remote(source = "")
+        val imageSource: HeaderImageSource = HeaderImageSource.Remote(source = "")
     ) : NestHeaderType, NestHeaderDoubleLineClickableAttr
 
     data class Search(
@@ -79,19 +79,4 @@ interface NestHeaderDoubleLineAttr : NestHeaderSingleLineAttr {
 
 interface NestHeaderDoubleLineClickableAttr : NestHeaderDoubleLineAttr {
     val onTitleClicked: () -> Unit
-}
-
-sealed interface ProfileSource {
-    data class Remote(val source: String) : ProfileSource
-    data class Painter(
-        val source: androidx.compose.ui.graphics.painter.Painter
-    ) : ProfileSource
-
-    data class ImageVector(
-        val source: androidx.compose.ui.graphics.vector.ImageVector
-    ) : ProfileSource
-
-    data class ImageBitmap(
-        val source: androidx.compose.ui.graphics.ImageBitmap
-    ) : ProfileSource
 }

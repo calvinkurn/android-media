@@ -199,7 +199,7 @@ fun NestHeaderProfileDefaultPreview() {
             type = NestHeaderType.Profile().copy(
                 title = "Header Profile Default",
                 subTitle = "Pilih Akun",
-                imageSource = ProfileSource.Remote(source = "")
+                imageSource = HeaderImageSource.Remote(source = "")
             )
         )
     }
@@ -213,7 +213,7 @@ fun NestHeaderProfileDefaultDarkPreview() {
             type = NestHeaderType.Profile().copy(
                 title = "Header Profile Default",
                 subTitle = "Pilih Akun",
-                imageSource = ProfileSource.Remote(source = ""),
+                imageSource = HeaderImageSource.Remote(source = ""),
                 showBackButton = false
             )
         )
@@ -229,7 +229,7 @@ fun NestHeaderProfileTransparentPreview() {
             type = NestHeaderType.Profile().copy(
                 title = "Header Profile Transparent",
                 subTitle = "Pilih Akun",
-                imageSource = ProfileSource.Remote(source = "")
+                imageSource = HeaderImageSource.Remote(source = "")
             )
         )
     }
@@ -244,7 +244,7 @@ fun NestHeaderProfileTransparentDarkPreview() {
             type = NestHeaderType.Profile().copy(
                 title = "Header Profile Transparent",
                 subTitle = "Pilih Akun",
-                imageSource = ProfileSource.Remote(source = ""),
+                imageSource = HeaderImageSource.Remote(source = ""),
                 showBackButton = false
             )
         )
