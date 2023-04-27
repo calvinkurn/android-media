@@ -56,7 +56,7 @@ internal fun PrefixFilterItem(
                 NestNotification(text = selectedSize.toString(), colorType = Color.SECONDARY)
             } else {
                 Icon(
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(26.dp),
                     painter = painterResource(id = painterId),
                     contentDescription = "Clear Filter Icon",
                     tint = LocalNestColor.current.NN._500
