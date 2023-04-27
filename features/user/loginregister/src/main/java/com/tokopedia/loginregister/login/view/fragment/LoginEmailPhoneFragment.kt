@@ -185,6 +185,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = false
     private var isEnableSilentVerif = false
+    private var isEnableDirectBiometric = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
@@ -329,6 +330,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
+        isEnableDirectBiometric = isEnableDirectBiometric()
         refreshRolloutVariant()
     }
 
@@ -410,7 +412,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun checkLoginOption() {
-        if (isEnableDirectBiometric()) {
+        if (isEnableDirectBiometric) {
             viewModel.checkLoginOption()
             showLoadingOverlay()
         } else {
@@ -821,7 +823,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             setLeftDrawableForFingerprint()
             show()
 
-            if (isEnableDirectBiometric()) {
+            if (isEnableDirectBiometric) {
                 analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
@@ -833,8 +835,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun isEnableDirectBiometric(): Boolean =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "").isNotEmpty()
+    private fun isEnableDirectBiometric(): Boolean {
+        val value = RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
+        return value.isNotEmpty()
+    }
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
