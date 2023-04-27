@@ -93,11 +93,9 @@ class ProductReportActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQ_CODE_GO_FORM) {
-            if (resultCode == Activity.RESULT_OK) {
-                setResult(Activity.RESULT_OK)
-                finish()
-            }
+        if (requestCode == REQ_CODE_GO_FORM && resultCode == Activity.RESULT_OK) {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 
