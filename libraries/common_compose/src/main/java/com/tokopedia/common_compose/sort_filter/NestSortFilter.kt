@@ -1,7 +1,6 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -77,9 +76,13 @@ private fun LazyListState.horizontalOffset(): Int {
             if (previousIndex == firstVisibleItemIndex && firstVisibleItemIndex == 0) {
                 firstVisibleItemScrollOffset - previousScrollOffset
             } else {
-                if (firstVisibleItemIndex > 0) 0
-                else if (firstVisibleItemIndex < previousIndex) -1 * previousScrollOffset
-                else firstVisibleItemScrollOffset
+                if (firstVisibleItemIndex > 0) {
+                    0
+                } else if (firstVisibleItemIndex < previousIndex) {
+                    -1 * previousScrollOffset
+                } else {
+                    firstVisibleItemScrollOffset
+                }
             }.also {
                 previousIndex = firstVisibleItemIndex
                 previousScrollOffset = firstVisibleItemScrollOffset
@@ -101,7 +104,7 @@ fun NestSortFilterAdvanced(
         Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
     }
     val ld = LocalDensity.current
-    val selectedSize by remember(items) { derivedStateOf { items.filter { it.isSelected }.size } }
+    val selectedSize = items.filter { it.isSelected }.size
     val rowState = rememberLazyListState()
     val offset = rowState.horizontalOffset()
     var currentTextWidth by remember { mutableStateOf<Dp?>(null) }
@@ -113,9 +116,10 @@ fun NestSortFilterAdvanced(
         currentTextWidth = (currentTextWidth!! - diffInDp).coerceIn(0.dp, firstWidth)
     })
 
+    val paddingEnd = if (currentTextWidth == 0.dp) 0.dp else 4.dp
     Row(modifier = modifier) {
         PrefixFilterItem(
-            modifier = Modifier.padding(end = 4.dp),
+            modifier = Modifier.padding(end = paddingEnd),
             size = size,
             text = "Filter",
             textWidth = currentTextWidth,
@@ -168,7 +172,7 @@ fun NestSortFilterPreview() {
                 SortFilter("Bad", false),
                 SortFilter("Medium", false),
                 SortFilter("Good", false),
-                SortFilter("Impressive", false),
+                SortFilter("Impressive", false)
             )
         )
     }
@@ -181,7 +185,7 @@ fun NestSortFilterPreview() {
                 SortFilter("Medium", false),
                 SortFilter("Big", false, showChevron = true),
                 SortFilter("Enormous", false),
-                SortFilter("Giant", false),
+                SortFilter("Giant", false)
             )
         )
     }
@@ -196,7 +200,8 @@ fun NestSortFilterPreview() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = size == Size.DEFAULT,
-                        onCheckedChange = { size = Size.DEFAULT })
+                        onCheckedChange = { size = Size.DEFAULT }
+                    )
                     Text("S", fontWeight = FontWeight.Bold)
                     Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                     Text("L", fontWeight = FontWeight.Bold)
@@ -208,17 +213,24 @@ fun NestSortFilterPreview() {
                     showClearFilterIcon = true,
                     onItemClicked = { sf ->
                         items = items.map {
-                            if (it == sf) it.copy(isSelected = it.isSelected.not())
-                            else it
+                            if (it == sf) {
+                                it.copy(isSelected = it.isSelected.not())
+                            } else {
+                                it
+                            }
                         }
                     },
-                    onClearFilter = { items = items.map { it.copy(isSelected = false) } })
+                    onClearFilter = { items = items.map { it.copy(isSelected = false) } }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Advanced Filter")
                 NestSortFilterAdvanced(items = advItems, size = size, onItemClicked = { sf ->
                     advItems = advItems.map {
-                        if (it == sf) it.copy(isSelected = it.isSelected.not())
-                        else it
+                        if (it == sf) {
+                            it.copy(isSelected = it.isSelected.not())
+                        } else {
+                            it
+                        }
                     }
                 })
             }
