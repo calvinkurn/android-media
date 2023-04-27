@@ -9,7 +9,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.ApplinkDebuggerTypeFactory
@@ -83,10 +82,6 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
             .context(activity!!.application).build()
         component.inject(this)
         presenter.attachView(this)
-    }
-
-    private fun injectToFragment(component: AnalyticsDebuggerComponent) {
-        presenter = component.applinkPresenter
     }
 
     override fun getScreenName(): String {
