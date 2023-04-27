@@ -22,14 +22,16 @@ private val NestThemeLight = lightColors(
     onPrimary = NestNN.light._0,
     primaryVariant = NestGN.light._400,
     secondary = NestBN.light._200,
-    surface = NestNN.light._0
+    surface = NestNN.light._0,
+    background = NestNN.light._0
 )
 
 private val NestThemeDark = darkColors(
     primary = NestGN.dark._500,
     onPrimary = NestNN.dark._0,
     secondary = NestBN.dark._200,
-    surface = NestNN.dark._0
+    surface = NestNN.dark._0,
+    background = NestNN.dark._0
 )
 
 private val LightElevation = Elevations()

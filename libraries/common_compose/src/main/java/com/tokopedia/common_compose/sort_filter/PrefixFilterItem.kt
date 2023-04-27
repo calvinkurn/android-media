@@ -1,7 +1,6 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -42,12 +40,14 @@ internal fun PrefixFilterItem(
         Size.DEFAULT -> 32.dp
         Size.LARGE -> 48.dp
     }
-    Surface(color = backgroundColor,
+    Surface(
+        color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, borderColor),
         modifier = modifier
             .height(height)
-            .clickable { onClick() }) {
+            .clickable { onClick() }
+    ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -71,7 +71,7 @@ internal fun PrefixFilterItem(
                         .onGloballyPositioned {
                             textWidthChange(it.size.width)
                         },
-                    style = NestTheme.typography.display2,
+                    style = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600),
                     text = text,
                     maxLines = 1
                 )
