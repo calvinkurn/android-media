@@ -29,7 +29,7 @@ import com.tokopedia.tokochat.stub.di.TokoChatFakeActivityComponentFactory
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
-import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
+import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -49,7 +49,7 @@ abstract class BaseTokoChatTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        TokoChatActivityStub::class.java,
+        TokoChatActivity::class.java,
         false,
         false
     )
@@ -86,7 +86,7 @@ abstract class BaseTokoChatTest {
     @Inject
     lateinit var cacheManager: TokoChatCacheManager
 
-    protected lateinit var activity: TokoChatActivityStub
+    protected lateinit var activity: TokoChatActivity
 
     @Before
     open fun before() {
@@ -99,14 +99,12 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking,
             idlingResourcePrepareDb
         )
         mockWebServer.start(8090)
         resetDatabase()
         removeDummyCache()
         prepareDatabase()
-        shouldWaitForChatHistory = true
     }
 
     @After
@@ -117,7 +115,6 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking,
             idlingResourcePrepareDb
         )
     }
@@ -171,7 +168,6 @@ abstract class BaseTokoChatTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        Thread.sleep(2000) // Waiting for all network call and databases from conversation sdk
     }
 
     private fun setupDaggerComponent() {
@@ -256,13 +252,8 @@ abstract class BaseTokoChatTest {
         val idlingResourceDatabaseChannel = CountingIdlingResource(
             "tokochat-database-channel"
         )
-        val idlingResourceGroupBooking = CountingIdlingResource(
-            "tokochat-groupbooking"
-        )
         val idlingResourcePrepareDb = CountingIdlingResource(
             "tokochat-prepare-db"
         )
-
-        var shouldWaitForChatHistory: Boolean = true
     }
 }
