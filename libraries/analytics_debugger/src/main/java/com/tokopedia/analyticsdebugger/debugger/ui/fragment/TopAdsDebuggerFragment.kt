@@ -10,18 +10,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.TopAdsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.TopAdsDebuggerTypeFactory
 import com.tokopedia.analyticsdebugger.debugger.ui.model.TopAdsDebuggerViewModel
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger
+import javax.inject.Inject
 
 class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebuggerTypeFactory>(), TopAdsDebugger.View {
 
     private var buttonSearch: Button? = null
 
-    var presenter: TopAdsDebugger.Presenter? = null
+    @Inject
+    lateinit var presenter: TopAdsDebugger.Presenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
@@ -38,9 +39,9 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
-                presenter?.reloadData()
+                presenter.reloadData()
             } else {
-                presenter?.search(searchInputView.searchText)
+                presenter.search(searchInputView.searchText)
             }
         }
         searchInputView.setSearchHint("Cari")
@@ -48,7 +49,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -57,7 +58,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
 
     override fun loadInitialData() {
         showLoading()
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -65,7 +66,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
     }
 
     override fun loadData(page: Int) {
-        presenter?.loadMore()
+        presenter.loadMore()
     }
 
     override fun getAdapterTypeFactory(): TopAdsDebuggerTypeFactory {
@@ -82,12 +83,8 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
         val component = DaggerAnalyticsDebuggerComponent.builder()
             .context(activity!!.application).build()
 
-        injectToFragment(component)
-        presenter?.attachView(this)
-    }
-
-    private fun injectToFragment(component: AnalyticsDebuggerComponent) {
-        presenter = component.topAdsPresenter
+        component.inject(this)
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String {
@@ -95,7 +92,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
     }
 
     override fun onSearchSubmitted(text: String) {
-        presenter?.search(text)
+        presenter.search(text)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -116,7 +113,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
     }
 
     override fun onDeleteCompleted() {
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -126,7 +123,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.topads_action_menu_delete) {
-            presenter?.deleteAll()
+            presenter.deleteAll()
             return true
         }
         return super.onOptionsItemSelected(item)

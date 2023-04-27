@@ -5,8 +5,6 @@ import com.tokopedia.analytics.debugger.ui.fragment.ApplinkDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.TopAdsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Named
@@ -21,10 +19,6 @@ interface AnalyticsDebuggerComponent {
     fun inject(fragment: FpmDebuggerFragment?)
     fun inject(fragment: ApplinkDebuggerFragment?)
     fun inject(fragment: TopAdsDebuggerFragment?)
-
-    val applinkPresenter: ApplinkDebugger.Presenter
-
-    val topAdsPresenter: TopAdsDebugger.Presenter
 
     @get:Named(NAMED_IRIS_SAVE)
     val gtmIrisSavePresenter: AnalyticsDebugger.Presenter
