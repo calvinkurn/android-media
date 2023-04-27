@@ -48,7 +48,10 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestHeader(type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false))
+            NestHeader(
+                modifier = Modifier.padding(bottom = 1.dp),
+                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false, elevation = 4.dp)
+            )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {

@@ -3,7 +3,6 @@ package com.tokopedia.common_compose.principles
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.header.HeaderDoubleLineType
 import com.tokopedia.common_compose.header.HeaderLocationType
 import com.tokopedia.common_compose.header.HeaderProfileType
@@ -29,7 +28,7 @@ fun NestHeader(
 
     Surface(
         color = headerBackground,
-        elevation = 1.dp,
+        elevation = type.elevation,
         modifier = modifier,
         contentColor = contentColor
     ) {

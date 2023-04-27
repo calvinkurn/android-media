@@ -1,6 +1,8 @@
 package com.tokopedia.common_compose.header
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 /**
  * Created by yovi.putra on 18/04/23"
@@ -8,7 +10,10 @@ import androidx.compose.runtime.Composable
  **/
 
 sealed interface NestHeaderType {
+    val elevation: Dp
+
     data class Location(
+        override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
@@ -18,6 +23,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestHeaderDoubleLineClickableAttr
 
     data class SingleLine(
+        override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
@@ -25,6 +31,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestHeaderSingleLineAttr
 
     data class DoubleLine(
+        override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
@@ -33,6 +40,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestHeaderDoubleLineAttr
 
     data class Profile(
+        override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
@@ -43,6 +51,7 @@ sealed interface NestHeaderType {
     ) : NestHeaderType, NestHeaderDoubleLineClickableAttr
 
     data class Search(
+        override val elevation: Dp = 1.dp,
         override val showBackButton: Boolean = true,
         override val onBackClicked: () -> Unit = {},
         override val buttonOptions: @Composable () -> Unit = {},
