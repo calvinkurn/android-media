@@ -204,31 +204,32 @@ internal fun HeaderOptionsButton(
         optionsButton.forEach { options ->
             when (options) {
                 is HeaderActionButton -> {
-                    HeaderIcon(
+                    IconButton(
                         modifier = Modifier
                             .size(24.dp)
-                            .tag(options.contentDescription)
-                            .clickable {
-                                options.onClicked.invoke()
-                            },
-                        imageSource = options.icon,
-                        contentDescription = options.contentDescription,
-                        iconColor = iconColor
-                    )
+                            .tag(options.contentDescription),
+                        onClick = { options.onClicked.invoke() }
+                    ) {
+                        HeaderIcon(
+                            imageSource = options.icon,
+                            contentDescription = options.contentDescription,
+                            iconColor = iconColor
+                        )
+                    }
                 }
                 is HeaderTextButton -> {
-                    NestTypography(
-                        modifier = Modifier
-                            .tag(options.contentDescription)
-                            .clickable {
-                                options.onClicked.invoke()
-                            },
-                        text = options.text,
-                        textStyle = NestTheme.typography.display2.copy(
-                            color = options.color,
-                            fontWeight = FontWeight.Bold
+                    IconButton(
+                        modifier = Modifier.tag(options.contentDescription),
+                        onClick = { options.onClicked.invoke() }
+                    ) {
+                        NestTypography(
+                            text = options.text,
+                            textStyle = NestTheme.typography.display2.copy(
+                                color = options.color,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
+                    }
                 }
                 else -> {
                     // no-ops

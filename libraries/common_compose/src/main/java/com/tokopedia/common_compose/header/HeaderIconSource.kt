@@ -28,7 +28,7 @@ sealed interface HeaderIconSource {
  */
 @Composable
 internal fun HeaderIcon(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     imageSource: HeaderIconSource,
     contentDescription: String,
     iconColor: Color
