@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.header
 
 import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.tokopedia.common_compose.principles.NestHeader
@@ -15,7 +16,8 @@ import com.tokopedia.common_compose.ui.NestTheme
  * SINGLE LINE
  */
 // region single line preview
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderSingleLineDefaultPreview() {
     NestTheme {
@@ -27,41 +29,16 @@ private fun NestHeaderSingleLineDefaultPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderSingleLineDefaultDarkPreview() {
-    NestTheme {
-        NestHeader(
-            type = NestHeaderType.SingleLine().copy(
-                title = "Header Single Line Default",
-                showBackButton = false
-            )
-        )
-    }
-}
-
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderSingleLineTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.SingleLine().copy(
-                title = "Header Single Line Transparent"
-            )
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderSingleLineTransparentDarkPreview() {
-    NestTheme {
-        NestHeader(
-            variant = NestHeaderVariant.Transparent,
-            type = NestHeaderType.SingleLine().copy(
                 title = "Header Single Line Transparent",
-                showBackButton = false
+                showBackButton = !isSystemInDarkTheme()
             )
         )
     }
@@ -73,7 +50,8 @@ private fun NestHeaderSingleLineTransparentDarkPreview() {
  * DOUBLE LINE
  */
 // region double line preview
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderDoubleLineDefaultPreview() {
     NestTheme {
@@ -85,41 +63,16 @@ private fun NestHeaderDoubleLineDefaultPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderDoubleLineDefaultDarkPreview() {
-    NestTheme {
-        NestHeader(
-            type = NestHeaderType.DoubleLine().copy(
-                title = "Header Double Line Default",
-                showBackButton = false
-            )
-        )
-    }
-}
-
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderDoubleLineTransparentPreview() {
     NestTheme {
         NestHeader(
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.DoubleLine().copy(
-                title = "Header Double Line Transparent"
-            )
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderDoubleLineTransparentDarkPreview() {
-    NestTheme {
-        NestHeader(
-            variant = NestHeaderVariant.Transparent,
-            type = NestHeaderType.DoubleLine().copy(
                 title = "Header Double Line Transparent",
-                showBackButton = false
+                showBackButton = !isSystemInDarkTheme()
             )
         )
     }
@@ -130,7 +83,8 @@ private fun NestHeaderDoubleLineTransparentDarkPreview() {
  * LOCATION
  */
 // region location preview
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderLocationDefaultPreview() {
     NestTheme {
@@ -143,21 +97,8 @@ private fun NestHeaderLocationDefaultPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderLocationDefaultDarkPreview() {
-    NestTheme {
-        NestHeader(
-            type = NestHeaderType.Location().copy(
-                title = "Header Location Default",
-                subTitle = "Pilih Lokasi",
-                showBackButton = false
-            )
-        )
-    }
-}
-
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderLocationTransparentPreview() {
     NestTheme {
@@ -165,22 +106,8 @@ private fun NestHeaderLocationTransparentPreview() {
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.Location().copy(
                 title = "Header Location Transparent",
-                subTitle = "Pilih Lokasi"
-            )
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderLocationTransparentDarkPreview() {
-    NestTheme {
-        NestHeader(
-            variant = NestHeaderVariant.Transparent,
-            type = NestHeaderType.Location().copy(
-                title = "Header Location Transparent",
                 subTitle = "Pilih Lokasi",
-                showBackButton = false
+                showBackButton = !isSystemInDarkTheme()
             )
         )
     }
@@ -191,7 +118,8 @@ private fun NestHeaderLocationTransparentDarkPreview() {
  * PROFILE
  */
 // region profile preview
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderProfileDefaultPreview() {
     NestTheme {
@@ -205,22 +133,8 @@ private fun NestHeaderProfileDefaultPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderProfileDefaultDarkPreview() {
-    NestTheme {
-        NestHeader(
-            type = NestHeaderType.Profile().copy(
-                title = "Header Profile Default",
-                subTitle = "Pilih Akun",
-                imageSource = HeaderImageSource.Remote(source = ""),
-                showBackButton = false
-            )
-        )
-    }
-}
-
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderProfileTransparentPreview() {
     NestTheme {
@@ -229,23 +143,8 @@ private fun NestHeaderProfileTransparentPreview() {
             type = NestHeaderType.Profile().copy(
                 title = "Header Profile Transparent",
                 subTitle = "Pilih Akun",
-                imageSource = HeaderImageSource.Remote(source = "")
-            )
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderProfileTransparentDarkPreview() {
-    NestTheme {
-        NestHeader(
-            variant = NestHeaderVariant.Transparent,
-            type = NestHeaderType.Profile().copy(
-                title = "Header Profile Transparent",
-                subTitle = "Pilih Akun",
                 imageSource = HeaderImageSource.Remote(source = ""),
-                showBackButton = false
+                showBackButton = !isSystemInDarkTheme()
             )
         )
     }
@@ -256,7 +155,8 @@ private fun NestHeaderProfileTransparentDarkPreview() {
  * SEARCH
  */
 // region search preview
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderSearchDefaultPreview() {
     NestTheme {
@@ -268,20 +168,8 @@ private fun NestHeaderSearchDefaultPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderSearchDefaultDarkPreview() {
-    NestTheme {
-        NestHeader(
-            type = NestHeaderType.Search().copy(
-                hint = "Cari di Tokopedia",
-                showBackButton = false
-            )
-        )
-    }
-}
-
-@Preview
+@Preview("Light")
+@Preview("Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NestHeaderSearchTransparentPreview() {
     NestTheme {
@@ -289,21 +177,7 @@ private fun NestHeaderSearchTransparentPreview() {
             variant = NestHeaderVariant.Transparent,
             type = NestHeaderType.Search().copy(
                 hint = "Cari di Tokopedia",
-                showBackButton = true
-            )
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NestHeaderSearchTransparentDarkPreview() {
-    NestTheme {
-        NestHeader(
-            variant = NestHeaderVariant.Transparent,
-            type = NestHeaderType.Search().copy(
-                hint = "Cari di Tokopedia",
-                showBackButton = false
+                showBackButton = !isSystemInDarkTheme()
             )
         )
     }
