@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.header.NestHeaderVariant
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -50,9 +49,7 @@ fun HomeScreen(
                 .verticalScroll(scrollState)
         ) {
             NestHeader(
-                modifier = Modifier.padding(bottom = 1.dp),
-                variant = NestHeaderVariant.Transparent,
-                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false, elevation = 4.dp)
+                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
             )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
