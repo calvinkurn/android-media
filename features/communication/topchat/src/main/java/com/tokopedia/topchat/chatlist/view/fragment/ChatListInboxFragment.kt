@@ -95,7 +95,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListInboxFragment :
+open class ChatListInboxFragment :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener,
     LifecycleOwner,
