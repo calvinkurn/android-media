@@ -211,7 +211,6 @@ class ShipmentPresenter @Inject constructor(
         private set
 
     var shipmentNewUpsellModel = ShipmentNewUpsellModel()
-        private set
 
     var shipmentCartItemModelList: List<ShipmentCartItem> = emptyList()
 
@@ -468,13 +467,11 @@ class ShipmentPresenter @Inject constructor(
             upsellCost = ShipmentCrossSellModel(crossSellModel, true, true, -1)
         }
         val listCheckedCrossModel = ArrayList<ShipmentCrossSellModel>()
-        if (listShipmentCrossSellModel.isNotEmpty()) {
-            for (crossSellModel in listCheckedCrossModel) {
-                if (crossSellModel.isChecked) {
-                    listCheckedCrossModel.add(crossSellModel)
-                    totalPrice += crossSellModel.crossSellModel.price
-                    shipmentCost.totalPrice = totalPrice
-                }
+        for (crossSellModel in listShipmentCrossSellModel) {
+            if (crossSellModel.isChecked) {
+                listCheckedCrossModel.add(crossSellModel)
+                totalPrice += crossSellModel.crossSellModel.price
+                shipmentCost.totalPrice = totalPrice
             }
         }
         if (upsellCost != null) {

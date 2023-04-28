@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -459,5 +462,64 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         // Then
         assertEquals(2000.0, presenter.shipmentCostModel.value.insuranceFee, 0.0)
         assertEquals(2000.0, presenter.shipmentCostModel.value.priorityFee, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart tradein dropoff with no shipment WHEN update cost THEN should calculate shipment cost correctly`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(0.0, presenter.shipmentCostModel.value.shippingFee, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with cross sell WHEN update cost THEN should calculate cross sell cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                )
+            )
+        )
+        presenter.listShipmentCrossSellModel = arrayListOf(
+            ShipmentCrossSellModel(isChecked = true, crossSellModel = CrossSellModel(price = 100.0)),
+            ShipmentCrossSellModel(isChecked = false, crossSellModel = CrossSellModel(price = 100.0))
+        )
+        presenter.shipmentNewUpsellModel = ShipmentNewUpsellModel(isShow = true, isSelected = true, price = 200)
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(2300.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(2, presenter.shipmentCostModel.value.listCrossSell.size)
     }
 }
