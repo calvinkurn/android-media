@@ -39,7 +39,7 @@ class ItemProductDetailInfoViewHolder(
             text = data.subtitle.parseAsHtmlLink(root.context)
 
             if (data.isClickable) {
-                setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
 
                 setOnClickListener {
@@ -63,7 +63,7 @@ class ItemProductDetailInfoViewHolder(
     }
 
     private fun renderDivider(itemCount: Int) = with(binding) {
-        val showDivider = adapterPosition < itemCount - 1 || !isProductCatalog
+        val showDivider = bindingAdapterPosition < itemCount - 1 || !isProductCatalog
         divider.showWithCondition(shouldShow = showDivider)
     }
 
