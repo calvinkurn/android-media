@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.databinding.FragmentOclChooseAccountBinding
 import com.tokopedia.chooseaccount.di.ChooseAccountComponent
@@ -90,15 +89,24 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
             adapter?.setList(it)
         }
 
+        viewModel.navigateToSuccessPage.observe(this) {
+            if(it) {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
+        }
+
+        binding?.oclBtnOtherAcc?.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+            startActivity(intent)
+        }
+
         viewModel.getOclAccounts()
     }
 
     override fun onAccountSelected(account: OclAccount) {
-        val intent = Intent().apply {
-            putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, account.token)
-        }
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        viewModel.loginOcl(account.token)
     }
 
     override fun onDeleteButtonClicked(account: OclAccount) {

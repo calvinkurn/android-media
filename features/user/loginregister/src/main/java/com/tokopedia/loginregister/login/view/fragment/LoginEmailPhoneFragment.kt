@@ -113,6 +113,7 @@ import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
@@ -159,6 +160,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
+    lateinit var oclPreferences: OclPreference
 
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
@@ -328,6 +332,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
+
+        if(getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_STICKY_LOGIN, arguments, savedInstanceState, false) &&
+            oclPreferences.getToken().isNotEmpty()) {
+            goToOclChooseAccount()
+        }
     }
 
     open fun refreshRolloutVariant() {
@@ -627,6 +636,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
         }
+    }
+
+    fun goToOclChooseAccount() {
+        val intent = RouteManager.getIntent(
+            requireContext(),
+            ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_OCL
+        )
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL)
     }
 
     private fun fetchRemoteConfig() {
@@ -1608,7 +1625,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     showToaster(getString(R.string.error_login_fp_error))
                 }
-            } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL && resultCode == Activity.RESULT_OK) {
+                viewModel.getUserInfo()
+            }
+            else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {

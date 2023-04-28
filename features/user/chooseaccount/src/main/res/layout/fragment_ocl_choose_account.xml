@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,12 +31,34 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/oclChooseAccountList"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chooseAccountTitle"/>
+            app:layout_constraintTop_toBottomOf="@+id/chooseAccountTitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/oclBtnOtherAcc"
+            android:layout_marginTop="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masuk ke akun lain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_4"
+            android:textColor="@color/Unify_G400"
+            app:layout_constraintTop_toBottomOf="@+id/oclChooseAccountList" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/oclBtnRegister"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum punya akun? Daftar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_4"
+            app:layout_constraintTop_toBottomOf="@+id/oclBtnOtherAcc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -47,11 +68,5 @@
         android:layout_height="@dimen/layout_lvl6"
         android:layout_gravity="center"
         android:visibility="gone" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_shop_creation"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/CustomActionBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

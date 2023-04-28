@@ -7,13 +7,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chooseaccount.data.GetOclAccountParam
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.domain.usecase.GetOclAccountUseCase
+import com.tokopedia.sessioncommon.data.ocl.LoginOclParam
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
+import com.tokopedia.sessioncommon.domain.usecase.LoginOclUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class OclChooseAccountViewModel @Inject constructor(
     val getOclAccountUseCase: GetOclAccountUseCase,
+    val loginOclUseCase: LoginOclUseCase,
     val oclPreference: OclPreference,
     dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.main) {
@@ -30,6 +33,9 @@ class OclChooseAccountViewModel @Inject constructor(
     private val _oclAccounts = MutableLiveData<ArrayList<OclAccount>>()
     val oclAccounts: LiveData<ArrayList<OclAccount>> = _oclAccounts
 
+    private val _navigateToSuccessPage = SingleLiveEvent<Boolean>()
+    val navigateToSuccessPage: LiveData<Boolean> = _navigateToSuccessPage
+
     fun getOclAccounts() {
         launch {
             try {
@@ -40,6 +46,18 @@ class OclChooseAccountViewModel @Inject constructor(
                 } else {
                     _navigateToNormalLogin.value = true
                 }
+            } catch (e: Exception) {
+                _toasterError.value = e.message
+            }
+        }
+    }
+
+    fun loginOcl(token: String) {
+        launch {
+            try {
+                val param = LoginOclParam(oclToken = oclPreference.getToken(), accountToken = token)
+                loginOclUseCase(param)
+                _navigateToSuccessPage.value = true
             } catch (e: Exception) {
                 _toasterError.value = e.message
             }

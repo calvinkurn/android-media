@@ -42,12 +42,7 @@ import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMoni
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -104,47 +99,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
-import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
-import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
-import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
-import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
-import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CategoryNavigationCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
-import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
+import com.tokopedia.home.beranda.presentation.view.helper.*
+import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
-import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
-import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.Lego4AutoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
-import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.MixLeftComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.MixTopComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.ProductHighlightComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RechargeBUWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendationCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -173,11 +130,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.navigation_common.listener.AllNotificationListener
-import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
-import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
-import com.tokopedia.navigation_common.listener.RefreshNotificationListener
+import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
@@ -218,6 +171,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.common.helper.getLoginIntentPage
 import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
 import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
@@ -233,7 +187,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.Date
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -926,7 +880,7 @@ open class HomeRevampFragment :
 
     override fun goToLogin() {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            val intent = getLoginIntentPage(it)
             startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
         }
     }
