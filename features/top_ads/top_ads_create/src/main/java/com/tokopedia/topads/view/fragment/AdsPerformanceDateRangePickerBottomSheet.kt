@@ -34,7 +34,6 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
         private const val BOTTOM_SHEET_HEIGHT_2 = 2
         private const val DATE_PATTERN = TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
         private const val JUNE_6_2020_IN_MILLIS = 1591012800000L
-        private const val TOASTER_BOTTOM_MARGIN = 64
 
         fun getInstanceRange(
             dateFrom: Date?,
@@ -174,7 +173,7 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private fun showErrorToaster(errorMessage: String) {
         dialog?.window?.decorView?.let {
-            Toaster.toasterCustomBottomHeight = context?.dpToPx(TOASTER_BOTTOM_MARGIN).toIntSafely()
+            Toaster.toasterCustomBottomHeight = context?.dpToPx(com.tokopedia.unifyprinciples.R.dimen.abc_list_item_height_material).toIntSafely()
             Toaster.build(it, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
