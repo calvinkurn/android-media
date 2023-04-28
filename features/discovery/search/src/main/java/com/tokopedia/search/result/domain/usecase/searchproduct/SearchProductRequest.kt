@@ -18,13 +18,12 @@ internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: Stri
 }
 
 @GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
-internal fun createAceSearchProductRequest(params: String): GraphqlRequest {
-    return GraphqlRequest(
+internal fun createAceSearchProductRequest(params: String): GraphqlRequest =
+    GraphqlRequest(
         AceSearchProduct.GQL_QUERY,
         AceSearchProductModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to params)
     )
-}
 
 internal fun MutableList<GraphqlRequest>.addProductAdsRequest(
     requestParams: RequestParams,
@@ -36,13 +35,12 @@ internal fun MutableList<GraphqlRequest>.addProductAdsRequest(
 }
 
 @GqlQuery("TopAdsProduct", TOPADS_PRODUCT_QUERY)
-internal fun createTopAdsProductRequest(params: String): GraphqlRequest {
-    return GraphqlRequest(
+internal fun createTopAdsProductRequest(params: String): GraphqlRequest =
+    GraphqlRequest(
         TopAdsProduct.GQL_QUERY,
         ProductTopAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to params)
     )
-}
 
 internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     requestParams: RequestParams,
@@ -54,13 +52,12 @@ internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
 }
 
 @GqlQuery("HeadlineAds", HEADLINE_ADS_QUERY)
-internal fun createHeadlineAdsRequest(headlineParams: String): GraphqlRequest {
-    return GraphqlRequest(
+internal fun createHeadlineAdsRequest(headlineParams: String): GraphqlRequest =
+    GraphqlRequest(
         HeadlineAds.GQL_QUERY,
         HeadlineAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
     )
-}
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query SearchProduct(${'$'}params: String!) {

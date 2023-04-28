@@ -32,13 +32,13 @@ class GetLocalSearchRecommendationUseCase(
     }
 
     @GqlQuery("LocalSearchRecommendation", LOCAL_SEARCH_QUERY)
-    private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest =
+        GraphqlRequest(
             LocalSearchRecommendation.GQL_QUERY,
             AceSearchProductModel::class.java,
             mapOf(KEY_PARAMS to UrlParamUtils.generateUrlParamString(requestParams.parameters))
         )
-    }
+
     companion object {
         private const val LOCAL_SEARCH_QUERY = """
             query SearchProduct(${'$'}params: String!) {

@@ -103,13 +103,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
-    private fun createQuickFilterRequest(query: String, params: String): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createQuickFilterRequest(query: String, params: String): GraphqlRequest =
+        GraphqlRequest(
             QuickFilter(),
             QuickFilterModel::class.java,
             mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
         )
-    }
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {
@@ -118,13 +117,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
-    private fun createGlobalSearchNavigationRequest(query: String, params: String): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createGlobalSearchNavigationRequest(query: String, params: String): GraphqlRequest =
+        GraphqlRequest(
             GlobalNav(),
             GlobalSearchNavigationModel::class.java,
             mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
         )
-    }
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationCarousel()) {
@@ -133,13 +131,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
-    private fun createSearchInspirationCarouselRequest(params: String): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createSearchInspirationCarouselRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
             InspirationCarousel(),
             SearchInspirationCarouselModel::class.java,
             mapOf(GQL.KEY_PARAMS to params)
         )
-    }
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationWidget()) {
@@ -148,13 +145,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
-    private fun createSearchInspirationWidgetRequest(params: String): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createSearchInspirationWidgetRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
             InspirationWidget(),
             SearchInspirationWidgetModel::class.java,
             mapOf(GQL.KEY_PARAMS to params)
         )
-    }
 
     private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
         requestParams: RequestParams,
@@ -166,13 +162,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
-    private fun createGetLastFilterRequest(params: String): GraphqlRequest {
-        return GraphqlRequest(
+    private fun createGetLastFilterRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
             GetLastFilter(),
             LastFilterModel::class.java,
             mapOf(GQL.KEY_PARAMS to params)
         )
-    }
 
     private fun createTopAdsImageViewModelObservable(
         query: String,
@@ -214,7 +209,8 @@ class SearchProductFirstPageGqlUseCase(
         val timeoutMs: Long = TDN_TIMEOUT
 
         return this.timeout(
-            timeoutMs, TimeUnit.MILLISECONDS,
+            timeoutMs,
+            TimeUnit.MILLISECONDS,
             Observable.create({ emitter ->
                 searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
                 emitter.onNext(listOf())
