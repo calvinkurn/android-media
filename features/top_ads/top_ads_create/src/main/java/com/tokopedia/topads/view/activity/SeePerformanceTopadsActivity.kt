@@ -299,9 +299,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressBarColor = colorArray
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpentPercent)
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
-                                4.toPx().toFloat()
+                                com.tokopedia.unifyprinciples.R.dimen.abc_progress_bar_height_material.toPx().toFloat()
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
-                                4.toPx().toFloat()
+                                com.tokopedia.unifyprinciples.R.dimen.abc_progress_bar_height_material.toPx().toFloat()
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
                         }
                     }
@@ -355,7 +355,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 if(it.data.dailyBudget.isMoreThanZero())
                     mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(100 * it.data.dailyUsage / it.data.dailyBudget)
                 else
-                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(0)
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(EMPTY)
             }
         }
 
@@ -388,7 +388,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         mainBottomSheetBinding.productName.setOnClickListener {
             // if product name has more than 1 line
-            if (mainBottomSheetBinding.productName.layout.getEllipsisCount(1) > 0) {
+            if (mainBottomSheetBinding.productName.layout.getEllipsisCount(1) > EMPTY) {
                 showDescriptionBottomSheet(
                     getString(R.string.topads_create_group_name),
                     "",
@@ -426,7 +426,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     "",
                     getString(R.string.topads_ads_performance_not_rated),
                     "",
-                    0,
+                    EMPTY,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 )
             }
@@ -500,7 +500,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         mainBottomSheetBinding.includeAdGroupManual.groupName.setOnClickListener {
             // if group name is longer than 1 line
-            if (mainBottomSheetBinding.includeAdGroupManual.groupName.layout.getEllipsisCount(0) > 0) {
+            if (mainBottomSheetBinding.includeAdGroupManual.groupName.layout.getEllipsisCount(0) > EMPTY) {
                 showDescriptionBottomSheet(
                     getString(R.string.topads_create_group_name),
                     "",
@@ -541,7 +541,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         TopAdsDashboardConstant.GROUPID,
                         seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""
                     )
-                    putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, "see_ads_performance")
+                    putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, SEE_ADS_PERFORMANCE_TAG)
                 }
             startActivity(intent)
             finish()
@@ -589,8 +589,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, false)
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, false)
         intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, "")
-        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, 0)
-        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, 0.0)
+        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, EMPTY)
+        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, EMPTY)
         startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
     }
 
@@ -845,7 +845,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             binding.heading1.visibility = View.VISIBLE
             binding.heading1.text = heading1
         }
-        if (heading1Color > 0) {
+        if (heading1Color > EMPTY) {
             binding.heading1.setTextColor(
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
@@ -854,7 +854,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 )
             )
         }
-        if (heading2Color > 0) {
+        if (heading2Color > EMPTY) {
             binding.heading2.setTextColor(
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
@@ -871,7 +871,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             binding.description.visibility = View.VISIBLE
             binding.description.text = description
         }
-        bottomSheet.show(supportFragmentManager, "descriptionBottomSheet")
+        bottomSheet.show(supportFragmentManager, DESCRIPTION_BOTTOMSHEET_TAG)
     }
 
     private fun showStatusIklanBottomSheet() {
@@ -1020,7 +1020,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     fun openCalendar() {
         AdsPerformanceDateRangePickerBottomSheet.getInstanceRange(
             selectedDateFrom, selectedDateTo, AdsPerformanceDateRangePickerBottomSheet.MAX_RANGE_90
-        ).show(supportFragmentManager, "calendar")
+        ).show(supportFragmentManager, CALENDAR_TAG)
     }
 
     override fun getComponent(): CreateAdsComponent {
@@ -1061,5 +1061,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         const val ADS_PLACEMENT_FILTER_TYPE_ALL = 1
         const val ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH = 2
         const val ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION = 3
+        private const val SEE_ADS_PERFORMANCE_TAG = "see_ads_performance"
+        private const val CALENDAR_TAG = "calendar"
+        private const val DESCRIPTION_BOTTOMSHEET_TAG = "description_bottomSheet"
+        private const val EMPTY = 0
     }
 }
