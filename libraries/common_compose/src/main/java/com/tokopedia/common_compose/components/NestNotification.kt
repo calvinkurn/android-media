@@ -2,6 +2,7 @@ package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -16,14 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
 
-
 @Composable
 fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
-    val color = if (colorType == Color.PRIMARY) {
-        NestTheme.colors.RN._600
-    } else {
-        NestTheme.colors.GN._500
-    }
+    val color = getNotificationColor(colorType)
     var textFinal = text
     val isText = try {
         val temp = text.toInt()
@@ -35,10 +31,14 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
 
     val height = if (isText) {
         if (textFinal.isEmpty()) 8.dp else 12.dp
-    } else 16.dp // unify has 10 for text
+    } else {
+        16.dp // unify has 10 for text
+    }
     val rad = if (isText) {
         if (textFinal.isEmpty()) 10.dp else 3.dp
-    } else 6.dp
+    } else {
+        6.dp
+    }
     val minWidth = if (textFinal.isEmpty()) 8.dp else 16.dp
     val style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
         .let { if (isText) it.copy(fontSize = 7.sp) else it }
@@ -47,7 +47,7 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
         modifier = Modifier
             .height(height)
             .defaultMinSize(minWidth = minWidth),
-        shape = RoundedCornerShape(rad),
+        shape = RoundedCornerShape(rad)
     ) {
         Text(
             modifier = Modifier
@@ -60,6 +60,18 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
         )
     }
 }
+
+@Composable
+private fun getNotificationColor(colorType: Color) =
+    if (colorType == Color.PRIMARY) {
+        if (isSystemInDarkTheme()) {
+            NestTheme.colors.RN._400
+        } else {
+            NestTheme.colors.RN._600
+        }
+    } else {
+        NestTheme.colors.GN._500
+    }
 
 enum class Color { PRIMARY, SECONDARY }
 
