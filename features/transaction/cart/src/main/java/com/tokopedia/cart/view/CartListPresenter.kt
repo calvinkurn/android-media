@@ -1609,19 +1609,6 @@ class CartListPresenter @Inject constructor(
                 view?.stopAllCartPerformanceTrace()
             }
         }
-//        val requestParam = getRecentViewUseCase.getRecomParams(
-//            1,
-//            RECENT_VIEW_XSOURCE,
-//            PAGE_NAME_RECENT_VIEW,
-//            allProductIds,
-//            ""
-//        )
-//        compositeSubscription.add(
-//            getRecentViewUseCase.createObservable(requestParam)
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(GetRecentViewSubscriber(view))
-//        )
     }
 
     override fun processGetWishlistV2Data() {
