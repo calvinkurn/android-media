@@ -352,12 +352,6 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
-    fun onAnnotationOpenAppLink(
-        key: String,
-        appLink: String,
-        trackData: ComponentTrackDataModel?
-    )
-
     fun onAnnotationOpenProductInfoSheet(
         key: String,
         extParam: String,

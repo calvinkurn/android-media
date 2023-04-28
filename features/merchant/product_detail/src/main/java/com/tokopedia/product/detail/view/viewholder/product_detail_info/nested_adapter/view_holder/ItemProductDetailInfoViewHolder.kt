@@ -90,12 +90,8 @@ class ItemProductDetailInfoViewHolder(
                 // no-ops, on bottom sheet only
             }
 
-            override fun toAppLink(key: String, appLink: String) {
-                listener.onAnnotationOpenAppLink(
-                    key = key,
-                    appLink = appLink,
-                    trackData = trackData
-                )
+            override fun toAppLink(appLink: String) {
+                listener.goToApplink(url = appLink)
             }
 
             override fun toProductDetailInfo(key: String, extParam: String) {

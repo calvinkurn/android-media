@@ -276,10 +276,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         RouteManager.route(context, url)
     }
 
-    override fun goToAppLinkWithTracker(key: String, url: String) {
-        goToApplink(url = url)
-    }
-
     override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
         val context = context ?: return
         val data = listener?.getPdpDataSource() ?: return

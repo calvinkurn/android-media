@@ -31,17 +31,6 @@ data class ProductDetailInfoContent(
     val isClickable: Boolean
         get() = applink.isNotBlank() || type != Content.TYPE_DEFAULT
 
-    /*enum class Type(val value: String) {
-        DEFAULT(""),
-        ACTION("action")
-    }
-
-    enum class Action(val value: String) {
-        NONE(""),
-        APP_LINK("applink"),
-        OPEN_PRODUCT_DETAIL_INFO("open_detail_product")
-    }*/
-
     fun routeOnClick(
         navigator: ProductDetailInfoNavigator
     ) {
@@ -50,7 +39,7 @@ data class ProductDetailInfoContent(
             KEY_CATALOG -> navigator.toCatalog(appLink = applink, subTitle = subtitle)
             KEY_CATEGORY -> navigator.toCategory(appLink = applink)
             else -> when (type) { // new code for generalize
-                Content.TYPE_ACTION -> routeAction(navigator = navigator)
+                Content.TYPE_ACTION -> actionRouting(navigator = navigator)
                 else -> {
                     // no ops
                 }
@@ -58,30 +47,17 @@ data class ProductDetailInfoContent(
         }
     }
 
-    private fun routeAction(navigator: ProductDetailInfoNavigator) {
+    private fun actionRouting(navigator: ProductDetailInfoNavigator) {
         when (action) {
             Content.ACTION_APPLINK -> {
-                navigator.toAppLink(key = key, appLink = applink)
+                navigator.toAppLink(appLink = applink)
             }
             Content.ACTION_OPEN_DETAIL_PRODUCT -> {
                 navigator.toProductDetailInfo(key = key, extParam = extParam)
             }
             else -> {
-                navigator.toAppLink(key = key, appLink = applink)
+                navigator.toAppLink(appLink = applink)
             }
         }
     }
 }
-/*
-
-fun Content.getType() = when (type) {
-    ProductDetailInfoContent.Type.ACTION.value -> ProductDetailInfoContent.Type.ACTION
-    else -> ProductDetailInfoContent.Type.DEFAULT
-}
-
-fun Content.getAction() = when (action) {
-    ProductDetailInfoContent.Action.APP_LINK.value -> ProductDetailInfoContent.Action.APP_LINK
-    ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO.value -> ProductDetailInfoContent.Action.OPEN_PRODUCT_DETAIL_INFO
-    else -> ProductDetailInfoContent.Action.NONE
-}
-*/

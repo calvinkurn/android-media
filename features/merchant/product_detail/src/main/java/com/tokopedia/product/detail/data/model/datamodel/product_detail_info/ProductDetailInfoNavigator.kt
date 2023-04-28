@@ -12,7 +12,7 @@ interface ProductDetailInfoNavigator {
 
     fun toCatalog(appLink: String, subTitle: String)
 
-    fun toAppLink(key: String, appLink: String)
+    fun toAppLink(appLink: String)
 
     fun toProductDetailInfo(key: String, extParam: String)
 }

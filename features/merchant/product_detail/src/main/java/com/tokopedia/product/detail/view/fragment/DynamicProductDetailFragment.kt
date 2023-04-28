@@ -1147,14 +1147,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onAnnotationOpenAppLink(
-        key: String,
-        appLink: String,
-        trackData: ComponentTrackDataModel?
-    ) {
-        goToApplink(url = appLink)
-    }
-
     override fun onAnnotationOpenProductInfoSheet(
         key: String,
         extParam: String,
