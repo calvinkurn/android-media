@@ -226,7 +226,9 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
                     ds.color = color
                 }
             },
-            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
     }
@@ -256,9 +258,6 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         activity?.let { activity ->
             val resultIntent = Intent()
             activity.setResult(Activity.RESULT_OK, resultIntent)
-            eventLabel?.let {
-                analytics.get().eventClickBackToSaldoPage(eventLabel)
-            }
             activity.finish()
         }
     }

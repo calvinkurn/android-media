@@ -191,16 +191,6 @@ class WithdrawAnalytics @Inject constructor(
         sendTrackingData(map)
     }
 
-    fun eventClickBackToSaldoPage(label: String) {
-        val map = TrackAppUtils.gtmData(
-            EVENT_NAME_CLICK_SALDO,
-            EVENT_CATEGORY_WITHDRAWAL_PAGE,
-            EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL,
-            label
-        )
-        sendTrackingData(map)
-    }
-
     fun onViewRekeningPremiumApplicationIsINProgress(bankName: String?) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_CLICK_SALDO_IRIS,
@@ -460,7 +450,6 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_ACTION_CLICK_TARIK_SALDO = "click tarik saldo"
         private const val EVENT_ACTION_CLICK_TANDC = "click ketentuan penarikan saldo"
         private const val EVENT_ACTION_CLICK_CONTINUE = "click lanjut tarik"
-        private const val EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL = "click kembali detail saldo"
         private const val EVENT_VIEW_WD_THANK_YOU_PAGE_SUCCESS = "view wd thank you page success"
         private const val EVENT_VIEW_WD_THANK_YOU_PAGE_FAILED = "view wd thank you page failed"
         private const val EVENT_ACTION_CLICK_CTA_THANK_YOU_PAGE_SUCCESS = "click button balik saldo tokopedia after wd success"
