@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.fragment
 
-import android.content.Context
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
@@ -27,7 +26,6 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_REGULAR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
 import com.tokopedia.media.editor.ui.widget.AddTextColorItem
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
 import com.tokopedia.media.loader.loadImage
