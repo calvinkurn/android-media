@@ -93,8 +93,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        TokopediaUrl.Companion.getInstance();
-
         new DebugApp().initDebug(this, getLiveStatus());
 
     }

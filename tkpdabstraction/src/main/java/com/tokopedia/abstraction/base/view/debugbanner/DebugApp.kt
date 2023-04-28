@@ -1,6 +1,8 @@
 package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.app.Activity
+import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.R
 import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
@@ -10,16 +12,29 @@ import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
  */
 class DebugApp() {
 
-    fun initDebug(p0: Activity, liveStatus: String) {
-        val decorView = p0.window.decorView as ViewGroup
+    fun initDebug(activity: Activity, liveStatus: String) {
+        val decorView = activity.window.decorView as ViewGroup
         val localBanner = Banner()
 
-        val debugBannerView = DebugBannerView(p0).apply {
+        var doubleClick = false
+
+        val debugBannerView = DebugBannerView(activity).apply {
             updateText(liveStatus, localBanner.textColorRes)
             updateBannerColor(localBanner.bannerColorRes)
             bannerGravity = localBanner.bannerGravity
+
+            setOnClickListener {
+                if (doubleClick) {
+                    // Code here when they double click
+
+                    this.visibility = View.GONE
+                }
+                doubleClick = true
+                Handler().postDelayed({ doubleClick = false }, 2000)
+            }
         }
-        val bannerSize = p0.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+
+        val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
         val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
         decorView.addView(debugBannerView, params)
     }
