@@ -4,8 +4,11 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -525,5 +528,34 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
         // Then
         assertEquals(2, couponListRecommendationRequest.orders.size)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with shipping & bo THEN should return with correct number of order & shipping & bo`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "123", cartStringOrder = "1"), CartItemModel(cartStringGroup = "123", cartStringOrder = "2")),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(freeShippingMetadata = "free_shipping_metadata", boCampaignId = 1)),
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1"), CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(freeShippingMetadata = "free_shipping_metadata", boCampaignId = 1))
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(3, couponListRecommendationRequest.orders.size)
+        assertEquals(true, couponListRecommendationRequest.orders[0].freeShippingMetadata.isNotEmpty())
+        assertEquals(true, couponListRecommendationRequest.orders[1].freeShippingMetadata.isNotEmpty())
+        assertEquals(false, couponListRecommendationRequest.orders[2].freeShippingMetadata.isNotEmpty())
     }
 }
