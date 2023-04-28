@@ -47,6 +47,8 @@ class MpAdsGroupsViewModel @Inject constructor(
         private const val NO_POSITION = -1
         private const val PER_PAGE = 20
         private const val FIRST_POS = 1
+        private const val TOP_ADS_CREATE = "top_ads_create"
+        private const val ADD = "add"
     }
 
     // Data list to hold all ad groups
@@ -335,7 +337,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     fun moveTopAdsGroup(productId: String) {
         val groupId = adGroupDataList[selectedAdGroupIndex].groupId
         launchCatchError(block = {
-            val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId, "top_ads_create", listOf(productId), "add")
+            val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId, TOP_ADS_CREATE, listOf(productId), ADD)
             val response = topAdsCreateUseCase.execute(param)
             checkTopadsDeposits(response)
         }, onError = {
