@@ -795,15 +795,15 @@ class ShipmentPresenter @Inject constructor(
                     )
                 )
                 if (view != null) {
-                    view?.stopEmbraceTrace()
+                    view!!.stopEmbraceTrace()
                     if (isReloadData) {
-                        view?.setShipmentNewUpsellLoading(false)
-                        view?.setHasRunningApiCall(false)
-                        view?.resetPromoBenefit()
-                        view?.clearTotalBenefitPromoStacking()
-                        view?.hideLoading()
+                        view!!.setShipmentNewUpsellLoading(false)
+                        view!!.setHasRunningApiCall(false)
+                        view!!.resetPromoBenefit()
+                        view!!.clearTotalBenefitPromoStacking()
+                        view!!.hideLoading()
                     } else {
-                        view?.hideInitialLoading()
+                        view!!.hideInitialLoading()
                     }
                     validateShipmentAddressFormData(
                         cartShipmentAddressFormData,
@@ -811,26 +811,26 @@ class ShipmentPresenter @Inject constructor(
                         isReloadAfterPriceChangeHinger,
                         isOneClickShipment
                     )
-                    view?.stopTrace()
+                    view!!.stopTrace()
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 if (view != null) {
-                    view?.stopEmbraceTrace()
+                    view!!.stopEmbraceTrace()
                     if (isReloadData) {
-                        view?.setShipmentNewUpsellLoading(false)
-                        view?.setHasRunningApiCall(false)
-                        view?.hideLoading()
+                        view!!.setShipmentNewUpsellLoading(false)
+                        view!!.setHasRunningApiCall(false)
+                        view!!.hideLoading()
                     } else {
-                        view?.hideInitialLoading()
+                        view!!.hideInitialLoading()
                     }
                     var errorMessage = throwable.message
                     if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
-                        errorMessage = getErrorMessage(view?.activity, throwable)
+                        errorMessage = getErrorMessage(view!!.activity, throwable)
                     }
-                    view?.showToastError(errorMessage)
-                    view?.stopTrace()
-                    view?.logOnErrorLoadCheckoutPage(throwable)
+                    view!!.showToastError(errorMessage)
+                    view!!.stopTrace()
+                    view!!.logOnErrorLoadCheckoutPage(throwable)
                 }
             }
         }
@@ -1001,21 +1001,17 @@ class ShipmentPresenter @Inject constructor(
     // region add new address
     private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
         eligibleForAddressUseCase.eligibleForAddressFeature({ response: KeroAddrIsEligibleForAddressFeatureData ->
-            if (view != null) {
-                view?.renderCheckoutPageNoAddress(
-                    cartShipmentAddressFormData,
-                    response.eligibleForRevampAna.eligible
-                )
-            }
+            view?.renderCheckoutPageNoAddress(
+                cartShipmentAddressFormData,
+                response.eligibleForRevampAna.eligible
+            )
         }, { throwable: Throwable ->
-            if (view != null) {
-                var errorMessage = throwable.message
-                if (errorMessage == null) {
-                    errorMessage =
-                        view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
-                }
-                view?.showToastError(errorMessage)
+            var errorMessage = throwable.message
+            if (errorMessage == null) {
+                errorMessage =
+                    view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
             }
+            view?.showToastError(errorMessage)
         }, AddressConstant.ANA_REVAMP_FEATURE_ID)
     }
     // endregion
@@ -1506,11 +1502,11 @@ class ShipmentPresenter @Inject constructor(
                                 } else {
                                     DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                                 }
-                            view?.renderErrorCheckPromoShipmentData(message)
-                            view?.resetPromoBenefit()
-                            view?.resetAllCourier()
+                            view!!.renderErrorCheckPromoShipmentData(message)
+                            view!!.resetPromoBenefit()
+                            view!!.resetAllCourier()
                         } else {
-                            view?.updateButtonPromoCheckout(
+                            view!!.updateButtonPromoCheckout(
                                 validateUsePromoRevampUiModel.promoUiModel,
                                 false
                             )
@@ -1544,13 +1540,13 @@ class ShipmentPresenter @Inject constructor(
                     if (view != null) {
                         if (e is AkamaiErrorException) {
                             clearAllPromo()
-                            view?.showToastError(e.message)
-                            view?.resetAllCourier()
-                            view?.doResetButtonPromoCheckout()
+                            view!!.showToastError(e.message)
+                            view!!.resetAllCourier()
+                            view!!.doResetButtonPromoCheckout()
                         } else {
-                            view?.renderErrorCheckPromoShipmentData(
+                            view!!.renderErrorCheckPromoShipmentData(
                                 getErrorMessage(
-                                    view?.activity,
+                                    view!!.activity,
                                     e
                                 )
                             )
@@ -1707,14 +1703,13 @@ class ShipmentPresenter @Inject constructor(
                 ticker.message =
                     responseData.successDataModel.tickerMessage
                 tickerAnnouncementHolderData.value = ticker
-//                        view?.updateTickerAnnouncementMessage()
             }
             val isLastAppliedPromo =
                 isLastAppliedPromo(shipmentValidatePromoHolderData.promoCode)
             if (isLastAppliedPromo) {
                 validateUsePromoRevampUiModel = null
             }
-            view?.onSuccessClearPromoLogistic(
+            view!!.onSuccessClearPromoLogistic(
                 shipmentValidatePromoHolderData.cartPosition,
                 isLastAppliedPromo
             )
@@ -1885,7 +1880,7 @@ class ShipmentPresenter @Inject constructor(
         if (view != null) {
             couponStateChanged = true
             if (showLoading) {
-                view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
+                view!!.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
             updateShipmentButtonPaymentModel(loading = true)
             promoQueue.offer(
@@ -1918,11 +1913,11 @@ class ShipmentPresenter @Inject constructor(
                     ignoreCase = true
                 ) && validateUsePromoRevampUiModel.errorCode == statusCode200
             if (isValidatePromoRevampSuccess) {
-                view?.updateButtonPromoCheckout(
+                view!!.updateButtonPromoCheckout(
                     validateUsePromoRevampUiModel.promoUiModel,
                     true
                 )
-                view?.setStateLoadingCourierStateAtIndex(
+                view!!.setStateLoadingCourierStateAtIndex(
                     shipmentValidatePromoHolderData.cartPosition,
                     false
                 )
@@ -1938,7 +1933,7 @@ class ShipmentPresenter @Inject constructor(
                     shipmentValidatePromoHolderData.cartPosition
                 )
             } else {
-                view?.setStateLoadingCourierStateAtIndex(
+                view!!.setStateLoadingCourierStateAtIndex(
                     shipmentValidatePromoHolderData.cartPosition,
                     false
                 )
@@ -1949,9 +1944,9 @@ class ShipmentPresenter @Inject constructor(
                         errMessage
                     )
                     eventCheckoutViewPromoMessage(errMessage)
-                    view?.showToastError(errMessage)
-                    view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-                    view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                    view!!.showToastError(errMessage)
+                    view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                    view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
                         ?.let {
                             if (it.boCode.isNotEmpty()) {
                                 clearCacheAutoApply(
@@ -1968,11 +1963,11 @@ class ShipmentPresenter @Inject constructor(
                             }
                         }
                 } else {
-                    view?.showToastError(
+                    view!!.showToastError(
                         DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
                     )
-                    view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-                    view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                    view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                    view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
                         ?.let {
                             if (it.boCode.isNotEmpty()) {
                                 clearCacheAutoApply(
@@ -2004,20 +1999,20 @@ class ShipmentPresenter @Inject constructor(
     ) {
         Timber.d(t)
         if (view != null) {
-            view?.setStateLoadingCourierStateAtIndex(
+            view!!.setStateLoadingCourierStateAtIndex(
                 shipmentValidatePromoHolderData.cartPosition,
                 false
             )
             mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
             if (t is AkamaiErrorException) {
                 clearAllPromo()
-                view?.showToastError(t.message)
-                view?.resetAllCourier()
-                view?.doResetButtonPromoCheckout()
+                view!!.showToastError(t.message)
+                view!!.resetAllCourier()
+                view!!.doResetButtonPromoCheckout()
             } else {
-                view?.showToastError(t.message)
-                view?.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-                view?.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
+                view!!.showToastError(t.message)
+                view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+                view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
                     ?.let {
                         if (it.boCode.isNotEmpty()) {
                             clearCacheAutoApply(
@@ -2034,7 +2029,7 @@ class ShipmentPresenter @Inject constructor(
                         }
                     }
             }
-            view?.logOnErrorApplyBo(
+            view!!.logOnErrorApplyBo(
                 t,
                 shipmentValidatePromoHolderData.cartPosition,
                 shipmentValidatePromoHolderData.promoCode
@@ -2094,8 +2089,8 @@ class ShipmentPresenter @Inject constructor(
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         if (view != null) {
-                            view?.resetCourier(shipmentCartItemModel)
-                            view?.logOnErrorApplyBo(
+                            view!!.resetCourier(shipmentCartItemModel)
+                            view!!.logOnErrorApplyBo(
                                 MessageErrorException(
                                     voucherOrder.messageUiModel.text
                                 ),
@@ -2115,8 +2110,8 @@ class ShipmentPresenter @Inject constructor(
             if (shipmentCartItemModel is ShipmentCartItemModel) {
                 val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
                 if (!code.isNullOrEmpty() && view != null) {
-                    view?.resetCourier(shipmentCartItemModel)
-                    view?.logOnErrorApplyBo(
+                    view!!.resetCourier(shipmentCartItemModel)
+                    view!!.logOnErrorApplyBo(
                         MessageErrorException("voucher order not found"),
                         shipmentCartItemModel,
                         code
@@ -2145,7 +2140,7 @@ class ShipmentPresenter @Inject constructor(
                     for (shipmentCartItemModel in shipmentCartItemModelList) {
                         if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                             if (view != null && recommendedCourier != null) {
-                                view?.setSelectedCourier(
+                                view!!.setSelectedCourier(
                                     cartItemPosition,
                                     recommendedCourier,
                                     true,
@@ -2165,8 +2160,8 @@ class ShipmentPresenter @Inject constructor(
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         if (view != null) {
-                            view?.resetCourier(shipmentCartItemModel)
-                            view?.logOnErrorApplyBo(
+                            view!!.resetCourier(shipmentCartItemModel)
+                            view!!.logOnErrorApplyBo(
                                 MessageErrorException(
                                     voucherOrder.messageUiModel.text
                                 ),
@@ -2185,8 +2180,8 @@ class ShipmentPresenter @Inject constructor(
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == cartString) {
                     if (view != null) {
-                        view?.resetCourier(shipmentCartItemModel)
-                        view?.logOnErrorApplyBo(
+                        view!!.resetCourier(shipmentCartItemModel)
+                        view!!.logOnErrorApplyBo(
                             MessageErrorException("voucher order not found"),
                             shipmentCartItemModel,
                             promoCode
@@ -4413,8 +4408,8 @@ class ShipmentPresenter @Inject constructor(
         locationPass: LocationPass?
     ) {
         if (view != null) {
-            view?.showLoading()
-            view?.setHasRunningApiCall(true)
+            view!!.showLoading()
+            view!!.setHasRunningApiCall(true)
             val requestParams =
                 generateEditAddressRequestParams(latitude, longitude)
             viewModelScope.launch(dispatchers.immediate) {
@@ -4422,8 +4417,8 @@ class ShipmentPresenter @Inject constructor(
                     val stringResponse =
                         editAddressUseCase.createObservable(requestParams).toBlocking().single()
                     if (view != null) {
-                        view?.setHasRunningApiCall(false)
-                        view?.hideLoading()
+                        view!!.setHasRunningApiCall(false)
+                        view!!.hideLoading()
                         var response: JsonObject? = null
                         var messageError = ""
                         var statusSuccess: Boolean
@@ -4456,11 +4451,11 @@ class ShipmentPresenter @Inject constructor(
                 } catch (t: Throwable) {
                     Timber.d(t)
                     if (view != null) {
-                        view?.setHasRunningApiCall(false)
-                        view?.hideLoading()
-                        view?.showToastError(
+                        view!!.setHasRunningApiCall(false)
+                        view!!.hideLoading()
+                        view!!.showToastError(
                             getErrorMessage(
-                                view?.activity,
+                                view!!.activity,
                                 t
                             )
                         )
@@ -4551,50 +4546,50 @@ class ShipmentPresenter @Inject constructor(
                     )
                 )
                 if (view != null) {
-                    view?.hideLoading()
-                    view?.setHasRunningApiCall(false)
+                    view!!.hideLoading()
+                    view!!.setHasRunningApiCall(false)
                     if (setShippingAddressData.isSuccess) {
                         if (setShippingAddressData.messages.isEmpty()) {
-                            view?.showToastNormal(view?.activity!!.getString(R.string.label_change_address_success))
+                            view!!.showToastNormal(view!!.activity?.getString(R.string.label_change_address_success) ?: "")
                         } else {
-                            view?.showToastNormal(setShippingAddressData.messages[0])
+                            view!!.showToastNormal(setShippingAddressData.messages[0])
                         }
                         hitClearAllBo()
-                        view?.renderChangeAddressSuccess(reloadCheckoutPage)
+                        view!!.renderChangeAddressSuccess(reloadCheckoutPage)
                     } else {
                         if (setShippingAddressData.messages.isNotEmpty()) {
                             val stringBuilder = StringBuilder()
                             for (errorMessage in setShippingAddressData.messages) {
                                 stringBuilder.append(errorMessage).append(" ")
                             }
-                            view?.showToastError(stringBuilder.toString())
+                            view!!.showToastError(stringBuilder.toString())
                             if (isHandleFallback) {
-                                view?.renderChangeAddressFailed(reloadCheckoutPage)
+                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
                         } else {
-                            view?.showToastError(view?.activity?.getString(R.string.label_change_address_failed))
+                            view!!.showToastError(view!!.activity?.getString(R.string.label_change_address_failed))
                             if (isHandleFallback) {
-                                view?.renderChangeAddressFailed(reloadCheckoutPage)
+                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
                         }
                     }
                 }
             } catch (t: Throwable) {
                 if (view != null) {
-                    view?.hideLoading()
-                    view?.setHasRunningApiCall(false)
+                    view!!.hideLoading()
+                    view!!.setHasRunningApiCall(false)
                     Timber.d(t)
                     val errorMessage: String? = if (t is AkamaiErrorException) {
                         t.message
                     } else {
                         getErrorMessage(
-                            view?.activity,
+                            view!!.activity,
                             t
                         )
                     }
-                    view?.showToastError(errorMessage)
+                    view!!.showToastError(errorMessage)
                     if (isHandleFallback) {
-                        view?.renderChangeAddressFailed(reloadCheckoutPage)
+                        view!!.renderChangeAddressFailed(reloadCheckoutPage)
                     }
                 }
             }
@@ -5012,7 +5007,7 @@ class ShipmentPresenter @Inject constructor(
     fun validatePrescriptionOnBackPressed(): Boolean {
         if (uploadPrescriptionUiModel.showImageUpload && view != null) {
             if (uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription) {
-                view?.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+                view!!.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
                 return false
             }
         }
@@ -5213,23 +5208,23 @@ class ShipmentPresenter @Inject constructor(
             { (dynamicData): UpdateDynamicDataPassingUiModel ->
                 this.dynamicData = dynamicData
                 if (view != null && !isFireAndForget) {
-                    view?.doCheckout()
+                    view!!.doCheckout()
                 }
                 Unit
             }
         ) { throwable: Throwable ->
             Timber.d(throwable)
             if (view != null) {
-                view?.setHasRunningApiCall(false)
-                view?.hideLoading()
+                view!!.setHasRunningApiCall(false)
+                view!!.hideLoading()
                 var errorMessage = throwable.message
                 if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
                     errorMessage = getErrorMessage(
-                        view?.activity,
+                        view!!.activity,
                         throwable
                     )
                 }
-                view?.showToastError(errorMessage)
+                view!!.showToastError(errorMessage)
             }
             Unit
         }

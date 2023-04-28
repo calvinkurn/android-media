@@ -6,6 +6,8 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -212,5 +214,34 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
         assertEquals(1, validateUsePromoRequest.orders[1].spId)
         assertEquals(true, validateUsePromoRequest.orders[1].freeShippingMetadata.isNotEmpty())
         assertEquals(true, validateUsePromoRequest.orders[1].codes.contains("code"))
+    }
+
+    @Test
+    fun `GIVEN last apply with mixed codes WHEN generate validate use request THEN should set codes correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.lastApplyData.value = LastApplyUiModel(
+            codes = listOf("global_code"),
+            voucherOrders = listOf(
+                LastApplyVoucherOrdersItemUiModel(code = "1", cartStringGroup = "123", uniqueId = "1", type = "merchant"),
+                LastApplyVoucherOrdersItemUiModel(code = "2", cartStringGroup = "123", uniqueId = "2", type = "logistic")
+            )
+        )
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals(true, validateUsePromoRequest.codes.contains("global_code"))
+        assertEquals(true, validateUsePromoRequest.orders[0].codes.contains("1"))
+        assertEquals(true, validateUsePromoRequest.orders[1].codes.isEmpty())
     }
 }
