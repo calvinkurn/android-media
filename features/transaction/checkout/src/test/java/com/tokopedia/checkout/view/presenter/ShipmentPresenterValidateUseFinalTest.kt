@@ -16,12 +16,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TickerInfoUiModel
@@ -333,52 +330,52 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         }
     }
 
-    @Test
-    fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
-        // Given
-        val promoUiModel = PromoUiModel(
-            voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(
-                    type = "logistic",
-                    messageUiModel = MessageUiModel(state = "green")
-                )
-            ),
-            clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
-                clashMessage = "clash message",
-                clashReason = "clash reason",
-                options = ArrayList<PromoClashOptionUiModel>().apply {
-                    add(
-                        PromoClashOptionUiModel(
-                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
-                                add(PromoClashVoucherOrdersUiModel(code = "123"))
-                            }
-                        )
-                    )
-                }
-            )
-        )
-        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
-            ValidateUsePromoRevampUiModel(
-                status = "OK",
-                errorCode = "200",
-                promoUiModel = promoUiModel
-            )
-        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
-            ClearPromoUiModel()
-
-        // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
-
-        // Then
-        verifySequence {
-            view.updateButtonPromoCheckout(promoUiModel, false)
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.hideLoading()
-            view.setHasRunningApiCall(false)
-            view.showToastNormal("Ada perubahan pada promo yang kamu pakai")
-        }
-    }
+//    @Test
+//    fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
+//        // Given
+//        val promoUiModel = PromoUiModel(
+//            voucherOrderUiModels = listOf(
+//                PromoCheckoutVoucherOrdersItemUiModel(
+//                    type = "logistic",
+//                    messageUiModel = MessageUiModel(state = "green")
+//                )
+//            ),
+//            clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
+//                clashMessage = "clash message",
+//                clashReason = "clash reason",
+//                options = ArrayList<PromoClashOptionUiModel>().apply {
+//                    add(
+//                        PromoClashOptionUiModel(
+//                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
+//                                add(PromoClashVoucherOrdersUiModel(code = "123"))
+//                            }
+//                        )
+//                    )
+//                }
+//            )
+//        )
+//        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+//            ValidateUsePromoRevampUiModel(
+//                status = "OK",
+//                errorCode = "200",
+//                promoUiModel = promoUiModel
+//            )
+//        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
+//            ClearPromoUiModel()
+//
+//        // When
+//        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+//
+//        // Then
+//        verifySequence {
+//            view.updateButtonPromoCheckout(promoUiModel, false)
+//            view.showLoading()
+//            view.setHasRunningApiCall(true)
+//            view.hideLoading()
+//            view.setHasRunningApiCall(false)
+//            view.showToastNormal("Ada perubahan pada promo yang kamu pakai")
+//        }
+//    }
 
     @Test
     fun `WHEN validate use status get error THEN should render error and reset promo benefit`() {
