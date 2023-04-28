@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
-import com.tokopedia.library.subviewmodel.SubViewModelScope
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IPlayWidgetSubViewModel
@@ -27,12 +26,6 @@ abstract class ViewModelModule {
     internal abstract fun bindSubViewModelProvider(
         provider: SubViewModelProviderImpl
     ): SubViewModelProvider
-
-    @ProductDetailScope
-    @Binds
-    internal abstract fun bindSubViewModelScope(
-        provider: SubViewModelProvider
-    ): SubViewModelScope
 
     @ProductDetailScope
     @Binds

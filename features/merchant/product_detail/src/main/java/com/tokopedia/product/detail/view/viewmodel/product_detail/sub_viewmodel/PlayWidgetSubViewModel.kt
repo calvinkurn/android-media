@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.library.subviewmodel.SubViewModel
-import com.tokopedia.library.subviewmodel.SubViewModelScope
+import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.library.subviewmodel.extension.getMediator
 import com.tokopedia.library.subviewmodel.extension.launch
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -25,8 +25,8 @@ import javax.inject.Inject
 
 class PlayWidgetSubViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
-    subViewModelScope: SubViewModelScope
-) : SubViewModel(subViewModelScope), IPlayWidgetSubViewModel {
+    subViewModelProvider: SubViewModelProvider
+) : SubViewModel(subViewModelProvider), IPlayWidgetSubViewModel {
 
     val productDetailMediator: GetProductDetailDataMediator by getMediator()
 
