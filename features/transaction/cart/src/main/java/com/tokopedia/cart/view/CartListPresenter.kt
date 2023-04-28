@@ -1745,11 +1745,6 @@ class CartListPresenter @Inject constructor(
             this.userId = userSessionInterface.userId
         }
 
-//        val requestParams = RequestParams.create()
-//        requestParams.putObject(
-//            AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-//            addToCartRequestParams
-//        )
         launch {
             try {
                 addToCartUseCase.setParams(addToCartRequestParams)
@@ -1782,13 +1777,6 @@ class CartListPresenter @Inject constructor(
                 view?.showToastMessageRed(t)
             }
         }
-//        compositeSubscription.add(
-//            addToCartUseCase.createObservable(requestParams)
-//                .subscribeOn(schedulers.io)
-//                .unsubscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(AddToCartSubscriber(view, this, productModel))
-//        )
     }
 
     override fun processAddToCartExternal(productId: Long) {
