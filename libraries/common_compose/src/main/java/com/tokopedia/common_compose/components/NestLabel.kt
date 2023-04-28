@@ -69,6 +69,13 @@ enum class NestLabelType {
     HIGHLIGHT_DARK_GREY,
 
     HIGHLIGHT_DARK_IMAGE_LABEL,
+
+    GENERAL_ORANGE,
+    GENERAL_RED,
+    GENERAL_BLUE,
+    GENERAL_GREEN,
+    GENERAL_TEAL,
+    GENERAL_GREY
 }
 
 @Composable
@@ -98,6 +105,12 @@ private fun NestLabelType.toBackgroundColor(): Color {
                 imageLabelColorLight
             }
         }
+        NestLabelType.GENERAL_ORANGE -> Color.Transparent
+        NestLabelType.GENERAL_RED -> Color.Transparent
+        NestLabelType.GENERAL_BLUE -> Color.Transparent
+        NestLabelType.GENERAL_GREEN -> Color.Transparent
+        NestLabelType.GENERAL_TEAL -> Color.Transparent
+        NestLabelType.GENERAL_GREY -> Color.Transparent
     }
 }
 
@@ -119,6 +132,13 @@ private fun NestLabelType.toTextColor(): Color {
         NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
 
         NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0
+
+        NestLabelType.GENERAL_ORANGE -> if (isSystemInDarkTheme()) NestTheme.colors.YN._800 else NestTheme.colors.YN._500
+        NestLabelType.GENERAL_RED -> if (isSystemInDarkTheme()) NestTheme.colors.RN._800 else NestTheme.colors.RN._500
+        NestLabelType.GENERAL_BLUE -> if (isSystemInDarkTheme()) NestTheme.colors.BN._800 else NestTheme.colors.BN._500
+        NestLabelType.GENERAL_GREEN -> if (isSystemInDarkTheme()) NestTheme.colors.GN._800 else NestTheme.colors.GN._500
+        NestLabelType.GENERAL_TEAL -> if (isSystemInDarkTheme()) NestTheme.colors.TN._800 else NestTheme.colors.TN._500
+        NestLabelType.GENERAL_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._800 else NestTheme.colors.NN._500
     }
 }
 
@@ -146,7 +166,7 @@ private fun NestLabelOnDevicesPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            NestTypography(text = "Light Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestTypography(text = "Highlight - Light Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -187,7 +207,7 @@ private fun NestLabelOnDevicesPreview() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            NestTypography(text = "Dark Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestTypography(text = "Highlight - Dark Variant", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
