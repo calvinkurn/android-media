@@ -10,7 +10,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_3"
-        android:text="Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks."
+        android:text="@string/add_text_latar_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -26,7 +26,7 @@
             android:id="@+id/btmsht_add_text_color_title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Pilihan Warna:"
+            android:text="@string/add_text_latar_content_title_color"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             android:layout_width="wrap_content"
@@ -48,13 +48,14 @@
             app:layout_constraintLeft_toRightOf="@id/btmsht_add_text_color_black"
             app:chipText="Putih"
             app:chipImageSrc="@drawable/bg_animated_action_counter_minus_24"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="24dp"
         android:id="@+id/btmsht_add_text_template_wrapper"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_color_wrapper"
@@ -65,13 +66,14 @@
             android:id="@+id/btmsht_add_text_template_title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Pilih Template:"
+            android:text="@string/add_text_latar_content_title_template"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <GridLayout
+            android:layout_marginTop="10dp"
             android:id="@+id/btmsht_add_text_template_model_wrapper"
             android:columnCount="2"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -98,7 +100,7 @@
 
             <com.tokopedia.media.editor.ui.widget.AddTextLatarBtmItem
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:id="@+id/btmsht_add_text_template_model_side_cut"
                 android:layout_columnWeight="1"
                 android:layout_width="0dp"
@@ -120,7 +122,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btmsht_add_text_action_lanjut"
-            android:text="Lanjut"
+            android:text="@string/add_text_latar_content_btn_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

@@ -26,6 +26,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         size: Pair<Int, Int>,
         data: EditorAddTextUiModel
     ): Bitmap {
+        // TODO: create generator for latar text, current only support free text
         val originalImageWidth = size.first
         val originalImageHeight = size.second
 

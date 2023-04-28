@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color: Int, latarModel: Int) -> Unit) :
     BottomSheetUnify() {
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
+    private var mNextButton: UnifyButton? = null
 
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
@@ -30,6 +32,8 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             initializeButtonListener()
             initializeLatarItem()
         }
+
+        setTitle(TITLE)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -51,6 +55,8 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             templateModelRef.add(
                 findViewById(editorR.id.btmsht_add_text_template_model_side_cut)
             )
+
+            mNextButton = findViewById(editorR.id.btmsht_add_text_action_lanjut)
         }
     }
 
@@ -78,6 +84,11 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             view.setOnClickListener {
                 modelRefClick(index)
             }
+        }
+
+        mNextButton?.setOnClickListener {
+            onFinish(colorSelectionIndex, modelSelectionIndex)
+            dismiss()
         }
     }
 
@@ -125,5 +136,9 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
                 item.setLatarModel(index)
             }
         }
+    }
+
+    companion object {
+        private const val TITLE = "Warna & Template"
     }
 }
