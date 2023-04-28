@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.ui
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -77,7 +78,11 @@ private fun AdaptiveStatusBarColor(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = themeColors.primary.toArgb()
+            window.statusBarColor = if (!darkTheme && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                NestNN.light._200.toArgb()
+            } else {
+                themeColors.onPrimary.toArgb()
+            }
 
             WindowCompat.getInsetsController(window, view)?.isAppearanceLightStatusBars = !darkTheme
         }
