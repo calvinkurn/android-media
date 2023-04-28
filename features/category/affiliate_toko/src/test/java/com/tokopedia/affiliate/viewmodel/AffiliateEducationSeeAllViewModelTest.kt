@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
+import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
@@ -88,13 +89,10 @@ class AffiliateEducationSeeAllViewModelTest {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
         val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
-
+        val eduTreeResponse = mockk<AffiliateEducationCategoryResponse>()
         coEvery {
-            educationCategoryUseCase.getEducationFilterChips(
-                any(),
-                any()
-            )
-        } returns expectedList
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
 
         assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
@@ -119,12 +117,7 @@ class AffiliateEducationSeeAllViewModelTest {
         coEvery {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
-        coEvery {
-            educationCategoryUseCase.getEducationFilterChips(
-                any(),
-                any()
-            )
-        } returns expectedList
+
         assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
         // calling first time should invoke chip live data
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
@@ -146,12 +139,7 @@ class AffiliateEducationSeeAllViewModelTest {
         coEvery {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
-        coEvery {
-            educationCategoryUseCase.getEducationFilterChips(
-                any(),
-                any()
-            )
-        } returns expectedList
+
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
         assertTrue(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
         assertEquals(null, affiliateEducationSeeAllViewModel.hasMoreData().value)
@@ -171,9 +159,6 @@ class AffiliateEducationSeeAllViewModelTest {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
         val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
-        coEvery {
-            educationCategoryUseCase.getEducationFilterChips(any(), any())
-        } returns expectedList
 
         affiliateEducationSeeAllViewModel.fetchSeeAllData("", "")
 
@@ -186,12 +171,7 @@ class AffiliateEducationSeeAllViewModelTest {
     fun `should fetch category list`() {
         val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
         val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
-        coEvery {
-            educationCategoryUseCase.getEducationFilterChips(
-                any(),
-                any()
-            )
-        } returns expectedList
+
         coEvery {
             educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
         } returns educationArticleResponse
@@ -205,12 +185,6 @@ class AffiliateEducationSeeAllViewModelTest {
         val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
         val expectedList: List<AffiliateEduCategoryChipModel> = mockk(relaxed = true)
 
-        coEvery {
-            educationCategoryUseCase.getEducationFilterChips(
-                any(),
-                any()
-            )
-        } returns expectedList
         if (affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty()) {
             coEvery {
                 educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())

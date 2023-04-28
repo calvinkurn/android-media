@@ -15,7 +15,6 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
-import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -25,7 +24,6 @@ import com.tokopedia.affiliate.interfaces.AffiliateEduCategoryChipClick
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -46,7 +44,8 @@ class AffiliateEducationSeeAllFragment :
     AffiliateEduCategoryChipClick {
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
@@ -132,34 +131,6 @@ class AffiliateEducationSeeAllFragment :
         educationVM?.getEducationSeeAllData()?.observe(viewLifecycleOwner) {
             seeAllAdapter.addMoreData(it)
             loadMoreTriggerListener?.updateStateAfterGetData()
-            val creativeName = (it[0] as? AffiliateEducationSeeAllUiModel)?.article?.title
-            val id = (it[0] as? AffiliateEducationSeeAllUiModel)?.article?.articleId.toString()
-            when (pageType) {
-                PAGE_EDUCATION_EVENT -> sendEducationImpressions(
-                    creativeName,
-                    id,
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD,
-                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
-                )
-                PAGE_EDUCATION_ARTICLE -> sendEducationImpressions(
-                    creativeName,
-                    id,
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CARD,
-                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
-                )
-                PAGE_EDUCATION_TUTORIAL -> sendEducationImpressions(
-                    creativeName,
-                    id,
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CARD,
-                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
-                )
-                PAGE_EDUCATION_ARTICLE_TOPIC -> sendEducationImpressions(
-                    creativeName,
-                    id,
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CATEGORY,
-                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
-                )
-            }
         }
         educationVM?.getEducationCategoryChip()?.observe(viewLifecycleOwner) {
             categoryChipAdapter.setVisitables(it)
@@ -344,7 +315,7 @@ class AffiliateEducationSeeAllFragment :
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }
@@ -362,7 +333,7 @@ class AffiliateEducationSeeAllFragment :
             id,
             position = 0,
             id,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }

@@ -8,6 +8,10 @@ import com.tokopedia.affiliate.ALMOST_OOS
 import com.tokopedia.affiliate.AVAILABLE
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EMPTY_STOCK
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
+import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.PRODUCT_INACTIVE
 import com.tokopedia.affiliate.SHOP_CLOSED
 import com.tokopedia.affiliate.SHOP_INACTIVE
@@ -23,6 +27,7 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationBannerItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationSeeAllVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationSocialRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
@@ -37,6 +42,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiMod
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -108,6 +114,7 @@ class AffiliateAdapter(
                 PageSource.SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
                 PageSource.SOURCE_DISCO_BANNER_LIST -> handleDiscoPromoListImpression(holder)
                 PageSource.SOURCE_EDU_LANDING -> handleEducationLandingImpression(holder)
+                PageSource.SOURCE_EDU_SEE_ALL -> handleEducationSeeAllImpression(holder)
                 else -> {}
             }
         }
@@ -246,6 +253,38 @@ class AffiliateAdapter(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun handleEducationSeeAllImpression(holder: AbstractViewHolder<*>) {
+        if (holder is AffiliateEducationSeeAllVH) {
+            val item = list[holder.bindingAdapterPosition] as? AffiliateEducationSeeAllUiModel
+            when (item?.pageType) {
+                PAGE_EDUCATION_EVENT -> sendEducationImpressions(
+                    item.article?.title,
+                    item.article?.articleId?.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
+                )
+                PAGE_EDUCATION_ARTICLE -> sendEducationImpressions(
+                    item.article?.title,
+                    item.article?.articleId?.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
+                )
+                PAGE_EDUCATION_TUTORIAL -> sendEducationImpressions(
+                    item.article?.title,
+                    item.article?.articleId?.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
+                )
+                PAGE_EDUCATION_ARTICLE_TOPIC -> sendEducationImpressions(
+                    item.article?.title,
+                    item.article?.articleId?.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                )
             }
         }
     }
@@ -415,12 +454,13 @@ class AffiliateAdapter(
         creativeName: String?,
         id: String?,
         actionKeys: String,
+        categoryKeys: String = AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
         position: Int = 0
     ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.VIEW_ITEM,
             actionKeys,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
+            categoryKeys,
             id,
             position = position,
             id,
@@ -471,6 +511,7 @@ class AffiliateAdapter(
         SOURCE_PROMOSIKAN,
         SOURCE_SSA_SHOP,
         SOURCE_DISCO_BANNER_LIST,
-        SOURCE_EDU_LANDING
+        SOURCE_EDU_LANDING,
+        SOURCE_EDU_SEE_ALL
     }
 }
