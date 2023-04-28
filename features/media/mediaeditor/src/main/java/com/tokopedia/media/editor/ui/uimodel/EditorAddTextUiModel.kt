@@ -34,7 +34,7 @@ class EditorAddTextUiModel(
     }
 
     fun getColor(context: Context?): Int {
-        if (context == null) return 0
+        if (context == null || textColor == 0) return 0
         return ContextCompat.getColor(context, textColor)
     }
 
