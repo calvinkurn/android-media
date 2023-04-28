@@ -7,9 +7,11 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
@@ -20,12 +22,14 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
     private var mImageRef: AppCompatImageView? = null
     private var mItemConstraint: ConstraintLayout? = null
     private var mItemChecklist: View? = null
+    private var mItemLatar: View? = null
 
     init {
         View.inflate(context, editorR.layout.add_text_latar_btm_item, this)?.apply {
             mImageRef = findViewById(editorR.id.btm_item_img)
             mItemConstraint = findViewById(editorR.id.btm_item_constraint)
             mItemChecklist = findViewById(editorR.id.btm_item_checklist)
+            mItemLatar = findViewById(editorR.id.btm_item_latar)
         }
     }
 
@@ -59,5 +63,17 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
         }
 
         mItemChecklist?.hide()
+    }
+
+    fun setLatarModel(latarTemplate: Int) {
+        when(latarTemplate) {
+            TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
+            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
+            TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
+            else -> 0
+        }.let {
+            if (it == 0) return
+            mItemLatar?.setBackgroundResource(it)
+        }
     }
 }

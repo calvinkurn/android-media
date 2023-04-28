@@ -28,7 +28,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             initializeViewRef(this)
             initializeActiveState()
             initializeButtonListener()
-            initializeImage()
+            initializeLatarItem()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -115,10 +115,14 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
         }
     }
 
-    private fun initializeImage() {
+    // initialize item image & latar model
+    private fun initializeLatarItem() {
         imgUrl?.let { imgUrlReady ->
-            templateModelRef.forEach {
-                it.setImage(imgUrlReady)
+            templateModelRef.forEachIndexed { index, item ->
+                item.setImage(imgUrlReady)
+
+                // please refer index with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_FULL
+                item.setLatarModel(index)
             }
         }
     }
