@@ -1673,19 +1673,6 @@ class CartListPresenter @Inject constructor(
                 view?.stopAllCartPerformanceTrace()
             }
         }
-//        val requestParam = getRecommendationUseCase.getRecomParams(
-//            page,
-//            "recom_widget",
-//            "cart",
-//            allProductIds,
-//            ""
-//        )
-//        compositeSubscription.add(
-//            getRecommendationUseCase.createObservable(requestParam)
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(GetRecommendationSubscriber(view))
-//        )
     }
 
     override fun processAddToCart(productModel: Any) {
