@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,12 +41,14 @@ fun NestLabel(
         shape = RoundedCornerShape(3.dp),
         color = backgroundColor
     ) {
-        Text(
+        NestTypography(
             text = labelText,
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
-            color = textColor,
-            maxLines = 1,
-            style = NestTheme.typography.small.copy(fontWeight = FontWeight.Bold)
+            textStyle = NestTheme.typography.small.copy(
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            ),
+            maxLines = 1
         )
     }
 }
