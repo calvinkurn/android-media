@@ -80,7 +80,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val _isSingleAds: MutableLiveData<Boolean> = MutableLiveData()
     val isSingleAds: LiveData<Boolean> = _isSingleAds
 
-    private val _goalId: MutableLiveData<Int> = MutableLiveData(1)
+    private val _goalId: MutableLiveData<Int> = MutableLiveData(1) // default ad placement filter type is ALL - 1
     val goalId: LiveData<Int> = _goalId
 
     private val _topAdsGetShopInfo: MutableLiveData<TopAdsGetShopInfo> = MutableLiveData()
@@ -173,7 +173,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             mapOf(
                 PARAM_KEY to AdGroupsParams(
                     shopId = userSession.shopId,
-                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: ""
+                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""
                 )
             )
         )
@@ -189,7 +189,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     }
 
     fun checkIsSingleAds() {
-        _isSingleAds.value = _adId.value != EMPTY_AD_ID && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == EMPTY_GROUP_ID)
+        _isSingleAds.value = _adId.value != EMPTY_AD_ID && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID == EMPTY_GROUP_ID)
     }
 
     fun getAutoAdsInfo() {

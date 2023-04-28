@@ -249,4 +249,6 @@
     <string name="topads_common_manual_dialog_title">Mau ubah ke Atur Manual?</string>
     <string name="topads_common_manual_dialog_description">Dengan Atur Manual, kamu bisa atur sendiri biaya iklan dan kata kunci sesuai strategi beriklanmu.</string>
     <string name="topads_common_product_name">Nama Produk</string>
+    <string name="topads_common_start">Mulai</string>
+    <string name="topads_common_end">Hingga</string>
 </resources>
