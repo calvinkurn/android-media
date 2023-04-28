@@ -211,6 +211,7 @@ import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductArTrackerData
 import com.tokopedia.product.detail.tracking.ProductArTracking
+import com.tokopedia.product.detail.tracking.ProductDetailInfoTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -1164,6 +1165,12 @@ open class DynamicProductDetailFragment :
             forceRefresh = shouldRefreshProductInfoBottomSheet,
             isOpenSpecification = false,
             annotationExtParam = extParam
+        )
+
+        ProductDetailInfoTracking.onClickAnnotationGeneric(
+            component = trackData ?: ComponentTrackDataModel(),
+            productInfo = viewModel.getDynamicProductInfoP1,
+            key = key
         )
     }
 
