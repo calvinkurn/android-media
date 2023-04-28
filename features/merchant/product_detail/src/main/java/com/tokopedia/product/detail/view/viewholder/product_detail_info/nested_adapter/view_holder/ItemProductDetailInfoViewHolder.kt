@@ -39,7 +39,7 @@ class ItemProductDetailInfoViewHolder(
             text = data.subtitle.parseAsHtmlLink(root.context)
 
             if (data.isClickable) {
-                setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
 
                 setOnClickListener {
