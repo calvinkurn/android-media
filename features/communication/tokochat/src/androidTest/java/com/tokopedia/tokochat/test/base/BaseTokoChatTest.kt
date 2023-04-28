@@ -22,8 +22,10 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
+import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
 import com.tokopedia.tokochat.stub.common.util.RecyclerViewUtil
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
+import com.tokopedia.tokochat.stub.di.DaggerTokoChatUserConsentComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatCourierConversationModule
 import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent
@@ -33,8 +35,11 @@ import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
 import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.usercomponents.userconsent.common.UserConsentComponentProvider
+import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -82,6 +87,9 @@ abstract class BaseTokoChatTest {
     @TokoChatQualifier
     lateinit var database: ConversationsDatabase
 
+    @Inject
+    lateinit var cacheManager: TokoChatCacheManager
+
     protected lateinit var activity: TokoChatActivityStub
 
     @Before
@@ -100,6 +108,8 @@ abstract class BaseTokoChatTest {
         )
         mockWebServer.start(8090)
         resetDatabase()
+        removeDummyCache()
+        prepareDatabase()
         shouldWaitForChatHistory = true
     }
 
@@ -192,6 +202,12 @@ abstract class BaseTokoChatTest {
             )
             .build()
         tokoChatComponent!!.inject(this)
+
+        val userConsentComponent: UserConsentComponent =
+            DaggerTokoChatUserConsentComponentStub.builder()
+                .fakeBaseAppComponent(baseComponent)
+                .build()
+        UserConsentComponentProvider.setUserConsentComponent(userConsentComponent)
     }
 
     protected fun getTokoChatAdapter(): TokoChatBaseAdapter {
@@ -223,6 +239,7 @@ abstract class BaseTokoChatTest {
         }
     }
 
+
     // Need to prepare before class,
     // in case the database is not ready after been deleted from other test class
     private fun prepareDatabase() {
@@ -246,6 +263,10 @@ abstract class BaseTokoChatTest {
             },
             OrderChatType.Unknown
         )
+    }
+
+    private fun removeDummyCache() {
+        (cacheManager as TokoChatCacheManagerStub).resetAll()
     }
 
     companion object {

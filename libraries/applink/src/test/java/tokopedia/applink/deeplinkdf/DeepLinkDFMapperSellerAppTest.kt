@@ -77,19 +77,19 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check create voucher appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/create-voucher"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/create/{voucher_type}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test
     fun `check voucher list appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/voucher-list"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/list/{voucher_status}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test
     fun `check voucher detail appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/voucher-detail"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/detail/{voucher_id}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
@@ -246,5 +246,23 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     fun `check admin accepted internal appLink then should return DF_BASE_SELLER_APP in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/accepted-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check campaign list applink then should return DF_CAMPAIGN_LIST in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://campaign-list"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CAMPAIGN_LIST)
+    }
+
+    @Test
+    fun `check flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check flash sale tokopedia detail page appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/campaign-detail/1"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
     }
 }
