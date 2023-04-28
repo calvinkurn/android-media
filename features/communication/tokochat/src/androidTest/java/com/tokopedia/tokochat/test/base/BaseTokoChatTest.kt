@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.test.base
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
@@ -14,26 +13,23 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.utils.toUri
+import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
 import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
 import com.tokopedia.tokochat.stub.common.util.RecyclerViewUtil
-import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatUserConsentComponentStub
-import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
-import com.tokopedia.tokochat.stub.di.TokoChatCourierConversationModule
-import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent
-import com.tokopedia.tokochat.stub.di.base.FakeAppModule
+import com.tokopedia.tokochat.stub.di.TokoChatFakeActivityComponentFactory
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
-import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
+import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -53,7 +49,7 @@ abstract class BaseTokoChatTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        TokoChatActivityStub::class.java,
+        TokoChatActivity::class.java,
         false,
         false
     )
@@ -90,7 +86,7 @@ abstract class BaseTokoChatTest {
     @Inject
     lateinit var cacheManager: TokoChatCacheManager
 
-    protected lateinit var activity: TokoChatActivityStub
+    protected lateinit var activity: TokoChatActivity
 
     @Before
     open fun before() {
@@ -103,26 +99,22 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking,
             idlingResourcePrepareDb
         )
         mockWebServer.start(8090)
         resetDatabase()
         removeDummyCache()
         prepareDatabase()
-        shouldWaitForChatHistory = true
     }
 
     @After
     open fun tearDown() {
         mockWebServer.shutdown()
         removeConversationAndCourier()
-        tokoChatComponent = null
         IdlingRegistry.getInstance().unregister(
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking,
             idlingResourcePrepareDb
         )
     }
@@ -161,18 +153,7 @@ abstract class BaseTokoChatTest {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }
         val intent = Intent().apply {
-            putExtra(
-                ApplinkConst.TokoChat.ORDER_ID_GOJEK,
-                gojekOrderId
-            )
-            putExtra(
-                ApplinkConst.TokoChat.ORDER_ID_TKPD,
-                tkpdOrderId
-            )
-            putExtra(
-                ApplinkConst.TokoChat.PARAM_SOURCE,
-                source
-            )
+            data = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=$source&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$gojekOrderId&${ApplinkConst.TokoChat.ORDER_ID_TKPD}=$tkpdOrderId".toUri()
             putExtra(
                 ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
                 isFromTokoFoodPostPurchase
@@ -187,25 +168,16 @@ abstract class BaseTokoChatTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        Thread.sleep(2000) // Waiting for all network call and databases from conversation sdk
     }
 
     private fun setupDaggerComponent() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        tokoChatComponent = DaggerTokoChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .tokoChatConfigContextModule(TokoChatConfigContextModule(context))
-            .tokoChatCourierConversationModule(
-                TokoChatCourierConversationModule(applicationContext as Application)
-            )
-            .build()
-        tokoChatComponent!!.inject(this)
+        val fakeComponent = TokoChatFakeActivityComponentFactory()
+        TokoChatActivityComponentFactory.instance = fakeComponent
+        fakeComponent.tokoChatComponent.inject(this)
 
         val userConsentComponent: UserConsentComponent =
             DaggerTokoChatUserConsentComponentStub.builder()
-                .fakeBaseAppComponent(baseComponent)
+                .fakeBaseAppComponent(fakeComponent.baseComponent)
                 .build()
         UserConsentComponentProvider.setUserConsentComponent(userConsentComponent)
     }
@@ -238,7 +210,6 @@ abstract class BaseTokoChatTest {
             }
         }
     }
-
 
     // Need to prepare before class,
     // in case the database is not ready after been deleted from other test class
@@ -275,20 +246,14 @@ abstract class BaseTokoChatTest {
         const val TKPD_ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
         const val CHANNEL_ID_DUMMY = "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d"
 
-        var tokoChatComponent: TokoChatComponentStub? = null
         val idlingResourceDatabaseMessage = CountingIdlingResource(
             "tokochat-database-message"
         )
         val idlingResourceDatabaseChannel = CountingIdlingResource(
             "tokochat-database-channel"
         )
-        val idlingResourceGroupBooking = CountingIdlingResource(
-            "tokochat-groupbooking"
-        )
         val idlingResourcePrepareDb = CountingIdlingResource(
             "tokochat-prepare-db"
         )
-
-        var shouldWaitForChatHistory: Boolean = true
     }
 }

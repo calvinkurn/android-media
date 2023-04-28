@@ -13,7 +13,6 @@ import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
-import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub.Companion.TEST_ID
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import com.tokopedia.tokochat.test.robot.general.GeneralResult

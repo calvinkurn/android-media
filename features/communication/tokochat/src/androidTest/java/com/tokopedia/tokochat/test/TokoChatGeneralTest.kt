@@ -41,7 +41,6 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
     @Test
     fun should_show_disabled_call_button() {
         // Given
-        shouldWaitForChatHistory = false
         chatOrderHistoryResponse.editAndGetResponseObject {
             it.tokochatOrderProgress.state = OrderStatusType.COMPLETED
         }
