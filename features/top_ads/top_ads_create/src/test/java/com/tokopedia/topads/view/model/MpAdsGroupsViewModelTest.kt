@@ -53,6 +53,7 @@ class MpAdsGroupsViewModelTest {
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase = mockk()
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase = mockk()
     private val topAdsManageGroupAdsUseCase: TopAdsManageGroupAdsUseCase = mockk()
+    private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk()
 
     private val productId = ""
     private val shopId = ""
@@ -69,6 +70,7 @@ class MpAdsGroupsViewModelTest {
             getTopAdsGroupStatsUseCase,
             getTopadsDepositsUseCase,
             topAdsManageGroupAdsUseCase,
+            topAdsCreateUseCase,
             userSession,
             rule.dispatchers
         )
@@ -80,6 +82,7 @@ class MpAdsGroupsViewModelTest {
             getTopAdsGroupStatsUseCase,
             getTopadsDepositsUseCase,
             topAdsManageGroupAdsUseCase,
+            topAdsCreateUseCase,
             userSession,
             rule.dispatchers
         )
@@ -440,78 +443,6 @@ class MpAdsGroupsViewModelTest {
             createAdGroupList()
         }
         viewModel?.unChooseAdGroup(50)
-        viewModel?.mainListLiveData?.value?.assertLists(expectedList)
-    }
-
-    @Test
-    fun `move selected ad group success and topads deposit success`(){
-        val moveAdResponse = TopadsManageGroupAdsResponse()
-        val depositResponse = Deposit()
-        val selectedIndex = 1
-        setupChooseAdGroup(selectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
-            createAdGroupList()
-            chooseAdGroup(selectedIndex)
-        }
-        every { topAdsManageGroupAdsUseCase.executeUseCase(requestParams,any(),any()) } answers {
-            secondArg<(TopadsManageGroupAdsResponse) -> Unit>().invoke(moveAdResponse)
-        }
-        every { topAdsManageGroupAdsUseCase.createRequestParams(any(),shopId,productId) } returns requestParams
-        every { getTopadsDepositsUseCase.execute(any(),any()) } answers {
-            firstArg<(Deposit) -> Unit>().invoke(depositResponse)
-        }
-        viewModel?.moveTopAdsGroup(productId)
-        viewModel?.mainListLiveData?.value?.assertLists(expectedList)
-        Assert.assertEquals((viewModel?.topadsCreditLiveData?.value as Success).data,Pair(moveAdResponse,depositResponse))
-    }
-
-    @Test
-    fun `move selected ad group success and topads deposit Failure`(){
-        val moveAdResponse = TopadsManageGroupAdsResponse()
-        val selectedIndex = 1
-        setupChooseAdGroup(selectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
-            createAdGroupList()
-            chooseAdGroup(selectedIndex)
-        }
-        every { topAdsManageGroupAdsUseCase.executeUseCase(requestParams,any(),any()) } answers {
-            secondArg<(TopadsManageGroupAdsResponse) -> Unit>().invoke(moveAdResponse)
-        }
-        every { topAdsManageGroupAdsUseCase.createRequestParams(any(),shopId,productId) } returns requestParams
-        every { getTopadsDepositsUseCase.execute(any(),any()) } answers {
-            lastArg<(Throwable) -> Unit>().invoke(error)
-        }
-        viewModel?.moveTopAdsGroup(productId)
-        viewModel?.mainListLiveData?.value?.assertLists(expectedList)
-        Assert.assertEquals((viewModel?.topadsCreditLiveData?.value as Fail).throwable,error)
-    }
-
-    @Test
-    fun `move selected ad group failure`(){
-        val selectedIndex = 1
-        setupChooseAdGroup(selectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
-            createAdGroupList()
-            chooseAdGroup(selectedIndex)
-        }
-        every { topAdsManageGroupAdsUseCase.executeUseCase(requestParams,any(),any()) } answers {
-            lastArg<(Throwable) -> Unit>().invoke(error)
-        }
-        every { topAdsManageGroupAdsUseCase.createRequestParams(any(),shopId,productId) } returns requestParams
-        viewModel?.moveTopAdsGroup(productId)
-        viewModel?.mainListLiveData?.value?.assertLists(expectedList)
-        Assert.assertEquals((viewModel?.topadsCreditLiveData?.value as Fail).throwable,error)
-    }
-
-    @Test
-    fun `move selected ad group with no selected group`(){
-        fetchFirstPage()
-        val productId = ""
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
-            createAdGroupList()
-        }
-        viewModel?.loadFirstPage()
-        viewModel?.moveTopAdsGroup(productId)
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
