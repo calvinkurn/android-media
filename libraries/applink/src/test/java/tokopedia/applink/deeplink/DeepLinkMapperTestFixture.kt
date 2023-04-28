@@ -7,14 +7,12 @@ import com.tokopedia.applink.DLP
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.account.DeeplinkMapperAccount
-import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkClass
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -37,7 +35,7 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
-        mockkObject(FirebaseRemoteConfigInstance.get(mockk(relaxed = true)))
+        mockkObject(FirebaseRemoteConfigInstance)
         setAllowingDebugToolsFalse()
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
     }
@@ -88,12 +86,10 @@ open class DeepLinkMapperTestFixture {
         }
     }
 
-    protected fun tokoChatRemoteConfigEnabler(
-        key: String = DeeplinkMapperCommunication.TOKOCHAT_REMOTE_CONFIG,
-        result: Boolean = true
-    ) {
+    protected fun setRemoteConfig(result: Boolean) {
         every {
-            FirebaseRemoteConfigInstance.get(any()).getBoolean(key)
+            FirebaseRemoteConfigInstance.get(any() as Context)
+                .getBoolean(any() as String)
         } returns result
     }
 }
