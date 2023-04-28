@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
@@ -531,6 +532,26 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN generate coupon list recommendation request with shipping but no courier THEN should return with no courier info`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1"), CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(false, couponListRecommendationRequest.orders[0].freeShippingMetadata.isNotEmpty())
+        assertEquals(0, couponListRecommendationRequest.orders[0].spId)
+    }
+
+    @Test
     fun `WHEN generate coupon list recommendation request with shipping & bo THEN should return with correct number of order & shipping & bo`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
@@ -557,5 +578,49 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         assertEquals(true, couponListRecommendationRequest.orders[0].freeShippingMetadata.isNotEmpty())
         assertEquals(true, couponListRecommendationRequest.orders[1].freeShippingMetadata.isNotEmpty())
         assertEquals(false, couponListRecommendationRequest.orders[2].freeShippingMetadata.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with trade in THEN should return with trade in true`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1"))
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.isTradeIn)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with trade in dropoff courier THEN should return with trade in dropoff courier`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourierTradeInDropOff = CourierItemData(shipperProductId = 1))
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.isTradeIn)
+        assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
+        assertEquals(1, couponListRecommendationRequest.orders[0].spId)
     }
 }

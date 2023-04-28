@@ -78,6 +78,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.fingerprint.util.FingerPrintUtil.getPublicKey
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
@@ -5678,7 +5679,7 @@ class ShipmentPresenter @Inject constructor(
                         ordersItem.shippingPrice =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shippingRate.toDouble()
                         ordersItem.etaText =
-                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.etaText!!
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.etaText.toEmptyStringIfNull()
                         ordersItem.boCampaignId =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.boCampaignId
                     } else {
@@ -5717,7 +5718,7 @@ class ShipmentPresenter @Inject constructor(
                         ordersItem.shippingPrice =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shippingRate.toDouble()
                         ordersItem.etaText =
-                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.etaText!!
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.etaText.toEmptyStringIfNull()
                         ordersItem.boCampaignId =
                             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.boCampaignId
                     } else {
