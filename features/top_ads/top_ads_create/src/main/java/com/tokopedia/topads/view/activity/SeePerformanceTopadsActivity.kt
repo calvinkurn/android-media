@@ -62,7 +62,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var endDate: String = getDaysAgo(0, REQUEST_DATE_FORMAT) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
     private var showAutoTopUpOldFlow = true
 
-    private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
+    private val mainBottomSheetBinding by lazy {
+        TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
+    }
 
     @JvmField
     @Inject
@@ -91,8 +93,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     }
 
     private fun openMainBottomSheet() {
-        mainBottomSheetBinding =
-            TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
         attachObservers()
         attachClickListeners()
         mainBottomSheetBinding.dateFilter.chipText = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 3) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
@@ -431,6 +431,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 )
             }
             else {
+                val performanceCountTemplate = "%.2f%%"
                 val adPerformanceCount = 100 * convertMoneyToValue(
                     statTotalTopSlotImpression ?: ""
                 ) / convertMoneyToValue(statTotalImpression ?: "").toFloat()
@@ -438,7 +439,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     adPerformanceCount > TOPADS_PERFORMANCE_FREQUENTLY_THRESHOLD -> {
                         showDescriptionBottomSheet(
                             getString(R.string.topads_ads_performance_performa_tampil),
-                            String.format("%.2f%%",adPerformanceCount),
+                            String.format(performanceCountTemplate,adPerformanceCount),
                             getString(R.string.topads_ads_performance_top_keyword),
                             String.format(
                                 getString(R.string.topads_ads_performance_count),
@@ -451,7 +452,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     adPerformanceCount > TOPADS_PERFORMANCE_RARITY_THRESHOLD -> {
                         showDescriptionBottomSheet(
                             getString(R.string.topads_ads_performance_performa_tampil),
-                            String.format("%.2f%%",adPerformanceCount),
+                            String.format(performanceCountTemplate,adPerformanceCount),
                             getString(R.string.topads_ads_performance_top_keyword),
                             String.format(
                                 getString(R.string.topads_ads_performance_count),
@@ -464,7 +465,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     else -> {
                         showDescriptionBottomSheet(
                             getString(R.string.topads_ads_performance_performa_tampil),
-                            String.format("%.2f%%",adPerformanceCount),
+                            String.format(performanceCountTemplate,adPerformanceCount),
                             getString(R.string.topads_ads_performance_top_keyword),
                             String.format(
                                 getString(R.string.topads_ads_performance_count),

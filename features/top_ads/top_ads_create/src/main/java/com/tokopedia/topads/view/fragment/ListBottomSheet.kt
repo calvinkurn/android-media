@@ -17,9 +17,10 @@ import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.topads.view.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ListBottomSheet(private val title: String, private val itemList: List<ItemListUiModel>) :
+class ListBottomSheet:
     BottomSheetUnify(), ScheduleSlotListener {
 
+    private var itemList: List<ItemListUiModel> = listOf()
 
     private val adapterItemList: ItemListAdapter by lazy {
         ItemListAdapter(ItemListTypeFactory(this))
@@ -51,14 +52,16 @@ class ListBottomSheet(private val title: String, private val itemList: List<Item
                 )
             )
         }
-        setTitle(title)
         setChild(binding.root)
     }
 
     companion object {
 
         fun show(fm: FragmentManager, title:String, list: List<ItemListUiModel>): ListBottomSheet {
-            val bottomSheet = ListBottomSheet(title, list)
+            val bottomSheet = ListBottomSheet().apply {
+                setTitle(title)
+                itemList = list
+            }
             bottomSheet.show(fm, "")
             return bottomSheet
         }

@@ -180,11 +180,10 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         topAdsGetGroupInfoUseCase.setTypeClass(TopAdsGroupsResponse::class.java)
         topAdsGetGroupInfoUseCase.setGraphqlQuery(GetTopadsDashboardGroups())
         launchCatchError(block = {
-            _topAdsGetGroupInfo.postValue(
-                withContext(dispatchers.io) {
-                    topAdsGetGroupInfoUseCase.executeOnBackground()
-                }
-            )
+            val response = withContext(dispatchers.io) {
+                topAdsGetGroupInfoUseCase.executeOnBackground()
+            }
+            _topAdsGetGroupInfo.postValue(response)
         }) {}
     }
 
@@ -194,11 +193,10 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     fun getAutoAdsInfo() {
         launchCatchError(block = {
-            _topAdsGetAutoAds.postValue(
-                withContext(dispatchers.io) {
-                    topAdsGetAutoAdsUseCase.executeOnBackground()
-                }
-            )
+            val response = withContext(dispatchers.io) {
+                topAdsGetAutoAdsUseCase.executeOnBackground()
+            }
+            _topAdsGetAutoAds.postValue(response)
         }) {}
     }
 
