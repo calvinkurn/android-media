@@ -55,6 +55,9 @@ object WebViewHelper {
         if (domain.isEmpty()) {
             return false
         }
+        if (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN) {
+            return true
+        }
         if (whiteListedDomains.domains.isEmpty()) {
             whiteListedDomains = getWhiteListedDomains(context.applicationContext)
         }
@@ -74,7 +77,7 @@ object WebViewHelper {
         return isDomainWhitelisted(context, getDomainName(url))
     }
 
-    private fun getWhiteListedDomains(context: Context):WhiteListedDomains {
+    fun getWhiteListedDomains(context: Context):WhiteListedDomains {
         return try {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
             val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
