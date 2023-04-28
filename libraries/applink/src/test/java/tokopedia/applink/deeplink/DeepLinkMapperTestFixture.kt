@@ -12,9 +12,11 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -35,6 +37,7 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        mockkStatic(RemoteConfigInstance::class)
         mockkObject(FirebaseRemoteConfigInstance)
         setAllowingDebugToolsFalse()
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
@@ -89,7 +92,7 @@ open class DeepLinkMapperTestFixture {
     protected fun setRemoteConfig(result: Boolean) {
         every {
             FirebaseRemoteConfigInstance.get(any() as Context)
-                .getBoolean(any() as String)
+                .getBoolean(any() as String, any() as Boolean)
         } returns result
     }
 }
