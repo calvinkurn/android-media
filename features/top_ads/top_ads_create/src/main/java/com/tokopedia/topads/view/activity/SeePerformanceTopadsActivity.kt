@@ -1045,8 +1045,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         private const val TOPADS_PERFORMANCE_RARITY_THRESHOLD = 5
         private const val TOPADS_PERFORMANCE_NOT_RATED_THRESHOLD = 0
         private const val TOPADS_ACTIVE_AND_VISIBLE = "1"
-        private const val TOPADS_ACTIVE_BUT_NOT_VISIBLE = "2"
-        private const val TOPADS_NOT_ACTIVE = "3"
+        const val TOPADS_ACTIVE_BUT_NOT_VISIBLE = "2"
+        const val TOPADS_NOT_ACTIVE = "3"
         private const val MANUAL_ADS_USER = 3
         private const val AUTO_ADS_USER = 4
         private const val INFINITE_DAILY_BUDGET = 0
@@ -1058,8 +1058,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         private const val AUTO_ADS_IN_THE_PROCESS_TYPE_3 = 400
         private const val AUTO_ADS_ACTIVE_AND_VISIBLE = 500
         private const val AUTO_ADS_ACTIVE_BUT_INVISIBLE = 600
-        private const val ADS_PLACEMENT_FILTER_TYPE_ALL = 1
-        private const val ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH = 2
-        private const val ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION = 3
+        const val ADS_PLACEMENT_FILTER_TYPE_ALL = 1
+        const val ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH = 2
+        const val ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION = 3
     }
 }

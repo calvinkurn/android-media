@@ -130,7 +130,6 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
                     ?.maxRange(maxRange)
                     ?.withSelectedDates(arrayListOf(startDate, startDate))
                 calendarPickerView?.selectDateClickListener()
-                calendarPickerView?.outOfRange()
             }
         }
     }
@@ -171,18 +170,6 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
                 this.setPlaceholder(dateFormat.format(it))
             }
         }
-    }
-
-    private fun CalendarPickerView.outOfRange() {
-        setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
-            override fun onNotifyMax() {
-                activity?.let {
-                    showErrorToaster(
-                        errorMessage = ""
-                    )
-                }
-            }
-        })
     }
 
     private fun showErrorToaster(errorMessage: String) {
