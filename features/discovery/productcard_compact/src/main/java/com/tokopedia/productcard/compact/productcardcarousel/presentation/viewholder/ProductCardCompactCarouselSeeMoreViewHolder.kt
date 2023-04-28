@@ -10,7 +10,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardCompactCarouselSeeMoreViewHolder(
     view: View,
-    private val listener: TokoNowCarouselProductCardSeeMoreListener? = null
+    private val listener: ProductCardCompactCarouselSeeMoreListener? = null
 ) : AbstractViewHolder<ProductCardCompactCarouselSeeMoreUiModel>(view){
 
     companion object {
@@ -35,7 +35,7 @@ class ProductCardCompactCarouselSeeMoreViewHolder(
         }
     }
 
-    interface TokoNowCarouselProductCardSeeMoreListener {
+    interface ProductCardCompactCarouselSeeMoreListener {
         fun onProductCardSeeMoreClickListener(
             seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )
