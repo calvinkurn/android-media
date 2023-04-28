@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -310,5 +311,153 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         assertEquals(null, presenter.shipmentCostModel.value.productDiscountLabel)
         assertEquals(0, presenter.shipmentCostModel.value.cashbackAmount)
         assertEquals(null, presenter.shipmentCostModel.value.cashbackLabel)
+    }
+
+    @Test
+    fun `GIVEN cart with mixed shipment WHEN update cost THEN should calculate shipment cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData()
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(shipperPrice = 1000))
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                isError = true,
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(1000.0, presenter.shipmentCostModel.value.shippingFee, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with mixed shipment insurance & priority WHEN update cost THEN should calculate shipment cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(insurancePrice = 1000, priorityPrice = 1000), useInsurance = false, isOrderPriority = false)
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(insurancePrice = 2000, priorityPrice = 2000), useInsurance = true, isOrderPriority = true)
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(insurancePrice = 3000, priorityPrice = 3000))
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(2000.0, presenter.shipmentCostModel.value.insuranceFee, 0.0)
+        assertEquals(2000.0, presenter.shipmentCostModel.value.priorityFee, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart tradein dropoff with mixed shipment insurance & priority WHEN update cost THEN should calculate shipment cost correctly`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourierTradeInDropOff = CourierItemData(insurancePrice = 1000, priorityPrice = 1000), useInsurance = false, isOrderPriority = false)
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourierTradeInDropOff = CourierItemData(insurancePrice = 2000, priorityPrice = 2000), useInsurance = true, isOrderPriority = true)
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourierTradeInDropOff = CourierItemData(insurancePrice = 3000, priorityPrice = 3000))
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(2000.0, presenter.shipmentCostModel.value.insuranceFee, 0.0)
+        assertEquals(2000.0, presenter.shipmentCostModel.value.priorityFee, 0.0)
     }
 }
