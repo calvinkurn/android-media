@@ -3,7 +3,9 @@ package com.tokopedia.tokochat.stub.di
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
+import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import dagger.Module
 import dagger.Provides
@@ -25,5 +27,21 @@ object TokoChatUseCaseModuleStub {
         @ActivityScope tokoChatChannelUseCaseStub: TokoChatChannelUseCaseStub
     ): TokoChatChannelUseCase {
         return tokoChatChannelUseCaseStub
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatSendMessageUseCaseStub(
+        @TokoChatQualifier tokoChatRepositoryStub: TokoChatRepositoryStub
+    ): TokoChatSendMessageUseCaseStub {
+        return TokoChatSendMessageUseCaseStub(tokoChatRepositoryStub)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatSendMessageUseCase(
+        @ActivityScope tokoChatSendMessageUseCaseStub: TokoChatSendMessageUseCaseStub
+    ): TokoChatSendMessageUseCase {
+        return tokoChatSendMessageUseCaseStub
     }
 }

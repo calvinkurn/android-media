@@ -20,7 +20,7 @@ class HomeProductRecomViewHolder(
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {

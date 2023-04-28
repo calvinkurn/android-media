@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.search.domain.mapper
 
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
@@ -25,7 +25,7 @@ object SearchBroadMatchMapper {
                 .map { otherRelatedProduct ->
                     ProductCardCompactCarouselItemUiModel(
                         appLink = otherRelatedProduct.applink,
-                        productCardModel = TokoNowProductCardViewUiModel (
+                        productCardModel = ProductCardCompactUiModel (
                             productId = otherRelatedProduct.id,
                             name = otherRelatedProduct.name,
                             price = otherRelatedProduct.priceString,

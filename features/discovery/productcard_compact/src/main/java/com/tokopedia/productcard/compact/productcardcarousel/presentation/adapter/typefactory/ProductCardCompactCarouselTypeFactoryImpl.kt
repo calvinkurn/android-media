@@ -10,8 +10,8 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.viewho
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
 
 class ProductCardCompactCarouselTypeFactoryImpl(
-    private val productCardCarouselItemListener: ProductCardCompactCarouselItemViewHolder.TokoNowCarouselProductCardItemListener? = null,
-    private val productCardCarouselSeeMoreListener: ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener? = null
+    private val productCardCarouselItemListener: ProductCardCompactCarouselItemViewHolder.ProductCardCarouselItemListener? = null,
+    private val productCardCarouselSeeMoreListener: ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener? = null
 ): ProductCardCompactCarouselTypeFactory {
 
     override fun type(
