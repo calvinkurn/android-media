@@ -1971,10 +1971,6 @@ class CartListPresenter @Inject constructor(
                     Timber.d(t)
                 }
             }
-//            compositeSubscription.add(
-//                // Do nothing on subscribe
-//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-//            )
             setLastApplyNotValid()
             setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
         }
@@ -2199,10 +2195,6 @@ class CartListPresenter @Inject constructor(
                 Timber.d(t)
             }
         }
-//        compositeSubscription.add(
-//            // Do nothing on subscribe
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-//        )
     }
 
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
@@ -2264,9 +2256,7 @@ class CartListPresenter @Inject constructor(
                 Timber.d(t)
             }
         }
-//        compositeSubscription.add(
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe()
-//        )
+        
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
     }
