@@ -108,9 +108,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
-    implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
-    implementation projectOrAar(rootProject.ext.features.sellerTokopediaFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
@@ -138,4 +136,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
     implementation projectOrAar(rootProject.ext.features.sellerPersona)
+    implementation projectOrAar(rootProject.ext.features.centralizedPromo)
 }

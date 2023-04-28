@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -94,7 +94,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "5",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
@@ -113,7 +113,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 appLink = "tokopedia://product/detail/1",
                 headerName = "Lagi Diskon",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "5",
                     name = "Tahu Bulat",
                     usePreDraw = true,
@@ -257,7 +257,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "5",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     imageUrl = "https://tokopedia.com/image.jpg",
                     price = "2000",
@@ -272,7 +272,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "2",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Daging",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "5",
                     imageUrl = "https://tokopedia.com/image_5.jpg",
                     price = "3000",
@@ -290,7 +290,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "2",
                 headerName = "Lagi Diskon",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "5",
                     name = "Tahu Bulat",
                     orderQuantity = 2,
@@ -433,7 +433,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "5",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
@@ -451,7 +451,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 shopId = "5",
                 headerName = "Lagi Diskon",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "5",
                     name = "Tahu Bulat",
                     usePreDraw = true,
@@ -584,7 +584,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         imageUrl = "https://tokopedia.com/image.jpg",
                         isVariant = false,
@@ -764,7 +764,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         imageUrl = "https://tokopedia.com/image.jpg",
                         isVariant = false,
