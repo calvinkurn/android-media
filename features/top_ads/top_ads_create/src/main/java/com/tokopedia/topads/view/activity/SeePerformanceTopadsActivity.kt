@@ -245,7 +245,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     it.response?.data?.firstOrNull()?.groupName
                 mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
                     it.response?.data?.firstOrNull()?.totalItem.toString()
-                    it.response?.data?.firstOrNull()?.totalItem.toString()
                 mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
                     it.response?.data?.firstOrNull()?.totalKeyword.toString()
                 mainBottomSheetBinding.includeAdGroupManual.adCostSearch.text =
