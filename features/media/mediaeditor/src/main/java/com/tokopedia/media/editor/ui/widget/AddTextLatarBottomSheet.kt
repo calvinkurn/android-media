@@ -8,11 +8,11 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 
-class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Unit) :
+class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color: Int, latarModel: Int) -> Unit) :
     BottomSheetUnify() {
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
-    private var templateModelRef: ArrayList<View> = arrayListOf()
+    private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
 
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
@@ -28,6 +28,7 @@ class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Uni
             initializeViewRef(this)
             initializeActiveState()
             initializeButtonListener()
+            initializeImage()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -59,7 +60,7 @@ class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Uni
         }
 
         if (modelSelectionIndex in(0..templateModelRef.count())) {
-            templateModelRef[modelSelectionIndex].alpha = 0.5f
+            templateModelRef[modelSelectionIndex].setActive()
         }
     }
 
@@ -71,6 +72,9 @@ class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Uni
         }
 
         templateModelRef.forEachIndexed { index, view ->
+            view.setClickListener {
+                modelRefClick(index)
+            }
             view.setOnClickListener {
                 modelRefClick(index)
             }
@@ -86,11 +90,11 @@ class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Uni
         templateModelRef[modelSelectionIndex].setViewState(true)
     }
 
-    private fun View.setViewState(isActive: Boolean) {
-        this.alpha = if (isActive) {
-             0.2f
+    private fun AddTextLatarBtmItem.setViewState(isActive: Boolean) {
+        if (isActive) {
+            setActive()
         } else {
-            1f
+            setInactive()
         }
     }
 
@@ -108,6 +112,14 @@ class AddTextLatarBottomSheet(val onFinish: (color: Int, latarModel: Int) -> Uni
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
+        }
+    }
+
+    private fun initializeImage() {
+        imgUrl?.let { imgUrlReady ->
+            templateModelRef.forEach {
+                it.setImage(imgUrlReady)
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -71,32 +72,37 @@
             android:layout_height="wrap_content"/>
 
         <GridLayout
+            android:id="@+id/btmsht_add_text_template_model_wrapper"
             android:columnCount="2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btmsht_add_text_template_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <View
+            <com.tokopedia.media.editor.ui.widget.AddTextLatarBtmItem
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/btmsht_add_text_template_model_full"
                 android:layout_columnWeight="1"
-                android:background="@color/green_200"
                 android:layout_width="0dp"
-                android:layout_height="100dp"/>
+                android:layout_height="wrap_content" />
 
-            <View
+            <com.tokopedia.media.editor.ui.widget.AddTextLatarBtmItem
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/btmsht_add_text_template_model_floating"
                 android:layout_columnWeight="1"
-                android:background="@color/red_100"
                 android:layout_width="0dp"
-                android:layout_height="100dp"/>
+                android:layout_height="wrap_content"
+                tools:ignore="RtlSymmetry" />
 
-            <View
+            <com.tokopedia.media.editor.ui.widget.AddTextLatarBtmItem
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:id="@+id/btmsht_add_text_template_model_side_cut"
                 android:layout_columnWeight="1"
-                android:background="@color/Blue_B100"
                 android:layout_width="0dp"
-                android:layout_height="100dp"/>
+                android:layout_height="wrap_content"/>
 
         </GridLayout>
 

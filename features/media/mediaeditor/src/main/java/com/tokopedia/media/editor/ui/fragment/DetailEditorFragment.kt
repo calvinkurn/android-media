@@ -1394,7 +1394,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun showAddTextLatarSelection(onFinish: (color: Int, latarModel: Int) -> Unit) {
-        AddTextLatarBottomSheet(onFinish).show(childFragmentManager, ADD_TEXT_BOTTOM_SHEET_TAG)
+        AddTextLatarBottomSheet(data.resultUrl, onFinish).show(
+            childFragmentManager,
+            ADD_TEXT_BOTTOM_SHEET_TAG
+        )
     }
 
     override fun getScreenName() = SCREEN_NAME
