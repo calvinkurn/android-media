@@ -5,7 +5,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.fake.InboxChatFakeDependency
 import com.tokopedia.inbox.fake.di.chat.DaggerFakeChatListComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 
 open class InboxChatTest : InboxTest() {
 
@@ -25,12 +24,10 @@ open class InboxChatTest : InboxTest() {
         )
     }
 
-
     private fun setupChatListDaggerComponent() {
         chatListComponent = DaggerFakeChatListComponent.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatListContextModule(ChatListContextModule(context))
+            .baseComponent(baseComponent!!)
+            .context(context)
             .build()
     }
-
 }
