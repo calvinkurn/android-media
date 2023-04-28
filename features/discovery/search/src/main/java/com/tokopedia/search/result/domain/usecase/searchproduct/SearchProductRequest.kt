@@ -9,39 +9,44 @@ import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.usecase.RequestParams
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
-        mutableListOf<GraphqlRequest>().apply {
-                request()
-        }
+    mutableListOf<GraphqlRequest>().apply {
+        request()
+    }
 
 internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
-        add(createAceSearchProductRequest(params))
+    add(createAceSearchProductRequest(params))
 }
 
 @GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
-internal fun createAceSearchProductRequest(params: String) =
-        GraphqlRequest(
-                AceSearchProduct.GQL_QUERY,
-                AceSearchProductModel::class.java,
-                mapOf(SearchConstant.GQL.KEY_PARAMS to params)
-        )
+internal fun createAceSearchProductRequest(params: String): GraphqlRequest {
+    return GraphqlRequest(
+        AceSearchProduct.GQL_QUERY,
+        AceSearchProductModel::class.java,
+        mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+    )
+}
 
-internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
-        if (!requestParams.isSkipProductAds()) {
-                add(createTopAdsProductRequest(params = params))
-        }
+internal fun MutableList<GraphqlRequest>.addProductAdsRequest(
+    requestParams: RequestParams,
+    params: String
+) {
+    if (!requestParams.isSkipProductAds()) {
+        add(createTopAdsProductRequest(params = params))
+    }
 }
 
 @GqlQuery("TopAdsProduct", TOPADS_PRODUCT_QUERY)
-internal fun createTopAdsProductRequest(params: String) =
-        GraphqlRequest(
-                TopAdsProduct.GQL_QUERY,
-                ProductTopAdsModel::class.java,
-                mapOf(SearchConstant.GQL.KEY_PARAMS to params)
-        )
+internal fun createTopAdsProductRequest(params: String): GraphqlRequest {
+    return GraphqlRequest(
+        TopAdsProduct.GQL_QUERY,
+        ProductTopAdsModel::class.java,
+        mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+    )
+}
 
 internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     requestParams: RequestParams,
-    headlineParams: String,
+    headlineParams: String
 ) {
     if (!requestParams.isSkipHeadlineAds()) {
         add(createHeadlineAdsRequest(headlineParams = headlineParams))
@@ -49,12 +54,13 @@ internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
 }
 
 @GqlQuery("HeadlineAds", HEADLINE_ADS_QUERY)
-internal fun createHeadlineAdsRequest(headlineParams: String) =
-    GraphqlRequest(
+internal fun createHeadlineAdsRequest(headlineParams: String): GraphqlRequest {
+    return GraphqlRequest(
         HeadlineAds.GQL_QUERY,
         HeadlineAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
     )
+}
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query SearchProduct(${'$'}params: String!) {

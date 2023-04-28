@@ -14,9 +14,9 @@ import rx.Observable
 import rx.functions.Func1
 
 class GetLocalSearchRecommendationUseCase(
-        private val graphqlUseCase: GraphqlUseCase,
-        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
-): UseCase<SearchProductModel>() {
+    private val graphqlUseCase: GraphqlUseCase,
+    private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
+) : UseCase<SearchProductModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val graphqlRequestList = listOf(
@@ -27,18 +27,18 @@ class GetLocalSearchRecommendationUseCase(
         graphqlUseCase.addRequests(graphqlRequestList)
 
         return graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map(searchProductModelMapper)
+            .createObservable(RequestParams.EMPTY)
+            .map(searchProductModelMapper)
     }
 
     @GqlQuery("LocalSearchRecommendation", LOCAL_SEARCH_QUERY)
-    private fun createGraphqlRequest(requestParams: RequestParams) =
-        GraphqlRequest(
+    private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest {
+        return GraphqlRequest(
             LocalSearchRecommendation.GQL_QUERY,
             AceSearchProductModel::class.java,
             mapOf(KEY_PARAMS to UrlParamUtils.generateUrlParamString(requestParams.parameters))
         )
-
+    }
     companion object {
         private const val LOCAL_SEARCH_QUERY = """
             query SearchProduct(${'$'}params: String!) {
