@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -42,6 +41,7 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.ma
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -171,6 +171,16 @@ class InboxContactUsFragment :
             showChatBotWidget(welcomeMessage.toString(), uiState.unReadNotification, appLink)
         } else {
             hideChatBotWidget()
+            showErrorTopChatStatus(uiState.errorMessageChatBotWidget)
+        }
+    }
+
+    private fun showErrorTopChatStatus(errorMessage: String){
+        if(errorMessage.isNotEmpty()) {
+            binding?.rvEmailList.showToasterErrorWithCta(
+                errorMessage,
+                context?.getString(R.string.contact_us_ok).orEmpty()
+            )
         }
     }
 
@@ -184,7 +194,7 @@ class InboxContactUsFragment :
                     toggleEmptyLayout(View.VISIBLE)
                 } else {
                     hideFilter()
-                    toggleNoTicketLayout(View.VISIBLE, uiEffect.name)
+                    toggleNoTicketLayout(uiEffect.name)
                 }
             }
 
@@ -285,6 +295,7 @@ class InboxContactUsFragment :
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             mAdapter.setListener(object : TicketListAdapter.TicketAdapterListener {
                 override fun scrollList() {
+                    rvEmailList?.scrollBy(0, 0)
                 }
 
                 override fun showSerVicePriorityBottomSheet() {
@@ -296,6 +307,7 @@ class InboxContactUsFragment :
                     val ticketId = itemTicket.id.orEmpty()
                     val detailIntent =
                         getIntent(context ?: return, ticketId, isOfficialStore)
+                    @Suppress("DEPRECATION")
                     startActivityForResult(detailIntent, REQUEST_DETAILS)
                     sendTrackingClickToDetailTicketMessage(index)
                 }
@@ -311,11 +323,10 @@ class InboxContactUsFragment :
     fun sendTrackingClickToDetailTicketMessage(positionItem: Int) {
         val itemTicket = viewModel.getItemTicketOnPosition(positionItem)
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventTicketClick,
-            itemTicket.caseNumber
+            itemTicket.caseNumber.orEmpty()
         )
     }
 
@@ -407,16 +418,16 @@ class InboxContactUsFragment :
         servicePrioritiesBottomSheet?.dismiss()
     }
 
-    private fun toggleNoTicketLayout(visibility: Int, name: String) {
+    private fun toggleNoTicketLayout(name: String) {
         ivNoTicket?.loadRemoteImageDrawable("no_messages.png")
-        ivNoTicket?.visibility = visibility
+        ivNoTicket?.show()
         tvNoTicket?.text = getString(R.string.contact_us_no_ticket_message)
-        tvNoTicket?.visibility = visibility
+        tvNoTicket?.show()
         tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
         tvRaiseTicket?.tag = RAISE_TICKET_TAG
-        tvRaiseTicket?.visibility = visibility
+        tvRaiseTicket?.show()
         tvGreetNoTicket?.text = String.format(getString(R.string.contact_us_greet_user), name)
-        tvGreetNoTicket?.visibility = visibility
+        tvGreetNoTicket?.show()
     }
 
     private fun toggleEmptyLayout(visibility: Int) {
@@ -480,7 +491,6 @@ class InboxContactUsFragment :
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
             ContactUsTracking.sendGTMInboxTicket(
-                context ?: return,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
@@ -497,7 +507,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGTMClickChatButton() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickChatbotButton,
@@ -508,7 +517,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGtmClickTicketFilter(selected: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickTicketFilter,
@@ -517,11 +525,11 @@ class InboxContactUsFragment :
     }
 
     private fun showProgressBar() {
-        binding?.progressBarLayout?.visibility = View.VISIBLE
+        binding?.progressBarLayout?.show()
     }
 
     private fun hideProgressBar() {
-        binding?.progressBarLayout?.visibility = View.GONE
+        binding?.progressBarLayout?.gone()
     }
 
     override fun onDestroy() {
@@ -532,6 +540,7 @@ class InboxContactUsFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED && requestCode == REQUEST_DETAILS) {
             if (resultCode == RESULT_FINISH) {
+                @Suppress("DEPRECATION")
                 activity?.startActivityForResult(
                     Intent(
                         context,

@@ -3,8 +3,6 @@ package com.tokopedia.recharge_credit_card.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.network.authentication.HEADER_USER_AGENT
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig
@@ -13,8 +11,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_USER_AGENT
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -26,6 +28,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 class RechargeCCModule {
+
+    @RechargeCCScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @RechargeCCScope
     @Provides
@@ -75,16 +83,20 @@ class RechargeCCModule {
 
     @Provides
     @RechargeCCScope
-    fun provideInterceptors(fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+    fun provideInterceptors(
+        fingerprintInterceptor: FingerprintInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor
+    ): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
-        listInterceptor.add(Interceptor { chain ->
-            val newRequest = chain.request().newBuilder()
-            newRequest.addHeader(HEADER_USER_AGENT, getUserAgent())
-            chain.proceed(newRequest.build())
-        })
+        listInterceptor.add(
+            Interceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                newRequest.addHeader(HEADER_USER_AGENT, getUserAgent())
+                chain.proceed(newRequest.build())
+            }
+        )
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(httpLoggingInterceptor)
@@ -95,13 +107,14 @@ class RechargeCCModule {
 
     @Provides
     @RechargeCCScope
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+    fun provideRestRepository(
+        interceptors: MutableList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
     }
 
     fun getUserAgent(): String = AuthHelper.getUserAgent()
-
 }

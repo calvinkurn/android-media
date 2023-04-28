@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import androidx.annotation.VisibleForTesting
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -47,20 +48,17 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
 import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
-import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
-import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
-import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.MEDIA_BUTTON_TOGGLE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -118,7 +116,11 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.*
+import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.websocket.ChatbotWebSocket
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -236,10 +238,7 @@ class ChatbotPresenter @Inject constructor(
                     }
             },
             onError = {
-                ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -312,10 +311,7 @@ class ChatbotPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Timber.d("Socket Reconnecting")
                 }
-                ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -346,12 +342,15 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        if (attachmentType != DYNAMIC_ATTACHMENT) {
+            return false
+        }
         val dynamicAttachment = GsonBuilder().create().fromJson(
             pojo.attachment?.attributes,
             DynamicAttachment::class.java
         )
         val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
-        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+        return !PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -375,10 +374,7 @@ class ChatbotPresenter @Inject constructor(
                 }
             }
         } catch (e: JsonSyntaxException) {
-            ChatbotNewRelicLogger.logNewRelicForSocket(
-                e,
-                pageSource = pageSourceAccess
-            )
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -581,15 +577,9 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun onFailureSendRating(throwable: Throwable, messageId: String) {
+    private fun onFailureSendRating(throwable: Throwable) {
         view.onError(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable,
-            pageSource = pageSourceAccess
-        )
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel) {
@@ -696,7 +686,6 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        // TODO
     }
 
     override fun sendMessageWithWebsocket(
@@ -746,14 +735,8 @@ class ChatbotPresenter @Inject constructor(
             chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
-                    ChatbotNewRelicLogger.logNewRelic(
-                        false,
-                        messageId,
-                        KEY_SECURE_UPLOAD,
-                        e,
-                        pageSource = pageSourceAccess
-                    )
                     onErrorImageUpload(e, imageUploadViewModel)
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
 
                 override fun onNext(t: Map<Type?, RestResponse?>?) {
@@ -894,21 +877,15 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
+    private fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
         view.onSuccessSubmitCsatRating(
             submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString()
         )
     }
 
-    private fun onErrorSubmitCsatRating(throwable: Throwable, messageId: String) {
+    private fun onErrorSubmitCsatRating(throwable: Throwable) {
         view.onError(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable,
-            pageSource = pageSourceAccess
-        )
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     override fun hitGqlforOptionList(
@@ -920,8 +897,7 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
             ::onErrorOptionList,
-            input,
-            messageId
+            input
         )
     }
 
@@ -929,15 +905,9 @@ class ChatbotPresenter @Inject constructor(
         throwable.printStackTrace()
     }
 
-    private fun onErrorOptionList(throwable: Throwable, messageId: String) {
+    private fun onErrorOptionList(throwable: Throwable) {
         onSubmitError(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable,
-            pageSource = pageSourceAccess
-        )
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun generateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
@@ -957,8 +927,7 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitChatCsatUseCase.chipSubmitChatCsat(
             ::onSuccessSubmitChatCsat,
             ::onFailureSubmitChatCsat,
-            input,
-            messageId
+            input
         )
     }
 
@@ -968,15 +937,9 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun onFailureSubmitChatCsat(throwable: Throwable, messageId: String) {
+    private fun onFailureSubmitChatCsat(throwable: Throwable) {
         view.onError(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable,
-            pageSource = pageSourceAccess
-        )
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     override fun checkLinkForRedirection(
@@ -1003,13 +966,7 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError(it)
-                ChatbotNewRelicLogger.logNewRelic(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-                    it,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -1032,20 +989,13 @@ class ChatbotPresenter @Inject constructor(
         getTickerDataUseCase.cancelJobs()
         getTickerDataUseCase.getTickerData(
             ::onSuccessGetTickerData,
-            ::onErrorGetTickerData,
-            messageId
+            ::onErrorGetTickerData
         )
     }
 
-    private fun onErrorGetTickerData(throwable: Throwable, messageId: String) {
+    private fun onErrorGetTickerData(throwable: Throwable) {
         view.onError(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable,
-            pageSource = pageSourceAccess
-        )
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun onSuccessGetTickerData(tickerData: TickerDataResponse) {
@@ -1105,13 +1055,6 @@ class ChatbotPresenter @Inject constructor(
                 view.uploadUsingSecureUpload(data)
             },
             onError = {
-                ChatbotNewRelicLogger.logNewRelic(
-                    false,
-                    messageId,
-                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-                    it,
-                    pageSource = pageSourceAccess
-                )
                 view.loadChatHistory()
                 view.enableTyping()
             }
@@ -1264,7 +1207,6 @@ class ChatbotPresenter @Inject constructor(
                     if (!inputList.list.isNullOrEmpty()) {
                         getChatRatingList(
                             inputList,
-                            messageId,
                             onChatRatingListSuccess(
                                 mappedResponse,
                                 onSuccessGetChat,
@@ -1278,14 +1220,7 @@ class ChatbotPresenter @Inject constructor(
                 },
                 onError = {
                     onError.invoke(it)
-
-                    ChatbotNewRelicLogger.logNewRelic(
-                        false,
-                        messageId,
-                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                        it,
-                        pageSource = pageSourceAccess
-                    )
+                    FirebaseCrashlytics.getInstance().recordException(it)
                 }
             )
         }
@@ -1315,7 +1250,6 @@ class ChatbotPresenter @Inject constructor(
 
     fun getChatRatingList(
         inputList: ChipGetChatRatingListInput,
-        messageId: String,
         onSuccessGetRatingList: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
     ) {
         val input = inputList
@@ -1332,13 +1266,7 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onGetChatRatingListError(it)
-                ChatbotNewRelicLogger.logNewRelic(
-                    true,
-                    messageId,
-                    KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -1402,7 +1330,6 @@ class ChatbotPresenter @Inject constructor(
                 if (!inputList.list.isNullOrEmpty()) {
                     getChatRatingList(
                         inputList,
-                        messageId,
                         onChatRatingListSuccess(
                             mappedResponse,
                             onSuccessGetChat,
@@ -1416,15 +1343,7 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
-                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
-                    it,
-                    getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -1444,7 +1363,6 @@ class ChatbotPresenter @Inject constructor(
                 if (!inputList.list.isNullOrEmpty()) {
                     getChatRatingList(
                         inputList,
-                        messageId,
                         onChatRatingListSuccess(
                             mappedResponse,
                             onSuccessGetChat,
@@ -1458,16 +1376,25 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
-                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
-                    false,
-                    messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
-                    it,
-                    getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime,
-                    pageSource = pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
+        )
+    }
+
+    override fun sendDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        opponentId: String
+    ) {
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                messageId,
+                bubbleUiModel,
+                startTime,
+                opponentId
+            ),
+            listInterceptor
         )
     }
 

@@ -42,6 +42,8 @@ import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -109,6 +111,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         private const val KEY_TYPE = "KEY_TYPE"
 
         private const val KEY_PARAMS = "KEY_PARAMS"
+
+        private const val SHOP_ID_PARAM = "{shop_id}"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
@@ -256,6 +260,18 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 commission = params?.commission ?: bundle.getString(KEY_COMMISON_PRICE, "")
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
                 type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
+
+                if (originScreen == ORIGIN_SSA_SHOP) {
+                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        RouteManager.route(
+                            context,
+                            ApplinkConst.SHOP.replace(
+                                SHOP_ID_PARAM,
+                                productId
+                            )
+                        )
+                    }
+                }
             }
 
             if (sheetType == SheetType.ADD_SOCIAL) {

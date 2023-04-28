@@ -9,15 +9,15 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
@@ -329,8 +329,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
                         orderQuantity = 0,
@@ -339,8 +339,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     ),
                     shopType = "pm"
                 ),
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
                         orderQuantity = quantity,
@@ -358,7 +358,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 title = "Lagi Diskon",
                 productList = productList,
                 realTimeRecom = realTimeRecom,
-                seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+                seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(
@@ -436,8 +436,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         orderQuantity = 4,
                         usePreDraw = true,
@@ -446,8 +446,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     ),
                     shopType = "pm"
                 ),
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         usePreDraw = true,
                         price = "0",
@@ -467,7 +467,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 title = "Lagi Diskon",
                 productList = productList,
                 realTimeRecom = realTimeRecom,
-                seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+                seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(
@@ -608,8 +608,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             val productList = listOf(
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
                         orderQuantity = 0,
@@ -619,8 +619,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     shopType = "pm",
 
                     ),
-                TokoNowProductCardCarouselItemUiModel(
-                    productCardModel = TokoNowProductCardViewUiModel(
+                ProductCardCompactCarouselItemUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
                         orderQuantity = 0,
@@ -638,7 +638,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 title = "Lagi Diskon",
                 productList = productList,
                 realTimeRecom = realTimeRecom,
-                seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+                seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(
@@ -1125,7 +1125,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 channelHeaderName = "Mix Left Carousel",
                 shopId = "100",
                 channelId = "2122",
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     price = "0",
                     usePreDraw = true,

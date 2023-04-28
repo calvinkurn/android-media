@@ -17,12 +17,12 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
-import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -63,6 +63,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
     private val _atcDataTracker = MutableLiveData<AddToCartDataTrackerModel>()
     private val _loadingState = MutableLiveData<Boolean>()
+    private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var productRecommendationPageNames: MutableList<String> = mutableListOf()
@@ -76,6 +77,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _atcDataTracker
     val loadingState: LiveData<Boolean>
         get() = _loadingState
+    val updateToolbarNotification: LiveData<Boolean>
+        get() = _updateToolbarNotification
 
     val isLogin: Boolean
         get() = userSession.isLoggedIn
@@ -100,9 +103,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         val cartProductIds = miniCartSimplifiedData.miniCartItems.values.mapNotNull {
             if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
         }
-        val unavailableProducts = productModels.filter { it is TokoNowProductCardCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
+        val unavailableProducts = productModels.filter { it is ProductCardCompactCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
         unavailableProducts.forEach { product ->
-            if ((product as TokoNowProductCardCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
+            if ((product as ProductCardCompactCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
                 val totalQuantity = miniCartSimplifiedData.miniCartItems.getMiniCartItemParentProduct(product.parentId)?.totalQuantity.orZero()
                 if (totalQuantity == HomeLayoutMapper.DEFAULT_QUANTITY) {
                     productModels.updateProductCardCarouselItemQuantity(
@@ -167,8 +170,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         quantity: Int,
         shopId: String
     ) {
-        if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
-            val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        if (productModels.size > position && productModels[position] is ProductCardCompactCarouselItemUiModel) {
+            val product = productModels[position] as ProductCardCompactCarouselItemUiModel
             val productId = product.getProductId()
             val stock = product.productCardModel.availableStock
             val isVariant = product.productCardModel.isVariant
@@ -182,12 +185,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 onSuccessAddToCart = {
                     updateProductItemQuantity(productId, quantity)
                     trackProductAddToCart(position, it, product)
+                    updateToolbarNotification()
                 },
                 onSuccessUpdateCart = { _, _ ->
                     updateProductItemQuantity(productId, quantity)
+                    updateToolbarNotification()
                 },
                 onSuccessDeleteCart = { _, _ ->
                     updateProductItemQuantity(productId, quantity)
+                    updateToolbarNotification()
                 }
             )
         }
@@ -227,7 +233,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private fun trackProductAddToCart(
         position: Int,
         addToCartModel: AddToCartDataModel,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         _atcDataTracker.postValue(
             AddToCartDataTrackerModel(
@@ -237,5 +243,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 productRecommendation = product
             )
         )
+    }
+
+    private fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
     }
 }
