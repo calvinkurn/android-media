@@ -1,6 +1,7 @@
 package com.tokopedia.library.subviewmodel
 
 import kotlinx.coroutines.CoroutineScope
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -25,7 +26,17 @@ class SubViewModelProviderImpl @Inject constructor() : SubViewModelProvider {
      * @param viewModelScope delegate
      */
     override fun registerScope(viewModelScope: () -> CoroutineScope) {
+        validateMultipleUseProvider()
         this.viewModelScopeProvider = viewModelScope
+    }
+
+    private fun validateMultipleUseProvider() {
+        if (this.viewModelScopeProvider != null) {
+            val message = "This SubVieModelProvider is already in use by another ViewModel"
+            val throwable = IllegalAccessException(message)
+            Timber.e(throwable)
+            throw throwable
+        }
     }
 
     /**
