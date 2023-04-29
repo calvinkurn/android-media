@@ -13,7 +13,8 @@ import dagger.Component
     modules = [
         FakeChatListNetworkModule::class,
         ChatListViewsModelModule::class,
-        ChatListModule::class
+        ChatListModule::class,
+        FakeChatListUseCase::class
     ],
     dependencies = [FakeBaseAppComponent::class]
 )
