@@ -13,6 +13,8 @@ import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollect
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetCollectionPointWithConsentUseCase
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
+import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentDataModel
 import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentViewModel
 import io.mockk.coEvery
@@ -22,6 +24,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertTrue
 
 class UserConsentViewModelTest {
 
@@ -276,7 +279,7 @@ class UserConsentViewModelTest {
     }
 
     @Test
-    fun `submit consent then then make sure function only called once`() {
+    fun `submit consent then make sure function only called once`() {
         val parameter = ConsentSubmissionParam()
 
         viewModel?.submitConsent(parameter)
@@ -287,7 +290,7 @@ class UserConsentViewModelTest {
     }
 
     @Test
-    fun `submit consent then then failed`() {
+    fun `submit consent then failed`() {
         val parameter = ConsentSubmissionParam()
 
         coEvery {
@@ -298,6 +301,42 @@ class UserConsentViewModelTest {
         coVerify(exactly = 1) {
             submitConsentUseCase(parameter)
         }
+    }
+
+    @Test
+    fun `submit consent then success submit`() {
+        val parameter = ConsentSubmissionParam()
+        val response = ConsentSubmissionResponse(
+            SubmitConsentDataModel(
+                isSuccess = true
+            )
+        )
+
+        coEvery {
+            submitConsentUseCase(parameter)
+        } returns response
+        viewModel?.submitConsent(parameter)
+
+        val result = viewModel?.submitResult?.getOrAwaitValue()
+        assertTrue(result is UserComponentsStateResult.Success)
+    }
+
+    @Test
+    fun `submit consent then failed submit`() {
+        val parameter = ConsentSubmissionParam()
+        val response = ConsentSubmissionResponse(
+            SubmitConsentDataModel(
+                isSuccess = false
+            )
+        )
+
+        coEvery {
+            submitConsentUseCase(parameter)
+        } returns response
+        viewModel?.submitConsent(parameter)
+
+        val result = viewModel?.submitResult?.getOrAwaitValue()
+        assertTrue(result is UserComponentsStateResult.Fail)
     }
 
 }
