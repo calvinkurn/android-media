@@ -3,8 +3,9 @@ package com.tokopedia.inbox.view.activity.base.chat
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.fake.InboxChatFakeDependency
-import com.tokopedia.inbox.fake.di.chat.DaggerFakeChatListComponent
+import com.tokopedia.inbox.fake.di.chat.FakeChatListComponentFactory
 import com.tokopedia.inbox.view.activity.base.InboxTest
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 
 open class InboxChatTest : InboxTest() {
 
@@ -25,9 +26,8 @@ open class InboxChatTest : InboxTest() {
     }
 
     private fun setupChatListDaggerComponent() {
-        chatListComponent = DaggerFakeChatListComponent.builder()
-            .baseComponent(baseComponent!!)
-            .context(context)
-            .build()
+        val stubComponent = FakeChatListComponentFactory()
+        ActivityComponentFactory.instance = stubComponent
+        chatListComponent = stubComponent.chatListComponent
     }
 }
