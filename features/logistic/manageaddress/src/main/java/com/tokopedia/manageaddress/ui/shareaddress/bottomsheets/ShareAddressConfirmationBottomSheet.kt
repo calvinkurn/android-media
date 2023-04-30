@@ -14,13 +14,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
-import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
+import com.tokopedia.manageaddress.di.ActivityComponentFactory
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
@@ -55,9 +54,8 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initInjector() {
-        DaggerManageAddressComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build().inject(this)
+        ActivityComponentFactory.instance.createComponent(requireActivity().application)
+            .inject(this)
     }
 
     private fun hideHeader() {
