@@ -213,7 +213,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     loyaltyStatus,
                     FavoriteNumberPageConfig.TELCO,
                 )
-
             startActivityForResult(intent, REQUEST_CODE_DIGITAL_SAVED_NUMBER)
         }
     }
