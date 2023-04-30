@@ -179,6 +179,7 @@ open class TokoChatFragment :
     }
 
     private fun loadChatRoomData() {
+        addInitialShimmering()
         // Do not init when order id empty
         if (viewModel.gojekOrderId.isNotBlank()) {
             initGroupBooking()
@@ -833,6 +834,7 @@ open class TokoChatFragment :
     }
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+        hideShimmeringHeader()
         removeShimmering()
         handleOnErrorCreateGroupBooking(error)
     }
