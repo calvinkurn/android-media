@@ -17,9 +17,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
@@ -30,7 +30,6 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -56,9 +55,6 @@ class ManageAddressFragment :
             }
         }
     }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -193,19 +189,19 @@ class ManageAddressFragment :
                 }
 
                 vpManageAddress.registerOnPageChangeCallback(object :
-                    ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        if (isFirstLoad) {
-                            isFirstLoad = false
-                        } else {
-                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                                ShareAddressAnalytics.onClickMainTab()
+                        ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            if (isFirstLoad) {
+                                isFirstLoad = false
                             } else {
-                                ShareAddressAnalytics.onClickFromFriendTab()
+                                if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                    ShareAddressAnalytics.onClickMainTab()
+                                } else {
+                                    ShareAddressAnalytics.onClickFromFriendTab()
+                                }
                             }
                         }
-                    }
-                })
+                    })
 
                 if (viewModel.isReceiveShareAddress) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -331,4 +327,3 @@ class ManageAddressFragment :
         }
     }
 }
-
