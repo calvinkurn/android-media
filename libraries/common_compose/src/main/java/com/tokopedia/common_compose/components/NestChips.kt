@@ -76,7 +76,7 @@ fun NestChips(
             if (showChevron) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_down),
+                    painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
                     contentDescription = "Dropdown Icon",
                     tint = chevronColor
                 )
@@ -86,7 +86,6 @@ fun NestChips(
 }
 
 enum class Size { SMALL, MEDIUM, LARGE }
-
 
 @Preview("chip preview")
 @Preview("chip preview (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -106,7 +105,8 @@ fun PreviewChip() {
                     Text("S", fontWeight = FontWeight.Bold)
                     Checkbox(
                         checked = size == Size.MEDIUM,
-                        onCheckedChange = { size = Size.MEDIUM })
+                        onCheckedChange = { size = Size.MEDIUM }
+                    )
                     Text("M", fontWeight = FontWeight.Bold)
                     Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                     Text("L", fontWeight = FontWeight.Bold)
