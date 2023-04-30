@@ -35,9 +35,15 @@ class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface
         }
         if (gqlRequest == null) throw Exception("gql request is null")
         when {
-            gqlRequest!!.query.contains("keroAddressCorner") -> return Observable.just(GraphqlResponse(
-                    mapOf(GetPeopleAddressResponse::class.java to data
-                    ), mapOf(), false))
+            gqlRequest!!.query.contains("keroAddressCorner") -> return Observable.just(
+                GraphqlResponse(
+                    mapOf(
+                        GetPeopleAddressResponse::class.java to data
+                    ),
+                    mapOf(),
+                    false
+                )
+            )
         }
         return Observable.error(Throwable("unrecognized query"))
     }

@@ -8,9 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.manageaddress.di.DaggerTestAppComponent
-import com.tokopedia.manageaddress.di.FakeAppModule
-import com.tokopedia.manageaddress.di.FakeGraphqlUseCase
+import com.tokopedia.manageaddress.di.*
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
@@ -34,13 +32,10 @@ class DirectShareAddressTest {
     @get:Rule
     var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
-    lateinit var fakeGql: FakeGraphqlUseCase
-
     @Before
     fun setup() {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
         val component = DaggerTestAppComponent.builder().fakeAppModule(FakeAppModule(ctx)).build()
-        fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
         setupAbTestRemoteConfig()
     }

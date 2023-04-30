@@ -98,6 +98,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     //-------------------------------------------------------------------//
 
 }

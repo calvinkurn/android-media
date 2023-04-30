@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object ManageAddressModule {
+open class ManageAddressModule {
 
     @Provides
     @ActivityScope
@@ -19,5 +19,5 @@ object ManageAddressModule {
 
     @Provides
     @ActivityScope
-    fun provideRemoteConfigAbTest(): RemoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
+    open fun provideRemoteConfigAbTest(): RemoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
 }

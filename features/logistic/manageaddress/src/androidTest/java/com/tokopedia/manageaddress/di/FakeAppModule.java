@@ -69,7 +69,13 @@ public class FakeAppModule {
 
     @ApplicationScope
     @Provides
-    public GraphqlUseCaseInterface provideGraphqlUsecase() {
+    public GraphqlUseCaseInterface provideGraphqlUsecase(FakeGraphqlUseCase fakeUseCase) {
+        return fakeUseCase;
+    }
+
+    @ApplicationScope
+    @Provides
+    public FakeGraphqlUseCase provideFakeUseCase() {
         return new FakeGraphqlUseCase(context);
     }
 
