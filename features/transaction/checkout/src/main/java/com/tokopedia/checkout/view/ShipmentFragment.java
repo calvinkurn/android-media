@@ -331,8 +331,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private Subscription delayScrollToFirstShopSubscription;
     private Subscription delayScrollToCoachmarkEpharmacySubscription;
 
-    private Subscription delayPlatformFeeLoader;
-
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
 
@@ -420,9 +418,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         if (toasterThrottleSubscription != null) {
             toasterThrottleSubscription.unsubscribe();
-        }
-        if (delayPlatformFeeLoader != null) {
-            delayPlatformFeeLoader.unsubscribe();
         }
         shippingCourierBottomsheet = null;
         CountDownTimer countDownTimer = cdView.getTimer();
