@@ -152,6 +152,7 @@ fun NestSortFilterAdvanced(
     }
 }
 
+@Stable
 data class SortFilter(
     val title: String,
     val isSelected: Boolean,
