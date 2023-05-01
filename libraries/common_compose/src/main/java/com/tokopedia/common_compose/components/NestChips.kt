@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestTypography
@@ -38,29 +39,19 @@ fun NestChips(
     val backgroundColorSelected = NestTheme.colors.GN._50
     val backgroundColorDefault = NestTheme.colors.NN._0
 
-    val height = when (size) {
-        Size.SMALL -> 32.dp
-        Size.MEDIUM -> 40.dp
-        Size.LARGE -> 48.dp
-    }
     val textColor = if (isSelected) textColorSelected else textColorDefault
     val borderColor = if (isSelected) borderColorSelected else borderColorDefault
     val backgroundColor = if (isSelected) backgroundColorSelected else backgroundColorDefault
     val chevronColor = if (isSelected) NestTheme.colors.GN._500 else NestTheme.colors.NN._900
     val paddingHorizontal = if (size == Size.LARGE) 12.dp else 8.dp // px tbd
-    val cornerRadius = when (size) {
-        Size.SMALL -> 10.dp
-        Size.MEDIUM -> 12.dp
-        Size.LARGE -> 8.dp
-    } // px tbd
     val maxLines = if (size == Size.LARGE) 2 else 1
 
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(cornerRadius),
+        shape = RoundedCornerShape(size.cornerRad),
         border = BorderStroke(1.dp, borderColor),
         modifier = modifier
-            .height(height)
+            .height(size.height)
     ) {
         Row(
             modifier = Modifier
@@ -85,7 +76,11 @@ fun NestChips(
     }
 }
 
-enum class Size { SMALL, MEDIUM, LARGE }
+enum class Size(val height: Dp, val cornerRad: Dp) {
+    SMALL(32.dp, 10.dp),
+    MEDIUM(40.dp, 12.dp),
+    LARGE(48.dp, 8.dp)
+}
 
 @Preview("chip preview")
 @Preview("chip preview (dark)", uiMode = UI_MODE_NIGHT_YES)
