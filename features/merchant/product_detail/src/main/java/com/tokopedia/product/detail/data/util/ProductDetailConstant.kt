@@ -86,6 +86,7 @@ object ProductDetailConstant {
     const val INFO_OBAT_KERAS = "info_obat_keras"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
+    const val ONGOING_CAMPAIGN = "ongoing_campaign"
     const val MEDIA = "product_media"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"

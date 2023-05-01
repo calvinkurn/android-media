@@ -41,9 +41,11 @@ import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
@@ -172,6 +174,16 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.ONGOING_CAMPAIGN -> {
+                    val dataModel = mapToOngoingCampaignDataModel(
+                        type = component.type,
+                        name = component.componentName,
+                        data = component.componentData.firstOrNull()
+                    )
+                    if(dataModel != null){
+                        listOfComponent.add(dataModel)
+                    }
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -836,5 +848,29 @@ object DynamicProductDetailMapper {
 
     private fun isPlus(boType: Int): Boolean {
         return boType == BebasOngkirType.BO_PLUS.value || boType == BebasOngkirType.BO_PLUS_DT.value
+    }
+
+    private fun mapToOngoingCampaignDataModel(
+        type: String,
+        name: String,
+        data: ComponentData?
+    ): OngoingCampaignDataModel? {
+
+        if (data == null) return null
+
+        val mainData = ProductContentMainData(
+            campaign = data.campaign,
+            thematicCampaign = data.thematicCampaign,
+            cashbackPercentage = data.isCashback.percentage,
+            price = data.price,
+            stockWording = data.stock.stockWording,
+            isVariant = data.variant.isVariant,
+            productName = data.name
+        )
+        return OngoingCampaignDataModel(
+            type = type,
+            name = name,
+            data = mainData
+        )
     }
 }

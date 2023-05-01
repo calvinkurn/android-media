@@ -70,6 +70,8 @@ class PartialContentView(
         }
 
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
+        // TODO vindo - use this to hide current campaign ribbon. will trigger by remote config
+        campaignRibbon.hide()
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
