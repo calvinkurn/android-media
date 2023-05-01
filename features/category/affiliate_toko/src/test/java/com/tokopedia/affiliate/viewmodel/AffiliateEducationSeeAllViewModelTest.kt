@@ -3,7 +3,9 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
@@ -61,7 +63,7 @@ class AffiliateEducationSeeAllViewModelTest {
     }
 
     @Test
-    fun `should fetch cards upon success`() {
+    fun `should fetch event cards upon success`() {
         val articleCards =
             AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
 
@@ -109,6 +111,392 @@ class AffiliateEducationSeeAllViewModelTest {
         affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_EVENT, "")
 
         assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should fetch article cards upon success`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 381,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_ARTICLE, "")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should fetch tutorial cards upon success`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 383,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_TUTORIAL, "")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should not update category on null page type`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 383,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(null, "")
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should fetch event cards upon success with categoryId`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
+                id = 123
+            )
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 382,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_EVENT, "123")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should fetch article cards upon success with categoryId`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
+                id = 123
+            )
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 381,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_ARTICLE, "123")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should fetch tutorial cards upon success with categoryId`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
+                id = 123
+            )
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 383,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(PAGE_EDUCATION_TUTORIAL, "123")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
+        assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
+        assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
+    }
+
+    @Test
+    fun `should not update category on null page type with categoryId`() {
+        val articleCards =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article()
+
+        val cardItem =
+            AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem(
+                offset = 1,
+                hasMore = true,
+                totalCount = 10,
+                articles = listOf(articleCards, articleCards, articleCards)
+            )
+
+        val educationArticleResponse =
+            AffiliateEducationArticleCardsResponse(
+                AffiliateEducationArticleCardsResponse.CardsArticle(
+                    AffiliateEducationArticleCardsResponse.CardsArticle.Data(
+                        listOf(cardItem, cardItem)
+                    )
+                )
+            )
+
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        val eduCategoryChild =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
+                id = 123
+            )
+        val eduCategory =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                id = 383,
+                children = listOf(eduCategoryChild)
+            )
+        val eduTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(eduCategory)
+                )
+            )
+        )
+        coEvery {
+            educationCategoryUseCase.getEducationCategoryTree()
+        } returns eduTreeResponse
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData(null, "123")
+
+        assertTrue(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
         assertFalse(affiliateEducationSeeAllViewModel.getEducationSeeAllData().value.isNullOrEmpty())
         assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
         assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
