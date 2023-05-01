@@ -35,16 +35,12 @@ internal fun PrefixFilterItem(
     // Implementation are specifically to cater SELECTED and NORMAL type chips only
     val backgroundColor = NestTheme.colors.NN._0
     val borderColor = NestTheme.colors.NN._200
-    val height = when (size) {
-        Size.DEFAULT -> 32.dp
-        Size.LARGE -> 48.dp
-    }
     Surface(
         color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, borderColor),
         modifier = modifier
-            .height(height)
+            .height(size.prefixHeight)
             .clickable { onClick() }
     ) {
         Row(
