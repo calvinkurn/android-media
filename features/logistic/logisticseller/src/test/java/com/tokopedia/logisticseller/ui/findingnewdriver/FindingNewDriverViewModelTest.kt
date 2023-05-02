@@ -12,11 +12,20 @@ import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverAvailab
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverBookingState
 import com.tokopedia.logisticseller.ui.findingnewdriver.viewmodel.FindingNewDriverViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FindingNewDriverViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -34,6 +43,7 @@ class FindingNewDriverViewModelTest {
 
     @Before
     fun setup() {
+        Dispatchers.setMain(CoroutineTestDispatchersProvider.main)
         viewModel = FindingNewDriverViewModel(
             CoroutineTestDispatchersProvider,
             newDriverAvailabilityUseCase,
@@ -42,6 +52,11 @@ class FindingNewDriverViewModelTest {
         )
         viewModel.newDriverAvailability.observeForever(newDriverAvailabilityObserver)
         viewModel.newDriverBooking.observeForever(newDriverBookingObserver)
+    }
+
+    @After
+    fun release() {
+        Dispatchers.resetMain()
     }
 
     @Test
