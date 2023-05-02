@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.websocket
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -10,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
@@ -75,26 +75,18 @@ class PlayWebSocketImpl(
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
             webSocketLogger.send("Web Socket Open")
-
-            Log.d("sukses url", webSocket.request().url.toString())
-            Log.d("sukses header", webSocket.request().headers.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
             webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString() + newMessage.message.tracking.id)
-            Log.d("sukses raw", text)
-
-            Log.d("SUKSES MESSAGE", newMessage.message.tracking.toString())
 
             /**
              * Send tracking Id
              */
             if (!newMessage.message.isTrackingIdAvailable) return
-            val tracking = sendTracking(newMessage.message.tracking.id)
-            Log.d("sukses t send", tracking.toString())
-            webSocket.send(tracking)
+            webSocket.send(sendTracking(newMessage.message.tracking.id))
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -121,7 +113,7 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source, mWebSocket?.request()?.headers.toString()).toString())
     }
 
     override fun close() {
@@ -150,12 +142,13 @@ class PlayWebSocketImpl(
         }
     }
 
-    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
+    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String, header: String): Map<String, String> {
         return mapOf(
             "source" to source.ifEmpty { "\"\"" },
             "channelId" to channelId.ifEmpty { "\"\"" },
             "warehouseId" to warehouseId.ifEmpty { "\"\"" },
-            "gcToken" to gcToken.ifEmpty { "\"\"" }
+            "gcToken" to gcToken.ifEmpty { "\"\"" },
+            "header" to header.toEmptyStringIfNull().ifEmpty { "\"\"" },
         )
     }
 

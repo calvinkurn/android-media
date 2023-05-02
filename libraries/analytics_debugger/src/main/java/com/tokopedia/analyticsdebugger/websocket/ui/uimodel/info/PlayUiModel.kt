@@ -13,13 +13,16 @@ data class PlayUiModel(
     val warehouseId: String = "",
     @SerializedName("gcToken")
     val gcToken: String = "",
+    @SerializedName("header")
+    val header: String = "",
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
-        parcel.readString().toString()
+        parcel.readString().toString(),
+        parcel.readString().toString(),
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -27,6 +30,7 @@ data class PlayUiModel(
         parcel.writeString(channelId)
         parcel.writeString(warehouseId)
         parcel.writeString(gcToken)
+        parcel.writeString(header)
     }
 
     override fun describeContents(): Int {

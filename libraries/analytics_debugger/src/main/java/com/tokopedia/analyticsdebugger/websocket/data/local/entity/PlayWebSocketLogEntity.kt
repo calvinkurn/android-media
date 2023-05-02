@@ -35,4 +35,7 @@ data class PlayWebSocketLogEntity (
 
     @ColumnInfo(name = "warehouse_id")
     val warehouseId: String,
+
+    @ColumnInfo(name = "header")
+    val header: String,
 )
