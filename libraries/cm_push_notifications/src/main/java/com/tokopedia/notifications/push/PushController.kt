@@ -147,12 +147,22 @@ class PushController(val context: Context) : CoroutineScope {
             baseNotificationModel.status = NotificationStatus.ACTIVE
         } else {
             baseNotificationModel.status = NotificationStatus.COMPLETED
+            sendPushExpiryLog(baseNotificationModel)
         }
         updatedBaseNotificationModel?.let {
             PushRepository.getInstance(context)
                     .insertNotificationModel(updatedBaseNotificationModel)
         } ?: PushRepository.getInstance(context)
                 .insertNotificationModel(baseNotificationModel)
+    }
+
+    private fun sendPushExpiryLog(baseNotificationModel: BaseNotificationModel){
+        try {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "exception",
+                    "err" to "PUSH_PAYLOAD_EXPIRED",
+                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        }catch (_: Exception){}
     }
 
     private suspend fun onOfflinePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
@@ -193,6 +203,7 @@ class PushController(val context: Context) : CoroutineScope {
         notificationManager.cancel(baseNotificationModel.notificationId)
         baseNotificationModel.status = NotificationStatus.COMPLETED
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
+        sendPushExpiryLog(baseNotificationModel)
     }
 
     private fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {

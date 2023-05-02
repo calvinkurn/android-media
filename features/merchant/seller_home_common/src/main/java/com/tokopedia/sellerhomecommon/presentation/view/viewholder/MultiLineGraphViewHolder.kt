@@ -149,7 +149,6 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
         if (element?.isComparePeriodOnly == true) {
             metricsAdapter.items.forEach {
@@ -180,7 +179,7 @@ class MultiLineGraphViewHolder(
                     } else {
                         metric.isSelected = true
                         this.lastSelectedMetric?.let {
-                            it.isSelected = !checkIsMetricError(it)
+                            it.isSelected = !it.isError
                         }
                         this.lastSelectedMetric = metric
                     }
@@ -195,10 +194,9 @@ class MultiLineGraphViewHolder(
                     lastSelectedMetric = metric
                 }
             }
-
         }
 
-        if (checkIsMetricError(metric)) {
+        if (metric.isError) {
             metricsAdapter.items.forEach {
                 if (it != metric) {
                     it.isSelected = false
@@ -403,7 +401,6 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setupMetricCards(items: List<MultiLineMetricUiModel>) {
         with(binding) {
             shcMlgSuccessState.post {
@@ -613,7 +610,7 @@ class MultiLineGraphViewHolder(
         if (isSingleMetric) {
             val metric = metrics[Int.ZERO]
 
-            if (checkIsMetricError(metric)) {
+            if (metric.isError) {
                 showMetricErrorState()
                 return emptyList()
             }
@@ -631,7 +628,7 @@ class MultiLineGraphViewHolder(
 
         hideLegendView()
 
-        val successStateMetrics = metrics.filter { !checkIsMetricError(it) }
+        val successStateMetrics = metrics.filter { !it.isError }
         if (successStateMetrics.isEmpty()) {
             showMetricErrorState()
             return emptyList()
@@ -666,11 +663,6 @@ class MultiLineGraphViewHolder(
     private fun clearMetricErrorState() {
         binding.chartViewShcMultiLine.visible()
         binding.shcMultiLineGraphErrorView.gone()
-    }
-
-    private fun checkIsMetricError(metric: MultiLineMetricUiModel): Boolean {
-        return metric.errorMsg.isNotEmpty() || metric.isError ||
-            metric.linePeriod.currentPeriod.isEmpty()
     }
 
     private fun getLineChartDataByPeriod(metric: MultiLineMetricUiModel): List<LineChartData> {

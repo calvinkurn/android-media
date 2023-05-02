@@ -1,5 +1,7 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,6 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,10 +25,13 @@ fun NestButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN._500, disabledBackgroundColor = NestTheme.colors.NN._100)
+    val backgroundColor = ButtonDefaults.buttonColors(
+        backgroundColor = NestTheme.colors.GN._500, disabledBackgroundColor = NestTheme.colors.NN._100
+    )
 
     Button(
-        modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 40.dp),
+        modifier = modifier
+            .fillMaxWidth().defaultMinSize(minHeight = 40.dp),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         colors = backgroundColor,
@@ -34,7 +40,7 @@ fun NestButton(
         NestTypography(
             text,
             textStyle = NestTheme.typography.display1.copy(
-                color = if (enabled) NestTheme.colors.NN._0 else NestTheme.colors.NN._400,
+                color = buttonTextColor(enabled),
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(vertical = 8.dp),
@@ -44,12 +50,39 @@ fun NestButton(
     }
 }
 
+@Composable
+private fun buttonTextColor(enabled: Boolean): Color {
+    return if (enabled) {
+        if (isSystemInDarkTheme()) {
+            NestTheme.colors.NN._1000
+        } else {
+            NestTheme.colors.NN._0
+        }
+    } else {
+        NestTheme.colors.NN._400
+    }
+}
+
 @Preview(name = "Button")
+@Preview(name = "Button Dark", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NestButtonPreview() {
+    NestTheme {
+        NestButton(
+            Modifier,
+            text = "Bagikan",
+            onClick = {}
+        )
+    }
+}
+
+@Preview(name = "Button disabled")
+@Composable
+fun NestButtonDisabledPreview() {
     NestButton(
         Modifier,
         text = "Bagikan",
-        onClick = {}
+        onClick = {},
+        enabled = false
     )
 }

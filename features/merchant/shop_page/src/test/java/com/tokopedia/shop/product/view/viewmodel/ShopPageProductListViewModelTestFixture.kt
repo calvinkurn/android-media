@@ -11,13 +11,13 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
@@ -102,6 +102,7 @@ abstract class ShopPageProductListViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var sharedPreferences: SharedPreferences
+
     @RelaxedMockK
     lateinit var context: Context
 
@@ -148,23 +149,23 @@ abstract class ShopPageProductListViewModelTestFixture {
         )
 
         shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
-                userSessionInterface,
-                getShopInfoUseCase,
-                getShopEtalaseByShopUseCase,
-                getShopProductUseCase,
-                gqlGetShopSortUseCase,
-                shopProductSortMapper,
-                testCoroutineDispatcherProvider,
-                getShopFilterBottomSheetDataUseCase,
-                getShopFilterProductCountUseCase,
-                restrictionEngineNplUseCase,
-                toggleFavouriteShopUseCase,
-                getFollowStatusUseCase,
-                gqlShopPageGetDynamicTabUseCase,
-                addToCartUseCase,
-                updateCartUseCase,
-                deleteCartUseCase,
-                sharedPreferences
+            userSessionInterface,
+            getShopInfoUseCase,
+            getShopEtalaseByShopUseCase,
+            getShopProductUseCase,
+            gqlGetShopSortUseCase,
+            shopProductSortMapper,
+            testCoroutineDispatcherProvider,
+            getShopFilterBottomSheetDataUseCase,
+            getShopFilterProductCountUseCase,
+            restrictionEngineNplUseCase,
+            toggleFavouriteShopUseCase,
+            getFollowStatusUseCase,
+            gqlShopPageGetDynamicTabUseCase,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            sharedPreferences
         )
     }
 }

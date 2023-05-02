@@ -27,6 +27,33 @@ data class GetLiveStatisticsResponse(
 
                 @SerializedName("metrics")
                 @Expose
-                val metrics: LiveStats = LiveStats()
+                val metrics: LiveStats = LiveStats(),
+
+                @SerializedName("userMetrics")
+                @Expose
+                val userMetrics: ReportUserChannelMetric = ReportUserChannelMetric()
         )
+
+    data class ReportUserChannelMetric(
+        @SerializedName("visitChannelFmt")
+        val visitChannel: String = "",
+
+        @SerializedName("totalLikeFmt")
+        val likeChannel: String = "",
+
+        @SerializedName("followProfileFmt")
+        val followProfile: String = "",
+
+        @SerializedName("visitPDPFmt")
+        val visitPdp: String = "",
+
+        @SerializedName("visitProfileFmt")
+        val visitProfile: String = "",
+
+        @SerializedName("addToCartFmt")
+        val addToCart: String = "",
+
+        @SerializedName("paymentVerifiedFmt")
+        val paymentVerified: String = "",
+    )
 }

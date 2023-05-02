@@ -10,7 +10,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_margin="@dimen/spacing_lvl4"
-        app:icon_name="CLOSE"
+        app:icon_name="ARROW_BACK"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,25 +61,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_summary_info" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fl_button_sticky"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:weightSum="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_post_video"
-            android:layout_width="match_parent"
+            android:id="@+id/btn_done"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl4"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"
+            android:text="@string/play_bro_product_summary_done"
+            app:unifyButtonSize="medium" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_post_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
             android:enabled="false"
             android:text="@string/play_summary_button_post_video"
             app:unifyButtonSize="medium" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/toaster_layout"

@@ -80,6 +80,7 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "item_list": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+      "item_list_name": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
       "items": [
         {
           "dimension40": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",

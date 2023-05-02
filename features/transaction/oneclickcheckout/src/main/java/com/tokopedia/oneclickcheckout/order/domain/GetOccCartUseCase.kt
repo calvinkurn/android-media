@@ -14,18 +14,20 @@ import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                            private val mapper: GetOccCartMapper,
-                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
+class GetOccCartUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val mapper: GetOccCartMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) {
 
     fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
         return mapOf(
-                PARAM_SOURCE to source,
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_ADDITIONAL_PARAMS to mapOf(
-                        PARAM_GATEWAY_CODE to gatewayCode,
-                        PARAM_TENOR to tenor
-                )
+            PARAM_SOURCE to source,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_ADDITIONAL_PARAMS to mapOf(
+                PARAM_GATEWAY_CODE to gatewayCode,
+                PARAM_TENOR to tenor
+            )
         )
     }
 
@@ -42,8 +44,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
             return mapper.mapGetOccCartDataToOrderData(response.response.data)
         } else {
-            throw MessageErrorException(response.response.errorMessages.firstOrNull()
-                    ?: DEFAULT_ERROR_MESSAGE)
+            throw MessageErrorException(
+                response.response.errorMessages.firstOrNull()
+                    ?: DEFAULT_ERROR_MESSAGE
+            )
         }
     }
 

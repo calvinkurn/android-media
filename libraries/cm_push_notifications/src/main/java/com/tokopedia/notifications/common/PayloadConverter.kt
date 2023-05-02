@@ -158,7 +158,7 @@ object PayloadConverter {
             model.persistentButtonList = persButtonList
         }
         model.videoPushModel = data.videoPushModel ?: ""
-        model.customValues = data.customValues
+        model.customValues = data.customValues.toString()
         data.carouselList?.let {
             val carouselList = ArrayList<Carousel>()
             it.forEach { carouselNullable ->

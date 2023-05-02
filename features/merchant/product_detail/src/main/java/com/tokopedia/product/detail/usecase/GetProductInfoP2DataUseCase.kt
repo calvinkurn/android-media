@@ -14,6 +14,8 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.shop_review.asUiModel
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -386,6 +388,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   link
                 }
                 isScheduled
+                boBadge {
+                  imageURL
+                  isUsingPadding
+                  imageHeight
+                }
               }
               boMetadata
               productMetadata {
@@ -561,6 +568,30 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                status
                componentName
             }
+            socialProofComponent {
+                socialProofType
+                socialProofID
+                title
+                subtitle
+                icon
+                applink {
+                    appLink
+                }
+            }
+            reviewList {
+                title
+                applink
+                applinkTitle
+                data {
+                    userImage
+                    userName
+                    userTitle
+                    userSubtitle
+                    reviewText 
+                    applink
+                    reviewID
+                }
+            }
           }
         }
 """.trimIndent()
@@ -642,6 +673,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.arInfo = arInfo
             p2UiData.obatKeras = responseData.obatKeras
             p2UiData.customInfoTitle = responseData.customInfoTitle
+            p2UiData.socialProof = responseData.socialProof.asUiModel()
+            p2UiData.shopReview = responseData.shopReview.asUiModel()
         }
         return p2UiData
     }

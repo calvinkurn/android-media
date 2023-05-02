@@ -63,42 +63,44 @@ data class HomeBalanceModel(
     ) {
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData, headerTitle, position) }
         walletAppData?.let { mapWalletApp(walletAppData, headerTitle, position) }
-        subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle) }
+        subscriptionsData?.let { mapSubscriptions(subscriptionsData, headerTitle, position) }
     }
 
     fun mapErrorTokopoints(headerTitle: String, position: Int = DEFAULT_BALANCE_POSITION) {
         if (position == DEFAULT_BALANCE_POSITION) {
-            balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle))
+            balanceDrawerItemModels.add(getDefaultTokopointsErrorState(headerTitle, position))
         } else if (balanceDrawerItemModels.size > position) {
-            balanceDrawerItemModels[position] = getDefaultTokopointsErrorState(headerTitle)
+            balanceDrawerItemModels[position] = getDefaultTokopointsErrorState(headerTitle, position)
         }
     }
 
     fun mapErrorWallet(headerTitle: String, position: Int = DEFAULT_BALANCE_POSITION) {
         if (position == DEFAULT_BALANCE_POSITION) {
-            balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle))
+            balanceDrawerItemModels.add(getDefaultGopayErrorState(headerTitle, position))
         } else if (balanceDrawerItemModels.size > position) {
-            balanceDrawerItemModels[position] = getDefaultGopayErrorState(headerTitle)
+            balanceDrawerItemModels[position] = getDefaultGopayErrorState(headerTitle, position)
         }
     }
 
-    private fun getDefaultGopayErrorState(headerTitle: String): BalanceDrawerItemModel {
+    private fun getDefaultGopayErrorState(headerTitle: String, position: Int): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
             state = STATE_ERROR,
-            headerTitle = headerTitle
+            headerTitle = headerTitle,
+            position = position
         )
     }
 
-    private fun getDefaultTokopointsErrorState(headerTitle: String): BalanceDrawerItemModel {
+    private fun getDefaultTokopointsErrorState(headerTitle: String, position: Int): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_REWARDS,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
             state = STATE_ERROR,
-            headerTitle = headerTitle
+            headerTitle = headerTitle,
+            position = position
         )
     }
 
@@ -148,7 +150,8 @@ data class HomeBalanceModel(
             it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
-                    headerTitle = headerTitle
+                    headerTitle = headerTitle,
+                    position = position
             )
         }
         val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
@@ -179,21 +182,22 @@ data class HomeBalanceModel(
         } else {
             flagStateCondition(itemType = TYPE_REWARDS,
                     action = {
-                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState(headerTitle).apply {
+                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState(headerTitle, position).apply {
                             state = STATE_ERROR
                         })
                     })
         }
     }
 
-    private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String) {
+    private fun mapSubscriptions(subscriptionData: SubscriptionsData, headerTitle: String, position: Int) {
         subscriptionData.drawerList.map {
             if (subscriptionData.isShown) {
                 val drawerSubscription = it.mapToHomeBalanceItemModel(
                     state = STATE_SUCCESS,
                     headerTitle = headerTitle,
                     isSubscriber = subscriptionData.isSubscriber,
-                    drawerItemType = TYPE_SUBSCRIPTION
+                    drawerItemType = TYPE_SUBSCRIPTION,
+                    position = position
                 )
                 val coachMarkData =
                     if (subscriptionData.subscriptionsCoachMarkList.isNotEmpty() && subscriptionData.subscriptionsCoachMarkList[FIRST_DATA_POSITION].coachMark.isNotEmpty()) {
@@ -220,7 +224,7 @@ data class HomeBalanceModel(
     ) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
-                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, headerTitle = headerTitle)
+                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, headerTitle = headerTitle, position = position)
             if (selectedBalance != null) {
                 selectedBalance.let { balance ->
                     flagStateCondition(

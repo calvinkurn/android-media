@@ -111,14 +111,14 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
             if (installment.installmentAmountPerPeriod > 0) {
                 viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
-                        R.string.occ_lbl_gocicil_installment_title,
-                        installment.installmentTerm,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
+                    R.string.occ_lbl_gocicil_installment_title,
+                    installment.installmentTerm,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
                 )
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
-                        R.string.occ_lbl_gocicil_installment_title_without_price,
-                        installment.installmentTerm
+                    R.string.occ_lbl_gocicil_installment_title_without_price,
+                    installment.installmentTerm
                 )
             }
             if (installment.description.isNotEmpty()) {
@@ -136,10 +136,10 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
                 viewInstallmentDetailItem.tvInstallmentDetailName.setTextColor(
-                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
                 )
                 viewInstallmentDetailItem.tvInstallmentDetailDescription.setTextColor(
-                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 )
                 if (installment.description.isEmpty()) {
                     viewInstallmentDetailItem.tvInstallmentDetailDescription.setText(R.string.occ_lbl_gocicil_installment_inactive_description)
@@ -176,9 +176,9 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             binding?.tvInstallmentMessage?.gone()
         } else {
             binding?.tvInstallmentMessage?.text = binding?.root?.context?.getString(
-                    R.string.occ_lbl_gocicil_installment_bottom_sheet_message,
-                    installmentMessageDetail.firstDueMessage,
-                    installmentMessageDetail.firstInstallmentDate
+                R.string.occ_lbl_gocicil_installment_bottom_sheet_message,
+                installmentMessageDetail.firstDueMessage,
+                installmentMessageDetail.firstInstallmentDate
             )
             binding?.tvInstallmentMessage?.visible()
         }

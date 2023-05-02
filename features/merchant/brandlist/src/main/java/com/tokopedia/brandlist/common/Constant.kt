@@ -1,8 +1,10 @@
 package com.tokopedia.brandlist.common
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 
 object ImageAssets {
-    const val BRAND_NOT_FOUND = "https://images.tokopedia.net/android/others/ic_product_not_found.png"
+    const val BRAND_NOT_FOUND = TokopediaImageUrl.BRAND_NOT_FOUND
 }
 
 object Constant {

@@ -29,24 +29,32 @@ class CheckoutOccUseCase @Inject constructor(@ApplicationContext private val gra
 
     private fun mapCheckoutData(checkoutOccGqlResponse: CheckoutOccGqlResponse): CheckoutOccData {
         val response = checkoutOccGqlResponse.response
-        return CheckoutOccData(response.status, response.header.messages.firstOrNull(),
-                CheckoutOccResult(response.data.success,
-                        CheckoutOccErrorData(response.data.error.code, response.data.error.imageUrl, response.data.error.message),
-                        CheckoutOccPaymentParameter(response.data.paymentParameter.callbackUrl, response.data.paymentParameter.payload,
-                                CheckoutOccRedirectParam(
-                                        response.data.paymentParameter.redirectParam.url,
-                                        response.data.paymentParameter.redirectParam.gateway,
-                                        response.data.paymentParameter.redirectParam.method,
-                                        response.data.paymentParameter.redirectParam.form
-                                )
-                        ),
-                        OccPrompt(response.data.prompt.type.lowercase(),
-                                response.data.prompt.title, response.data.prompt.description, response.data.prompt.imageUrl,
-                                response.data.prompt.buttons.map {
-                                    OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
-                                }
-                        )
+        return CheckoutOccData(
+            response.status,
+            response.header.messages.firstOrNull(),
+            CheckoutOccResult(
+                response.data.success,
+                CheckoutOccErrorData(response.data.error.code, response.data.error.imageUrl, response.data.error.message),
+                CheckoutOccPaymentParameter(
+                    response.data.paymentParameter.callbackUrl,
+                    response.data.paymentParameter.payload,
+                    CheckoutOccRedirectParam(
+                        response.data.paymentParameter.redirectParam.url,
+                        response.data.paymentParameter.redirectParam.gateway,
+                        response.data.paymentParameter.redirectParam.method,
+                        response.data.paymentParameter.redirectParam.form
+                    )
+                ),
+                OccPrompt(
+                    response.data.prompt.type.lowercase(),
+                    response.data.prompt.title,
+                    response.data.prompt.description,
+                    response.data.prompt.imageUrl,
+                    response.data.prompt.buttons.map {
+                        OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
+                    }
                 )
+            )
         )
     }
 

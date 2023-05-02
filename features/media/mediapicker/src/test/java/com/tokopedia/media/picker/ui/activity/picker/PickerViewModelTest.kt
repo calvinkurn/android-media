@@ -322,6 +322,30 @@ class PickerViewModelTest {
         assert(viewModel.pickerParam.value != null)
     }
 
+    @Test
+    fun `it should be able to change state to true of the video recording`() {
+        // Given
+        val expectedValue = true
+
+        // When
+        viewModel.isOnVideoRecording(expectedValue)
+
+        // Then
+        assert(viewModel.isOnVideoRecording.value == expectedValue)
+    }
+
+    @Test
+    fun `it should be able to change state to false of the video recording`() {
+        // Given
+        val expectedValue = false
+
+        // When
+        viewModel.isOnVideoRecording(expectedValue)
+
+        // Then
+        assert(viewModel.isOnVideoRecording.value == expectedValue)
+    }
+
     companion object {
         val mediaUiModelList = listOf(
             MediaUiModel(1, PickerFile("sdcard/images/media1.jpg")),

@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -28,20 +28,51 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.CachedState
+import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.custom.activityresult.OpenLogin
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductButtonUiModel
+import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.orDefault
+import com.tokopedia.play.view.type.toAction
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
+import com.tokopedia.play.view.uimodel.action.AtcProductAction
+import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
+import com.tokopedia.play.view.uimodel.action.BuyProductAction
+import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.OCCProductAction
+import com.tokopedia.play.view.uimodel.action.OCCProductVariantAction
+import com.tokopedia.play.view.uimodel.action.OpenCart
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
+import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
+import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
+import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderFailed
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderSuccess
+import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -68,7 +99,8 @@ class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
-    private val router: Router
+    private val router: Router,
+    private val resultRegistry: ActivityResultRegistry,
 ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
@@ -101,6 +133,10 @@ class PlayBottomSheetFragment @Inject constructor(
         get() = requireParentFragment() as PlayFragment
 
     override fun getScreenName(): String = "Play Bottom Sheet"
+
+    private val openLoginForCart = registerForActivityResult(OpenLogin(), resultRegistry) { success ->
+        if (success) router.route(context, ApplinkConst.CART)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,6 +185,14 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     override fun onCloseButtonClicked(view: ProductSheetViewComponent) {
         closeProductSheet()
+    }
+
+    override fun onCartClicked(view: ProductSheetViewComponent) {
+        if (playViewModel.isLoggedIn) {
+            router.route(context, ApplinkConst.CART)
+        } else {
+            openLoginForCart.launch(Unit)
+        }
     }
 
     override fun onButtonTransactionClicked(
@@ -404,9 +448,19 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
-        val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
-        val requiredMargin = offset16
-        playFragment.onBottomInsetsViewShown(requireView().height - (productSheetHeight + statusBarHeight + requiredMargin))
+        val closeIcon = playFragment.getCloseIconView() ?: return
+        val videoOrientation = playViewModel.videoOrientation
+        val dstHeight = if (videoOrientation is VideoOrientation.Horizontal) {
+            val dstStart = closeIcon.right + offset16
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (videoOrientation.widthRatio / videoOrientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - productSheetHeight -
+                    closeIcon.top -
+                    offset16
+        }
+        playFragment.onBottomInsetsViewShown(dstHeight.toInt())
     }
 
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
@@ -545,11 +599,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                when (state.winnerBadge.leaderboards.state) {
+            playViewModel.uiState.withCache().collectLatest { state ->
+                when (state.value.winnerBadge.leaderboards.state) {
                     ResultState.Success ->
                         leaderboardSheetView.setData(
-                            state.winnerBadge.leaderboards.data
+                            state.value.winnerBadge.leaderboards.data
                         )
                     is ResultState.Fail ->
                         leaderboardSheetView.setError()
@@ -557,29 +611,17 @@ class PlayBottomSheetFragment @Inject constructor(
                         leaderboardSheetView.setLoading()
                 }
 
-                if (state.status.channelStatus.statusType.isFreeze ||
-                    state.status.channelStatus.statusType.isBanned
+                if (state.value.status.channelStatus.statusType.isFreeze ||
+                    state.value.status.channelStatus.statusType.isBanned
                 ) {
                     viewModel.onFreezeBan()
                     hideLoadingView()
                 }
 
-                renderProductSheet(
-                    prevState?.tagItems,
-                    state.tagItems,
-                    state.tagItems.bottomSheetTitle,
-                    state.channel.emptyBottomSheetInfo
-                )
-
-                renderVoucherSheet(state.tagItems)
-
-                renderVariantSheet(state.selectedVariant)
-
-                if (state.isLoadingBuy) {
-                    showLoadingView()
-                } else {
-                    hideLoadingView()
-                }
+                renderProductSheet(state)
+                renderVoucherSheet(state.value.tagItems)
+                renderVariantSheet(state.value.selectedVariant)
+                renderFullLoading(state)
             }
         }
     }
@@ -783,37 +825,46 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Render View
      */
-    private fun renderProductSheet(
-        prevTagItem: TagItemUiModel?,
-        tagItem: TagItemUiModel,
-        bottomSheetTitle: String,
-        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel
-    ) {
-        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
+    private fun renderProductSheet(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged(
+                { it.tagItems },
+                { it.channel.showCart },
+                { it.combinedState.cartCount },
+                { it.channel.emptyBottomSheetInfo }
+            )
+        ) return
+
+        productSheetView.showCart(state.value.channel.showCart)
+        productSheetView.setCartCount(state.value.combinedState.cartCount)
+
+        val prevTagItems = state.prevValue?.tagItems
+        val tagItems = state.value.tagItems
+
+        if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
             productSheetView.showPlaceholder()
-        } else if (tagItem.resultState is ResultState.Fail) {
+        } else if (tagItems.resultState is ResultState.Fail) {
             productSheetView.showError(
-                isConnectionError = tagItem.resultState.error is ConnectException ||
-                    tagItem.resultState.error is UnknownHostException,
+                isConnectionError = tagItems.resultState.error is ConnectException ||
+                    tagItems.resultState.error is UnknownHostException,
                 onError = { playViewModel.submitAction(RetryGetTagItemsAction) }
             )
-        } else if (tagItem.product.productSectionList.isNotEmpty()) {
+        } else if (tagItems.product.productSectionList.isNotEmpty()) {
             productSheetView.setProductSheet(
-                sectionList = tagItem.product.productSectionList,
-                voucherList = tagItem.voucher.voucherList,
-                title = bottomSheetTitle
+                sectionList = tagItems.product.productSectionList,
+                voucherList = tagItems.voucher.voucherList,
+                title = tagItems.bottomSheetTitle,
             )
         } else {
-            productSheetView.showEmpty(emptyBottomSheetInfoUi)
+            productSheetView.showEmpty(state.value.channel.emptyBottomSheetInfo)
         }
 
-        if (prevTagItem?.product?.productSectionList == tagItem.product.productSectionList) return
+        if (prevTagItems?.product?.productSectionList == tagItems.product.productSectionList) return
 
-        val prevSum = prevTagItem?.product?.productSectionList?.productsSum().orZero()
-        val sum = tagItem.product.productSectionList.productsSum()
+        val prevSum = prevTagItems?.product?.productSectionList?.productsSum().orZero()
+        val sum = tagItems.product.productSectionList.productsSum()
 
         if (prevSum != sum &&
-            prevTagItem?.resultState?.isLoading != true &&
+            prevTagItems?.resultState?.isLoading != true &&
             sum != 0
         ) {
             onProductCountChanged()
@@ -836,6 +887,17 @@ class PlayBottomSheetFragment @Inject constructor(
                 isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
                 onError = { }
             )
+            else -> {}
+        }
+    }
+
+    private fun renderFullLoading(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged { it.combinedState.isLoadingBuy }) return
+
+        if (state.value.combinedState.isLoadingBuy) {
+            showLoadingView()
+        } else {
+            hideLoadingView()
         }
     }
 

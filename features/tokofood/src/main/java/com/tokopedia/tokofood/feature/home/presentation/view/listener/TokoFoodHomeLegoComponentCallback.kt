@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.home.presentation.view.listener
 
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -9,10 +8,11 @@ import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
-class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView,
-                                        private val userSession: UserSessionInterface,
-                                        private val analytics: TokoFoodHomeAnalytics,
-): DynamicLegoBannerListener {
+class TokoFoodHomeLegoComponentCallback(
+    private val view: TokoFoodView,
+    private val userSession: UserSessionInterface,
+    private val analytics: TokoFoodHomeAnalytics
+) : DynamicLegoBannerListener {
 
     private val context by lazy { view.getFragmentPage().context }
 

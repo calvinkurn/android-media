@@ -18,7 +18,7 @@ class ValidateShippingMapper : Func1<ValidateShippingResponse, ValidateShippingM
 
     private fun dataModel(data: Data): com.tokopedia.editshipping.domain.model.Data {
         return com.tokopedia.editshipping.domain.model.Data().apply {
-            this.showPopup  = data.showPopup
+            this.showPopup = data.showPopup
             this.tickerTitle = data.tickerTitle
             this.tickerContent = data.tickerContent
             this.popupContent = data.popupContent

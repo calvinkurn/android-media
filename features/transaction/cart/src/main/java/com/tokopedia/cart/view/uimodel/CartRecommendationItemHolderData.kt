@@ -7,6 +7,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 
 data class CartRecommendationItemHolderData(
-        var hasSentImpressionAnalytics: Boolean = false,
-        var recommendationItem: RecommendationItem
+    var hasSentImpressionAnalytics: Boolean = false,
+    var recommendationItem: RecommendationItem
 )

@@ -48,10 +48,10 @@ import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -104,10 +104,8 @@ class PlayFragment @Inject constructor(
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
 
-    private val keyboardWatcher = KeyboardWatcher()
-
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
@@ -191,7 +189,7 @@ class PlayFragment @Inject constructor(
             .filterIsInstance<PlayFragmentContract>()
             .any { it.onInterceptOrientationChangedEvent(newOrientation) }
         val videoOrientation = playViewModel.videoOrientation
-        return isIntercepted || !videoOrientation.isHorizontal
+        return isIntercepted
     }
 
     override fun onEnterPiPState(pipState: PiPState) {
@@ -242,6 +240,11 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
+    fun getCloseIconView(): View? {
+        return if (::ivClose.isInitialized) ivClose
+        else null
+    }
+
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
         val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
         fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
@@ -287,7 +290,7 @@ class PlayFragment @Inject constructor(
     }
 
     fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
-        val key = BoundsKey.getByOrientation(orientation, videoOrientation)
+        val key = BoundsKey.getByOrientation(orientation.orientation, videoOrientation)
         boundsMap[key] = topBounds
 
         invalidateVideoTopBounds(videoOrientation)
@@ -333,7 +336,6 @@ class PlayFragment @Inject constructor(
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             newAnalytic.setData(channelData.channelDetail.channelInfo)
-            sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
 
@@ -344,7 +346,7 @@ class PlayFragment @Inject constructor(
     private fun invalidateVideoTopBounds(
         videoOrientation: VideoOrientation = playViewModel.videoOrientation
     ) {
-        val key = BoundsKey.getByOrientation(orientation, playViewModel.videoOrientation)
+        val key = BoundsKey.getByOrientation(orientation.orientation, playViewModel.videoOrientation)
         val topBounds = boundsMap[key] ?: 0
         getVideoBoundsManager().invalidateVideoBounds(videoOrientation, playViewModel.videoPlayer, topBounds)
     }
@@ -362,7 +364,7 @@ class PlayFragment @Inject constructor(
                 requireView() as ViewGroup,
                 object : ScreenOrientationDataSource {
                     override fun getScreenOrientation(): ScreenOrientation {
-                        return orientation
+                        return orientation.orientation
                     }
                 }
             )
@@ -372,7 +374,7 @@ class PlayFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
+        val newOrientation = ScreenOrientation2.get(requireActivity())
         if (newOrientation.isLandscape) hideAllInsets()
 
         invalidateVideoTopBounds()
@@ -559,24 +561,19 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    fun registerKeyboardListener(view: View) {
-        keyboardWatcher.listen(
-            view,
-            object : KeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    playViewModel.onKeyboardShown(estimatedKeyboardHeight)
-                }
-
-                override fun onKeyboardHidden() {
-                    playViewModel.onKeyboardHidden()
-                    if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
-                }
+    private fun registerKeyboardListener(view: View) {
+        view.addKeyboardInsetsListener(triggerOnAttached = false) { isVisible, height ->
+            if (isVisible) {
+                playViewModel.onKeyboardShown(height)
+            } else {
+                playViewModel.onKeyboardHidden()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
-        )
+        }
     }
 
-    fun unregisterKeyboardListener(view: View) {
-        keyboardWatcher.unlisten(view)
+    private fun unregisterKeyboardListener(view: View) {
+        view.setOnApplyWindowInsetsListener(null)
     }
 
     private fun hideAllInsets() {
@@ -596,18 +593,6 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
-    }
-
-    private fun doAutoSwipe() {
-        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
-    }
-
-    @Throws(IndexOutOfBoundsException::class)
-    private fun sendSwipeRoomAnalytic() {
-        try {
-            val nextId = playParentViewModel.getNextChannel(channelId)
-            if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
-        } catch (e: Exception) {}
     }
 
     //region onStateChanged

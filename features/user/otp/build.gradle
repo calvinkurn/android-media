@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -84,7 +85,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
 
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.testDependencies.espressoIdlingResource

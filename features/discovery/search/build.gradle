@@ -63,7 +63,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.globalNavWidget)
     implementation projectOrAar(rootProject.ext.features.shopWidget)
@@ -138,6 +137,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

@@ -40,12 +40,7 @@ class GreenGradientButton @JvmOverloads constructor(
 
         val paddingTop = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_top_padding)?.toInt() ?: 0
         val paddingSide = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_side_padding)?.toInt() ?: 0
-        val lp = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-        lp.apply {
-            setPadding(paddingSide, paddingTop, paddingSide, paddingTop + shadowPadding)
-        }
-        layoutParams = lp
-
+        setPadding(paddingSide, paddingTop, paddingSide, paddingTop + shadowPadding)
         initPaintProps()
     }
 

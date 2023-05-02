@@ -1,5 +1,7 @@
 package com.tokopedia.additional_check.view.activity
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -73,6 +75,6 @@ class LinkAccountReminderActivity: BaseActivity() {
     }
 
     companion object {
-        private const val LINK_ACC_MAIN_IMG = "https://images.tokopedia.net/img/android/user/additional_check/img_link_acc_cloud.png"
+        private const val LINK_ACC_MAIN_IMG = TokopediaImageUrl.LINK_ACC_MAIN_IMG
     }
 }

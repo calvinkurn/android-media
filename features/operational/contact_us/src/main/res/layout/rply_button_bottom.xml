@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_NN0"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_reply_button"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/Unify_NN0">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_reply_button"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/bg_button_state"
-            android:gravity="center"
-            android:text="@string/balas"
-            android:textColor="@color/Unify_NN0"
-            app:typographyWeight="bold"
-            app:typographyType="display_2" />
-
-    </LinearLayout>
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/bg_button_state"
+        android:gravity="center"
+        android:text="@string/balas"
+        android:textColor="@color/Unify_NN0"
+        app:typographyWeight="bold"
+        app:typographyType="display_2" />
 
 </LinearLayout>

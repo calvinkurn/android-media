@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintTop_toBottomOf="@id/linear_top"
+    >
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/unify_space_8"
+                android:padding="@dimen/tm_dash_dp_10"
+                android:backgroundTint="@color/Unify_NN50"
+                android:background="@drawable/tm_bg_round_corner"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/tm_ic_tokomember_premium"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:text="@string/tm_premium_level_1"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_3"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/tm_dash_dp_10"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:text="@string/tm_min_transaksi"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="body_3"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTransactionPremium"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/tm_dash_dp_16"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="heading_6"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:text="@string/tm_detail_member"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="body_3"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvMemberCountPremium"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="heading_6"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_2"
+        app:layout_constraintTop_toBottomOf="@+id/card_1"
+        android:layout_marginHorizontal="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/unify_space_8"
+                android:padding="@dimen/tm_dash_dp_10"
+                android:backgroundTint="@color/Unify_NN50"
+                android:background="@drawable/tm_bg_round_corner"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/tm_ic_tokomember_vip"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/tm_dash_dp_8"
+                    android:text="@string/tm_vip_level_2"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_3"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/tm_dash_dp_10"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/tm_dash_dp_16"
+                        android:text="@string/tm_min_transaksi"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="body_3"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTransactionVip"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/tm_dash_dp_16"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="heading_6"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/tm_dash_dp_10"
+                        android:text="@string/tm_detail_member"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="body_3"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvMemberCountVip"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/tm_dash_dp_10"
+                        android:textColor="@color/Unify_NN950"
+                        app:typographyType="heading_6"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</LinearLayout>

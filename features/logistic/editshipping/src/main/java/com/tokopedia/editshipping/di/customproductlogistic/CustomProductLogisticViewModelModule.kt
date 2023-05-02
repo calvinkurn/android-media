@@ -22,5 +22,4 @@ abstract class CustomProductLogisticViewModelModule {
     @IntoMap
     @ViewModelKey(CustomProductLogisticViewModel::class)
     internal abstract fun provideCustomProductLogisticViewModel(viewModel: CustomProductLogisticViewModel): ViewModel
-
 }

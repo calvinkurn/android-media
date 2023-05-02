@@ -3,8 +3,6 @@ package com.tokopedia.play.broadcaster.view.partial
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.text.*
-import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +14,10 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.extension.isLocal
+import com.tokopedia.play_common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponentListener
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -32,19 +30,9 @@ class CoverSetupViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, R.id.cl_cover_setup) {
 
-//    var coverTitle: String
-//        get() = etCoverTitle.text?.toString() ?: ""
-//        set(value) {
-//            etCoverTitle.setText(value)
-//            etCoverTitle.setSelection(etCoverTitle.length())
-//        }
-
     private val ivCoverImage: ImageView = findViewById(R.id.iv_cover_image)
     private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
     private val llChangeCover: LinearLayout = findViewById(R.id.ll_change_cover)
-//    private val etCoverTitle: EditText = findViewById(R.id.et_cover_title)
-//    private val tvCoverTitleLabel: TextView = findViewById(R.id.tv_cover_title_label)
-//    private val tvCoverTitleCounter: TextView = findViewById(R.id.tv_cover_title_counter)
     private val tvAddChangeCover: TextView = findViewById(R.id.tv_add_change_cover)
     private val btnNext: UnifyButton = findViewById(R.id.btn_next)
     private val clCropButton: ConstraintLayout = findViewById(R.id.cl_crop_button)
@@ -52,38 +40,15 @@ class CoverSetupViewComponent(
     private val clCropParent: ConstraintLayout = findViewById(R.id.cl_crop_parent)
     private val slCropParent: ScrollView = findViewById(R.id.sl_crop_parent)
 
-    private val mMaxTitleChars: Int
-        get() = dataSource.getMaxTitleCharacters()
-
-    private val keyboardWatcher = KeyboardWatcher().apply {
-        listen(rootView, object : KeyboardWatcher.Listener {
-            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                stabilizeScroll(false)
-                clCropButton.gone()
-            }
-
-            override fun onKeyboardHidden() {
-                stabilizeScroll(true)
-                clCropButton.visible()
-            }
-        })
-    }
-
     init {
         llChangeCover.setOnClickListener { listener.onImageAreaClicked(this) }
         ivCoverImage.setOnClickListener { listener.onImageAreaClicked(this) }
         btnNext.setOnClickListener {
-//            etCoverTitle.clearFocus()
-
             if (btnNext.isLoading) return@setOnClickListener
             listener.onNextButtonClicked(this)
         }
 
         setupScrollView()
-
-//        showHint(true)
-//        setupTitleTextField()
-//        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
 
         updateViewState()
 
@@ -98,12 +63,16 @@ class CoverSetupViewComponent(
                 ivCoverImage.requestLayout()
             }
         }
+
+        rootView.addKeyboardInsetsListener(triggerOnAttached = false) { isVisible, _ ->
+            stabilizeScroll(!isVisible)
+            clCropButton.showWithCondition(!isVisible)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        keyboardWatcher.unlisten(rootView)
-//        etCoverTitle.clearFocus()
+        rootView.setOnApplyWindowInsetsListener(null)
         listener.onViewDestroyed(this)
     }
 
@@ -111,7 +80,6 @@ class CoverSetupViewComponent(
 
     fun setLoading(isLoading: Boolean) {
         btnNext.isLoading = isLoading
-//        etCoverTitle.isEnabled = !isLoading
     }
 
     fun setImage(uri: Uri?) {
@@ -161,103 +129,6 @@ class CoverSetupViewComponent(
                 if (dataSource.getCurrentCoverUri() != null) R.string.play_prepare_cover_title_change_cover_label
                 else R.string.play_prepare_cover_title_add_cover_label
         )
-    }
-
-    private fun updateCounterCount(text: String) {
-//        tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-//                text.length, mMaxTitleChars)
-    }
-
-    private fun updateCounterColor(text: String) {
-//        tvCoverTitleCounter.setTextColor(
-//                MethodChecker.getColor(
-//                        tvCoverTitleCounter.context,
-//                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Unify_R500
-//                        else com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-//                )
-//        )
-    }
-
-    private fun setupTitleLabel(currentTitle: CharSequence) {
-//        val currentLabel = tvCoverTitleLabel.text.toString()
-//        val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
-//        if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
-    }
-
-//    private fun updateTextField(text: String, isFirstFocus: Boolean) {
-//        val isValid = dataSource.isValidCoverTitle(text)
-//        val hasFocus = etCoverTitle.hasFocus()
-//        etCoverTitle.setTextFieldColor(
-//                when {
-//                    isValid && hasFocus -> com.tokopedia.unifyprinciples.R.color.Unify_G400
-//                    !isValid && hasFocus && !isFirstFocus -> com.tokopedia.unifyprinciples.R.color.Unify_R500
-//                    else -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-//                }
-//        )
-//    }
-
-//    private fun setupTitleTextField() {
-//        etCoverTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
-//        etCoverTitle.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(p0: Editable?) {
-//            }
-//
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-//                setupTitleLabel(text)
-//                updateCounterCount(text.toString())
-//                updateCounterColor(text.toString())
-//                updateTextField(text.toString(), isFirstFocus = false)
-//                updateButtonState()
-//            }
-//        })
-//        etCoverTitle.setOnEditorActionListener { v, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
-//            false
-//        }
-//        etCoverTitle.setOnFocusChangeListener { _, hasFocus ->
-//            if (hasFocus) listener.onTitleAreaHasFocus()
-//            else updateCounterColor(coverTitle)
-//
-//            updateTextField(coverTitle, isFirstFocus = hasFocus)
-//            updateCounterCount(coverTitle)
-//            showHint(!hasFocus)
-//            showCounter(hasFocus)
-//        }
-//        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
-//    }
-
-    private fun getCoverTitleLabelText(label: String, coverTitle: String): CharSequence {
-        val isCoverValid = dataSource.isValidCoverTitle(coverTitle)
-        val asterisk = '*'
-        val finalText =
-                if (!isCoverValid && label.last() != asterisk) "$label*"
-                else if (isCoverValid && label.last() == asterisk) label.removeSuffix(asterisk.toString())
-                else label
-
-        val spanBuilder = SpannableStringBuilder(finalText)
-        if (spanBuilder.contains(asterisk)) {
-            spanBuilder.setSpan(
-                    ForegroundColorSpan(getColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)),
-                    finalText.indexOf(asterisk),
-                    finalText.length,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        return spanBuilder
-    }
-
-//    private fun showHint(shouldShow: Boolean) {
-//        etCoverTitle.hint =
-//                if (shouldShow) getString(R.string.play_prepare_cover_title_default_title_placeholder)
-//                else ""
-//    }
-    
-    private fun showCounter(shouldShow: Boolean) {
-//        if (shouldShow) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
     }
 
     private fun stabilizeScroll(shouldStabilize: Boolean) {

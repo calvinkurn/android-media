@@ -109,7 +109,5 @@ class OrderSummaryPageActivityEthicalDrugTest {
                 descriptionText = "Kamu punya 1 resep dokter"
             )
         }
-
     }
-
 }

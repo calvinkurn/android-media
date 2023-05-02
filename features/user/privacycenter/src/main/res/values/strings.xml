@@ -152,7 +152,7 @@
     <string name="sharing_wishlist_success_public">Koleksi “%s” sekarang bisa dilihat oleh publik.</string>
     <string name="sharing_wishlist_oke">Oke</string>
     <string name="sharing_wishlist_message_update">Koleksi “%1$s” sudah berhasil menjadi %2$s.</string>
-    <string name="dsar_summary_ticker_info">Datamu akan dikirim ke e-mail di atas maks. 14 hari sejak tanggal pengajuan.</string>
+    <string name="dsar_summary_ticker_info">Datamu akan dikirim ke e-mail di atas maks. 3 hari sejak tanggal pengajuan.</string>
     <string name="dsar_range_item_6">Pilih Tanggal Sendiri</string>
     <string name="dsar_range_item_5">7 Hari Terakhir</string>
     <string name="dsar_range_item_4">30 Hari Terakhir</string>

@@ -1,7 +1,7 @@
 package com.tokopedia.sellerapp.di
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.sellerapp.presentation.viewmodel.CoroutineDispatchers
+import com.tokopedia.sellerapp.presentation.viewmodel.CoroutineDispatchersProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

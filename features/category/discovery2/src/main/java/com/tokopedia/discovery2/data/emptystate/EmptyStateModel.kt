@@ -5,5 +5,8 @@ data class EmptyStateModel(
         var title: String = "",
         var description: String = "",
         var buttonText: String = "",
+        var imageURL: String? = "",
+        var buttonApplink: String? = "",
         var isFilterState: Boolean = false,
+        var isRedirectionState: Boolean = false,
 )

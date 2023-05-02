@@ -48,6 +48,7 @@ import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
@@ -93,6 +94,11 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -103,6 +109,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -118,6 +125,7 @@ class MvcListFragment :
     companion object {
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
+
         @JvmStatic
         fun newInstance(statusFilter: String) = MvcListFragment().apply {
             arguments = Bundle().apply {
@@ -626,7 +634,7 @@ class MvcListFragment :
     private fun observeVoucherCreationMetadata() {
         viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
             if (result is Success) {
-                displayTicker(result.data.creationMetadata.discountActive, result.data.tickerWording)
+                displayTicker(result.data.creationMetadata.discountActive, result.data.tickers)
             }
         }
     }
@@ -759,7 +767,10 @@ class MvcListFragment :
         filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(
+                viewModel.filter,
+                enableResetButton = !viewModel.isFilterReseted()
+            )
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
@@ -1049,6 +1060,7 @@ class MvcListFragment :
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
+        SharedPreferencesUtil().setEditCouponSourcePage(context, activity?.javaClass.toString())
         val intent = SummaryActivity.buildEditModeIntent(requireContext(), voucher.id)
         startActivity(intent)
     }
@@ -1058,11 +1070,40 @@ class MvcListFragment :
         startActivity(intent)
     }
 
-    private fun displayTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
-            binding?.ticker?.visible()
-            binding?.ticker?.setTextDescription(remoteTickerMessage)
+    private fun displayTicker(isDiscountPromoTypeEnabled: Boolean, tickers: List<RemoteTicker>) {
+        if (!isDiscountPromoTypeEnabled && tickers.isNotEmpty()) {
+            renderTicker(tickers)
         }
     }
 
+    private fun renderTicker(tickers: List<RemoteTicker>) {
+        binding?.run {
+            ticker.visible()
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description,
+                    isFromHtml = true,
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                )
+            }
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+            ticker.addPagerView(tickerAdapter, remoteTickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                }
+            })
+        }
+    }
 }

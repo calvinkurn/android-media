@@ -38,12 +38,19 @@ allprojects {
             }
         }
         maven {
+            url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/GoTo-Android-Lib")
+
+            credentials {
+                username = properties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
+        }
+        maven {
             url "https://jitpack.io"
             credentials { username authToken }
         }
         flatDir {
             dirs rootProject.file('aars')
-            dirs rootProject.file('libraries/liveness_lib/libs')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }

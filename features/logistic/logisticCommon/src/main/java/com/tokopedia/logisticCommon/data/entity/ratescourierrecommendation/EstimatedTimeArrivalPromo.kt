@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class EstimatedTimeArrivalPromo(
-        @SerializedName("text_eta")
-        val textEta: String = "",
-        @SerializedName("error_code")
-        val errorCode: Int = -1
+    @SerializedName("text_eta")
+    val textEta: String = "",
+    @SerializedName("error_code")
+    val errorCode: Int = -1
 ) : Parcelable

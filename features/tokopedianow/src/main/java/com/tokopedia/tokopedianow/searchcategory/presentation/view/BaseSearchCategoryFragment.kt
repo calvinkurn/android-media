@@ -91,17 +91,19 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickyS
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TokoNowSimilarProductTrackerCallback
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -515,11 +517,12 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
-        productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
                     getViewModel().refreshMiniCart()
+                    updateToolbarNotification(true)
                 }
                 is Fail -> {
                     activity?.apply {
@@ -529,7 +532,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     getViewModel().refreshMiniCart()
@@ -542,7 +545,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessRemoveFromCartMessage(result.data.second)
@@ -558,6 +561,10 @@ abstract class BaseSearchCategoryFragment:
 
         productRecommendationViewModel.atcDataTracker.observe(viewLifecycleOwner) {
             sendAddToCartRecommendationTrackingEvent(it)
+        }
+
+        productRecommendationViewModel.updateToolbarNotification.observe(viewLifecycleOwner) {
+            updateToolbarNotification(it)
         }
     }
 
@@ -950,7 +957,7 @@ abstract class BaseSearchCategoryFragment:
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         getViewModel().onViewATCRepurchaseWidget(data, quantity)
     }
 
@@ -1124,7 +1131,14 @@ abstract class BaseSearchCategoryFragment:
         },
     )
 
-    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : TokoNowSimilarProductTrackerCallback {
-        return TokoNowSimilarProductTrackerCallback(isCategoryPage)
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
+    }
+
+    protected open fun createProductCardCompactCallback(): ProductCardCompactCallback = ProductCardCompactCallback { productId, similarProductTrackerListener ->
+        context?.apply {
+            val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
+            startActivity(intent)
+        }
     }
 }

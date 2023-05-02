@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_failed"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp">
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/localload_error_balance_widget"
+        android:layout_width="0dp"
+        android:layout_height="89dp"
+        android:background="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_local_load_description="@string/error_state_transaction_description"
+        app:unify_local_load_title="@string/error_state_transaction_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

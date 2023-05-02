@@ -52,7 +52,7 @@ class TokoFoodOrderTrackingActivity :
         return DaggerTokoFoodOrderTrackingComponent
             .builder()
             .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
-            .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
             .build()
     }
 
@@ -60,7 +60,7 @@ class TokoFoodOrderTrackingActivity :
         DaggerTokoFoodOrderTrackingComponent
             .builder()
             .baseAppComponent((this.applicationContext as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
             .build()
             .inject(this)
     }

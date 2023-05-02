@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -31,6 +33,6 @@ class EmptyNotificationViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_notification_empty
-        const val emptyImageUrl = "https://images.tokopedia.net/android/user/empty-state-notification.png"
+        const val emptyImageUrl = TokopediaImageUrl.NOTIF_EMPTY_IMAGE_URL
     }
 }

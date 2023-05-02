@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 kapt {
@@ -9,8 +10,24 @@ kapt {
 }
 
 android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
@@ -64,6 +81,14 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    /**
+     * COMPOSE
+     */
+    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeLiveData
 }
 
 project.ext {

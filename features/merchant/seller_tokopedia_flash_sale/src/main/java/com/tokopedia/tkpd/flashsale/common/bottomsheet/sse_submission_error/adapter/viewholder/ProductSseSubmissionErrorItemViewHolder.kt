@@ -3,9 +3,9 @@ package com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.ada
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductSseSubmissionErrorBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
-import com.tokopedia.seller_tokopedia_flash_sale.R
 
 class ProductSseSubmissionErrorItemViewHolder(private val binding: StfsItemProductSseSubmissionErrorBinding) :
     RecyclerView.ViewHolder(binding.root) {

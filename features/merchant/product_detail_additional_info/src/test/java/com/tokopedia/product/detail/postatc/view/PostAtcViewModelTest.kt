@@ -1,11 +1,12 @@
 package com.tokopedia.product.detail.postatc.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.detail.postatc.model.PostAtcComponentData
-import com.tokopedia.product.detail.postatc.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.data.model.PostAtcComponentData
+import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -131,12 +132,32 @@ class PostAtcViewModelTest {
     }
 
     @Test
+    fun `on fail fetch layout cause by empty components`() {
+        val productId = "123"
+        val cartId = ""
+        val layoutId = ""
+        val pageSource = ""
+        val response = PostAtcLayout()
+
+        coEvery {
+            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
+        } returns response
+
+        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+
+        Assert.assertTrue(viewModel.layouts.value is Fail)
+    }
+
+    @Test
     fun `on success fetch recommendation`() {
         val productId = "111"
         val pageName = "pdp_atc_1"
         val uniqueId = 1234
 
-        val recomWidget = RecommendationWidget()
+        val recomItem = RecommendationItem()
+        val recomWidget = RecommendationWidget(
+            recommendationItemList = listOf(recomItem)
+        )
 
         val requestParam = GetRecommendationRequestParam(
             pageNumber = 1,
@@ -185,4 +206,55 @@ class PostAtcViewModelTest {
         Assert.assertTrue(result?.second is Fail)
     }
 
+    @Test
+    fun `on fetch recommendation fail cause by empty widget`() {
+        val productId = "111"
+        val pageName = "pdp_atc_1"
+        val uniqueId = 1234
+
+        val requestParam = GetRecommendationRequestParam(
+            pageNumber = 1,
+            pageName = pageName,
+            productIds = listOf(productId)
+        )
+
+        val response = emptyList<RecommendationWidget>()
+
+        coEvery {
+            getRecommendationUseCase.getData(requestParam)
+        } returns response
+
+        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+
+        val result = viewModel.recommendations.value
+        Assert.assertEquals(uniqueId, result?.first)
+        Assert.assertTrue(result?.second is Fail)
+    }
+
+    @Test
+    fun `on fetch recommendation fail cause by empty recom item`() {
+        val productId = "111"
+        val pageName = "pdp_atc_1"
+        val uniqueId = 1234
+
+        val recomWidget = RecommendationWidget()
+
+        val requestParam = GetRecommendationRequestParam(
+            pageNumber = 1,
+            pageName = pageName,
+            productIds = listOf(productId)
+        )
+
+        val response = listOf(recomWidget)
+
+        coEvery {
+            getRecommendationUseCase.getData(requestParam)
+        } returns response
+
+        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+
+        val result = viewModel.recommendations.value
+        Assert.assertEquals(uniqueId, result?.first)
+        Assert.assertTrue(result?.second is Fail)
+    }
 }

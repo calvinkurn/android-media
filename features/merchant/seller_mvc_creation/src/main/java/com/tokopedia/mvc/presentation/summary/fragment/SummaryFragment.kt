@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.summary.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -49,6 +50,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPagePageNameMapper
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
@@ -165,18 +167,30 @@ class SummaryFragment :
             } else {
                 tracker.sendClickArrowBackEvent(it.voucherId.toString())
             }
-            if (viewModel.checkIsAdding(it)) {
+            finishPage(context, it)
+        }
+        return super.onFragmentBackPressed()
+    }
+
+    private fun finishPage(context: Context?, voucherConfiguration: VoucherConfiguration) {
+        context?.let {
+            val source = sharedPreferencesUtil.getEditCouponSourcePage(it)
+            if (viewModel.checkIsAdding(voucherConfiguration)) {
                 VoucherSettingActivity.buildCreateModeIntent(
-                    requireContext(),
-                    it.copy(
+                    it,
+                    voucherConfiguration.copy(
                         isFinishFilledStepThree = false
                     ),
                     viewModel.products.value.orEmpty()
                 )
+            } else if (source == VoucherDetailActivity::class.java.toString()) {
+                RouteManager.route(context, SELLER_MVC_LIST)
+                VoucherDetailActivity.start(it, voucherConfiguration.voucherId)
+            } else {
+                RouteManager.route(context, SELLER_MVC_LIST)
             }
         }
         activity?.finish()
-        return super.onFragmentBackPressed()
     }
 
     override fun onResume() {
@@ -277,9 +291,13 @@ class SummaryFragment :
             }
         }
         viewModel.errorUpload.observe(viewLifecycleOwner) {
-            showErrorUploadDialog(ErrorHandler.getErrorMessagePair(
-                context, it, ErrorHandler.Builder()
-            ).first.orEmpty())
+            showErrorUploadDialog(
+                ErrorHandler.getErrorMessagePair(
+                    context,
+                    it,
+                    ErrorHandler.Builder()
+                ).first.orEmpty()
+            )
         }
         viewModel.isInputValid.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.btnSubmit?.isEnabled = it
@@ -492,13 +510,14 @@ class SummaryFragment :
         }
         cardPreview.setOnClickListener {
             DisplayVoucherBottomSheet
-                .newInstance(configuration.copy(
-                    productIds = parentProductIds
-                ))
+                .newInstance(
+                    configuration.copy(
+                        productIds = parentProductIds
+                    )
+                )
                 .show(childFragmentManager, "")
         }
         viewModel.previewImage(
-            isCreateMode = false,
             voucherConfiguration = configuration,
             parentProductIds = parentProductIds,
             imageRatio = ImageRatio.SQUARE
@@ -559,6 +578,7 @@ class SummaryFragment :
         val selectedProducts = viewModel.products.value.orEmpty()
         redirectionHelper.redirectToVoucherTypePage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
+        activity?.finish()
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {

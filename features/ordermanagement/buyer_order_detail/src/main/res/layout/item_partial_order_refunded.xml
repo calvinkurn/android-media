@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofRefundedLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvPofRefundedValue"
+        app:typographyType="display_3"
+        tools:text="Dana dikembalikan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofRefundedValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
+        app:layout_constraintBottom_toBottomOf="@id/tvPofRefundedLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvPofRefundedLabel"
+        tools:text="Rp5.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofRefundedDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPofRefundedLabel"
+        app:layout_constraintEnd_toStartOf="@id/tvPofRefundedValue"
+        app:typographyType="display_3"
+        tools:text="Cek detail dana yang dikembalikan di sini" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

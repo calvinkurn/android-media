@@ -47,11 +47,11 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.home.WidgetName
@@ -65,7 +65,7 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -2134,7 +2134,7 @@ class ShopHomeViewModelTest {
             shopPageGetDynamicTab = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
                 tabData = listOf(
                     ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
-                        name = ShopPageTabName.HOME,
+                        name = ShopPageHeaderTabName.HOME,
                         data = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData.Data(
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(

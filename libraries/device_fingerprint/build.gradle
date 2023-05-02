@@ -22,7 +22,6 @@ android {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.dataVisor
     implementation rootProject.ext.tkpdInternalLibDependencies.secUtil
-    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
     implementation rootProject.ext.miscDependencies.multiDex
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads

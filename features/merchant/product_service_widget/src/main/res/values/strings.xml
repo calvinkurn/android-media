@@ -22,7 +22,6 @@
     <string name="error_empty_variant">Variant habis, ganti ke varian lain</string>
 
     <!-- product bundle overview -->
-    <string name="action_buy_bundle">Beli Paket</string>
     <string name="action_preorder">PreOrder</string>
     <string name="text_saving">Hemat</string>
     <string name="text_discount_in_percentage">%d%%</string>

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.flashsale.util.extension
 
-import java.util.Calendar
 import java.util.Date
+import java.util.Calendar
 
 private const val EPOCH_TO_MILLIS_MULTIPLIER = 1000
 

@@ -490,6 +490,7 @@
     <string name="smvc_quota_info_bottomsheet_action_text">Tutup</string>
     <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota: %s</string>
     <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
+    <string name="smvc_quota_info_quota_button_collapse">Lihat sumber lebih sedikit</string>
     <string name="smvc_quota_info_quota_total_format">/ %d</string>
     <string name="smvc_quota_info_quota_source_desc">Kuota Kupon Toko Saya bersumber dari:</string>
     <string name="smvc_quota_info_quota_remaining_prefix">Sisa Kuota:</string>

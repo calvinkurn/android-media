@@ -92,6 +92,7 @@
     <string name="play_kebab_pip">Picture in Picture</string>
     <string name="play_kebab_chromecast">Chromecast</string>
     <string name="play_kebab_watch_mode">Mode Nonton</string>
+    <string name="play_kebab_see_performance">Lihat Performa</string>
 
     <!--User Report-->
     <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
@@ -135,4 +136,7 @@
     <string name="play_explore_widget_default_errmessage">Oops, gagal menampilkan video.</string>
     <string name="play_explore_widget_noconn_errmessage">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="play_explore_widget_empty">Cek Sekarang</string>
+
+    <!--Vertical Swipe-->
+    <string name="play_check_next_video">Cek video berikutnya</string>
 </resources>

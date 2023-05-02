@@ -1,6 +1,7 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
@@ -32,23 +33,27 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
 
             viewModel.getShopInfo("1")
 
-            val expectedShopInfo = shopInfo
-                .toShopInfoData()
+            val expectedShopInfo = Success(shopInfo.toShopInfoData())
 
             verifyGetShopInfoUseCaseCalled()
-            verifyShopInfoEquals(expectedShopInfo)
+            val actualShopInfo = viewModel.shopInfo.value
+            assertEquals(expectedShopInfo, actualShopInfo)
         }
     }
 
     @Test
     fun when_get_shop_info_error_shop_info_value_should_be_null() {
         runBlocking {
-            onGetShopInfo_thenReturn_Error()
+            val error = MessageErrorException("Server Error")
+            coEvery { getShopInfoUseCase.executeOnBackground() } throws error
 
             viewModel.getShopInfo("1")
 
             verifyGetShopInfoUseCaseCalled()
-            verifyShopInfoNull()
+
+            val expected = Fail(error)
+            val actualShopInfo = viewModel.shopInfo.value
+            assertEquals(actualShopInfo, expected)
         }
     }
 
@@ -239,10 +244,6 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
     }
 
-    private suspend fun onGetShopInfo_thenReturn_Error() {
-        coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
-    }
-
     private suspend fun onGetShopNotes_thenReturn(shopNotes: List<ShopNoteModel>) {
         coEvery { getShopNotesUseCase.executeOnBackground() } returns shopNotes
     }
@@ -276,15 +277,6 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
         coVerify { getShopNotesUseCase.executeOnBackground() }
     }
 
-    private fun verifyShopInfoEquals(expectedShopInfo: ShopInfoData) {
-        val actualShopInfo = viewModel.shopInfo.value
-        assertEquals(expectedShopInfo, actualShopInfo)
-    }
-
-    private fun verifyShopInfoNull() {
-        val actualShopInfo = viewModel.shopInfo.value
-        assertEquals(actualShopInfo, null)
-    }
 
     private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteUiModel>>) {
         val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteUiModel>>)

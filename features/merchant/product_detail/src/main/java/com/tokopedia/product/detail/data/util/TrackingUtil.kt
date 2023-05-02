@@ -13,7 +13,9 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.tracking.TrackingConstant
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.unifycomponents.ticker.Ticker
 import org.json.JSONArray
 import org.json.JSONObject
@@ -183,6 +185,32 @@ object TrackingUtil {
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun addClickEvent(
+        productInfo: DynamicProductInfoP1?,
+        trackDataModel: ComponentTrackDataModel?,
+        action: String,
+        trackerId: String = "",
+        eventLabel: String = "",
+        modify: ((MutableMap<String, Any>) -> Unit) = {}
+    ) {
+        val events = mutableMapOf<String, Any>(
+            TrackerConstant.EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PG,
+            TrackerConstant.EVENT_ACTION to action,
+            TrackerConstant.EVENT_CATEGORY to ProductTrackingConstant.Category.PDP,
+            TrackerConstant.EVENT_LABEL to eventLabel,
+            TrackingConstant.Hit.TRACKER_ID to trackerId,
+            TrackerConstant.BUSINESS_UNIT to ProductTrackingConstant.Category.PDP,
+            TrackerConstant.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
+        ).apply { modify.invoke(this) }
+
+        addComponentTracker(
+            mapEvent = events,
+            productInfo = productInfo,
+            componentTrackDataModel = trackDataModel,
+            elementName = action
+        )
     }
 
     fun addComponentOvoTracker(mapEvent: MutableMap<String, Any>, productId: String, userId: String) {

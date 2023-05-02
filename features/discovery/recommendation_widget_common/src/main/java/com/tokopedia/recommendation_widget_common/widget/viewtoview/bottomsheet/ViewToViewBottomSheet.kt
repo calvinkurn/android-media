@@ -21,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.BottomSheetViewToViewBinding
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -128,10 +129,10 @@ class ViewToViewBottomSheet @Inject constructor(
     private fun renderRecommendationResult(result: Result<ViewToViewRecommendationResult>) {
         result.doSuccessOrFail(
             success = {
-                when(val data = it.data) {
+                when (val data = it.data) {
                     is ViewToViewRecommendationResult.Loading -> {
                         binding?.loadingViewToView?.run {
-                            if(!data.hasATCButton) {
+                            if (!data.hasATCButton) {
                                 shimmering1.button.gone()
                                 shimmering2.button.gone()
                                 shimmering3.button.gone()
@@ -230,7 +231,21 @@ class ViewToViewBottomSheet @Inject constructor(
         super.onDestroyView()
     }
 
-    override fun onProductImpressed(product: ViewToViewDataModel, position: Int) {
+    override fun onProductImpressed(
+        product: ViewToViewDataModel,
+        position: Int,
+        className: String,
+    ) {
+        if (product.recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                className,
+                product.recommendationItem.trackerImageUrl,
+                product.recommendationItem.productId.toString(),
+                product.recommendationItem.name,
+                product.recommendationItem.imageUrl,
+                product.componentName,
+            )
+        }
         ViewToViewBottomSheetTracker.eventImpressProduct(
             product.recommendationItem,
             headerTitle,
@@ -241,7 +256,21 @@ class ViewToViewBottomSheet @Inject constructor(
         )
     }
 
-    override fun onProductClicked(product: ViewToViewDataModel, position: Int) {
+    override fun onProductClicked(
+        product: ViewToViewDataModel,
+        position: Int,
+        className: String,
+    ) {
+        if (product.recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                className,
+                product.recommendationItem.clickUrl,
+                product.recommendationItem.productId.toString(),
+                product.recommendationItem.name,
+                product.recommendationItem.imageUrl,
+                product.componentName,
+            )
+        }
         ViewToViewBottomSheetTracker.eventProductClick(
             product.recommendationItem,
             headerTitle,

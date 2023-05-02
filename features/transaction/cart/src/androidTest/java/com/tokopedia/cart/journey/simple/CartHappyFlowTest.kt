@@ -57,9 +57,9 @@ class CartHappyFlowTest {
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartShopViewHolder(
-                    view = activityRule.activity.findViewById(R.id.parent_view),
-                    position = 3,
-                    shopIndex = 0
+                view = activityRule.activity.findViewById(R.id.parent_view),
+                position = 3,
+                shopIndex = 0
             )
 
             // Prevent glide crash
