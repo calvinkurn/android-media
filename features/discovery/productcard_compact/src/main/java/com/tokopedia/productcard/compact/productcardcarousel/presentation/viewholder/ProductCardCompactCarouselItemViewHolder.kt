@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardCompactCarouselItemViewHolder(
     view: View,
-    private var listener: TokoNowCarouselProductCardItemListener? = null
+    private var listener: ProductCardCarouselItemListener? = null
 ) : AbstractViewHolder<ProductCardCompactCarouselItemUiModel>(view) {
 
     companion object {
@@ -62,7 +62,7 @@ class ProductCardCompactCarouselItemViewHolder(
         }
     }
 
-    interface TokoNowCarouselProductCardItemListener {
+    interface ProductCardCarouselItemListener {
         fun onProductCardAddVariantClicked(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
