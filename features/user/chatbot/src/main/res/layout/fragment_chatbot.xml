@@ -142,14 +142,14 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <include
-                android:id="@+id/chatbot_view_help_rate"
-                layout="@layout/chatbot_layout_rating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/spacing_lvl3"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+        <include
+            android:id="@+id/chatbot_view_help_rate"
+            layout="@layout/chatbot_layout_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
 
         </LinearLayout>
@@ -191,14 +191,14 @@
 
         </androidx.cardview.widget.CardView>
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/footer"
-            android:layout_below="@id/chatbot_ticker"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/unify_space_8">
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:layout_below="@id/chatbot_ticker"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -245,12 +245,12 @@
                 app:typographyType="body_2"
                 tools:text="JJJJ" />
 
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/action"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:layout_gravity="center"
-                app:loader_type="circular" />
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/action"
+            app:loader_type="circular"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center" />
 
         </LinearLayout>
 

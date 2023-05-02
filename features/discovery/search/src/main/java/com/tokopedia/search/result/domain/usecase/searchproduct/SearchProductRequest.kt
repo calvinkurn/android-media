@@ -212,6 +212,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     applink
                     customVideoURL
                     parentId
+                    isPortrait
                 }
                 violation {
                     headerText

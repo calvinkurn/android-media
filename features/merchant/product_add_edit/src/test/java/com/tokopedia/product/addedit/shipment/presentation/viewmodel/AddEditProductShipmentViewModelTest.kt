@@ -20,11 +20,16 @@ import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -84,7 +89,7 @@ class AddEditProductShipmentViewModelTest {
     fun `When save product error, should log error to crashlytics`() {
         coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
 
-        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        // Mock FirebaseCrashlytics because .getInstance() method is a static method
         mockkStatic(FirebaseCrashlytics::class)
 
         every {
@@ -100,7 +105,6 @@ class AddEditProductShipmentViewModelTest {
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
     }
-
 
     @Test
     fun `when all boolean variables should return true and object should return the same object`() {
@@ -208,8 +212,6 @@ class AddEditProductShipmentViewModelTest {
 
         val result = (viewModel.cplList.value as Success).data.shipperList
         assertEquals(result.all { it.shipper.all { s -> s.isActive } }, isCPLActivated)
-
-
     }
 
     @Test
