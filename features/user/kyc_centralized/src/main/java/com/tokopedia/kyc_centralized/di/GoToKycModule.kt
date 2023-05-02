@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
+import com.gojek.kyc.plus.card.KycPlusDefaultCard
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
@@ -128,6 +129,10 @@ open class GoToKycModule {
     @ActivityScope
     fun provideUnifiedKycConfigsDefault() = UnifiedKycConfigsDefault()
 
+    @Provides
+    @ActivityScope
+    fun provideKycPlusDefaultCard() = KycPlusDefaultCard()
+
     @ActivityScope
     @Provides
     fun provideOneKycSdk(
@@ -137,6 +142,7 @@ open class GoToKycModule {
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
         unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
+        kycPlusDefaultCard: KycPlusDefaultCard,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
     ): OneKycSdk {
@@ -148,7 +154,8 @@ open class GoToKycModule {
             experimentProvider = unifiedKycConfigsDefault,
             errorHandler = gotoKycErrorHandler,
             okHttpClient = okHttpClient,
-            imageLoader = gotoKycImageLoader
+            imageLoader = gotoKycImageLoader,
+            kycPlusCardFactory = kycPlusDefaultCard
         )
     }
 

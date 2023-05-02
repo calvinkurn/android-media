@@ -61,11 +61,11 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
             if (it != null && it is UnifiedKycFlowResult) {
                 interactor.updateConsumed()
                 when (it) {
-                    UnifiedKycFlowResult.SUCCESS -> {
+                    UnifiedKycFlowResult.DOC_SUBMITTED -> {
                         gotoFinalLoader()
                     }
-                    UnifiedKycFlowResult.STATE_UPDATED -> {
-
+                    UnifiedKycFlowResult.FAILURE -> {
+                        //show failed page
                     }
                     else -> {
                         activity?.setResult(Activity.RESULT_CANCELED)
@@ -94,7 +94,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
             projectId = args.parameter.projectId,
             gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
-        val toFinalLoaderPage = DobChallengeFragmentDirections.actionDobChallengeFragmentToFinalLoaderFragment(parameter)
+        val toFinalLoaderPage = CaptureKycDocumentsFragmentDirections.actionCaptureKycDocumentsFragmentToFinalLoaderFragment(parameter)
         view?.findNavController()?.navigate(toFinalLoaderPage)
     }
 

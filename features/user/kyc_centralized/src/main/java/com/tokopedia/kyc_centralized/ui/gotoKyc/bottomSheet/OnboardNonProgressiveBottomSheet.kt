@@ -29,6 +29,9 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -89,6 +92,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = LayoutGotoKycOnboardNonProgressiveBinding.inflate(inflater, container, false)
         setChild(binding?.root)
+        clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -96,12 +100,33 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setUpViewAccountLinking()
         initListener()
+        initUserConsent()
     }
 
     override fun onResume() {
         super.onResume()
         setUpViewKtp()
         setUpViewSelfie()
+    }
+
+    private fun initUserConsent() {
+        val consentParam = ConsentCollectionParam(
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentGotoKycProgressiveStaging
+            } else {
+                KYCConstant.consentGotoKycProgressiveStaging
+            }
+        )
+
+        binding?.consentGotoKycNonProgressive?.load(
+            lifecycleOwner = viewLifecycleOwner,
+            viewModelStoreOwner = this,
+            consentCollectionParam = consentParam
+        )
+
+        binding?.consentGotoKycNonProgressive?.setOnCheckedChangeListener { isChecked ->
+            binding?.btnSubmit?.isEnabled = isChecked
+        }
     }
 
     private fun initListener() {

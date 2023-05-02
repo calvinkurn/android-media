@@ -58,6 +58,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_captureKycDocumentsFragment"
+            app:destination="@id/captureKycDocumentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/dobChallengeFragment"

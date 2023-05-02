@@ -233,7 +233,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             if (viewModel.checkEligibility.value is CheckEligibilityResult.Progressive) {
                 viewModel.registerProgressiveUseCase(args.parameter.projectId)
             } else {
-                goToCaptureKycDocuments()
+                val parameter = CaptureKycDocumentsParam(
+                    projectId = args.parameter.projectId,
+                    source = args.parameter.source
+                )
+                gotoCaptureKycDocuments(parameter)
             }
         }
     }
@@ -289,8 +293,9 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
-    private fun goToCaptureKycDocuments() {
-
+    private fun gotoCaptureKycDocuments(parameter: CaptureKycDocumentsParam) {
+        val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
+        view?.findNavController()?.navigate(toCaptureKycDocuments)
     }
 
     private fun showToaster(message: String) {
