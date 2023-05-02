@@ -10,5 +10,8 @@ import retrofit2.http.Part
 interface UploadFileService {
     @Multipart
     @POST("seller/nib")
-    suspend fun uploadFile(@Header("accounts-authorization") accessToken: String, @Part file: MultipartBody.Part): UploadFileResponse
+    suspend fun uploadFile(
+        @Header("accounts-authorization") accessToken: String,
+        @Part file: MultipartBody.Part
+    ): UploadFileResponse
 }
