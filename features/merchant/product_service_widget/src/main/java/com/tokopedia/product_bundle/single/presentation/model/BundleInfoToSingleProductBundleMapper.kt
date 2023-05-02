@@ -1,8 +1,6 @@
 package com.tokopedia.product_bundle.single.presentation.model
 
 import android.content.Context
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
@@ -63,15 +61,14 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         if (productVariant.hasVariant) {
-            val child = productVariant.children.minByOrNull { child ->
-                child.finalPrice
-            }
+            val originalPrice = bundleItem.getPreviewOriginalPrice()
+            val discountedPrice = bundleItem.getPreviewBundlePrice()
             SingleProductBundleItem(
-                quantity = child?.stock?.minimumOrder.toIntOrZero(),
+                quantity = bundleItem.getPreviewMinOrder(),
                 productName = bundleItem.name,
-                originalPrice = child?.finalMainPrice.orZero(),
-                discountedPrice = child?.finalPrice.orZero(),
-                discount = child?.campaign?.discountedPercentage?.toInt().orZero(),
+                originalPrice = originalPrice,
+                discountedPrice = discountedPrice,
+                discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
                 imageUrl = bundleItem.picURL,
                 preorderDurationWording = getPreorderWording(context, it.preorder),
                 productVariant = productVariant
@@ -138,11 +135,11 @@ object BundleInfoToSingleProductBundleMapper {
     }
 
     private fun BundleInfo.isStockAvailable() = bundleItems.any {
-        it.stock > 0 || it.children.isStockAvailable()
+        it.stock >= it.minOrder || it.children.isStockAvailable()
     }
 
     private fun List<Child>.isStockAvailable() = any {
-        it.stock > 0
+        it.stock >= it.minOrder
     }
 
     private fun BundleInfo.isMinOrderValid() = bundleItems.any {

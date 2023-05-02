@@ -1,5 +1,7 @@
 package com.tokopedia.common.topupbills.favoritecommon.view.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
@@ -23,6 +25,6 @@ class ContactListPermissionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topup_bills_contact_permission
-        const val CONTACT_PERMISSION_IMG_URL = "https://images.tokopedia.net/img/https:/images.tokopedia.net/img/https:/images.tokopedia.net/img/android/digital/common_topup_bills/common_topup_ic_contact_permission.png"
+        const val CONTACT_PERMISSION_IMG_URL = TokopediaImageUrl.CONTACT_PERMISSION_IMG_URL
     }
 }

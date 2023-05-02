@@ -123,8 +123,8 @@ internal class HandleViewClickBuyTest: SimilarSearchTestFixtures() {
         val addToCartRequestParams = addToCartUseCaseInput[REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST]
             as AddToCartRequestParams
 
-        addToCartRequestParams.productId shouldBe similarProductModel.getOriginalProduct().id.toLong()
-        addToCartRequestParams.shopId shouldBe similarProductModel.getOriginalProduct().shop.id
+        addToCartRequestParams.productId shouldBe similarProductModel.getOriginalProduct().id
+        addToCartRequestParams.shopId shouldBe similarProductModel.getOriginalProduct().shop.id.toString()
         addToCartRequestParams.quantity shouldBe similarProductModel.getOriginalProduct().minOrder
         addToCartRequestParams.productName shouldBe similarProductModel.getOriginalProduct().name
         addToCartRequestParams.category shouldBe similarProductModel.getOriginalProduct().categoryName

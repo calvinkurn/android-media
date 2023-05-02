@@ -18,20 +18,6 @@ fun ShopShipmentData.transformToVisitable(): ShopInfoLogisticUiModel {
     }
 }
 
-fun Double.formatToSimpleNumber(): String {
-    return when {
-        containsIn(this, THOUSAND, MILLION) -> {
-            "${df.format(this / THOUSAND)}rb"
-        }
-        containsIn(this, MILLION, Int.MAX_VALUE) -> {
-            "${df.format(this / MILLION)}jt"
-        }
-        else -> {
-            df.format(this)
-        }
-    }.replace(".", ",")
-}
-
 private fun containsIn(value: Double, start: Int, end: Int): Boolean {
     return value.toIntExactOrNull().let { if (it != null) contains(it, start, end) else false }
 }

@@ -291,8 +291,8 @@ open class RecomWidgetViewModel @Inject constructor(
     private fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
         launchCatchError(block = {
             val atcParam = AddToCartRequestParams(
-                productId = recomItem.productId,
-                shopId = recomItem.shopId,
+                productId = recomItem.productId.toString(),
+                shopId = recomItem.shopId.toString(),
                 quantity = quantity
             )
             addToCartUseCase.get().setParams(atcParam)

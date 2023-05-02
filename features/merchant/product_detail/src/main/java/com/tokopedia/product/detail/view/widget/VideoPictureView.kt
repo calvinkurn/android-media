@@ -38,7 +38,9 @@ import com.tokopedia.product.detail.view.util.animateExpand
  */
 @SuppressLint("WrongConstant")
 class VideoPictureView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), ProductMainThumbnailListener {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
@@ -83,7 +85,7 @@ class VideoPictureView @JvmOverloads constructor(
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
             setupViewPager(containerType = containerType)
-            //If first position is video and selected: process the video
+            // If first position is video and selected: process the video
         }
 
         if (thumbnailAdapter == null) {
@@ -138,7 +140,9 @@ class VideoPictureView @JvmOverloads constructor(
                 val thumbPosition = if (isMediaSame) {
                     thumbSelectedPosition = index
                     index
-                } else -Int.ONE
+                } else {
+                    -Int.ONE
+                }
                 val isSelected = thumbPosition == index
 
                 data.copy(isSelected = isSelected)
@@ -208,7 +212,7 @@ class VideoPictureView @JvmOverloads constructor(
         val viewPager = binding.pdpViewPager
         viewPager.adapter = videoPictureAdapter
         viewPager.setPageTransformer { _, _ ->
-            //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+            // NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }
 
         viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -229,18 +233,18 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPagerCallback() {
         binding.pdpViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                onMediaPageSelected(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()
-                        ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    onMediaPageSelected(position)
                 }
-            }
-        })
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                        mListener?.getProductVideoCoordinator()
+                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                    }
+                }
+            })
     }
 
     private fun onMediaPageSelected(position: Int) {
@@ -258,6 +262,7 @@ class VideoPictureView @JvmOverloads constructor(
                     type = selected.type,
                     url = url,
                     position = position + Int.ONE,
+                    variantOptionId = selected.variantOptionId,
                     componentTrackDataModel = componentTrackDataModel
                 )
             }
@@ -283,13 +288,15 @@ class VideoPictureView @JvmOverloads constructor(
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
             val uriNoPhoto = Uri.parse(
-                ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + res.getResourcePackageName(resId)
-                    + '/'.toString() + res.getResourceTypeName(resId)
-                    + '/'.toString() + res.getResourceEntryName(resId)
+                ContentResolver.SCHEME_ANDROID_RESOURCE +
+                    "://" + res.getResourcePackageName(resId) +
+                    '/'.toString() + res.getResourceTypeName(resId) +
+                    '/'.toString() + res.getResourceEntryName(resId)
             )
             listOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
-        } else media
+        } else {
+            media
+        }
     }
 
     private fun getThumbnailVariantOnly(media: List<MediaDataModel>?): List<MediaDataModel> {
@@ -323,8 +330,8 @@ class VideoPictureView @JvmOverloads constructor(
             }
         }
 
-        val ignoreUpdateLabel = position == RecyclerView.NO_POSITION
-            || binding.txtAnimLabel.getCurrentText() == stringLabel
+        val ignoreUpdateLabel = position == RecyclerView.NO_POSITION ||
+            binding.txtAnimLabel.getCurrentText() == stringLabel
         if (ignoreUpdateLabel) return
 
         binding.txtAnimLabel.showView(stringLabel)

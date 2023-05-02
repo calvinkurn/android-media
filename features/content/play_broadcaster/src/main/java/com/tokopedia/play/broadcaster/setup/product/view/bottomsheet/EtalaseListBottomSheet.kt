@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
@@ -15,10 +16,9 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
-import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
@@ -37,7 +37,9 @@ class EtalaseListBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroEtalaseListBinding
         get() = _binding!!
 
-    private val eventBus by viewLifecycleBound(
+    private var mDataSource: DataSource? = null
+
+    private val eventBus by lifecycleBound(
         creator = { EventBus<Any>() }
     )
 
@@ -61,6 +63,12 @@ class EtalaseListBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
+        setupAnalytic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.emit(Event.ViewBottomSheet)
     }
 
     override fun onDestroyView() {
@@ -72,11 +80,19 @@ class EtalaseListBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
+    }
+
     private fun setupBottomSheet() {
         _binding = BottomSheetPlayBroEtalaseListBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)
+
+        setOnDismissListener {
+            eventBus.emit(Event.ClickClose)
+        }
     }
 
     private fun setupView() {
@@ -106,6 +122,10 @@ class EtalaseListBottomSheet @Inject constructor(
         }
 
         analyticManager.observe(viewLifecycleOwner.lifecycleScope, eventBus)
+    }
+
+    private fun setupAnalytic() {
+        eventBus.emit(Event.SetSelectedAccount(mDataSource?.getSelectedAccount().orUnknown()))
     }
 
     private fun renderBottomSheetTitle(
@@ -150,6 +170,16 @@ class EtalaseListBottomSheet @Inject constructor(
                 dismiss()
             }
         }
+    }
+
+    interface DataSource {
+        fun getSelectedAccount(): ContentAccountUiModel
+    }
+
+    sealed interface Event {
+        data class SetSelectedAccount(val account: ContentAccountUiModel) : Event
+        object ClickClose : Event
+        object ViewBottomSheet : Event
     }
 
     companion object {

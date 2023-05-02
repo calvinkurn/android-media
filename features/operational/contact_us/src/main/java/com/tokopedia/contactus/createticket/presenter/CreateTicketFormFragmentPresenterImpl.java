@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.createticket.presenter;
 
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_SEND_CREATED_TICKET;
+
 import android.util.Patterns;
 import android.view.View;
 
@@ -12,6 +14,7 @@ import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteract
 import com.tokopedia.contactus.createticket.listener.CreateTicketFormFragmentView;
 import com.tokopedia.contactus.createticket.model.ContactUsPass;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -25,6 +28,8 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     CreateTicketFormFragmentView viewListener;
     ContactUsRetrofitInteractor networkInteractor;
     CreateTicketFormFragment.FinishContactUsListener listener;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
+
 
     public CreateTicketFormFragmentPresenterImpl(CreateTicketFormFragmentView viewListener, CreateTicketFormFragment.FinishContactUsListener listener) {
         this.viewListener = viewListener;
@@ -79,14 +84,16 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     private ContactUsPass getSendTicketParam() {
         UserSessionInterface userSession = new UserSession(viewListener.getActivity());
         ContactUsPass pass = new ContactUsPass();
-        pass.setSolutionId(String.valueOf(viewListener.getArguments().getString(
-                ContactUsActivity.PARAM_SOLUTION_ID)));
+        String solutionID =viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_SOLUTION_ID);
+        pass.setSolutionId(String.valueOf(solutionID));
         pass.setMessageBody(viewListener.getMessage().getText().toString());
         if (!viewListener.getAttachment().isEmpty())
             pass.setAttachment(viewListener.getAttachment());
         pass.setName(userSession.getName());
-        pass.setTag(String.valueOf(viewListener.getArguments().getString(
-                ContactUsActivity.PARAM_TAG)));
+        String tags = viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_TAG);
+        pass.setTag(String.valueOf(tags));
         if (viewListener.getPhoneNumber().trim().length() > 0)
             pass.setPhoneNumber(String.valueOf(viewListener.getPhoneNumber()));
         if (viewListener.getArguments().getString(
@@ -101,6 +108,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             pass.setName(viewListener.getName().getText().toString());
             pass.setEmail(viewListener.getEmail().getText().toString());
         }
+        newRelicLogging.sendToNewRelicLog(ACTION_SEND_CREATED_TICKET, solutionID, tags);
         return pass;
     }
 

@@ -1,11 +1,14 @@
 package com.tokopedia.media.editor.base
 
 import android.R.id.home
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.media.editor.ui.EditorFragmentProvider
 import com.tokopedia.media.editor.ui.EditorFragmentProviderImpl
 
@@ -33,7 +36,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
         )
     }
 
-    fun setHeader(title: CharSequence, actionText: CharSequence? = null) {
+    fun setHeader(title: CharSequence, actionText: CharSequence? = null, rightIcon: Int? = null) {
         clearOldToolbar()
 
         setSupportActionBar(unifyToolbar)
@@ -46,6 +49,12 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
             unifyToolbar.actionText = actionText
             unifyToolbar.actionTextView?.setOnClickListener {
                 onHeaderActionClick()
+            }
+        } else if (rightIcon != null) {
+            unifyToolbar.addRightIconNotification(rightIcon).apply {
+                setOnClickListener {
+                    onHeaderActionClick()
+                }
             }
         }
     }

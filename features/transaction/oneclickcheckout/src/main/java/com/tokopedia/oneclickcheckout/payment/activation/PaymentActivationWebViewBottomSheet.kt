@@ -6,7 +6,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.view.LayoutInflater
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.URLUtil
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,11 +22,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 
-class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
-                                          private val callbackUrl: String,
-                                          private val title: String,
-                                          private val shouldGenerateLoginUrl: Boolean, // currently only for ovo
-                                          private val listener: PaymentActivationWebViewBottomSheetListener) {
+class PaymentActivationWebViewBottomSheet(
+    private val activationUrl: String,
+    private val callbackUrl: String,
+    private val title: String,
+    private val shouldGenerateLoginUrl: Boolean, // currently only for ovo
+    private val listener: PaymentActivationWebViewBottomSheetListener
+) {
 
     private var context: Context? = null
 
@@ -103,9 +109,10 @@ class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
         // Uri should automatically encode
         val url = generateUrl()
         return URLGenerator.generateURLSessionLogin(
-                url,
-                userSession.deviceId,
-                userSession.userId)
+            url,
+            userSession.deviceId,
+            userSession.userId
+        )
     }
 
     private fun generateUrl(): String {

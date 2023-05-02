@@ -173,5 +173,4 @@ class PromoInputBottomSheet() : BottomSheetUnify() {
         renderView(inputUiModel)
         dismissAfterSuccess(inputUiModel)
     }
-
 }

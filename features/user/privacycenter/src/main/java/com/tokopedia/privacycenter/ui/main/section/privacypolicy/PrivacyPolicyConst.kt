@@ -6,9 +6,10 @@ object PrivacyPolicyConst {
 
     private val BASE_URL = "${TokopediaUrl.getInstance().API}ent-tnc/v1/privacy/history"
 
-    val GET_LIST_URL = "$BASE_URL?language=id&showAll=true"
+    val GET_LIST_URL = "$BASE_URL?language=id&showAll=false"
+    val ORIGIN_HEADER = "Origin"
 
-    val WEBVIEW_URL = "${TokopediaUrl.getInstance().MOBILEWEB}privacy/history/"
+    val WEBVIEW_URL = "${TokopediaUrl.getInstance().WEB}privacy/history/"
 
     const val RESPONSE_OK = "200"
     const val RESPONSE_SUCCESS = "success"

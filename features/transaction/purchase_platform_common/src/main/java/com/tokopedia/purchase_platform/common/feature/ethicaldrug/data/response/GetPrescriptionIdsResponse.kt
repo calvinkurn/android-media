@@ -1,11 +1,10 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class GetPrescriptionIdsResponse(
     @SerializedName("getEpharmacyCheckoutData")
-    val detailData : EPharmacyCheckoutData?
+    val detailData: EPharmacyCheckoutData?
 ) {
 
     data class EPharmacyCheckoutData(
@@ -24,5 +23,4 @@ data class GetPrescriptionIdsResponse(
             val prescriptionId: String?
         )
     }
-
 }

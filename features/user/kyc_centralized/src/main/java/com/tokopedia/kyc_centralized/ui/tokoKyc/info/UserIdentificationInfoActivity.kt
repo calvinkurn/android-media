@@ -3,7 +3,7 @@ package com.tokopedia.kyc_centralized.ui.tokoKyc.info
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALL_BACK
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
@@ -11,11 +11,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_RED
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 
 /**
  * @author by alvinatin on 02/11/18.
  */
-class UserIdentificationInfoActivity : BaseSimpleActivity() {
+class UserIdentificationInfoActivity : BaseSimpleActivity(),
+    HasComponent<UserIdentificationCommonComponent> {
+
     var isSourceSeller = false
     private var projectId = -1
     private var redirectUrl: String? = null
@@ -40,7 +44,6 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         if (intent != null && intent.extras != null) {
             isSourceSeller = intent.extras?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
         }
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
     override fun getNewFragment(): Fragment? {
@@ -63,5 +66,9 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
                 kycType,
                 if (callback.isNullOrEmpty()) redirectUrl else callback
         )
+    }
+
+    override fun getComponent(): UserIdentificationCommonComponent {
+        return ActivityComponentFactory.instance.createActivityComponent(this)
     }
 }

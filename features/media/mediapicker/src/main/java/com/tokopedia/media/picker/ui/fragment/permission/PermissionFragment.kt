@@ -71,7 +71,9 @@ open class PermissionFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        if (listener?.isRootPermissionGranted() == false) {
+        if (listener?.isRootPermissionGranted() == true) {
+            listener?.onPermissionGranted()
+        } else {
             viewModel.getDynamicPermissionList()
         }
     }

@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:textColor="@color/content_dms_soft_dark"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_3"
         tools:text="Tidak menjual produk kategori dewasa (alkohol, rokok, kondom, dll)" />
 

@@ -62,6 +62,8 @@ class GetConfigurationUseCase @Inject constructor(
                  $PARAMS_WITH_CHANNEL_STATE: ${"$$PARAMS_WITH_CHANNEL_STATE"}
               ) {
                 streamAllowed
+                shortVideoAllowed
+                isBanned
                 config
                 tnc {
                   description

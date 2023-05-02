@@ -69,6 +69,10 @@ private const val TOP_ADS_BANNER_QUERY =
         next_page_token
         current_page
       }
+      auto_scroll {
+        enable
+        timer
+      }
     }
   }
 }"""
@@ -82,7 +86,6 @@ open class TopAdsRepository {
         queryParams: MutableMap<String, Any>,
         sessionId: String
     ): ArrayList<TopAdsImageViewModel> {
-
         val response = this.postData<TopAdsBannerResponse>(
             getTopAdsImageViewUrl(),
             object : TypeToken<DataResponse<TopAdsBannerResponse>>() {}.type,
@@ -91,7 +94,6 @@ open class TopAdsRepository {
         )
 
         return mapToListOfTopAdsImageViewModel(response, queryParams)
-
     }
 
     private suspend fun <T : Any> postData(
@@ -112,7 +114,6 @@ open class TopAdsRepository {
                         mapOf(DISPLAY_BANNER_PARAMS to getQueryMapAsString(queryMap))
                     )
                 )
-
                 .setHeaders(mapOf(KEY_IRIS_SESSION_ID to sessionId))
                 .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
                 .build()
@@ -147,6 +148,11 @@ open class TopAdsRepository {
                 imageUrl = image.first
                 imageWidth = image.second
                 imageHeight = image.third
+                isAutoScrollEnabled =
+                    responseBanner.topadsDisplayBannerAdsV3.header?.autoScroll?.enable ?: false
+                scrollDuration =
+                    responseBanner.topadsDisplayBannerAdsV3.header?.autoScroll?.timer?.times(1000)
+                        ?: 0
                 nextPageToken =
                     responseBanner.topadsDisplayBannerAdsV3.header?.pagination?.nextPageToken
                 shopId = data.banner?.shop?.shopID?.toString() ?: ""

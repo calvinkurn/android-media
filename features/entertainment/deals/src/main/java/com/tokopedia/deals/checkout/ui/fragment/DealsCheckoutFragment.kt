@@ -200,6 +200,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                                         EXTRA_PARAMETER_TOP_PAY_DATA,
                                         checkoutResultData
                                     )
+                                    intent.putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, System.currentTimeMillis())
                                     startActivityForResult(intent, PAYMENT_SUCCESS)
                                 } else {
                                     showErrorToaster(it.data.checkout.data.error)

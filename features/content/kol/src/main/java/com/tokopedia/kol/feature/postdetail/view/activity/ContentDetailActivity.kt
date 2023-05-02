@@ -18,7 +18,7 @@ import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 class ContentDetailActivity : BaseSimpleActivity() {
 
     private var actionToRefresh: Boolean = false
-    var contentDetailFirstPostData : FeedXCard? = null
+    var contentDetailFirstPostData: FeedXCard? = null
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle().apply {
@@ -114,9 +114,12 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     private fun setResultBeforeFinish() {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(PARAM_ACTION_TO_REFRESH, actionToRefresh)
-        })
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(PARAM_ACTION_TO_REFRESH, actionToRefresh)
+            }
+        )
     }
 
     companion object {

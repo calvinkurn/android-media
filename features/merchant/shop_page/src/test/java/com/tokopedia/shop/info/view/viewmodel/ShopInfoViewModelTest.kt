@@ -1,6 +1,9 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
@@ -30,23 +33,27 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
 
             viewModel.getShopInfo("1")
 
-            val expectedShopInfo = shopInfo
-                .toShopInfoData()
+            val expectedShopInfo = Success(shopInfo.toShopInfoData())
 
             verifyGetShopInfoUseCaseCalled()
-            verifyShopInfoEquals(expectedShopInfo)
+            val actualShopInfo = viewModel.shopInfo.value
+            assertEquals(expectedShopInfo, actualShopInfo)
         }
     }
 
     @Test
     fun when_get_shop_info_error_shop_info_value_should_be_null() {
         runBlocking {
-            onGetShopInfo_thenReturn_Error()
+            val error = MessageErrorException("Server Error")
+            coEvery { getShopInfoUseCase.executeOnBackground() } throws error
 
             viewModel.getShopInfo("1")
 
             verifyGetShopInfoUseCaseCalled()
-            verifyShopInfoNull()
+
+            val expected = Fail(error)
+            val actualShopInfo = viewModel.shopInfo.value
+            assertEquals(actualShopInfo, expected)
         }
     }
 
@@ -181,6 +188,42 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
     }
 
     @Test
+    fun `when shop is GoApotik should return true`() {
+        // given
+        val isGoApotik = true
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.DEFAULT)
+
+        // then
+        assert(result)
+    }
+
+    @Test
+    fun `when shop is EPharmacy should return true`() {
+        // given
+        val isGoApotik = false
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY)
+
+        // then
+        assert(result)
+    }
+
+    @Test
+    fun `when shop is not EPharmacy or not GoApotik should return false`() {
+        // given
+        val isGoApotik = false
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.DEFAULT)
+
+        // then
+        assert(!result)
+    }
+
+    @Test
     fun `when user login but error to get chat existing message id`() {
         runBlocking {
             // define return expected
@@ -199,10 +242,6 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
-    }
-
-    private suspend fun onGetShopInfo_thenReturn_Error() {
-        coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
     }
 
     private suspend fun onGetShopNotes_thenReturn(shopNotes: List<ShopNoteModel>) {
@@ -238,15 +277,6 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
         coVerify { getShopNotesUseCase.executeOnBackground() }
     }
 
-    private fun verifyShopInfoEquals(expectedShopInfo: ShopInfoData) {
-        val actualShopInfo = viewModel.shopInfo.value
-        assertEquals(expectedShopInfo, actualShopInfo)
-    }
-
-    private fun verifyShopInfoNull() {
-        val actualShopInfo = viewModel.shopInfo.value
-        assertEquals(actualShopInfo, null)
-    }
 
     private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteUiModel>>) {
         val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteUiModel>>)
@@ -280,23 +310,25 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
     // region private methods
     private fun ShopInfo.toShopInfoData(): ShopInfoData {
         return ShopInfoData(
-            shopCore.shopID,
-            shopCore.name,
-            shopCore.description,
-            shopCore.url,
-            location,
-            shopAssets.cover,
-            shopCore.tagLine,
-            goldOS.isOfficial,
-            goldOS.isGold,
-            createdInfo.openSince,
-            emptyList(),
-            shopSnippetUrl,
-            isGoApotik,
-            epharmacyInfo.siaNumber,
-            epharmacyInfo.sipaNumber,
-            epharmacyInfo.apj,
-            partnerLabel
+            shopId = shopCore.shopID,
+            name = shopCore.name,
+            description = shopCore.description,
+            url = shopCore.url,
+            location = location,
+            imageCover = shopAssets.cover,
+            tagLine = shopCore.tagLine,
+            isOfficial = goldOS.isOfficial,
+            isGold = goldOS.isGold,
+            openSince = createdInfo.openSince,
+            shipments = emptyList(),
+            shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
+            siaNumber = epharmacyInfo.siaNumber,
+            sipaNumber = epharmacyInfo.sipaNumber,
+            apj = epharmacyInfo.apj,
+            partnerLabel = partnerLabel,
+            fsType = partnerInfo.firstOrNull()?.fsType.orZero(),
+            partnerName = partnerInfo.firstOrNull()?.partnerName.orEmpty()
         )
     }
 

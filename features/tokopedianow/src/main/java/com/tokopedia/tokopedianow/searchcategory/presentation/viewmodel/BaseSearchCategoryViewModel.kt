@@ -42,7 +42,6 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
@@ -95,7 +94,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
@@ -116,21 +114,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
-        private val baseDispatcher: CoroutineDispatchers,
-        queryParamMap: Map<String, String>,
-        protected val getFilterUseCase: UseCase<DynamicFilterModel>,
-        protected val getProductCountUseCase: UseCase<String>,
-        protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        protected val cartService: CartService,
-        private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
-        protected val chooseAddressWrapper: ChooseAddressWrapper,
-        protected val abTestPlatformWrapper: ABTestPlatformWrapper,
-        protected val userSession: UserSessionInterface,
+    private val baseDispatcher: CoroutineDispatchers,
+    queryParamMap: Map<String, String>,
+    protected val getFilterUseCase: UseCase<DynamicFilterModel>,
+    protected val getProductCountUseCase: UseCase<String>,
+    protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    protected val cartService: CartService,
+    private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    protected val chooseAddressWrapper: ChooseAddressWrapper,
+    protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
     companion object {
-        private const val LABEL_GROUP_TYPE_TRANSPARENTBLACK = "transparentBlack"
-        private const val LABEL_GROUP_POSITION_STATUS = "status"
         private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
@@ -550,7 +545,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun isShowCategoryFilter(categoryFilter: Filter) =
             categoryFilter.options.size > 1
 
-    protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
+    private fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel
         val position = 1
         val channelModel = DynamicChannelComponentMapper.mapChannelToComponent(channel, position)
@@ -558,12 +553,12 @@ abstract class BaseSearchCategoryViewModel(
         return BannerDataView(channelModel)
     }
 
-    protected fun createCategoryFilterItemList(categoryFilter: Filter) =
+    private fun createCategoryFilterItemList(categoryFilter: Filter) =
             categoryFilter.options.map {
                 CategoryFilterItemDataView(it, filterController.getFilterViewState(it))
             }
 
-    protected fun createQuickFilterItemList(headerDataView: HeaderDataView) =
+    private fun createQuickFilterItemList(headerDataView: HeaderDataView) =
             headerDataView.quickFilterDataValue.filter.map {
                 SortFilterItemDataView(
                         filter = it,
@@ -830,11 +825,11 @@ abstract class BaseSearchCategoryViewModel(
         needToUpdateProductRecommendationMutableLiveData.value = true
     }
 
-    protected fun clearVisitableListLiveData() {
+    private fun clearVisitableListLiveData() {
         visitableListMutableLiveData.value = listOf()
     }
 
-    protected fun updateVisitableListLiveData() {
+    private fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
     }
 

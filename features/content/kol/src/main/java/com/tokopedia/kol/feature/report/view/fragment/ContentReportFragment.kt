@@ -11,13 +11,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
-import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
+import com.tokopedia.kol.feature.report.view.model.ReportReasonUiModel
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -54,15 +53,17 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
             (it.applicationContext as BaseMainApplication).baseAppComponent
         }.let {
             DaggerContentReportComponent.builder()
-                    .baseAppComponent(it)
-                    .build()
-                    .inject(this)
+                .baseAppComponent(it)
+                .build()
+                .inject(this)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_content_report, container, false)
     }
 
@@ -104,9 +105,12 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     override fun onErrorSendReport(message: String) {
         mainView?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                sendReport()
-            })
+            Toaster.make(
+                it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                clickListener = View.OnClickListener {
+                    sendReport()
+                }
+            )
         }
     }
 
@@ -139,30 +143,30 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         sendBtn.setOnClickListener { sendReport() }
     }
 
-    private fun getReasonList(): MutableList<ReportReasonViewModel> {
-        val reasonList = ArrayList<ReportReasonViewModel>()
+    private fun getReasonList(): MutableList<ReportReasonUiModel> {
+        val reasonList = ArrayList<ReportReasonUiModel>()
 
-        val reasonSpam = ReportReasonViewModel(
-                type = getString(R.string.kol_reason_type_spam),
-                description = getString(R.string.kol_reason_desc_spam)
+        val reasonSpam = ReportReasonUiModel(
+            type = getString(R.string.kol_reason_type_spam),
+            description = getString(R.string.kol_reason_desc_spam)
         )
         reasonList.add(reasonSpam)
 
-        val reasonAbuse = ReportReasonViewModel(
-                type = getString(R.string.kol_reason_type_abuse),
-                description = getString(R.string.kol_reason_desc_abuse)
+        val reasonAbuse = ReportReasonUiModel(
+            type = getString(R.string.kol_reason_type_abuse),
+            description = getString(R.string.kol_reason_desc_abuse)
         )
         reasonList.add(reasonAbuse)
 
-        val reasonInappropriate = ReportReasonViewModel(
-                type = getString(R.string.kol_reason_type_inappropriate),
-                description = getString(R.string.kol_reason_desc_inappropriate)
+        val reasonInappropriate = ReportReasonUiModel(
+            type = getString(R.string.kol_reason_type_inappropriate),
+            description = getString(R.string.kol_reason_desc_inappropriate)
         )
         reasonList.add(reasonInappropriate)
 
-        val reasonOthers = ReportReasonViewModel(
-                type = getString(R.string.kol_reason_type_others),
-                description = getString(R.string.kol_reason_desc_others)
+        val reasonOthers = ReportReasonUiModel(
+            type = getString(R.string.kol_reason_type_others),
+            description = getString(R.string.kol_reason_desc_others)
         )
         reasonList.add(reasonOthers)
 
@@ -174,10 +178,10 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         val reasonMessage = if (isCustomType) reasonInput.text.toString() else adapter.getSelectedItem().description
 
         presenter.sendReport(
-                contentId,
-                adapter.getSelectedItem().type,
-                reasonMessage,
-                "content"
+            contentId,
+            adapter.getSelectedItem().type,
+            reasonMessage,
+            "content"
         )
     }
 }

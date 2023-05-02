@@ -8,6 +8,7 @@ import com.tokopedia.picker.common.utils.wrapper.PickerFile
 data class Media(
     val id: Long,
     val file: PickerFile,
+    var duration: Int = 0
 ) {
 
     private var uriHolder: Uri? = null

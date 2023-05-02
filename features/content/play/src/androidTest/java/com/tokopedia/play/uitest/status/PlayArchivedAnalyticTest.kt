@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEvent
 import com.tokopedia.content.test.cassava.containsEventAction
 import com.tokopedia.play.di.DaggerPlayTestComponent
@@ -53,7 +53,7 @@ class PlayArchivedAnalyticTest {
                     id = channelId,
                     tagItems = uiModelBuilder.buildTagItem(
                         product = uiModelBuilder.buildProductModel(
-                            canShow = true,
+                            canShow = true
                         )
                     ),
                     status = uiModelBuilder.buildStatus(
@@ -63,10 +63,10 @@ class PlayArchivedAnalyticTest {
                             statusSource = PlayStatusSource.Network,
                             waitingDuration = 100
                         )
-                    ),
+                    )
                 )
             ),
-            cursor = "",
+            cursor = ""
         )
 
         PlayInjector.set(
@@ -79,7 +79,7 @@ class PlayArchivedAnalyticTest {
     }
 
     @Test
-    fun impressArchived(){
+    fun impressArchived() {
         val robot = createRobot()
         robot.isErrorViewAvailable()
 
@@ -87,7 +87,7 @@ class PlayArchivedAnalyticTest {
     }
 
     @Test
-    fun exitArchived(){
+    fun exitArchived() {
         val robot = createRobot()
         robot.clickExitError()
 
@@ -95,7 +95,7 @@ class PlayArchivedAnalyticTest {
     }
 
     @Test
-    fun sendToPlayChannel(){
+    fun sendToPlayChannel() {
         val robot = createRobot()
         robot.clickGlobalErrorCta()
 

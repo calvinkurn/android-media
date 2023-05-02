@@ -439,29 +439,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun addEmptyStateData(productList: List<ShopProductUiModel>) {
-        if (productList.isNotEmpty()) {
-            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
-                visitables.add(ShopProductEmptySearchUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-            if (visitables.getOrNull(lastIndex) !is ShopProductTitleEmptyUiModel) {
-                visitables.add(ShopProductTitleEmptyUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-            if (visitables.getOrNull(lastIndex) !is ShopProductUiModel) {
-                val lastIndex = visitables.size
-                visitables.addAll(productList)
-                notifyItemRangeInserted(lastIndex, productList.size)
-            }
-        } else {
-            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
-                visitables.add(ShopProductEmptySearchUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-        }
-    }
-
     fun changeProductCardGridType(gridType: ShopProductViewGridType) {
         shopProductAdapterTypeFactory.productCardType = gridType
         setLayoutManagerSpanCount()

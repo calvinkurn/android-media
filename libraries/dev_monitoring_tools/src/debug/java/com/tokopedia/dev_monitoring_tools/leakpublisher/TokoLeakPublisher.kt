@@ -13,11 +13,12 @@ class TokoLeakPublisher(
 ) {
 
     init {
+        val buildTypeApp = if (GlobalConfig.isAllowDebuggingTools()) "debug" else "release"
         val metadata = mapOf<String, Any>(
             "Version Name" to GlobalConfig.VERSION_NAME,
             "Version Code" to GlobalConfig.VERSION_CODE,
             "App Id" to GlobalConfig.APPLICATION_ID,
-            "Build Type" to "debug"
+            "Build Type" to buildTypeApp
         )
 
         LeakPublisher(

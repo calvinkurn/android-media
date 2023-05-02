@@ -45,4 +45,32 @@ object ChatBotTimeConverter {
         }
         return time
     }
+
+    fun settingDateIndicatorTimeAtLeastToday(replyTime: String, today: String, yesterday: String): String {
+        val time: String = try {
+            val myTime = replyTime.changeToTodayIfZero().toLong()
+            val date = Date(myTime)
+            if (DateUtils.isToday(myTime)) {
+                today
+            } else if (DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)) {
+                yesterday
+            } else {
+                val formatter = SimpleDateFormat("d MMM")
+                formatter.format(date)
+            }
+
+        } catch (e: NumberFormatException) {
+            replyTime
+        }
+        return time
+    }
+
+
+    private fun String.changeToTodayIfZero(): String {
+        return if (this == "0") Calendar.getInstance().time.time.toString() else {
+            var myTime = this.toLong()
+            myTime /= BaseChatViewHolder.MILISECONDS
+            myTime.toString()
+        }
+    }
 }

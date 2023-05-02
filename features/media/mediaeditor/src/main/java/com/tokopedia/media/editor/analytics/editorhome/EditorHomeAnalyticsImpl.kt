@@ -1,43 +1,15 @@
 package com.tokopedia.media.editor.analytics.editorhome
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
-import com.tokopedia.media.editor.analytics.ACTION_AUTO_CROP_TIME
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_BACK
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_BRIGHTNESS
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_CONTRAST
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_CROP
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_REMOVE_BACKGROUND
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_ROTATE
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_UPLOAD
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_WATERMARK
-import com.tokopedia.media.editor.analytics.BUSINESS_UNIT
-import com.tokopedia.media.editor.analytics.CURRENT_SITE
-import com.tokopedia.media.editor.analytics.EVENT
-import com.tokopedia.media.editor.analytics.EVENT_CATEGORY
-import com.tokopedia.media.editor.analytics.KEY_BUSINESS_UNIT
-import com.tokopedia.media.editor.analytics.KEY_CURRENT_SITE
-import com.tokopedia.media.editor.analytics.KEY_EVENT
-import com.tokopedia.media.editor.analytics.KEY_EVENT_ACTION
-import com.tokopedia.media.editor.analytics.KEY_EVENT_CATEGORY
-import com.tokopedia.media.editor.analytics.KEY_EVENT_LABEL
-import com.tokopedia.media.editor.analytics.KEY_TRACKER_ID
-import com.tokopedia.media.editor.analytics.KEY_USER_ID
-import com.tokopedia.media.editor.analytics.TRACKER_ID_AUTO_CROP_TIME
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_BACK
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_BRIGHTNESS
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_CONTRAST
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_CROP
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_REMOVE_BACKGROUND
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_ROTATE
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_UPLOAD
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_WATERMARK
-import com.tokopedia.media.editor.utils.ParamCacheManager
+import com.tokopedia.media.editor.analytics.*
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EditorHomeAnalyticsImpl(
+class EditorHomeAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : EditorHomeAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
@@ -46,7 +18,7 @@ class EditorHomeAnalyticsImpl(
         get() = userSession.shopId.toZeroStringIfNullOrBlank()
 
     private val pageSource: String
-        get() = cacheManager.getPickerParam().pageSourceName()
+        get() = cacheManager.get().pageSourceName()
 
     override fun clickUpload() {
         sendGeneralEvent(
@@ -109,6 +81,14 @@ class EditorHomeAnalyticsImpl(
             ACTION_CLICK_WATERMARK,
             "$pageSource - $userId - $shopId",
             TRACKER_ID_CLICK_WATERMARK
+        )
+    }
+
+    override fun clickAddLogo() {
+        sendGeneralEvent(
+            ACTION_CLICK_ADD_LOGO,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_ADD_LOGO
         )
     }
 

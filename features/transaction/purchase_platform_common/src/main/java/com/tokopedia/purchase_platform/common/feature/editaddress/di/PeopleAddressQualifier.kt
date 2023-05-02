@@ -7,5 +7,4 @@ import javax.inject.Qualifier
  */
 
 @Qualifier
-annotation class PeopleAddressQualifier {
-}
+annotation class PeopleAddressQualifier

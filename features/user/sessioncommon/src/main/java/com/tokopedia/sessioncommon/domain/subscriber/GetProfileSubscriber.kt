@@ -131,6 +131,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                     pojo.profileInfo.phone)
             userSession.setIsShopOfficialStore(isOfficialStore(pojo.shopInfo.shopData.shopLevel))
             userSession.shopAvatar = pojo.shopInfo.shopData.shopAvatar
+            userSession.shopAvatarOriginal = pojo.shopInfo.shopData.shopAvatarOriginal
         }
     }
 

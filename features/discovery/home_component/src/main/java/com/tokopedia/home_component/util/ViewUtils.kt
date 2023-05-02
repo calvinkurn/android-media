@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
@@ -14,32 +13,36 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
-import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Lukas on 2019-08-20
  */
 object ChannelWidgetUtil {
-    private const val DIVIDER_HEIGHT = 1f
+    private const val DEFAULT_DIVIDER_HEIGHT = 1
+    private const val BOTTOM_PADDING_WITHOUT_DIVIDER = 8
 
     fun validateHomeComponentDivider(
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
-        dividerBottom: DividerUnify?
+        dividerBottom: DividerUnify?,
+        useBottomPadding: Boolean = false
     ) {
-        dividerTop?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-        dividerBottom?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-        when(channelModel?.channelConfig?.dividerType) {
+        val dividerSize = channelModel?.channelConfig?.dividerSize?.toPx()
+            ?: DEFAULT_DIVIDER_HEIGHT.toPx()
+        dividerTop?.layoutParams?.height = dividerSize
+        dividerBottom?.layoutParams?.height = dividerSize
+        when (channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
-                dividerTop?.invisible()
-                dividerBottom?.gone()
+                dividerTop?.gone()
+                if (useBottomPadding) dividerBottom?.setAsPadding(BOTTOM_PADDING_WITHOUT_DIVIDER) else dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
                 dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
-                dividerTop?.invisible()
+                dividerTop?.gone()
                 dividerBottom?.visible()
             }
             ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
@@ -47,6 +50,11 @@ object ChannelWidgetUtil {
                 dividerBottom?.visible()
             }
         }
+    }
+
+    private fun DividerUnify.setAsPadding(height: Int) {
+        this.layoutParams?.height = height.toPx()
+        this.invisible()
     }
 }
 
@@ -64,24 +72,25 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
             this.setBackgroundColor(Color.parseColor(colorArray[0]))
         }
     } catch (e: Exception) {
-
     }
 }
 
-//function check is gradient all white, if empty default color is white
-fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context) : Boolean {
+// function check is gradient all white, if empty default color is white
+fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context): Boolean {
     val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it != colorWhite }
-            if (colorArrayNotWhite.isNotEmpty())
+            if (colorArrayNotWhite.isNotEmpty()) {
                 return false
+            }
             return true
         } else {
             return colorArray[0].equals(colorWhite, true)
         }
-    } else
+    } else {
         return true
+    }
 }
 
 fun convertDpToPixel(dp: Float, context: Context): Int {
@@ -89,15 +98,14 @@ fun convertDpToPixel(dp: Float, context: Context): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
 }
 
-fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
-
 fun Float.toDpInt(): Int = this.toPx().toInt()
 
 fun Float.toDpFloat(): Float = this.toPx()
 
 fun RecyclerView.removeAllItemDecoration() {
-    if (this.itemDecorationCount > 0)
-    for (i in 0 until this.itemDecorationCount) {
-        this.removeItemDecorationAt(i)
+    if (this.itemDecorationCount > 0) {
+        for (i in 0 until this.itemDecorationCount) {
+            this.removeItemDecorationAt(i)
+        }
     }
 }

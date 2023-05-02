@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dms_privacy_center_static_color_toolbar">#098A4E</color>
+    <color name="privacycenter_dms_green_toolbar">#098A4E</color>
+    <color name="privacycenter_dms_white">#FFFFFF</color>
+    <color name="privacycenter_dms_black">#000000</color>
 </resources>

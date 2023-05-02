@@ -4,17 +4,23 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
-    private val saveImageRepository: SaveImageRepository
+    private val saveImageRepository: SaveImageRepository,
+    private val addLogoFilterRepository: AddLogoFilterRepository,
+    private val userSession: UserSessionInterface,
+    private val bitmapCreationRepository: BitmapCreationRepository
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -70,10 +76,6 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    fun cleanImageCache() {
-        saveImageRepository.clearEditorCache()
-    }
-
     fun undoState(activeImageUrl: String): EditorUiModel? {
         getEditState(activeImageUrl)?.let {
             val imageEditStateCount = it.editList.size
@@ -95,14 +97,26 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
+    fun saveToGallery(
+        dataList: List<EditorUiModel>,
+        onFinish: (result: List<String>?, exception: Exception?) -> Unit
+    ) {
         // store list image of camera picker that need to be saved
         val cameraImageList = mutableListOf<String>()
         val pickerCameraCacheDir = getTokopediaCacheDir()
 
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
-                it.getImageUrl()
+                // if use 'add logo' feature then need to flatten image first
+                it.getOverlayLogoValue()?.let { overlayData ->
+                    addLogoFilterRepository.flattenImage(
+                        it.getImageUrl(),
+                        overlayData.overlayLogoUrl,
+                        it.getOriginalUrl()
+                    )
+                } ?: run {
+                    it.getImageUrl()
+                }
             } else {
                 it.getOriginalUrl().apply {
                     if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
@@ -115,13 +129,13 @@ class EditorViewModel @Inject constructor(
 
         // save camera image that didn't have edit state
         if (cameraImageList.size != 0) {
-            saveImageRepository.saveToGallery(cameraImageList) {}
+            saveImageRepository.saveToGallery(cameraImageList) { _, _ -> }
         }
 
         saveImageRepository.saveToGallery(
             filteredData
-        ) {
-            onFinish(it)
+        ) { listData, exception ->
+            onFinish(listData, exception)
         }
     }
 
@@ -133,6 +147,14 @@ class EditorViewModel @Inject constructor(
         return saveImageRepository.saveToCache(
             bitmapParam, filename, sourcePath
         )
+    }
+
+    fun isShopAvailable(): Boolean {
+        return userSession.hasShop()
+    }
+
+    fun isMemoryOverflow(width: Int, height: Int): Boolean {
+        return bitmapCreationRepository.isBitmapOverflow(width, height)
     }
 
     private fun updateEditedItem(originalUrl: String) {

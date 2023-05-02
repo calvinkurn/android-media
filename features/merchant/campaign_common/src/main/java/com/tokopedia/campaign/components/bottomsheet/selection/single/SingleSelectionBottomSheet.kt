@@ -145,4 +145,8 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
 
         singleSelectionAdapter.submit(updatedItems)
     }
+
+    fun getBottomsheetView(): BottomsheetSingleSelectionItemBinding? {
+        return binding
+    }
 }

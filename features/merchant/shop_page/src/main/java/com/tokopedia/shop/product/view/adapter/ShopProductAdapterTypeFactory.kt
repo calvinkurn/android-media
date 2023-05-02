@@ -140,7 +140,7 @@ class ShopProductAdapterTypeFactory(
         when (type) {
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
             ShopProductListEmptyViewHolder.LAYOUT -> return ShopProductListEmptyViewHolder(parent, emptyProductOnClickListener)
-            ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
+            ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent)
             ShopProductTitleEmptyViewHolder.LAYOUT -> return ShopProductTitleEmptyViewHolder(parent)
             ShopProductEmptySearchViewHolder.LAYOUT -> return ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
             ShopProductEmptyShowcaseViewHolder.LAYOUT -> return ShopProductEmptyShowcaseViewHolder(parent, shopShowcaseEmptySearchListener)

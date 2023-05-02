@@ -32,7 +32,7 @@ class PatchLogger : PatchCallBack {
     override fun onFinish() {
         end = System.currentTimeMillis()
         var elapsed = end - start
-        ServerLogger.log(Priority.P1, SERVER_TAG, mutableMapOf("patching_time" to elapsed.toString()))
+        //ServerLogger.log(Priority.P1, SERVER_TAG, mutableMapOf("patching_time" to elapsed.toString()))
     }
 
     override fun onPatchListFetched(
@@ -41,9 +41,9 @@ class PatchLogger : PatchCallBack {
         isNet: Boolean,
         patches: List<Patch>
     ) {
-        for (patch in patches) {
-            ServerLogger.log(Priority.P1, SERVER_TAG,mutableMapOf("fetch_patch_name" to patch.name))
-        }
+//         for (patch in patches) {
+//             ServerLogger.log(Priority.P1, SERVER_TAG,mutableMapOf("fetch_patch_name" to patch.name))
+//         }
     }
 
     override fun onPatchFetched(context: Context, result: Boolean, isNet: Boolean) {
@@ -58,11 +58,11 @@ class PatchLogger : PatchCallBack {
         if (patch.debug) {
             Log.v(TAG, "Applied patch: " + patch.name)
         } else {
-            ServerLogger.log(
-                Priority.P1,
-                SERVER_TAG,
-                mutableMapOf("patch_applied" to "${patch.name}", "patch_applied_result" to "${result}")
-            )
+//             ServerLogger.log(
+//                 Priority.P1,
+//                 SERVER_TAG,
+//                 mutableMapOf("patch_applied" to "${patch.name}", "patch_applied_result" to "${result}")
+//             )
         }
     }
 
@@ -76,11 +76,11 @@ class PatchLogger : PatchCallBack {
         if(debug){
             Log.e(TAG, log)
         } else {
-            ServerLogger.log(
-                Priority.P1,
-                SERVER_TAG,
-                mutableMapOf("error_log" to "${log}", "where" to "${where}", "patch_name" to "${patchName}")
-            )
+//             ServerLogger.log(
+//                 Priority.P1,
+//                 SERVER_TAG,
+//                 mutableMapOf("error_log" to "${log}", "where" to "${where}", "patch_name" to "${patchName}")
+//             )
         }
     }
 
@@ -91,7 +91,7 @@ class PatchLogger : PatchCallBack {
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
-        ServerLogger.log(Priority.P1, SERVER_TAG, mutableMapOf("exception" to "${throwable.message}"))
+//         ServerLogger.log(Priority.P1, SERVER_TAG, mutableMapOf("exception" to "${throwable.message}"))
     }
 
     companion object {

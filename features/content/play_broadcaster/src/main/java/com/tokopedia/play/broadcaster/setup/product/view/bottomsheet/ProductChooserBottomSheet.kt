@@ -11,6 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -139,6 +141,11 @@ class ProductChooserBottomSheet @Inject constructor(
         setupObserve()
     }
 
+    override fun onStart() {
+        super.onStart()
+        eventBus.emit(Event.ViewBottomSheet)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -152,7 +159,9 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductSortBottomSheet -> childFragment.setListener(this)
+            is ProductSortBottomSheet -> {
+                childFragment.setListener(this)
+            }
         }
     }
 
@@ -537,7 +546,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     sealed class Event {
-
+        object ViewBottomSheet : Event()
         object ExitDialogConfirm : Event()
         object ExitDialogCancel : Event()
         object CloseClicked : Event()

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,8 +31,8 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
 
     companion object {
 
-        private const val IMG_BS_MEMBERSHIP_SUCCESS = "https://images.tokopedia.net/img/android/membership/coupon_success.png"
-        private const val IMG_BS_MEMBERSHIP_FAIL = "https://images.tokopedia.net/img/android/membership/coupon_fail.png"
+        private const val IMG_BS_MEMBERSHIP_SUCCESS = TokopediaImageUrl.IMG_BS_MEMBERSHIP_SUCCESS
+        private const val IMG_BS_MEMBERSHIP_FAIL = TokopediaImageUrl.IMG_BS_MEMBERSHIP_FAIL
         private const val TITLE_PARAM = "title_membership"
         private const val DESC_PARAM = "desc_membership"
         private const val CODE_PARAM = "code_membership"

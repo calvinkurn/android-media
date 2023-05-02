@@ -21,7 +21,9 @@ data class PayLaterAllData(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("text") val text: String?,
     @SerializedName("small_text") val smallText: String?,
-    @SerializedName("sections") val detail: List<GatewaySection>
+    @SerializedName("sections") val detail: List<GatewaySection>,
+    @SerializedName("label") val label: Label?,
+    @SerializedName("promo_name") val promoName: String?,
 ) : Parcelable
 
 @Parcelize
@@ -31,6 +33,13 @@ data class GatewaySection(
     @SerializedName("is_collapsible") val isCollapsible: Boolean?,
     @SerializedName("detail") val detail: List<Detail>
 ) : Parcelable
+
+@Parcelize
+data class Label(
+    @SerializedName("text") val text: String = "",
+    @SerializedName("text_color") val textColor: String = "",
+    @SerializedName("bg_color") val bgColor: String = "",
+): Parcelable
 
 @Parcelize
 data class Cta(
@@ -63,12 +72,14 @@ data class Detail(
     @SerializedName("recommended") val recommendationDetail: RecommendationDetail?,
     @SerializedName("benefits") val benefits: List<String>?,
     @SerializedName("disable") val paylaterDisableDetail: DisableDetail?,
+    @SerializedName("ticker") val ticker: Ticker = Ticker(),
     @SerializedName("cta") val cta: Cta,
     @SerializedName("installment_details") val installementDetails: InstallmentDetails?,
     @SerializedName("user_state") val userState: String?,
     @SerializedName("user_balance_amt") val limit: String?,
     @SerializedName("tenure_header") val optionalTenureHeader: String?,
-    @SerializedName("linking_status") val linkingStatus: String?
+    @SerializedName("linking_status") val linkingStatus: String?,
+    @SerializedName("promo_name") val promoName: String?,
 ) : BasePayLaterWidgetUiModel, Parcelable {
     override fun type(typeFactory: PayLaterAdapterFactory): Int {
         return typeFactory.type(this)
@@ -87,7 +98,13 @@ data class RecommendationDetail(
 data class DisableDetail(
 
     @SerializedName("status") val status: Boolean?,
-    @SerializedName("header") val header: String?
+) : Parcelable
+
+@Parcelize
+data class Ticker(
+    @SerializedName("is_shown") val isShown: Boolean = false,
+    @SerializedName("type") val type: String = "",
+    @SerializedName("content") val content: String = "",
 ) : Parcelable
 
 @Parcelize

@@ -16,9 +16,9 @@ import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 internal val shopItemProductList: List<SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct>().also {
-    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = 1))
-    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = 2))
-    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = 3))
+    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = "1"))
+    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = "2"))
+    it.add(SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct(id = "3"))
 }
 
 internal val shopItemList: List<SearchShopModel.AceSearchShop.ShopItem> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {

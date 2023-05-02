@@ -2,22 +2,18 @@ package com.tokopedia.media.editor.ui.activity.detail
 
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.domain.param.WatermarkUseCaseParam
+import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.ResourceProvider
-import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -36,7 +32,9 @@ class DetailEditorViewModel @Inject constructor(
     private val watermarkFilterRepository: WatermarkFilterRepository,
     private val rotateFilterRepository: RotateFilterRepository,
     private val saveImageRepository: SaveImageRepository,
-    private val getWatermarkUseCase: GetWatermarkUseCase
+    private val getWatermarkUseCase: GetWatermarkUseCase,
+    private val bitmapCreationRepository: BitmapCreationRepository,
+    private val addLogoFilterRepository: AddLogoFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -57,8 +55,8 @@ class DetailEditorViewModel @Inject constructor(
     private var _contrastFilter = MutableLiveData<Bitmap>()
     val contrastFilter: LiveData<Bitmap> get() = _contrastFilter
 
-    private var _watermarkFilter = MutableLiveData<Bitmap>()
-    val watermarkFilter: LiveData<Bitmap> get() = _watermarkFilter
+    private var _watermarkFilter = MutableLiveData<Bitmap?>()
+    val watermarkFilter: LiveData<Bitmap?> get() = _watermarkFilter
 
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
@@ -134,7 +132,7 @@ class DetailEditorViewModel @Inject constructor(
 
     fun setWatermarkFilterThumbnail(
         implementedBaseBitmap: Bitmap
-    ): Pair<Bitmap, Bitmap> {
+    ): Pair<Bitmap?, Bitmap?> {
         initializeWatermarkAsset()
 
         return watermarkFilterRepository.watermarkDrawerItem(
@@ -195,6 +193,38 @@ class DetailEditorViewModel @Inject constructor(
         return saveImageRepository.saveToCache(
             bitmapParam, filename, sourcePath
         )
+    }
+
+    fun getAvatarShop(): String {
+        return userSession.shopAvatarOriginal
+    }
+
+    fun bitmapCreation(bitmapCreation: BitmapCreationModel): Bitmap? {
+        return bitmapCreationRepository.createBitmap(bitmapCreation)
+    }
+
+    fun generateAddLogoOverlay(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean): Bitmap? {
+        return bitmap?.let {
+            addLogoFilterRepository.generateOverlayImage(
+                it,
+                newSize,
+                isCircular
+            )
+        } ?: kotlin.run {
+            null
+        }
+    }
+
+    fun getProcessedBitmap(data: ProcessedBitmapModel): Bitmap? {
+        return bitmapCreationRepository.getProcessedBitmap(data)
+    }
+
+    fun isImageOverFlow(
+        url: String
+    ): Boolean {
+        return getImageSize(url).let { (width, height) ->
+            bitmapCreationRepository.isBitmapOverflow(width, height)
+        }
     }
 
     private fun initializeWatermarkAsset() {

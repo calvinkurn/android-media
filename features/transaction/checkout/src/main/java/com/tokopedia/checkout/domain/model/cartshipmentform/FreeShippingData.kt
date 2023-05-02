@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FreeShippingData(
-        var eligible: Boolean = false,
-        var badgeUrl: String = ""
+    var eligible: Boolean = false,
+    var badgeUrl: String = ""
 ) : Parcelable

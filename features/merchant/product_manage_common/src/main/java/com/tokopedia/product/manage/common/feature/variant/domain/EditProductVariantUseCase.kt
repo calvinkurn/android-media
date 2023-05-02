@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
@@ -8,6 +9,8 @@ import com.tokopedia.product.manage.common.feature.variant.data.query.ProductUpd
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+
+@GqlQuery("GetEditProductVariantGqlQuery", ProductUpdateV3.QUERY)
 class EditProductVariantUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ProductUpdateV3Response>(graphqlRepository) {
@@ -21,7 +24,7 @@ class EditProductVariantUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(ProductUpdateV3.QUERY)
+        setGraphqlQuery(GetEditProductVariantGqlQuery())
         setTypeClass(ProductUpdateV3Response::class.java)
     }
 

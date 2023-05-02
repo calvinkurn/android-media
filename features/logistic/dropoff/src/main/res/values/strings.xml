@@ -23,4 +23,5 @@
     <string name="no_permission_title">Lokasi tidak diizinkan</string>
     <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
     <string name="no_permission_action">Izinkan Lokasi</string>
+    <string name="maps_preview_unavailable_ticker_desc">Yaah, peta tidak bisa ditampilkan di perangkatmu saat ini. Tenang, kamu bisa ketik lokasi titik ambil di kolom pencarian atau pilih dari lokasi terdekat.</string>
 </resources>

@@ -304,12 +304,6 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/merchant_credit_line_widget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible" />
-
-            <FrameLayout
                 android:id="@+id/saldo_prioritas_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

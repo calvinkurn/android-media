@@ -1,21 +1,24 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationShimmerViewHolder
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationTenureViewHolder
 
 class PayLaterSimulationTenureAdapter(
-    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>,Int) -> Unit
+    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>, Int, String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val tenureItemList = arrayListOf<SimulationUiModel>()
     var lastSelectedPosition = -1
 
+    @SuppressLint("PII Data Exposure")
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -29,7 +32,11 @@ class PayLaterSimulationTenureAdapter(
             else ->
                 PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
                     if (isTenureSelectionChanged(pos)) {
-                        showPayLaterOption(tenureItemList[pos].simulationList!!, tenureItemList[pos].tenure?:0)
+                        showPayLaterOption(
+                            tenureItemList[pos].simulationList ?: arrayListOf(),
+                            tenureItemList[pos].tenure.orZero(),
+                            tenureItemList[pos].promoName,
+                        )
                         changeAndUpdateSelection(pos)
                     }
                 }

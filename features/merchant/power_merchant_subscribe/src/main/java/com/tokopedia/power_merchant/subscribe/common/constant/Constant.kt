@@ -9,13 +9,13 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val PM_TOP_ADS_CREDIT = "5%"
+    const val PM_TOP_ADS_CREDIT = "1,5%"
     const val PM_BROAD_CAST_CHAT = "200"
-    const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "2%"
     const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
-    const val PM_PRO_EXP_TOP_ADS_CREDIT = "6%"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "2,5%"
     const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
-    const val PM_PRO_ULT_TOP_ADS_CREDIT = "6,5%"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "3%"
     const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
     const val PM_SPECIAL_RELEASE = 5
     const val PM_PRO_ADV_SPECIAL_RELEASE = 10
@@ -67,8 +67,6 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
         const val IC_PM_PRO_UPGRADE_LEVEL =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
-        const val IC_PM_CASH_BACK =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
         const val IC_PM_FLASH_SALE =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
         const val IC_PM_PRODUCT_BUNDLING =

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FinalAdResponse(
 
-    @field:SerializedName("TopadsManagePromoGroupProductResponse", alternate = ["topadsManageGroupAds"])
+    @field:SerializedName("TopadsManagePromoGroupProductResponse", alternate = ["topadsManageGroupAds","topadsManagePromoGroupProduct"])
     val topadsManageGroupAds: TopadsManageGroupAds = TopadsManageGroupAds()
 
 ) {

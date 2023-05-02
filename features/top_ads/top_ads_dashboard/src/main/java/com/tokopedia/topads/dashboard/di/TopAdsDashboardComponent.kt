@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.*
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsEditAutoTopUpFragment
+import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseCreditBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
@@ -57,6 +58,7 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsHeadlineGroupDetailViewActivity: TopAdsHeadlineAdDetailViewActivity)
     fun inject(topAdsAddCreditActivity: TopAdsAddCreditActivity)
     fun inject(topAdsChooseNominalBottomSheet: TopAdsChooseNominalBottomSheet)
+    fun inject(topAdsChooseCreditBottomSheet: TopAdsChooseCreditBottomSheet)
     fun inject(topAdsRecomGroupBottomSheet: TopAdsRecomGroupBottomSheet)
     fun inject(topAdsDashDeletedGroupFragment: TopAdsDashDeletedGroupFragment)
 }

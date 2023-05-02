@@ -7,10 +7,10 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
@@ -21,6 +21,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -470,7 +471,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun createPriceRangeClickTrackingEventAction(priceOptionViewModel: PriceOptionViewModel): String {
         return String.format(
                 FilterEventTracking.Action.CLICK_FILTER_PRICE_RANGE,
-                priceOptionViewModel.option.valMin.toInt(), priceOptionViewModel.option.valMax.toInt(), priceOptionViewModel.position
+                priceOptionViewModel.option.valMin.toIntOrZero(), priceOptionViewModel.option.valMax.toIntOrZero(), priceOptionViewModel.position
         )
     }
 
@@ -575,6 +576,12 @@ internal class SortFilterBottomSheetViewModel {
 
     fun getSelectedSortMap(): Map<String, String> {
         return selectedSortMap
+    }
+
+    fun getSortAutoFilterMap(): Map<String, String> {
+        val activeFilterMap = filterController.getActiveFilterMap()
+        val hasNoDuplicateFilter = sortApplyFilterMap.none { activeFilterMap.containsKey(it.key) }
+        return if (hasNoDuplicateFilter) sortApplyFilterMap else emptyMap()
     }
 
     fun resetSortAndFilter() {

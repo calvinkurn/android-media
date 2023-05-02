@@ -4,11 +4,9 @@ import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-interface MainNavListener : HomeNavListener{
+interface MainNavListener : HomeNavListener {
 
     fun onProfileLoginClicked()
 
@@ -34,11 +32,17 @@ interface MainNavListener : HomeNavListener{
 
     fun onErrorWishlistClicked()
 
-    fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int)
+    fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int)
 
     fun onErrorFavoriteShopClicked()
 
     fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int)
 
     fun showReviewProduct(uriReviewProduct: String)
+
+    fun onErrorReviewClicked()
+
+    fun onViewAllTransactionClicked(trackingLabel: String? = null)
+
+    fun onViewAllWishlistClicked()
 }

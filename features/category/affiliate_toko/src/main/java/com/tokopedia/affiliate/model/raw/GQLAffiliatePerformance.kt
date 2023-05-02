@@ -30,6 +30,13 @@ val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerformanceLis
           ItemTitle
           DefaultLinkURL
           Status
+          SSAStatus
+          Label {
+            LabelType
+            LabelText
+          }
+          Message
+          SSAMessage
           Image {
             DesktopURL
             MobileURL

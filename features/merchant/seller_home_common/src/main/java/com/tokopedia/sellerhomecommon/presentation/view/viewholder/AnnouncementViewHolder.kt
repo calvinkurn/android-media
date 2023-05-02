@@ -169,9 +169,7 @@ class AnnouncementViewHolder(
     }
 
     private fun setOnCtaClick(element: AnnouncementWidgetUiModel) {
-        if (RouteManager.route(itemView.context, element.data?.appLink.orEmpty())) {
-            listener.sendAnnouncementClickEvent(element)
-        }
+        listener.setOnAnnouncementWidgetCtaClicked(element)
     }
 
     private fun showLoadingState() {
@@ -187,12 +185,12 @@ class AnnouncementViewHolder(
     interface Listener : BaseViewHolderListener, WidgetDismissalListener {
         fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
 
-        fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
-
         fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {}
 
         fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {}
 
         fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {}
+
+        fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {}
     }
 }

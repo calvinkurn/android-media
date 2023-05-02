@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_campaign_status_indicator"
+        android:layout_width="4dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_voucher_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_campaign_status_indicator"
+        app:layout_constraintStart_toEndOf="@+id/img_campaign_status_indicator"
+        app:layout_constraintTop_toTopOf="@+id/img_campaign_status_indicator"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Berlangsung"
+        tools:textColor="@color/green_500" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_ubah_kupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/smvc_ubah_kupon_label"
+        android:textColor="@color/green_500"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_voucher_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpg_voucher_status"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_ubah_kupon"
+        app:layout_constraintEnd_toEndOf="@+id/btn_ubah_kupon"
+        app:layout_constraintTop_toTopOf="@id/btn_ubah_kupon"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_type="auto"
+        app:timer_unify_single_variant="main" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_period_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_ubah_kupon"
+        app:layout_constraintEnd_toEndOf="@+id/btn_ubah_kupon"
+        app:layout_constraintTop_toTopOf="@id/btn_ubah_kupon"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Dihentikan pada 16 Juni 2022" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_voucher"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="@id/tpg_voucher_status"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_status" />
+
+    <ImageView
+        android:id="@+id/btn_download_image_voucher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/smvc_shape_download_overlay"
+        app:layout_constraintBottom_toBottomOf="@+id/img_voucher"
+        app:layout_constraintEnd_toEndOf="@+id/img_voucher"
+        app:layout_constraintStart_toStartOf="@+id/img_voucher" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_voucher_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        app:labelType="general_light_blue"
+        app:layout_constraintStart_toEndOf="@+id/img_voucher"
+        app:layout_constraintTop_toTopOf="@+id/img_voucher"
+        tools:labelTitle="Paket Promosi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_vps_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="@+id/label_voucher_source"
+        app:layout_constraintTop_toBottomOf="@+id/label_voucher_source"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Paket WIB Premium Max" />
+
+    <LinearLayout
+        android:id="@+id/ll_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/img_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_vps_package">
+
+        <com.tokopedia.mvc.common.customview.VerticalDateTimeView
+            android:id="@+id/tpg_date_time_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_dash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:gravity="start"
+            android:text="@string/smvc_dash_label"
+            android:textColor="@color/Unify_NN600" />
+
+        <com.tokopedia.mvc.common.customview.VerticalDateTimeView
+            android:id="@+id/tpg_date_time_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_progress_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/smvc_kuota_terpakai_label"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="@+id/img_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/img_voucher"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/pgb_used_voucher"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/tpg_used_voucher_quota"
+        app:layout_constraintStart_toStartOf="@+id/tpg_progress_bar_title"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_progress_bar_title"
+        app:unify_progress_bar_height="6" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_used_voucher_quota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/pgb_used_voucher"
+        app:layout_constraintEnd_toStartOf="@+id/tpg_available_voucher_quota"
+        app:layout_constraintTop_toTopOf="@+id/pgb_used_voucher"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="120" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_available_voucher_quota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpg_used_voucher_quota"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="/120" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pgb_used_voucher" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,7 +54,7 @@ class CheckoutAnalyticsTest {
             selectFirstShippingDurationOption()
             waitForData()
             clickChoosePaymentButton(activityRule)
-        } validateAnalytics  {
+        } validateAnalytics {
             waitForData()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -74,5 +74,4 @@ class CheckoutAnalyticsTest {
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
-
 }

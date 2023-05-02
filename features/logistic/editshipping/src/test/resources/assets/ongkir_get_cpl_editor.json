@@ -1,0 +1,110 @@
+{
+  "ongkirGetCPLEditor": {
+    "data": {
+      "shipper_list": [
+        {
+          "header": "Dijemput Kurir",
+          "description": "Kurir akan menjemput pesanan di alamatmu untuk diantar ke pembeli.",
+          "whitelabels": [
+            {
+              "title": "Instan",
+              "description": "Layanan pengiriman instan yang disediakan Tokopedia dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+              "shipper_product_ids": [
+                28,
+                37
+              ],
+              "is_active": true
+            }
+          ],
+          "shippers": [
+            {
+              "shipper_id": 11,
+              "shipper_name": "SiCepat",
+              "logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+              "shipper_product": [
+                {
+                  "shipper_product_id": 18,
+                  "shipper_product_name": "Regular Package",
+                  "ui_hidden": false,
+                  "is_active": false,
+                  "shipper_service_name": "Reguler"
+                },
+                {
+                  "shipper_product_id": 44,
+                  "shipper_product_name": "REG",
+                  "ui_hidden": true,
+                  "is_active": false,
+                  "shipper_service_name": "Reguler"
+                }
+              ]
+            },
+            {
+              "shipper_id": 13,
+              "shipper_name": "GrabExpress",
+              "logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "shipper_product": [
+                {
+                  "shipper_product_id": 37,
+                  "shipper_product_name": "Instant",
+                  "ui_hidden": true,
+                  "is_active": true,
+                  "shipper_service_name": "Instant"
+                }
+              ]
+            },
+            {
+              "shipper_id": 10,
+              "shipper_name": "GoSend",
+              "logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "shipper_product": [
+                {
+                  "shipper_product_id": 20,
+                  "shipper_product_name": "Same Day",
+                  "ui_hidden": false,
+                  "is_active": true,
+                  "shipper_service_name": "Same Day"
+                },
+                {
+                  "shipper_product_id": 28,
+                  "shipper_product_name": "Instant Courier",
+                  "ui_hidden": true,
+                  "is_active": true,
+                  "shipper_service_name": "Instant"
+                },
+                {
+                  "shipper_product_id": 59,
+                  "shipper_product_name": "Instant Car",
+                  "ui_hidden": true,
+                  "is_active": true,
+                  "shipper_service_name": "Instant"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "header": "Antar ke Kantor Agen",
+          "description": "Bawa pesanan ke kantor agen terdekat dan minta resi dari petugas.",
+          "whitelabels": [],
+          "shippers": [
+            {
+              "shipper_id": 14,
+              "shipper_name": "J&T",
+              "logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+              "shipper_product": [
+                {
+                  "shipper_product_id": 27,
+                  "shipper_product_name": "Reguler",
+                  "ui_hidden": false,
+                  "is_active": true,
+                  "shipper_service_name": "Reguler"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "errors": []
+}

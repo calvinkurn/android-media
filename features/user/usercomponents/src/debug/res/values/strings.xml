@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="load_consent">Load Consent</string>
+    <string name="submit_consent">Submit Consent</string>
 </resources>

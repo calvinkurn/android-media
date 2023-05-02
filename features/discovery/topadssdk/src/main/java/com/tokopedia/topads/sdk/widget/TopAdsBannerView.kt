@@ -578,7 +578,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 product.freeOngkir.imageUrl
             ),
             hasAddToCartButton = this.hasAddToCartButton,
-            addToCartButtonType = UnifyButton.Type.MAIN
+            addToCartButtonType = UnifyButton.Type.MAIN,
+            stockBarPercentage = product.stock_info.soldStockPercentage,
+            stockBarLabel = product.stock_info.stockWording,
+            stockBarLabelColor = product.stock_info.stockColour
         )
         return getProductModelOnCondition(product, isAvailAble, productCardModel)
 
@@ -707,7 +710,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
                         productList = productList.map {
                             ShopCardModel.ShopItemProduct(
-                                    id = it.id.toIntOrZero(),
+                                    id = it.id,
                                     name = it.name,
                                     priceFormat = it.priceFormat,
                                     imageUrl = it.imageProduct.imageUrl

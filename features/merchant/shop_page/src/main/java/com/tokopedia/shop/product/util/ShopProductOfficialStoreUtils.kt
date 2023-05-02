@@ -127,12 +127,6 @@ object ShopProductOfficialStoreUtils {
         return params
     }
 
-    fun getLogInUrl(url: String, fcmTokenId: String?, uid: String?): String {
-        return if (!url.contains(SEAMLESS)) {
-            URLGenerator.generateURLSessionLogin(encodeUrl(url), fcmTokenId, uid)
-        } else url
-    }
-
     private fun encodeUrl(url: String): String {
         try {
             return URLEncoder.encode(url, "UTF-8")

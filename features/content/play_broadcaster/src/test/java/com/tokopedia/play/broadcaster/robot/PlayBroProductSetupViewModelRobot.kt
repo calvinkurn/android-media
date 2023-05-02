@@ -26,21 +26,23 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on February 17, 2022
  */
 internal class PlayBroProductSetupViewModelRobot(
+    creationId: String = "",
+    maxProduct: Int = 30,
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
-    hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     private val viewModel = PlayBroProductSetupViewModel(
+        creationId,
+        maxProduct,
         productSectionList,
         handle,
         isEligibleForPin,
         channelRepo,
-        hydraConfigStore,
         userSession,
         dispatchers,
     )

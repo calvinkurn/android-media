@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -18,21 +17,24 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
-import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplySettingsStatusWidget
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplyStatisticsWidget
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,6 +49,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     private var talkSmartReplyStatisticsWidget: TalkSmartReplyStatisticsWidget? = null
     private var talkSmartReplySettingsLoading: View? = null
     private var talkSmartReplySettingsStatusWidget: TalkSmartReplySettingsStatusWidget? = null
+    private var talkSmartReplyTicker: Ticker? = null
 
     override fun getScreenName(): String {
         return ""
@@ -59,9 +62,9 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     override fun getComponent(): TalkSmartReplySettingsComponent? {
         return activity?.run {
             DaggerTalkSmartReplySettingsComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -75,8 +78,10 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         bindViewReferences(view)
         showLoading()
         observeSmartReplyData()
+        observeSmartReplyDecommissionConfig()
         setToolbarTitle()
         setupOnBackPressed()
+        setupTicker()
         onFragmentResult()
         setSmartReplyInfoClickListener()
     }
@@ -86,20 +91,31 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun observeSmartReplyData() {
-        viewModel.smartReplyData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    with(it.data) {
-                        updateStatisticsData(totalQuestion, totalAnsweredBySmartReply, replySpeed)
-                        updateIsSmartReplyOnLabel(isSmartReplyOn)
-                        hideLoading()
+        viewModel.smartReplyData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        with(it.data) {
+                            updateStatisticsData(totalQuestion, totalAnsweredBySmartReply, replySpeed)
+                            updateIsSmartReplyOnLabel(isSmartReplyOn)
+                            hideLoading()
+                        }
+                    }
+                    is Fail -> {
+                        showErrorToaster()
                     }
                 }
-                is Fail -> {
-                    showErrorToaster()
-                }
             }
-        })
+        )
+    }
+
+    private fun observeSmartReplyDecommissionConfig() {
+        viewModel.smartReplyDecommissionConfig.observe(viewLifecycleOwner) { config ->
+            talkSmartReplyTicker?.tickerTitle = config.tickerConfig.title
+            talkSmartReplyTicker?.setHtmlDescription(config.tickerConfig.text)
+            talkSmartReplyTicker?.showWithCondition(config.isSmartReviewDisabled)
+        }
     }
 
     private fun updateStatisticsData(totalQuestion: String, totalAnsweredBySmartReply: String, speed: String) {
@@ -109,21 +125,19 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     private fun updateIsSmartReplyOnLabel(isActive: Boolean) {
         talkSmartReplySettingsStatusWidget?.setOnClickListener {
             val cacheManagerId = putDataIntoCacheManager()
-            if(cacheManagerId.isNullOrEmpty()) {
+            if (cacheManagerId.isNullOrEmpty()) {
                 return@setOnClickListener
             }
             val destination = TalkSmartReplySettingsFragmentDirections.actionTalkSmartReplySettingsFragmentToTalkSmartReplyDetailFragment()
             destination.cacheManagerId = cacheManagerId
             NavigationController.navigate(this, destination)
         }
-        if(isActive) {
+        if (isActive) {
             talkSmartReplySettingsStatusWidget?.setActiveLabel()
             return
         }
         talkSmartReplySettingsStatusWidget?.setInactiveLabel()
     }
-
-
 
     private fun setToolbarTitle() {
         val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
@@ -143,27 +157,44 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     private fun showErrorToaster() {
         view?.let {
-            Toaster.build(it, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { viewModel.getSmartReplyData() }). show() }
+            Toaster.build(it, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { viewModel.getSmartReplyData() }).show()
+        }
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
             }
+        )
+    }
+
+    private fun setupTicker() {
+        talkSmartReplyTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
         })
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "") == TalkSellerSettingsConstants.VALUE_ADD_EDIT) {
-                    getSmartReplyData()
-                    showLoading()
+        getNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)?.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    if (it.getString(TalkSellerSettingsConstants.KEY_ACTION, "") == TalkSellerSettingsConstants.VALUE_ADD_EDIT) {
+                        getSmartReplyData()
+                        showLoading()
+                    }
                 }
+                removeNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)
             }
-            removeNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)
-        })
+        )
     }
 
     private fun getSmartReplyData() {
@@ -189,6 +220,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         talkSmartReplyStatisticsWidget = view.findViewById(R.id.talkSmartReplyStatisticsWidget)
         talkSmartReplySettingsStatusWidget = view.findViewById(R.id.talkSmartReplySettingsStatusWidget)
         talkSmartReplySettingsLoading = view.findViewById(R.id.talkSmartReplySettingsLoading)
+        talkSmartReplyTicker = view.findViewById(R.id.ticker_talk_smart_reply)
     }
-
 }

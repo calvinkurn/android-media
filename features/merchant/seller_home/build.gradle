@@ -33,6 +33,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     //features
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.internalReview)
@@ -79,6 +80,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

@@ -72,7 +72,8 @@ object ProductMapper {
                 notifyMeOOSCount = it.notifyMeOOSCount,
                 notifyMeOOSWording = it.notifyMeOOSWording,
                 isEmptyStock = it.isEmptyStock,
-                isStockGuaranteed = it.manageProductData.isStockGuaranteed
+                isStockGuaranteed = it.manageProductData.isStockGuaranteed,
+                isTobacco = it.manageProductData.isTobacco
             )
         } ?: emptyList()
     }

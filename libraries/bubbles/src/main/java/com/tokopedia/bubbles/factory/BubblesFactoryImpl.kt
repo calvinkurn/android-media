@@ -33,29 +33,31 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         builder: NotificationCompat.Builder,
         model: BubbleNotificationModel
     ) {
-        val pendingIntentBundle =
-            getPendingIntentBundle(model.notificationType, model.notificationId)
-        val pendingIntent = getPendingIntent(model.applinks, pendingIntentBundle)
         val icon = createBubbleIcon(model.avatarUrl)
-        val user = getBubblePerson(model.fullName)
-        val person = getBubblePerson(icon, model.fullName)
-        val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
-        val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
+        if (icon != null) {
+            val pendingIntentBundle =
+                getPendingIntentBundle(model.notificationType, model.notificationId)
+            val pendingIntent = getPendingIntent(model.applinks, pendingIntentBundle)
+            val user = getBubblePerson(model.fullName)
+            val person = getBubblePerson(icon, model.fullName)
+            val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
+            val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
 
-        BubblesTracker.sendImpressionTracking(
-            userSession.shopId,
-            model.shortcutId,
-            model.senderId
-        )
+            BubblesTracker.sendImpressionTracking(
+                userSession.shopId,
+                model.shortcutId,
+                model.senderId
+            )
 
-        builder
-            .setBubbleMetadata(bubbleMetadata)
-            .setLocusId(LocusIdCompat(model.shortcutId))
-            .setShortcutId(model.shortcutId)
-            .setCategory(Notification.CATEGORY_MESSAGE)
-            .addPerson(person)
-            .setStyle(messagingStyle)
-            .setWhen(model.sentTime)
+            builder
+                .setBubbleMetadata(bubbleMetadata)
+                .setLocusId(LocusIdCompat(model.shortcutId))
+                .setShortcutId(model.shortcutId)
+                .setCategory(Notification.CATEGORY_MESSAGE)
+                .addPerson(person)
+                .setStyle(messagingStyle)
+                .setWhen(model.sentTime)
+        }
     }
 
     override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel) {
@@ -142,7 +144,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
     }
 
     private fun getBubblePerson(
-        icon: IconCompat,
+        icon: IconCompat?,
         fullName: String
     ): Person {
         return Person.Builder()
@@ -151,9 +153,11 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             .build()
     }
 
-    private fun createBubbleIcon(avatarUrl: String): IconCompat {
+    private fun createBubbleIcon(avatarUrl: String): IconCompat? {
         val bitmap = BubblesUtils.getBitmap(context, avatarUrl, getBitmapWidth(), getBitmapHeight())
-        return IconCompat.createWithAdaptiveBitmap(bitmap)
+        return bitmap?.let {
+            IconCompat.createWithAdaptiveBitmap(it)
+        }
     }
 
     private fun getMessagingStyle(

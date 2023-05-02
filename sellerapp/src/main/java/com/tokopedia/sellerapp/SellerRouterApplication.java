@@ -15,12 +15,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -29,7 +27,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -71,6 +68,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -106,8 +104,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter {
-
-    private TetraDebugger tetraDebugger;
 
     protected RemoteConfig remoteConfig;
     protected CacheManager cacheManager;
@@ -147,8 +143,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initSeamlessLoginWorker();
+        initRefreshProfileWorker();
         return true;
     }
 
@@ -156,6 +152,13 @@ public abstract class SellerRouterApplication extends MainApplication implements
         UserSessionInterface userSession = new UserSession(context);
         if(userSession.isLoggedIn()) {
             TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initRefreshProfileWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 
@@ -194,19 +197,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void refreshFCMFromInstantIdService(String token) {
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
-    }
-
-    private void initTetraDebugger() {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(this);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
     }
 
     @Override
@@ -352,13 +342,18 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful() || task.getResult() == null) {
-                    gcmUpdateLegacy(sessionRefresh);
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    if (!TextUtils.isEmpty(token)) {
+                        fcmManager.get().onNewToken(token);
+                    } else {
+                        gcmUpdateLegacy(sessionRefresh);
+                    }
                 } else {
-                    fcmManager.get().onNewToken(task.getResult().getToken());
+                    gcmUpdateLegacy(sessionRefresh);
                 }
             }
         });
@@ -493,6 +488,16 @@ public abstract class SellerRouterApplication extends MainApplication implements
             }
             gcmUpdateComponent.inject(this);
         }
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        //Do nothing
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        //Do nothing
     }
 
 }

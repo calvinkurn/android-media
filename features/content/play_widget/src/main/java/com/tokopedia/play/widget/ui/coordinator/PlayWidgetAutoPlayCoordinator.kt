@@ -1,24 +1,29 @@
 package com.tokopedia.play.widget.ui.coordinator
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 21/10/20
  */
 class PlayWidgetAutoPlayCoordinator(
-        private val scope: CoroutineScope,
-        private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    private val scope: CoroutineScope,
+    private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : PlayWidgetInternalListener {
 
     private var autoPlayJob: Job? = null
@@ -52,22 +57,22 @@ class PlayWidgetAutoPlayCoordinator(
         videoPlayerMap.keys.forEach { it.restart() }
     }
 
-    fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+    private fun setupAutoplay(context: Context, config: PlayWidgetConfigUiModel, type: PlayWidgetType) {
         mConfig = config
 
         if (!config.autoPlay) {
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
-            return@synchronized
+            return
         }
 
         val maxAutoPlay = config.autoPlayAmount
 
         if (videoPlayerMap.size < maxAutoPlay) {
             videoPlayerMap.putAll(
-                    List(maxAutoPlay - videoPlayerMap.size) {
-                        PlayVideoPlayer(widget.context) to null
-                    }
+                List(maxAutoPlay - videoPlayerMap.size) {
+                    PlayVideoPlayer(context, type) to null
+                }
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
@@ -79,6 +84,26 @@ class PlayWidgetAutoPlayCoordinator(
         }
     }
 
+    // For PlayWidgetView
+    fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+        setupAutoplay(widget.context, config, type)
+    }
+
+    // For Small View
+    fun configureAutoPlaySmall(widget: PlayWidgetSmallView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+        setupAutoplay(widget.context, config, type)
+    }
+
+    // For Medium View
+    fun configureAutoPlayMedium(widget: PlayWidgetMediumView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+        setupAutoplay(widget.context, config, type)
+    }
+
+    // For Large View
+    fun configureAutoPlayLarge(widget: PlayWidgetLargeView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+        setupAutoplay(widget.context, config, type)
+    }
+
     private fun startAutoPlay(widgetCardsContainer: RecyclerView) {
         val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
         if (visibleCards.isEmpty()) return
@@ -87,9 +112,9 @@ class PlayWidgetAutoPlayCoordinator(
         autoPlayJob = scope.launch(mainCoroutineDispatcher) {
             delay(MAX_DELAY)
             val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
-                    visibleCards = visibleCards,
-                    itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                    maxAutoPlay = getMaxAutoPlayCard()
+                visibleCards = visibleCards,
+                itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
+                maxAutoPlay = getMaxAutoPlayCard()
             )
 
             videoPlayerMap.entries.forEach {
@@ -97,15 +122,15 @@ class PlayWidgetAutoPlayCoordinator(
             }
 
             autoPlayEligibleReceivers
-                    .filter { it.getPlayer() == null }
-                    .forEach {
-                        val nextIdlePlayer = getNextIdlePlayer()
+                .filter { it.getPlayer() == null }
+                .forEach {
+                    val nextIdlePlayer = getNextIdlePlayer()
 
-                        if (nextIdlePlayer != null) {
-                            it.setPlayer(nextIdlePlayer)
-                            videoPlayerMap[nextIdlePlayer] = it
-                        }
+                    if (nextIdlePlayer != null) {
+                        it.setPlayer(nextIdlePlayer)
+                        videoPlayerMap[nextIdlePlayer] = it
                     }
+                }
         }
     }
 
@@ -130,8 +155,11 @@ class PlayWidgetAutoPlayCoordinator(
 
             val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
                 val view = layoutManager.findViewByPosition(it)
-                if (view == null) null
-                else AutoPlayModel(view, it)
+                if (view == null) {
+                    null
+                } else {
+                    AutoPlayModel(view, it)
+                }
             }
 
             allVisibleViews

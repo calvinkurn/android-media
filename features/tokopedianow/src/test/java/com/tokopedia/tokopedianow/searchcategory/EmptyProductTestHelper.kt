@@ -47,7 +47,6 @@ class EmptyProductTestHelper(
 
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
-//        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
 
         callback.`Then assert empty result visitable list`(visitableList)
     }

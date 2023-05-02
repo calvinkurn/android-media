@@ -20,6 +20,7 @@ class EmptyStateUseCase @Inject constructor() {
             if (it.name == ComponentsList.ProductCardCarousel.componentName
                 || it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName
                 || it.name == ComponentsList.MerchantVoucherCarousel.componentName
+                || it.name == ComponentsList.ShopCardView.componentName
             )
                 it.shouldRefreshComponent = true
             getComponent(it.parentFilterComponentId?:it.parentComponentId, it.pageEndPoint)?.let { item ->

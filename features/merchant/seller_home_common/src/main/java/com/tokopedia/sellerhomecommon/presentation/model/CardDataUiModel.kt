@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 /**
@@ -7,17 +8,18 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
  */
 
 data class CardDataUiModel(
-    override var dataKey: String = "",
-    override var error: String = "",
+    override var dataKey: String = String.EMPTY,
+    override var error: String = String.EMPTY,
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
     override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
-    val description: String = "",
-    val secondaryDescription: String = "",
+    val description: String = String.EMPTY,
+    val secondaryDescription: String = String.EMPTY,
     val state: State = State.NORMAL,
-    val value: String = "",
+    val value: String = String.EMPTY,
     var previousValue: String? = null,
-    val badgeImageUrl: String = ""
+    val badgeImageUrl: String = String.EMPTY,
+    val appLink: String = String.EMPTY
 ) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.editshipping.util.EditShippingConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +81,10 @@ public class Courier implements Parcelable{
 
     public int getCourierWeight(){
         return Integer.parseInt(weight.replaceAll("[^0-9]", ""));
+    }
+
+    public boolean isWhitelabelService() {
+        return EditShippingConstant.INSTANCE.getWHITELABEL_SHIPPER_ID().contains(Long.parseLong(id));
     }
 
     public Map<String, String> getAdditionalOptionDatas(){

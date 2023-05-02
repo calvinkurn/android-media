@@ -121,20 +121,23 @@ object Telemetry {
 
     private var currStartTime = 0L
     private const val MAX_SECTION = 5
+    private val lock = Any()
 
     @JvmStatic
     fun addSection(eventName: String) {
-        if (telemetrySectionList.size >= MAX_SECTION) {
-            telemetrySectionList.removeLast()
-        }
-        currStartTime = System.currentTimeMillis()
-        telemetrySectionList.add(
-            0,
-            TelemetrySection(
-                eventName,
-                currStartTime
+        synchronized(lock) {
+            if (telemetrySectionList.size >= MAX_SECTION) {
+                telemetrySectionList.removeLast()
+            }
+            currStartTime = System.currentTimeMillis()
+            telemetrySectionList.add(
+                0,
+                TelemetrySection(
+                    eventName,
+                    currStartTime
+                )
             )
-        )
+        }
     }
 
     fun getCurrentSectionName(): String {
@@ -147,18 +150,22 @@ object Telemetry {
 
     @JvmStatic
     fun addStopTime(eventNameStop: String = "", timeStop: Long = System.currentTimeMillis()) {
-        if (telemetrySectionList.isEmpty()) return
-        for (telemetrySection in telemetrySectionList) {
-            if (telemetrySection.endTime == 0L) {
-                if (timeStop - telemetrySection.startTime > SECTION_TELEMETRY_DURATION) {
-                    telemetrySection.endTime =
-                        telemetrySection.startTime + SECTION_TELEMETRY_DURATION;
-                } else {
-                    telemetrySection.endTime = timeStop
+        synchronized(lock) {
+            if (telemetrySectionList.isEmpty()) return
+            val sizeList = telemetrySectionList.size
+            for (i in 0 until sizeList) {
+                val telemetrySection = telemetrySectionList[i]
+                if (telemetrySection.endTime == 0L) {
+                    if (timeStop - telemetrySection.startTime > SECTION_TELEMETRY_DURATION) {
+                        telemetrySection.endTime =
+                            telemetrySection.startTime + SECTION_TELEMETRY_DURATION
+                    } else {
+                        telemetrySection.endTime = timeStop
+                    }
                 }
-            }
-            if (telemetrySection.eventNameEnd.isEmpty()) {
-                telemetrySection.eventNameEnd = eventNameStop
+                if (telemetrySection.eventNameEnd.isEmpty()) {
+                    telemetrySection.eventNameEnd = eventNameStop
+                }
             }
         }
     }
@@ -223,12 +230,11 @@ object Telemetry {
     fun addTyping(diffChar: Int) {
         try {
             val typingList = telemetrySectionList[0].typingList
-            val elapsedDiff = getElapsedDiff();
+            val elapsedDiff = getElapsedDiff()
             if (elapsedDiff < SECTION_TELEMETRY_DURATION) {
                 typingList.add(Typing(elapsedDiff, diffChar))
             }
         } catch (ignored: Exception) {
         }
     }
-
 }

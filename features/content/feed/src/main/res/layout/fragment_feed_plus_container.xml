@@ -7,6 +7,16 @@
     android:orientation="vertical"
     android:background="@color/Unify_Background">
 
+    <View
+        android:id="@+id/transparent_overlay_coachmark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp"
+        android:clickable="true"
+        android:background="@color/transparent"
+        android:visibility="visible"/>
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feed_appbar"
         android:layout_width="match_parent"
@@ -89,7 +99,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+        <com.tokopedia.feedplus.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
             android:visibility="gone"
             android:layout_width="match_parent"

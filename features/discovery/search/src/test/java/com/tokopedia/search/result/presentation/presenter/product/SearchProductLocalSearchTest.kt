@@ -232,18 +232,14 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
-        verify {
-            viewUpdater.appendItems(capture(visitableListSlot))
-        }
-
         val visitableList = visitableListSlot.captured
-        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
+        visitableList[1].shouldBeInstanceOf<SuggestionDataView>()
 
         val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchDataView }
-        index shouldBe 1
+        index shouldBe 2
 
         repeat(otherRelated.size) {
             val visitable = visitableList[index]
@@ -321,6 +317,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptyStateDataView.globalSearchApplink shouldBe ""
         emptyStateDataView.keyword shouldBe keyword
         emptyStateDataView.pageTitle shouldBe ""
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
     }
 
     private fun `Then verify get local search recommendation is not called`() {

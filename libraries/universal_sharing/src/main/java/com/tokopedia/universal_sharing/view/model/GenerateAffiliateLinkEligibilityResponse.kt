@@ -22,7 +22,25 @@ data class EligibleCommission (
     var amount: String? = "",
 
     @SerializedName("Message")
-    var message: String? = ""
+    var message: String? = "",
+
+    @SerializedName("Badge")
+    val badge: String? = "",
+
+    @SerializedName("ExpiredDate")
+    val expiredDate: String? = "",
+
+    @SerializedName("ExpiredDateFormatted")
+    val expiredDateFormatted: String? = "",
+
+    @SerializedName("SellerAmount")
+    val sellerAmount: String? = "",
+
+    @SerializedName("SellerAmountFormatted")
+    val sellerAmountFormatted: String? = "",
+
+    @SerializedName("SsaStatus")
+    val ssaStatus: Boolean? = false
 )
 
 data class Banner (

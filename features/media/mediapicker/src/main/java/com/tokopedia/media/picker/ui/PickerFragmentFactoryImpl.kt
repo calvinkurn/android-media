@@ -7,9 +7,12 @@ import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 
 class PickerFragmentFactoryImpl constructor(
-    private val fragmentManager: FragmentManager,
+    private val mFragmentManager: FragmentManager,
     private val classLoader: ClassLoader
 ) : PickerFragmentFactory {
+
+    override val fragmentManager: FragmentManager
+        get() = mFragmentManager
 
     override fun permissionFragment(): Fragment {
         return fragmentCreation(

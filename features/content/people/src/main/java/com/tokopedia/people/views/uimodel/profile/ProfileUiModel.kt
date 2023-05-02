@@ -14,6 +14,8 @@ data class ProfileUiModel(
     val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
     val liveInfo: LivePlayChannelUiModel,
+    val isBlocking: Boolean,
+    val isBlockedBy: Boolean,
 ) {
 
     companion object {
@@ -29,6 +31,8 @@ data class ProfileUiModel(
                 stats = ProfileStatsUiModel.Empty,
                 shareLink = LinkUiModel.Empty,
                 liveInfo = LivePlayChannelUiModel.Empty,
+                isBlocking = false,
+                isBlockedBy = false,
             )
     }
 }

@@ -96,11 +96,13 @@ object RealTimeRecomMapper {
     }
 
     private fun MutableList<HomeLayoutItemUiModel?>.getProductRecomItem(channelId: String): HomeProductRecomUiModel? {
-        return mapNotNull { it?.layout }.filterIsInstance<HomeProductRecomUiModel>().firstOrNull { it.id == channelId }
+        return firstOrNull { (it?.layout is HomeProductRecomUiModel && it.layout.id == channelId) }
+            ?.layout as? HomeProductRecomUiModel
     }
 
     private fun MutableList<HomeLayoutItemUiModel?>.getLeftAtcItem(channelId: String): HomeLeftCarouselAtcUiModel? {
-        return mapNotNull { it?.layout }.filterIsInstance<HomeLeftCarouselAtcUiModel>().firstOrNull { it.id == channelId }
+        return firstOrNull { (it?.layout is HomeLeftCarouselAtcUiModel && it.layout.id == channelId) }
+            ?.layout as? HomeLeftCarouselAtcUiModel
     }
 
     private fun HomeProductRecomUiModel.getRecomItem(productId: String?): HomeRealTimeRecomProductUiModel? {

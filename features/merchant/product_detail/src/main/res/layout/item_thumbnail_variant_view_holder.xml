@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/thumb_variant_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/thumb_variant_top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_component"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/thumb_variant_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/thumb_variant_see_more"
+        app:layout_constraintEnd_toStartOf="@id/thumb_variant_see_more"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/thumb_variant_see_more"
+        app:typographyType="display_3"
+        tools:text="5 warna, 2 ukuran." />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/thumb_variant_see_more"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thumb_variant_top_separator" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/thumb_variant_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/thumb_variant_see_more"
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/item_thumbnail_variant" />
+</androidx.constraintlayout.widget.ConstraintLayout>

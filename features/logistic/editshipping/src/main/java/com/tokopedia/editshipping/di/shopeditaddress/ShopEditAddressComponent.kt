@@ -7,6 +7,6 @@ import dagger.Component
 
 @ActivityScope
 @Component(modules = [ShopEditAddressModule::class, ShopEditAddressViewModelModule::class], dependencies = [BaseAppComponent::class])
-interface ShopEditAddressComponent{
-    fun inject (shopEditAddressFragment: ShopEditAddressFragment)
+interface ShopEditAddressComponent {
+    fun inject(shopEditAddressFragment: ShopEditAddressFragment)
 }

@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
@@ -19,7 +18,6 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -38,17 +36,21 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by misael on 05/01/22
  * */
-class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class RechargeClientNumberWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private var binding: WidgetRechargeClientNumberBinding = WidgetRechargeClientNumberBinding.inflate(
-        LayoutInflater.from(context), this)
+        LayoutInflater.from(context),
+        this
+    )
 
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
@@ -70,7 +72,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private fun initInputField() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
             clearIconView.setOnClickListener {
-                this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon()})
+                this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon() })
             }
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
         }
@@ -88,7 +90,12 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-
+                        removeTextChangedListener(this)
+                        s?.let {
+                            val formattedText = customInputNumberFormatter?.invoke(it.toString()) ?: it.toString()
+                            it.replace(0, it.length, formattedText)
+                        }
+                        addTextChangedListener(this)
                     }
 
                     override fun beforeTextChanged(
@@ -97,7 +104,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                         count: Int,
                         after: Int
                     ) {
-
                     }
 
                     override fun onTextChanged(
@@ -162,6 +168,24 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSeeAll.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                )
+                setOnClickListener {
+                    mFilterChipListener?.onClickIcon(true)
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
+
         // create each chip
         for (number in favnum) {
             val sortFilterItem = if (number.clientName.isEmpty()) {
@@ -186,31 +210,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             sortFilter.add(sortFilterItem)
         }
 
-        // create extra chip for navigation
-        val sortFilterItem = SortFilterItem(
-            "",
-            type = ChipsUnify.TYPE_ALTERNATE
-        )
-        sortFilterItem.listener = {
-            mFilterChipListener?.onClickIcon(true)
-        }
-        sortFilter.add(sortFilterItem)
-
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
-
-        // init navigation chip's icon & color
-        val chevronRight = IconUnify(
-            context, IconUnify.VIEW_LIST,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-        chevronRight.layoutParams = ViewGroup.LayoutParams(
-            getDimens(unifyDimens.layout_lvl3),
-            getDimens(unifyDimens.layout_lvl3)
-        )
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
-            last()?.refChipUnify?.addCustomView(chevronRight)
     }
 
-    private fun onClickClearIcon(){
+    private fun onClickClearIcon() {
         clearErrorState()
         hideOperatorIcon()
         mInputFieldListener?.onClearInput()
@@ -224,7 +227,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         autoCompleteAdapter?.updateItems(
             suggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
-            }.toMutableList())
+            }.toMutableList()
+        )
     }
 
     fun setInputFieldType(type: InputFieldType) {
@@ -248,8 +252,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun setInputNumber(inputNumber: String) {
-        val number = customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(number)
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(inputNumber)
     }
 
     fun getInputNumber(): String {
@@ -307,7 +310,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun setVisibleSimplifiedLayout(show: Boolean) {
-        with (binding) {
+        with(binding) {
             includeLayout.clientNumberSimplifiedLabel.text =
                 binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint
             includeLayout.clientNumberSimplifiedPhoneNumber.text = getInputNumber()
@@ -337,7 +340,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun showOperatorIcon(url: String) {
-        with (binding) {
+        with(binding) {
             clientNumberWidgetOperatorGroup.show()
             clientNumberWidgetOperatorIcon.loadImage(url)
             includeLayout.clientNumberSimplifiedOperatorIcon.loadImage(url)
@@ -345,7 +348,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun hideOperatorIcon() {
-        with (binding) {
+        with(binding) {
             clientNumberWidgetOperatorGroup.invisible()
         }
     }
@@ -371,7 +374,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun startShakeAnimation() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
-            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim)
+        )
     }
 
     private fun View.animateFadeInThenShow() {
@@ -387,7 +391,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     private fun View.animateFadeOutThenGone() {
-
         val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
         fadeOut.interpolator = AccelerateInterpolator()
         fadeOut.duration = FADE_DURATION
@@ -400,7 +403,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     private fun View.animateFadeOutThenInvisible() {
-
         val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
         fadeOut.interpolator = AccelerateInterpolator()
         fadeOut.duration = FADE_DURATION
@@ -416,5 +418,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         private const val FADE_DURATION = 200L
         private const val ALPHA_0_5 = 0.5f
         private const val ALPHA_1_0 = 1.0f
+
+        private const val DEFAULT_EMPTY_STRING = ""
     }
 }

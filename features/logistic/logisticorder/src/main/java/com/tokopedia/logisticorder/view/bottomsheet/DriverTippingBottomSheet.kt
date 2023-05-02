@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
@@ -41,10 +42,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
-class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
+class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,21 +72,25 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         isKeyboardOverlap = false
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        iniInjector()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        iniInjector()
         initChildLayout()
         setInitialViewState()
         initObserver()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-   private fun iniInjector() {
-       component.inject(this)
-   }
+    private fun iniInjector() {
+        component.inject(this)
+    }
 
     private fun initChildLayout() {
         binding = BottomsheetTippingGojekBinding.inflate(LayoutInflater.from(context))
@@ -107,21 +111,23 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             .build()
     }
 
-
     private fun initObserver() {
-        viewModel.driverTipData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    setDriverTipLayout(it.data)
-                }
+        viewModel.driverTipData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        setDriverTipLayout(it.data)
+                    }
 
-                is Fail -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    showSoftError(it.throwable)
+                    is Fail -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        showSoftError(it.throwable)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun setDriverTipLayout(logisticDriverModel: LogisticDriverModel) {
@@ -144,7 +150,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.rvChipsTip.apply {
                     layoutManager = chipsLayoutManagerTipping
                     adapter = tippingValueAdapter
-                    addItemDecoration( object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
+                    addItemDecoration(object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
                             val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
@@ -152,7 +158,6 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                         }
                     })
                 }
-
 
                 binding.tickerTippingGojek.apply {
                     descriptionView.elevation = 2f
@@ -204,12 +209,11 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                         setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     }
                 }
-
             }
         }
     }
 
-    private fun setTippingDescription(descriptionList: List<String>) : CharSequence {
+    private fun setTippingDescription(descriptionList: List<String>): CharSequence {
         val description = descriptionList.joinToString("\n")
         val result = SpannableString(description)
         var last = 0
@@ -224,7 +228,6 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun setWrapperWatcherTipping(wrapper: TextInputLayout, minAmount: Int, maxAmount: Int): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -244,7 +247,6 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             }
 
             override fun afterTextChanged(text: Editable) {
-
             }
         }
     }

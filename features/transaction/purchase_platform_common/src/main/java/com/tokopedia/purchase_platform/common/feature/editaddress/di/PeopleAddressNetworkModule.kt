@@ -40,21 +40,22 @@ class PeopleAddressNetworkModule {
 
     @Provides
     @PeopleAddressQualifier
-    fun providePeopleApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     tkpdAuthInterceptor: TkpdAuthInterceptor,
-                                     okHttpRetryPolicy: OkHttpRetryPolicy,
-                                     fingerprintInterceptor: FingerprintInterceptor,
-                                     chuckInterceptor: ChuckerInterceptor): OkHttpClient {
-
+    fun providePeopleApiOkHttpClient(
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        okHttpRetryPolicy: OkHttpRetryPolicy,
+        fingerprintInterceptor: FingerprintInterceptor,
+        chuckInterceptor: ChuckerInterceptor
+    ): OkHttpClient {
         val builder = OkHttpClient.Builder()
-                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
+            .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+            .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(fingerprintInterceptor)
+            .addInterceptor(tkpdAuthInterceptor)
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(chuckInterceptor)
+                .addInterceptor(chuckInterceptor)
         }
         return builder.build()
     }
@@ -63,13 +64,13 @@ class PeopleAddressNetworkModule {
     @PeopleAddressQualifier
     fun providePeopleApiRetrofit(@PeopleAddressQualifier okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(TokopediaUrl.getInstance().WS)
-                .addConverterFactory(TokopediaWsV4ResponseConverter())
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
+            .baseUrl(TokopediaUrl.getInstance().WS)
+            .addConverterFactory(TokopediaWsV4ResponseConverter())
+            .addConverterFactory(StringResponseConverter())
+            .addConverterFactory(GsonConverterFactory.create(Gson()))
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
     }
 
     @Provides
@@ -81,5 +82,4 @@ class PeopleAddressNetworkModule {
     fun providePeopleAddressRepository(peopleActApi: PeopleActApi): AddressRepository {
         return AddressRepositoryImpl(peopleActApi)
     }
-
 }

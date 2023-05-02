@@ -41,7 +41,7 @@ public class GetKolCommentFirstTimeSubscriber extends rx.Subscriber<KolComments>
     @Override
     public void onNext(KolComments kolComments) {
         viewListener.removeLoading();
-        viewListener.updateCursor(kolComments.getLastcursor());
+        viewListener.updateCursor(kolComments.getLastCursor());
         viewListener.onSuccessGetCommentsFirstTime(kolComments);
     }
 }

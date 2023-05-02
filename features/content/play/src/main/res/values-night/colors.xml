@@ -6,5 +6,6 @@
     <color name="play_dms_variant_sheet_divider">#40454C</color>
 
     <color name="play_dms_discount_price">#EE7484</color>
+    <color name="play_dms_explore_widget_icon_bg">#B32E3137</color>
 
 </resources>

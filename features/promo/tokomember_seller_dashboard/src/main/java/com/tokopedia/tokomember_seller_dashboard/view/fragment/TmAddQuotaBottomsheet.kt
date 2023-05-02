@@ -109,7 +109,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-                    view?.let { it1 -> Toaster.build(it1, it.error?.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+                    view?.rootView?.let { it1 -> Toaster.build(it1, it.error?.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
                 }
             }
         })
@@ -122,7 +122,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                         dismiss()
                     }
                     else{
-                        view?.let { it1 -> it.data?.merchantPromotionUpdateMVQuota?.message?.let { it2 ->
+                        view?.rootView?.let { it1 -> it.data?.merchantPromotionUpdateMVQuota?.message?.let { it2 ->
                             Toaster.build(it1,
                                 it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                         } }
@@ -133,7 +133,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-                    view?.let { it1 -> Toaster.build(it1, "Something went wrong", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    view?.rootView?.let { it1 -> Toaster.build(it1, "Something went wrong", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
         })

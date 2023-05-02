@@ -121,20 +121,26 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             awbInfoUiModel = mapAwbInfoUiModel(
-                shipment.shippingRefNum, orderStatusId, orderId, resourceProvider
+                shipment.shippingRefNum,
+                orderStatusId,
+                orderId,
+                resourceProvider
             ),
-            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
+            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(
-                driverTippingInfo, resourceProvider
+                driverTippingInfo,
+                resourceProvider
             ),
             courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo, userSession, orderId),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship, resourceProvider),
             headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(
-                shipment.receiver, resourceProvider
+                shipment.receiver,
+                resourceProvider
             ),
             ticker = mapTicker(
-                shipment.shippingInfo, BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
+                shipment.shippingInfo,
+                BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
             )
         )
     }
@@ -151,19 +157,35 @@ object ShipmentInfoUiStateMapper {
             copyableText = shippingRefNum,
             copyLabel = mapStringRes(resourceProvider.getCopyLabelAwb()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageAwb()),
-            label = mapStringRes(resourceProvider.getAwbLabel()),
+            label = mapStringRes(resourceProvider.getAwbLabel())
         )
     }
 
     private fun mapCourierDriverInfoUiModel(
-        driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver
+        shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment
     ): ShipmentInfoUiModel.CourierDriverInfoUiModel {
+        val driver = shipment.driver
+        val buttonList = mapDriverButtonUiModel(shipment.buttons)
         return ShipmentInfoUiModel.CourierDriverInfoUiModel(
             name = driver.name,
             phoneNumber = driver.phone,
             photoUrl = driver.photoUrl,
-            plateNumber = driver.licenseNumber
+            plateNumber = driver.licenseNumber,
+            buttonList = buttonList
         )
+    }
+
+    private fun mapDriverButtonUiModel(
+        buttons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Button>
+    ): List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> {
+        return buttons.map { button ->
+            ShipmentInfoUiModel.CourierDriverInfoUiModel.Button(
+                key = button.key,
+                icon = button.icon,
+                actionValue = button.actionType,
+                value = button.value
+            )
+        }
     }
 
     private fun mapDriverTippingInfoUiModel(
@@ -200,31 +222,33 @@ object ShipmentInfoUiStateMapper {
         orderId: String,
         userSession: UserSessionInterface
     ): ShipmentInfoUiModel.CourierInfoUiModel.Pod? {
-        return podInfo?.let {
-            Uri.parse(it.imageUrl).getQueryParameter(QUERY_PARAM_POD_IMAGE_ID)?.let { imageId ->
-                val completeImageUrl = LogisticImageDeliveryHelper.getDeliveryImage(
-                    imageId,
-                    orderId.toLongOrZero(),
-                    IMAGE_SMALL_SIZE,
-                    userSession.userId,
-                    DEFAULT_OS_TYPE,
-                    userSession.deviceId
-                )
-                ShipmentInfoUiModel.CourierInfoUiModel.Pod(
-                    podPictureUrl = completeImageUrl,
-                    podLabel = it.title,
-                    podCtaText = it.action.name,
-                    podCtaUrl = it.action.link,
-                    accessToken = userSession.accessToken
-                )
+        return runCatching {
+            podInfo?.let {
+                Uri.parse(it.imageUrl).getQueryParameter(QUERY_PARAM_POD_IMAGE_ID)?.let { imageId ->
+                    val completeImageUrl = LogisticImageDeliveryHelper.getDeliveryImage(
+                        imageId,
+                        orderId.toLongOrZero(),
+                        IMAGE_SMALL_SIZE,
+                        userSession.userId,
+                        DEFAULT_OS_TYPE,
+                        userSession.deviceId
+                    )
+                    ShipmentInfoUiModel.CourierInfoUiModel.Pod(
+                        podPictureUrl = completeImageUrl,
+                        podLabel = it.title,
+                        podCtaText = it.action.name,
+                        podCtaUrl = it.action.link,
+                        accessToken = userSession.accessToken
+                    )
+                }
+            }?.takeIf {
+                it.podPictureUrl.isNotBlank() &&
+                    it.podLabel.isNotBlank() &&
+                    it.podCtaText.isNotBlank() &&
+                    it.podCtaUrl.isNotBlank() &&
+                    it.accessToken.isNotBlank()
             }
-        }?.takeIf {
-            it.podPictureUrl.isNotBlank() &&
-                it.podLabel.isNotBlank() &&
-                it.podCtaText.isNotBlank() &&
-                it.podCtaUrl.isNotBlank() &&
-                it.accessToken.isNotBlank()
-        }
+        }.getOrNull()
     }
 
     private fun mapDropShipperInfoUiModel(

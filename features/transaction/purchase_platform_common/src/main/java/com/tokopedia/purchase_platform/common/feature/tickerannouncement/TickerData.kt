@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TickerData(
-        var id: String = "",
-        var message: String = "",
-        var page: String = "",
-        var title: String = ""
+    var id: String = "",
+    var message: String = "",
+    var page: String = "",
+    var title: String = ""
 ) : Parcelable {
 
     fun isValid(page: String?): Boolean {

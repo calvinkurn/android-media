@@ -42,40 +42,52 @@ class BottomSheetCreateNewCollectionViewModelTest {
     lateinit var createWishlistCollectionUseCase: CreateWishlistCollectionUseCase
 
     private var getWishlistCollectionNamesResponseDataStatusOkAndErrorMessageIsEmpty = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = emptyList()))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = emptyList())
+    )
 
     private var getWishlistCollectionNamesResponseDataStatusOkAndErrorMessageIsNotEmpty = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = listErrorMessage))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = listErrorMessage)
+    )
 
     private var getWishlistCollectionNamesResponseDataStatusErrorAndErrorMessageIsEmpty = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = emptyList()))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = emptyList())
+    )
 
     private var getWishlistCollectionNamesResponseDataStatusErrorAndErrorMessageIsNotEmpty = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = listErrorMessage))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = listErrorMessage)
+    )
 
     private var addWishlistCollectionItemsResponseDataStatusOkAndErrorMessageIsEmpty = AddWishlistCollectionItemsResponse(
-        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "OK", errorMessage = emptyList()))
+        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "OK", errorMessage = emptyList())
+    )
 
     private var addWishlistCollectionItemsResponseDataStatusOkAndErrorMessageIsNotEmpty = AddWishlistCollectionItemsResponse(
-        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "OK", errorMessage = listErrorMessage))
+        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "OK", errorMessage = listErrorMessage)
+    )
 
     private var addWishlistCollectionItemsResponseDataStatusErrorAndErrorMessageIsEmpty = AddWishlistCollectionItemsResponse(
-        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "ERROR", errorMessage = emptyList()))
+        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "ERROR", errorMessage = emptyList())
+    )
 
     private var addWishlistCollectionItemsResponseDataStatusErrorAndErrorMessageIsNotEmpty = AddWishlistCollectionItemsResponse(
-        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "ERROR", errorMessage = listErrorMessage))
+        addWishlistCollectionItems = AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(status = "ERROR", errorMessage = listErrorMessage)
+    )
 
     private var createWishlistCollectionResponseDataStatusOkAndErrorMessageIsEmpty = CreateWishlistCollectionResponse(
-        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "OK", errorMessage = emptyList()))
+        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "OK", errorMessage = emptyList())
+    )
 
     private var createWishlistCollectionResponseDataStatusOkAndErrorMessageIsNotEmpty = CreateWishlistCollectionResponse(
-        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "OK", errorMessage = listErrorMessage))
+        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "OK", errorMessage = listErrorMessage)
+    )
 
     private var createWishlistCollectionResponseDataStatusErrorAndErrorMessageIsEmpty = CreateWishlistCollectionResponse(
-        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "ERROR", errorMessage = emptyList()))
+        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "ERROR", errorMessage = emptyList())
+    )
 
     private var createWishlistCollectionResponseDataStatusErrorAndErrorMessageIsNotEmpty = CreateWishlistCollectionResponse(
-        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "ERROR", errorMessage = listErrorMessage))
+        createWishlistCollection = CreateWishlistCollectionResponse.CreateWishlistCollection(status = "ERROR", errorMessage = listErrorMessage)
+    )
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -100,214 +112,214 @@ class BottomSheetCreateNewCollectionViewModelTest {
 
     @Test
     fun `Execute GetWishlistCollectionsNames Success Status OK And Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
         } returns getWishlistCollectionNamesResponseDataStatusOkAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.getWishlistCollectionNames()
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.collectionNames.value is Success)
         assert((bottomSheetCreateNewCollectionViewModel.collectionNames.value as Success).data.status == "OK")
     }
 
     @Test
     fun `Execute GetWishlistCollectionsNames Success Status OK And Error Message is Not Empty`() {
-        //given
+        // given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
         } returns getWishlistCollectionNamesResponseDataStatusOkAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.getWishlistCollectionNames()
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.collectionNames.value is Fail)
     }
 
     @Test
     fun `Execute GetWishlistCollectionsBottomSheet Success Status ERROR and Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
         } returns getWishlistCollectionNamesResponseDataStatusErrorAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.getWishlistCollectionNames()
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.collectionNames.value is Fail)
     }
 
     @Test
     fun `Execute GetWishlistCollectionsBottomSheet Success Status ERROR and Error Message is not Empty`() {
-        //given
+        // given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
         } returns getWishlistCollectionNamesResponseDataStatusErrorAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.getWishlistCollectionNames()
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.collectionNames.value is Fail)
     }
 
     @Test
     fun `Execute GetWishlistCollectionsBottomSheet Failed`() {
-        //given
+        // given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
         } throws throwable.throwable
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.getWishlistCollectionNames()
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.collectionNames.value is Fail)
     }
 
     @Test
     fun `Execute SaveToWishlistCollection Success Status OK And Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             addWishlistCollectionItemsUseCase(addWishlistCollectionsHostBottomSheetParams)
         } returns addWishlistCollectionItemsResponseDataStatusOkAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.saveNewWishlistCollection(addWishlistCollectionsHostBottomSheetParams)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value is Success)
         assert((bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value as Success).data.status == "OK")
     }
 
     @Test
     fun `Execute SaveToWishlistCollection Success Status OK And Error Message is Not Empty`() {
-        //given
+        // given
         coEvery {
             addWishlistCollectionItemsUseCase(addWishlistCollectionsHostBottomSheetParams)
         } returns addWishlistCollectionItemsResponseDataStatusOkAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.saveNewWishlistCollection(addWishlistCollectionsHostBottomSheetParams)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value is Fail)
     }
 
     @Test
     fun `Execute SaveToWishlistCollection Success Status ERROR And Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             addWishlistCollectionItemsUseCase(addWishlistCollectionsHostBottomSheetParams)
         } returns addWishlistCollectionItemsResponseDataStatusErrorAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.saveNewWishlistCollection(addWishlistCollectionsHostBottomSheetParams)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value is Fail)
     }
 
     @Test
     fun `Execute SaveToWishlistCollection Success Status ERROR And Error Message is not Empty`() {
-        //given
+        // given
         coEvery {
             addWishlistCollectionItemsUseCase(addWishlistCollectionsHostBottomSheetParams)
         } returns addWishlistCollectionItemsResponseDataStatusErrorAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.saveNewWishlistCollection(addWishlistCollectionsHostBottomSheetParams)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value is Fail)
     }
 
     @Test
     fun `Execute SaveToWishlistCollection Failed`() {
-        //given
+        // given
         coEvery {
             addWishlistCollectionItemsUseCase(addWishlistCollectionsHostBottomSheetParams)
         } throws throwable.throwable
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.saveNewWishlistCollection(addWishlistCollectionsHostBottomSheetParams)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.addWishlistCollectionItem.value is Fail)
     }
 
     @Test
     fun `Execute CreateWishlistCollection Success Status OK And Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             createWishlistCollectionUseCase(paramNewCollectionName)
         } returns createWishlistCollectionResponseDataStatusOkAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.createNewWishlistCollection(paramNewCollectionName)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value is Success)
         assert((bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value as Success).data.status == "OK")
     }
 
     @Test
     fun `Execute CreateWishlistCollection Success Status OK And Error Message is not Empty`() {
-        //given
+        // given
         coEvery {
             createWishlistCollectionUseCase(paramNewCollectionName)
         } returns createWishlistCollectionResponseDataStatusOkAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.createNewWishlistCollection(paramNewCollectionName)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value is Fail)
     }
 
     @Test
     fun `Execute CreateWishlistCollection Success Status ERROR And Error Message is Empty`() {
-        //given
+        // given
         coEvery {
             createWishlistCollectionUseCase(paramNewCollectionName)
         } returns createWishlistCollectionResponseDataStatusErrorAndErrorMessageIsEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.createNewWishlistCollection(paramNewCollectionName)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value is Fail)
     }
 
     @Test
     fun `Execute CreateWishlistCollection Success Status ERROR And Error Message is Not Empty`() {
-        //given
+        // given
         coEvery {
             createWishlistCollectionUseCase(paramNewCollectionName)
         } returns createWishlistCollectionResponseDataStatusErrorAndErrorMessageIsNotEmpty
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.createNewWishlistCollection(paramNewCollectionName)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value is Fail)
     }
 
     @Test
     fun `Execute CreateWishlistCollection Failed`() {
-        //given
+        // given
         coEvery {
             createWishlistCollectionUseCase(paramNewCollectionName)
         } throws throwable.throwable
 
-        //when
+        // when
         bottomSheetCreateNewCollectionViewModel.createNewWishlistCollection(paramNewCollectionName)
 
-        //then
+        // then
         assert(bottomSheetCreateNewCollectionViewModel.createWishlistCollectionResult.value is Fail)
     }
 }

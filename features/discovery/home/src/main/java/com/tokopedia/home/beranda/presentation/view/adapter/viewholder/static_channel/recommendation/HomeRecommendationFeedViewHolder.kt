@@ -51,9 +51,9 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
         // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
         layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
-                8f.toDpInt() +
-                1f.toDpInt() +
-                8f.toDpInt()
+                HEIGHT_8.toDpInt() +
+                HEIGHT_8.toDpInt() +
+                HEIGHT_8.toDpInt()
         container?.layoutParams = layoutParams
 
         recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel
@@ -141,5 +141,6 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         val LAYOUT = R.layout.home_recommendation_feed_viewholder
         private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
         private const val DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10
+        private const val HEIGHT_8 = 8f
     }
 }

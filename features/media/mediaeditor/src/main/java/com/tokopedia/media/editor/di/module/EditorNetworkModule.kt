@@ -3,6 +3,8 @@ package com.tokopedia.media.editor.di.module
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.media.editor.data.EditorNetworkServices
 import com.tokopedia.media.editor.di.EditorQualifier
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -20,6 +22,16 @@ object EditorNetworkModule {
 
     private const val BASE_URL = "https://mu.tokopedia.com/"
     private const val DEFAULT_TIMEOUT = 60
+
+    @Provides
+    @ActivityScope
+    fun provideImageUploaderServices(
+        @EditorQualifier retrofit: Retrofit.Builder,
+        @EditorQualifier okHttpClient: OkHttpClient.Builder
+    ): EditorNetworkServices {
+        val services = retrofit.client(okHttpClient.build()).build()
+        return services.create(EditorNetworkServices::class.java)
+    }
 
     @Provides
     @EditorQualifier
@@ -51,5 +63,4 @@ object EditorNetworkModule {
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
     }
-
 }

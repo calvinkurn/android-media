@@ -34,6 +34,7 @@ import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.contactus.createticket.utilities.CreateTicketProgressDialog;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.contactus.createticket.widget.LinearLayoutManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;

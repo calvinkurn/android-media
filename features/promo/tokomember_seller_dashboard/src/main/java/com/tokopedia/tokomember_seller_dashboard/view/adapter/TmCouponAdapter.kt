@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.model.CouponItem
 import com.tokopedia.tokomember_seller_dashboard.model.LayoutType
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
@@ -18,7 +19,8 @@ class TmCouponAdapter(
     val fragmentManager: FragmentManager,
     val tmCouponActions: TmCouponActions,
     private val callback:TmCouponDetailCallback?,
-    private val tmTracker: TmTracker?
+    private val tmTracker: TmTracker?,
+    private val tmCouponListRefreshCallback: TmCouponListRefreshCallback
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -38,7 +40,7 @@ class TmCouponAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is TmCouponVh)
-        holder.bind(vouchersItemList[position].coupon, tmCouponActions,callback,tmTracker)
+        holder.bind(vouchersItemList[position].coupon, tmCouponActions,callback,tmTracker, tmCouponListRefreshCallback)
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -15,7 +15,9 @@ data class ConsentGroupListDataModel(
     @SerializedName("errorMessages")
     val errorMessages: List<String> = listOf(),
     @SerializedName("groups")
-    val groups: List<ConsentGroupDataModel> = listOf()
+    val groups: List<ConsentGroupDataModel> = listOf(),
+    @SerializedName("ticker")
+    val ticker: String = ""
 )
 
 data class ConsentGroupDataModel(

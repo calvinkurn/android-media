@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
         android:text="@string/sob_slider_title_message"
-        android:textColor="@color/Unify_NN950"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -31,7 +31,7 @@ class GetRecommendationPostUseCase @Inject constructor(
         setRequestParams(map)
     }
     suspend fun execute(cursor: String = "", limit: Int = 5, activityId: String):
-            FeedXPostRecommendationData {
+        FeedXPostRecommendationData {
         this.setParams(cursor, limit, activityId)
         return executeOnBackground()
     }
@@ -142,6 +142,7 @@ class GetRecommendationPostUseCase @Inject constructor(
               ... on FeedXCardProductsHighlight {
                     id
                     type
+                    hasVoucher
                     author {
                       id
                       type
@@ -154,6 +155,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                     }
                     cta {
                       text
+                      subtitle
                       color
                       colorGradient {
                       color

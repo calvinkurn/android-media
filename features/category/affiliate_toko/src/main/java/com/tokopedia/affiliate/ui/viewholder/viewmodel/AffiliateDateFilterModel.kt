@@ -3,8 +3,12 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
+import kotlinx.coroutines.flow.StateFlow
 
-class AffiliateDateFilterModel(val data: AffiliateDateFilterData) : Visitable<AffiliateAdapterTypeFactory> {
+class AffiliateDateFilterModel(
+    val data: AffiliateDateFilterData,
+    val isSSEConnected: StateFlow<Boolean>
+) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {
         return typeFactory.type(this)

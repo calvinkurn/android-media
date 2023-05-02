@@ -20,15 +20,36 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECI
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
-import com.tokopedia.campaign.utils.extension.*
+import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpBodyBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpHeaderBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpOngoingMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpRegisteredMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpUpcomingBodyBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpUpcomingMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignDetailBinding
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
@@ -37,7 +58,11 @@ import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
@@ -64,6 +89,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
+        private const val DEFAULT_FOR_EMPTY_FLASH_SALE_ID = 0L
         private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped_new.png"
@@ -120,9 +146,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         if (isOpenedFromApplink(appLinkData)) {
-            appLinkData?.lastPathSegment?.toLong().orZero()
+            getFLashSaleIdFromApplink(appLinkData)
         } else {
-            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+            getFlashSaleIdFromBundle()
         }
     }
 
@@ -223,6 +249,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         getFlashSaleSubmissionProgress(flashSaleId)
                     }
                     is Fail -> {
+                        binding?.run { header.setNavigationOnClickListener { activity?.finish() } }
                         showGlobalError()
                     }
                 }
@@ -1577,7 +1604,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             globalError.apply {
                 show()
                 setActionClickListener {
-                    loadCampaignDetailData()
+                    activity?.finish()
                 }
             }
         }
@@ -1653,5 +1680,21 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
         return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
+    }
+
+    private fun getFLashSaleIdFromApplink(appLinkData: Uri?): Long {
+        return try {
+            appLinkData?.lastPathSegment?.toLong().orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
+    }
+
+    private fun getFlashSaleIdFromBundle(): Long {
+        return try {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
     }
 }

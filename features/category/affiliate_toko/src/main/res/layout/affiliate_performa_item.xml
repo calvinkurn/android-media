@@ -36,6 +36,17 @@
             app:typographyWeight="bold"
             tools:text="Rp1.500.000" />
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/value_shimmer"
+            android:layout_width="120dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/performa_type"
+            app:layout_constraintTop_toBottomOf="@+id/performa_type"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/value_change_value"
             android:layout_width="0dp"
@@ -48,6 +59,17 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="+Rp550.000" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/value_change_shimmer"
+            android:layout_width="64dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/value_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/value_shimmer"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/increase_value_icon"

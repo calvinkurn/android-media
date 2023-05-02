@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.util
 
 import android.graphics.Typeface
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
 import android.text.style.StyleSpan
@@ -15,7 +16,7 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     return SpannedString(builder)
 }
 
-public inline fun SpannableStringBuilder.inSpans(
+inline fun SpannableStringBuilder.inSpans(
     span: Any,
     builderAction: SpannableStringBuilder.() -> Unit
 ): SpannableStringBuilder {
@@ -28,3 +29,11 @@ public inline fun SpannableStringBuilder.inSpans(
 inline fun SpannableStringBuilder.bold(
     builderAction: SpannableStringBuilder.() -> Unit
 ): SpannableStringBuilder = inSpans(StyleSpan(Typeface.BOLD), builderAction = builderAction)
+
+fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
+    try {
+        setSpan(what, start, end, flags)
+    } catch (throwable: Throwable) {
+        // ignore styling
+    }
+}

@@ -17,10 +17,8 @@
     <color name="contact_us_dms_detail_hint_bg">#7031353B</color>
     <color name="contact_us_dms_no_ticket_text">#60000000</color>
     <color name="contact_us_dms_transparent">#00000000</color>
-    <color name="contact_us_dms_no_ticket_view">#1e000000</color>
     <color name="contact_us_dms_priority_color">#9342ED</color>
     <color name="contact_us_dms_detail_view_txn">#03AC0E</color>
-    <color name="contact_us_dms_rating_divider">#F3F4F5</color>
     <color name="contact_us_dms_filter">#6C727C</color>
     <color name="contact_us_dms_search">#2E3137</color>
     <color name="contact_us_dms_image">#9FA6B0</color>

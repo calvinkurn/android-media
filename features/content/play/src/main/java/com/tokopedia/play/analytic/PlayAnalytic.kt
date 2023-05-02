@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -44,24 +45,6 @@ class PlayAnalytic(
         this.mChannelName = channelName
         if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.mSourceType = sourceType
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
-    }
-
-    /**
-     * User swipe room
-     */
-    fun swipeRoom(nextId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "swipe channel",
-                        KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value} - $mSourceType - $nextId",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_TRACKER_ID to "6663"
-                )
-        )
     }
 
     fun clickLeaveRoom(durationInMs: Long) {
@@ -248,7 +231,7 @@ class PlayAnalytic(
     fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
-            ProductAction.Buy -> clickBeliButtonProductWithVariant(productId)
+            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
         }
     }
 
@@ -477,39 +460,6 @@ class PlayAnalytic(
     }
 
     fun getTrackingQueue() = trackingQueue
-
-    /**
-     * Cast
-     */
-    fun impressCast(channelId: String, channelType: PlayChannelType) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "impression on chromecast button",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-            )
-        )
-    }
-
-    fun clickCast() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "click chromecast button",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-            )
-        )
-    }
 
     fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -843,6 +793,19 @@ class PlayAnalytic(
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun openScreen(channelId: String, channelType: PlayChannelType) {
+        Tracker.Builder()
+            .setEvent("openScreen")
+            .setCustomProperty(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "13881")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
+            .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
             .setUserId(userId)
             .build()
             .send()

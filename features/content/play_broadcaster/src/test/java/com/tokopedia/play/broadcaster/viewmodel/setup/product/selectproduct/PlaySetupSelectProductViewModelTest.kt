@@ -35,6 +35,7 @@ class PlaySetupSelectProductViewModelTest {
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     private val mockSelectedProducts = mockProductTagSectionList.flatMap { it.products }
+    private val mockMaxProduct = 30
 
     @Test
     fun `when user select product, it should emit uiState with new selected products`() {
@@ -43,11 +44,9 @@ class PlaySetupSelectProductViewModelTest {
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.add(mockAddedProduct)
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -71,7 +70,7 @@ class PlaySetupSelectProductViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockSelectedProducts.size,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -93,11 +92,9 @@ class PlaySetupSelectProductViewModelTest {
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.removeLast()
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -122,11 +119,9 @@ class PlaySetupSelectProductViewModelTest {
         mockNewProductTagSectionList.remove(mockSection)
         mockNewProductTagSectionList.add(mockSection.copy(products = mockNewProductList + mockAddedProduct))
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -151,11 +146,9 @@ class PlaySetupSelectProductViewModelTest {
             )
         )
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -182,11 +175,9 @@ class PlaySetupSelectProductViewModelTest {
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -228,11 +219,9 @@ class PlaySetupSelectProductViewModelTest {
             )
         )
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -260,13 +249,9 @@ class PlaySetupSelectProductViewModelTest {
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
 
-        val maxProduct = 30
-
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns maxProduct
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
-            hydraConfigStore = mockHydraConfigStore,
+            maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
@@ -277,7 +262,7 @@ class PlaySetupSelectProductViewModelTest {
             }
 
             state.selectedProductList
-                .assertEqualTo(mockProducts.subList(0, maxProduct))
+                .assertEqualTo(mockProducts.subList(0, mockMaxProduct))
         }
     }
 }

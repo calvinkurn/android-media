@@ -20,7 +20,8 @@ data class EditorDetailUiModel(
     var isContrastExecuteFirst: Boolean? = null,
     var cropRotateValue: EditorCropRotateUiModel = EditorCropRotateUiModel(),
     var originalRatio: Float = 1f,
-    var removeBackgroundColor: Int? = null
+    var removeBackgroundColor: Int? = null,
+    var addLogoValue: EditorAddLogoUiModel = EditorAddLogoUiModel()
 ) : Parcelable {
     // used only for remove background
     fun clearValue() {
@@ -52,6 +53,10 @@ data class EditorDetailUiModel(
 
     fun isToolWatermark(): Boolean {
         return editorToolType == EditorToolType.WATERMARK
+    }
+
+    fun isToolAddLogo(): Boolean {
+        return editorToolType == EditorToolType.ADD_LOGO
     }
 
     companion object {

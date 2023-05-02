@@ -10,7 +10,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
-        const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
+        const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" // page source
         const val ITEM_CATEGORY_BUILDER = "%s / %s / %s / %s "
         const val KEY_UNDEFINED = "undefined"
     }
@@ -108,7 +108,7 @@ object ProductTrackingConstant {
         const val BUILDER_SHOP_ID = "shop_id:%s"
         const val KEY_WAREHOUSE_ID = "warehouseId"
 
-        //Tradein
+        // Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
         const val TRADEIN_TRUE_NON_DIAGNOSTIC = "true non diagnostic"
 
@@ -128,9 +128,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_120 = "dimension120"
 
         const val CONTENT_TYPE = "product"
-        const val BRANCH_QUANTITY ="1"
-
-
+        const val BRANCH_QUANTITY = "1"
     }
     object Action {
         const val CLICK = "click"
@@ -200,8 +198,8 @@ object ProductTrackingConstant {
 
         const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
 
-        const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
-        const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+        const val CLICK_TDN_BANNER_ADS_WIDGET = "click - tdn banner ads widget"
+        const val VIEW_TDN_BANNER_ADS_WIDGET = "view - tdn banner ads widget"
 
         const val CLICK_VARIANT_GUIDELINE_BOTTOM_SHEET = "click - panduan ukuran on product detail bottomsheet"
         const val CLICK_CUSTOM_INFO_HAMPERS_BOTTOM_SHEET = "click - informasi pelengkap bingkisan"
@@ -213,7 +211,7 @@ object ProductTrackingConstant {
         const val CLICK_WRITE_DISCUSSION_BOTTOM_SHEET = "click - tanya di diskusi on product detail bottomsheet"
         const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"
 
-        const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
+        const val CLICK_REPORT_FROM_COMPONENT = "click - laporkan on produk bermasalah"
         const val VIEW_TICKER_OOS = "view - ticker on pdp"
         const val CLICK_BUTTON_OOS = "click - %s on pdp"
 
@@ -236,21 +234,27 @@ object ProductTrackingConstant {
 
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
-        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
+        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" // recoom title, page name, widget type
 
         const val CLICK_INFO_MULTILOC = "click - information icon on shop component"
 
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
-    }
 
+        const val CLICK_LOCATION_RESTRICTION = "click - button on pdp restriction bottomsheet"
+        const val IMPRESS_LOCATION_RESTRICTION = "impression - pdp restriction bottomsheet"
+
+        const val VIEW_ITEM = "view_item"
+        const val PROMO_VIEW = "promoView"
+        const val PROMOTIONS = "promotions"
+    }
 
     object Label {
         const val EMPTY_LABEL = ""
         const val PDP = "PDP"
         const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
-        const val DISCUSSION_SEE_ALL ="count thread:%s;"
+        const val DISCUSSION_SEE_ALL = "count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
         const val TICKER_OOS = "ticker type:%s;ticker title:%s;ticker message:%s;"
         const val BUTTON_OOS = "fitur : OOS; is_variant:%s;"
@@ -284,6 +288,7 @@ object ProductTrackingConstant {
         const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
+        const val EVENT_VIEW_PG_IRIS = "viewPGiris"
         const val EVENT_CLICK_COURIER = "clickCourier"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
     }
@@ -322,27 +327,27 @@ object ProductTrackingConstant {
         const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
-    object ImpulsiveBanner{
+    object ImpulsiveBanner {
         const val IMPRESSION_BANNER = "impression on pdp 7 widget banner"
         const val CLICK_BANNER = "click on pdp 7 widget banner"
         const val EVENT_COMPONENT_IMPRESSION_BANNER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
         const val EVENT_LAYOUT_IMPRESSION_BANNER = "layout:%s;catName:%s;catId:%s;"
-        const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
+        const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" // recomAlgo - keywordName
         const val CREATIVE_NAME = "impulsive widget"
     }
 
     object RecomTokonow {
 
-        //recomatc
+        // recomatc
         const val KEY_EVENT_ATC = "addToCart"
         const val KEY_EVENT_PAGE_SOURCE = "pageSource"
         const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
         const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
-        const val KEY_EVENT_LABEL_ATC = "%s, %s" //recom title, chips value
+        const val KEY_EVENT_LABEL_ATC = "%s, %s" // recom title, chips value
 
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
-        const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+        const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" // page source like PDP, recommendationType
     }
 
     object TrackerId {
@@ -350,5 +355,27 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
         const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
+        const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
+        const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
+    }
+
+    object ViewToView {
+        const val TRACKER_ID_IMPRESS = "40439"
+        const val TRACKER_ID_CLICK = "40441"
+
+        const val ACTION_IMPRESSION = "impression on banner v2v widget"
+        const val ACTION_CLICK = "click on banner v2v widget"
+
+        const val BUSINESS_UNIT_HOME = "home & browse"
+        const val CATEGORY_PDP = "product detail page"
+
+        const val KEY_CREATIVE_NAME = "creative_name"
+        const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_ITEM_ID = "item_id"
+        const val KEY_ITEM_NAME = "item_name"
+
+        const val ITEM_NAME_FORMAT = "/product - p%s - v2v widget - rekomendasi untuk anda - banner - %s"
+
+        const val NULL_LABEL = "null"
     }
 }

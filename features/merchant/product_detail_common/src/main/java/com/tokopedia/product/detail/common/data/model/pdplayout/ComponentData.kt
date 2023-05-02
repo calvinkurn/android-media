@@ -135,7 +135,13 @@ data class ComponentData(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("componentName")
-    val componentName: String = ""
+    val componentName: String = "",
+    // endregion
+
+    // region Variant Thumb
+    // componentType value is thumbnail or chips
+    @SerializedName("componentType")
+    val componentType: String = ""
     // endregion
 ) {
     companion object {

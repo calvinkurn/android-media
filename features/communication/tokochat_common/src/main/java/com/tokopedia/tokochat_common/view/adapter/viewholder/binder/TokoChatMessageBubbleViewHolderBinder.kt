@@ -107,7 +107,7 @@ object TokoChatMessageBubbleViewHolderBinder {
         tokoChatMessageChatLayout?.setHourTime(hourTime)
     }
 
-    private fun getHourTime(replyTime: Long): String {
+    fun getHourTime(replyTime: Long): String {
         return try {
             TokoChatTimeConverter.formatTime(replyTime)
         } catch (error: Throwable) {

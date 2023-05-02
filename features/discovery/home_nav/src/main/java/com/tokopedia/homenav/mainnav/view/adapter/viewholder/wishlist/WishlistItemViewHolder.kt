@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 
-import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -11,9 +10,8 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<WishlistModel>(itemView) {
@@ -36,44 +34,30 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
             )
         }
 
-        binding?.textProductName?.text = element.navWishlistModel.productName
+        binding?.textName?.text = element.navWishlistModel.name
 
-        if (element.navWishlistModel.imageUrl.isNotEmpty()) {
-            val imageView = binding?.imageWishlist
-            imageView?.setImageUrl(element.navWishlistModel.imageUrl)
+        if (element.navWishlistModel.images.isEmpty()) {
+            binding?.imageWishlist?.gone()
+            binding?.imageWishlist2?.gone()
+        } else {
+            binding?.imageWishlist?.visible()
+            binding?.imageWishlist?.setImageUrl(element.navWishlistModel.images[0])
+            if(element.navWishlistModel.images.size > 1) {
+                binding?.imageWishlist2?.apply {
+                    visible()
+                    setImageUrl(element.navWishlistModel.images[1])
+                }
+            } else {
+                binding?.imageWishlist2?.gone()
+            }
         }
-        binding?.textPriceValue?.text = element.navWishlistModel.priceFmt
-        setLabel(element)
+
+        binding?.textDescription?.text = itemView.context.getString(
+            com.tokopedia.homenav.R.string.wishlist_item_count_format
+        ).format(element.navWishlistModel.totalItem)
 
         binding?.containerWishlistItem?.setOnClickListener {
-            mainNavListener.onWishlistItemClicked(element.navWishlistModel, adapterPosition)
-        }
-    }
-
-    private fun setLabel(element: WishlistModel){
-        when {
-            element.navWishlistModel.discountPercentageFmt.isNotEmpty() -> {
-                binding?.textSlashedPrice?.apply {
-                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    text = element.navWishlistModel.originalPriceFmt
-                    show()
-                }
-                binding?.labelDiscountPercent?.apply {
-                    text = element.navWishlistModel.discountPercentageFmt
-                    show()
-                }
-                binding?.labelCashback?.invisible()
-            }
-            element.navWishlistModel.cashback -> {
-                binding?.textSlashedPrice?.invisible()
-                binding?.labelDiscountPercent?.invisible()
-                binding?.labelCashback?.visible()
-            }
-            else -> {
-                binding?.textSlashedPrice?.invisible()
-                binding?.labelDiscountPercent?.invisible()
-                binding?.labelCashback?.invisible()
-            }
+            mainNavListener.onWishlistCollectionClicked(element.navWishlistModel, adapterPosition)
         }
     }
 

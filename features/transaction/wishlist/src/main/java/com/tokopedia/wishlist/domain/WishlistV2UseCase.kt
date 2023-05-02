@@ -3,9 +3,9 @@ package com.tokopedia.wishlist.domain
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import javax.inject.Inject
 
 class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {

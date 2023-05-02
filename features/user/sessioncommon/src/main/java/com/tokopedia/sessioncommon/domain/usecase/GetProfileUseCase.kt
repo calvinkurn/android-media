@@ -23,6 +23,9 @@ open class GetProfileUseCase @Inject constructor(val resources: Resources, val g
         val graphqlRequest = GraphqlRequest(query,
                 ProfilePojo::class.java, RequestParams.create().parameters)
 
+        // we are always set skipCache = true, to always get the latest data
+        graphqlRequest.variables = mapOf(PARAM_SKIP_CACHE to true)
+
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
@@ -30,5 +33,9 @@ open class GetProfileUseCase @Inject constructor(val resources: Resources, val g
 
     fun unsubscribe() {
         graphqlUseCase.unsubscribe()
+    }
+
+    companion object {
+        const val PARAM_SKIP_CACHE = "skipCache"
     }
 }

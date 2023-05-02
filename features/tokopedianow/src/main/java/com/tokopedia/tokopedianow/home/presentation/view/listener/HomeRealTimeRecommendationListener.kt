@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
@@ -23,18 +23,18 @@ class HomeRealTimeRecommendationListener(
 
     override fun onRecomProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         RouteManager.route(context, product.appLink)
     }
 
     override fun onAddToCartProductNonVariant(
         channelId: String,
-        item: TokoNowProductCardCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 channelId = channelId,
                 productId = item.getProductId(),
                 quantity = quantity,
@@ -48,7 +48,7 @@ class HomeRealTimeRecommendationListener(
 
     override fun onAddToCartProductVariantClick(
         position: Int,
-        item: TokoNowProductCardCarouselItemUiModel
+        item: ProductCardCompactCarouselItemUiModel
     ) {
         context?.let {
             if (userSession.isLoggedIn) {

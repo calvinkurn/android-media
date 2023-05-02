@@ -26,6 +26,8 @@ class UohRecommendationTrackingTest {
 
     companion object {
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
+        private const val KEY_UOH_FILTER_CATEGORY = "GetUOHFilterCategory"
+        private const val KEY_UOH_PMS_NOTIFICATION = "GetPmsNotifications"
         private const val KEY_UOH_RECOMMENDATION = "productRecommendation"
     }
 
@@ -42,8 +44,35 @@ class UohRecommendationTrackingTest {
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
 
         setupGraphqlMockResponse {
-            addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_uoh_orders_empty), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_UOH_RECOMMENDATION, InstrumentationMockHelper.getRawString(context, R.raw.response_uoh_recommendation_items), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_UOH_FILTER_CATEGORY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_uoh_filter_category
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_UOH_PMS_NOTIFICATION,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_uoh_get_pms_notification
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_UOH_ORDERS,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_uoh_orders_empty),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_UOH_RECOMMENDATION,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_uoh_recommendation_items
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()

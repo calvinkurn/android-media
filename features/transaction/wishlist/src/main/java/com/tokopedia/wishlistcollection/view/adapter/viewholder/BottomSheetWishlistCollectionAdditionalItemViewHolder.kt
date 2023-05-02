@@ -12,5 +12,4 @@ class BottomSheetWishlistCollectionAdditionalItemViewHolder(
             binding.additionalSectionText.text = item.dataObject
         }
     }
-
 }

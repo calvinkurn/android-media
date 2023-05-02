@@ -20,6 +20,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {

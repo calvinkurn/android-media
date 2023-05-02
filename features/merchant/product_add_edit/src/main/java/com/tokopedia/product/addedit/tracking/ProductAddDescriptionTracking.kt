@@ -9,14 +9,6 @@ object ProductAddDescriptionTracking {
         ProductAddEditTracking.getTracker().sendScreenAuthenticated(SCREEN)
     }
 
-    fun clickBack(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click back on product description page")
-    }
-
-    fun clickHelpWriteDescription(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click toaster", "clear product description")
-    }
-
     fun clickRemoveVideoLink(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click remove video link")
     }
@@ -27,10 +19,6 @@ object ProductAddDescriptionTracking {
 
     fun clickAddProductVariant(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click add product variant")
-    }
-
-    fun clickHelpVariant(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click toaster", "determine product variant")
     }
 
     fun clickContinue(shopId: String) {

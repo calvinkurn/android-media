@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.domain.response.orderprogress
 
-
 import com.google.gson.annotations.SerializedName
 
 data class TokoChatOrderProgressResponse(
@@ -21,7 +20,7 @@ data class TokoChatOrderProgressResponse(
         @SerializedName("orderId")
         val orderId: String = "",
         @SerializedName("state")
-        val state: String = "",
+        var state: String = "",
         @SerializedName("status")
         val status: String = "",
         @SerializedName("statusId")

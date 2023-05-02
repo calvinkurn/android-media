@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:pathData="M3.92,20C4.98,20 5.84,19.14 5.84,18.08C5.84,17.02 4.98,16.16 3.92,16.16C2.86,16.16 2,17.02 2,18.08C2,19.14 2.86,20 3.92,20Z"
+      android:fillColor="@color/Unify_NN900"/>
+  <path
+      android:pathData="M3.28,5.564V5.564C3.28,4.7 3.98,4 4.844,4L20.04,4C21.145,4 22.04,4.895 22.04,6V16.72C22.04,17.825 21.145,18.72 20.04,18.72H16.21"
+      android:strokeWidth="2"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M2.96,13.6C5.52,13.6 8.4,14.88 8.4,18.72"
+      android:strokeWidth="2"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M3.28,9.792C7.44,9.792 12.24,12.32 12.24,18.72"
+      android:strokeWidth="2"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
+</vector>

@@ -57,6 +57,11 @@ class ContentAccountTypeBottomSheet : BottomSheetUnify() {
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)
+
+        setCloseClickListener {
+            mListener?.onClickClose()
+            dismiss()
+        }
     }
 
     private fun setupView() {
@@ -68,7 +73,7 @@ class ContentAccountTypeBottomSheet : BottomSheetUnify() {
         adapter.updateData(mFeedAccountList)
     }
 
-    fun setOnAccountClickListener(listener: Listener?) {
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 
@@ -106,5 +111,6 @@ class ContentAccountTypeBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onAccountClick(contentAccount: ContentAccountUiModel)
+        fun onClickClose()
     }
 }

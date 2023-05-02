@@ -5,5 +5,4 @@ interface ToolbarPromoCheckoutListener {
     fun onClickInputCode()
 
     fun onBackPressed()
-
 }

@@ -52,6 +52,7 @@ class DiscoveryPlayWidgetViewModelTest {
 
         mockkStatic(::getComponent)
         mockkConstructor(URLParser::class)
+        mockkConstructor(UserSession::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
     }
 
@@ -59,6 +60,7 @@ class DiscoveryPlayWidgetViewModelTest {
     fun shutDown() {
         Dispatchers.resetMain()
         unmockkStatic(::getComponent)
+        unmockkConstructor(UserSession::class)
         unmockkConstructor(URLParser::class)
     }
 
@@ -185,6 +187,49 @@ class DiscoveryPlayWidgetViewModelTest {
         viewModel.updatePlayWidgetTotalView("4","3")
 
         TestCase.assertEquals(viewModel.getPlayWidgetUILiveData().value, playWidgetState)
+
+    }
+
+    /**************************** test for getPlayWidgetData() *******************************************/
+    @Test
+    fun `test for getPlayWidgetData when dataPresent is false`(){
+
+        val list = ArrayList<DataItem>()
+        val item = DataItem(playWidgetPlayID = "2")
+        list.add(item)
+        every { componentsItem.data } returns list
+        val playWidgetTools: PlayWidgetTools = mockk(relaxed = true)
+        viewModel.playWidgetTools = playWidgetTools
+        val playWidget: PlayWidget = mockk(relaxed = true)
+        coEvery { playWidgetTools.getWidgetFromNetwork(any()) } returns playWidget
+        val playWidgetState: PlayWidgetState = mockk(relaxed = true)
+        coEvery { playWidgetTools.mapWidgetToModel(any()) } returns playWidgetState
+
+        viewModel.getPlayWidgetData()
+
+        TestCase.assertEquals(viewModel.getPlayWidgetUILiveData().value , playWidgetState)
+
+    }
+
+    /**************************** test for updatePlayWidgetReminder() *******************************************/
+    @Test
+    fun `test for updatePlayWidgetReminder`(){
+        val list = ArrayList<DataItem>()
+        val item = DataItem(playWidgetPlayID = "2")
+        list.add(item)
+        every { componentsItem.data } returns list
+        val playWidgetTools: PlayWidgetTools = mockk(relaxed = true)
+        viewModel.playWidgetTools = playWidgetTools
+        val playWidget: PlayWidget = mockk(relaxed = true)
+        coEvery { playWidgetTools.getWidgetFromNetwork(any()) } returns playWidget
+        val playWidgetState: PlayWidgetState = mockk(relaxed = true)
+        coEvery { playWidgetTools.mapWidgetToModel(any()) } returns playWidgetState
+
+        viewModel.getPlayWidgetData()
+
+        viewModel.updatePlayWidgetReminder("4",true)
+
+        TestCase.assertEquals(viewModel.getPlayWidgetUILiveData().value!= null, true)
 
     }
 

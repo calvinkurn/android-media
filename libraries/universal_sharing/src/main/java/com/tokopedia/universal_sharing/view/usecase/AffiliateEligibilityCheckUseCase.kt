@@ -50,6 +50,12 @@ class AffiliateEligibilityCheckUseCase constructor(
                             AmountFormatted
                             Amount
                             Message
+                            Badge
+                            ExpiredDate
+                            ExpiredDateFormatted
+                            SellerAmount
+                            SellerAmountFormatted
+                            SsaStatus
                         }
                     }
                 }

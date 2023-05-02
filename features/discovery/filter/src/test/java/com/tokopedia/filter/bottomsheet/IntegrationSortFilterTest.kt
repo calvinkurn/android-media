@@ -52,12 +52,14 @@ internal class IntegrationSortFilterTest: SortFilterBottomSheetViewModelTestFixt
             expectedMapParameter: Map<String, String>,
             expectedSelectedFilterMap: Map<String, String>,
             expectedSelectedSortMap: Map<String, String>,
-            expectedSortName: String
+            expectedSortName: String,
+            expectedApplyFilterMap: Map<String, String> = mapOf(),
     ) {
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert selected filter map is as expected`(expectedSelectedFilterMap)
         `Then assert selected sort map is as expected`(expectedSelectedSortMap)
         `Then assert selected sort name`(expectedSortName)
+        `Then assert selected apply filter map is as expected`(expectedApplyFilterMap)
     }
 
     @Test
@@ -163,12 +165,13 @@ internal class IntegrationSortFilterTest: SortFilterBottomSheetViewModelTestFixt
         sortFilterBottomSheetViewModel.onOptionClick(filterViewModel, clickedOptionViewModel)
         sortFilterBottomSheetViewModel.applySortFilter()
 
+        val expectedApplyFilterMap = clickedSort.sort.applyFilter.toMapParam()
         val expectedMapParameter = mutableMapOf(
                 SearchApiConst.Q to keyword,
                 clickedSort.sort.key to clickedSort.sort.value,
                 clickedOptionViewModel.option.key to clickedOptionViewModel.option.value
         ).also {
-            it.putAll(clickedSort.sort.applyFilter.toMapParam())
+            it.putAll(expectedApplyFilterMap)
         }
         val expectedSelectedFilterMap = mapOf(
                 clickedOptionViewModel.option.key to clickedOptionViewModel.option.value
@@ -177,7 +180,11 @@ internal class IntegrationSortFilterTest: SortFilterBottomSheetViewModelTestFixt
         val expectedSelectedSortName = clickedSort.sort.name
 
         `Then assert apply button parameters is expected`(
-                expectedMapParameter, expectedSelectedFilterMap, expectedSelectedSortMap, expectedSelectedSortName
+            expectedMapParameter,
+            expectedSelectedFilterMap,
+            expectedSelectedSortMap,
+            expectedSelectedSortName,
+            expectedApplyFilterMap,
         )
     }
 
@@ -228,18 +235,23 @@ internal class IntegrationSortFilterTest: SortFilterBottomSheetViewModelTestFixt
         sortFilterBottomSheetViewModel.onSortItemClick(clickedSort)
         sortFilterBottomSheetViewModel.applySortFilter()
 
+        val expectedApplyFilterMap = clickedSort.sort.applyFilter.toMapParam()
         val expectedMapParameter = mutableMapOf(
                 SearchApiConst.Q to keyword,
                 clickedSort.sort.key to clickedSort.sort.value
         ).also {
-            it.putAll(clickedSort.sort.applyFilter.toMapParam())
+            it.putAll(expectedApplyFilterMap)
         }
         val expectedSelectedFilterMap = mapOf<String, String>()
         val expectedSelectedSortMap = mapOf(clickedSort.sort.key to clickedSort.sort.value)
         val expectedSelectedSortName = clickedSort.sort.name
 
         `Then assert apply button parameters is expected`(
-                expectedMapParameter, expectedSelectedFilterMap, expectedSelectedSortMap, expectedSelectedSortName
+            expectedMapParameter,
+            expectedSelectedFilterMap,
+            expectedSelectedSortMap,
+            expectedSelectedSortName,
+            expectedApplyFilterMap,
         )
     }
 

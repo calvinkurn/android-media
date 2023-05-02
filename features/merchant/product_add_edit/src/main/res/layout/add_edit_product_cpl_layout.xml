@@ -53,104 +53,45 @@
 
     </RadioGroup>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_custom_ondemand"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/layout_cpl"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:card_type="border"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radios_cpl">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_dijemput_kurir"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/cpl_custom_on_demand"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_info_on_demand"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="4dp"
-            app:icon_name="INFORMATION"
-            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
-            app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btn_change_on_demand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cpl_custom_on_demand_button"
-            android:textColor="@color/Unify_G500"
-            android:textSize="14sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_on_demand"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
-            tools:listitem="@layout/item_add_edit_shipment" />
+            android:paddingHorizontal="16dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_shipper_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_add_edit_shipment" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_custom_conventional"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_custom_ondemand">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/btn_cpl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/cpl_custom_label"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_shipper_group"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_agen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/cpl_custom_agen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_info_conventional"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="4dp"
-            app:icon_name="INFORMATION"
-            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
-            app:layout_constraintStart_toEndOf="@id/tv_agen"
-            app:layout_constraintTop_toTopOf="@id/tv_agen" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btn_change_conventional"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cpl_custom_agen_button"
-            android:textColor="@color/Unify_G500"
-            android:textSize="14sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_agen" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_conventional"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_agen"
-            tools:listitem="@layout/item_add_edit_shipment" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

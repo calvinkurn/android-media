@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -25,7 +25,6 @@ import javax.inject.Inject
  */
 class GetProductVariantAggregatorUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     @ApplicationContext
     private val context: Context
 ) : UseCase<ProductVariantAggregatorUiData>() {
@@ -86,6 +85,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                           description
                           attributeName
                           badgeURL
+                          buttonLink
+                          buttonText
                         }
                       }
                     }
@@ -232,13 +233,17 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    fun createRequestParams(productId: String,
-                            source: String,
-                            isTokoNow:Boolean,
-                            shopId: String,
-                            extParams: String,
-                            warehouseId: String? = null,
-                            pdpSession: String? = null): Map<String, Any?> = mapOf(
+    fun createRequestParams(
+        productId: String,
+        source: String,
+        isTokoNow: Boolean,
+        shopId: String,
+        extParams: String,
+        warehouseId: String? = null,
+        pdpSession: String? = null
+    ): Map<String, Any?> {
+        val chooseAddress = ChooseAddressUtils.getLocalizingAddressData(context)
+        return mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
             ProductDetailCommonConstant.PARAM_PDP_SESSION to pdpSession,
             ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
@@ -247,13 +252,15 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
             ProductDetailCommonConstant.PARAM_EXT_PARAMS to extParams,
             ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
-                    chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
-                    chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
-                    chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
-                    chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
+                chooseAddress.district_id,
+                chooseAddress.address_id,
+                chooseAddress.postal_code,
+                chooseAddress.latLong,
+                chooseAddress.city_id
             ),
-            ProductDetailCommonConstant.PARAM_TOKONOW to generateTokoNow()
-    )
+            ProductDetailCommonConstant.PARAM_TOKONOW to generateTokoNow(chooseAddress)
+        )
+    }
 
     private var requestParams: Map<String, Any?> = mapOf()
 
@@ -263,12 +270,14 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ProductVariantAggregatorUiData {
-        val request = GraphqlRequest(QUERY, ProductVariantAggregatorResponse::class.java, requestParams)
+        val request =
+            GraphqlRequest(QUERY, ProductVariantAggregatorResponse::class.java, requestParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .build()
+            .build()
 
         val response = graphqlRepository.response(listOf(request), cacheStrategy)
-        val error: List<GraphqlError>? = response.getError(ProductVariantAggregatorResponse::class.java)
+        val error: List<GraphqlError>? =
+            response.getError(ProductVariantAggregatorResponse::class.java)
         val data = response.getSuccessData<ProductVariantAggregatorResponse>()
 
         if (error != null && error.isNotEmpty()) {
@@ -284,27 +293,28 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
 
     private fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
         return ProductVariantAggregatorUiData(
-                variantData = data.variantData,
-                cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
-                nearestWarehouse = data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
-                alternateCopy = data.cardRedirection.alternateCopy,
-                simpleBasicInfo = data.basicInfo,
-                shopType = data.shopInfo.shopType,
-                boData = data.bebasOngkir,
-                rates = data.ratesEstimate,
-                reData = data.restrictionInfo,
-                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
-                cashBackPercentage = data.isCashback.percentage,
-                isCod = data.isCod
+            variantData = data.variantData,
+            cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
+            nearestWarehouse = data.nearestWarehouse.associateBy(
+                { it.productId },
+                { it.warehouseInfo }),
+            alternateCopy = data.cardRedirection.alternateCopy,
+            simpleBasicInfo = data.basicInfo,
+            shopType = data.shopInfo.shopType,
+            boData = data.bebasOngkir,
+            rates = data.ratesEstimate,
+            reData = data.restrictionInfo,
+            uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
+            cashBackPercentage = data.isCashback.percentage,
+            isCod = data.isCod
         )
     }
 
-    private fun generateTokoNow(): TokoNowParam{
-        val localCache = ChooseAddressUtils.getLocalizingAddressData(context)
+    private fun generateTokoNow(chooseAddress: LocalCacheModel): TokoNowParam {
         return TokoNowParam(
-            localCache.shop_id,
-            localCache.warehouse_id,
-            localCache.service_type
+            chooseAddress.shop_id,
+            chooseAddress.warehouse_id,
+            chooseAddress.service_type
         )
     }
 }

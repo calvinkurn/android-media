@@ -78,6 +78,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                backendFiltersToggle
                 keywordIntention
                 redirection {
                     redirectApplink
@@ -211,6 +212,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     applink
                     customVideoURL
                     parentId
+                    isPortrait
                 }
                 violation {
                     headerText
@@ -298,6 +300,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         url
                     }
                     customvideo_url
+                    parent_id
                 }
                 shop{
                     id
@@ -400,6 +403,11 @@ private const val HEADLINE_ADS_QUERY = """
                             campaign {
                                 original_price
                                 discount_percentage
+                            }
+                            stock_info {
+                                sold_stock_percentage
+                                stock_wording
+                                stock_colour
                             }
                         }
                         image_shop {

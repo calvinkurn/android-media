@@ -25,16 +25,20 @@ data class PickerParam(
     @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
     @SerializedName("withEditor") private var withEditor: Boolean = false,
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
+    @SerializedName("subPageSource") private var subPageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
-    @SerializedName("editorParam")private var editorParam: EditorParam? = null
+    @SerializedName("editorParam") private var editorParam: EditorParam? = null
 ) : Parcelable {
 
     // getter
     fun pageType() = pageType
     fun modeType() = modeType
+    fun pageSource() = pageSource
     fun pageSourceName() = pageSource.value
+    fun subPageSource() = subPageSource
+    fun subPageSourceName() = subPageSource.value
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isVideoModeOnly() = modeType == ModeType.VIDEO_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
@@ -59,10 +63,12 @@ data class PickerParam(
     fun getEditorParam() = editorParam
     fun previewActionText(): String {
         return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
-            previewActionText.substring(IntRange(
-                SUBSTRING_START_INDEX,
-                SUBSTRING_END_INDEX
-            )) + SUBSTRING_ELLIPSIZE_APPEND
+            previewActionText.substring(
+                IntRange(
+                    SUBSTRING_START_INDEX,
+                    SUBSTRING_END_INDEX
+                )
+            ) + SUBSTRING_ELLIPSIZE_APPEND
         } else {
             previewActionText
         }
@@ -70,6 +76,7 @@ data class PickerParam(
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
+    fun subPageSource(value: PageSource) = apply { subPageSource = value }
     fun cameraRatio(value: CameraRatio) = apply { cameraRatio = value }
     fun maxMediaItem(value: Int) = apply { maxMediaItem = value }
     fun maxVideoItem(value: Int) = apply { maxVideoItem = value }
@@ -84,6 +91,7 @@ data class PickerParam(
         withEditor = true
         editorParam = EditorParam().apply(param)
     }
+
     fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<String>) = apply { includeMedias = value }

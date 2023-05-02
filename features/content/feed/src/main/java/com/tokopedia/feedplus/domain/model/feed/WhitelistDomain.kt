@@ -23,15 +23,18 @@ data class WhitelistDomain(
     val isShopAccountExists: Boolean
         get() = authors.find { it.type == TYPE_SHOP } != null
 
-    // for buyer/non-seller/ugc enable was meant for accepting tnc
+    /**
+     * For buyer/non-seller/ugc enable was meant for accepting tnc.
+     * Special for post.enable, it alr has has_accept_tnc in it
+     * */
     val isBuyerAccountPostEligible: Boolean
         get() = authors.find{ it.type == TYPE_USER && it.post.enable } != null
 
     val isBuyerAccountExists: Boolean
         get() = authors.find{ it.type == TYPE_USER } != null
 
-    val isShopAccountLiveEligible: Boolean
-        get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
+    val isShopAccountShortsEligible: Boolean
+        get() = authors.find { it.type == TYPE_SHOP && it.shortVideo.enable } != null
 
     val userAccount: GetCheckWhitelistResponse.Author?
         get() = authors.find { it.type == TYPE_USER }

@@ -143,30 +143,23 @@
                     android:layout_height="0.5dp"
                     android:background="@drawable/bg_list_separator" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical">
+                    android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_view_pin"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/Unify_N0"
-                        app:typographyType="display_2"
                         android:layout_marginStart="@dimen/spacing_lvl4"
-                        android:minHeight="@dimen/unify_space_64"
-                        app:typographyWeight="bold"
-                        android:padding="@dimen/unify_space_8"
+                        android:background="@color/Unify_N0"
                         android:gravity="center_vertical"
+                        android:minHeight="@dimen/unify_space_64"
+                        android:padding="@dimen/unify_space_8"
                         android:text="@string/title_setting_pin"
-                        />
-
-                    <Space
-                        android:id="@+id/space"
-                        android:layout_width="@dimen/dp_120"
-                        android:layout_height="0dp" />
+                        app:typographyType="display_2"
+                        app:typographyWeight="bold" />
 
                     <com.tokopedia.unifycomponents.Label
                         android:id="@+id/text_new"
@@ -174,16 +167,14 @@
                         app:labelType="general_dark_red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="5dp"
-                        android:layout_toRightOf="@+id/space"
+                        android:gravity="center_vertical"
                         android:background="@drawable/bg_rounded_corners_red"
                         android:lineSpacingExtra="2sp"
                         android:padding="@dimen/unify_space_2"
                         android:textAllCaps="true"
                         android:textColor="@color/Unify_N0" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     android:id="@+id/separator_biometric"
@@ -202,8 +193,7 @@
                     app:typographyWeight="bold"
                     android:padding="@dimen/unify_space_8"
                     android:gravity="center_vertical"
-                    android:text="Sidik Jari"
-                    />
+                    android:text="Sidik Jari" />
 
                 <View
                     android:id="@+id/separator_kyc"

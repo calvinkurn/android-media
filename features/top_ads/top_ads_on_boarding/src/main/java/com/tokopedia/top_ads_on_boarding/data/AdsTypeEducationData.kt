@@ -22,19 +22,19 @@ object AdsTypeEducationData {
                     AdsTypeEducationModel.Points(
                         points_Title = "Buat iklan dengan mudah",
                         points_Description = "Iklan ini akan menampilkan produkmu secara spesifik dan bisa pilih pengaturan otomatis supaya bisa beriklan tanpa ribet. ",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     ),
 
                     AdsTypeEducationModel.Points(
                         points_Title = "Atur biaya iklan sesuai kebutuhan",
                         points_Description = "Dengan sistem biaya per klik, kamu hanya perlu bayar saat iklanmu diklik calon pembeli. Bisa atur biayanya sesuai budget!",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     ),
 
                     AdsTypeEducationModel.Points(
                         points_Title = "Pantau performa iklan & penjualanmu",
                         points_Description = "Kamu bisa rutin pantau performa iklanmu untuk buat strategi beriklan yang efektif agar penjualan lebih maksimal.",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     )
                 )
             }
@@ -52,19 +52,19 @@ object AdsTypeEducationData {
                     AdsTypeEducationModel.Points(
                         points_Title = "Toko jadi makin ramai dengan iklan toko",
                         points_Description = "Iklanmu akan tampil menonjol dan eksklusif di halaman-halaman strategis untuk jangkau calon pembeli lebih luas.",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     ),
 
                     AdsTypeEducationModel.Points(
                         points_Title = "Brand-mu jadi makin dikenali dengan TDN",
                         points_Description = "Iklanmu akan menggunakan banner promosi sehingga tampil beda & dominan untuk menarik perhatian calon pembeli.",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     ),
 
                     AdsTypeEducationModel.Points(
                         points_Title = "Atur biaya iklan per tampil",
                         points_Description = "Kamu bisa mengontrol berapa banyak calon pembeli yang melihat iklanmu dengan pengaturan biaya per tampil.",
-                        points_Icon = R.drawable.icon_education_point
+                        points_Icon = com.tokopedia.topads.common.R.drawable.icon_education_point
                     )
                 )
 

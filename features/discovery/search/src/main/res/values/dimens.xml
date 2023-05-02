@@ -6,4 +6,10 @@
     <dimen name="search_suggestion_padding">16dp</dimen>
 
     <dimen name="sp_8">8sp</dimen>
+
+    <dimen name="search_empty_state_image_default_width">130dp</dimen>
+    <dimen name="search_empty_state_image_default_height">100dp</dimen>
+    <dimen name="search_empty_state_image_show_ads_width">113dp</dimen>
+    <dimen name="search_empty_state_image_show_ads_height">94dp</dimen>
+
 </resources>

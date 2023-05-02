@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.tdn
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -8,6 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
+@SearchScope
 class TopAdsImageViewPresenterDelegate @Inject constructor() {
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
 

@@ -4,8 +4,10 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tkpd.feed_component.builder.DynamicTabsModelBuilder
 import com.tokopedia.tkpd.feed_component.builder.WhitelistModelBuilder
 import com.tokopedia.tkpd.feed_component.const.INITIAL_DELAY
@@ -41,6 +43,8 @@ class FeedUserProfileEntryPointUiTest {
     /** Mock */
     private val mockRepo = mockk<FeedPlusRepository>(relaxed = true)
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
+    private val mockContentCoachMarkManager = mockk<ContentCoachMarkManager>(relaxed = true)
 
     init {
         coEvery { mockRepo.getDynamicTabs() } returns dynamicTabsResponse
@@ -48,7 +52,9 @@ class FeedUserProfileEntryPointUiTest {
 
         daggerHelper.setupDagger(
             mockUserSession = mockUserSession,
-            mockRepo = mockRepo
+            mockRepo = mockRepo,
+            mockRemoteConfig = mockRemoteConfig,
+            mockContentCoachMarkManager = mockContentCoachMarkManager,
         )
     }
 

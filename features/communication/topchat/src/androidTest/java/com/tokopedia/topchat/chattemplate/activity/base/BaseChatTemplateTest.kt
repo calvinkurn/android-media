@@ -9,21 +9,22 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.stub.chattemplate.di.FakeTemplateActivityComponentFactory
-import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
+import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.chattemplate.view.activity.TemplateChatActivityStub
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 abstract class BaseChatTemplateTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        TemplateChatActivityStub::class.java, false, false
+        TemplateChatActivityStub::class.java,
+        false,
+        false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -32,19 +33,21 @@ abstract class BaseChatTemplateTest {
             .getInstrumentation().context.applicationContext
     protected open lateinit var activity: TemplateChatActivityStub
 
-    protected var successGetTemplateResponseBuyer: TemplateData = TemplateData()
-    protected lateinit var chatTemplateApi: ChatTemplateApiStub
+    @Inject
+    lateinit var getTemplateUseCaseStub: GetTemplateUseCaseStub
+
     private val fakeTemplateActivityComponentFactory = FakeTemplateActivityComponentFactory()
 
     @Before
     open fun before() {
         setupDaggerComponent()
-        setupResponse()
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
     private fun setupDaggerComponent() {
         ActivityComponentFactory.instance = fakeTemplateActivityComponentFactory
+        fakeTemplateActivityComponentFactory.createTemplateChatComponent(applicationContext)
+        FakeTemplateActivityComponentFactory.templateChatComponent!!.inject(this)
     }
 
     protected fun launchActivity(
@@ -60,14 +63,6 @@ abstract class BaseChatTemplateTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-    }
-
-    private fun setupResponse() {
-        chatTemplateApi = fakeTemplateActivityComponentFactory.chatTemplateApiStub
-        successGetTemplateResponseBuyer = AndroidFileUtil.parse(
-            "template/success_get_template_buyer.json",
-            TemplateData::class.java
-        )
     }
 
     protected fun assertSnackBarWithSubText(msg: String) {

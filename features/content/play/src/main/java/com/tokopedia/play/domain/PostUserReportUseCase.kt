@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.UserReportSubmissionResponse
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class PostUserReportUseCase @Inject constructor(
 ) : GraphqlUseCase<UserReportSubmissionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(PostUserReportUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(PostUserReportUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
             .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -26,25 +27,29 @@ class PostUserReportUseCase @Inject constructor(
     }
 
     fun createParam(
-        reporterId: Long,
         channelId: Long,
         mediaUrl: String,
         reasonId: Int,
         timestamp: Long,
         reportDesc: String,
-        shopId: Long
+        partnerId: Long,
+        partnerType: PartnerType,
+        reporterId: Long,
     ): RequestParams{
-        val params = mapOf(
+        val param = mutableMapOf(
             REPORTER_ID_PARAM to reporterId,
             CHANNEL_ID_PARAM to channelId,
             MEDIA_URL_PARAM to mediaUrl,
             REASON_ID_PARAM to reasonId,
             TIMESTAMP_PARAM to timestamp,
             DESCRIPTION_PARAM to reportDesc,
-            SHOP_ID_PARAM to shopId
-        )
+        ).apply {
+            if (partnerType == PartnerType.Buyer) put(USER_ID_PARAM, partnerId)
+            else put(SHOP_ID_PARAM, partnerId)
+        }
+
         return RequestParams.create().apply {
-            putObject(INPUT, params)
+            putObject(INPUT, param)
         }
     }
 
@@ -57,6 +62,7 @@ class PostUserReportUseCase @Inject constructor(
         private const val DESCRIPTION_PARAM = "description"
         private const val SHOP_ID_PARAM = "shop_id"
         private const val INPUT = "input"
+        private const val USER_ID_PARAM = "user_id"
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """

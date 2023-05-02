@@ -5,14 +5,14 @@ import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerRes
 import javax.inject.Inject
 
 class ChatImageServerUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ChatImageServerResponse>
+    private val gqlUseCase: GraphqlUseCase<ChatImageServerResponse>
 ) {
 
     private var response: ChatImageServerResponse? = null
 
     fun getSourceId(
-            onSuccess: (String) -> Unit,
-            onError: (Throwable) -> Unit
+        onSuccess: (String, String) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         if (sourceIdAlreadyRetrieved(onSuccess)) return
         gqlUseCase.apply {
@@ -21,17 +21,17 @@ class ChatImageServerUseCase @Inject constructor(
             setGraphqlQuery(query)
             execute({ result ->
                 response = result
-                onSuccess(result.sourceId)
+                onSuccess(result.sourceId, result.sourceIdSecure)
             }, { error ->
                 onError(error)
             })
         }
     }
 
-    private fun sourceIdAlreadyRetrieved(onSuccess: (String) -> Unit): Boolean {
+    private fun sourceIdAlreadyRetrieved(onSuccess: (String, String) -> Unit): Boolean {
         response?.let {
-            if (it.sourceId.isNotEmpty()) {
-                onSuccess(it.sourceId)
+            if (it.sourceId.isNotEmpty() && it.sourceIdSecure.isNotEmpty()) {
+                onSuccess(it.sourceId, it.sourceIdSecure)
                 return true
             }
         }
@@ -41,7 +41,8 @@ class ChatImageServerUseCase @Inject constructor(
     private val query = """
         query chatImageServer{
           chatImageServer {
-            sourceID
+            sourceID,
+            sourceIDSecure
           }
         }
     """.trimIndent()

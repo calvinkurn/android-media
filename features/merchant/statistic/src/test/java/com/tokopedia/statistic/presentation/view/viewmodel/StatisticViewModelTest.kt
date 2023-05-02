@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -145,6 +146,7 @@ class StatisticViewModelTest {
     fun `should success when get widget layout`() = runBlocking {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, TestConst.PAGE_SOURCE)
 
@@ -154,7 +156,7 @@ class StatisticViewModelTest {
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
 
         viewModel.getWidgetLayout(TestConst.PAGE_SOURCE)
 
@@ -167,7 +169,7 @@ class StatisticViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        viewModel.widgetLayout.verifySuccessEquals(Success(layoutList))
     }
 
     @Test

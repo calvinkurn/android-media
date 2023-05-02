@@ -169,17 +169,6 @@
                         android:text="@string/tv_pinpoint_desc"
                         app:typographyType="body_3"/>
 
-                    <com.tokopedia.unifycomponents.ticker.Ticker
-                        android:id="@+id/ticker_maps_preview_unavailable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:descriptionText="@string/maps_preview_unavailable_ticker_desc"
-                        app:tickerType="error"
-                        app:tickerShapeType="loose"
-                        android:visibility="gone"
-                        app:closeButtonVisibility="gone"
-                        tools:visibility="visible"/>
-
                     <include
                         android:id="@+id/layout_maps_preview"
                         layout="@layout/item_open_maps_address"

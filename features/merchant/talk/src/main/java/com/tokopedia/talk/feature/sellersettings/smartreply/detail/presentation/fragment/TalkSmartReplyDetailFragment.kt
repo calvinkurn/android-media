@@ -18,10 +18,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
-import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.utils.FirebaseLogger
 import com.tokopedia.talk.common.utils.UpdateTrackerListener
@@ -29,7 +26,11 @@ import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationCon
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.analytics.TalkSmartReplyDetailTracking
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.widget.TalkSmartReplyDetailCard
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -37,6 +38,7 @@ import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -57,13 +59,14 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private var talkSmartReplyDetailAvailableStockTextArea: TextAreaUnify? = null
     private var talkSmartReplyDetailUnavailableStockTextArea: TextAreaUnify? = null
     private var talkSmartReplyDetailSubmitButton: UnifyButton? = null
+    private var talkSmartReplyDetailTicker: Ticker? = null
 
     override fun getComponent(): TalkSmartReplyDetailComponent? {
         return activity?.run {
             DaggerTalkSmartReplyDetailComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -78,9 +81,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                 viewModel.isSmartReplyOn = smartReplyDataWrapper?.isSmartReplyOn ?: false
                 viewModel.updateIsSwitchActive(viewModel.isSmartReplyOn)
                 viewModel.messageReady = smartReplyDataWrapper?.messageReady
-                        ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
+                    ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
                 viewModel.messageNotReady = smartReplyDataWrapper?.messageNotReady
-                        ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
+                    ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
             }
         }
     }
@@ -102,6 +105,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         initButton()
         observeSetSmartReplyResult()
         observeButtonState()
+        observeSmartReplyDecommissionConfig()
     }
 
     override fun getScreenName(): String {
@@ -123,11 +127,20 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     private fun initSwitchState() {
         talkSmartReplySwitch?.isChecked = viewModel.isSmartReplyOn
-        talkSmartReplySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            updateSwitchState(isChecked)
-            viewModel.isSmartReplyOn = isChecked
-            viewModel.setSmartReply()
-            viewModel.updateIsSwitchActive(isChecked)
+        talkSmartReplySwitch?.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.smartReplyDecommissionConfig.value.let { config ->
+                if (config?.isSmartReviewDisabled == true) {
+                    if (isChecked) {
+                        showToaster(config.toasterConfig.text, false)
+                        talkSmartReplySwitch?.isChecked = false
+                    }
+                } else {
+                    updateSwitchState(isChecked)
+                    viewModel.isSmartReplyOn = isChecked
+                    viewModel.setSmartReply()
+                    viewModel.updateIsSwitchActive(isChecked)
+                }
+            }
         }
     }
 
@@ -181,42 +194,60 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun observeSetSmartReplyResult() {
-        viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessSetSmartReplyResult()
-                is Fail -> onFailSetSmartReply(it.throwable)
+        viewModel.setSmartReplyResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessSetSmartReplyResult()
+                    is Fail -> onFailSetSmartReply(it.throwable)
+                }
             }
-        })
+        )
     }
 
     private fun observeButtonState() {
-        viewModel.buttonState.observe(viewLifecycleOwner, Observer {
-            when {
-                // Smart Reply active & text changed
-                (it.isReadyTextChanged || it.isNotReadyTextChanged) && it.isSwitchActive -> {
-                    talkSmartReplyDetailSubmitButton?.apply {
-                        isEnabled = true
-                        show()
+        viewModel.buttonState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when {
+                    // Smart Reply active & text changed
+                    (it.isReadyTextChanged || it.isNotReadyTextChanged) && it.isSwitchActive -> {
+                        talkSmartReplyDetailSubmitButton?.apply {
+                            isEnabled = true
+                            show()
+                        }
+                        enableTextAreas()
+                        setCardData()
                     }
-                    enableTextAreas()
-                    setCardData()
-                }
-                // Smart Reply active & text not changed
-                !it.isReadyTextChanged && !it.isNotReadyTextChanged && it.isSwitchActive -> {
-                    talkSmartReplyDetailSubmitButton?.apply {
-                        isEnabled = false
-                        show()
+                    // Smart Reply active & text not changed
+                    !it.isReadyTextChanged && !it.isNotReadyTextChanged && it.isSwitchActive -> {
+                        talkSmartReplyDetailSubmitButton?.apply {
+                            isEnabled = false
+                            show()
+                        }
+                        enableTextAreas()
+                        setCardData()
                     }
-                    enableTextAreas()
-                    setCardData()
-                }
-                //Smart Reply inactive
-                !it.isSwitchActive -> {
-                    talkSmartReplyDetailSubmitButton?.hide()
-                    disableTextAreas()
+                    // Smart Reply inactive
+                    !it.isSwitchActive -> {
+                        talkSmartReplyDetailSubmitButton?.hide()
+                        disableTextAreas()
+                    }
                 }
             }
-        })
+        )
+    }
+
+    private fun observeSmartReplyDecommissionConfig() {
+        viewModel.smartReplyDecommissionConfig.observe(viewLifecycleOwner) { config ->
+            if (config?.isSmartReviewDisabled == true) {
+                talkSmartReplySwitch?.isChecked = false
+                viewModel.updateIsSwitchActive(false)
+                talkSmartReplyDetailTicker?.tickerTitle = config.tickerConfig.title
+                talkSmartReplyDetailTicker?.setHtmlDescription(config.tickerConfig.text)
+                talkSmartReplyDetailTicker?.showWithCondition(viewModel.isSmartReplyOn)
+            }
+        }
     }
 
     private fun onSuccessSetSmartReplyResult() {
@@ -271,11 +302,14 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
+                }
             }
-        })
+        )
     }
 
     private fun disableTextAreas() {
@@ -296,6 +330,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplyDetailAvailableStockTextArea = view.findViewById(R.id.talkSmartReplyDetailAvailableStockTextArea)
         talkSmartReplyDetailUnavailableStockTextArea = view.findViewById(R.id.talkSmartReplyDetailUnavailableStockTextArea)
         talkSmartReplyDetailSubmitButton = view.findViewById(R.id.talkSmartReplyDetailSubmitButton)
+        talkSmartReplyDetailTicker = view.findViewById(R.id.talk_smart_reply_detail_ticker)
     }
 
     private fun getUserId(): String {

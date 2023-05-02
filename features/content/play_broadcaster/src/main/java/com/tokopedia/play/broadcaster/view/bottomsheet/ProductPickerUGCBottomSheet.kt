@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
@@ -23,8 +24,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProduct
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collect
@@ -36,8 +35,7 @@ import javax.inject.Inject
  */
 class ProductPickerUGCBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val analytic: ProductPickerUGCAnalytic,
+    private val analytic: ContentProductTagAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.play_dp_50) ?: 0 }
@@ -45,10 +43,6 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
     private val binding: BottomSheetPlayUgcProductPickerBinding
         get() = _binding!!
-
-    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
-        parentViewModelFactoryCreator.create(requireActivity())
-    }
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
         override fun onCloseProductTag() {
@@ -64,7 +58,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                             name = it.name,
                             imageUrl = it.cover,
                             stock = 1,
-                            price = PriceUnknown,
+                            price = PriceUnknown
                         )
                     }
                 )
@@ -78,7 +72,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { toaster.dismissToaster() },
-                bottomMargin = offsetToaster,
+                bottomMargin = offsetToaster
             )
         }
     }
@@ -115,6 +109,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
+    private var mDataSource: DataSource? = null
+
     private var mListener: Listener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,6 +129,10 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 childFragment.setAnalytic(analytic)
             }
         }
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
     }
 
     fun setListener(listener: Listener?) {
@@ -166,16 +166,16 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             closeBottomSheet()
         }
 
-        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
+        val selectedAccount = mDataSource?.getSelectedAccount()
 
         val productPicker = ProductTagParentFragment.getFragment(
             fragmentManager = childFragmentManager,
             classLoader = requireActivity().classLoader,
             argumentBuilder = ContentProductTagArgument.Builder()
-                .setAuthorType(selectedAccount.type)
+                .setAuthorType(selectedAccount?.type.orEmpty())
                 .setProductTagSource(ProductTagSource.GlobalSearch.tag)
-                .setAuthorId(selectedAccount.id)
-                .setShopBadge(selectedAccount.badge)
+                .setAuthorId(selectedAccount?.id.orEmpty())
+                .setShopBadge(mDataSource?.getShopBadgeIfAny().orEmpty())
                 .setMultipleSelectionProduct(true, viewModel.maxProduct)
                 .setIsShowActionBarDivider(false)
         )
@@ -187,7 +187,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     private fun setupBottomSheet() {
         _binding = BottomSheetPlayUgcProductPickerBinding.inflate(
-            LayoutInflater.from(requireContext()),
+            LayoutInflater.from(requireContext())
         )
         clearContentPadding = true
         showHeader = false
@@ -217,7 +217,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                         toaster.showError(
                             err = it.error,
                             customErrMessage = it.error.message,
-                            bottomMargin = offsetToaster,
+                            bottomMargin = offsetToaster
                         )
                     }
                     else -> {}
@@ -232,7 +232,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayUGCProductPickerBottomSheet"
-        private const val SHEET_HEIGHT_PERCENT = 0.9f //a bit higher than the other bottomsheet to cater for no header height
+        private const val SHEET_HEIGHT_PERCENT = 0.9f // a bit higher than the other bottomsheet to cater for no header height
 
         fun get(fragmentManager: FragmentManager): ProductPickerUGCBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductPickerUGCBottomSheet
@@ -240,7 +240,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
 
         ): ProductPickerUGCBottomSheet {
             val existing = get(fragmentManager)
@@ -251,6 +251,11 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 ProductPickerUGCBottomSheet::class.java.name
             ) as ProductPickerUGCBottomSheet
         }
+    }
+
+    interface DataSource {
+        fun getSelectedAccount(): ContentAccountUiModel
+        fun getShopBadgeIfAny(): String
     }
 
     interface Listener {

@@ -36,13 +36,10 @@ import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
 import com.tokopedia.saldodetails.commom.utils.SaldoCoachMarkController
-import com.tokopedia.saldodetails.commom.utils.SaldoDetailsRollenceUtil
 import com.tokopedia.saldodetails.commom.utils.Success
 import com.tokopedia.saldodetails.databinding.FragmentSaldoDepositBinding
-import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlDetailsResponse
-import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
@@ -67,7 +64,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         const val IS_SELLER_ENABLED = "is_user_enabled"
         const val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
-        const val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details"
 
         const val BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int"
         const val BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int"
@@ -75,7 +71,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         private const val MCL_STATUS_BLOCK1 = 700
         private const val MCL_STATUS_BLOCK3 = 999
         private const val IS_SELLER = "is_seller"
-        const val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
         const val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
 
         private const val IS_WITHDRAW_LOCK = "is_lock"
@@ -272,21 +267,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 else -> {
                     performanceInterface.stopNetworkRequestPerformanceMonitoring()
                     hideSaldoPrioritasFragment()
-                }
-            }
-        }
-
-        saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                    performanceInterface.startRenderPerformanceMonitoring()
-                    showMerchantCreditLineFragment(it.data.data)
-                    performanceInterface.stopRenderPerformanceMonitoring()
-                }
-                else -> {
-                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                    hideMerchantCreditLineFragment()
                 }
             }
         }
@@ -612,12 +592,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 } else {
                     hideSaldoPrioritasFragment()
                 }
-
-                if (isMerchantCreditLineEnabled) {
-                    saldoDetailViewModel.getMerchantCreditLineDetails()
-                } else {
-                    hideMerchantCreditLineFragment()
-                }
             }
         }
     }
@@ -731,20 +705,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         binding?.depositHeaderLayout?.apply {
             saldoPrioritasWidget.show()
             Handler().postDelayed({
-                if (merchantCreditLineWidget.visibility != View.VISIBLE) {
-                    hideUserFinancialStatusLayout()
-                }
-            }, CHECK_VISIBILITY_DELAY)
-        }
-    }
-
-    private fun hideMerchantCreditLineFragment() {
-        binding?.depositHeaderLayout?.apply {
-            merchantCreditLineWidget.gone()
-            Handler().postDelayed({
-                if (saldoPrioritasWidget.visibility != View.VISIBLE) {
-                    hideUserFinancialStatusLayout()
-                }
+                hideUserFinancialStatusLayout()
             }, CHECK_VISIBILITY_DELAY)
         }
     }
@@ -819,44 +780,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showBuyerSaldoRL() {
         binding?.depositHeaderLayout?.saldoBuyerBalanceRl?.show()
-    }
-
-    private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
-        if (SaldoDetailsRollenceUtil.shouldShowModalTokoWidget() && response != null && response.isEligible) {
-            statusWithDrawLock = response.status
-            when (statusWithDrawLock) {
-                MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
-                MCL_STATUS_BLOCK1 -> {
-                    showTicker()
-                    showMerchantCreditLineWidget(response)
-                }
-                MCL_STATUS_BLOCK3 -> {
-                    showTicker()
-                    hideMerchantCreditLineFragment()
-                }
-                else -> showMerchantCreditLineWidget(response)
-            }
-        } else {
-            hideMerchantCreditLineFragment()
-        }
-    }
-
-    private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {
-        binding?.depositHeaderLayout?.merchantStatusLl?.show()
-        val bundle = Bundle()
-        saveInstanceCacheManager =
-            context?.let { context -> SaveInstanceCacheManager(context, true) }
-        saveInstanceCacheManager?.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response)
-        if (!saveInstanceCacheManager?.id.isNullOrBlank()) {
-            bundle.putString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, saveInstanceCacheManager?.id)
-        }
-        childFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.merchant_credit_line_widget,
-                MerchantCreditDetailFragment.newInstance(bundle)
-            )
-            .commit()
     }
 
     private fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?) {

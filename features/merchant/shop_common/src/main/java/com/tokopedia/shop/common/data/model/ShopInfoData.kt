@@ -21,5 +21,7 @@ data class ShopInfoData(
         val siaNumber: String,
         val sipaNumber: String,
         val apj: String,
-        val partnerLabel: String
+        val partnerLabel: String,
+        val fsType: Int,
+        val partnerName: String
 ) : Parcelable

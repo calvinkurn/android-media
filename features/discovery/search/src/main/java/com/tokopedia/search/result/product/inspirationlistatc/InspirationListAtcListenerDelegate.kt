@@ -52,6 +52,5 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         SearchIdlingResource.increment()
 
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
-        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 }

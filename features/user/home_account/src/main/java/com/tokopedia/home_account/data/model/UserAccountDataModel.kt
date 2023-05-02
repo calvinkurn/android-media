@@ -15,8 +15,6 @@ data class UserAccountDataModel(
     var profile: ProfileModel = ProfileModel(),
     @SerializedName("openDebitSettings")
     var debitInstant: DebitInstantModel = DebitInstantModel(),
-    @SerializedName("isAffiliate")
-    var isAffiliate: Boolean = false,
     var shortcutResponse: ShortcutResponse = ShortcutResponse(),
     var linkStatus: LinkStatusPojo = LinkStatusPojo(),
     var offerInterrupt: OfferInterruptData = OfferInterruptData()

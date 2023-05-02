@@ -13,6 +13,7 @@ object AdminUserSessionUtil {
         shopId = shopData.shopId
         shopName = shopData.shopName
         shopAvatar = shopData.shopAvatar
+        shopAvatarOriginal = shopData.shopAvatarOriginal
         setIsGoldMerchant(shopData.shopLevel == levelGold  ||  shopData.shopLevel == levelOfficialStore)
         setIsShopOfficialStore(shopData.shopLevel == levelOfficialStore)
     }

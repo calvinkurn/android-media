@@ -44,6 +44,7 @@ object ImagePickerAddEditNavigation {
                 createDefaultEditorTools()
                 withRemoveBackground()
                 withWatermark()
+                withAddLogo()
             }
         }
     }
@@ -61,6 +62,7 @@ object ImagePickerAddEditNavigation {
                 createDefaultEditorTools()
                 withRemoveBackground()
                 withWatermark()
+                withAddLogo()
             }
         }
     }
@@ -142,9 +144,7 @@ object ImagePickerAddEditNavigation {
         }
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx, bundle) { ct, bnd ->
             val userSession = UserSession(ct)
-            if (bnd?.getBoolean(AddEditProductPreviewConstants.EXTRA_IS_ADDING_PRODUCT, true) == true) {
-                ProductAddEditImageTracking.trackEditContinue(userSession.shopId)
-            } else {
+            if (bnd?.getBoolean(AddEditProductPreviewConstants.EXTRA_IS_ADDING_PRODUCT, true) != true) {
                 ProductEditEditImageTracking.trackContinue(userSession.shopId)
             }
         }

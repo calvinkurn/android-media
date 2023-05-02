@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/unify_space_12"
-        android:paddingTop="9dp">
+        android:paddingTop="16dp">
 
         <ViewStub
             tools:visibility="visible"
@@ -96,7 +96,7 @@
             android:id="@+id/rv_popular_keyword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginLeft="12dp"
             tools:spanCount="2"
@@ -121,7 +121,7 @@
             android:layout="@layout/stub_popular_keyword_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             tools:layout_width="match_parent"
             tools:layout_height="match_parent"
             tools:visibility="visible"

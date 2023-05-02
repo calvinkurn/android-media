@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.PrivacyCenterConst
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.di.PrivacyCenterComponent
@@ -114,6 +115,7 @@ class PrivacyCenterFragment :
         trackingScroll()
 
         MainPrivacyCenterAnalytics.sendViewPrivacyCenterEvent()
+        MainPrivacyCenterAnalytics.trackScreen(screenName)
     }
 
     private fun setUpUserNameToolbar() {
@@ -204,9 +206,7 @@ class PrivacyCenterFragment :
         privacyCenterSection = null
     }
 
-    override fun getScreenName(): String {
-        return PrivacyCenterFragment::class.java.simpleName
-    }
+    override fun getScreenName(): String = PrivacyCenterConst.MAIN_PRIVACY_CENTER_SCREEN_NAME
 
     override fun initInjector() {
         getComponent(PrivacyCenterComponent::class.java).inject(this)
@@ -228,7 +228,7 @@ class PrivacyCenterFragment :
             val backIcon = getIconBackWithColor(getWhite = isExpand)
 
             window.statusBarColor = if (!isCollapsed) {
-                getResColor(R.color.dms_privacy_center_static_color_toolbar)
+                getResColor(R.color.privacycenter_dms_green_toolbar)
             } else {
                 getDynamicColorStatusBar()
             }

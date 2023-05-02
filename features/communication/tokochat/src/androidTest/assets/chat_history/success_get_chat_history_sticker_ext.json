@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": "17767a57-d014-4a6b-959b-5d27418ab128",
+      "channel_id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+      "text": "Pesan Sticker",
+      "data": "{\"id\":\"gochat.sticker\",\"message_id\":\"gochat.message.sticker\",\"widget_id\":\"gochat.widget.sticker\",\"version\":1,\"message_text\":\"Sticker\",\"payload\":\"{\\\"duration_in_ms\\\":1625,\\\"extension\\\":\\\"aac\\\",\\\"id\\\":\\\"70499a35-9941-489d-82e2-006bcabdd96e\\\"}\",\"tracking_id\":\"96054611-47b1-497f-a3de-486d66b996a5\"}",
+      "type": "extension",
+      "sender": {
+        "id": "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc",
+        "name": "Tokofood Driver 13",
+        "phone": "82240158005",
+        "country_code": "62"
+      },
+      "sent_at": 1673949690282
+    }
+  ],
+  "success": true,
+  "errors": []
+}

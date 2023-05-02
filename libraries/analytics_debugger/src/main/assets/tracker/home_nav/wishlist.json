@@ -3,52 +3,43 @@
   "mode": "exact",
   "query": [
     {
-      "event": "view_item_list",
+      "event": "view_item",
       "eventAction": "impression wishlist card",
       "eventCategory": "global menu",
-      "eventLabel": "",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "item_list": "/global_menu - wishlist_card",
-      "items": [
+      "promotions": [
         {
-          "dimension125": ".*",
-          "dimension40": "/global_menu - wishlist_card",
-          "index": ".*",
-          "item_brand": ".*",
-          "item_category": ".* / .* / .*",
-          "item_id": ".*",
-          "item_name": ".*",
-          "item_variant": ".*",
-          "price": ".*"
+          "creative_name": "",
+          "creative_slot": ".*",
+          "item_id": "0",
+          "item_name": "/global_menu - wishlist_card"
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "30836"
     },
     {
       "event": "select_content",
       "eventAction": "click wishlist card",
       "eventCategory": "global menu",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "item_list": "/global_menu - wishlist_card",
-      "items": [
+      "promotions": [
         {
-          "dimension125": ".*",
-          "index": ".*",
-          "item_brand": ".*",
-          "item_category": ".* / .* / .*",
-          "item_id": ".*",
-          "item_name": ".*",
-          "item_variant": ".*",
-          "price": ".*"
+          "creative_name": "",
+          "creative_slot": ".*",
+          "item_id": "0",
+          "item_name": "/global_menu - wishlist_card"
         }
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "30837"
     },
     {
       "event": "clickHomepage",

@@ -86,6 +86,9 @@ object DigitalCheckoutTrackingConst {
 
         const val ACTION_FIELD_STEP2_TEBUS_MURAH = "click proceed to payment"
         const val TRACKER_ID = "trackerId"
+
+        const val AUTO_APPLY_TRUE = 1
+        const val AUTO_APPLY_FALSE = 0
     }
 
     object CurrencyCode {

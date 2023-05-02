@@ -1,58 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
-    android:background="@color/Unify_Background"
-    android:padding="16dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
+    android:visibility="gone">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_detail_discussion_empty_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/product_detail_discussion_empty_subtitle"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        app:layout_constraintTop_toTopOf="parent"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/productDetailDiscussionEmptyImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="productDetailDiscussionEmptyImage"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionEmptyImage" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_pdp_discuss_empty"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_discussion_empty_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/product_detail_discussion_empty_description"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="display_2"
-        app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_subtitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionEmptyImage"/>
+        app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionEmptyImage"
+        app:layout_constraintEnd_toEndOf="@id/productDetailDiscussionEmptyButton"
+        app:layout_constraintStart_toEndOf="@id/productDetailDiscussionEmptyImage"
+        app:layout_constraintTop_toTopOf="@id/productDetailDiscussionEmptyImage"
+        app:typographyType="display_2" />
 
-    <ImageView
-        android:id="@+id/productDetailDiscussionEmptyImage"
-        android:layout_width="@dimen/dp_114"
-        android:layout_height="110dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="productDetailDiscussionEmptyImage" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/productDetailDiscussionEmptyButton"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/product_detail_discussion_empty_button"
-        app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_description"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        app:layout_constraintStart_toStartOf="@id/product_detail_discussion_empty_subtitle" />
-
-
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionEmptyImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productDetailDiscussionEmptyImage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

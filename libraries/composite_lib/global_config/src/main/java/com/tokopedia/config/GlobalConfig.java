@@ -37,6 +37,11 @@ public class GlobalConfig {
     public static Boolean ENABLE_DEBUG_TRACE = false;
 
     /**
+     * This field is used to enable macrobenchmark util. Used by macrobenchmark job
+     */
+    public static Boolean ENABLE_MACROBENCHMARK_UTIL = false;
+
+    /**
      * This field is used to pass the list of  trace names for which tracing need to be recorded if debug trace is enabled
      */
     public static String[] DEBUG_TRACE_NAME = {};

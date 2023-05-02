@@ -30,4 +30,9 @@
     <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="setting_toaster_error_retry">Muat Ulang</string>
 
+    <!-- RM Transaction -->
+    <string name="seller_rm_transaction_title">Jumlah transaksi</string>
+    <string name="seller_rm_transaction_info"><![CDATA[Kamu telah mendapatkan <b>%s</b> transaksi sejak bergabung. Bebas biaya layanan untuk <b>100</b> transaksi pertama. Setelahnya, biaya layanan akan dikenakan per produk terjual.]]></string>
+    <string name="seller_rm_transaction_edu"><![CDATA[Yuk, <a href="">baca artikel</a> untuk informasi lebih lanjut.]]></string>
+
 </resources>

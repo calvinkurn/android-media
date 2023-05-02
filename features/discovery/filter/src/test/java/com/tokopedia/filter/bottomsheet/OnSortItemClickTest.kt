@@ -43,10 +43,12 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
             expectedSelectedSortName: String,
             clickedSortItemViewModel: SortItemViewModel,
             expectedResetButtonVisibility: Boolean = true,
-            expectedIsButtonApplyVisible: Boolean = true
+            expectedIsButtonApplyVisible: Boolean = true,
+            expectedApplyFilterMap: Map<String, String> = mapOf(),
     ) {
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert selected sort map is as expected`(expectedSelectedSortMap)
+        `Then assert selected apply filter map is as expected`(expectedApplyFilterMap)
         `Then assert selected sort name`(expectedSelectedSortName)
         `Then assert UI changes for apply sort`(clickedSortItemViewModel, expectedResetButtonVisibility, expectedIsButtonApplyVisible)
         `Then assert filter view is expanded`()
@@ -86,16 +88,19 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
         val clickedSortItemViewModel = this.sortFilterList!!.getUnselectedSortWithApplyFilter()
         `When a Sort Item is clicked and applied`(clickedSortItemViewModel)
 
+        val applyFilterMap = clickedSortItemViewModel.sort.applyFilter.toMapParam()
+
         val expectedMapParameter = mapParameter.toMutableMap().also {
             it[clickedSortItemViewModel.sort.key] = clickedSortItemViewModel.sort.value
-            it.putAll(clickedSortItemViewModel.sort.applyFilter.toMapParam())
+            it.putAll(applyFilterMap)
         }
 
         `Then assert sort item click`(
                 expectedMapParameter,
                 mapOf(clickedSortItemViewModel.sort.key to clickedSortItemViewModel.sort.value),
                 clickedSortItemViewModel.sort.name,
-                clickedSortItemViewModel
+                clickedSortItemViewModel,
+                expectedApplyFilterMap = applyFilterMap,
         )
     }
 

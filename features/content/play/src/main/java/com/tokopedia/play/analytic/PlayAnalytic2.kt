@@ -1,5 +1,7 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.analytic.explorewidget.PlayExploreWidgetAnalytic
+import com.tokopedia.play.analytic.kebab.PlayKebabAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
@@ -24,18 +26,22 @@ class PlayAnalytic2 @AssistedInject constructor(
     upcomingAnalytic: PlayUpcomingAnalytic,
     shareExperienceAnalytic: PlayShareExperienceAnalytic,
     tagItemsAnalytic: PlayTagItemsAnalytic.Factory,
+    kebabAnalytic: PlayKebabAnalytic.Factory,
+    exploreWidgetAnalytic: PlayExploreWidgetAnalytic.Factory
 ) : PlayPartnerAnalytic by partnerAnalytic,
     PlayLikeAnalytic by likeAnalytic,
     PlaySocketAnalytic by socketAnalytic,
     PlayUpcomingAnalytic by upcomingAnalytic,
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
-    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo) {
+    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo),
+    PlayKebabAnalytic by kebabAnalytic.create(channelInfo),
+    PlayExploreWidgetAnalytic by exploreWidgetAnalytic.create(channelInfo, trackingQueue) {
 
     @AssistedFactory
     interface Factory {
         fun create(
             trackingQueue: TrackingQueue,
-            channelInfo: PlayChannelInfoUiModel,
+            channelInfo: PlayChannelInfoUiModel
         ): PlayAnalytic2
     }
 }

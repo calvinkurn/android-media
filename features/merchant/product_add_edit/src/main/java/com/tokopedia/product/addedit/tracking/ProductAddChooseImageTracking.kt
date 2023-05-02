@@ -12,10 +12,4 @@ object ProductAddChooseImageTracking {
     fun trackBack(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click back on gallery page")
     }
-
-    fun trackContinue(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click continue on gallery page")
-    }
-
-
 }

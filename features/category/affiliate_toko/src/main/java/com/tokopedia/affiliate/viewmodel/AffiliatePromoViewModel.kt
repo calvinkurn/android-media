@@ -2,60 +2,102 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
+import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromoViewModel  @Inject constructor(
+class AffiliatePromoViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+    private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
+    private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
 
-    fun getSearch(productLink : String) {
-        progressBar.value =  true
-        launchCatchError(block = {
-            affiliateSearchData.value =
+    fun isAffiliateSSAShopEnabled() =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_SSA_SHOP,
+            ""
+        ) == AFFILIATE_SSA_SHOP
+
+    fun getSearch(productLink: String) {
+        progressBar.value = true
+        launchCatchError(
+            block = {
+                affiliateSearchData.value =
                     affiliateSearchUseCase.affiliateSearchWithLink(arrayListOf(productLink))
-            progressBar.value = false
-        }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it.localizedMessage
-        })
+                progressBar.value = false
+            },
+            onError = {
+                progressBar.value = false
+                it.printStackTrace()
+                errorMessage.value = it.localizedMessage
+            }
+        )
     }
+
+    fun getDiscoBanners(
+        page: Int,
+        limit: Int = 20
+    ) {
+        launchCatchError(
+            block = {
+                discoBanners.value =
+                    affiliateDiscoveryCampaignUseCase.getAffiliateDiscoveryCampaign(
+                        page,
+                        limit
+                    )
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
+    }
+
     fun getAffiliateValidateUser() {
-        launchCatchError(block = {
-            validateUserdata.value =
-                affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
-            progressBar.value = false
-        }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-        })
+        launchCatchError(
+            block = {
+                validateUserdata.value =
+                    affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+                progressBar.value = false
+            },
+            onError = {
+                progressBar.value = false
+                it.printStackTrace()
+            }
+        )
     }
 
     fun getAnnouncementInformation() {
-        launchCatchError(block = {
-            affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_PROMOSIKAN)
-        }, onError = {
-            it.printStackTrace()
-        })
+        launchCatchError(
+            block = {
+                affiliateAnnouncement.value =
+                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                        PAGE_ANNOUNCEMENT_PROMOSIKAN
+                    )
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
     }
 
     fun setValidateUserType(onRegistered: String) {
@@ -69,6 +111,5 @@ class AffiliatePromoViewModel  @Inject constructor(
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getValidateUserType(): LiveData<String> = validateUserState
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
-
-
+    fun getDiscoCampaignBanners(): LiveData<AffiliateDiscoveryCampaignResponse> = discoBanners
 }

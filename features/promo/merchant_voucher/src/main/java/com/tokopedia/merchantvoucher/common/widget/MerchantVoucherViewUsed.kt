@@ -77,7 +77,10 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         merchantVoucherViewModel?.run {
             var voucherImageUrl = ""
             when (merchantVoucherViewModel.merchantVoucherType) {
-                MerchantVoucherTypeDef.TYPE_DISCOUNT, MerchantVoucherTypeDef.TYPE_CASHBACK -> {
+                MerchantVoucherTypeDef.TYPE_DISCOUNT -> {
+                    voucherImageUrl = MerchantVoucherConst.DISCOUNT_VOUCHER_IMAGE_URL
+                }
+                MerchantVoucherTypeDef.TYPE_CASHBACK -> {
                     voucherImageUrl = MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
                 }
                 MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {

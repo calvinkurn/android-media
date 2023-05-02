@@ -85,9 +85,13 @@ class ChatListAdapter constructor(
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
         val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            visitables.goToFirst(chatItemPosition)
-            notifyItemMoved(chatItemPosition, 0)
-            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
+            val bubbleCount = visitables
+                .filterIsInstance<ChatListTickerUiModel>()
+                .size
+
+            visitables.moveTo(chatItemPosition, bubbleCount)
+            notifyItemMoved(chatItemPosition, bubbleCount)
+            notifyItemChanged(bubbleCount, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 

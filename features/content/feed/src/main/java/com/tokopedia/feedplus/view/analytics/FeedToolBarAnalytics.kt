@@ -27,6 +27,7 @@ const val CONTENT_FEED_TIMELINE = "content feed timeline"
 const val CLICK_RETRY_ON_FEED_TO_POST = "click on retry button"
 const val FORMAT_TWO_PARAM = "%s - %s"
 const val CONTENT = "content"
+const val PLAY = "play"
 const val MARKETPLACE = "tokopediamarketplace"
 
 private object EventLabel {

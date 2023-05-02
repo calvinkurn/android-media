@@ -78,7 +78,6 @@
     <string name="shop_operational_hour_abort_holiday_schedule_success">Tanggal toko libur dihapus.</string>
     <string name="shop_operational_hour_create_holiday_schedule_fail">Oops, tanggal libur tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_abort_ongoing_holiday_schedule_success">Tokomu sudah buka kembali. Cek jam operasional hari ini, ya.</string>
-    <string name="shop_operational_hour_ticker_description_auto_chat_dummy_url">https://tokopedia.com/#open-auto-reply-chat-settings</string>
     <string name="shop_operational_hour_set_holiday_schedule_title">Atur tanggal libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan tanggal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus tanggal libur tokomu?</string>
@@ -239,5 +238,6 @@
     <string name="shop_page_setting_seller_center">Pusat Seller</string>
     <string name="shop_page_setting_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
     <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+    <string name="shop_operational_hour_ticker_auto_chat_reply">https://www.tokopedia.com/chat/setting/auto-reply</string>
 
 </resources>

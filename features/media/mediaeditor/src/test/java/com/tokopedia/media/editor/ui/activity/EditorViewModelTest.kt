@@ -9,9 +9,14 @@ import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
+import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
 import io.mockk.Runs
@@ -29,9 +34,15 @@ class EditorViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private val saveImageRepo = mockk<SaveImageRepository>()
+    private val userSession = mockk<UserSessionInterface>()
+    private val addLogoRepository = mockk<AddLogoFilterRepository>()
+    private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = EditorViewModel(
-        saveImageRepo
+        saveImageRepo,
+        addLogoRepository,
+        userSession,
+        bitmapCreationRepository
     )
 
     @Test
@@ -195,9 +206,41 @@ class EditorViewModelTest {
 
         // When
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) {}
+        viewModel.saveToGallery(
+            dataList,
+            onFinish = { _, _ -> }
+        )
+
+        // Then
+        verify { saveImageRepo.saveToGallery(any(), any()) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `save image to gallery with overlay logo`() {
+        // Given
+        val tempOverlayUrl = "temp_url"
+        val dataList = createUiModelState(0, -1)
+        dataList.first().apply {
+            editList.add(
+                EditorDetailUiModel(
+                    resultUrl = this.getOriginalUrl(),
+                    editorToolType = EditorToolType.ADD_LOGO,
+                    addLogoValue = EditorAddLogoUiModel(
+                        overlayLogoUrl = tempOverlayUrl
+                    )
+                )
+            )
+        }
+
+        // When
+        every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        }
+        viewModel.saveToGallery(dataList) { _, _ -> }
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }
@@ -214,22 +257,15 @@ class EditorViewModelTest {
         mockkStatic(FileUtil::class)
         every { getTokopediaCacheDir() } returns tokopediaCacheDir
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) {}
+        viewModel.saveToGallery(
+            dataList,
+            onFinish = { _, _ -> }
+        )
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }
-    }
-
-    @Test
-    fun `clean cache`() {
-        // When
-        every { saveImageRepo.clearEditorCache() } just Runs
-        viewModel.cleanImageCache()
-
-        // Then
-        verify { saveImageRepo.clearEditorCache() }
     }
 
     @Test
@@ -246,6 +282,62 @@ class EditorViewModelTest {
 
         // Then
         verify { saveImageRepo.saveToCache(any(), any(), any()) }
+    }
+
+    @Test
+    fun `check if user have shop`() {
+        // Given
+        var isShopAvail = false
+
+        // When
+        every { userSession.hasShop() } returns true
+        isShopAvail = viewModel.isShopAvailable()
+
+        // Then
+        assertEquals(true, isShopAvail)
+    }
+
+    @Test
+    fun `check if user have no shop`() {
+        // Given
+        var isShopAvail = false
+
+        // When
+        every { userSession.hasShop() } returns false
+        isShopAvail = viewModel.isShopAvailable()
+
+        // Then
+        assertEquals(false, isShopAvail)
+    }
+
+    @Test
+    fun `check memory is overflow true`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns true
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(true, isMemoryOverflow)
+    }
+
+    @Test
+    fun `check memory is overflow false`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns false
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(false, isMemoryOverflow)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
@@ -269,6 +361,7 @@ class EditorViewModelTest {
     companion object {
         private const val tokopediaCacheDir = "com.tokopedia.tkpd/cache/Tokopedia"
         private const val removeBackgroundPath = "/storage/sdcard/Pictures/remove_background.jpg"
+        private const val addLogoPath = "/storage/sdcard/Pictures/add_logo.jpg"
 
         private val pathSampleList = listOf(
             "/storage/sdcard/Pictures/Image1.jpg",
@@ -279,5 +372,6 @@ class EditorViewModelTest {
         )
 
         private const val videoKey = "/storage/sdcard/Pictures/Video1.mp4"
+        private const val userShopId = "13580123"
     }
 }

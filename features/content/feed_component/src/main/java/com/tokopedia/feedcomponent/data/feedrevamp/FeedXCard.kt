@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.data.feedrevamp
 
-
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -11,7 +11,7 @@ data class FeedXCard(
     @SerializedName("__typename")
     var typename: String = "",
 
-    //FeedXCardBanners Data Type
+    // FeedXCardBanners Data Type
     @SerializedName("id")
     var id: String = "",
     @SerializedName("publishedAt")
@@ -27,7 +27,7 @@ data class FeedXCard(
     @SerializedName("detailScore")
     var detailScore: List<FeedXScore> = emptyList(),
 
-    //FeedXCardTopAds Data Type
+    // FeedXCardTopAds Data Type
     @SerializedName("promos")
     var promos: List<String> = emptyList(),
     @SerializedName("author")
@@ -35,11 +35,11 @@ data class FeedXCard(
     @SerializedName("items")
     var items: List<FeedXCardDataItem> = emptyList(),
 
-    //FeedXCardPlaceHolder Data Type
+    // FeedXCardPlaceHolder Data Type
     @SerializedName("type")
     var type: String = "",
 
-    //FeedXCardProductsHighlight Data Type
+    // FeedXCardProductsHighlight Data Type
     @SerializedName("products")
     var products: List<FeedXProduct> = emptyList(),
     @SerializedName("hasVoucher")
@@ -71,7 +71,7 @@ data class FeedXCard(
     @SerializedName("maximumDiscountPercentageFmt")
     var maximumDisPercentFmt: String = "",
 
-    //FeedXCardPost Data Type
+    // FeedXCardPost Data Type
     @SerializedName("appLink")
     var appLink: String = "",
     @SerializedName("webLink")
@@ -95,10 +95,10 @@ data class FeedXCard(
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
-    //Active carousel index
+    // Active carousel index
     var lastCarouselIndex: Int = 0,
     var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
-    //Topads
+    // Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
     val adId: String = "",
@@ -107,16 +107,15 @@ data class FeedXCard(
     val cpmData: CpmData = CpmData(),
     val listProduct: List<Product> = listOf(),
 
-    //FeedXCardPlay data type
+    // FeedXCardPlay data type
     @SerializedName("playChannelID")
     var playChannelID: String = "",
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
-    var views: FeedXViews = FeedXViews(),
+    var views: FeedXViews = FeedXViews()
 
-
-    ) : ImpressHolder() {
+) : ImpressHolder() {
 
     val isTypeProductHighlight: Boolean
         get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -128,14 +127,14 @@ data class FeedXCard(
     val isTypeSgcVideo: Boolean
         get() = media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
-        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty()
-            && media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
+        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() &&
+            media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
     val isTypeUGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
     val isASGCDiscountToko: Boolean
-         get() = type == ASGC_DISCOUNT_TOKO
+        get() = type == ASGC_DISCOUNT_TOKO
     val contentScore
         get() = detailScore.filter { feedXScore ->
             feedXScore.isContentScore
@@ -149,7 +148,7 @@ data class FeedXCard(
             hasVoucher = hasVoucher,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
-            author = author,
+            author = author.copy(name = MethodChecker.fromHtml(this.author.name).toString()),
             title = title,
             totalProducts = totalProducts,
             products = products,

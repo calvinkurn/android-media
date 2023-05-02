@@ -115,6 +115,9 @@ object IrisAnalyticsEvents {
             return
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, baseNotificationModel)
+        if (baseNotificationModel.isAmplification) {
+            values[LABEL] = AMPLIFICATION
+        }
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
@@ -285,7 +288,8 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
-            PUSH_DISMISSED
+            PUSH_DISMISSED,
+            PUSH_CANCELLED
         )
 
         if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {

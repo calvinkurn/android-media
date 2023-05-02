@@ -21,7 +21,6 @@ class SaldoDetailViewModel @Inject constructor(
     val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     val getTickerWithdrawalMessageUseCase: GetTickerWithdrawalMessageUseCase,
     var getMerchantSaldoDetails: GetMerchantSaldoDetails,
-    val getMerchantCreditDetails: GetMerchantCreditDetails,
     val getMCLLateCountUseCase: GetMCLLateCountUseCase,
     @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
     @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
@@ -30,7 +29,6 @@ class SaldoDetailViewModel @Inject constructor(
     var isSeller: Boolean = false
 
     val gqlMerchantSaldoDetailLiveData: MutableLiveData<Resources<GqlMerchantSaldoDetailsResponse>> = MutableLiveData()
-    val gqlMerchantCreditDetailLiveData: MutableLiveData<Resources<GqlMerchantCreditDetailsResponse>> = MutableLiveData()
     val gqlLateCountResponseLiveData: MutableLiveData<Resources<GqlMclLateCountResponse>> = MutableLiveData()
     val gqlTickerWithdrawalLiveData: MutableLiveData<Resources<GqlWithdrawalTickerResponse>> = MutableLiveData()
     val gqlUserSaldoBalanceLiveData: MutableLiveData<Resources<GqlSaldoBalanceResponse>> = MutableLiveData()
@@ -73,15 +71,6 @@ class SaldoDetailViewModel @Inject constructor(
             }
         }, onError = {
             gqlMerchantSaldoDetailLiveData.postValue(ErrorMessage(it.toString()))
-        })
-    }
-
-    fun getMerchantCreditLineDetails() {
-        launchCatchError(block = {
-            val response = getMerchantCreditDetails.execute()
-            gqlMerchantCreditDetailLiveData.postValue(Success(response))
-        }, onError = {
-            gqlMerchantCreditDetailLiveData.postValue(ErrorMessage(it.toString()))
         })
     }
 

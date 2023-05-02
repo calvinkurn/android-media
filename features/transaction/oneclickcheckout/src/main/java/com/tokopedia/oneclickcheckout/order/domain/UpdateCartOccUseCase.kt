@@ -17,8 +17,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import javax.inject.Inject
 
-class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                               private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
+class UpdateCartOccUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) {
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccUIMessage? {
         val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
@@ -31,8 +33,11 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
             return prompt
         }
         if (response.response.data.toasterAction.showCta) {
-            return OccToasterAction(response.getErrorMessage()
-                    ?: DEFAULT_ERROR_MESSAGE, response.response.data.toasterAction.text)
+            return OccToasterAction(
+                response.getErrorMessage()
+                    ?: DEFAULT_ERROR_MESSAGE,
+                response.response.data.toasterAction.text
+            )
         }
         throw MessageErrorException(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
@@ -45,10 +50,15 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(promptResponse.type.lowercase(), promptResponse.title,
-                promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
-            OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
-        })
+        return OccPrompt(
+            promptResponse.type.lowercase(),
+            promptResponse.title,
+            promptResponse.description,
+            promptResponse.imageUrl,
+            promptResponse.buttons.map {
+                OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
+            }
+        )
     }
 
     companion object {

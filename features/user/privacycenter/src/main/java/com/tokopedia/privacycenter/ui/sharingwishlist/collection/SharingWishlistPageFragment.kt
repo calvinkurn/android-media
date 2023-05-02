@@ -130,15 +130,15 @@ class SharingWishlistPageFragment :
         }
 
         viewBinding?.emptyPage?.apply {
-            val accessName = if (collectionAccess == COLLECTION_PUBLIC_ID) {
-                COLLECTION_PUBLIC.asLowerCase()
+            if (collectionAccess == COLLECTION_PUBLIC_ID) {
+                errorPageTitle.text = getString(R.string.sharing_wishlist_empty_page_title_public)
+                errorPageDescription.text = getString(R.string.sharing_wishlist_empty_page_description_public)
             } else {
-                COLLECTION_PRIVATE.asLowerCase()
+                errorPageTitle.text = getString(R.string.sharing_wishlist_empty_page_title_private)
+                errorPageDescription.text = getString(R.string.sharing_wishlist_empty_page_description_private)
             }
 
             errorPageImage.loadImage(getString(R.string.sharing_wishlist_empty_page))
-            errorPageTitle.text = getString(R.string.sharing_wishlist_empty_page_title, accessName)
-            errorPageDescription.text = getString(R.string.sharing_wishlist_empty_page_description, accessName)
         }?.root?.show()
     }
 

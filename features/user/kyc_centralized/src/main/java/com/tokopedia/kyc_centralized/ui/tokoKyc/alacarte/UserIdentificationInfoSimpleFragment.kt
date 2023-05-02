@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -17,17 +16,23 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
 
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoSimpleBinding>()
     private var projectId = 0
@@ -47,6 +52,11 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
+        )
+
         activity?.intent?.data?.let {
             projectId = it.getQueryParameter(PARAM_PROJECT_ID).toIntOrZero()
             showWrapperLayout = it.getQueryParameter(PARAM_SHOW_INTRO).toBoolean()
@@ -79,22 +89,24 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private fun loadUserConsent() {
         val consentParam = ConsentCollectionParam(
-            collectionId = KYCConstant.consentCollectionId,
-            version = KYCConstant.consentVersion
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
+           }
         )
         viewBinding?.layoutBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-                override fun onCheckedChange(isChecked: Boolean) { }
-
-                override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                    startKyc()
-                }
-
-                override fun onFailed(throwable: Throwable) {
-                    Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-                }
-            }
+            viewLifecycleOwner, this, consentParam
         )
+
+        viewBinding?.layoutBenefit?.kycBenefitBtn?.setOnClickListener {
+            viewBinding?.layoutBenefit?.userConsentKyc?.submitConsent()
+            startKyc()
+        }
+
+        viewBinding?.layoutBenefit?.userConsentKyc?.setOnCheckedChangeListener {isChecked ->
+            viewBinding?.layoutBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
     }
 
     private fun setupKycBenefitView(view: View) {
@@ -117,6 +129,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private fun finishAndRedirectKycResult() {
         activity?.let {
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             it.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
@@ -138,6 +151,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
                     }
                 }
                 else -> {
+                    kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
                     activity?.setResult(resultCode)
                     activity?.finish()
                 }
@@ -146,7 +160,9 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = TAG
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
+    }
 
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"

@@ -69,6 +69,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mBroadcastOn = false
 
+    private var mAudioRate: String? = null
+    private var mVideoRate: String? = null
+    private var mVideoFps: String? = null
+
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
 
@@ -86,6 +90,12 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             // Arrays.fill(data, (byte) 0); // "Mute" audio
         }
 
+    override fun setConfig(audioRate: String, videoRate: String, videoFps: String) {
+        mAudioRate = audioRate
+        mVideoRate = videoRate
+        mVideoFps = videoFps
+    }
+
     override fun addListener(listener: Broadcaster.Listener) {
         mListeners.add(listener)
     }
@@ -100,6 +110,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+        if (mAudioRate.isNullOrEmpty() && mVideoRate.isNullOrEmpty() && mVideoFps.isNullOrEmpty()) return
         if (mStreamer != null) return
 
         val context = mContext
@@ -132,13 +143,13 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         builder.setUserAgent("Larix/$VERSION_NAME")
 
         // audio
-        val audioConfig = BroadcasterUtil.getAudioConfig()
+        val audioConfig = BroadcasterUtil.getAudioConfig(mAudioRate)
         builder.setAudioConfig(audioConfig)
 
         // video
         builder.setCamera2(BroadcasterCameraManager.allowCamera2Support(context))
 
-        val videoConfig = BroadcasterUtil.getVideoConfig()
+        val videoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mVideoFps)
 
         // get camera id
         val activeCamera = mSelectedCamera ?: findPreferredCamera(cameraList).also {

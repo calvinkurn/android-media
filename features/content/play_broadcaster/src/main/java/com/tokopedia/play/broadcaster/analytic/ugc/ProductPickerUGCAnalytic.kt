@@ -6,6 +6,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SearchHeaderUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
@@ -46,7 +47,11 @@ class ProductPickerUGCAnalytic @Inject constructor(
             .send()
     }
 
-    override fun clickProductTagSource(source: ProductTagSource) {
+    override fun clickProductTagSource(
+        source: ProductTagSource,
+        authorId: String,
+        authorType: String
+    ) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - product source ${source.labelAnalytic}")
@@ -237,6 +242,14 @@ class ProductPickerUGCAnalytic @Inject constructor(
             .setUserId(userId)
             .build()
             .send()
+    }
+
+    override fun viewProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** not applicable for Play Broadcaster */
+    }
+
+    override fun clickCloseOnProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** not applicable for Play Broadcaster */
     }
 
     override fun sendAll() {

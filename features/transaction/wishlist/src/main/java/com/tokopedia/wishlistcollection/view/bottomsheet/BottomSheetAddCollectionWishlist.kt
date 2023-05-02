@@ -54,7 +54,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
 import javax.inject.Inject
 
-class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
+class BottomSheetAddCollectionWishlist : BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private val collectionAdapter = BottomSheetWishlistCollectionAdapter()
@@ -114,7 +114,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         isFullpage = false
         showCloseIcon = false
         showHeader = true
-        customPeekHeight = (getScreenHeight()/2).toDp()
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     private fun initLayout() {
@@ -136,8 +136,12 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
             binding?.tickerOos?.id?.let { tickerId ->
                 binding?.rvAddWishlistCollection?.let { rv ->
                     constraintSet.connect(
-                        rv.id, ConstraintSet.TOP,
-                        tickerId, ConstraintSet.BOTTOM, 20)
+                        rv.id,
+                        ConstraintSet.TOP,
+                        tickerId,
+                        ConstraintSet.BOTTOM,
+                        20
+                    )
                 }
             }
             constraintSet.applyTo(constraintLayout)
@@ -198,8 +202,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
                         updateBottomSheet(dataGetBottomSheetCollections)
                         collectionAdapter.addList(mapDataCollectionsBottomSheet(dataGetBottomSheetCollections))
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         if (errorMessage != null) {
                             toasterErrorMessage = errorMessage
                         }
@@ -250,7 +257,8 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
                 context?.let { c ->
                     WishlistCollectionAnalytics.sendClickCheckWishlistEvent(productId, source)
                     dismiss()
-                    goToWishlistPage(c) }
+                    goToWishlistPage(c)
+                }
             }
         }
     }

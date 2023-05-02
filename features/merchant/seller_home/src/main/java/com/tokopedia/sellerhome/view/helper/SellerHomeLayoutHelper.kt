@@ -8,7 +8,6 @@ import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
@@ -56,6 +55,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
@@ -114,13 +114,13 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @return  flow that emit mapped/combined widget layouts
      */
     suspend fun getInitialWidget(
-        widgets: List<BaseWidgetUiModel<*>>,
+        widgetList: List<BaseWidgetUiModel<*>>,
         deviceHeightDp: Float,
         isFromCache: Boolean
-    ): Flow<List<BaseWidgetUiModel<*>>> {
-        val widgetFlow = flow { emit(widgets) }
+    ): Flow<List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+        val widgetFlow = flow { emit(widgetList) }
         val predictedInitialWidgetFlow = getPredictedInitialWidget(
-            widgets, deviceHeightDp, isFromCache
+            widgetList, deviceHeightDp, isFromCache
         )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
             widgetsFromFlow.map { widget ->

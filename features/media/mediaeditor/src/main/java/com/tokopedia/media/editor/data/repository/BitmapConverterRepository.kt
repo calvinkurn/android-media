@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
@@ -11,7 +12,7 @@ interface BitmapConverterRepository {
 }
 
 class BitmapConverterRepositoryImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : BitmapConverterRepository {
 
     override fun uriToBitmap(uri: Uri): Bitmap? {

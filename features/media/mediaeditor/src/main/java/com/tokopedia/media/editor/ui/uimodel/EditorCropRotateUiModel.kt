@@ -21,11 +21,15 @@ data class EditorCropRotateUiModel(
     var isCrop: Boolean = false,
     var isAutoCrop: Boolean = false,
     var croppedSourceWidth: Int = 0,
-    var cropRatio: Pair<Int, Int> = Pair(0, 0)
+    var cropRatio: Pair<Int, Int> = EMPTY_RATIO
 ) : Parcelable {
 
     // cropRatio.first = ratio width || cropRatio.second = ratio height
     fun getRatio(): Float? {
         return if (imageWidth == 0 && imageHeight == 0) null else cropRatio.first.toFloat() / cropRatio.second
+    }
+
+    companion object {
+        val EMPTY_RATIO = Pair(0, 0)
     }
 }

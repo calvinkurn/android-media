@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -47,7 +46,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapterTypeFactory>(),
+class TokoFoodPromoFragment : BaseMultiFragment(),
         TokoFoodPromoActionListener, TokoFoodPromoToolbarListener, IBaseMultiFragment {
 
     @Inject
@@ -70,6 +69,17 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private val merchantId by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(MERCHANT_ID_KEY).orEmpty()
     }
+
+    private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
+        TokoFoodPromoAdapterTypeFactory(this)
+    }
+    private val rvLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        activity?.let {
+            LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private var rvAdapter: TokoFoodPromoAdapter? = null
 
     companion object {
         const val RV_DIRECTION_UP = -1
@@ -104,18 +114,18 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = LayoutFragmentPurchasePromoBinding.inflate(inflater, container, false)
-        val view = viewBinding?.root
-        getRecyclerView(view)?.let {
-            it.addItemDecoration(TokoFoodPromoDecoration())
-            (it.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        }
-        return view
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
         setBackground()
         initializeToolbar()
         initializeRecyclerViewScrollListener()
@@ -133,19 +143,13 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         return ""
     }
 
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
-    }
-
-    override fun onItemClicked(t: Visitable<*>?) {
-        // No-op
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
     }
 
     override fun getScreenName(): String {
         return ""
     }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view_purchase_promo
 
     override fun initInjector() {
         activity?.let {
@@ -157,32 +161,27 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         }
     }
 
-    override fun loadData(page: Int) {
-
-    }
-
     private fun loadData() {
         viewBinding?.layoutGlobalErrorPurchasePromo?.gone()
         viewBinding?.recyclerViewPurchasePromo?.show()
-        adapter.clearAllElements()
+        rvAdapter?.clearAllElements()
         showLoading()
         viewModel.loadData(source, merchantId)
     }
 
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, TokoFoodPromoAdapterTypeFactory> {
-        return TokoFoodPromoAdapter(adapterTypeFactory)
-    }
-
-    override fun getAdapterTypeFactory(): TokoFoodPromoAdapterTypeFactory {
-        return TokoFoodPromoAdapterTypeFactory(this)
-    }
-
     override fun onBackPressed() {
         (activity as? BaseTokofoodActivity)?.onBackPressed()
+    }
+
+    private fun setupRecyclerView() {
+        viewBinding?.recyclerViewPurchasePromo?.run {
+            addItemDecoration(TokoFoodPromoDecoration())
+            (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+            rvAdapter = TokoFoodPromoAdapter(adapterTypeFactory).also {
+                adapter = it
+            }
+            layoutManager = rvLayoutManager
+        }
     }
 
     private fun initializeToolbar() {
@@ -219,7 +218,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        viewBinding?.recyclerViewPurchasePromo?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 // No-op
             }
@@ -235,20 +234,20 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     private fun observeList() {
-        viewModel.visitables.observe(viewLifecycleOwner, {
-            (adapter as TokoFoodPromoAdapter).updateList(it)
-        })
+        viewModel.visitables.observe(viewLifecycleOwner) {
+            rvAdapter?.updateList(it)
+        }
     }
 
     private fun observeFragmentUiModel() {
-        viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
+        viewModel.fragmentUiModel.observe(viewLifecycleOwner) {
             toolbar?.setTitle(it.pageTitle)
             renderTotalAmount(it)
-        })
+        }
     }
 
     private fun observeUiEvent() {
-        viewModel.uiEvent.observe(viewLifecycleOwner, {
+        viewModel.uiEvent.observe(viewLifecycleOwner) {
             when (it.state) {
                 UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
                 UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE -> {
@@ -275,7 +274,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                     }
                 }
             }
-        })
+        }
     }
 
     private fun renderPromoPage() {
@@ -299,7 +298,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 setLabelTitle(fragmentUiModel.promoTitle)
                 setAmount(fragmentUiModel.promoAmountStr)
                 amountCtaView.setOnClickListener {
-                    (activity as? BaseTokofoodActivity)?.onBackPressed()
+                    onBackPressed()
                 }
             }
         }
@@ -392,6 +391,12 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
             )
         )
+    }
+
+    private fun showLoading() {
+        rvAdapter?.removeErrorNetwork()
+        rvAdapter?.setLoadingModel(LoadingModel())
+        rvAdapter?.showLoading()
     }
 
     override fun onClickUnavailablePromoItem() {

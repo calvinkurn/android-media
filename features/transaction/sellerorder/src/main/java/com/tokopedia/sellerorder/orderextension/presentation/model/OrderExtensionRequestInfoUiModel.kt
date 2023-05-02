@@ -4,11 +4,14 @@ import androidx.annotation.ColorRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory.OrderExtensionRequestInfoAdapterTypeFactory
+import java.util.Date
 
 data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
+    val orderExtensionDate: OrderExtensionDate = OrderExtensionDate(),
     var processing: Boolean,
     var success: Boolean,
     var completed: Boolean,
@@ -58,6 +61,16 @@ data class OrderExtensionRequestInfoUiModel(
         }
     }
 
+    data class OrderExtensionDate(
+        val deadLineTime: Date = Date(),
+        val eligibleDates: List<EligibleDateUIModel> = listOf()
+    ){
+        data class EligibleDateUIModel(
+            val date: Date = Date(),
+            val extensionTime: Int = 0
+        )
+    }
+
     data class DescriptionUiModel(
         val alignment: DescriptionAlignment = DescriptionAlignment.TEXT_ALIGNMENT_INHERIT,
         @ColorRes val fontColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
@@ -65,7 +78,8 @@ data class OrderExtensionRequestInfoUiModel(
         val description: StringComposer,
         override var show: Boolean = true,
         override var hideKeyboardOnClick: Boolean = true,
-        override var requestFocus: Boolean = false
+        override var requestFocus: Boolean = false,
+        var id: Int
     ) : BaseOrderExtensionRequestInfoItem {
         override fun type(typeFactory: OrderExtensionRequestInfoAdapterTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -170,6 +184,17 @@ data class OrderExtensionRequestInfoUiModel(
         }
     }
 
+    class PickTimeUiModel : BaseOrderExtensionRequestInfoItem {
+        var timeText: String = String.EMPTY
+        override var show: Boolean = true
+        override var hideKeyboardOnClick: Boolean = true
+        override var requestFocus: Boolean = false
+
+        override fun type(typeFactory: OrderExtensionRequestInfoAdapterTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
+        }
+    }
+
     class DescriptionShimmerUiModel(val width: DimenRes) : BaseOrderExtensionRequestInfoItem {
         override var show: Boolean = true
         override var hideKeyboardOnClick: Boolean = true
@@ -180,7 +205,17 @@ data class OrderExtensionRequestInfoUiModel(
         }
     }
 
-    class OptionShimmerUiModel: BaseOrderExtensionRequestInfoItem {
+    class OptionShimmerUiModel : BaseOrderExtensionRequestInfoItem {
+        override var show: Boolean = true
+        override var hideKeyboardOnClick: Boolean = true
+        override var requestFocus: Boolean = false
+
+        override fun type(typeFactory: OrderExtensionRequestInfoAdapterTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
+        }
+    }
+
+    class PickTimeShimmerUiModel : BaseOrderExtensionRequestInfoItem {
         override var show: Boolean = true
         override var hideKeyboardOnClick: Boolean = true
         override var requestFocus: Boolean = false

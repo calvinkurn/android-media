@@ -10,9 +10,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.toPx
 
-
+private const val SORT_FILTER_PADDING_4 = 4
 private const val SORT_FILTER_PADDING_8 = 8
-private const val SORT_FILTER_PADDING_16 = 16
 private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
 private const val REGEX_IS_NUMERIC = "^[0-9\\s]*$"
 private const val LABEL_MAX_CHAR = 18
@@ -29,26 +28,31 @@ fun TextFieldUnify2.clearErrorField() {
     }
 }
 
-fun TextFieldUnify2.onClickClearIconUnify(textFieldStaticLabel: String,
-                                              onClickClearIcon: () -> Unit){
-        editText.setText("")
-        isInputError = false
-        textInputLayout.hint = textFieldStaticLabel
-        onClickClearIcon()
+fun TextFieldUnify2.onClickClearIconUnify(
+    textFieldStaticLabel: String,
+    onClickClearIcon: () -> Unit
+) {
+    editText.setText("")
+    isInputError = false
+    textInputLayout.hint = textFieldStaticLabel
+    onClickClearIcon()
 }
 
-fun SortFilter.setMainPadding(){
+fun SortFilter.setMainPadding() {
     sortFilterHorizontalScrollView.setPadding(
-        SORT_FILTER_PADDING_16.toPx(), 0 ,
-        SORT_FILTER_PADDING_8.toPx() ,0)
+        SORT_FILTER_PADDING_4.toPx(),
+        0,
+        SORT_FILTER_PADDING_8.toPx(),
+        0
+    )
     sortFilterHorizontalScrollView.clipToPadding = false
 }
 
-fun IconUnify.showClearIconUnify(){
+fun IconUnify.showClearIconUnify() {
     if (!isVisible) show()
 }
 
-fun IconUnify.hideClearIconUnify(){
+fun IconUnify.hideClearIconUnify() {
     if (isVisible) hide()
 }
 

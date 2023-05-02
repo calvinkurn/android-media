@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2
 
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapperTest
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModelTest
@@ -153,6 +154,7 @@ import org.junit.runners.Suite
     ThematicHeaderViewModelTest::class,
     ContentCardModelTest::class,
     ContentCardItemModelTest::class,
+    DiscoveryListViewModelTest::class,
 )
 
 

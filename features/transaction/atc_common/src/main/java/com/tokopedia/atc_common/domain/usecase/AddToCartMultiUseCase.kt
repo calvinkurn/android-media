@@ -10,6 +10,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>,
                                                 private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) {
@@ -32,9 +33,11 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
                     val quantity = param.qty
                     val productPrice = param.productPrice
                     val category = param.category
-                    AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                        productId, productName, productPrice.roundToLong().toString(),
                             quantity.toString(), category)
-                    AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
+                    AddToCartBaseAnalytics.sendBranchIoTracking(
+                        productId, productName, productPrice.roundToLong().toString(),
                             quantity.toString(), category, "",
                             "", "", "",
                             "", "", userId)

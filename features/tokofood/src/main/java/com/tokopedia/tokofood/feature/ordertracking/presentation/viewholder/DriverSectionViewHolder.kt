@@ -11,6 +11,8 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
@@ -86,7 +88,10 @@ class DriverSectionViewHolder(
     }
 
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setLicensePlatNumber(platNumber: String) {
-        tvOrderTrackingDriverPlatNumber.text = platNumber
+        tvOrderTrackingDriverPlatNumber.text = TokoChatViewUtil.censorPlatNumber(
+            platNumber = platNumber,
+            percentageCensor = DEFAULT_CENSOR_PERCENTAGE
+        )
     }
 
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {

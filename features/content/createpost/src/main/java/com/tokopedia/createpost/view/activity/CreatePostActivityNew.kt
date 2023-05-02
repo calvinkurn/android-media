@@ -72,7 +72,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             is ContentAccountTypeBottomSheet -> {
                 fragment.setData(mFeedAccountList)
                 fragment.setAnalytic(feedAccountAnalytic)
-                fragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                fragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if(contentAccount.type != selectedContentAccount.type && contentAccount.isShop) {
                             showSwitchAccountDialog(contentAccount)
@@ -81,6 +81,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
                         changeSelectedFeedAccount(contentAccount)
                     }
+
+                    override fun onClickClose() { }
                 })
             }
         }

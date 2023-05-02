@@ -16,6 +16,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.databinding.MvcLayoutMultishopMerchatCouponListBinding
 import com.tokopedia.mvcwidget.di.components.MvcComponent
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceConstant
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
@@ -23,7 +24,6 @@ import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.mvcwidget.databinding.MvcLayoutMultishopMerchatCouponListBinding
 import javax.inject.Inject
 
 class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringListener,

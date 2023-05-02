@@ -13,7 +13,7 @@ data class PlainHeaderUiModel(
     }
 
     override fun shouldShow(context: Context?): Boolean {
-        return header.getString(context).isNotBlank()
+        return header.getStringValue(context).isNotBlank()
     }
 
     override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {

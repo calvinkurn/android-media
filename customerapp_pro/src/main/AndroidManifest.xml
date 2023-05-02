@@ -98,6 +98,7 @@
         <package android:name="com.asistenhidup.terran" />
         <package android:name="com.awantunai.app" />
         <package android:name="com.baga.cabjahbcaefiag" />
+        <package android:name="com.bajingan.bangsat" />
         <package android:name="com.bbxfintech" />
         <package android:name="com.berkem.bang" />
         <package android:name="com.beruangcerdas.finansialapp" />
@@ -179,6 +180,7 @@
         <package android:name="com.electrodialitic.haltere" />
         <package android:name="com.enough.rupiah" />
         <package android:name="com.estakapital.investor" />
+        <package android:name="com.example.myapplication" />
         <package android:name="com.excellence.PinjamanRupiah" />
         <package android:name="com.excelliance.multiaccount" />
         <package android:name="com.excelliance.multiaccounts" />
@@ -725,6 +727,10 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/appsflyer_key_pro" />
+
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
 
         <provider
             android:name="com.facebook.internal.FacebookInitProvider"

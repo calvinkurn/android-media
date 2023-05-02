@@ -2,19 +2,18 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet
 
 import android.content.Context
 import androidx.annotation.ArrayRes
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
-import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
+import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
-import java.lang.Exception
 import javax.inject.Inject
 
-class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext private val context: Context) {
+class CommonBottomSheetInitializer @Inject constructor() {
 
     private fun getResourceList(
+        context: Context,
         @ArrayRes resId: Int,
         @ArrayRes contentResId: Int
     ): List<Pair<String, String>> {
@@ -31,48 +30,18 @@ class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext priva
     }
 
     private fun getResourceListSingle(
+        context: Context,
         @ArrayRes resId: Int,
         @ArrayRes contentResId: Int
     ): ArrayList<SingleSelectionItem> {
-        val output = getResourceList(resId, contentResId).map {
+        val output = getResourceList(context, resId, contentResId).map {
             SingleSelectionItem(it.first, it.second)
         }
         return ArrayList(output)
     }
 
-    private fun getResourceListMultiple(
-        @ArrayRes resId: Int,
-        @ArrayRes contentResId: Int
-    ): ArrayList<MultipleSelectionItem> {
-        val output = getResourceList(resId, contentResId).map {
-            MultipleSelectionItem(it.first, it.second)
-        }
-        return ArrayList(output)
-    }
-
-    fun initSortBottomSheet(selectedItemId: String): SingleSelectionBottomSheet{
-        val items = getResourceListSingle(R.array.sort_items_id, R.array.sort_items)
-        val title = context.getString(R.string.commonbs_sort_title)
-        val actionText = context.getString(R.string.action_apply)
-        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedItemId, items)
-        return bottomSheet.apply {
-            setBottomSheetTitle(title)
-            setBottomSheetButtonTitle(actionText)
-        }
-    }
-
-    fun initFilterStatusBottomSheet(selectedItemIds: ArrayList<String>): MultipleSelectionBottomSheet{
-        val multipleSelectionItems = getResourceListMultiple(R.array.status_filter_items_id, R.array.status_filter_items)
-        val title = context.getString(R.string.commonbs_status_filter_title)
-        val actionText = context.getString(R.string.action_apply)
-        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedItemIds, multipleSelectionItems)
-        return bottomSheet.apply {
-            setBottomSheetTitle(title)
-            setBottomSheetButtonTitle(actionText)
-        }
-    }
-
     fun initFilterCategoryBottomSheet(
+        context: Context,
         selectedItemIds: List<String>,
         categoryItems: List<Category>
     ): MultipleSelectionBottomSheet{
@@ -86,8 +55,8 @@ class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext priva
         }
     }
 
-    fun initCategoryFilterBottomSheet(selectedItemId: String): SingleSelectionBottomSheet{
-        val items = getResourceListSingle(R.array.criteria_filter_items_id, R.array.criteria_filter_items)
+    fun initCategoryFilterBottomSheet(context: Context, selectedItemId: String): SingleSelectionBottomSheet{
+        val items = getResourceListSingle(context, R.array.criteria_filter_items_id, R.array.criteria_filter_items)
         val title = context.getString(R.string.commonbs_criteria_filter_title)
         val actionText = context.getString(R.string.action_apply)
         val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedItemId, items)

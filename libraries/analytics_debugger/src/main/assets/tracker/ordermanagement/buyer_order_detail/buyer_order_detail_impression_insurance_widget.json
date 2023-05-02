@@ -1,0 +1,16 @@
+{
+  "readme": "Revamped Buyer Order Detail - impression on insurance widget",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewPGIris",
+      "eventAction": "impression - proteksi transaksi",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "40081",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

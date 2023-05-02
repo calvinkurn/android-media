@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.play.broadcaster.testdouble.MockPlayCoverImageUtil
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -37,6 +39,7 @@ class PlayCoverSetupViewModelTest {
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var tagsDataStore: TagsDataStore
     private lateinit var interactiveDataStore: InteractiveDataStore
+    private lateinit var productTagDataStore: ProductTagDataStore
 
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var titleConfigStore: TitleConfigStore
@@ -58,12 +61,21 @@ class PlayCoverSetupViewModelTest {
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        productTagDataStore = ProductTagDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(
+            coverDataStore,
+            broadcastScheduleDataStore,
+            titleDataStore,
+            tagsDataStore,
+            interactiveDataStore,
+            productTagDataStore,
+        )
 
         viewModel = PlayCoverSetupViewModel(
             productList = emptyList(),
             channelId = "",
             hydraConfigStore = HydraConfigStoreImpl(
+                BroadcastingConfigStoreImpl(),
                 channelConfigStore,
                 ProductConfigStoreImpl(),
                 titleConfigStore,
@@ -76,7 +88,8 @@ class PlayCoverSetupViewModelTest {
             getOriginalProductImageUseCase = getOriginalProductImageUseCase,
             coverImageUtil = MockPlayCoverImageUtil(),
             coverImageTransformer = MockImageTransformer(),
-            authorId = "123",
+            account = ContentAccountUiModel.Empty.copy(id = "123"),
+            pageSource = PlayBroPageSource.Live
         )
     }
 

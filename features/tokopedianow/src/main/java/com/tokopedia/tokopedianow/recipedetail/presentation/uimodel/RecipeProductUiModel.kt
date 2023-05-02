@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipedetail.presentation.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductTypeFactory
 import kotlinx.parcelize.Parcelize
@@ -31,5 +32,9 @@ data class RecipeProductUiModel(
 
     override fun type(typeFactory: RecipeProductTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getPrice(): String {
+        return priceFmt.getDigits().toString()
     }
 }

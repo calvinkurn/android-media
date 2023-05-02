@@ -26,12 +26,13 @@ class PromoCheckoutActivity : BaseSimpleActivity() {
         val promoMvcLockCourierFlow = intent.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
         val chosenAddress: ChosenAddress? = intent.getParcelableExtra(ARGS_CHOSEN_ADDRESS)
         fragment = PromoCheckoutFragment.createInstance(
-                pageSource,
-                promoRequest,
-                validateUseRequest,
-                bboPromoCodes ?: ArrayList(),
-                promoMvcLockCourierFlow,
-                chosenAddress)
+            pageSource,
+            promoRequest,
+            validateUseRequest,
+            bboPromoCodes ?: ArrayList(),
+            promoMvcLockCourierFlow,
+            chosenAddress
+        )
         return fragment
     }
 

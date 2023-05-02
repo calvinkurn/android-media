@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_ava"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shop_credibility_name"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -38,7 +39,8 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_badge"
         app:layout_constraintRight_toLeftOf="@id/shop_credibility_partner"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_ava"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginEnd="16dp"
         app:layout_goneMarginLeft="8dp"
@@ -189,23 +191,16 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/shop_credibility_info_ticker"
+    <ViewStub
+        android:id="@+id/shop_credibility_ticker_stub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_goneMarginTop="8dp"
+        android:layout="@layout/view_credibility_ticker"
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_desc_2"
-        app:layout_constraintVertical_bias="0"
-        app:tickerShapeType="loose"
-        app:tickerType="announcement"
-        tools:descriptionText="Toko sedang libur. Ada potensi keterlambatan dalam pengiriman. Cek Jadwal"
-        tools:layout_editor_absoluteX="12dp"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

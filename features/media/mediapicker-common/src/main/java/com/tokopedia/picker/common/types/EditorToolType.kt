@@ -16,6 +16,7 @@ import androidx.annotation.IntDef
     EditorToolType.ROTATE,
     EditorToolType.REMOVE_BACKGROUND,
     EditorToolType.WATERMARK,
+    EditorToolType.ADD_LOGO
 ])
 annotation class EditorToolType {
     companion object {
@@ -26,5 +27,6 @@ annotation class EditorToolType {
         const val ROTATE = 3
         const val REMOVE_BACKGROUND = 4
         const val WATERMARK = 5
+        const val ADD_LOGO = 6
     }
 }

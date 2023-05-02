@@ -1017,6 +1017,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                     maxMediaItem(MAX_IMAGE_COUNT)
                     maxVideoItem(MAX_VIDEO_COUNT)
                     maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
+                    includeMedias(viewModel.getSelectedMediasUrl())
                 }
                 startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
             }

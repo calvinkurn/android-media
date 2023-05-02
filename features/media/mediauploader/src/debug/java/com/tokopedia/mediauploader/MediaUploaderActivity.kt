@@ -16,6 +16,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -34,6 +35,8 @@ import com.tokopedia.mediauploader.di.MediaUploaderTestModule
 import com.tokopedia.mediauploader.services.UploaderWorker
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_VIDEO_URL
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
@@ -403,16 +406,21 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun pickImageToUpload() {
-        val builder = ImagePickerBuilder.getOriginalImageBuilder(this)
-            .withSimpleMultipleSelection(maxPick = 1)
-        val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.IMAGE_PICKER)
-        intent.putImagePickerBuilder(builder)
+        val intent = MediaPicker.intent(this) {
+            pageType(PageType.GALLERY)
+            singleSelectionMode()
+        }
+
         startActivityForResult(intent, REQUEST_IMAGE_PICKER)
         isUploadImage = true
     }
 
     private fun pickVideoToUpload() {
-        val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.VIDEO_PICKER)
+        val intent = MediaPicker.intent(this) {
+            maxVideoDuration(600000)
+            pageType(PageType.GALLERY)
+            singleSelectionMode()
+        }
         startActivityForResult(intent, REQUEST_VIDEO_PICKER)
         isUploadImage = false
     }
@@ -455,11 +463,11 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
-            val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-            setPreviewInfo(imageList.first(), true)
+            val imageList = MediaPicker.result(data)
+            setPreviewInfo(imageList.originalPaths.first(), true)
         } else if (requestCode == REQUEST_VIDEO_PICKER && resultCode == Activity.RESULT_OK) {
-            val videoList = data?.getStringArrayListExtra(VIDEO_RESULT_CODE) ?: arrayListOf()
-            setPreviewInfo(videoList.first(), false)
+            val videoList = MediaPicker.result(data)
+            setPreviewInfo(videoList.originalPaths.first(), false)
         }
     }
 

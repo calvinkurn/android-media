@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 
 class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutAdapterTypeFactory) :
-        BaseListAdapter<Visitable<*>, PromoCheckoutAdapterTypeFactory>(adapterTypeFactory) {
+    BaseListAdapter<Visitable<*>, PromoCheckoutAdapterTypeFactory>(adapterTypeFactory) {
 
     fun addVisitable(visitable: Visitable<*>) {
         val newList: MutableList<Visitable<*>> = mutableListOf()
@@ -63,5 +63,4 @@ class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutAdapterTypeFactory) 
 
         diffResult.dispatchUpdatesTo(this)
     }
-
 }

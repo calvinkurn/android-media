@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -21,7 +22,7 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationProductB
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
@@ -49,10 +50,11 @@ interface ProductListTypeFactory {
     fun type(chooseAddressDataView: ChooseAddressDataView): Int
     fun type(bannerDataView: BannerDataView): Int
     fun type(lastFilterDataView: LastFilterDataView): Int
-    fun type(sizeDataView: InspirationSizeDataView): Int
+    fun type(sizeDataView: InspirationFilterDataView): Int
     fun type(violationView: ViolationDataView) : Int
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
+    fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -6,17 +6,17 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MerchantVoucherData (
-        @SerializedName("is_mvc")
-        @Expose
-        val isMvc: Int,
-        @SerializedName("mvc_title")
-        @Expose
-        val mvcTitle: String,
-        @SerializedName("mvc_logo")
-        @Expose
-        val mvcLogo: String,
-        @SerializedName("mvc_error_message")
-        @Expose
-        val mvcErrorMessage: String
+data class MerchantVoucherData(
+    @SerializedName("is_mvc")
+    @Expose
+    val isMvc: Int,
+    @SerializedName("mvc_title")
+    @Expose
+    val mvcTitle: String,
+    @SerializedName("mvc_logo")
+    @Expose
+    val mvcLogo: String,
+    @SerializedName("mvc_error_message")
+    @Expose
+    val mvcErrorMessage: String
 ) : Parcelable

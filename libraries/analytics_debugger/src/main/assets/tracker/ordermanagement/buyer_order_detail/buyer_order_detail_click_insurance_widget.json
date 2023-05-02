@@ -1,0 +1,16 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on insurance widget",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPG",
+      "eventAction": "click on insurance button",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "37322",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

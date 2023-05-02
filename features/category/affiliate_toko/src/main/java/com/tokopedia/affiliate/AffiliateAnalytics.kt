@@ -55,7 +55,8 @@ object AffiliateAnalytics {
         position: Int,
         itemName: String?,
         label: String?,
-        itemList: String = ""
+        itemList: String = "",
+        itemsKey: String = ITEMS
     ) {
         val listBundle = Bundle().apply {
             putString(EventKeys.KEY_ITEM_ID, productId)
@@ -69,7 +70,7 @@ object AffiliateAnalytics {
             putString(EventKeys.KEY_EVENT_LABEL, label)
             putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
             putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
-            putParcelableArrayList(ITEMS, arrayListOf(listBundle))
+            putParcelableArrayList(itemsKey, arrayListOf(listBundle))
             putString(EventKeys.KEY_USER_ID, userId)
             if (itemList.isNotEmpty()) {
                 putString(ITEM_LIST, itemList)
@@ -234,6 +235,8 @@ object AffiliateAnalytics {
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE = "affiliate edukasi page - category landing page - article"
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT = "affiliate edukasi page - category landing page - event"
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL = "affiliate edukasi page - category landing page - tutorial"
+            const val AFFILIATE_PROMOSIKAN_SSA_PAGE = "affiliate promosikan page - ssa shop list"
+            const val AFFILIATE_PROMOSIKAN_PAGE_DISCO_BANNER_LIST = "affiliate promosikan page - discovery banner list"
         }
     }
 
@@ -300,7 +303,7 @@ object AffiliateAnalytics {
             const val CLICK_PRIMARY_BUTTON = "click - primary button"
             const val CLICK_SECONDARY_BUTTON = "click - secondary button"
             const val CLICK_SHOP_LINK_DENGAN_PERFORMA = "click - shop - link dengan performa"
-            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA = "click - salin link - shop -  link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA = "click - salin link - shop - link dengan performa"
             const val CLICK_SALIN_LINK_SHOP_SEARCH_RESULT = "click - salin link - shop - search result page"
             const val CLICK_SHOP_SEARCH_RESULT_PAGE = "click - shop - search result page"
             const val IMPRESSION_SHOP_LINK_DENGAN_PERFORMA = "impression - shop - link dengan performa"
@@ -327,6 +330,20 @@ object AffiliateAnalytics {
             const val CLICK_KAMUS_AFFILIATE = "click - kamus affiliate"
             const val CLICK_BANTUAN = "click - bantuan"
             const val CLICK_EVENT_CATEGORY = "click - event category"
+            const val CLICK_SSA_SHOP_BANNER = "click - ssa shop banner"
+            const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
+            const val CLICK_SALIN_LINK_SSA_SHOP = "click - salin link - ssa shop list"
+            const val IMPRESSION_SSA_SHOP = "impression - shop - ssa shop list"
+            const val IMPRESSION_EVENT_DISCO_BANNER = "impression - event - discovery banner"
+            const val IMPRESSION_EVENT_DISCO_BANNER_LIST = "impression - event - discovery banner list"
+            const val IMPRESSION_EVENT_DENGAN_PERFORMA = "impression - event - link dengan performa"
+            const val CLICK_EVENT_DISCO_BANNER = "click - event - discovery banner"
+            const val CLICK_EVENT_DISCO_BANNER_LIST = "click - event - discovery banner list"
+            const val CLICK_SALIN_DISCO_BANNER = "click - salin link - discovery banner"
+            const val CLICK_SALIN_DISCO_BANNER_LIST = "click - salin link - discovery banner list"
+            const val CLICK_SALIN_DISCO_HOME = "click - salin link - event - link dengan performa"
+            const val CLICK_LIHAT_DISCO_BANNER = "click - lihat semua - discovery banner"
+            const val CLICK_EVENT_LINK_DENGAN_PERFORMA = "click - event - link dengan performa"
         }
     }
 
@@ -362,6 +379,10 @@ object AffiliateAnalytics {
             const val AFFILAITE_HOME_SHOP_SELECT_CONTENT = "/affiliate home page - link dengan performa - shop"
             const val AFFILIATE_SEARCH_SHOP_CLICK = "/affiliate promosikan page - search result page - shop"
             const val AFFILIATE_EDUCATION_PAGE = "/affiliate edukasi page"
+            const val AFFILIATE_SSA_SHOP_CLICK = "/affiliate promosikan page - ssa shop list"
+            const val AFFILIATE_PROMOSIKAN_DISCO_BANNER = "/affiliate promosikan page - discovery banner"
+            const val AFFILIATE_PROMOSIKAN_DISCO_BANNER_LIST = "/affiliate promosikan page - discovery banner list"
+            const val AFFILAITE_HOME_EVENT_SELECT_CONTENT = "/affiliate home page - link dengan performa - event"
         }
     }
 

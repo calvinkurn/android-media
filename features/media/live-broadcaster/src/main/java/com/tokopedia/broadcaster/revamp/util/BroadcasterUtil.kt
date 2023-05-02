@@ -4,6 +4,7 @@ import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.media.MediaFormat
 import android.media.MediaRecorder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.ConnectionConfig
 import com.wmspanel.libstream.Streamer
@@ -29,16 +30,23 @@ object BroadcasterUtil {
         DEFAULT_RESOLUTION_VIDEO_HEIGHT
     )
 
-    fun getAudioConfig(): AudioConfig {
+    fun getAudioConfig(audioRate: String?): AudioConfig {
+        val value = audioRate.toIntOrZero()
+        val mAudioRate = if (value == 0) null else value
         return AudioConfig().apply {
             audioSource = MediaRecorder.AudioSource.CAMCORDER
-            bitRate = AudioConfig.calcBitRate(sampleRate, channelCount, AudioConfig.AAC_PROFILE)
+            bitRate = AudioConfig.calcBitRate(mAudioRate ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
         }
     }
 
-    fun getVideoConfig(): VideoConfig {
+    fun getVideoConfig(videoRate: String?, videoFps: String?): VideoConfig {
+        val valueVideoRate = videoRate?.toIntOrZero()
+        val mVideoRate = if (valueVideoRate == 0) null else valueVideoRate
+        val valueFps = if (videoFps.isNullOrEmpty()) null else videoFps.toFloat()
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
+            bitRate = mVideoRate ?: bitRate
+            fps = valueFps ?: fps
         }
     }
 

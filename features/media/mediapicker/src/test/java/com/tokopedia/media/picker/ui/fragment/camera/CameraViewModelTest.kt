@@ -23,10 +23,6 @@ class CameraViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
     @get:Rule val coroutineScopeRule = CoroutineTestRule()
 
-    private val testCoroutineScope = TestCoroutineScope(
-        coroutineScopeRule.dispatchers.main
-    )
-
     private val createMediaRepository = mockk<CreateMediaRepository>()
 
     private lateinit var viewModel: CameraViewModel

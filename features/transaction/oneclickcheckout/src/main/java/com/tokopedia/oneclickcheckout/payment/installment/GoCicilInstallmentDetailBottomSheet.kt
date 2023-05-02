@@ -8,8 +8,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetGocicilInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemGocicilInstallmentDetailBinding
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,9 +38,12 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
 
     private var getAdminFeeJob: Job? = null
 
-    fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart, orderPayment: OrderPayment,
-             orderProfile: OrderProfile, orderCost: OrderCost, userId: String,
-             listener: InstallmentDetailBottomSheetListener) {
+    fun show(
+        fragment: OrderSummaryPageFragment,
+        goCicilInstallmentRequest: GoCicilInstallmentRequest,
+        orderPayment: OrderPayment,
+        listener: InstallmentDetailBottomSheetListener
+    ) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
             this.listener = listener
@@ -48,7 +54,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 showHeader = true
                 setTitle(fragment.getString(R.string.occ_gocicil_bottom_sheet_title))
                 binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(fragment, orderCart, orderPayment, orderProfile, orderCost, userId)
+                setupChild(fragment, goCicilInstallmentRequest, orderPayment)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -62,16 +68,30 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
         }
     }
 
-    private fun setupChild(fragment: OrderSummaryPageFragment, orderCart: OrderCart,
-                           orderPayment: OrderPayment, orderProfile: OrderProfile, orderCost: OrderCost, userId: String) {
+    private fun setupChild(
+        fragment: OrderSummaryPageFragment,
+        goCicilInstallmentRequest: GoCicilInstallmentRequest,
+        orderPayment: OrderPayment
+    ) {
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
         if (orderPayment.walletData.goCicilData.availableTerms.isEmpty()) {
             getAdminFeeJob = launch {
-                val result = paymentProcessor.getGopayAdminFee(orderPayment, userId, orderCost, orderCart, orderProfile)
+                val result = paymentProcessor.getGopayAdminFee(goCicilInstallmentRequest, orderPayment)
                 if (result != null) {
-                    listener.onSelectInstallment(result.first, result.second, isSilent = true)
-                    setupInstallments(fragment, orderPayment.walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))
+                    listener.onSelectInstallment(
+                        result.selectedInstallment,
+                        result.installmentList,
+                        result.tickerMessage,
+                        isSilent = true
+                    )
+                    setupInstallments(
+                        fragment,
+                        orderPayment.walletData.goCicilData.copy(
+                            selectedTerm = result.selectedInstallment,
+                            availableTerms = result.installmentList
+                        )
+                    )
                 } else {
                     dismiss()
                     listener.onFailedLoadInstallment()
@@ -91,14 +111,14 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
             if (installment.installmentAmountPerPeriod > 0) {
                 viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
-                        R.string.occ_lbl_gocicil_installment_title,
-                        installment.installmentTerm,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
+                    R.string.occ_lbl_gocicil_installment_title,
+                    installment.installmentTerm,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.installmentAmountPerPeriod, false).removeDecimalSuffix()
                 )
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailName.text = viewInstallmentDetailItem.root.context.getString(
-                        R.string.occ_lbl_gocicil_installment_title_without_price,
-                        installment.installmentTerm
+                    R.string.occ_lbl_gocicil_installment_title_without_price,
+                    installment.installmentTerm
                 )
             }
             if (installment.description.isNotEmpty()) {
@@ -116,10 +136,10 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
                 viewInstallmentDetailItem.tvInstallmentDetailName.setTextColor(
-                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
                 )
                 viewInstallmentDetailItem.tvInstallmentDetailDescription.setTextColor(
-                        MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 )
                 if (installment.description.isEmpty()) {
                     viewInstallmentDetailItem.tvInstallmentDetailDescription.setText(R.string.occ_lbl_gocicil_installment_inactive_description)
@@ -129,11 +149,11 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
                 viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment, installmentDetails)
+                    listener.onSelectInstallment(installment, installmentDetails, goCicilData.tickerMessage)
                     dismiss()
                 }
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment, installmentDetails)
+                    listener.onSelectInstallment(installment, installmentDetails, goCicilData.tickerMessage)
                     dismiss()
                 }
             } else {
@@ -141,11 +161,11 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
                 viewInstallmentDetailItem.rbInstallmentDetail.skipAnimation()
                 viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment, installmentDetails)
+                    listener.onSelectInstallment(installment, installmentDetails, goCicilData.tickerMessage)
                     dismiss()
                 }
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment, installmentDetails)
+                    listener.onSelectInstallment(installment, installmentDetails, goCicilData.tickerMessage)
                     dismiss()
                 }
             }
@@ -156,11 +176,17 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             binding?.tvInstallmentMessage?.gone()
         } else {
             binding?.tvInstallmentMessage?.text = binding?.root?.context?.getString(
-                    R.string.occ_lbl_gocicil_installment_bottom_sheet_message,
-                    installmentMessageDetail.firstDueMessage,
-                    installmentMessageDetail.firstInstallmentDate
+                R.string.occ_lbl_gocicil_installment_bottom_sheet_message,
+                installmentMessageDetail.firstDueMessage,
+                installmentMessageDetail.firstInstallmentDate
             )
             binding?.tvInstallmentMessage?.visible()
+        }
+        if (goCicilData.tickerMessage.isNotBlank()) {
+            binding?.tickerInstallmentInfo?.setHtmlDescription(goCicilData.tickerMessage)
+            binding?.tickerInstallmentInfo?.visible()
+        } else {
+            binding?.tickerInstallmentInfo?.gone()
         }
     }
 
@@ -170,7 +196,12 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
 
     interface InstallmentDetailBottomSheetListener {
 
-        fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean = false)
+        fun onSelectInstallment(
+            selectedInstallment: OrderPaymentGoCicilTerms,
+            installmentList: List<OrderPaymentGoCicilTerms>,
+            tickerMessage: String,
+            isSilent: Boolean = false
+        )
 
         fun onFailedLoadInstallment()
     }

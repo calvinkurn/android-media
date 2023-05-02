@@ -26,12 +26,7 @@ public interface InboxTicketTracking {
         String EventClickReplyTicket = "click reply ticket";
         String EventClickReason = "Click Reason";
         String EventClickFilter = "Click Filter";
-        String EventClickSelectAllMessage = "Click Select All Message";
-        String EventClickDeselectAllMessage = "Click Deselect All Message";
-        String EventClickDeleteMessage = "Click Delete Message";
         String EventAbandonReplySubmission = "Abandon Reply Submission";
-        String EventClickOpenImage = "Click Open Image";
-        String EventClickSearch = "Click Search";
         String EventClickSearchDetails = "Click Search In Details";
         String EventNotAttachImageRequired = "Not Attach Image Required";
         String EventClickCsatPerReply = "click rating csat per reply";

@@ -190,7 +190,9 @@ class ProductTagUiModelMapper @Inject constructor() {
     }
 
     fun mapSortFilter(response: GetSortFilterResponse): DynamicFilterModel {
-        return response.wrapper
+        return response.wrapper.apply {
+            defaultSortValue = ""
+        }
     }
 
     fun mapSortFilterProductCount(response: GetSortFilterProductCountResponse): String {

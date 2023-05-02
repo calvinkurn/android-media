@@ -1,32 +1,31 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import android.view.ViewGroup.LayoutParams
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTH
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTTOM
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_TOP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.STOCK_ASSURANCE
+import com.tokopedia.product.detail.databinding.ItemOneLinersBinding
+import com.tokopedia.product.detail.databinding.ItemOneLinersContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 class OneLinersViewHolder(
     val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<OneLinersDataModel>(view) {
+) : ProductDetailPageViewHolder<OneLinersDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_one_liners
@@ -34,22 +33,26 @@ class OneLinersViewHolder(
         private const val BOTTOM_PADDING = 12f
     }
 
-    private val container: View? = view.findViewById(R.id.one_liners_container)
-    private val iconStart: ImageUnify? = view.findViewById(R.id.one_liners_icon_start)
-    private val title: Typography? = view.findViewById(R.id.one_liners_title)
-    private val description: Typography? = view.findViewById(R.id.one_liners_description)
-    private val iconRightArrow: IconUnify? = view.findViewById(R.id.one_liners_icon_right)
-    private val separatorTop: View? = view.findViewById(R.id.one_liners_top_separator)
-    private val separatorBottom: View? = view.findViewById(R.id.one_liners_bottom_separator)
+    private val bindingLayout by lazy {
+        ItemOneLinersBinding.bind(view)
+    }
+    private val bindingContent by lazy {
+        ItemOneLinersContentBinding.bind(bindingLayout.vsOneLinersContent.inflate())
+    }
 
     override fun bind(element: OneLinersDataModel) {
-        val content = element.oneLinersContent
-        if (content == null || !content.isVisible) {
-            itemView.layoutParams.height = 0
-            return
-        } else itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        if (element.shouldRenderContent) {
+            bindingLayout.root.setLayoutHeight(LayoutParams.WRAP_CONTENT)
+            bindingContent.renderContent(element = element)
+        } else {
+            bindingLayout.root.setLayoutHeight(0)
+        }
+    }
 
-        renderViewImpression(element = element)
+    private fun ItemOneLinersContentBinding.renderContent(element: OneLinersDataModel) {
+        val content = element.oneLinersContent ?: return
+
+        impressComponent(element = element)
 
         renderViewEvent(element = element)
 
@@ -66,32 +69,31 @@ class OneLinersViewHolder(
         }
     }
 
-    private fun renderViewImpression(element: OneLinersDataModel) {
+    private fun ItemOneLinersContentBinding.impressComponent(element: OneLinersDataModel) {
         val content = element.oneLinersContent
 
-        view.apply {
-            addOnImpressionListener(element.impressHolder) {
-                renderCoachMark(content?.eduLink?.appLink?.isNotBlank() == true)
+        root.addOnImpressionListener(element.impressHolder) {
+            renderCoachMark(content?.eduLink?.appLink?.isNotBlank() == true)
 
-                if (element.name == STOCK_ASSURANCE)
-                    listener.onImpressStockAssurance(
-                        componentTrackDataModel = getComponentTrackData(element),
-                        label = content?.linkText + content?.content
-                    )
-                else listener.onImpressComponent(getComponentTrackData(element))
+            if (element.name == STOCK_ASSURANCE) {
+                listener.onImpressStockAssurance(
+                    componentTrackDataModel = getComponentTrackData(element),
+                    label = content?.linkText + content?.content
+                )
             }
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
-    private fun renderViewEvent(element: OneLinersDataModel) {
+    private fun ItemOneLinersContentBinding.renderViewEvent(element: OneLinersDataModel) {
         val content = element.oneLinersContent ?: return
 
         if (content.applink.isNotBlank()) {
-            view.setOnClickListener { listener.goToApplink(content.applink) }
+            root.setOnClickListener { listener.goToApplink(content.applink) }
         }
 
         if (content.eduLink.appLink.isNotBlank()) {
-            iconRightArrow?.setOnClickListener {
+            oneLinersIconRight.setOnClickListener {
                 listener.onClickInformationIconAtStockAssurance(
                     componentTrackDataModel = getComponentTrackData(element = element),
                     appLink = content.eduLink.appLink,
@@ -101,18 +103,16 @@ class OneLinersViewHolder(
         }
     }
 
-    private fun renderCoachMark(shouldShowCoachmark: Boolean) {
+    private fun ItemOneLinersContentBinding.renderCoachMark(shouldShowCoachmark: Boolean) {
         if (shouldShowCoachmark) {
-            iconStart?.let {
-                listener.showOneLinersImsCoachMark(it)
-            }
+            listener.showOneLinersImsCoachMark(oneLinersIconStart)
         }
     }
 
-    private fun renderBestSellerView(element: OneLinersDataModel) {
+    private fun ItemOneLinersContentBinding.renderBestSellerView(element: OneLinersDataModel) {
         val appLink = element.oneLinersContent?.applink.orEmpty()
 
-        container?.apply {
+        oneLinersContainer.apply {
             val dp12 = convertDpToPixel(BOTTOM_PADDING, context)
             setPadding(paddingLeft, 0, paddingRight, dp12)
         }
@@ -125,11 +125,11 @@ class OneLinersViewHolder(
                 )
             }
         }
-        title?.setWeight(Typography.BOLD)
+        oneLinersTitle.setWeight(Typography.BOLD)
     }
 
-    private fun renderText(content: OneLinersContent) {
-        title?.apply {
+    private fun ItemOneLinersContentBinding.renderText(content: OneLinersContent) {
+        oneLinersTitle.apply {
             text = content.linkText
 
             runCatching {
@@ -138,24 +138,24 @@ class OneLinersViewHolder(
             }
         }
 
-        description?.text = content.content
+        oneLinersDescription.text = content.content
     }
 
-    private fun renderIconStart(content: OneLinersContent) {
+    private fun ItemOneLinersContentBinding.renderIconStart(content: OneLinersContent) {
         val iconUrl = content.icon
-        iconStart?.showIfWithBlock(iconUrl.isNotBlank()) {
+        oneLinersIconStart.showIfWithBlock(iconUrl.isNotBlank()) {
             setImageUrl(iconUrl)
         }
     }
 
-    private fun renderIconEnd(content: OneLinersContent) {
+    private fun ItemOneLinersContentBinding.renderIconEnd(content: OneLinersContent) {
         // app-link field is existing flag for stock info
         // and edu-link field is new flag for stock should available
         val eduLinkIsNotEmpty = content.eduLink.appLink.isNotBlank()
         val appLinkIsNotEmpty = content.applink.isNotBlank()
         val shouldShow = appLinkIsNotEmpty || eduLinkIsNotEmpty
 
-        iconRightArrow?.showIfWithBlock(shouldShow) {
+        oneLinersIconRight.showIfWithBlock(shouldShow) {
             if (eduLinkIsNotEmpty) {
                 setImage(newIconId = IconUnify.INFORMATION)
             } else if (appLinkIsNotEmpty) {
@@ -164,15 +164,9 @@ class OneLinersViewHolder(
         }
     }
 
-    private fun renderSeparators(content: OneLinersContent) {
+    private fun ItemOneLinersContentBinding.renderSeparators(content: OneLinersContent) {
         val separator = content.separator
-        separatorTop?.showWithCondition(separator == SEPARATOR_BOTH || separator == SEPARATOR_TOP)
-        separatorBottom?.showWithCondition(separator == SEPARATOR_BOTH || separator == SEPARATOR_BOTTOM)
+        oneLinersTopSeparator.showWithCondition(separator == SEPARATOR_BOTH || separator == SEPARATOR_TOP)
+        oneLinersBottomSeparator.showWithCondition(separator == SEPARATOR_BOTH || separator == SEPARATOR_BOTTOM)
     }
-
-    private fun getComponentTrackData(element: OneLinersDataModel?) = ComponentTrackDataModel(
-        componentType = element?.type.orEmpty(),
-        componentName = element?.name.orEmpty(),
-        adapterPosition = bindingAdapterPosition + Int.ONE
-    )
 }

@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.common.util
 
 import android.app.Activity
 import android.content.Context
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
@@ -15,6 +14,7 @@ object SharedPreferencesUtil {
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT = "FirstTimeWPV"
     private const val MA_SA_ADDEDITPRODUCT_PRICE_WHEN_LOADED = "PriceWhenLoaded"
     private const val MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL = "ProductLimitationModel"
+    private const val MA_SA_ADDEDITPRODUCT_SHIPMENT_CPL_ON_BOARDING = "CPLShipmentOnBoarding"
 
     fun getFirstTimeSpecification(activity: Activity): Boolean {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
@@ -29,10 +29,17 @@ object SharedPreferencesUtil {
         }
     }
 
-    fun getPriceWhenLoaded(activity: Activity): BigInteger {
+    fun shouldShowCPLWhitelabelOnBoarding(activity: Activity): Boolean {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
-        val value = sharedPref.getString(MA_SA_ADDEDITPRODUCT_PRICE_WHEN_LOADED, "0")
-        return value?.toBigIntegerOrNull().orZero()
+        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_SHIPMENT_CPL_ON_BOARDING, true)
+    }
+
+    fun setCPLWhitelabelOnBoarding(activity: Activity, value: Boolean) {
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean(MA_SA_ADDEDITPRODUCT_SHIPMENT_CPL_ON_BOARDING, value)
+            commit()
+        }
     }
 
     fun setPriceWhenLoaded(activity: Activity, value: BigInteger) {

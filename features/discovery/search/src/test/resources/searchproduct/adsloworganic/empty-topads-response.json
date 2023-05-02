@@ -1,0 +1,14 @@
+{
+  "productAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.15784843,
+      "total_data": 0
+    },
+    "data": [],
+    "template": []
+  }
+}

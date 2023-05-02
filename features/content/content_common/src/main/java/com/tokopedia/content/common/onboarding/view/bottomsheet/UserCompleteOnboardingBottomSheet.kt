@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -44,7 +45,6 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     private val viewModel: UGCOnboardingViewModel by viewModels {
         viewModelFactoryCreator.create(
             this,
-            onboardingType,
             strategyFactory.create(onboardingType),
         )
     }
@@ -83,8 +83,16 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         setTitle(getString(R.string.ugc_complete_onboarding_title))
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupListener() {
         binding.textFieldUsername.editText.apply {
+            setOnTouchListener { _, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    _listener?.clickUsernameFieldOnCompleteOnboarding()
+                }
+                false
+            }
+
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -101,13 +109,10 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
                     true
                 } else false
             }
-            setOnFocusChangeListener { _, isFocus ->
-                if (isFocus) _listener?.clickUsernameFieldOnCompleteOnboarding()
-            }
         }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
-            _listener?.clickCheckBoxOnCompleteOnboarding()
+            _listener?.clickAcceptTnc(binding.layoutTnc.cbxTnc.isChecked)
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
@@ -196,7 +201,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     interface Listener : BaseUserOnboardingBottomSheet.Listener {
         fun clickUsernameFieldOnCompleteOnboarding()
-        fun clickCheckBoxOnCompleteOnboarding()
+        fun clickAcceptTnc(isChecked: Boolean)
         fun clickNextOnCompleteOnboarding()
     }
 

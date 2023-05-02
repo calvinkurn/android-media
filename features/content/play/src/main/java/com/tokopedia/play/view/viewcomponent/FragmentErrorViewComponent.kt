@@ -22,6 +22,10 @@ class FragmentErrorViewComponent(
 
     private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
+    val activeFragment: PlayErrorFragment? by lazy (LazyThreadSafetyMode.NONE) {
+        fragmentManager.findFragmentByTag(ERROR_FRAGMENT_TAG) as? PlayErrorFragment
+    }
+
     fun safeInit() = synchronized(this) {
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)

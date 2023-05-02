@@ -79,7 +79,11 @@ class EmoneyPdpActivityLoginTest {
     }
 
     private fun setUpLaunchActivity() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.userSession {
+            /** content.prod.automation2+frontendtest@tokopedia.com */
+            userId = "17211048"
+            shopId = "3533069"
+        }
         setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = true))
         val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
                 Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")

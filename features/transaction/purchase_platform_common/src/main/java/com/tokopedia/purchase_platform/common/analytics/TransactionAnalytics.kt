@@ -27,10 +27,14 @@ abstract class TransactionAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    protected fun sendGeneralEvent(event: String, eventCategory: String,
-                                   eventAction: String, eventLabel: String = "") {
+    protected fun sendGeneralEvent(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String = ""
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+            TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
         )
     }
 
@@ -39,16 +43,23 @@ abstract class TransactionAnalytics {
     }
 
     @Deprecated("This method is not optimized for kotlin", ReplaceWith("sendGeneralEvent()"))
-    protected fun sendEventCategoryActionLabel(event: String, eventCategory: String,
-                                               eventAction: String, eventLabel: String?) {
+    protected fun sendEventCategoryActionLabel(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String?
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+            TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
         )
     }
 
     @Deprecated("This method is not optimized for kotlin", ReplaceWith("sendGeneralEvent()"))
-    protected fun sendEventCategoryAction(event: String, eventCategory: String,
-                                          eventAction: String) {
+    protected fun sendEventCategoryAction(
+        event: String,
+        eventCategory: String,
+        eventAction: String
+    ) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
     }
 
@@ -60,8 +71,12 @@ abstract class TransactionAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
     }
 
-    protected fun getGtmData(event: String, eventCategory: String,
-                             eventAction: String, eventLabel: String): MutableMap<String, Any> {
+    protected fun getGtmData(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ): MutableMap<String, Any> {
         return TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
     }
 }

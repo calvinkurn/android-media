@@ -29,6 +29,8 @@ data class SectionWidgetUiModel(
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
     var shouldShow: Boolean = true,
+    var titleTextColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+    var subTitleTextColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

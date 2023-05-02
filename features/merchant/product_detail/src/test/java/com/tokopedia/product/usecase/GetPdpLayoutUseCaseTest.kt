@@ -25,7 +25,6 @@ import org.junit.rules.ExpectedException
 import java.io.File
 import java.lang.reflect.Type
 
-
 class GetPdpLayoutUseCaseTest {
 
     companion object {
@@ -33,6 +32,7 @@ class GetPdpLayoutUseCaseTest {
         const val GQL_GET_PDP_LAYOUT_USECASE_JSON = "json/gql_get_pdp_layout_usecase_response.json"
         const val GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON = "json/gql_get_pdp_layout_remove_component.json"
         const val GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON = "json/gql_get_pdp_layout_tobacco.json"
+        const val GQL_GET_PDP_LAYOUT_MINI_VARIANT_JSON = "json/gql_get_pdp_layout_mini_varaint.json"
     }
 
     @RelaxedMockK
@@ -86,7 +86,6 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.addRequest(any())
                 gqlUseCase.executeOnBackground()
             }
-
         }
     }
 
@@ -163,8 +162,8 @@ class GetPdpLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON),
-                JsonObject::class.java
+            getJsonFromFile(GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON),
+            JsonObject::class.java
         )
 
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -178,8 +177,8 @@ class GetPdpLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(GQL_GET_PDP_LAYOUT_USECASE_JSON),
-                JsonObject::class.java
+            getJsonFromFile(GQL_GET_PDP_LAYOUT_USECASE_JSON),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = ProductDetailLayout::class.java

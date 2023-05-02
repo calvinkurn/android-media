@@ -62,7 +62,9 @@
     <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
     <string name="gopay_kyc_privacy_bank_text">GoPay diawasi oleh Bank Indonesia</string>
     <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak GoPay untuk verifikasi.</string>
-    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <![CDATA[<"font color='#03AC0E'><b>syarat &amp; ketentuan</b></font>]]></string>
+    <string name="gopay_kyc_accept_tnc_text">Saya menyetujui Syarat &amp; Ketentuan untuk upgrade akun ke GoPay Plus.</string>
+    <string name="gopay_kyc_accept_tnc_syarat_text">Syarat</string>
+    <string name="gopay_kyc_accept_tnc_untuk_text">untuk</string>
     <string name="gopay_kyc_submit_button_text">Kirim</string>
 
     <string name="gopay_kyc_upload_success_title_text">Upgrade lagi diproses</string>

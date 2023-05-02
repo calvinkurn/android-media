@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.CardDataModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
@@ -55,7 +57,10 @@ class CardMapper @Inject constructor(
             isFromCache = isFromCache,
             showWidget = model.showWidget.orFalse(),
             lastUpdated = getLastUpdatedMillis(model.dataKey.orEmpty(), isFromCache),
-            badgeImageUrl = model.badgeImageUrl.orEmpty()
+            badgeImageUrl = model.badgeImageUrl.orEmpty(),
+            appLink = SellerHomeCommonUtils.extractUrls(model.value.orEmpty())
+                .getOrNull(Int.ZERO)
+                .orEmpty()
         )
     }
 }

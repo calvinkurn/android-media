@@ -5,8 +5,6 @@ package com.tokopedia.shop.common.constant
  */
 object ShopParamApiConstant {
     const val SHOP_ID = "shop_id"
-    const val SHOP_DOMAIN = "shop_domain"
-    const val SHOP_NOTE_ID = "note_id"
     const val KEYWORD = "keyword"
     const val ETALASE_ID = "etalase_id"
     const val PAGE = "page"

@@ -15,9 +15,8 @@ class EditAddressUseCase @Inject constructor(private val addressRepository: Addr
         return addressRepository.editAddress(mapParam)
     }
 
-    companion object{
+    companion object {
         const val RESPONSE_DATA = "data"
         const val RESPONSE_IS_SUCCESS = "is_success"
     }
-
 }

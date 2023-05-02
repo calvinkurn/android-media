@@ -79,10 +79,10 @@
             android:id="@+id/customChatLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/dp_chatbot_10"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_chatbot_10"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="10dp"
             app:showCheckMark="false" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -90,13 +90,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginTop="2dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost"
             tools:text="beli"/>
 
     </LinearLayout>

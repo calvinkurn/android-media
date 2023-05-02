@@ -2,7 +2,6 @@
 <resources>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
     <string name="cart_error_message">Yaah, ada %1d barang tidak bisa diproses.</string>
-    <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="label_dialog_action_delete">Hapus Barang</string>
     <string name="label_dialog_action_delete_simple">Hapus</string>
     <string name="label_dialog_action_cancel">Kembali</string>
@@ -50,7 +49,6 @@
     <string name="label_cart_ticker_error_action">Lihat</string>
     <string name="label_tokonow_show_less">Tampilkan Lebih Sedikit</string>
     <string name="label_tokonow_show_more">Lihat Selengkapnya</string>
-    <string name="label_tokonow_show_other">+ %d Lainnya</string>
     <string name="cart_default_wording_show_more">Tampilkan Semua</string>
     <string name="cart_default_wording_show_less">Tampilkan Lebih Sedikit</string>
     <string name="message_toaster_cart_change_bundle_success">Paket Bundling berhasil diubah.</string>

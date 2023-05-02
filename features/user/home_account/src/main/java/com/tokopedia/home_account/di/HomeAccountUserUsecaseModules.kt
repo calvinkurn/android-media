@@ -3,7 +3,6 @@ package com.tokopedia.home_account.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -27,12 +26,6 @@ class HomeAccountUserUsecaseModules {
         @ApplicationContext context: Context,
         @ApplicationContext coroutineGqlRepository: GraphqlRepository
     ): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
-
-    @Provides
-    fun provideGetSafeModeStatusUseCase(
-        @ApplicationContext context: Context,
-        @ApplicationContext coroutineGqlRepository: GraphqlRepository
-    ): UserProfileSafeModeUseCase = UserProfileSafeModeUseCase(context, coroutineGqlRepository)
 
     @Provides
     fun provideCheckFingerprintToggleUseCase(

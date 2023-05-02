@@ -1,0 +1,358 @@
+{
+  "ongkirShippingEditor": {
+    "status": 200,
+    "message": "success",
+    "data": {
+      "shippers": {
+        "ondemand": [
+          {
+            "shipper_id": 26,
+            "shipper_name": "Kurir Rekomendasi",
+            "is_active": true,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-rekomendasi.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 50,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "Layanan Reguler Tokopedia Expres",
+                "is_active": true
+              }
+            ]
+          },
+          {
+            "shipper_id": 11,
+            "shipper_name": "SiCepat",
+            "is_active": true,
+            "text_promo": "Cashback dari Tokopedia hingga 20%",
+            "image": "https://images-staging.tokopedia.net/img/kurir-sicepat.png",
+            "feature_info": [
+              {
+                "header": "Tokopedia Corner",
+                "body": "Layanan gratis ongkir khusus mahasiswa untuk dapat mengambil pesanan di kampusnya."
+              },
+              {
+                "header": "Bayar di Tempat",
+                "body": "Pembeli membayar pesanan secara tunai melalui kurir pengirim. Dana akan diteruskan ke saldo penjual setelah pembeli konfirmasi terima barang."
+              }
+            ],
+            "shipper_product": [
+              {
+                "shipper_product_id": 18,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "Layanan Pengiriman biasa dengan lead time 1-2 hari (kota besar) dan lead time 3-4 hari (Kabupaten/transit)",
+                "is_active": true
+              },
+              {
+                "shipper_product_id": 33,
+                "shipper_product_name": "BEST (Next Day)",
+                "shipper_product_desc": "BEST (Besok Sampai Tujuan): Layanan Pengiriman Express dengan lead time 1 hari",
+                "is_active": true
+              },
+              {
+                "shipper_product_id": 51,
+                "shipper_product_name": "HALU (Ekonomi)",
+                "shipper_product_desc": "Sicepat Halu ",
+                "is_active": true
+              },
+              {
+                "shipper_product_id": 43,
+                "shipper_product_name": "GOKIL (Kargo)",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                "is_active": true
+              }
+            ]
+          },
+          {
+            "shipper_id": 23,
+            "shipper_name": "AnterAja",
+            "is_active": true,
+            "text_promo": "Cashback dari Tokopedia hingga 20%",
+            "image": "https://images-staging.tokopedia.net/img/kurir-anteraja.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 45,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ \u003e9 hari tergantung rute pengiriman.",
+                "is_active": true
+              },
+              {
+                "shipper_product_id": 46,
+                "shipper_product_name": "Next Day",
+                "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 49,
+                "shipper_product_name": "Same Day",
+                "shipper_product_desc": "Layanan AnterAja Same Day",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 55,
+                "shipper_product_name": "Economy",
+                "shipper_product_desc": "Layanan pengiriman ekonomis oleh Anteraja dengan kecepatan pengiriman 3-9 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dengan durasi pengiriman yang lebih lama dibandingkan dengan layanan Reguler.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 56,
+                "shipper_product_name": "Cargo",
+                "shipper_product_desc": "Layanan pengiriman oleh Anteraja dengan kecepatan pengiriman 3-9 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 24,
+            "shipper_name": "Lion Parcel",
+            "is_active": false,
+            "text_promo": "Cashback dari Tokopedia hingga 20%",
+            "image": "https://images-staging.tokopedia.net/img/kurir-lionparcel.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 47,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ \u003e9 hari tergantung rute pengiriman.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 13,
+            "shipper_name": "GrabExpress",
+            "is_active": true,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-grab.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 37,
+                "shipper_product_name": "Instant",
+                "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                "is_active": true
+              },
+              {
+                "shipper_product_id": 24,
+                "shipper_product_name": "Same Day",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "is_active": true
+              }
+            ]
+          },
+          {
+            "shipper_id": 10,
+            "shipper_name": "GoSend",
+            "is_active": true,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-gosend.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 28,
+                "shipper_product_name": "Instant",
+                "shipper_product_desc": "Dengan kurir instan, kamu bisa pakai GoSend Car dan GoSend Bike (pengiriman maks. 3 jam \u0026 berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 20,
+                "shipper_product_name": "Same Day",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "is_active": true
+              }
+            ]
+          },
+          {
+            "shipper_id": 12,
+            "shipper_name": "Ninja Xpress",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-ninja.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 25,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ \u003e9 hari tergantung rute pengiriman.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 16,
+            "shipper_name": "REX",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-rex.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 32,
+                "shipper_product_name": "REX-10 (Kargo)",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 28,
+            "shipper_name": "Paxel",
+            "is_active": false,
+            "text_promo": "Cashback dari Tokopedia hingga 10%",
+            "image": "https://images-staging.tokopedia.net/img/kurir-paxel.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 54,
+                "shipper_product_name": "Next Day",
+                "shipper_product_desc": "Paxel adalah layanan kurir dengan spesialisasi di bidang pengiriman berbagai jenis paket makanan dan minuman dengan layanan \"Cold Chain\" sehingga paket kamu tetap aman ketika diterima oleh pembeli",
+                "is_active": false
+              }
+            ]
+          }
+        ],
+        "conventional": [
+          {
+            "shipper_id": 14,
+            "shipper_name": "J\u0026T",
+            "is_active": false,
+            "text_promo": "Cashback dari Tokopedia hingga 15%",
+            "image": "https://images-staging.tokopedia.net/img/kurir-jnt.png",
+            "feature_info": [
+              {
+                "header": "Non Tunai",
+                "body": "Penjual tidak perlu bayar ongkir ke kurir. Ongkir dipotong langsung dari saldo penjual saat barang sudah diterima pembeli."
+              },
+              {
+                "header": "AWB Otomatis",
+                "body": "Dengan fitur ini, resi pengiriman akan terupdate secara otomatis di akun Penjual dan Pembeli."
+              }
+            ],
+            "shipper_product": [
+              {
+                "shipper_product_id": 27,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "J\u0026T Express adalah layanan ekspres pertama di Indonesia berbasis teknologi, memberikan kemudahan dalam satu layanan.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 1,
+            "shipper_name": "JNE",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-jne.png",
+            "feature_info": [
+              {
+                "header": "Non Tunai",
+                "body": "Penjual tidak perlu bayar ongkir ke kurir. Ongkir dipotong langsung dari saldo penjual saat barang sudah diterima pembeli."
+              },
+              {
+                "header": "AWB Otomatis",
+                "body": "Dengan fitur ini, resi pengiriman akan terupdate secara otomatis di akun Penjual dan Pembeli."
+              }
+            ],
+            "shipper_product": [
+              {
+                "shipper_product_id": 1,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 2,
+                "shipper_product_name": "OKE (Ekonomi)",
+                "shipper_product_desc": "JNE OKE adalah paket ekonomis yang ditawarkan JNE. Umumnya pengiriman melalui paket ini membutuhkan waktu yang lebih lama. Dukungan kota nya pun masih terbatas.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 6,
+                "shipper_product_name": "YES (Next Day)",
+                "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 22,
+                "shipper_product_name": "Trucking (Kargo)",
+                "shipper_product_desc": "JNE Cargo, saat ini hanya melayani dari kota Jakarta saja",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 2,
+            "shipper_name": "TIKI",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-tiki.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 3,
+                "shipper_product_name": "Reguler",
+                "shipper_product_desc": "TIKI Paket Reguler adalah paket yang dapat menjangkau seluruh Indonesia hanya dalam waktu kurang dari 7 hari kerja.",
+                "is_active": false
+              },
+              {
+                "shipper_product_id": 16,
+                "shipper_product_name": "Over Night Service (Next Day)",
+                "shipper_product_desc": "ONS (Over Night Services) Hari ini paket Anda kami kirimkan dan paket akan segera tiba keesokan harinya.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 6,
+            "shipper_name": "Wahana",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-wahana.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 8,
+                "shipper_product_name": "Service Normal (Ekonomi)",
+                "shipper_product_desc": "Service Normal adalah pengiriman paket yang ditawarkan Wahana ke seluruh kota besar Indonesia dengan lead time pengiriman estimasi 3-4 hari untuk kota besar propinsi dan +10 hari untuk kota kabupaten sesuai kecamatan yang dituju.",
+                "is_active": false
+              }
+            ]
+          },
+          {
+            "shipper_id": 4,
+            "shipper_name": "Pos Indonesia",
+            "is_active": false,
+            "text_promo": "",
+            "image": "https://images-staging.tokopedia.net/img/kurir-pos.png",
+            "feature_info": [],
+            "shipper_product": [
+              {
+                "shipper_product_id": 10,
+                "shipper_product_name": "Pos Kilat Khusus (Reguler)",
+                "shipper_product_desc": "Gunakan Pos Kilat Khusus, sebagai pilihan tepat untuk pengiriman Suratpos yang mengandalkan kecepatan kiriman dan menjangkau ke seluruh pelosok Indonesia.",
+                "is_active": false
+              }
+            ]
+          }
+        ]
+      },
+      "ticker": [
+        {
+          "header": "Info pengaturan lokasi pengiriman",
+          "body": "Jika ingin ubah lokasi pengiriman tokomu, silakan buka halaman",
+          "text_link": "\u003ca href\u003d“#”\u003eLokasi Toko\u003c/a\u003e",
+          "url_link": "tokopedia://seller/setting/shop-address"
+        },
+        {
+          "header": "Bebas Ongkir untuk PM akan dikenai biaya",
+          "body": "Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan Kurir Rekomendasi, SiCepat \u0026 AnterAja",
+          "text_link": "\u003ca href\u003d“#”\u003edi sini.\u003c/a\u003e",
+          "url_link": "https://m-staging.tokopedia.com/bebas-ongkir"
+        }
+      ]
+    }
+  }
+}
+

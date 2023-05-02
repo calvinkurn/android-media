@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -40,6 +39,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.fromHtmlWithSpaceAndLinebreak
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
@@ -87,11 +87,10 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class AddEditProductDescriptionFragment:
-        BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
-        VideoLinkTypeFactory.VideoLinkListener,
-        AddEditProductPerformanceMonitoringListener
-{
+class AddEditProductDescriptionFragment :
+    BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
+    VideoLinkTypeFactory.VideoLinkListener,
+    AddEditProductPerformanceMonitoringListener {
 
     private var mainLayout: ViewGroup? = null
     private var layoutVariantTips: ViewGroup? = null
@@ -121,6 +120,7 @@ class AddEditProductDescriptionFragment:
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
 
@@ -140,8 +140,10 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
         }
-        adapter.data.removeAt(position)
-        adapter.notifyItemRemoved(position)
+        adapter.data.getOrNull(position)?.run {
+            adapter.data.removeAt(position)
+            adapter.notifyItemRemoved(position)
+        }
         textViewAddVideo?.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
         updateSaveButtonStatus()
     }
@@ -159,7 +161,7 @@ class AddEditProductDescriptionFragment:
             val uri = if (url.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
                 Uri.parse(url)
             } else {
-                Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${url}")
+                Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://$url")
             }
             startActivity(Intent(Intent.ACTION_VIEW, uri))
             if (descriptionViewModel.isEditMode) {
@@ -179,10 +181,10 @@ class AddEditProductDescriptionFragment:
 
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -303,7 +305,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
 
             if (!productInputModelJson.isNullOrBlank()) {
-                //set product input model and and ui of the page
+                // set product input model and and ui of the page
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     descriptionViewModel.updateProductInputModel(this)
                     if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) {
@@ -326,14 +328,14 @@ class AddEditProductDescriptionFragment:
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_PREPARE_METRICS,
-                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_NETWORK_METRICS,
-                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_PREPARE_METRICS,
+            AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_NETWORK_METRICS,
+            AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_TRACE)
@@ -373,7 +375,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun setupSellerMigrationLayout() {
-        with (GlobalConfig.isSellerApp()) {
+        with(GlobalConfig.isSellerApp()) {
             containerAddEditDescriptionFragmentNoInputVariant?.showWithCondition(!this)
             containerAddEditDescriptionFragmentInputVariant?.showWithCondition(this)
             tvNoVariantDescription?.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
@@ -394,7 +396,7 @@ class AddEditProductDescriptionFragment:
             }
         }
 
-        getRecyclerView(view)?.itemAnimator = object: DefaultItemAnimator() {
+        getRecyclerView(view)?.itemAnimator = object : DefaultItemAnimator() {
             override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
                 return true
             }
@@ -478,17 +480,20 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, Observer { bundle ->
-            setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
-            removeNavigationResult(REQUEST_KEY_ADD_MODE)
-            findNavController().navigateUp()
-        })
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(
+            viewLifecycleOwner,
+            Observer { bundle ->
+                setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
+                removeNavigationResult(REQUEST_KEY_ADD_MODE)
+                findNavController().navigateUp()
+            }
+        )
     }
 
     private fun sendDataBack() {
-        if(descriptionViewModel.isAddMode && !descriptionViewModel.isDraftMode) {
+        if (descriptionViewModel.isAddMode && !descriptionViewModel.isDraftMode) {
             var dataBackPressed = NO_DATA
-            if(descriptionViewModel.isFirstMoved) {
+            if (descriptionViewModel.isFirstMoved) {
                 inputAllDataInInputModel()
                 dataBackPressed = DESCRIPTION_DATA
                 descriptionViewModel.productInputModel.value?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
@@ -502,8 +507,8 @@ class AddEditProductDescriptionFragment:
     private fun inputAllDataInInputModel() {
         descriptionViewModel.productInputModel.value?.isDataChanged = true
         descriptionViewModel.productInputModel.value?.descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                getFilteredValidVideoLink()
+            textFieldDescription.getText(),
+            getFilteredValidVideoLink()
         )
     }
 
@@ -541,14 +546,22 @@ class AddEditProductDescriptionFragment:
             layoutVariantTips?.visible()
         }
         tvVariantHeaderSubtitle?.text = descriptionViewModel.getVariantSelectedMessage()
-        tvVariantLevel1Type?.setTextOrGone(descriptionViewModel
-                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
-        tvVariantLevel2Type?.setTextOrGone(descriptionViewModel
-                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
-        tvVariantLevel1Count?.setTextOrGone(descriptionViewModel
-                .getVariantCountMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
-        tvVariantLevel2Count?.setTextOrGone(descriptionViewModel
-                .getVariantCountMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
+        tvVariantLevel1Type?.setTextOrGone(
+            descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_ONE_POSITION)
+        )
+        tvVariantLevel2Type?.setTextOrGone(
+            descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_TWO_POSITION)
+        )
+        tvVariantLevel1Count?.setTextOrGone(
+            descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_ONE_POSITION)
+        )
+        tvVariantLevel2Count?.setTextOrGone(
+            descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_TWO_POSITION)
+        )
     }
 
     private fun observeProductVideo() {
@@ -618,7 +631,7 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
         val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
 
-        textFieldDescription?.setText(description)
+        textFieldDescription?.setText(description.fromHtmlWithSpaceAndLinebreak())
         if (!videoLinks.isNullOrEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
@@ -644,7 +657,7 @@ class AddEditProductDescriptionFragment:
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
-                                        ?: ProductInputModel()
+                            ?: ProductInputModel()
                         descriptionViewModel.updateProductInputModel(productInputModel)
                     }
                 }
@@ -653,24 +666,21 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                sendDataBack()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    sendDataBack()
 
-                if (descriptionViewModel.isEditMode) {
-                    ProductEditDescriptionTracking.clickBack(shopId)
-                } else {
-                    ProductAddDescriptionTracking.clickBack(shopId)
+                    if (descriptionViewModel.isEditMode) {
+                        ProductEditDescriptionTracking.clickBack(shopId)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun showDescriptionTips() {
-        if (descriptionViewModel.isAddMode) {
-            ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
-        }
-
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_tooltip_description_tips)
@@ -699,9 +709,10 @@ class AddEditProductDescriptionFragment:
     private fun showVariantTips() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickHelpVariant(shopId)
         }
+//        } else {
+//            ProductAddDescriptionTracking.clickHelpVariant(shopId)
+//        }
 
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericTooltipModel> = ArrayList()
@@ -746,7 +757,7 @@ class AddEditProductDescriptionFragment:
 
     @SuppressLint("ClickableViewAccessibility")
     private fun hideKeyboardWhenTouchOutside() {
-        mainLayout?.setOnTouchListener{ _, _ ->
+        mainLayout?.setOnTouchListener { _, _ ->
             activity?.apply {
                 KeyboardHandler.hideSoftKeyboard(this)
             }
@@ -802,7 +813,7 @@ class AddEditProductDescriptionFragment:
                 putString(BUNDLE_CACHE_MANAGER_ID, cacheManagerId)
                 putInt(BUNDLE_BACK_PRESSED, dataBackPressed)
             }
-            setNavigationResult(bundle,requestKey)
+            setNavigationResult(bundle, requestKey)
             findNavController().navigateUp()
         }
     }
@@ -812,7 +823,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun updateSaveButtonStatus() {
-        with (descriptionViewModel.validateInputVideo(adapter.data)) {
+        with(descriptionViewModel.validateInputVideo(adapter.data)) {
             btnSave?.isEnabled = this
             btnNext?.isEnabled = this
         }
@@ -823,8 +834,11 @@ class AddEditProductDescriptionFragment:
         val clipboard = requireView().context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(template, template)
         clipboard.setPrimaryClip(clipData)
-        Toaster.build(requireView(), getString(R.string.label_gifting_description_copied_message),
-                Snackbar.LENGTH_LONG).show()
+        Toaster.build(
+            requireView(),
+            getString(R.string.label_gifting_description_copied_message),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun highlightNavigationButton() {

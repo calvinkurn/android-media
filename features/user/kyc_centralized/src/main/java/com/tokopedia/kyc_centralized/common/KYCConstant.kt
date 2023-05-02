@@ -18,9 +18,6 @@ object KYCConstant {
     const val KTP_RETAKE = 1
     const val FACE_RETAKE = 2
     const val USER_EXIT = -9
-    const val HOME_CREDIT_PROJECT_ID = "16"
-    const val CO_BRAND_PROJECT_ID = "18"
-    const val GO_CICIL_PROJECT_ID = "21"
 
     const val BUSINESS_UNIT = "businessUnit"
     const val USER_PLATFORM = "user platform"
@@ -50,6 +47,18 @@ object KYCConstant {
     const val MB_10 = 10
     const val MB_15 = 15
 
-    const val consentCollectionId = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
-    const val consentVersion = "1"
+    const val consentCollectionIdProduction = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
+    const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
+
+    object SharedPreference {
+        /*
+        * WARNING!!!
+        * the value of this variable [KEY_KYC_FLOW_TYPE] must be the same as the value of the
+        * [KEY_SHARED_PREFERENCE_KYC_FLOW_TYPE] variable in [com.tokopedia.liveness.analytics.LivenessDetectionAnalytics]
+        * */
+        const val KEY_KYC_FLOW_TYPE = "kyc_type"
+
+        const val VALUE_KYC_FLOW_TYPE_ALA_CARTE = "ala carte"
+        const val VALUE_KYC_FLOW_TYPE_CKYC = "ckyc"
+    }
 }

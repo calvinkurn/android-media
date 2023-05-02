@@ -16,7 +16,9 @@ const val TYPE_LARGE = 0
 const val TYPE_SMALL = 1
 
 open class FollowCardView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
     private var w = 0
     private var h = 0
@@ -33,17 +35,16 @@ open class FollowCardView @JvmOverloads constructor(
         paintLarge.style = Paint.Style.FILL
         if (context.isDarkMode()) {
             paintSmall.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N100)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
             paintLarge.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N150)
-
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
         } else {
             paintSmall.color =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
             paintLarge.color =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
         }
-        background.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0),PorterDuff.Mode.SRC)
+        background.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC)
         readFromAttrs(attrs)
     }
 
@@ -61,7 +62,6 @@ open class FollowCardView @JvmOverloads constructor(
         this.w = w
         this.h = h
         if (type == TYPE_LARGE) {
-
             var paddingFromBottom = 0F
             var paddingSmallCircle = 0F
             var paddingLargeCircle = 0F
@@ -74,7 +74,7 @@ open class FollowCardView @JvmOverloads constructor(
 
             val paddingLarge = dpToPx(36) - paddingLargeCircle
             val circleDiameterLarge = h + paddingLarge - paddingFromBottom
-            val circleDiameterSmall = h - paddingFromBottom -paddingSmallCircle
+            val circleDiameterSmall = h - paddingFromBottom - paddingSmallCircle
             rectLarge = RectF(
                 -w * 0.53f,
                 -paddingLarge,
@@ -99,9 +99,9 @@ open class FollowCardView @JvmOverloads constructor(
                 circleDiameterLarge
             )
             rectSmall = RectF(
-                - w * 0.2804f,
+                -w * 0.2804f,
                 -paddingSmall,
-                 w * 0.0858f,
+                w * 0.0858f,
                 circleDiameterSmall
             )
         }

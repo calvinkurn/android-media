@@ -30,6 +30,7 @@ class BubbleChatActivationIntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        mListener?.onPageLoaded()
     }
 
     fun setListener(listener: Listener?) {
@@ -78,6 +79,7 @@ class BubbleChatActivationIntroFragment : Fragment() {
 
     interface Listener {
         fun onIntroButtonClicked()
+        fun onPageLoaded()
     }
 
     companion object {

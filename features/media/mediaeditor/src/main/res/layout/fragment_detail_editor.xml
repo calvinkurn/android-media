@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editor_fragment_detail_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/editor_fragment_detail_root"
     android:orientation="vertical">
 
-    <com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-        android:id="@+id/img_ucrop_preview"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/uc_tool_container"
-        android:background="@color/Unify_NN50"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/img_view_preview"
-        android:visibility="gone"
-        android:scaleType="fitCenter"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:foregroundGravity="center"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/uc_tool_container"
-        android:background="@color/Unify_NN50"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/ldr_preview"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/uc_tool_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"/>
+        <com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+            android:id="@+id/img_ucrop_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_view_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:scaleType="fitCenter" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/ldr_preview"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_preview_overlay"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:translationZ="2dp" />
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:background="@color/Unify_NN0"
         android:id="@+id/uc_tool_container"
-        app:layout_constraintBottom_toTopOf="@id/action_btn_container"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@color/Unify_NN0"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/action_btn_container"
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <!--    Brightness Tool-->
         <include
@@ -94,13 +103,20 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
 
+        <!--    Add Logo Tool-->
+        <include
+            layout="@layout/ui_component_tool_add_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:background="@color/Unify_NN0"
         android:id="@+id/action_btn_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
         android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -111,8 +127,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/editor_button_title_cancel"
-            app:unifyButtonVariant="text"
-            app:unifyButtonSize="medium"/>
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="text" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_save"
@@ -120,8 +136,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/editor_button_title_save"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="medium"/>
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
 
     </LinearLayout>
 

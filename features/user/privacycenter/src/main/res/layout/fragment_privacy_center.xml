@@ -8,7 +8,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/dms_privacy_center_static_color_toolbar"
+        android:background="@color/privacycenter_dms_green_toolbar"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -33,7 +33,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/Neutral_N0"
+                    android:textColor="@color/privacycenter_dms_white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@string/privacy_center_toolbar_desc"
-                    android:textColor="@color/Neutral_N0"
+                    android:textColor="@color/privacycenter_dms_white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_name"

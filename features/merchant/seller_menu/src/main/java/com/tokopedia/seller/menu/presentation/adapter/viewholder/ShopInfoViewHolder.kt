@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracki
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
 import com.tokopedia.seller.menu.databinding.LayoutSellerMenuShopInfoBinding
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
@@ -507,7 +508,7 @@ class ShopInfoViewHolder(
             hideTransactionSection()
         } else {
             if (userShopInfoUiModel?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                showTransactionSection()
+                showTransactionSection(totalTransaction)
                 if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text =
                         MethodChecker.fromHtml(getString(R.string.transaction_passed))
@@ -543,7 +544,7 @@ class ShopInfoViewHolder(
         findViewById<View>(R.id.view_rm_transaction_cta)?.hide()
     }
 
-    private fun View.showTransactionSection() {
+    private fun View.showTransactionSection(totalTransaction: Long) {
         findViewById<View>(R.id.divider_stats_rm)?.show()
         findViewById<View>(R.id.divider_stats_rm)?.setBackgroundResource(R.drawable.ic_divider_stats_rm)
         findViewById<Typography>(R.id.tx_stats_rm)?.show()
@@ -551,9 +552,7 @@ class ShopInfoViewHolder(
         findViewById<View>(R.id.view_rm_transaction_cta)?.run {
             show()
             setOnClickListener {
-                context?.let {
-                    RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
-                }
+                listener?.onRMTransactionClicked(totalTransaction)
             }
         }
     }
@@ -696,5 +695,6 @@ class ShopInfoViewHolder(
         fun onScoreImpressed()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
+        fun onRMTransactionClicked(totalTransaction: Long)
     }
 }

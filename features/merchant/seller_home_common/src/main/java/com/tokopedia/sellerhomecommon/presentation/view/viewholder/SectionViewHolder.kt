@@ -5,7 +5,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.asUpperCase
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcSectionWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
@@ -35,8 +37,7 @@ class SectionViewHolder(
         with(binding) {
             root.toggleSectionWidgetHeight(element.shouldShow)
             tvSectionTitle.text = element.title
-            tvSectionSubTitle.visibility =
-                if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
+            tvSectionSubTitle.showWithCondition(element.subtitle.isNotBlank())
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
             element.tooltip?.let { tooltip ->
@@ -51,6 +52,16 @@ class SectionViewHolder(
                     tvSectionTitle.clearUnifyDrawableEnd()
                 }
             }
+            setTextColor(element)
+        }
+    }
+
+    private fun setTextColor(element: SectionWidgetUiModel) {
+        with(binding) {
+            val titleTextColor = root.context.getResColor(element.titleTextColorId)
+            val subTitleTextColor = root.context.getResColor(element.subTitleTextColorId)
+            tvSectionTitle.setTextColor(titleTextColor)
+            tvSectionSubTitle.setTextColor(subTitleTextColor)
         }
     }
 

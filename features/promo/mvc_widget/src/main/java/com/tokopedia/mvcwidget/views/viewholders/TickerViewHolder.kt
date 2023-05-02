@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.TickerText
-import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 

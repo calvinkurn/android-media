@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.model
 
+import android.net.Uri
 import com.google.gson.Gson
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
@@ -10,25 +11,23 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
-import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
-import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import io.mockk.mockk
 import java.io.File
 import java.util.*
 
@@ -85,8 +84,22 @@ class UiModelBuilder {
             state = state
     )
 
+    fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = "123",
+            bitrateMode = "123",
+            fps = "123",
+            maxRetry = 1,
+            reconnectDelay = 1,
+            videoBitrate = "123",
+            videoWidth = "123",
+            videoHeight = "123",
+        )
+    }
+
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
+        shortVideoAllowed: Boolean = false,
         channelId: String = "",
         channelStatus: ChannelStatus = ChannelStatus.Draft,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -97,6 +110,7 @@ class UiModelBuilder {
         tnc: List<TermsAndConditionUiModel> = emptyList(),
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
+        shortVideoAllowed = shortVideoAllowed,
         channelId = channelId,
         channelStatus = channelStatus,
         durationConfig = durationConfig,
@@ -204,7 +218,8 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
-                    hasAcceptTnc = tncShop
+                    hasAcceptTnc = tncShop,
+                    enable = tncShop
                 )
             )
             onlyBuyer -> listOf(
@@ -215,7 +230,8 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
-                    hasAcceptTnc = tncBuyer
+                    hasAcceptTnc = tncBuyer,
+                    enable = tncBuyer
                 )
             )
             else -> listOf(
@@ -226,7 +242,8 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
-                    hasAcceptTnc = tncShop
+                    hasAcceptTnc = tncShop,
+                    enable = tncShop
                 ),
                 ContentAccountUiModel(
                     id = idBuyer,
@@ -235,7 +252,8 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
-                    hasAcceptTnc = tncBuyer
+                    hasAcceptTnc = tncBuyer,
+                    enable = tncBuyer
                 ),
             )
         }
@@ -248,4 +266,52 @@ class UiModelBuilder {
             pinStatus = PinProductUiModel(isPinned = isPinned, canPin = true, isLoading = false),
         )
 
+    fun buildCoverSetupStateUploaded(
+        localImage: Uri? = mockk(relaxed = true),
+        coverImage: Uri = mockk(relaxed = true),
+        coverSource: CoverSource = mockk(relaxed = true),
+    ) = CoverSetupState.Cropped.Uploaded(
+        localImage = localImage,
+        coverImage = coverImage,
+        coverSource = coverSource,
+    )
+
+    fun buildTags(
+        size: Int = 5
+    ): Set<PlayTagUiModel> {
+        return mutableSetOf<PlayTagUiModel>().apply {
+            for(i in 0 until size) {
+                add(
+                    PlayTagUiModel(
+                        tag = "Tag $i",
+                        isChosen = false,
+                    )
+                )
+            }
+        }
+    }
+
+    fun buildTncList(
+        size: Int = 3,
+    ) = List(size) {
+        TermsAndConditionUiModel(desc = "Desc $it")
+    }
+
+    fun buildShortsConfig(
+        shortsId: String = "123",
+        shortsAllowed: Boolean = true,
+        isBanned: Boolean = false,
+        tncList: List<TermsAndConditionUiModel> = buildTncList(),
+        maxTitleCharacter: Int = 24,
+        maxTaggedProduct: Int = 30,
+        shortsVideoSourceId: String = "asdf",
+    ) = PlayShortsConfigUiModel(
+        shortsId = shortsId,
+        shortsAllowed = shortsAllowed,
+        isBanned = isBanned,
+        tncList = tncList,
+        maxTitleCharacter = maxTitleCharacter,
+        maxTaggedProduct = maxTaggedProduct,
+        shortsVideoSourceId = shortsVideoSourceId,
+    )
 }

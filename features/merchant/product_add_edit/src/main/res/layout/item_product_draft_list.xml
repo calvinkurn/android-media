@@ -20,8 +20,7 @@
             android:id="@+id/ivProduct"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_centerInParent="true"
-            app:srcCompat="@drawable/ic_image_not_available" />
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
 

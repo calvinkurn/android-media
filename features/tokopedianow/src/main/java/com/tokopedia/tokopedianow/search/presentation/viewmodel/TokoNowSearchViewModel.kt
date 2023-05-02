@@ -10,7 +10,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView
@@ -57,30 +57,29 @@ class TokoNowSearchViewModel @Inject constructor (
     abTestPlatformWrapper: ABTestPlatformWrapper,
     userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
-        baseDispatcher,
-        queryParamMap,
-        getFilterUseCase,
-        getProductCountUseCase,
-        getMiniCartListSimplifiedUseCase,
-        cartService,
-        getWarehouseUseCase,
-        setUserPreferenceUseCase,
-        chooseAddressWrapper,
-        abTestPlatformWrapper,
-        userSession,
+    baseDispatcher,
+    queryParamMap,
+    getFilterUseCase,
+    getProductCountUseCase,
+    getMiniCartListSimplifiedUseCase,
+    cartService,
+    getWarehouseUseCase,
+    setUserPreferenceUseCase,
+    chooseAddressWrapper,
+    userSession,
 ) {
     companion object {
         private val showBroadMatchResponseCodeList = listOf("4", "5")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
     }
 
-    private val addToCartBroadMatchTrackingMutableLiveData: SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = SingleLiveEvent()
+    private val addToCartBroadMatchTrackingMutableLiveData: SingleLiveEvent<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = SingleLiveEvent()
     private var responseCode: String = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
 
-    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
     val query = queryParamMap[SearchApiConst.Q].orEmpty()
 
     override val tokonowSource: String
@@ -222,13 +221,13 @@ class TokoNowSearchViewModel @Inject constructor (
     private fun sendAddToCartBroadMatchItemTracking(
         quantity: Int,
         addToCartDataModel: AddToCartDataModel,
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItem: ProductCardCompactCarouselItemUiModel,
     ) {
         addToCartBroadMatchTrackingMutableLiveData.value = Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
     }
 
     fun onViewATCBroadMatchItem(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItem: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int
     ) {

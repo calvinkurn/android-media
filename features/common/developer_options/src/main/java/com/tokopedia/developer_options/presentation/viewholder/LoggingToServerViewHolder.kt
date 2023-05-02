@@ -45,7 +45,7 @@ class LoggingToServerViewHolder(
     }
 
     private fun manageTimberMessage(context: Context, timberMessage: String) {
-        //"Pno##TAG##message (message: abc=123##edf=456) (required Server Logging ON)"
+        // "Pno##TAG##message (message: abc=123##edf=456) (required Server Logging ON)"
         val priorityIndex = 0
         val tagIndex = 1
         var priority = ""
@@ -78,8 +78,6 @@ class LoggingToServerViewHolder(
             priorityLogger = Priority.P1
         } else if (priority == "P2") {
             priorityLogger = Priority.P2
-        } else if (priority == "SF") {
-            priorityLogger = Priority.SF
         }
         if (priorityLogger != null) {
             log(priorityLogger, tag, messageMap)

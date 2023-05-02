@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 
-class WishlistCollectionHostBottomSheetActivity: BaseSimpleActivity() {
+class WishlistCollectionHostBottomSheetActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_wishlist_collection_bottomsheet
 
     override fun getParentViewResourceID() = R.id.parent_view

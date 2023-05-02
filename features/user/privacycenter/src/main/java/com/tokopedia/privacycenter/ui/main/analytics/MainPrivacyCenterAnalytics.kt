@@ -1,6 +1,9 @@
 package com.tokopedia.privacycenter.ui.main.analytics
 
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
+import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
 
 // List tracker on MyNakama: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3571
 object MainPrivacyCenterAnalytics {
@@ -48,6 +51,14 @@ object MainPrivacyCenterAnalytics {
     private const val BUTTON_TOKOPEDIA_CARE = "button tokopedia care"
     private const val BUTTON_AKTIVITAS = "button aktivitas"
     private const val BUTTON_DOWNLOAD_DATA_PRIBADI = "button download data pribadi"
+
+    fun trackScreen(screenName: String) {
+        val additionalData = mapOf(
+            CURRENT_SITE to VALUE_CURRENT_SITE,
+            BUSINESS_UNIT to VALUE_BUSINESS_UNIT
+        )
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, additionalData)
+    }
 
     fun sendClickOnButtonAccountLinkingEvent(eventLabel: String) {
         Tracker.Builder()

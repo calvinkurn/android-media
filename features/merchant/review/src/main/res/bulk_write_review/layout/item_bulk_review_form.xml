@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_content_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_content_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_content_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="16dp" />
+
+        <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewProductInfo
+            android:id="@+id/widget_bulk_review_product_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@id/widget_bulk_write_review_form_rating"
+            app:layout_constraintEnd_toStartOf="@id/ic_bulk_review_remove"
+            app:layout_constraintStart_toStartOf="@id/guide_content_start"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_bulk_review_remove"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            app:icon_color_light_disabled="@color/Unify_NN600"
+            app:icon_color_light_enable="@color/Unify_NN600"
+            app:icon_color_night_disabled="@color/Unify_NN600"
+            app:icon_color_night_enable="@color/Unify_NN600"
+            app:icon_name="CLOSE"
+            app:layout_constraintEnd_toEndOf="@id/guide_content_end"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewRating
+            android:id="@+id/widget_bulk_write_review_form_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            app:layout_constraintBottom_toTopOf="@id/widget_bulk_review_bad_rating_categories"
+            app:layout_constraintStart_toStartOf="@id/guide_content_start"
+            app:layout_constraintTop_toBottomOf="@id/widget_bulk_review_product_info" />
+
+        <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewBadRatingCategories
+            android:id="@+id/widget_bulk_review_bad_rating_categories"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/widget_bulk_review_text_area"
+            app:layout_constraintEnd_toEndOf="@id/guide_content_end"
+            app:layout_constraintStart_toStartOf="@id/guide_content_start"
+            app:layout_constraintTop_toBottomOf="@id/widget_bulk_write_review_form_rating" />
+
+        <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewTextArea
+            android:id="@+id/widget_bulk_review_text_area"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toTopOf="@id/widget_bulk_review_attachments"
+            app:layout_constraintEnd_toStartOf="@id/guide_content_end"
+            app:layout_constraintStart_toEndOf="@id/guide_content_start"
+            app:layout_constraintTop_toBottomOf="@id/widget_bulk_review_bad_rating_categories" />
+
+        <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewMediaPicker
+            android:id="@+id/widget_bulk_review_attachments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/barrier_most_bottom"
+            app:layout_constraintTop_toBottomOf="@id/widget_bulk_review_text_area" />
+
+        <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewMiniActions
+            android:id="@+id/widget_bulk_review_mini_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/widget_bulk_review_attachments" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_most_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="widget_bulk_review_mini_actions,guide_content_bottom" />
+
+        <View
+            android:id="@+id/view_bulk_review_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0.5"
+            android:background="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/widget_bulk_review_mini_actions"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

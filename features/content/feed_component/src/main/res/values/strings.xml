@@ -219,6 +219,11 @@
     <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_shorts">Buat Video</string>
+
+    <!-- Play Short Entry Point Coach Mark -->
+    <string name="feed_play_shorts_entry_point_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_play_shorts_entry_point_coachmark_description">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
 
     <string name="feed_webview_template">%s?url=%s</string>
     <string name="feed_post_sebagai">Post sebagai</string>

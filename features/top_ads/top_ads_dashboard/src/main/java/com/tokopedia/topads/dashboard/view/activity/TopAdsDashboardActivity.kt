@@ -97,6 +97,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     lateinit var ivEducationTopAdsActionBar: ImageUnify
     private lateinit var ivCalendarTopAdsActionBar: ImageUnify
     private lateinit var txtBuatIklan: Typography
+    var insightMultiActionButtonEnabled: Boolean = false
 
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
@@ -182,6 +183,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                             multiActionBtn?.text =
                                 getString(R.string.topads_dash_button_submit_beranda)
                             setPadding()
+                            setMultiActionButtonEnabled(true)
                         }
                         IKLANKAN_PRODUK_TAB -> {
                             removeBtn()
@@ -199,6 +201,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                                     getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
                                 checkVisibility()
                             }
+                            setMultiActionButtonEnabled(insightMultiActionButtonEnabled)
                         }
                         HEADLINE_ADS_TAB -> {
                             removeBtn()
@@ -319,7 +322,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         viewPager.setPadding(0, 0, 0, heightButton ?: 0)
     }
 
-    fun enableRecommButton(isEnable: Boolean) {
+    fun setMultiActionButtonEnabled(isEnable: Boolean) {
         multiActionBtn?.isEnabled = isEnable
     }
 

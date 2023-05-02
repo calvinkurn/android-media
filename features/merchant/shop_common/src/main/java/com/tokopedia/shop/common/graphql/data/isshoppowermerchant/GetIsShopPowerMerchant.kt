@@ -31,6 +31,9 @@ data class GetIsShopPowerMerchant(
                 @SerializedName("status")
                 @Expose
                 val status: String = "",
+                @SerializedName("pm_tier")
+                @Expose
+                val pmTier: Int = 0,
                 @SerializedName("auto_extend")
                 @Expose
                 val autoExtend: AutoExtend = AutoExtend(),

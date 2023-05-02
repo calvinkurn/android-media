@@ -16,10 +16,10 @@ import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class FilterPageTestHelper(
-        private val baseViewModel: BaseSearchCategoryViewModel,
-        private val getFilterUseCase: UseCase<DynamicFilterModel>,
-        private val getProductCountUseCase: UseCase<String>,
-        private val callback: Callback,
+    private val baseViewModel: BaseSearchCategoryViewModel,
+    private val getFilterUseCase: UseCase<DynamicFilterModel>,
+    private val getProductCountUseCase: UseCase<String>,
+    private val callback: Callback,
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
@@ -46,8 +46,8 @@ class FilterPageTestHelper(
     }
 
     private fun `Given get filter API will be successful`(
-            dynamicFilterModel: DynamicFilterModel,
-            filterRequestParamsSlot: CapturingSlot<RequestParams> = slot()
+        dynamicFilterModel: DynamicFilterModel,
+        filterRequestParamsSlot: CapturingSlot<RequestParams> = slot()
     ) {
         every {
             getFilterUseCase.execute(any(), any(), capture(filterRequestParamsSlot))
@@ -67,8 +67,8 @@ class FilterPageTestHelper(
     }
 
     private fun `Then assert filter request params`(
-            expectedQueryParamMap: Map<String, String>,
-            filterRequestParams: RequestParams,
+        expectedQueryParamMap: Map<String, String>,
+        filterRequestParams: RequestParams,
     ) {
         val actualRequestParams = filterRequestParams.parameters
         expectedQueryParamMap.forEach { (key, value) ->
@@ -77,7 +77,7 @@ class FilterPageTestHelper(
     }
 
     private fun `Then assert dynamic filter model live data is updated`(
-            dynamicFilterModel: DynamicFilterModel
+        dynamicFilterModel: DynamicFilterModel
     ) {
         assertThat(baseViewModel.dynamicFilterModelLiveData.value, shouldBe(dynamicFilterModel))
     }
@@ -171,12 +171,13 @@ class FilterPageTestHelper(
                 selectedFilterMapParameter = selectedFilterMap,
                 selectedSortMapParameter = mapOf(),
                 selectedSortName = "",
+                sortAutoFilterMapParameter = mapOf()
         )
     }
 
     private fun `When view apply filter`() {
-        val applySortFilterModel = applySortFilterModel ?:
-        throw AssertionError("Apply Sort Filter Model is null")
+        val applySortFilterModel = applySortFilterModel
+            ?: throw AssertionError("Apply Sort Filter Model is null")
 
         baseViewModel.onViewApplySortFilter(applySortFilterModel)
     }
@@ -192,9 +193,9 @@ class FilterPageTestHelper(
             val expectedKey = key.removePrefix(OptionHelper.EXCLUDE_PREFIX)
 
             assertThat(
-                    "Query param with key $key is incorrect",
-                    queryParams[expectedKey],
-                    shouldBe(value)
+                "Query param with key $key is incorrect",
+                queryParams[expectedKey],
+                shouldBe(value)
             )
         }
     }
@@ -214,8 +215,8 @@ class FilterPageTestHelper(
     }
 
     private fun `Given get product count API will be successful`(
-            requestParamsSlot: CapturingSlot<RequestParams>,
-            successResponse: String,
+        requestParamsSlot: CapturingSlot<RequestParams>,
+        successResponse: String
     ) {
         every {
             getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
@@ -229,11 +230,11 @@ class FilterPageTestHelper(
     }
 
     private fun `Then assert params for get product count`(
-            mandatoryParams: Map<String, Any>,
-            getProductCountRequestParams: RequestParams
+        mandatoryParams: Map<String, Any>,
+        getProductCountRequestParams: RequestParams
     ) {
         val expectedGetProductCountParams =
-                mockApplyFilterMapParam + mandatoryParams + mapOf(SearchApiConst.ROWS to 0)
+            mockApplyFilterMapParam + mandatoryParams + mapOf(SearchApiConst.ROWS to 0)
 
         val getProductCountParams = getProductCountRequestParams.parameters
 
@@ -284,7 +285,7 @@ class FilterPageTestHelper(
 
     private fun `Given view apply filter and dismissed`() {
         val applySortFilterModel = applySortFilterModel
-                ?: throw AssertionError("Apply Sort Filter Model is null")
+            ?: throw AssertionError("Apply Sort Filter Model is null")
 
         baseViewModel.onViewApplySortFilter(applySortFilterModel)
         baseViewModel.onViewDismissFilterPage()
@@ -299,7 +300,7 @@ class FilterPageTestHelper(
     interface Callback {
         fun `Given first page API will be successful`()
         fun `Then assert first page use case is called twice`(
-                requestParamsSlot: MutableList<RequestParams>
+            requestParamsSlot: MutableList<RequestParams>
         )
     }
 }

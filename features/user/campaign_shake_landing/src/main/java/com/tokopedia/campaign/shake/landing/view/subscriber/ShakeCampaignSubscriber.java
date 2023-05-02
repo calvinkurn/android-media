@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.campaign.shake.landing.R;
-import com.tokopedia.campaign.shake.landing.analytics.CampaignTracking;
 import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
 import com.tokopedia.campaign.shake.landing.data.entity.CampaignResponseEntity;
 import com.tokopedia.campaign.shake.landing.data.entity.ValidCampaignPojo;
@@ -21,7 +20,6 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.shakedetect.ShakeDetectManager;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -49,7 +47,6 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
         if(view == null) {
             return;
         }
@@ -86,7 +83,6 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
         }
         if (graphqlResponse.getError(CampaignGqlResponse.class) != null
                 && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
-            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
             view.showMessage(graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() != null ?
                     graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() : "");
             return;
@@ -101,14 +97,12 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
                 ValidCampaignPojo campaign = s.getValidCampaignPojos().get(0);
 
                 if (!campaign.isValid()) {
-                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
                     return;
                 }
 
                 if ((campaign.getErrorMessage()) != null
                         && !campaign.getErrorMessage().isEmpty()
                         && campaign.getUrl() != null && campaign.getUrl().isEmpty()) {
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                     view.showMessage(campaign.getErrorMessage());
                     return;
                 }
@@ -116,7 +110,6 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
                 Intent intentFromRouter = RouteManager.getIntentNoFallback(context, campaign.getUrl());
                 if(intentFromRouter == null){
                     view.showErrorNetwork(context.getString(R.string.shake_landing_shake_shake_wrong_deeplink));
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                     return;
                 }
 
@@ -127,15 +120,10 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
                 }
 
                 redirectToCampaignUrl(campaign.getUrl());
-
-                CampaignTracking.eventShakeShake("success",
-                        ShakeDetectManager.sTopActivity, "", campaign.getUrl());
-
                 //Open next activity based upon the result from server
 
             }
         } else {
-            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
             view.showErrorGetInfo();
         }
     }

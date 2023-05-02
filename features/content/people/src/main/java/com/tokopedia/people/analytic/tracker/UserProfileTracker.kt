@@ -32,7 +32,7 @@ interface UserProfileTracker {
         live: Boolean,
         activityId: String,
         imageUrl: String,
-        videoPosition: Int,
+        videoPosition: Int
     )
 
     fun clickVideo(
@@ -40,8 +40,6 @@ interface UserProfileTracker {
         self: Boolean,
         live: Boolean,
         activityId: String,
-        imageUrl: String,
-        videoPosition: Int,
     )
 
     fun clickFeedTab(userId: String, self: Boolean)
@@ -52,16 +50,14 @@ interface UserProfileTracker {
         activityId: String,
         imageUrl: String,
         postPosition: Int,
-        mediaType: String,
+        mediaType: String
     )
 
     fun clickPost(
         userId: String,
         self: Boolean,
         activityId: String,
-        imageUrl: String,
-        postPosition: Int,
-        mediaType: String,
+        mediaType: String
     )
 
     fun openFollowersTab(userId: String)
@@ -87,17 +83,15 @@ interface UserProfileTracker {
     fun impressionProfileRecommendation(
         userId: String,
         shops: ShopRecomUiModelItem,
-        postPosition: Int,
+        postPosition: Int
     )
 
     fun clickProfileRecommendation(
         userId: String,
-        shopId: String,
-        imageUrl: String,
-        postPosition: Int,
+        item: ShopRecomUiModelItem,
     )
 
-    fun clickFollowProfileRecommendation(userId: String, shopId: String)
+    fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem)
 
     fun clickCreatePost(userId: String)
 
@@ -126,6 +120,10 @@ interface UserProfileTracker {
     fun clickChannelScreenshotShareBottomsheet(userId: String, self: Boolean)
 
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
+
+    fun clickCreateShorts(userId: String)
+
+    fun viewCreateShorts(userId: String)
 
     fun sendAll()
 }

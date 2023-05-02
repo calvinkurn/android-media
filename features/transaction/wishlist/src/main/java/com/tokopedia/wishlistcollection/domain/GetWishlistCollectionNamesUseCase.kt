@@ -10,8 +10,10 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNames
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistCollectionNamesQuery", GetWishlistCollectionNamesUseCase.query)
-class GetWishlistCollectionNamesUseCase @Inject constructor(@ApplicationContext private val repository: GraphqlRepository,
-                                                            dispatcher: CoroutineDispatchers) :
+class GetWishlistCollectionNamesUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) :
     CoroutineUseCase<Unit, GetWishlistCollectionNamesResponse>(dispatcher.io) {
 
     override suspend fun execute(params: Unit): GetWishlistCollectionNamesResponse {

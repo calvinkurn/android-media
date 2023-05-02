@@ -6,9 +6,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
-import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -20,14 +21,26 @@ import java.util.concurrent.TimeUnit
  * Created by jegul on 09/03/21
  */
 class PlayWebSocketImpl(
-        clientBuilder: OkHttpClient.Builder,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
-        @ApplicationContext private val context: Context,
-        private val localCacheHandler: LocalCacheHandler,
+    clientBuilder: OkHttpClient.Builder,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
+    @ApplicationContext private val context: Context,
+    private val localCacheHandler: LocalCacheHandler
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
+
+    private val webSocketLogger: WebSocketLogger by lazy {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            PlayWebSocketLogger(context)
+        } else {
+            object : WebSocketLogger {
+                override fun init(data: String) {}
+                override fun send(event: String) {}
+                override fun send(event: String, message: String) {}
+            }
+        }
+    }
 
     init {
         clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
@@ -45,7 +58,7 @@ class PlayWebSocketImpl(
     private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
-            extraBufferCapacity = 100
+        extraBufferCapacity = 100
     )
 
     private var mWebSocket: WebSocket? = null
@@ -53,13 +66,13 @@ class PlayWebSocketImpl(
     private val webSocketListener = object : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
-            WebSocketLogger.getInstance(context).send("Web Socket Open")
+            webSocketLogger.send("Web Socket Open")
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
-            WebSocketLogger.getInstance(context).send(newMessage.message.type, newMessage.message.jsonElement.toString())
+            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -72,13 +85,13 @@ class PlayWebSocketImpl(
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Intended))
-            WebSocketLogger.getInstance(context).send("Web Socket Close (Intended)")
+            webSocketLogger.send("Web Socket Close (Intended)")
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(t)))
-            WebSocketLogger.getInstance(context).send("Web Socket Close (Error)")
+            webSocketLogger.send("Web Socket Close (Error)")
         }
     }
 
@@ -86,7 +99,7 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     override fun close() {
@@ -115,22 +128,24 @@ class PlayWebSocketImpl(
         }
     }
 
-    private fun getRequest(url: String, accessToken: String): Request {
-        return Request.Builder().get().url(url)
-                .header("Origin", TokopediaUrl.getInstance().WEB)
-                .header("Accounts-Authorization", "Bearer $accessToken")
-                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
-                .build()
-    }
-
     private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
         return mapOf(
-            "source" to if(source.isEmpty()) "\"\"" else source,
-            "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
-            "warehouseId" to if(warehouseId.isEmpty()) "\"\"" else warehouseId,
-            "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
+            "source" to source.ifEmpty { "\"\"" },
+            "channelId" to channelId.ifEmpty { "\"\"" },
+            "warehouseId" to warehouseId.ifEmpty { "\"\"" },
+            "gcToken" to gcToken.ifEmpty { "\"\"" }
         )
+    }
+
+    private fun getRequest(url: String, accessToken: String): Request {
+        return Request.Builder().get().url(url)
+            .header("Origin", TokopediaUrl.getInstance().WEB)
+            .header("Accounts-Authorization", "Bearer $accessToken")
+            .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+            .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
+            .header("x_app_name", GlobalConfig.getPackageApplicationName())
+            .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
+            .build()
     }
 
     companion object {

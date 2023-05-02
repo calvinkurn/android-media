@@ -15,6 +15,7 @@ import com.tokopedia.wishlist.runWishlistCollectionBot
 import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
+import com.tokopedia.wishlist.util.setupRemoteConfig
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
@@ -44,6 +45,7 @@ class WishlistCollectionTopAdsVerificationTest {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
                 InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+                setupRemoteConfig()
                 setupTopAdsDetector()
                 disableWishlistCoachmark(context)
             }

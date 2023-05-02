@@ -26,6 +26,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RETURN_TO_SHIPPER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
@@ -319,6 +320,7 @@ open class SomListOrderViewHolder(
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
                 KEY_CHANGE_COURIER -> listener.onChangeCourierClicked(element.orderId)
+                KEY_RETURN_TO_SHIPPER -> listener.onReturnToShipper(element.orderId)
             }
         }
     }
@@ -408,5 +410,6 @@ open class SomListOrderViewHolder(
         fun onEditAwbButtonClicked(orderId: String)
         fun onChangeCourierClicked(orderId: String)
         fun onFinishBindOrder(view: View, itemIndex: Int)
+        fun onReturnToShipper(orderId: String)
     }
 }

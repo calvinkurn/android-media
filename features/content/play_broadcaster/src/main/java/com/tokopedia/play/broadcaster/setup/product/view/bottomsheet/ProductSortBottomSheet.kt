@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
@@ -20,7 +23,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 02/02/22
  */
-class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
+class ProductSortBottomSheet @Inject constructor(
+    private val analytic: PlayBroSetupProductAnalytic,
+) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroProductSortBinding? = null
     private val binding: BottomSheetPlayBroProductSortBinding
@@ -46,6 +51,11 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
 
         setupView()
         setupObserve()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductSortingBottomSheet()
     }
 
     override fun onDestroyView() {
@@ -75,6 +85,11 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
         setAction(getString(R.string.play_label_save)) {
             val selectedSort = mSelectedSort
             if (selectedSort != null) mListener?.onSortChosen(this, selectedSort)
+            dismiss()
+        }
+
+        setCloseClickListener {
+            analytic.clickCloseOnProductSortingBottomSheet()
             dismiss()
         }
 

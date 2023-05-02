@@ -1,0 +1,9 @@
+<com.tokopedia.unifycomponents.ticker.Ticker
+    android:id="@+id/tickerTopAds"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:tickerType="announcement"
+    app:closeButtonVisibility="gone"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
+

@@ -27,30 +27,30 @@ class TopChatVoucherViewHolder constructor(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             merchantVoucherView,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             merchantVoucherView,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN50,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN50,
             getStrokeWidthSenderDimenRes()
     )
 

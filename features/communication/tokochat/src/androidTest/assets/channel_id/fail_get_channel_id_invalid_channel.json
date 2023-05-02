@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "data": null,
+  "errors": [
+    {
+      "code": "CHAT:SERVICE:CHAT_NOT_PERMITTED",
+      "message": "invalid channel",
+      "message_title": "Chat not allowed in current state",
+      "message_severity": "error"
+    }
+  ]
+}

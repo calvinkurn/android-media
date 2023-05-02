@@ -12,9 +12,11 @@ import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.utils.clickChildViewWithId
 import com.tokopedia.usercomponents.common.utils.clickClickableSpanOnTypographyUnify
 import com.tokopedia.usercomponents.common.utils.waitOnView
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 
 fun userConsentRobot(action: UserConsentRobot.() -> Unit): UserConsentRobot {
     return UserConsentRobot().apply(action)
@@ -69,7 +71,7 @@ class UserConsentResult {
     private val textWithTnc = "Saya menyetujui Syarat & Ketentuan"
     private val textWithTncPolicy = "Saya menyetujui Syarat & Ketentuan serta Kebijakan Privasi"
 
-    private fun generatePurposeText(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
+    private fun generatePurposeText(purposes: MutableList<PurposeDataModel>): String {
         var purposeText = ""
         if (purposes.size.orZero() == 1) {
             purposeText = purposes.first().description
@@ -93,41 +95,49 @@ class UserConsentResult {
         return purposeText
     }
 
-    fun shouldViewTnCMultipleOptional(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTnCMultipleOptional(purposes: MutableList<PurposeDataModel>) {
         onView(allOf(withId(R.id.textMainDescription), withText(textWithTnc), isDisplayed()))
         purposes.forEach {
             onView(allOf(withId(R.id.checkboxPurposes), withText(it.description), isDisplayed()))
         }
     }
 
-    fun shouldViewTnCPolicyMultipleOptional(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTnCPolicyMultipleOptional(purposes: MutableList<PurposeDataModel>) {
         onView(allOf(withId(R.id.textMainDescription), withText(textWithTncPolicy), isDisplayed()))
         purposes.forEach {
             onView(allOf(withId(R.id.checkboxPurposes), withText(it.description), isDisplayed()))
         }
     }
 
-    fun shouldViewTnCMandatory(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTnCMandatory(purposes: MutableList<PurposeDataModel>) {
         val text = textWithTnc + generatePurposeText(purposes)
         onView(allOf(withId(R.id.descriptionPurposes), withText(text), isDisplayed()))
     }
 
-    fun shouldViewTncPolicyMandatory(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTncPolicyMandatory(purposes: MutableList<PurposeDataModel>) {
         val text = textWithTncPolicy + generatePurposeText(purposes)
         onView(allOf(withId(R.id.descriptionPurposes), withText(text), isDisplayed()))
     }
 
-    fun shouldViewTnCOptional(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTnCOptional(purposes: MutableList<PurposeDataModel>) {
         val text = textWithTnc + generatePurposeText(purposes)
         onView(allOf(withId(R.id.descriptionPurposes), withText(text), isDisplayed()))
     }
 
-    fun shouldViewTncPolicyOptional(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun shouldViewTncPolicyOptional(purposes: MutableList<PurposeDataModel>) {
         val text = textWithTncPolicy + generatePurposeText(purposes)
         onView(allOf(withId(R.id.descriptionPurposes), withText(text), isDisplayed()))
     }
 
     fun shouldButtonActionEnable() {
         onView(allOf(withId(R.id.buttonAction), isDisplayed()))
+    }
+
+    fun shouldConsentHide() {
+        onView(allOf(withId(R.id.sampleUserConsent), not(isDisplayed())))
+    }
+
+    fun shouldButtonHide() {
+        onView(allOf(withId(R.id.buttonAction), not(isDisplayed())))
     }
 }

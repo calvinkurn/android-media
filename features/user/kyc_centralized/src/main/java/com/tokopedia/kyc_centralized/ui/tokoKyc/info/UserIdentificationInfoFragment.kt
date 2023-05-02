@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -30,16 +29,17 @@ import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -70,6 +70,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
     private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -81,6 +84,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_CKYC
+        )
+
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER) ?: false
             projectId = arguments?.getInt(PARAM_PROJECT_ID) ?: KYCConstant.KYC_PROJECT_ID
@@ -90,7 +99,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         if (isSourceSeller) {
             goToFormActivity()
         }
-        analytics = createInstance(projectId)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = createInstance(projectId, kycFlowType)
     }
 
     override fun getScreenName(): String = ""
@@ -139,25 +149,30 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     private fun loadUserConsent() {
         val consentParam = ConsentCollectionParam(
-            collectionId = KYCConstant.consentCollectionId,
-            version = KYCConstant.consentVersion
-        )
-        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-                override fun onCheckedChange(isChecked: Boolean) {
-                    analytics?.eventClickKycTnc(isChecked)
-                }
-
-                override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                    analytics?.eventClickOnNextOnBoarding()
-                    goToFormActivity()
-                }
-
-                override fun onFailed(throwable: Throwable) {
-                    Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-                }
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
             }
         )
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
+            viewLifecycleOwner, this, consentParam
+        )
+
+        viewBinding?.layoutKycBenefit?.kycBenefitBtn?.setOnClickListener {
+            analytics?.eventClickOnNextOnBoarding()
+            goToFormActivity()
+            viewBinding?.layoutKycBenefit?.userConsentKyc?.submitConsent()
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnCheckedChangeListener { isChecked ->
+            analytics?.eventClickKycTnc(isChecked)
+            viewBinding?.layoutKycBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnFailedGetCollectionListener { throwable ->
+            Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun getStatusInfo() {
@@ -414,6 +429,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
                 KycStatus.BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
                 else -> {}
             }
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             activity?.finish()
         }
     }
@@ -438,6 +454,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
             showStatusPending()
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             activity?.finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -453,6 +470,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     private fun goToCallBackUrl(callback: String?): View.OnClickListener {
         return View.OnClickListener { v: View? ->
             if (callback != null) {
+                kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
                 RouteManager.route(activity, callback)
                 activity?.finish()
             }

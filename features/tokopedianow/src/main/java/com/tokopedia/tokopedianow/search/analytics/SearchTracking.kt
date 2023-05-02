@@ -22,7 +22,14 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_ADD_TO_CART_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_EMPTY_STATE_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH
+import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
@@ -41,11 +48,9 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_P
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BROADMATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
@@ -71,11 +76,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_SEARCH
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -105,26 +105,17 @@ object SearchTracking {
         const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
         const val CLICK_CATEGORY_JUMPER = "click - category jumper"
         const val CLICK_CARI_BARANG_DI_TOKONOW = "click - cari barang di tokonow"
-        const val IMPRESSION_SRP_PRODUCT_TOKONOW =
-            "impression product on tokonow product recommendation"
-        const val CLICK_SRP_PRODUCT_TOKONOW =
-            "click product on tokonow product recommendation"
-        const val CLICK_ATC_SRP_PRODUCT_TOKONOW =
-            "click add to cart on tokonow product recommendation"
         const val IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
         const val CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
         const val IMPRESSION_BROADMATCH = "impression - broad match"
         const val CLICK_BROADMATCH = "click - broad match"
         const val CLICK_BROADMATCH_LIHAT_SEMUA = "click - broad match lihat semua"
-        const val CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION = "click view all on tokonow recommendation"
     }
 
     object Category {
         const val TOP_NAV = "top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
-        const val TOKONOW_EMPTY_RESULT =
-            "tokonow empty search result"
         const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
         const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
     }
@@ -133,8 +124,6 @@ object SearchTracking {
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
         const val RECOM_LIST_PAGE = "searchproduct"
-        const val RECOM_LIST_PAGE_EMPTY_SEARCH =
-            "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
         const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
         const val TOKONOW_OOC_SCREEN_NAME = "search result tokonow"
     }
@@ -190,6 +179,7 @@ object SearchTracking {
                 "dimension61", filterSortValue,
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
+                "dimension98",(!productCardModel.isOos()).toString(),
                 "id", productCardModel.productId,
                 "name", productCardModel.name,
                 "price", productCardModel.price.getDigits(),
@@ -514,7 +504,7 @@ object SearchTracking {
 
     fun sendBroadMatchImpressionEvent(
         trackingQueue: TrackingQueue,
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         position: Int
@@ -538,7 +528,7 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsImpressionClickObjectDataLayer(position: Int): Any {
+    private fun ProductCardCompactCarouselItemUiModel.getAsImpressionClickObjectDataLayer(position: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "list", TOKONOW_BROAD_MATCH,
@@ -547,7 +537,7 @@ object SearchTracking {
         }
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsObjectDataLayerMap(): MutableMap<String, Any> {
+    private fun ProductCardCompactCarouselItemUiModel.getAsObjectDataLayerMap(): MutableMap<String, Any> {
         return DataLayer.mapOf(
             "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
@@ -559,7 +549,7 @@ object SearchTracking {
     }
 
     fun sendBroadMatchClickEvent(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         position: Int
@@ -599,7 +589,7 @@ object SearchTracking {
     }
 
     fun sendBroadMatchAddToCartEvent(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         quantity: Int,
@@ -625,7 +615,7 @@ object SearchTracking {
         )
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsATCObjectDataLayer(quantity: Int): Any {
+    private fun ProductCardCompactCarouselItemUiModel.getAsATCObjectDataLayer(quantity: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "dimension40", TOKONOW_BROAD_MATCH,
@@ -634,19 +624,6 @@ object SearchTracking {
                 "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }
-    }
-
-    fun sendRecommendationSeeAllClickEvent(keyword: String) {
-        sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, EVENT_CLICK_TOKONOW,
-                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION,
-                EVENT_CATEGORY, TOKONOW_EMPTY_RESULT,
-                EVENT_LABEL, keyword,
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
-        )
     }
 
     fun sendOOCOpenScreenTracking(isLoggedInStatus: Boolean) {
@@ -709,7 +686,7 @@ object SearchTracking {
             userId = userId
         ).apply {
             putString(KEY_PRODUCT_ID, productIdTriggered)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH)
+            putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH)
         }
 
         sendEnhanceEcommerceEvent(
@@ -721,7 +698,7 @@ object SearchTracking {
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -741,7 +718,7 @@ object SearchTracking {
             userId = userId
         ).apply {
             putString(KEY_PRODUCT_ID, similarProduct.id)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH)
+            putString(KEY_TRACKER_ID, TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH)
             putString(KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
             putParcelableArrayList(KEY_ITEMS, ArrayList(items))
         }
@@ -755,7 +732,7 @@ object SearchTracking {
     fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -789,7 +766,7 @@ object SearchTracking {
     fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {
@@ -814,7 +791,7 @@ object SearchTracking {
         ).apply {
             putString(KEY_USER_ID, userId)
             putString(KEY_PRODUCT_ID, similarProduct.id)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_SEARCH)
+            putString(KEY_TRACKER_ID, TRACKER_ID_ADD_TO_CART_SEARCH)
             putParcelableArrayList(KEY_ITEMS, items)
         }
 

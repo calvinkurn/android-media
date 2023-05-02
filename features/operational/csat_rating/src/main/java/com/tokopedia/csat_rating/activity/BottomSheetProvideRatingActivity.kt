@@ -36,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-
 open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
 
     private val bottomSheetPage = BottomSheetUnify()
@@ -117,7 +116,6 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun initInjector() {
-
         DaggerCsatComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent
         )
@@ -218,7 +216,6 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
 
     private fun setMessage(message: String) {
         textEmojiSelected?.text = message
-
     }
 
     private fun setMessageColor(color: Int) {
@@ -276,7 +273,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
                     selectedOption.remove(typeFilter)
                 } else {
                     if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
-                        //Neglect
+                        // Neglect
                     }
                     if (typeFilter != null) {
                         selectedOption.add(typeFilter)
@@ -310,7 +307,6 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
     }
 
     open fun onSubmitButton() {
-        val intent = Intent()
         intent.putExtra(BaseFragmentProvideRating.EMOJI_STATE, viewModel.emojiState.orZero())
         intent.putExtra(BaseFragmentProvideRating.SELECTED_ITEM, getSelectedItem())
         onSuccessSubmit(intent)
@@ -331,5 +327,4 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
         }
         return filters
     }
-
 }

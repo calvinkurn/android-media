@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
@@ -21,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(
@@ -37,7 +39,7 @@ class ShopInfoViewModel @Inject constructor(
     private fun isUserLogin(): Boolean = userSessionInterface.isLoggedIn
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
-    val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopInfo = MutableLiveData<Result<ShopInfoData>>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
@@ -55,9 +57,11 @@ class ShopInfoViewModel @Inject constructor(
                 }
 
                 val shopInfoData = getShopInfo.mapToShopInfoData()
-                shopInfo.postValue(shopInfoData)
+                shopInfo.postValue(Success(shopInfoData))
             }
-        }) {}
+        }, onError = { error ->
+            shopInfo.postValue(Fail(error))
+        })
     }
 
     fun getShopNotes(shopId: String) {
@@ -110,6 +114,8 @@ class ShopInfoViewModel @Inject constructor(
             messageIdOnChatExist.postValue(Fail(it))
         }
     }
+
+    fun isShouldShowLicenseForDrugSeller(isGoApotik: Boolean, fsType: Int): Boolean = isGoApotik || fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
 
     private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)

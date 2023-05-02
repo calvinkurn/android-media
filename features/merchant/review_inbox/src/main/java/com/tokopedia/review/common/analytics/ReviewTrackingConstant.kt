@@ -22,6 +22,7 @@ object ReviewTrackingConstant {
     const val KEY_ECOMMERCE = "ecommerce"
     const val KEY_PROMO_VIEW = "promoView"
     const val KEY_PROMOTIONS = "promotions"
+    const val KEY_TRACKER_ID = "trackerId"
     const val ACTION_CLICK = "click"
     const val CLICK_SMILEY = "$ACTION_CLICK - smiley"
 

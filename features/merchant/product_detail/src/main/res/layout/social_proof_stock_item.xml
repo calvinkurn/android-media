@@ -18,10 +18,9 @@
         tools:ignore="RtlSymmetry"
         tools:text="Dilihat 200" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="1dp"
         android:layout_height="16dp"
-        android:layout_gravity="center"
-        android:background="@color/Unify_NN300" />
+        android:layout_gravity="center" />
 
 </LinearLayout>

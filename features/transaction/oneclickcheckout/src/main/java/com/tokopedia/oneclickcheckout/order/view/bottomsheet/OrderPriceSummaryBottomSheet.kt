@@ -182,7 +182,9 @@ class OrderPriceSummaryBottomSheet {
         binding.llPaymentFee.removeAllViews()
         if (orderCost.isInstallment) {
             renderPaymentFeeView(
-                view, binding, OrderPaymentFee(
+                view,
+                binding,
+                OrderPaymentFee(
                     title = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_title_info),
                     fee = orderCost.paymentFee,
                     showTooltip = true,
@@ -196,8 +198,7 @@ class OrderPriceSummaryBottomSheet {
                 renderPaymentFeeView(view, binding, orderPaymentFee)
             }
             showPaymentFeeSection(binding, true)
-        }
-        else if (orderCost.orderPaymentFees.isEmpty() && !orderCost.isInstallment) {
+        } else if (orderCost.orderPaymentFees.isEmpty() && !orderCost.isInstallment) {
             showPaymentFeeSection(binding, false)
         }
     }
@@ -237,8 +238,7 @@ class OrderPriceSummaryBottomSheet {
             binding.dividerTransactionFee.visible()
             binding.llPaymentFee.visible()
             binding.tvTransactionFee.visible()
-        }
-        else {
+        } else {
             binding.dividerTransactionFee.gone()
             binding.llPaymentFee.gone()
             binding.tvTransactionFee.gone()

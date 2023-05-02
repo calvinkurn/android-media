@@ -2,6 +2,7 @@ package com.tokopedia.topads.debit.autotopup.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
 
 data class AutoTopUpStatus(
         @SerializedName("status")
@@ -22,5 +23,9 @@ data class AutoTopUpStatus(
 
         @SerializedName("available_nominal")
         @Expose
-        val availableNominals: MutableList<AutoTopUpItem> = mutableListOf()
+        val availableNominals: MutableList<AutoTopUpItem> = mutableListOf(),
+
+        @SerializedName("frequency")
+        @Expose
+        val frequency :Int = DEFAULT_TOP_UP_FREQUENCY,
 )

@@ -197,6 +197,7 @@ class BestSellerViewHolder (private val view: View,
     private fun setChannelDivider(element: BestSellerDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             dividerType = element.dividerType,
+            dividerSize = element.dividerSize,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter
         )

@@ -8,5 +8,5 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class PromoClashOptionUiModel(
-        var voucherOrders: List<PromoClashVoucherOrdersUiModel> = listOf()
+    var voucherOrders: List<PromoClashVoucherOrdersUiModel> = listOf()
 ) : Parcelable

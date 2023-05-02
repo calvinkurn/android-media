@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BannerInfiniteGQLRepository @Inject constructor() : BaseRepository(), BannerInfiniteRepository {
@@ -21,12 +23,25 @@ class BannerInfiniteGQLRepository @Inject constructor() : BaseRepository(), Bann
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
-        val list = when (bannerComponentName) {
-            ComponentNames.BannerInfinite.componentName ->
-                DiscoveryDataMapper().mapListToBannerComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
-            else ->
-                DiscoveryDataMapper().mapListToBannerComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, null, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
-
+        val list = withContext(Dispatchers.Default) {
+            when (bannerComponentName) {
+                ComponentNames.BannerInfinite.componentName ->
+                    DiscoveryDataMapper().mapListToBannerComponentList(
+                        componentData,
+                        ComponentNames.BannerInfiniteItem.componentName,
+                        componentProperties,
+                        parentListSize = componentsListSize,
+                        parentSectionId = componentItem?.parentSectionId
+                    )
+                else ->
+                    DiscoveryDataMapper().mapListToBannerComponentList(
+                        componentData,
+                        ComponentNames.BannerInfiniteItem.componentName,
+                        null,
+                        parentListSize = componentsListSize,
+                        parentSectionId = componentItem?.parentSectionId
+                    )
+            }
         }
         return Pair(list,nextPage)
     }

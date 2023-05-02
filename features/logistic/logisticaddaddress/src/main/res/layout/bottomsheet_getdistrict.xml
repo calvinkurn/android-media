@@ -70,20 +70,21 @@
                 app:typographyType="body_1"
                 tools:text="Jalan Taman Siswa" />
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_search_btn"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_search_btn" />
+                app:icon_color_light_enable="@color/Unify_N700_68"
+                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_name="SEARCH" />
 
         </RelativeLayout>
 
@@ -99,9 +100,9 @@
 
         <LinearLayout
             android:id="@+id/detail_address_layout"
-            android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -113,9 +114,9 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_detail_address"
-                    android:contentDescription="@string/content_desc_et_detail_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_et_detail_address"
                     android:enabled="true"
                     android:focusable="true"
                     android:imeOptions="actionDone"
@@ -167,18 +168,17 @@
 
         </LinearLayout>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_choose_location"
-            android:contentDescription="@string/content_desc_btn_choose_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="30dp"
-            android:foreground="?selectableItemBackground"
+            android:contentDescription="@string/content_desc_btn_choose_location"
             android:text="@string/choose_this_location"
-            android:textAllCaps="false"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary" />
+            android:textStyle="bold"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
     </LinearLayout>
 
@@ -211,20 +211,21 @@
                 app:typographyType="heading_4"
                 tools:text="@string/invalid_title" />
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/invalid_ic_search_btn"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_search_btn" />
+                app:icon_color_light_enable="@color/Unify_N700_68"
+                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_name="SEARCH" />
 
         </RelativeLayout>
 

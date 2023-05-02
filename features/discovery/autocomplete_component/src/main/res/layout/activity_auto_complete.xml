@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/activity_container"
@@ -7,17 +8,20 @@
 
     <com.tokopedia.autocompletecomponent.searchbar.SearchBarView
         android:id="@+id/autocompleteSearchBar"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="10dp" />
 
     <FrameLayout
         android:id="@+id/search_initial_state_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/search_suggestion_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </LinearLayout>

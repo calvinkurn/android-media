@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.content.common.R
 import com.tokopedia.content.common.ui.custom.PlayTermsAndConditionView
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 
@@ -14,6 +13,8 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 class SellerTncBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
+
     private var view: PlayTermsAndConditionView? = null
     private val mDataTnc = mutableListOf<TermsAndConditionUiModel>()
 
@@ -24,7 +25,9 @@ class SellerTncBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
+
+        setTitle(mDataSource?.getTitle().orEmpty())
+        this.view?.setTermsAndConditions(mDataSource?.getTermsAndCondition().orEmpty())
     }
 
     override fun onDestroyView() {
@@ -40,6 +43,10 @@ class SellerTncBottomSheet : BottomSheetUnify() {
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    fun setDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
     }
 
     private fun initViews() {
@@ -70,17 +77,6 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
     }
 
-    private fun initData() {
-        setTitle(getString(R.string.play_bro_tnc_title))
-        view?.setTermsAndConditions(mDataTnc)
-    }
-
-    fun setData(tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
-        if (mDataTnc.isNotEmpty()) mDataTnc.clear()
-        mDataTnc.addAll(tncList)
-        return this
-    }
-
     fun show(fragmentManager: FragmentManager) {
         if(!isAdded) show(fragmentManager, TAG)
     }
@@ -98,6 +94,11 @@ class SellerTncBottomSheet : BottomSheetUnify() {
                 SellerTncBottomSheet::class.java.name
             ) as SellerTncBottomSheet
         }
+    }
+
+    interface DataSource {
+        fun getTitle(): String
+        fun getTermsAndCondition(): List<TermsAndConditionUiModel>
     }
 
     interface Listener {

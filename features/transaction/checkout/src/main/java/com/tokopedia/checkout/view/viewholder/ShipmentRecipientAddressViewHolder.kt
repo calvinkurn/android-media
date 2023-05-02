@@ -105,7 +105,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
         tvChangeDropOff.setOnClickListener {
-            shipmentAdapterActionListener.onChangeTradeInDropOffClicked()
+            shipmentAdapterActionListener.onChangeTradeInDropOffClicked(recipientAddress.latitude, recipientAddress.longitude)
         }
     }
 
@@ -190,7 +190,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             emptyStateDropOff.setDescription(emptyStateDropOff.context.getString(R.string.label_drop_off_empty_description))
             emptyStateDropOff.setPrimaryCTAText(emptyStateDropOff.context.getString(R.string.label_drop_off_cta))
             emptyStateDropOff.setPrimaryCTAClickListener {
-                shipmentAdapterActionListener.onChangeTradeInDropOffClicked()
+                shipmentAdapterActionListener.onChangeTradeInDropOffClicked(recipientAddress.latitude, recipientAddress.longitude)
                 Unit
             }
             emptyStateDropOff.setImageUrl(TRADE_IN_DROP_OFF_IMAGE_URL)
@@ -228,18 +228,23 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             tvAddressStatus.visibility = View.GONE
         }
         tvAddressName.text = getHtmlFormat(recipientAddress.addressName)
-        tvRecipientName.text = String.format(tvRecipientName.context.getString(R.string.recipient_name_format),
-                getHtmlFormat(recipientAddress.recipientName), recipientAddress.recipientPhoneNumber)
+        tvRecipientName.text = String.format(
+            tvRecipientName.context.getString(R.string.recipient_name_format),
+            getHtmlFormat(recipientAddress.recipientName),
+            recipientAddress.recipientPhoneNumber
+        )
         tvRecipientAddress.text = getHtmlFormat(getFullAddress(recipientAddress))
         tvRecipientPhone.visibility = View.GONE
     }
 
     private fun getFullAddress(recipientAddress: RecipientAddressModel): String {
-        return (recipientAddress.street + ", "
-                + recipientAddress.destinationDistrictName + ", "
-                + recipientAddress.cityName + ", "
-                + recipientAddress.provinceName + ", "
-                + recipientAddress.recipientPhoneNumber)
+        return (
+            recipientAddress.street + ", " +
+                recipientAddress.destinationDistrictName + ", " +
+                recipientAddress.cityName + ", " +
+                recipientAddress.provinceName + ", " +
+                recipientAddress.recipientPhoneNumber
+            )
     }
 
     private fun renderChangeAddress(recipientAddress: RecipientAddressModel) {
@@ -265,10 +270,11 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         itemView.context.let {
             val onboardingItems = ArrayList<CoachMark2Item>().apply {
                 add(
-                        CoachMark2Item(rlRecipientAddressLayout,
-                                it.getString(R.string.label_showcase_address_title),
-                                it.getString(R.string.label_showcase_address_message)
-                        )
+                    CoachMark2Item(
+                        rlRecipientAddressLayout,
+                        it.getString(R.string.label_showcase_address_title),
+                        it.getString(R.string.label_showcase_address_message)
+                    )
                 )
             }
 
@@ -290,5 +296,4 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         const val KEY_ONBOARDING_CHECKOUT_ADDRESS = "KEY_ONBOARDING_CHECKOUT_ADDRESS"
         const val KEY_HAS_SHOWN_CHECKOUT_ADDRESS_ONBOARDING = "KEY_HAS_SHOWN_CHECKOUT_ADDRESS_ONBOARDING"
     }
-
 }

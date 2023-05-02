@@ -23,5 +23,4 @@ class DisabledReasonViewHolder(private val binding: ItemCartDisabledReasonBindin
             binding.textDisabledSubTitle.gone()
         }
     }
-
 }

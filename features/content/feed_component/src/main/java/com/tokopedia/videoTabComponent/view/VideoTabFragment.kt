@@ -379,6 +379,7 @@ class VideoTabFragment :
         }
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
         callAPiOnTabCLick(item)
+        mContainerListener?.updateVideoTabSelectedChipValue(item.slugID)
     }
 
     override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {

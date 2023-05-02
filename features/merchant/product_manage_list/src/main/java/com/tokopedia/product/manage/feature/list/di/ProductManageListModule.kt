@@ -3,9 +3,6 @@ package com.tokopedia.product.manage.feature.list.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
-import com.tokopedia.gm.common.data.source.GMCommonDataSource
-import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -17,9 +14,6 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditP
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
-import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
@@ -29,7 +23,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
+@Module(includes = [ViewModelModule::class])
 class ProductManageListModule(private val context: Context) {
 
     @Provides
@@ -45,45 +39,6 @@ class ProductManageListModule(private val context: Context) {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
-    @Provides
-    @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
-        return GMCommonRepositoryImpl(gmCommonDataSource)
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(ProductManageListConstant.GQL_POPUP_NAME)
-    fun requestQuery(): String {
-        return """
-            query GetShopManagerPopups(${'$'}shopID:Int!){
-              getShopManagerPopups(shopID: ${'$'}shopID) {
-                 data {
-                   showPopUp
-                 }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQL_UPDATE_PRODUCT)
-    fun provideUpdateProduct(): String {
-        return """
-            mutation productUpdateV3(${'$'}input: ProductInputV3!){
-              ProductUpdateV3(input:${'$'}input) {
-                header {
-                  messages
-                  reason
-                  errorCode
-                }
-                isSuccess
-              }
-            }
-        """.trimIndent()
-    }
-
     @ProductManageListScope
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
@@ -91,16 +46,6 @@ class ProductManageListModule(private val context: Context) {
         return GraphqlHelper.loadRawString(
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_get_shop_info)
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQL_FEATURED_PRODUCT)
-    fun provideGqlMutationFeaturedProduct(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
-        )
     }
 
     @ProductManageListScope

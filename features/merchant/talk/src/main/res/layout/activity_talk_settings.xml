@@ -14,7 +14,8 @@
         android:id="@+id/talk_seller_settings_parent_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/talk_seller_settings_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

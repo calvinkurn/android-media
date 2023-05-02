@@ -37,8 +37,9 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -46,7 +47,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: PageErrorDataModel): Int
-    fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
     fun type(data: ProductMediaDataModel): Int
     fun type(data: ProductContentDataModel): Int
@@ -77,6 +77,8 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: GlobalBundlingDataModel): Int
     fun type(data: ProductShopAdditionalDataModel): Int
     fun type(data: ArButtonDataModel): Int
+    fun type(data: ViewToViewWidgetDataModel): Int
     fun type(data: ProductCustomInfoTitleDataModel): Int
+    fun type(data: ProductShopReviewDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

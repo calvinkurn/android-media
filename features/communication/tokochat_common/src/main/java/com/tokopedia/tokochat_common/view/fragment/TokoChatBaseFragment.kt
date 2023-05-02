@@ -66,7 +66,6 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     protected open fun initViews(view: View, savedInstanceState: Bundle?) {
         setupChatRoomRecyclerView()
         setupRecyclerViewLoadMore()
-        addInitialShimmering()
     }
 
     private fun setupChatRoomRecyclerView() {
@@ -112,14 +111,14 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         endlessRecyclerViewScrollListener?.resetState()
     }
 
-    private fun addInitialShimmering() {
+    protected fun addInitialShimmering() {
+        showShimmeringHeader()
         adapter.clearAllItems()
         adapter.addItem(shimmerUiModel)
         adapter.notifyItemInserted(adapter.itemCount)
     }
 
     protected fun removeShimmering() {
-        hideShimmeringHeader()
         val shimmerIndex = adapter.getItems().indexOf(shimmerUiModel)
         if (shimmerIndex > RecyclerView.NO_POSITION) {
             adapter.removeItem(shimmerUiModel)
@@ -143,6 +142,10 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         (activity as? TokoChatBaseActivity<*>)?.showHeader()
     }
 
+    private fun showShimmeringHeader() {
+        (activity as? TokoChatBaseActivity<*>)?.showHeaderShimmering()
+    }
+
     protected fun hideShimmeringHeader() {
         (activity as? TokoChatBaseActivity<*>)?.hideHeaderShimmering()
     }
@@ -155,13 +158,13 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {
         val errorType = getErrorType()
-        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setType(errorType)
-        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setActionClickListener {
-            baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.hide()
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setType(errorType)
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setActionClickListener {
+            baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.hide()
             addInitialShimmering()
             onActionClick()
         }
-        baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.show()
+        baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.show()
     }
 
     protected fun getErrorType(): Int {

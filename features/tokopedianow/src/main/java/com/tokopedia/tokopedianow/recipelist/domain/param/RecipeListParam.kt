@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.domain.param
 
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_QUERY_PARAM
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_SOURCE_PAGE
@@ -59,7 +61,8 @@ class RecipeListParam {
                 if (stringBuilder.isNotBlank()) {
                     stringBuilder.append(AMP)
                 }
-                stringBuilder.append("$key$EQUAL$value")
+                val newValue = if (key == PARAM_TITLE) value.encodeToUtf8() else value
+                stringBuilder.append("$key$EQUAL$newValue")
             }
         }
 
@@ -78,4 +81,6 @@ class RecipeListParam {
     fun getValue(key: String): String {
         return queryParamsMap[key].orEmpty()
     }
+
+    fun decodeTitle(): String = getValue(PARAM_TITLE).decodeToUtf8()
 }

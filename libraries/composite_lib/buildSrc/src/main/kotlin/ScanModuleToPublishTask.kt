@@ -1,13 +1,18 @@
 package com.tokopedia.plugin
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class ScanModuleToPublishTask : DefaultTask() {
+    @Internal
     var moduleToPublishList = mutableSetOf<String>()
 
+    @Internal
     val PROPERTY_KEY = "moduleToPublish"
+
+    @Internal
     var successScan = false
 
     @TaskAction

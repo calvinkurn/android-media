@@ -82,6 +82,7 @@ class PlayBroQuizViewModelTest {
     @Before
     fun setUp() {
         coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
     }
 
     @Test

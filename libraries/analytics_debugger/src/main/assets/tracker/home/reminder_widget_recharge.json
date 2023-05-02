@@ -8,7 +8,7 @@
           "creative_name": ".+",
           "creative_slot": ".+",
           "item_id": ".+",
-          "item_name": ".+",
+          "item_name": "/ - p1 - digital bills - .+",
           "creative_url": ""
         }
       ],
@@ -16,7 +16,7 @@
       "event": "view_item",
       "eventAction": "impression on digital bills",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+ - .+"
     },
     {
       "promotions": [
@@ -24,7 +24,7 @@
           "creative_name": ".+",
           "creative_slot": ".+",
           "item_id": ".+",
-          "item_name": ".+",
+          "item_name": "/ - p1 - digital bills - .+",
           "creative_url": ""
         }
       ],
@@ -32,7 +32,7 @@
       "event": "select_content",
       "eventAction": "click on digital bills",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+ - .+"
     }
   ]
 }

@@ -10,20 +10,18 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 
 data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
@@ -79,51 +77,44 @@ data class ProductRecommendationCallback(
 
     override fun productCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getClickProductTracking(
-                recommendationItem = recommendationItem,
-                eventCategory = eventCategory,
-                headerTitle = product.headerName,
-                position = position,
-                isLoggedIn = isLogin,
-                userId = userId,
-                eventLabel = eventLabel,
-                eventAction = eventActionClicked,
-                listValue = getListValue(recommendationItem),
-            )
+        SearchResultTracker.trackClickProduct(
+            position,
+            eventLabel,
+            eventActionClicked,
+            eventCategory,
+            getListValue(recommendationItem),
+            userId,
+            recommendationItem
         )
+
         RouteManager.route(activity, product.appLink)
     }
 
     override fun productCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
-        trackingQueue?.putEETracking(
-            ProductRecommendationTracking.getImpressionProductTracking(
-                recommendationItem = recommendationItem,
-                eventCategory = eventCategory,
-                headerTitle = product.headerName,
-                position = position,
-                isLoggedIn = isLogin,
-                userId = userId,
-                eventLabel = eventLabel,
-                eventAction = eventActionImpressed,
-                listValue = getListValue(recommendationItem),
-            )
+        SearchResultTracker.trackImpressionProduct(
+            position,
+            eventLabel,
+            eventActionImpressed,
+            eventCategory,
+            getListValue(recommendationItem),
+            userId,
+            recommendationItem
         )
     }
 
     override fun seeMoreClicked(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         directToSeeMorePage(seeMoreUiModel.appLink)
     }
@@ -141,7 +132,7 @@ data class ProductRecommendationCallback(
             CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
             modifySeeMoreAppLink(appLink)
         } else {
-            SearchTracking.sendRecommendationSeeAllClickEvent(query)
+            SearchResultTracker.sendRecommendationSeeAllClickEvent(query)
             appLink
         }
         RouteManager.route(activity, newAppLink)

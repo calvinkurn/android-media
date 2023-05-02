@@ -22,7 +22,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -522,7 +529,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L, cartId = "2147818593"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593", cartId = "2147818593"), status = "OK")
         val slotRequest = slot<RequestParams>()
         coEvery {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
@@ -543,7 +550,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val actionButtonAtc = 2
         val slot = slot<RequestParams>()
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818576), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818576"), status = "OK")
 
         coEvery {
             addToCartUseCase.createObservable(capture(slot)).toBlocking().single()
@@ -656,7 +663,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val actionButtonAtc = 3
         val slot = slot<RequestParams>()
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
 
         coEvery {
             addToCartOcsUseCase.createObservable(capture(slot)).toBlocking().single()
@@ -666,7 +673,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcs = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
-        Assert.assertEquals(requestParams.shippingPrice, 30000)
+        Assert.assertEquals(requestParams.shippingPrice, 30000.0, 0.0)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
         assertButton(expectedIsBuyable = true)
@@ -712,7 +719,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
@@ -730,7 +737,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         decideFailValueHitGqlAggregator()
         val actionButtonAtc = 4
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()

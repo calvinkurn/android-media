@@ -1,0 +1,25 @@
+{
+  "readme": "Bulk Write Review Trackers - https://mynakama.tokopedia.com/datatracker/requestdetail/view/3658",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "click - kirim ulasan produk",
+      "eventCategory": "product review detail page - bulk review form",
+      "eventLabel": "",
+      "trackerId": "40303",
+      "businessUnit": "product detail page",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "star : \\d{1,} - ulasan : (blank|filled) - review_char : \\d{1,} - gambar : \\d{1,} - video : \\d{1,} - anonim : (true|false) - count_template_used : 0",
+          "creative_slot": "\\d{1,}",
+          "item_id": "\\d{1,} - \\d{1,} - \\d{1,}",
+          "item_name": "null"
+        }
+      ],
+      "userId": "\\d{1,}",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

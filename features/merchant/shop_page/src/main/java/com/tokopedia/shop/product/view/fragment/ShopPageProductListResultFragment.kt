@@ -47,7 +47,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -55,8 +54,8 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -79,7 +78,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -753,7 +752,7 @@ class ShopPageProductListResultFragment :
         shopDynamicTabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab
     ): Boolean {
         return shopDynamicTabData.tabData.firstOrNull {
-            it.name == ShopPageTabName.HOME
+            it.name == ShopPageHeaderTabName.HOME
         }?.shopLayoutFeature?.firstOrNull {
             it.name == ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE && it.isActive
         } != null
@@ -953,7 +952,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.clickProductSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -970,10 +968,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -995,7 +995,7 @@ class ShopPageProductListResultFragment :
             getProductIntent(
                 shopProductUiModel.productUrl,
                 attribution,
-                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
+                shopPageTracking?.getListNameOfProduct(SEARCH, getSelectedEtalaseChip())
                     ?: ""
             )
         )
@@ -1006,7 +1006,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.impressionProductListSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -1023,10 +1022,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(
@@ -1174,34 +1175,6 @@ class ShopPageProductListResultFragment :
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = {}
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun onErrorAddWishList(errorMessage: String) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -1282,10 +1255,6 @@ class ShopPageProductListResultFragment :
                 productId = shopProductUiModel.id ?: ""
             )
         )
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
@@ -1472,6 +1441,13 @@ class ShopPageProductListResultFragment :
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
             }
         }
+
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopProductAdapter.updateWishListStatus(
+                productId = productCardOptionsModel.productId,
+                wishList = false
+            )
+        }
     }
 
     override fun onPause() {
@@ -1586,7 +1562,6 @@ class ShopPageProductListResultFragment :
 
         private val GRID_SPAN_COUNT = 2
         private const val SORT_NEWEST = "1"
-        private const val ALREADY_FOLLOW_SHOP = 1
         private const val PRODUCT_INELIGIBLE = "ineligible"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"

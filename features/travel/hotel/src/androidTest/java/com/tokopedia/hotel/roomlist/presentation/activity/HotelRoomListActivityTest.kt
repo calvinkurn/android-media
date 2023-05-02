@@ -103,7 +103,11 @@ class HotelRoomListActivityTest {
 
     private fun login() {
         Thread.sleep(3000)
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.userSession {
+            /** content.prod.automation2+frontendtest@tokopedia.com */
+            userId = "17211048"
+            shopId = "3533069"
+        }
     }
 
     companion object {

@@ -30,7 +30,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
@@ -140,9 +140,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     private val userId: String
         get() = viewModel.userId
 
-    private val remoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
     private var shopAttribution: String = ""
     private var searchQuery = ""
     private var shopRef: String = ""

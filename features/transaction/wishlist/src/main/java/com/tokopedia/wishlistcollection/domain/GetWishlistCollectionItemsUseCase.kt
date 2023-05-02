@@ -13,7 +13,8 @@ import javax.inject.Inject
 @GqlQuery("GetWishlistCollectionItemsQuery", GetWishlistCollectionItemsUseCase.query)
 class GetWishlistCollectionItemsUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatchers: CoroutineDispatchers) :
+    dispatchers: CoroutineDispatchers
+) :
     CoroutineUseCase<GetWishlistCollectionItemsParams, GetWishlistCollectionItemsResponse>(dispatchers.io) {
 
     override fun graphqlQuery(): String = query
