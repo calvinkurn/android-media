@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselA
 
 class HomeLeftCarouselAtcProductCardTypeFactoryImplCompact(
     private val productCardListener: HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener? = null,
-    private val productCardSeeMoreListener: ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener? = null
+    private val productCardSeeMoreListener: ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener? = null
 ): HomeLeftCarouselAtcProductCardTypeFactory, ProductCardCompactCarouselTypeFactory {
 
     override fun type(visitable: Visitable<*>): Int {

@@ -88,4 +88,7 @@ object RollenceKey {
 
     //DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
+
+    // Payment
+    const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
 }
