@@ -334,6 +334,8 @@ object ShopPageTrackingConstant {
     const val SHOP_NOT_AFFILIATE = "not affiliate"
     const val FESTIVITY = "festivity"
     const val NULL_VALUE = "null"
+    const val CLICK_SHOP_HEADER = "click shop header"
+    const val CLICK_SELLER = "click - seller"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -396,7 +398,6 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
         const val ALL_PRODUCT_CLICKED = "click product"
         const val ALL_PRODUCT_IMPRESSION = "product list impression"
-
     }
 
     object EventCategory {
@@ -437,7 +438,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET = "25639"
         const val TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET = "25641"
         const val TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT = "25642"
-
+        const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_BUYER = "8055"
+        const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_SELLER = "8100"
     }
 
     object Key {

@@ -1,25 +1,18 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
-import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
-import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.track.TrackApp
 
 /**
  * @author by jessica on 11/01/21
@@ -169,18 +162,6 @@ object DigitalCheckoutMapper {
         }
     }
 
-    fun mapToPaymentPassData(responseCheckoutData: ResponseCheckout): PaymentPassData {
-        val paymentPassData = PaymentPassData()
-        responseCheckoutData.attributes.run {
-            paymentPassData.callbackFailedUrl = callbackUrlFailed ?: ""
-            paymentPassData.callbackSuccessUrl = callbackUrlSuccess ?: ""
-            paymentPassData.redirectUrl = redirectUrl ?: ""
-            paymentPassData.queryString = queryString ?: ""
-            paymentPassData.transactionId = parameter?.transactionId ?: ""
-        }
-        return paymentPassData
-    }
-
     fun mapToPaymentPassData(responseCheckoutData: RechargeCheckoutResponse): PaymentPassData {
         val paymentPassData = PaymentPassData()
 
@@ -210,61 +191,5 @@ object DigitalCheckoutMapper {
         requestCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
 
         return requestCheckoutDataParameter
-    }
-
-    fun getRequestBodyCheckout(
-        checkoutData: DigitalCheckoutDataParameter,
-        digitalIdentifierParam: RequestBodyIdentifier,
-        fintechProduct: FintechProduct?
-    ): RequestBodyCheckout {
-        val requestBodyCheckout = RequestBodyCheckout()
-        requestBodyCheckout.type = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE
-
-        val attributes = RequestBodyCheckout.AttributesCheckout()
-        attributes.voucherCode = checkoutData.voucherCode
-        attributes.transactionAmount = checkoutData.transactionAmount.toLong()
-        attributes.ipAddress = checkoutData.ipAddress
-        attributes.userAgent = checkoutData.userAgent
-        attributes.identifier = digitalIdentifierParam
-        attributes.deviceId = checkoutData.deviceId
-
-        try {
-            val getTrackClientId: String = TrackApp.getInstance().gtm.clientIDString
-            attributes.clientId = getTrackClientId
-
-            attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
-                TrackApp.getInstance().appsFlyer.uniqueId,
-                TrackApp.getInstance().appsFlyer.googleAdId
-            )
-        } catch (e: Throwable) {
-        }
-
-        attributes.subscribe = checkoutData.isSubscriptionChecked
-
-        val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
-        checkoutData.crossSellProducts.values.forEach { crossSell ->
-            fintechProductsCheckout.add(
-                RequestBodyCheckout.FintechProductCheckout(
-                    transactionType = crossSell.product.transactionType,
-                    tierId = crossSell.product.tierId.toIntSafely(),
-                    userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                    fintechAmount = crossSell.product.fintechAmount.toLong(),
-                    fintechPartnerAmount = crossSell.product.fintechPartnerAmount.toLong(),
-                    productName = crossSell.product.info.title
-                )
-            )
-        }
-        attributes.fintechProduct = fintechProductsCheckout
-
-        requestBodyCheckout.attributes = attributes
-        requestBodyCheckout.relationships = CheckoutRelationships(
-            CheckoutRelationships.Cart(
-                CheckoutRelationships.Cart.Data(
-                    checkoutData.relationType,
-                    checkoutData.relationId
-                )
-            )
-        )
-        return requestBodyCheckout
     }
 }

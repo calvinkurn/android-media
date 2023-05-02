@@ -52,6 +52,8 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
@@ -583,6 +585,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tokoButtonContainer.btnReminder.setOnClickListener {
             if (!isReminderSet) {
                 viewModel.setReminder()
+                showNotificationReminderPrompt()
             } else {
                 viewModel.unSetReminder()
             }
@@ -593,6 +596,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tokoButtonContainer.btnThird.setOnClickListener {
             GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
             RouteManager.route(context,String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, Constants.SERU_WEBLINK))
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "tapTapKotak"
+        activity?.let {
+            val view = NotificationGeneralPromptLifecycleCallbacks()
+                .notificationGeneralPromptView(it, pageName)
+            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
         }
     }
 

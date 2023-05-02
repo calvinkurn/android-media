@@ -407,6 +407,7 @@ class SearchProductFirstPageGqlUseCase(
                         layout
                         type
                         position
+                        input_type
                         options {
                             text
                             img
@@ -414,7 +415,7 @@ class SearchProductFirstPageGqlUseCase(
                             color
                             applink
                             component_id
-                            filters {
+                            multi_filters {
                               title
                               key
                               name

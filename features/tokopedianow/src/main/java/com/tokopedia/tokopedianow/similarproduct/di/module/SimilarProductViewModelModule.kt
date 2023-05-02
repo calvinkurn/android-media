@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopedianow.similarproduct.di.scope.SimilarProductScope
-import com.tokopedia.tokopedianow.similarproduct.viewmodel.TokoNowSimilarProductViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -17,9 +17,8 @@ abstract class SimilarProductViewModelModule {
     @SimilarProductScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-
     @Binds
     @IntoMap
-    @ViewModelKey(TokoNowSimilarProductViewModel::class)
-    internal abstract fun similarProductViewModel(viewModel: TokoNowSimilarProductViewModel): ViewModel
+    @ViewModelKey(TokoNowSimilarProductBottomSheetViewModel::class)
+    internal abstract fun tokoNowSimilarProductViewModel(viewModelTokoNowBottomSheet: TokoNowSimilarProductBottomSheetViewModel): ViewModel
 }

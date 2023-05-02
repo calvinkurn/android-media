@@ -29,7 +29,6 @@ import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
-import com.tokopedia.media.picker.utils.isOppoManufacturer
 import com.tokopedia.media.picker.utils.parcelableArrayListExtra
 import com.tokopedia.media.picker.utils.parcelableExtra
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
@@ -43,8 +42,6 @@ import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -129,7 +126,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
 
-        if (isOppoManufacturer()) {
+        if (isSplitInstallEnabled()) {
             SplitCompat.installActivity(this)
         }
     }
@@ -182,6 +179,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             LAST_MEDIA_SELECTION,
             medias
         )
+    }
+
+    private fun isSplitInstallEnabled(): Boolean {
+        return true
     }
 
     private fun resetVideoRecordingState() {
@@ -318,14 +319,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.includeMedias.observe(this) { files ->
             if (files.isEmpty()) return@observe
 
-            val fileAsUiModelList = files.mapNotNull {
-                val mPickerFile = it?.asPickerFile()
-                mPickerFile?.toUiModel()
-            }
-
-            fileAsUiModelList.forEach {
-                eventBus.addMediaEvent(it)
-            }
+            files.filterNotNull()
+                .forEach {
+                    eventBus.addMediaEvent(it)
+                }
         }
 
         viewModel.connectionIssue.observe(this) { message ->
@@ -386,7 +383,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        return media.videoLength
+        return media.duration
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {

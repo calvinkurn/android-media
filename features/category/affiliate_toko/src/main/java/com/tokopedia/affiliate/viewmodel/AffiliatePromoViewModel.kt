@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
+import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -20,13 +22,15 @@ class AffiliatePromoViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+    private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
+    private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
 
     fun isAffiliateSSAShopEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
@@ -50,26 +54,50 @@ class AffiliatePromoViewModel @Inject constructor(
         )
     }
 
+    fun getDiscoBanners(
+        page: Int,
+        limit: Int = 20
+    ) {
+        launchCatchError(
+            block = {
+                discoBanners.value =
+                    affiliateDiscoveryCampaignUseCase.getAffiliateDiscoveryCampaign(
+                        page,
+                        limit
+                    )
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
+    }
+
     fun getAffiliateValidateUser() {
-        launchCatchError(block = {
-            validateUserdata.value =
-                affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
-            progressBar.value = false
-        }, onError = {
+        launchCatchError(
+            block = {
+                validateUserdata.value =
+                    affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+                progressBar.value = false
+            },
+            onError = {
                 progressBar.value = false
                 it.printStackTrace()
-            })
+            }
+        )
     }
 
     fun getAnnouncementInformation() {
-        launchCatchError(block = {
-            affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                    PAGE_ANNOUNCEMENT_PROMOSIKAN
-                )
-        }, onError = {
+        launchCatchError(
+            block = {
+                affiliateAnnouncement.value =
+                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                        PAGE_ANNOUNCEMENT_PROMOSIKAN
+                    )
+            },
+            onError = {
                 it.printStackTrace()
-            })
+            }
+        )
     }
 
     fun setValidateUserType(onRegistered: String) {
@@ -83,4 +111,5 @@ class AffiliatePromoViewModel @Inject constructor(
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getValidateUserType(): LiveData<String> = validateUserState
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
+    fun getDiscoCampaignBanners(): LiveData<AffiliateDiscoveryCampaignResponse> = discoBanners
 }

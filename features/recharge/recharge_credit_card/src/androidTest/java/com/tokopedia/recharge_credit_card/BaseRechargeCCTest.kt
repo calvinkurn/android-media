@@ -1,11 +1,13 @@
 package com.tokopedia.recharge_credit_card
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -13,8 +15,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.supportsInputMethods
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
+import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.core.AllOf
 
 abstract class BaseRechargeCCTest {
 
@@ -46,7 +52,7 @@ abstract class BaseRechargeCCTest {
     }
 
     protected fun pdp_clickBankListButton() {
-        onView(withId(R.id.list_bank_btn)).perform(click())
+        onView(withId(R.id.cc_widget_bank_list)).perform(click())
     }
 
     protected fun bankListBottomSheet_clickCloseButton() {
@@ -87,6 +93,72 @@ abstract class BaseRechargeCCTest {
 
     protected fun clientNumberWidget_checkIsLoadingStateHidden() {
         onView(withId(R.id.text_field_loader)).check(matches(not(isDisplayed())))
+    }
+
+    protected fun tabLayout_clickTabWithText(text: String) {
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
+            click()
+        )
+    }
+
+    protected fun recentTransaction_scrollToPosition(position: Int) {
+        val viewInteraction = onView(
+            AllOf.allOf(
+                isDescendantOfA(withId(R.id.layout_widget)),
+                withId(R.id.recycler_view_menu_component),
+                isDisplayed()
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+
+    protected fun promo_scrollToPosition(position: Int) {
+        val viewInteraction = onView(
+            AllOf.allOf(
+                isDescendantOfA(withId(R.id.layout_widget)),
+                withId(R.id.recycler_view_menu_component),
+                isDisplayed()
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+
+    protected fun recentTransaction_clickItemWithPosition(position: Int) {
+        val viewInteraction = onView(
+            AllOf.allOf(
+                isDescendantOfA(withId(R.id.layout_widget)),
+                withId(R.id.recycler_view_menu_component),
+                isDisplayed()
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(
+                    position,
+                    click()
+                )
+        )
+    }
+
+    protected fun promo_clickCopyPromoWithPosition(position: Int) {
+        val viewInteraction = onView(
+            AllOf.allOf(
+                isDescendantOfA(withId(R.id.layout_widget)),
+                withId(R.id.recycler_view_menu_component),
+                isDisplayed()
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                    position,
+                    CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
+                )
+        )
     }
 
     private fun ViewInteraction.isVisible() = getViewAssertion(ViewMatchers.Visibility.VISIBLE)

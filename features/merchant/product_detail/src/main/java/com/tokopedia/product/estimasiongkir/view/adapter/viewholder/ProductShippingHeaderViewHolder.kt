@@ -32,9 +32,11 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductShippingHeaderViewHolder(view: View,
-                                      private val listener: ProductDetailShippingListener,
-                                      private val chooseAddressListener: ChooseAddressWidget.ChooseAddressWidgetListener) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
+class ProductShippingHeaderViewHolder(
+    view: View,
+    private val listener: ProductDetailShippingListener,
+    private val chooseAddressListener: ChooseAddressWidget.ChooseAddressWidgetListener
+) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_product_shipping_header
 
@@ -142,7 +144,6 @@ class ProductShippingHeaderViewHolder(view: View,
         isFreeOngkirQuotaEmpty: Boolean,
         freeOngkirEtas: List<FreeShipping.Eta>
     ) = with(itemView) {
-
         imgFreeOngkir?.shouldShowWithAction(isFreeOngkir && freeOngkirImageUrl.isNotEmpty()) {
             imgFreeOngkir.loadImage(freeOngkirImageUrl)
         }
@@ -155,12 +156,15 @@ class ProductShippingHeaderViewHolder(view: View,
 
         txtTokoNow?.hide()
 
-        if (freeOngkirEtas.size > MIN_MULTI_ETAS) renderMultipleBoEta(
-            freeOngkirEtas,
-            isFreeOngkir,
-            isFreeOngkirQuotaEmpty
-        )
-        else renderSingleBoEta(freeOngkirEtas.firstOrNull(), isFreeOngkir, isFreeOngkirQuotaEmpty)
+        if (freeOngkirEtas.size > MIN_MULTI_ETAS) {
+            renderMultipleBoEta(
+                freeOngkirEtas,
+                isFreeOngkir,
+                isFreeOngkirQuotaEmpty
+            )
+        } else {
+            renderSingleBoEta(freeOngkirEtas.firstOrNull(), isFreeOngkir, isFreeOngkirQuotaEmpty)
+        }
     }
 
     private fun renderSingleBoEta(
@@ -214,7 +218,6 @@ class ProductShippingHeaderViewHolder(view: View,
     }
 
     private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {
-
         dividerFreeOngkir?.show()
 
         txtFreeOngkirPrice?.shouldShowWithAction(shouldShowTxtTokoNow && freeOngkirPrice.isNotEmpty()) {
@@ -231,5 +234,4 @@ class ProductShippingHeaderViewHolder(view: View,
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
     }
-
 }
