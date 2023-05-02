@@ -6,6 +6,10 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
+import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
+import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import java.lang.Exception
 
 /**
@@ -17,8 +21,10 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val typeFactory = RecomTypeFactoryImpl()
+    private var component: RecommendationComponent? = null
 
     fun bind(model: RecomVisitable) {
+        initInjector()
         val widget = typeFactory.createView(context, model)
         val widgetView = addWidgetView(widget) ?: return
         widgetView.bind(model)
@@ -47,6 +53,14 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
             Lifecycle.Event.ON_STOP -> { }
             Lifecycle.Event.ON_DESTROY -> { }
             else -> { }
+        }
+    }
+
+    private fun initInjector() {
+        if (component == null) {
+            val appContext = context.getActivityFromContext()?.application as BaseMainApplication
+            component = DaggerRecommendationComponent.builder().baseAppComponent((appContext).baseAppComponent).build()
+            component?.inject(appContext)
         }
     }
 }

@@ -20,11 +20,7 @@ class PdpRecomWidgetViewHolder(
         val LAYOUT = R.layout.item_recom_view_holder
     }
 
-    private val binding : ItemRecomViewHolderBinding? by viewBinding()
-
-    init {
-        //todo
-    }
+    private val binding: ItemRecomViewHolderBinding? by viewBinding()
 
     override fun bind(element: PdpRecomWidgetDataModel) {
         element.recomWidgetModel.let {

@@ -7,8 +7,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
  * Created by frenzel on 11/03/23
  */
 interface RecomVisitable : Visitable<RecomTypeFactory> {
-    val type: String
-    val name: String
     val recomWidgetMetadata: RecomWidgetMetadata
     val recomWidgetTrackingModel: RecomWidgetTrackingModel
     val recomWidgetAnalyticListener: RecomWidgetAnalyticListener?

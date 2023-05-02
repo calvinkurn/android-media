@@ -29,8 +29,5 @@ class RecomCarouselWidgetView : BaseRecomWidgetView<RecomCarouselModel> {
     }
 
     override fun bind(model: RecomCarouselModel) {
-        binding?.run {
-
-        }
     }
 }

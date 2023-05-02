@@ -14,19 +14,17 @@ data class PdpRecomWidgetDataModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    override fun type(): String = recomWidgetModel.type
+    override fun type(): String = recomWidgetModel.recomWidgetMetadata.pageType
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
-    override fun name(): String = recomWidgetModel.name
+    override fun name(): String = recomWidgetModel.recomWidgetMetadata.pageName
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is PdpRecomWidgetDataModel) {
-            recomWidgetModel.type == newData.recomWidgetModel.type &&
-                recomWidgetModel.name == newData.recomWidgetModel.name &&
-                recomWidgetModel.recomWidgetMetadata == newData.recomWidgetModel.recomWidgetMetadata &&
+            recomWidgetModel.recomWidgetMetadata == newData.recomWidgetModel.recomWidgetMetadata &&
                 recomWidgetModel.recomWidgetMetadata.isInitialized == newData.recomWidgetModel.recomWidgetMetadata.isInitialized &&
                 recomWidgetModel.recomWidgetMetadata.pageName == newData.recomWidgetModel.recomWidgetMetadata.pageName &&
                 recomWidgetModel.recomWidgetMetadata.verticalPosition == newData.recomWidgetModel.recomWidgetMetadata.verticalPosition

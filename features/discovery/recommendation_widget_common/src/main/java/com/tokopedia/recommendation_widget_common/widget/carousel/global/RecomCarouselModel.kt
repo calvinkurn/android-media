@@ -11,10 +11,15 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecomVisitable
 data class RecomCarouselModel(
     val recomVisitable: RecomVisitable,
     val tokonowListener: RecommendationCarouselTokonowListener? = null,
-    val chipListener: RecomCarouselChipListener? = null,
-    val isTokonow: Boolean = false
+    val chipListener: RecomCarouselChipListener? = null
 ) : RecomVisitable by recomVisitable {
     override fun type(typeFactory: RecomTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    val isTokonow: Boolean = this.recomWidgetMetadata.pageName == PAGE_NAME_TOKONOW
+
+    companion object {
+        private const val PAGE_NAME_TOKONOW = "pdp_9_tokonow"
     }
 }
