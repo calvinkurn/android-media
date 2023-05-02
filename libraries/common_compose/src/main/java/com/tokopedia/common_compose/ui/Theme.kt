@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.ui
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -22,14 +23,16 @@ private val NestThemeLight = lightColors(
     onPrimary = NestNN.light._0,
     primaryVariant = NestGN.light._400,
     secondary = NestBN.light._200,
-    surface = NestNN.light._0
+    surface = NestNN.light._0,
+    background = NestNN.light._0
 )
 
 private val NestThemeDark = darkColors(
     primary = NestGN.dark._500,
     onPrimary = NestNN.dark._0,
     secondary = NestBN.dark._200,
-    surface = NestNN.dark._0
+    surface = NestNN.dark._0,
+    background = NestNN.dark._0
 )
 
 private val LightElevation = Elevations()
@@ -75,7 +78,11 @@ private fun AdaptiveStatusBarColor(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = themeColors.primary.toArgb()
+            window.statusBarColor = if (!darkTheme && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                NestNN.light._200.toArgb()
+            } else {
+                themeColors.onPrimary.toArgb()
+            }
 
             WindowCompat.getInsetsController(window, view)?.isAppearanceLightStatusBars = !darkTheme
         }
