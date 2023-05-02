@@ -191,6 +191,8 @@ const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
 const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
 
+const val AFFILIATE_TOKONOW_DATA = "android_affiliate_tokonow_static_data"
+
 const val PAGE_TYPE_PDP = "pdp"
 
 const val PAGE_TYPE_SHOP = "shop"

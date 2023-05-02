@@ -13,9 +13,18 @@ import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.Shop
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliatePromoViewModel @Inject constructor(
@@ -23,7 +32,8 @@ class AffiliatePromoViewModel @Inject constructor(
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
-    private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase
+    private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase,
+    private val graphqlRepository: GraphqlRepository
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
@@ -31,6 +41,7 @@ class AffiliatePromoViewModel @Inject constructor(
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
+    private var tokoNowBottomSheetData = MutableLiveData<GenerateAffiliateLinkEligibility>()
 
     fun isAffiliateSSAShopEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
@@ -100,6 +111,45 @@ class AffiliatePromoViewModel @Inject constructor(
         )
     }
 
+    fun getTokoNowBottomSheetInfo(pageId: String?) {
+        val affiliateEligibilityCheckUseCase = AffiliateEligibilityCheckUseCase(graphqlRepository)
+        launchCatchError(
+            block = {
+                tokoNowBottomSheetData.value = affiliateEligibilityCheckUseCase.apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(
+                        AffiliatePDPInput(
+                            pageType = PageType.SHOP.value,
+                            pageDetail = PageDetail(
+                                pageType = PageType.SHOP.value,
+                                pageId = pageId.toString(),
+                                siteId = "1",
+                                verticalId = "1"
+                            ),
+                            product = Product(
+                                productID = "",
+                                catLevel1 = "",
+                                catLevel2 = "",
+                                catLevel3 = "",
+                                productPrice = "",
+                                maxProductPrice = "",
+                                productStatus = ""
+                            ),
+                            shop = Shop(
+                                shopID = pageId.toString(),
+                                shopStatus = 1,
+                                isOS = true,
+                                isPM = false
+                            )
+                        )
+                    )
+                }.executeOnBackground()
+            },
+            onError = {
+                Timber.e(it)
+            }
+        )
+    }
+
     fun setValidateUserType(onRegistered: String) {
         validateUserState.value = onRegistered
     }
@@ -112,4 +162,5 @@ class AffiliatePromoViewModel @Inject constructor(
     fun getValidateUserType(): LiveData<String> = validateUserState
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getDiscoCampaignBanners(): LiveData<AffiliateDiscoveryCampaignResponse> = discoBanners
+    fun getTokoNowBottomSheetData(): LiveData<GenerateAffiliateLinkEligibility> = tokoNowBottomSheetData
 }

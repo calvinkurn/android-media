@@ -122,6 +122,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         const val ORIGIN_HOME_GENERATED = 6
         const val ORIGIN_PROMO_DISCO_BANNER = 7
         const val ORIGIN_PROMO_DISCO_BANNER_LIST = 8
+        const val ORIGIN_PROMO_TOKO_NOW = 9
 
         const val OTHERS_ID = 0
         const val FACEBOOK_ID = 1
