@@ -275,6 +275,7 @@ class FeedPostVideoViewHolder(
             productTagView.root.hide()
             overlayTop.root.hide()
             overlayBottom.root.hide()
+            overlayRight.root.hide()
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
     }
@@ -291,6 +292,7 @@ class FeedPostVideoViewHolder(
             productTagView.root.show()
             overlayTop.root.show()
             overlayBottom.root.show()
+            overlayRight.root.show()
             btnDisableClearMode.hide()
         }
     }

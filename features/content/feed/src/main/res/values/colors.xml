@@ -13,4 +13,7 @@
 
     <color name="feed_dms_top_overlay_0">#4D2E3137</color>
     <color name="feed_dms_top_overlay_1">#002E3137</color>
+
+    <color name="feed_dms_right_overlay_0">#4D2E3137</color>
+    <color name="feed_dms_right_overlay_1">#002E3137</color>
 </resources>
