@@ -5,6 +5,7 @@ import com.tokopedia.shop_nib.data.mapper.UploadFileMapper
 import com.tokopedia.shop_nib.data.service.UploadFileService
 import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.util.FileHelper
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -13,7 +14,8 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val service: UploadFileService,
     private val fileHelper: FileHelper,
-    private val mapper: UploadFileMapper
+    private val mapper: UploadFileMapper,
+    private val userSession: UserSessionInterface
 ) {
     companion object {
         private const val REQUEST_PARAM_KEY_FILE = "file_upload"
@@ -36,7 +38,8 @@ class RemoteDataSource @Inject constructor(
         val fileBody = file.asRequestBody(fileMime.toMediaTypeOrNull())
         val filePart = MultipartBody.Part.createFormData(REQUEST_PARAM_KEY_FILE, file.name, fileBody)
 
-        val response = service.uploadFile(filePart)
+        val authToken = "Bearer ${userSession.accessToken}"
+        val response = service.uploadFile(authToken, filePart)
 
         //Remove the file from app cache directory if it was successfully submitted
         if (response.data?.resultStatus?.code == "200") {
