@@ -120,11 +120,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                 }
                 val jobName = "Invoice $lastNoInvoice"
 
-                val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    it.createPrintDocumentAdapter(jobName)
-                } else {
-                    it.createPrintDocumentAdapter()
-                }
+                val printAdapter = it.createPrintDocumentAdapter(jobName)
                 val prinAttr = PrintAttributes.Builder()
                     .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
                     .build()
@@ -144,7 +140,9 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         if (mHandler == null || mRunnable == null) {
             return
         }
-        mHandler?.removeCallbacks(mRunnable!!)
+        mRunnable?.let {
+            mHandler?.removeCallbacks(it)
+        }
     }
 
     companion object {
