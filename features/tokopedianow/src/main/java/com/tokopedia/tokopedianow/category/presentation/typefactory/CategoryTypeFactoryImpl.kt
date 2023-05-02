@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
@@ -20,7 +22,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
@@ -35,12 +36,13 @@ class CategoryTypeFactoryImpl(
     quickFilterListener: QuickFilterListener,
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
-    tokoNowSimilarProductTrackerListener: TokoNowSimilarProductTrackerListener,
+    productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     productRecommendationOocBindListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
+    productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
     private val categoryAisleListener: CategoryAisleListener,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
@@ -56,7 +58,8 @@ class CategoryTypeFactoryImpl(
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
         feedbackWidgetListener,
-        tokoNowSimilarProductTrackerListener,
+        productCardCompactListener,
+        productCardCompactSimilarProductTrackerListener,
         productRecommendationOocBindListener,
         productRecommendationOocListener,
         productRecommendationListener
