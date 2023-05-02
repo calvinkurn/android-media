@@ -1,6 +1,6 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
-data class TokoNowProductCardViewUiModel(
+data class ProductCardCompactUiModel(
     val productId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,

@@ -130,6 +130,7 @@
 /features/merchant/seller_home_drawer/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /features/merchant/seller_persona/                      @tokopedia/android-minionstuart-dev
+/features/merchant/centralized_promo/                   @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
@@ -387,6 +388,7 @@
 /libraries/universal_sharing/							@tokopedia/android-minionkevin-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/data_explorer/                               @tokopedia/android-core-dev
+/libraries/foldable                                     @tokopedia/android-miniondarth-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
