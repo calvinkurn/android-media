@@ -299,6 +299,7 @@ class AddTextFragment @Inject constructor(
 
                     if (styleIndex == activeStyleIndex) {
                         styleItem.setActive()
+                        changeFontStyle(styleIndex)
                     }
                 }
 
@@ -319,7 +320,10 @@ class AddTextFragment @Inject constructor(
 
                         activeColorIndex = index
                     }
-                    if (index == activeColorIndex) this.setActive()
+                    if (index == activeColorIndex) {
+                        this.setActive()
+                        changeFontColor(colorRef)
+                    }
 
                     textColorItemRef[index] = this
                 }
