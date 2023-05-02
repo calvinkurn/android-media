@@ -60,6 +60,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
     private val _atcDataTracker = MutableLiveData<AddToCartDataTrackerModel>()
     private val _loadingState = MutableLiveData<Boolean>()
+    private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var productRecommendationPageNames: MutableList<String> = mutableListOf()
@@ -73,6 +74,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _atcDataTracker
     val loadingState: LiveData<Boolean>
         get() = _loadingState
+    val updateToolbarNotification: LiveData<Boolean>
+        get() = _updateToolbarNotification
 
     val isLogin: Boolean
         get() = userSession.isLoggedIn
@@ -175,12 +178,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 onSuccessAddToCart = {
                     updateProductItemQuantity(productId, quantity)
                     trackProductAddToCart(position, it, product)
+                    updateToolbarNotification()
                 },
                 onSuccessUpdateCart = { _, _ ->
                     updateProductItemQuantity(productId, quantity)
+                    updateToolbarNotification()
                 },
                 onSuccessDeleteCart = { _, _ ->
                     updateProductItemQuantity(productId, quantity)
+                    updateToolbarNotification()
                 }
             )
         }
@@ -230,5 +236,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 productRecommendation = product
             )
         )
+    }
+
+    private fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
     }
 }
