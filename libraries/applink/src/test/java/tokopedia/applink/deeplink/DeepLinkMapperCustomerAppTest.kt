@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 223
+        const val SIZE_MAPPER = 224
     }
 
     override fun setup() {
@@ -2139,6 +2139,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check gofood appLink then should return tokopedia internal tokofood home in customerapp`() {
+        setRemoteConfig(true)
         val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
         val goFoodAppLink = ApplinkConst.TokoFood.GOFOOD
         assertEqualsDeepLinkMapper(goFoodAppLink, expectedDeepLink)
@@ -2146,6 +2147,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokofood home appLink then should return tokopedia internal tokofood home in customerapp`() {
+        setRemoteConfig(true)
         val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
         val appLink = ApplinkConst.TokoFood.HOME
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
@@ -2153,6 +2155,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokofood merchant appLink then should return tokopedia internal tokofood merchant in customerapp`() {
+        setRemoteConfig(true)
         val merchantId = "cbdb87be-acca-439e-ae0f-4829a608b811"
         val productId = "1111"
         val expectedDeepLink =
@@ -2163,6 +2166,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokofood category appLink then should return tokopedia internal tokofood category in customerapp`() {
+        setRemoteConfig(true)
         val pageTitle = "Terlaris"
         val cuisine = "Coffee"
         val option = "1"
@@ -2185,6 +2189,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokofood search appLink then should return tokopedia internal tokofood home in customerapp`() {
+        setRemoteConfig(true)
         val expectedDeepLink = ApplinkConstInternalTokoFood.SEARCH
         val appLink = ApplinkConst.TokoFood.SEARCH
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
@@ -2591,5 +2596,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = ApplinkConst.DilayaniTokopedia.HOME
         val expectedDeepLink = ApplinkConstInternalDilayaniTokopedia.HOME
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    private fun setRemoteConfig(isEnabled: Boolean) {
+        every {
+            FirebaseRemoteConfigInstance.get(mockk(relaxed = true)).getBoolean(any())
+        } returns isEnabled
     }
 }
