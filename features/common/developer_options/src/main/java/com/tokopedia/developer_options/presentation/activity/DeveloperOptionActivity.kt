@@ -15,8 +15,10 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
@@ -24,6 +26,9 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapt
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.Env
@@ -45,6 +50,7 @@ class DeveloperOptionActivity : BaseActivity() {
         private const val API_KEY_TRANSLATOR = ""
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
+        private const val LOGIN_HELPER_REQUEST_CODE = 789
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -75,11 +81,15 @@ class DeveloperOptionActivity : BaseActivity() {
         const val PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
         const val PREFERENCE_NAME = "coahmark_choose_address"
         const val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+        const val DEPRECATED_API_SWITCHER_TOASTER_SP_NAME = "deprecated_switcher_toggle"
+        const val DEPRECATED_API_SWITCHER_TOASTER_KEY = "deprecated_switcher_key"
     }
 
     private var userSession: UserSession? = null
     private var rvDeveloperOption: RecyclerView? = null
     private var sbDeveloperOption: SearchBarUnify? = null
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
+    private val loginSession by lazy { DevOptLoginSession(this) }
 
     private val adapter by lazy {
         DeveloperOptionAdapter(
@@ -87,7 +97,9 @@ class DeveloperOptionActivity : BaseActivity() {
                 accessTokenListener = clickAccessTokenBtn(),
                 resetOnBoardingListener = clickResetOnBoarding(),
                 urlEnvironmentListener = selectUrlEnvironment(),
-                homeAndNavigationRevampListener = homeAndNavigationListener()
+                homeAndNavigationRevampListener = homeAndNavigationListener(),
+                loginHelperListener = loginHelperListener(),
+                authorizeListener = checkAuthorize()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -157,6 +169,12 @@ class DeveloperOptionActivity : BaseActivity() {
             layoutManager = LinearLayoutManager(context)
             setItemViewCacheSize(RV_CACHE_SIZE)
         }
+
+        val loggedIn = loginSession.isLoggedIn()
+        clearSessionIfNotLoggedIn(loggedIn)
+
+        adapter.setValueIsAuthorized(loggedIn)
+        adapter.initializeList()
         adapter.setDefaultItem()
     }
 
@@ -236,14 +254,14 @@ class DeveloperOptionActivity : BaseActivity() {
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
         override fun onClickSkipOnBoardingBtn() {
             userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -251,6 +269,52 @@ class DeveloperOptionActivity : BaseActivity() {
         override fun onLogOutUserSession() {
             userSession?.logoutSession()
         }
+    }
+
+    private fun loginHelperListener() = object : LoginHelperListener {
+        override fun routeToLoginHelperActivity() {
+            val loginHelperIntent = RouteManager.getIntent(
+                this@DeveloperOptionActivity,
+                ApplinkConstInternalGlobal.LOGIN_HELPER
+            )
+            startActivityForResult(loginHelperIntent, LOGIN_HELPER_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LOGIN_HELPER_REQUEST_CODE -> {
+                this.setResult(Activity.RESULT_OK)
+                this.finish()
+            }
+        }
+    }
+
+    private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+        return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+            override fun onSubmitDevOptsPassword(password: String) {
+                val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+                if (password == serverPassword) {
+                    loginSession.setLoginSession(password)
+                    adapter.setValueIsAuthorized(true)
+                    adapter.initializeList()
+                    adapter.setDefaultItem()
+                    showToaster("You are authorized !!")
+                } else {
+                    showToaster("Wrong password !! Please ask Android representative")
+                }
+            }
+        }
+    }
+
+    private fun clearSessionIfNotLoggedIn(loggedIn: Boolean) {
+        if (!loggedIn) loginSession.clear()
+    }
+
+    private fun showToaster(message: String) {
+        KeyboardHandler.hideSoftKeyboard(this)
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)

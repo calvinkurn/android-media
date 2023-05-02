@@ -3,9 +3,12 @@ package com.tokopedia.tokochat.test
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
@@ -76,6 +79,82 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(null, result)
+        }
+    }
+
+    @Test
+    fun `when user first open, get consent should return true`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getNeedConsentUseCase(any())
+            } returns Success(true)
+
+            // When
+            viewModel.getUserConsent()
+
+            // Then
+            assertEquals(
+                true,
+                (viewModel.isNeedConsent.value as Success).data
+            )
+        }
+    }
+
+    @Test
+    fun `when user not first open, get consent should return false`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getNeedConsentUseCase(any())
+            } returns Success(false)
+
+            // When
+            viewModel.getUserConsent()
+
+            // Then
+            assertEquals(
+                false,
+                (viewModel.isNeedConsent.value as Success).data
+            )
+        }
+    }
+
+    @Test
+    fun `should get error when get consent return result fail with error message`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getNeedConsentUseCase(any())
+            } returns Fail(throwableDummy)
+
+            // When
+            viewModel.getUserConsent()
+
+            // Then
+            assertEquals(
+                throwableDummy.message,
+                (viewModel.isNeedConsent.value as Fail).throwable.message
+            )
+        }
+    }
+
+    @Test
+    fun `should get error when get consent return error message`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getNeedConsentUseCase(any())
+            } throws throwableDummy
+
+            // When
+            viewModel.getUserConsent()
+
+            // Then
+            assertEquals(
+                throwableDummy.message,
+                viewModel.error.value?.first?.message
+            )
         }
     }
 }

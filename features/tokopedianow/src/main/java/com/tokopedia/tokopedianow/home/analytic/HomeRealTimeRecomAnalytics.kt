@@ -32,7 +32,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_ADD_TO_CART_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_CLOSE_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_RTR_PRODUCT
@@ -127,7 +127,7 @@ class HomeRealTimeRecomAnalytics(
     override fun trackProductImpression(
         headerName: String,
         productId: String,
-        item: TokoNowProductCardCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val items = arrayListOf(
@@ -160,7 +160,7 @@ class HomeRealTimeRecomAnalytics(
     override fun trackProductClick(
         headerName: String,
         productId: String,
-        item: TokoNowProductCardCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val items = arrayListOf(
@@ -192,7 +192,7 @@ class HomeRealTimeRecomAnalytics(
 
     override fun trackAddToCart(
         productId: String,
-        item: TokoNowProductCardCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         val items = arrayListOf(
@@ -242,7 +242,7 @@ class HomeRealTimeRecomAnalytics(
         productBrand: String = "",
         productVariant: String = "",
         quantity: Int = 0,
-        item: TokoNowProductCardCarouselItemUiModel
+        item: ProductCardCompactCarouselItemUiModel
     ): Bundle {
         val productCategory = item.categoryBreadcrumbs
         val productId = item.getProductId()

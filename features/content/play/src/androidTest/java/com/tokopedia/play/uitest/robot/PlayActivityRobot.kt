@@ -169,6 +169,50 @@ class PlayActivityRobot(
         )
     }
 
+    fun assertShowCartIconInProductBottomSheet(isShown: Boolean) = chainable {
+        val viewMatcher = allOf(
+            withId(com.tokopedia.play_common.R.id.icon_notif_right),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet)))
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(
+                    if (isShown) isDisplayed()
+                    else not(isDisplayed())
+                )
+            )
+    }
+
+    fun assertShowCartCountInProductBottomSheet(isShown: Boolean) = chainable {
+        val viewMatcher = allOf(
+            withId(com.tokopedia.play_common.R.id.notification),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
+            isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(
+                    if (isShown) isDisplayed()
+                    else not(isDisplayed())
+                )
+            )
+    }
+
+    fun assertCartCountInProductBottomSheet(count: String) = chainable {
+        val viewMatcher = allOf(
+            withId(com.tokopedia.play_common.R.id.notification),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
+            isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(withText(count))
+            )
+    }
+
     fun hasEngagement(isGame: Boolean) {
         RecyclerViewMatcher(R.id.rv_engagement_widget)
             .atPosition(0)

@@ -9,4 +9,6 @@ object TrackerConstant {
     const val CURRENT_SITE = "currentSite"
     const val SHOP_ID = "shopId"
     const val USERID = "userId"
+    const val TRACKER_ID = "trackerId"
+    const val SCREEN_NAME = "screenName"
 }

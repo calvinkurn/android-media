@@ -1,7 +1,6 @@
 package com.tokopedia.favorite.data.mapper
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.domain.model.*
 import com.tokopedia.network.data.model.response.GraphqlResponse
@@ -13,13 +12,8 @@ import java.util.*
  * Created by naveengoyal on 5/7/18.
  */
 class FavoritShopGraphQlMapper(
-        context: Context,
-        private val gson: Gson
+        context: Context
 ) : Func1<Response<GraphqlResponse<FavoritShopResponseData>>, FavoriteShop> {
-
-    companion object {
-        const val IS_SHOP_FAVORITE = "1"
-    }
 
     private val defaultErrorMessage: String = context.getString(R.string.msg_network_error)
     private val emptyErrorMessage: String = context.getString(R.string.msg_empty_wishlist)

@@ -24,7 +24,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.isCompact
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -44,7 +46,7 @@ class VideoViewComponent(
         pvVideo.player = exoPlayer
     }
 
-    fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+    fun setOrientation(screenOrientation: ScreenOrientation2, videoOrientation: VideoOrientation) {
         configureVideoLayout(screenOrientation, videoOrientation)
         configureThumbnailLayout(screenOrientation, videoOrientation)
     }
@@ -76,10 +78,14 @@ class VideoViewComponent(
 
     fun getPlayerView(): PlayerView = pvVideo
 
-    private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+    private fun configureVideoLayout(screenOrientation: ScreenOrientation2, videoOrientation: VideoOrientation) {
 
         fun configureVideo() {
-            pvVideo.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            pvVideo.resizeMode = if (videoOrientation.isVertical && screenOrientation.isCompact && screenOrientation.isPortrait) {
+                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            } else {
+                AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }
 
             val lParams = flVideoWrapper.layoutParams as ConstraintLayout.LayoutParams
 
@@ -108,7 +114,7 @@ class VideoViewComponent(
         configureBackground()
     }
 
-    private fun configureThumbnailLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+    private fun configureThumbnailLayout(screenOrientation: ScreenOrientation2, videoOrientation: VideoOrientation) {
         when {
             !screenOrientation.isLandscape && videoOrientation is VideoOrientation.Horizontal -> {
                 rootView.changeConstraint {

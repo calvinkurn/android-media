@@ -167,6 +167,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
                     router = mockk(relaxed = true),
+                    resultRegistry = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
