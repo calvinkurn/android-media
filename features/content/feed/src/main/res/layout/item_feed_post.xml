@@ -22,6 +22,27 @@
 
     </com.tokopedia.feedcomponent.util.NestedScrollableHost>
 
+    <include
+        android:id="@+id/overlay_top"
+        layout="@layout/layout_feed_top_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        />
+
+    <include
+        android:id="@+id/overlay_bottom"
+        layout="@layout/layout_feed_bottom_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.3"
+        />
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/indicator_feed_content"

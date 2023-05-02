@@ -273,6 +273,8 @@ class FeedPostVideoViewHolder(
             shareButton.hide()
             productTagButton.root.hide()
             productTagView.root.hide()
+            overlayTop.root.hide()
+            overlayBottom.root.hide()
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
     }
@@ -287,6 +289,8 @@ class FeedPostVideoViewHolder(
             shareButton.show()
             productTagButton.root.show()
             productTagView.root.show()
+            overlayTop.root.show()
+            overlayBottom.root.show()
             btnDisableClearMode.hide()
         }
     }
