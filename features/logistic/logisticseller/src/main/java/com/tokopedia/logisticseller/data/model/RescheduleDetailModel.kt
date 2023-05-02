@@ -24,7 +24,6 @@ data class RescheduleTimeOptionModel(
     val etaPickup: String = ""
 )
 
-
 data class RescheduleDayOptionModel(
     val day: String = "",
     val timeOptions: List<RescheduleTimeOptionModel> = emptyList()
