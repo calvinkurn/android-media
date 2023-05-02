@@ -34,6 +34,7 @@
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
         app:layout_constraintStart_toEndOf="@id/pdp_shipment_title"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_title"
         app:typographyType="display_3"
         tools:text="Rp30.000" />
 
@@ -109,7 +110,7 @@
         android:id="@+id/pdp_shipment_destination"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -128,7 +129,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_destination"
-        app:layout_goneMarginTop="16dp"
+        app:layout_goneMarginTop="12dp"
         app:typographyType="display_3"
         tools:text="Estimasi tiba 20 - 21 Nov" />
 

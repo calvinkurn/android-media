@@ -13,6 +13,7 @@ public interface CMConstant {
         String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
         String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
         String KEY_GENERAL_PROMPT_TIME_INTERVAL = "android_cm_general_prompt_gap_time_interval";
+        String KEY_CM_REMINDER_PROMPT_PAGE_FREQ = "android_cm_reminder_prompt_page_freq";
     }
 
 
@@ -37,9 +38,11 @@ public interface CMConstant {
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
     String HTTP = "http";
     String WWW = "www";
+    String SUFFIX_REMINDER_PROMPT_PAGE_DATA = "_reminder_prompt_data";
 
     interface CMPrefKeys{
         String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+        String KEY_REMINDER_PROMPT_APP_DATA = "reminder_prompt_app_data";
     }
 
 
@@ -266,6 +269,7 @@ public interface CMConstant {
         String KEY_TRACKER_ID = "trackerId";
         String KEY_DEVICE_ID = "deviceId";
         String KEY_PAGE_PATH = "pagePath";
+        String KEY_PAGE_TYPE = "pageType";
         String VALUE_BUSINESS_UNIT = "cm";
         String VALUE_TRACKER_ID_VIEW = "35363";
         String VALUE_TRACKER_ID_NOT_ALLOW = "35365";
@@ -279,6 +283,10 @@ public interface CMConstant {
         String VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA = "37793";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_SA = "37797";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_MA = "37794";
+        String VALUE_TRACKER_ID_REMINDER_VIEW = "42642";
+        String VALUE_TRACKER_ID_CLICK_CTA_REMINDER = "42645";
+
+        String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER = "42646";
         String VALUE_CURRENT_SITE = "tokopediamarketplace";
         String VALUE_EVENT_CLICK_CONTENT = "clickContent";
         String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
@@ -286,12 +294,14 @@ public interface CMConstant {
         String VALUE_CATEGORY_SA = "native android seller push prompt";
         String VALUE_GEN_CATEGORY = "general android push prompt";
         String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
+        String VALUE_REMINDER_CATEGORY = "reminder push prompt";
         String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";
         String VALUE_ACTION_CLICK_CLOSE = "click close";
         String VALUE_ACTION_CLICK_CTA = "click cta";
         String KEY_EVENT_NAME = "event_name";
+        String KEY_EVENT_GA = "event_ga";
         String KEY_MAIN_APP_PUSH_PERMISSION_STATUS = "android_push_permission_mainapp_device_status";
         String KEY_SELLER_APP_PUSH_PERMISSION_STATUS = "android_push_permission_sellerapp_device_status";
         String KEY_TRAFFIC_SOURCE_NAME = "traffic_source_name";

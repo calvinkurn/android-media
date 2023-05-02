@@ -5,31 +5,56 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.user.session.UserSession
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.data.Properties
 
-class DebugMediaLoaderActivity : AppCompatActivity() {
+open class DebugMediaLoaderActivity : AppCompatActivity() {
 
     private val btnShow by lazy { findViewById<Button>(R.id.btn_show) }
+    private val btnEdit by lazy { findViewById<ImageView>(R.id.img_edit) }
     private val edtUrl by lazy { findViewById<EditText>(R.id.edt_url) }
+    private val edtProperties by lazy { findViewById<EditText>(R.id.edt_properties) }
     private val imgSample by lazy { findViewById<ImageView>(R.id.img_sample) }
 
-    private val userSession by lazy {
-        UserSession(applicationContext)
-    }
+    private var isCustomPropertiesVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_debug_medialoader)
 
+        edtUrl.setText("https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg")
+
+        edtProperties.setText(
+            GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(Properties())
+        )
+
+        btnEdit.setOnClickListener {
+            isCustomPropertiesVisible = if (!isCustomPropertiesVisible) {
+                edtProperties.show()
+                true
+            } else {
+                edtProperties.hide()
+                false
+            }
+        }
+
         btnShow.setOnClickListener {
             val url = edtUrl.text.toString().trim()
+            val json = edtProperties.text.toString().trim()
 
-            imgSample.loadSecureImage(url, userSession)
+            val properties = Gson().fromJson(json, Properties::class.java)
+            imgSample.debugLoadImage(url, properties)
         }
     }
 
-    companion object {
-        private const val SAMPLE_SECURE_IMAGE_URL = "https://chat.tokopedia.com/tc/v1/download_secure/1844584535/2022-04-19/99f532b4-bfb0-11ec-9296-42010a2942a0"
-    }
-
+    private fun ImageView.debugLoadImage(
+        url: String? = "",
+        properties: Properties = Properties()
+    ) = call(url, properties)
 }

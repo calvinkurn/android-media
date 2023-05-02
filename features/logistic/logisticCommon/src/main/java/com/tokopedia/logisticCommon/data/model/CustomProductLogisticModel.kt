@@ -10,9 +10,10 @@ data class CustomProductLogisticModel(
         val shipperProductIds = mutableListOf<Long>()
         shipperList.forEach { shipperGroup ->
             shipperGroup.shipper.filter { s -> s.isActive }.forEach { s ->
-                shipperProductIds.addAll(s.shipperProduct.filter { sp -> sp.isActive }
-                    .map { sp -> sp.shipperProductId })
-
+                shipperProductIds.addAll(
+                    s.shipperProduct.filter { sp -> sp.isActive }
+                        .map { sp -> sp.shipperProductId }
+                )
             }
         }
         return shipperProductIds
@@ -45,7 +46,7 @@ data class ShipperCPLModel(
     var description: String = "",
     var shipperProduct: List<ShipperProductCPLModel> = listOf(),
     var isActive: Boolean = false,
-    var isWhitelabel: Boolean = false,
+    var isWhitelabel: Boolean = false
 )
 
 data class ShipperProductCPLModel(
@@ -53,6 +54,5 @@ data class ShipperProductCPLModel(
     var shipperProductName: String = "",
     var uiHidden: Boolean = false,
     var isActive: Boolean = false,
-    var shipperServiceName: String = "",
+    var shipperServiceName: String = ""
 )
-

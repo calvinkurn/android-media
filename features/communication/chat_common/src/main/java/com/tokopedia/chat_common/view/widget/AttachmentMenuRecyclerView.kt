@@ -101,4 +101,19 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
         }
     }
 
+    fun addChatbotImageAttachmentMenu() {
+        if (!adapter.alreadyHasChatbotImageMenu())
+            adapter.addChatbotImageAttachmentMenu()
+    }
+
+    fun removeChatbotImageAttachmentMenu() {
+        if (adapter.alreadyHasChatbotImageMenu())
+            adapter.removeChatbotImageAttachmentMenu()
+    }
+
+    fun removeVideoAttachmentMenu() {
+        if (adapter.alreadyHasVideoMenu())
+            adapter.removeVideoAttachmentMenu()
+    }
+
 }

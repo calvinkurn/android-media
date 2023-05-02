@@ -156,8 +156,11 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -261,7 +264,10 @@ class TokoNowHomeFragment : Fragment(),
                 playWidgetCoordinator = createPlayWidgetCoordinator(),
                 rtrListener = createRealTimeRecommendationListener(),
                 rtrAnalytics = rtrAnalytics,
-                productRecommendationBindOocListener = createProductRecomOocCallback()
+                productRecommendationBindOocListener = createProductRecomOocCallback(),
+                claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
+                claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
+                claimCouponWidgetListener = createClaimCouponWidgetCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -443,9 +449,9 @@ class TokoNowHomeFragment : Fragment(),
         return carouselScrollState[adapterPosition]
     }
 
-    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModelTokoNow.addProductToCart(
+            viewModelTokoNow.onCartQuantityChanged(
                 data.channelId,
                 data.productId,
                 quantity,
@@ -981,7 +987,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartAdd) {
+        observe(viewModelTokoNow.addItemToCart) {
             when (it) {
                 is Success -> {
                     getMiniCart()
@@ -1003,7 +1009,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartUpdate) {
+        observe(viewModelTokoNow.updateCartItem) {
             when (it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -1018,7 +1024,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartRemove) {
+        observe(viewModelTokoNow.removeCartItem) {
             when (it) {
                 is Success -> {
                     getMiniCart()
@@ -1134,6 +1140,37 @@ class TokoNowHomeFragment : Fragment(),
                             ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                 }
+            }
+        }
+
+        observe(viewModelTokoNow.couponClaimed) {
+            when (it) {
+                is Success -> {
+                    val couponClaimed = it.data
+                    if (couponClaimed.code == COUPON_STATUS_LOGIN) {
+                        RouteManager.route(context, ApplinkConst.LOGIN)
+                    } else {
+                        showToaster(
+                            message = getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description),
+                            actionText = getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_cta),
+                            type = TYPE_NORMAL,
+                            onClickActionBtn = {
+                                analytics.trackClickCouponWidget(
+                                    couponStatus = couponClaimed.couponStatus,
+                                    position = couponClaimed.position,
+                                    slugText = couponClaimed.slugText,
+                                    couponName = couponClaimed.couponName,
+                                    warehouseId = couponClaimed.warehouseId
+                                )
+                                RouteManager.route(context, couponClaimed.appLink)
+                            }
+                        )
+                    }
+                }
+                is Fail -> showToaster(
+                    message = it.throwable.message ?: getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default),
+                    type = TYPE_ERROR
+                )
             }
         }
     }
@@ -1883,6 +1920,18 @@ class TokoNowHomeFragment : Fragment(),
         return HomeRealTimeRecomAnalytics(userSession)
     }
 
+    private fun createClaimCouponWidgetItemCallback(): ClaimCouponWidgetItemCallback {
+        return ClaimCouponWidgetItemCallback(
+            viewModel = viewModelTokoNow,
+            context = context,
+            analytics = analytics
+        )
+    }
+
+    private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
+        return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
         return HomeCategoryMenuCallback(
             analytics = analytics,
@@ -1950,4 +1999,5 @@ class TokoNowHomeFragment : Fragment(),
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=${linkUrl}")
     }
+
 }

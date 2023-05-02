@@ -90,7 +90,6 @@ class GetAddressCornerUseCase
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)
 
-
         return usecase.getExecuteObservable(null)
             .map { graphqlResponse ->
                 val response: GetPeopleAddressResponse? =
@@ -107,5 +106,4 @@ class GetAddressCornerUseCase
     fun unsubscribe() {
         usecase.unsubscribe()
     }
-
 }

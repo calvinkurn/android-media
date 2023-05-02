@@ -14,6 +14,8 @@ import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -34,6 +36,8 @@ class AffiliateSSAShopItemVH(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_ssa_shop_item_layout
+
+        private const val SHOP_ID_PARAM = "{shop_id}"
     }
 
     private val shopImage = itemView.findViewById<ImageView>(R.id.imageMain)
@@ -50,29 +54,38 @@ class AffiliateSSAShopItemVH(
     private val ratingDivider = itemView.findViewById<DividerUnify>(R.id.ratingDivider)
 
     override fun bind(element: AffiliateSSAShopUiModel?) {
-        element?.ssaShop?.let {
-            shopImage.loadImageRounded(it.ssaShopDetail?.imageURL?.androidURL)
-            shopName.text = it.ssaShopDetail?.shopName
-            if (it.ssaShopDetail?.badgeURL?.isNotEmpty() == true) {
+        element?.ssaShop?.let { shop ->
+            shopImage.loadImageRounded(shop.ssaShopDetail?.imageURL?.androidURL)
+            shopName.text = shop.ssaShopDetail?.shopName
+            if (shop.ssaShopDetail?.badgeURL?.isNotEmpty() == true) {
                 imageBadge.apply {
                     visible()
-                    loadImage(it.ssaShopDetail.badgeURL)
+                    loadImage(shop.ssaShopDetail.badgeURL)
                 }
             }
             ssaMessage.apply {
                 visible()
                 text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(it.ssaShopDetail?.message, Html.FROM_HTML_MODE_LEGACY)
+                    Html.fromHtml(shop.ssaShopDetail?.message, Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    Html.fromHtml(it.ssaShopDetail?.message)
+                    Html.fromHtml(shop.ssaShopDetail?.message)
                 }
             }
             ssaLabel.apply {
-                isVisible = it.ssaShopDetail?.ssaStatus == true
-                text = it.ssaShopDetail?.label?.labelText
+                isVisible = shop.ssaShopDetail?.ssaStatus == true
+                text = shop.ssaShopDetail?.label?.labelText
             }
-            setUpFooterData(it.ssaShopDetail)
-            setUpPromotionClickListener(it)
+            itemView.setOnClickListener {
+                RouteManager.route(
+                    itemView.context,
+                    ApplinkConst.SHOP.replace(
+                        SHOP_ID_PARAM,
+                        shop.ssaShopDetail?.shopId.toString()
+                    )
+                )
+            }
+            setUpFooterData(shop.ssaShopDetail)
+            setUpPromotionClickListener(shop)
         }
     }
 

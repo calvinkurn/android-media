@@ -294,7 +294,7 @@ class PartialRegisterInputView : BaseCustomView {
                                 extension)
                             )
                         }
-                        editText.setSelection(textInput.trim { it <= ' ' }.length)
+                        editText.setSelection(editText.text.trim { it <= ' ' }.length)
                         isExtensionSelected = true
                         hideEmailExtension()
                     }

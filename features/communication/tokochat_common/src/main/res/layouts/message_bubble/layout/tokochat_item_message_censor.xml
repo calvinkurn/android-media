@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokochat_layout_item_msg_censor"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="vertical">
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout
+        android:id="@+id/tokochat_layout_msg_censor_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tokochat_layout_body_msg_censor_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="right"
+            tools:ignore="RtlHardcoded">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/tokochat_icon_msg_censor"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="14dp"
+                app:icon_color_light_enable="@color/Unify_NN500"
+                app:icon_color_light_disabled="@color/Unify_NN500"
+                app:icon_color_night_enable="@color/Unify_NN500"
+                app:icon_color_night_disabled="@color/Unify_NN500"
+                app:icon_name="WARNING" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tokochat_tv_msg_censor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5.5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tokochat_icon_msg_censor"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_1"
+                tools:text="@string/tokochat_message_censored"
+                tools:ignore="RtlHardcoded" />
+
+            <LinearLayout
+                android:id="@+id/tokochat_layout_status_msg_censor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="13dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tokochat_tv_msg_censor">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tokochat_tv_msg_censor_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/Unify_NN400"
+                    app:typographyType="body_3"
+                    tools:text="11:00" />
+            </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tokochat_tv_msg_censor_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintStart_toStartOf="@id/tokochat_tv_msg_censor"
+                app:layout_constraintTop_toBottomOf="@+id/tokochat_tv_msg_censor"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:text="@string/tokochat_message_censored_guide"
+                tools:ignore="RtlHardcoded,RtlSymmetry"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout>
+
+</LinearLayout>

@@ -2,8 +2,11 @@ package com.tokopedia.affiliate.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.affiliate.viewmodel.AffiliateDiscoPromoListViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateEducationSearchArticleViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateEducationSearchViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
@@ -57,6 +60,18 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliatePromoViewModel::class)
     internal abstract fun affiliatePromoViewModel(viewModel: AffiliatePromoViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateEducationSearchViewModel::class)
+    internal abstract fun affiliateEducationSearchViewModel(viewModel: AffiliateEducationSearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateEducationSearchArticleViewModel::class)
+    internal abstract fun affiliateEducationSearchArticleViewModel(viewModel: AffiliateEducationSearchArticleViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -143,5 +158,11 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliateSSAShopViewModel::class)
     internal abstract fun affiliateSSAShopViewModel(viewModel: AffiliateSSAShopViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateDiscoPromoListViewModel::class)
+    internal abstract fun affiliateCommissionEventViewModel(viewModel: AffiliateDiscoPromoListViewModel): ViewModel
 
 }

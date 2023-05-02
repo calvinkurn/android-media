@@ -31,7 +31,6 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -49,7 +48,6 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -111,16 +109,19 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     protected fun isCheckoutPassDataInitialized() = ::checkoutPassData.isInitialized
 
     private fun subscribeUi() {
-        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> navigateToCart(it.data)
-                is Fail -> showErrorMessage(it.throwable)
+        addToCartViewModel.addToCartResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> navigateToCart(it.data)
+                    is Fail -> showErrorMessage(it.throwable)
+                }
+                onLoadingAtc(false)
             }
-            onLoadingAtc(false)
-        })
+        )
 
-        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
-            when{
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
+            when {
                 it.atcErrorPage.isShowErrorPage -> redirectToCart(categoryId.toString())
                 it.appLinkUrl.isEmpty() -> showErrorMessage(MessageErrorException(it.title))
                 else -> redirectErrorUnVerifiedNumber(it)
@@ -128,101 +129,122 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             onLoadingAtc(false)
         }
 
-        topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> processEnquiry(it.data)
-                    is Fail -> {
-                        // Handle null response error
-                        var throwable = it.throwable
-                        if (throwable.message == NULL_RESPONSE) {
-                            throwable =
-                                MessageErrorException(getString(R.string.common_topup_enquiry_error))
+        topupBillsViewModel.enquiryData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> processEnquiry(it.data)
+                        is Fail -> {
+                            // Handle null response error
+                            var throwable = it.throwable
+                            if (throwable.message == NULL_RESPONSE) {
+                                throwable =
+                                    MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                            }
+                            onEnquiryError(throwable)
                         }
-                        onEnquiryError(throwable)
+                    }
+                }
+            }
+        )
+
+        topupBillsViewModel.menuDetailData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> processMenuDetail(it.data)
+                        is Fail -> onMenuDetailError(it.throwable)
                     }
                 }
             }
-        })
+        )
 
-        topupBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> processMenuDetail(it.data)
-                    is Fail -> onMenuDetailError(it.throwable)
-                }
-            }
-        })
-
-        topupBillsViewModel.catalogPluginData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> processCatalogPluginData(it.data)
-                    is Fail -> onCatalogPluginDataError(it.throwable)
-                }
-            }
-        })
-
-        topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> processFavoriteNumbers(it.data)
-                    is Fail -> onFavoriteNumbersError(it.throwable)
-                }
-            }
-        })
-
-        topupBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> processSeamlessFavoriteNumbers(it.data.first, it.data.second)
-                    is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
-                }
-            }
-        })
-
-        topupBillsViewModel.checkVoucherData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                promoTicker?.toggleLoading(false)
-                when (it) {
-                    is Success -> setupPromoTicker(it.data)
-                    is Fail -> onCheckVoucherError(it.throwable)
-                }
-            }
-        })
-
-        topupBillsViewModel.expressCheckoutData.observe(viewLifecycleOwner, Observer {
-            it.run {
-                when (it) {
-                    is Success -> {
-                        // Navigate to otp if requested
-                        if (it.data.needsOtp) {
-                            requestOtp()
-                        } else {
-                            commonTopupBillsAnalytics.eventExpressCheckout(
-                                categoryName,
-                                operatorName,
-                                productId.toString(),
-                                productName,
-                                price,
-                                isInstantCheckout,
-                                promoCode.isNotEmpty(),
-                                isSpecialProduct
-                            )
-                            navigateToPayment(it.data)
-                        }
-                    }
-                    is Fail -> {
-                        var throwable = it.throwable
-                        if (it.throwable.message.isNullOrEmpty()) {
-                            throwable =
-                                MessageErrorException(getString(R.string.common_topup_enquiry_error))
-                        }
-                        onExpressCheckoutError(throwable)
+        topupBillsViewModel.catalogPluginData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> processCatalogPluginData(it.data)
+                        is Fail -> onCatalogPluginDataError(it.throwable)
                     }
                 }
             }
-        })
+        )
+
+        topupBillsViewModel.favNumberData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> processFavoriteNumbers(it.data)
+                        is Fail -> onFavoriteNumbersError(it.throwable)
+                    }
+                }
+            }
+        )
+
+        topupBillsViewModel.seamlessFavNumberData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> processSeamlessFavoriteNumbers(it.data.first, it.data.second)
+                        is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
+                    }
+                }
+            }
+        )
+
+        topupBillsViewModel.checkVoucherData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    promoTicker?.toggleLoading(false)
+                    when (it) {
+                        is Success -> setupPromoTicker(it.data)
+                        is Fail -> onCheckVoucherError(it.throwable)
+                    }
+                }
+            }
+        )
+
+        topupBillsViewModel.expressCheckoutData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    when (it) {
+                        is Success -> {
+                            // Navigate to otp if requested
+                            if (it.data.needsOtp) {
+                                requestOtp()
+                            } else {
+                                commonTopupBillsAnalytics.eventExpressCheckout(
+                                    categoryName,
+                                    operatorName,
+                                    productId.toString(),
+                                    productName,
+                                    price,
+                                    isInstantCheckout,
+                                    promoCode.isNotEmpty(),
+                                    isSpecialProduct
+                                )
+                                navigateToPayment(it.data)
+                            }
+                        }
+                        is Fail -> {
+                            var throwable = it.throwable
+                            if (it.throwable.message.isNullOrEmpty()) {
+                                throwable =
+                                    MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                            }
+                            onExpressCheckoutError(throwable)
+                        }
+                    }
+                }
+            }
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -388,7 +410,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     // Optional function if promo ticker can be null e.g General Template Promo
     open fun onPromoTickerNull(data: PromoData) {
-
     }
 
     private fun TickerPromoStackingCheckoutView.resetPromoTicker() {
@@ -460,7 +481,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun showErrorMessage(error: Throwable)
 
-    abstract fun redirectErrorUnVerifiedNumber(error:ErrorAtc)
+    abstract fun redirectErrorUnVerifiedNumber(error: ErrorAtc)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
@@ -540,9 +561,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             checkoutPassData.voucherCodeCopied = promoCode
             addToCartViewModel.addToCart(
                 checkoutPassData,
-                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams(),
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+                DeviceUtil.getDigitalIdentifierParam(requireActivity())
             )
         }
     }
@@ -560,13 +579,16 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     // this function used to redirect to cart if getting error from atc Response
-    private fun redirectToCart(categoryId: String){
+    private fun redirectToCart(categoryId: String) {
         context?.let {
-            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
-                checkoutPassData.productId ?: "",
-                checkoutPassData.clientNumber ?: "",
-                categoryId
-            ))
+            RouteManager.route(
+                it,
+                CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                    checkoutPassData.productId ?: "",
+                    checkoutPassData.clientNumber ?: "",
+                    categoryId
+                )
+            )
         }
     }
 
@@ -632,5 +654,4 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         const val EXTRA_IS_USE = "EXTRA_IS_USE"
         const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
     }
-
 }

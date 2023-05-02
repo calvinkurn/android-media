@@ -38,7 +38,6 @@
       "eventCategory": "shop page - (buyer|seller)",
       "productId": ".+",
       "item_list": "/shoppage - (.+) - etalase chip ongoing campaign (.+) - (login|non login) - search result",
-      "item_list_name": "/shoppage - (.+) - etalase chip ongoing campaign (.+) - (login|non login) - search result",
       "dimension90": ".*",
       "shopId": ".+",
       "shopType": ".+",

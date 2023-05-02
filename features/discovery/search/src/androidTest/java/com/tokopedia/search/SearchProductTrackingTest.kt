@@ -20,6 +20,7 @@ import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtc
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.clickAddToCartOnInspirationListATC
 import com.tokopedia.search.utils.clickAddToCartOnProductCard
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -30,6 +31,7 @@ import org.junit.Test
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
 private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
+@CassavaTest
 internal class SearchProductTrackingTest {
 
     private val isFromNetwork = true

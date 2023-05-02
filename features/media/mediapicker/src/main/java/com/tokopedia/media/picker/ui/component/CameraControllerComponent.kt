@@ -18,7 +18,7 @@ import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
 import com.tokopedia.media.picker.ui.adapter.utils.SliderLayoutManager
-import com.tokopedia.media.picker.ui.fragment.camera.CameraSelectorUiModel
+import com.tokopedia.media.picker.ui.fragment.camera.CameraSelectorModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
@@ -36,7 +36,7 @@ class CameraControllerComponent(
 ) : UiComponent(parent, R.id.uc_camera_controller), ViewTreeObserver.OnScrollChangedListener,
     CameraSliderAdapter.Listener {
 
-    private val adapterData = CameraSelectorUiModel.create()
+    private val adapterData = CameraSelectorModel.create()
 
     private val adapter by lazy {
         CameraSliderAdapter(adapterData, this)

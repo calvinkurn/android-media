@@ -67,13 +67,14 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_SHARING_EXPERIENCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -86,7 +87,9 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLAIM_COUPON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_COUPON_DETAIL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_3
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_4
@@ -110,6 +113,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_FINISHED_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_3
@@ -122,6 +126,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_VIEW_SWITCHER_WIDGET
@@ -130,11 +135,15 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_ATC_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_LEGO_4
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_CLAIM_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_REMOVE_ATC_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_VIEW_ALL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_LEGO4
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_DOUBLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
@@ -178,6 +187,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_CLICK_ALL_CATEGORY = "click view all category widget"
         const val EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY = "click category on category widget"
         const val EVENT_ACTION_IMPRESSION_SLIDER_BANNER = "impression slider banner"
+        const val EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET = "view double coupon widget"
+        const val EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET = "view single coupon widget"
+        const val EVENT_ACTION_CLICK_COUPON_DETAIL = "click coupon detail"
+        const val EVENT_ACTION_CLICK_CLAIM_COUPON = "click claim coupon"
         const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM = "click view all on tokonow recom homepage"
         const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC =
             "click 'Cek Sekarang' on recom widget on tokonow homepage while the address is out of coverage (OOC)"
@@ -264,6 +277,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val ID_CLICK_REMOVE_ATC_PRODUCT_RECOM = "20148"
         const val ID_IMPRESSION_LEGO4 = "41955"
         const val ID_CLICK_LEGO_4 = "41956"
+        const val ID_IMPRESSION_DOUBLE_COUPON_WIDGET = "41922"
+        const val ID_IMPRESSION_SINGLE_COUPON_WIDGET = "41923"
+        const val ID_CLICK_COUPON_WIDGET = "41924"
+        const val ID_CLICK_CLAIM_COUPON_WIDGET = "41925"
     }
 
     fun onClickSearchBar() {
@@ -388,7 +405,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onClickProductRecom(
         channelId: String,
         headerName: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val productId = recommendationItem.productCardModel.productId
@@ -421,7 +438,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onImpressProductRecom(
         channelId: String,
         headerName: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val productId = recommendationItem.productCardModel.productId
@@ -515,7 +532,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int,
         cartId: String
     ) {
@@ -557,7 +574,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        recommendationItem: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         val item = productItemDataLayer(
@@ -1468,6 +1485,111 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     /*
+        -- Claim Coupon Widget --
+        Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/view/3790
+     */
+
+    fun trackImpressCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String,
+        isDouble: Boolean
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_VIEW_ITEM,
+            action = if (isDouble) EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET else EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = if (isDouble) ID_IMPRESSION_DOUBLE_COUPON_WIDGET else ID_IMPRESSION_SINGLE_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    fun trackClickCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_COUPON_DETAIL,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = ID_CLICK_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun trackClickClaimCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_CLAIM_COUPON,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = ID_CLICK_CLAIM_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    /*
         -- Switcher Widget --
         Thanos : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/2972
     */
@@ -1577,6 +1699,20 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         }
     }
 
+    private fun promotionsDataLayer(
+        creativeName: String,
+        creativeSlot: Int,
+        itemId: String,
+        itemName: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_CREATIVE_NAME, creativeName)
+            putInt(KEY_CREATIVE_SLOT, creativeSlot.getTrackerPosition())
+            putString(KEY_ITEM_ID, itemId)
+            putString(KEY_ITEM_NAME, itemName)
+        }
+    }
+
     private fun ecommerceDataLayerCategoryClicked(position: Int, categoryId: String, headerName: String): Bundle {
         val nullString = "null"
         return Bundle().apply {
@@ -1665,6 +1801,31 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             if (pageSource.isNotBlank()) {
                 putString(KEY_PAGE_SOURCE, pageSource)
             }
+        }
+    }
+
+    private fun getDataLayer(
+        event: String,
+        action: String,
+        category: String,
+        label: String,
+        warehouseId: String,
+        trackerId: String,
+        businessUnit: String,
+        currentSite: String,
+        promotions: ArrayList<Bundle>,
+    ): Bundle {
+        return Bundle().apply {
+            putString(TrackAppUtils.EVENT, event)
+            putString(TrackAppUtils.EVENT_ACTION, action)
+            putString(TrackAppUtils.EVENT_CATEGORY, category)
+            putString(TrackAppUtils.EVENT_LABEL, label)
+            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_BUSINESS_UNIT, businessUnit)
+            putString(KEY_CURRENT_SITE, currentSite)
+            putParcelableArrayList(KEY_PROMOTIONS, promotions)
+            putString(KEY_USER_ID, userSession.userId)
+            putString(KEY_WAREHOUSE_ID, warehouseId)
         }
     }
 

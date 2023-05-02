@@ -178,6 +178,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateImageGeneratorData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generatePersonalizedData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
@@ -288,6 +289,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -3608,8 +3610,10 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
-                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId)
+                        ?: "",
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
+                        ?: "",
                     categoryId = it.basic.category.id,
                     isScheduled = isScheduled
                 )
@@ -3868,6 +3872,13 @@ open class DynamicProductDetailFragment :
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                 ?.map { it.urlOriginal } ?: emptyList()
+            val startTime = viewModel.p2Data.value?.upcomingCampaigns?.get(
+                viewModel.getDynamicProductInfoP1?.basic?.productID
+                    ?: ""
+            )?.startDate.toLongOrZero()
+            val personalizedCampaignModel = viewModel.getDynamicProductInfoP1?.let { product ->
+                generatePersonalizedData(product, startTime)
+            } ?: PersonalizedCampaignModel()
 
             shareProductInstance?.showUniversalShareBottomSheet(
                 fragmentManager = it.supportFragmentManager,
@@ -3882,7 +3893,8 @@ open class DynamicProductDetailFragment :
                 },
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
-                imageGeneratorData
+                imageGeneratorData,
+                personalizedCampaignModel
             )
         }
     }

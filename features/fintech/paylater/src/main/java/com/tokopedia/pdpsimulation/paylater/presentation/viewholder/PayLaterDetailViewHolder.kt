@@ -6,8 +6,10 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
@@ -17,6 +19,8 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteracti
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
@@ -27,6 +31,10 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
         const val TYPE_FILLED = "filled"
+        private const val TICKER_TYPE_GENERAL = "general"
+        private const val TICKER_TYPE_WARNING = "warning"
+        private const val TICKER_TYPE_DANGER = "danger"
+        private const val TICKER_TYPE_INFO = "info"
     }
 
     private val context: Context = itemView.context
@@ -35,16 +43,16 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         setPayLaterHeader(element)
         setUpRecommendation(element)
         setPayLaterImage(element)
+        setUpTicker(element)
         setUpFooter(element)
         setUpCta(element)
     }
 
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
-
-            itemView.clDetailParent.background =if (itemView.context.isDarkMode()) {
+            itemView.clDetailParent.background = if (itemView.context.isDarkMode()) {
                 MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_dark_gradient)
-            }else{
+            } else {
                 MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_light_gradient)
             }
             itemView.clPartnerCard.background = MethodChecker.getDrawable(
@@ -54,9 +62,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
             itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
-
         } else {
-
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
             itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_BORDER
@@ -72,7 +78,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.setOnClickListener {
             interaction.invokeAnalytics(
                 getInstallmentInfoEvent(
-                    element, element.cta.android_url
+                    element,
+                    element.cta.android_url
                         ?: ""
                 )
             )
@@ -81,17 +88,41 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     }
 
     private fun setUpFooter(element: Detail) {
-        if (element.paylaterDisableDetail?.status == true) {
+        if (element.paylaterDisableDetail?.status == true || element.ticker.isShown) {
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
-            itemView.payLaterStatusTicker.visible()
-            itemView.disableTitleDetail()
-            itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
-            itemView.payLaterStatusTicker.gone()
-            itemView.enableTitleDetail()
             setPayLaterBenefits(element)
+        }
+
+        if (element.paylaterDisableDetail?.status == true) {
+            itemView.disableTitleDetail()
+        } else {
+            itemView.enableTitleDetail()
+        }
+    }
+
+    private fun setUpTicker(element: Detail) {
+        itemView.payLaterStatusTicker.shouldShowWithAction(element.ticker.isShown) {
+            itemView.payLaterStatusTicker.setHtmlDescription(element.ticker.content)
+            itemView.payLaterStatusTicker.tickerType = when (element.ticker.type) {
+                TICKER_TYPE_GENERAL -> Ticker.TYPE_INFORMATION
+                TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
+                TICKER_TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
+                TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+                else -> Ticker.TYPE_INFORMATION
+            }
+            itemView.payLaterStatusTicker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(
+                        itemView.context,
+                        linkUrl.toString()
+                    )
+                }
+
+                override fun onDismiss() {}
+            })
         }
     }
 
@@ -110,7 +141,6 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             )
             itemView.llBenefits.addView(typography)
         }
-
     }
 
     private fun setPayLaterImage(element: Detail) {
@@ -119,8 +149,9 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         } else {
             element.gatewayDetail?.img_light_url
         }
-        if (!imageUrl.isNullOrEmpty())
+        if (!imageUrl.isNullOrEmpty()) {
             itemView.ivPaylaterPartner.setImageUrl(imageUrl)
+        }
     }
 
     private fun setPayLaterHeader(element: Detail) {
@@ -128,26 +159,27 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
             tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(
                 element.installment_per_month_ceil
-                    ?: 0, false
+                    ?: 0,
+                false
             )
             if (element.tenure != 1) {
                 tvTenureMultiplier.visible()
                 tvTenureMultiplier.text =
                     context.getString(R.string.paylater_x_tenure, element.tenure)
-            }
-            else {
+            } else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
             }
-            if (element.subheader.isNullOrEmpty())
+            if (element.subheader.isNullOrEmpty()) {
                 tvInstallmentDescription.gone()
-            else {
+            } else {
                 tvInstallmentDescription.visible()
                 tvInstallmentDescription.text = element.subheader.parseAsHtml()
             }
             partnerTenureInfo.setOnClickListener {
-                if (element.installementDetails != null)
+                if (element.installementDetails != null) {
                     interaction.installementDetails(element)
+                }
             }
         }
     }
@@ -157,7 +189,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         PayLaterCtaClick().apply {
             tenureOption = detail.tenure ?: 0
             userStatus = detail.userState ?: ""
-            payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+            payLaterPartnerName = detail.gatewayDetail?.gatewayCode ?: ""
             emiAmount = detail.installment_per_month_ceil.toString()
             limit = detail.limit ?: ""
             redirectLink = link
@@ -169,22 +201,44 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 }
 
 private fun View.disableTitleDetail() {
-
-    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
-        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvTitlePaymentPartner.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
+    this.tvInstallmentAmount.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
+    this.tvTenureMultiplier.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
     this.partnerTenureInfo.isEnabled = false
 }
 private fun View.enableTitleDetail() {
-    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
-        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    this.tvTitlePaymentPartner.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+    )
+    this.tvInstallmentAmount.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+    )
+    this.tvTenureMultiplier.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        )
+    )
     this.partnerTenureInfo.isEnabled = true
-
 }

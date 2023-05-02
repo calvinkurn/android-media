@@ -1,13 +1,18 @@
 package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 
 
@@ -17,7 +22,26 @@ class GiftBoxReminderButton @JvmOverloads constructor(
 
     val LAYOUT_ID = R.layout.gami_giftbox_reminder_button
     val loaderReminder: LoaderUnify
-    val imageBell: AppCompatImageView
+    val imageBell: ImageUnify
+
+    private val bellImageSource : String
+    get() {
+        val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
+        return if(isTablet){
+            Constants.BELL_IMAGE_4X
+        }
+        else Constants.BELL_IMAGE_3X
+    }
+
+    private val bellFilledImageSource : String
+        get() {
+            val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
+            return if(isTablet){
+               Constants.FILLED_BELL_IMAGE_4X
+            }
+            else Constants.FILLED_BELL_IMAGE_3X
+        }
+
 
     init {
         View.inflate(context, LAYOUT_ID, this)
@@ -54,10 +78,20 @@ class GiftBoxReminderButton @JvmOverloads constructor(
     }
 
     fun setIcon(isReminderSet: Boolean) {
-        if (isReminderSet) {
-            imageBell.setImageResource(R.drawable.gami_bell_filled)
-        } else {
-            imageBell.setImageResource(R.drawable.gami_bell_1)
-        }
+        val imageSource = if(isReminderSet) bellFilledImageSource else bellImageSource
+        Glide.with(context)
+            .asDrawable()
+            .load(imageSource)
+            .into(object : CustomTarget<Drawable>(){
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    imageBell.setImageDrawable(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+            })
     }
 }

@@ -1,8 +1,6 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
-import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupModel
@@ -67,11 +65,11 @@ class RechargeCCViewModelTest {
         )
     }
 
-    //========================================= Bank List ===================================
+    // ========================================= Bank List ===================================
 
     @Test
     fun getListBank_ErrorMessageEmpty_SuccessGetListBank() {
-        //given
+        // given
         val bankList = getMockBankList()
 
         val result = HashMap<Type, Any>()
@@ -80,10 +78,10 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeCCViewModel.getListBank("", 0)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.rechargeCCBankList
         Assert.assertNotNull(actualData)
         Assert.assertEquals(bankList, actualData.value?.bankList)
@@ -91,7 +89,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun getListBank_ErrorMessageIsNotEmpty_FailedGetListBank() {
-        //given
+        // given
         val errorMessage = "Maaf terjadi kendala teknis"
 
         val result = HashMap<Type, Any>()
@@ -100,10 +98,10 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeCCViewModel.getListBank("", 0)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
         Assert.assertEquals(errorMessage, actualData.value?.message)
@@ -111,7 +109,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun getListBank_ErrorGetApi_FailedGetListBank() {
-        //given
+        // given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -120,20 +118,20 @@ class RechargeCCViewModelTest {
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
-        //when
+        // when
         rechargeCCViewModel.getListBank("", 0)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
         Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 
-    //========================================= MENU DETAIL ================================
+    // ========================================= MENU DETAIL ================================
 
     @Test
     fun getMenuDetail_TickersNotEmpty_SuccessGetTicker() {
-        //given
+        // given
         val tickers = getMockTickers()
         val loyaltyStatus = "tokopedia"
         val menuName = "Kartu Kredit"
@@ -152,13 +150,13 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeCCViewModel.getMenuDetail("", "169")
 
-        //then
-        val actualData = rechargeCCViewModel.tickers
+        // then
+        val actualData = (rechargeCCViewModel.menuDetail.value as RechargeNetworkResult.Success).data
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(tickers, actualData.value)
+        Assert.assertEquals(tickers, actualData.tickers)
 
         Assert.assertEquals(loyaltyStatus, rechargeCCViewModel.loyaltyStatus)
         Assert.assertEquals(menuName, rechargeCCViewModel.categoryName)
@@ -166,7 +164,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun getMenuDetail_TickerEmpty_FailedGetTicker() {
-        //given
+        // given
         val tickers = mutableListOf<TickerCreditCard>()
 
         val result = HashMap<Type, Any>()
@@ -177,18 +175,18 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeCCViewModel.getMenuDetail("", "169")
 
-        //then
-        val actualData = rechargeCCViewModel.tickers
+        // then
+        val actualData = (rechargeCCViewModel.menuDetail.value as RechargeNetworkResult.Success).data
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(tickers, actualData.value)
+        Assert.assertEquals(tickers, actualData.tickers)
     }
 
     @Test
     fun getMenuDetail_ErrorGetApi_FailedGetTicker() {
-        //given
+        // given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -198,34 +196,34 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeCCViewModel.getMenuDetail("", "169")
 
-        //then
-        val actualData = rechargeCCViewModel.tickers
-        Assert.assertNull(actualData.value)
+        // then
+        val actualData = rechargeCCViewModel.menuDetail.value
+        Assert.assertTrue(actualData is RechargeNetworkResult.Fail)
     }
 
-    //========================================= PREFIX =====================================
+    // ========================================= PREFIX =====================================
 
     @Test
     fun checkPrefixNumber_PrefixesNotEmpty_SuccessGetPrefixMatch() {
-        //given
+        // given
         val prefixes = getMockPrefixes()
         val validations = getMockValidations()
         val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
             CatalogPrefixSelect(
-            prefixes = prefixes,
-            validations = validations
+                prefixes = prefixes,
+                validations = validations
             )
         )
 
-        //when
+        // when
         rechargeCCViewModel.checkPrefixNumber(VALID_CC_NUMBER)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.creditCardSelected
         Assert.assertNotNull(actualData)
         Assert.assertEquals(rechargeCCSelected.defaultProductId, actualData.value?.defaultProductId)
@@ -245,7 +243,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun checkPrefixNumber_PrefixNotFound_ReturnEmptyResult() {
-        //given
+        // given
         val prefixes = getMockPrefixes()
         val validations = getMockValidations()
 
@@ -256,10 +254,10 @@ class RechargeCCViewModelTest {
             )
         )
 
-        //when
+        // when
         rechargeCCViewModel.checkPrefixNumber(INVALID_CC_NUMBER)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.creditCardSelected
         Assert.assertNotNull(actualData.value)
         Assert.assertEquals("", actualData.value?.defaultProductId)
@@ -269,7 +267,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun checkPrefixNumber_PrefixEmpty_ReturnEmptyResult() {
-        //given
+        // given
         val prefixes = listOf<CatalogPrefixs>()
         val validations = getMockValidations()
 
@@ -280,10 +278,10 @@ class RechargeCCViewModelTest {
             )
         )
 
-        //when
+        // when
         rechargeCCViewModel.checkPrefixNumber(INVALID_CC_NUMBER)
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.creditCardSelected
         Assert.assertNotNull(actualData.value)
         Assert.assertEquals("", actualData.value?.defaultProductId)
@@ -293,16 +291,16 @@ class RechargeCCViewModelTest {
 
     @Test
     fun getPrefix_ErrorGetApi_FailedGetPrefix() {
-        //given
+        // given
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
-        //when
+        // when
         rechargeCCViewModel.getPrefixes("", "169")
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.prefixSelect
         Assert.assertNotNull(actualData)
         Assert.assertEquals(RechargeCCCatalogPrefix(), (actualData.value as RechargeNetworkResult.Success).data)
@@ -310,7 +308,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun getPrefix_SuccessGetPrefix() {
-        //given
+        // given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -319,10 +317,10 @@ class RechargeCCViewModelTest {
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
-        //when
+        // when
         rechargeCCViewModel.getPrefixes("", "169")
 
-        //then
+        // then
         val actualData = rechargeCCViewModel.prefixSelect
         Assert.assertNotNull(actualData)
         Assert.assertEquals("Error gql", (actualData.value as RechargeNetworkResult.Fail).error.message)
@@ -388,7 +386,7 @@ class RechargeCCViewModelTest {
         Assert.assertNotNull(rechargeCCViewModel.validatorJob)
     }
 
-    //======================================= Favorite Number =====================================
+    // ======================================= Favorite Number =====================================
     @Test
     fun setFavoriteNumberLoading_ShouldReturnChipsLoading() {
         rechargeCCViewModel.setFavoriteNumberLoading()
@@ -408,7 +406,7 @@ class RechargeCCViewModelTest {
         val favoriteGroupModel = FavoriteGroupModel(
             prefill = PrefillModel(),
             autoCompletes = listOf(AutoCompleteModel()),
-            favoriteChips = listOf(FavoriteChipModel()),
+            favoriteChips = listOf(FavoriteChipModel())
         )
 
         coEvery {
@@ -445,7 +443,7 @@ class RechargeCCViewModelTest {
         val favoriteGroupModel = FavoriteGroupModel(
             prefill = PrefillModel(),
             autoCompletes = listOf(AutoCompleteModel()),
-            favoriteChips = listOf(FavoriteChipModel()),
+            favoriteChips = listOf(FavoriteChipModel())
         )
 
         coEvery {
@@ -479,7 +477,7 @@ class RechargeCCViewModelTest {
         val favoriteGroupModel = FavoriteGroupModel(
             prefill = PrefillModel(),
             autoCompletes = listOf(AutoCompleteModel()),
-            favoriteChips = listOf(FavoriteChipModel()),
+            favoriteChips = listOf(FavoriteChipModel())
         )
 
         coEvery {
@@ -493,7 +491,7 @@ class RechargeCCViewModelTest {
         Assert.assertNull(rechargeCCViewModel.favoriteChipsData.value)
     }
 
-    //======================================= Mock Data ===========================================
+    // ======================================= Mock Data ===========================================
 
     private fun getMockValidations(): List<Validation> {
         return listOf(
@@ -505,12 +503,16 @@ class RechargeCCViewModelTest {
     private fun getMockPrefixes(): List<CatalogPrefixs> {
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(
-            CatalogPrefixs("1", "1234",
+            CatalogPrefixs(
+                "1",
+                "1234",
                 CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))
             )
         )
         prefixes.add(
-            CatalogPrefixs("2", "4111",
+            CatalogPrefixs(
+                "2",
+                "4111",
                 CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))
             )
         )
@@ -526,7 +528,7 @@ class RechargeCCViewModelTest {
         return tickers
     }
 
-    private fun getMockBankList() : List<RechargeCCBank> {
+    private fun getMockBankList(): List<RechargeCCBank> {
         val bankList = mutableListOf<RechargeCCBank>()
         bankList.add(RechargeCCBank("CITIBANK", "https://images.tokopedia.net/img/recharge/operator/esia.png"))
         bankList.add(RechargeCCBank("VISA", "https://images.tokopedia.net/img/attachment/2019/10/8/8966534/8966534_172ecb33-180b-422a-b694-ffeb82ec95b6.png"))

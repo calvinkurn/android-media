@@ -27,6 +27,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -131,6 +132,9 @@ class ShipmentPresenterValidateUseFinalTest {
     @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -164,7 +168,8 @@ class ShipmentPresenterValidateUseFinalTest {
             gson,
             TestSchedulers,
             eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
