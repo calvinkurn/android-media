@@ -1,14 +1,13 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
+import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -18,6 +17,9 @@ import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
+import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
+import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
+import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
 import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
@@ -25,6 +27,7 @@ import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -65,12 +68,14 @@ class MediaUploaderModule {
     fun provideVideoUploaderManager(
         policyManager: SourcePolicyManager,
         policyUseCase: GetVideoPolicyUseCase,
+        videoCompression: SetVideoCompressionUseCase,
         simpleUploader: SimpleUploaderManager,
         largeUploader: LargeUploaderManager
     ): VideoUploaderManager {
         return VideoUploaderManager(
             policyManager,
             policyUseCase,
+            videoCompression,
             simpleUploader,
             largeUploader
         )
@@ -117,6 +122,22 @@ class MediaUploaderModule {
             imageUploaderUseCase,
             imageSecurePolicyUseCase
         )
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideVideoCompressionRepository(
+        videoCompressionCacheManager: VideoCompressionCacheManager
+    ): VideoCompressionRepository {
+        return VideoCompressionRepositoryImpl(videoCompressionCacheManager)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideSetVideoCompressionUseCase(
+        repository: VideoCompressionRepository
+    ): SetVideoCompressionUseCase {
+        return SetVideoCompressionUseCase(repository)
     }
 
     // --- simple video ---

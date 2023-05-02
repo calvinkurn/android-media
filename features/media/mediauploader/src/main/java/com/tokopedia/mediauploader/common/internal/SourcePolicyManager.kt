@@ -3,7 +3,6 @@ package com.tokopedia.mediauploader.common.internal
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import javax.inject.Inject

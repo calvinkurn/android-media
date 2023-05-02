@@ -23,7 +23,9 @@ class UploaderUseCase @Inject constructor(
 
     private lateinit var sourceId: String
     private lateinit var file: File
+
     private var withTranscode = true
+    private var shouldCompress = false
     private var isSecure = false
     private var extraHeader: Map<String, String> = mapOf()
     private var extraBody: Map<String, String> = mapOf()
@@ -33,6 +35,7 @@ class UploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: RequestParams): UploadResult {
         withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true)
+        shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, false)
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
         isSecure = params.getBoolean(PARAM_IS_SECURE, false)
@@ -40,13 +43,13 @@ class UploaderUseCase @Inject constructor(
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
 
         return if (isVideoFormat(file.absolutePath)) {
-            videoUploader(withTranscode)
+            videoUploader()
         } else {
-            imageUploader(extraHeader, extraBody)
+            imageUploader()
         }
     }
 
-    private suspend fun videoUploader(withTranscode: Boolean) = request(
+    private suspend fun videoUploader() = request(
         file = file,
         sourceId = sourceId,
         uploaderManager = videoUploaderManager,
@@ -55,15 +58,13 @@ class UploaderUseCase @Inject constructor(
                 file,
                 sourceId,
                 progressUploader,
-                withTranscode
+                withTranscode,
+                shouldCompress
             )
         }
     )
 
-    private suspend fun imageUploader(
-        extraHeader: Map<String, String>,
-        extraBody: Map<String, String>
-    ) = request(
+    private suspend fun imageUploader() = request(
         file = file,
         sourceId = sourceId,
         uploaderManager = imageUploaderManager,
@@ -94,6 +95,7 @@ class UploaderUseCase @Inject constructor(
         filePath: File,
         withTranscode: Boolean = true,
         isSecure: Boolean = false,
+        shouldCompress: Boolean = false,
         extraHeader: Map<String, String> = mapOf(),
         extraBody: Map<String, String> = mapOf()
     ): RequestParams {
@@ -102,6 +104,7 @@ class UploaderUseCase @Inject constructor(
             putString(PARAM_SOURCE_ID, sourceId)
             putObject(PARAM_FILE_PATH, filePath)
             putBoolean(PARAM_IS_SECURE, isSecure)
+            putBoolean(PARAM_SHOULD_COMPRESS, shouldCompress)
             putObject(PARAM_EXTRA_HEADER, extraHeader)
             putObject(PARAM_EXTRA_BODY, extraBody)
         }
@@ -128,5 +131,6 @@ class UploaderUseCase @Inject constructor(
         const val PARAM_IS_SECURE = "is_secure"
         const val PARAM_EXTRA_HEADER = "extra_header"
         const val PARAM_EXTRA_BODY = "extra_body"
+        const val PARAM_SHOULD_COMPRESS = "should_compress"
     }
 }

@@ -7,13 +7,16 @@ import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.mbToBytes
+import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
+import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
 import java.io.File
 import javax.inject.Inject
 
 class VideoUploaderManager @Inject constructor(
     private val policyManager: SourcePolicyManager,
     private val policyUseCase: GetVideoPolicyUseCase,
+    private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
     private val largeUploaderManager: LargeUploaderManager
 ) : UploaderManager {
@@ -24,7 +27,8 @@ class VideoUploaderManager @Inject constructor(
         file: File,
         sourceId: String,
         loader: ProgressUploader?,
-        withTranscode: Boolean
+        withTranscode: Boolean,
+        shouldCompress: Boolean
     ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
@@ -32,11 +36,24 @@ class VideoUploaderManager @Inject constructor(
         val policy = policyUseCase(sourceId)
         policyManager.set(policy)
 
+        // compress video if needed
+        val filePath = if (shouldCompress) {
+            val param = VideoCompressionParam(
+                sourceId = sourceId,
+                videoPath = file.path,
+                bitrate = 1_000_000,
+                resolution = 540
+            )
+
+            videoCompression(param)
+        } else {
+            file.path
+        }
+
         // return the upload result
         return policy.videoPolicy?.let { videoPolicy ->
             val maxSizeOfSimpleUpload = videoPolicy.thresholdSizeOfVideo()
             val maxFileSize = videoPolicy.maxFileSize
-            val filePath = file.path
 
             when {
                 !file.exists() -> {
