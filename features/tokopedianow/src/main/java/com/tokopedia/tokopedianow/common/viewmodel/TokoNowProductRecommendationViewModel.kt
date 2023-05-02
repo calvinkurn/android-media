@@ -25,7 +25,6 @@ import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updatePro
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
@@ -40,11 +39,11 @@ import javax.inject.Inject
 class TokoNowProductRecommendationViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val userSession: UserSessionInterface,
+    private val addressData: TokoNowLocalAddress,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
-    addressData: TokoNowLocalAddress,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(

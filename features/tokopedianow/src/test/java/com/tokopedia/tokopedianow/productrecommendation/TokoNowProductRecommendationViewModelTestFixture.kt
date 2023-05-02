@@ -18,6 +18,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
@@ -49,6 +50,9 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+
+    @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
@@ -58,7 +62,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
     @RelaxedMockK
-    lateinit var addressData: TokoNowLocalAddress
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -230,11 +234,12 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         viewModel = TokoNowProductRecommendationViewModel(
             getRecommendationUseCase = getRecommendationUseCase,
             getMiniCartUseCase = getMiniCartUseCase,
+            addressData = addressData,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
+            getTargetedTickerUseCase = getTargetedTickerUseCase,
             userSession = userSession,
-            addressData = addressData,
             dispatchers = coroutineTestRule.dispatchers
         )
     }

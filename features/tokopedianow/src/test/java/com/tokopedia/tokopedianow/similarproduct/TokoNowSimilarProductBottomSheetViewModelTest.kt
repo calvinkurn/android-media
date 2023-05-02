@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendat
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -30,7 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class ProductCardCompactSimilarProductViewModelTest {
+class TokoNowSimilarProductBottomSheetViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -43,7 +44,6 @@ class ProductCardCompactSimilarProductViewModelTest {
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
     private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
-    private lateinit var chooseAddressWrapper: ChooseAddressWrapper
     private lateinit var chooseAddressData: LocalCacheModel
 
     protected lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
@@ -57,18 +57,18 @@ class ProductCardCompactSimilarProductViewModelTest {
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         getSimilarProductUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
-            chooseAddressWrapper,
             userSession,
+            addressData,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
             getTargetedTickerUseCase,
-            addressData,
             CoroutineTestDispatchers
         )
     }
