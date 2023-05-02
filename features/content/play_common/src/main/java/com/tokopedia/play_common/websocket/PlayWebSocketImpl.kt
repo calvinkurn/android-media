@@ -174,7 +174,7 @@ class PlayWebSocketImpl(
 
         val bundle = JsonObject()
         bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_TRACKING)
-        bundle.add(PARAM_SEND_DATA, param)
+        bundle.add(PARAM_SEND_TYPE_TRACKING_FIELD, param)
 
         return bundle.toString()
     }
@@ -193,8 +193,8 @@ class PlayWebSocketImpl(
         private const val HEADER_VALUE_CONTENT_TYPE_JSON = "application/json"
 
         private const val PARAM_SEND_TYPE = "type"
-        private const val PARAM_SEND_DATA = "data"
         private const val PARAM_SEND_TYPE_TRACKING = "TRACKING"
         private const val PARAM_SEND_TYPE_TRACKING_ID = "id"
+        private const val PARAM_SEND_TYPE_TRACKING_FIELD = "tracking"
     }
 }
