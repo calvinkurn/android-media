@@ -9,7 +9,7 @@ class PaymentSettingAuthenticateAnalyticsConstant {
     }
 
     object Value {
-        const val TRACKER_ID_42704 = "TRACKER_ID_42704"
+        const val TRACKER_ID_42704 = "42704"
         const val TRACKER_ID_42703 = "42703"
         const val TRACKER_ID_42702 = "42702"
         const val PAYMENT = "payment"
