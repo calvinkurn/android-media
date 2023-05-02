@@ -42,7 +42,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     }
 
     private fun redirectToPlayRoom() {
-        val webLink = intent.getStringExtra(EXTRA_WEB_LINK).orEmpty()
+        val webLink = intent.getStringExtra(EXTRA_LINK).orEmpty()
         RouteManager.route(this, webLink)
         finish()
     }
@@ -51,20 +51,20 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         private const val EXTRA_CHANNEL_ID = "channel_id"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
-        private const val EXTRA_WEB_LINK = "web_link"
+        private const val EXTRA_LINK = "link"
 
         fun getIntent(
             context: Context,
             channelId: String,
             authorId: String,
             authorType: String,
-            webLink: String,
+            link: String,
         ): Intent {
             return Intent(context, PlayShortsPostUploadActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_ID, channelId)
                 putExtra(EXTRA_AUTHOR_ID, authorId)
                 putExtra(EXTRA_AUTHOR_TYPE, authorType)
-                putExtra(EXTRA_WEB_LINK, webLink)
+                putExtra(EXTRA_LINK, link)
             }
         }
     }

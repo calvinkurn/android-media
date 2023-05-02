@@ -242,7 +242,7 @@ object DeeplinkMapper {
         }
 
         val appLinkContent =
-            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(context, uri)
         if (appLinkContent.isNotBlank()) return appLinkContent
 
         val appLinkFeed =

@@ -1,5 +1,6 @@
 package com.tokopedia.applink.content
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -17,14 +18,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_E
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.isAppInstalled
 
 /**
  * Created by jegul on 2019-11-04
  */
 object DeeplinkMapperContent {
 
-    fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
-        return if (!GlobalConfig.isSellerApp() && uri.pathSegments
+    fun getRegisteredNavigationContentFromHttp(context: Context, uri: Uri): String {
+        return if (context.isAppInstalled(CUSTOMER_APP_PACKAGE) && uri.pathSegments
             .joinToString("/")
             .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)
         ) {
@@ -139,4 +141,6 @@ object DeeplinkMapperContent {
             )
         )
     }
+
+    private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 }
