@@ -35,10 +35,10 @@ class SSELoggingFragment: Fragment() {
 
     private val adapter: SSELogAdapter by lazy { SSELogAdapter() }
 
-    private lateinit var etSSELogSearch: SearchBarUnify
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var rvSSELog: RecyclerView
-    private lateinit var tvNoData: Typography
+    private var etSSELogSearch: SearchBarUnify? = null
+    private var swipeRefresh: SwipeRefreshLayout? = null
+    private var rvSSELog: RecyclerView? = null
+    private var tvNoData: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
@@ -70,7 +70,7 @@ class SSELoggingFragment: Fragment() {
         rvSSELog = view.findViewById(R.id.rv_sse_log)
         tvNoData = view.findViewById(R.id.tv_sse_log_no_data)
 
-        rvSSELog.apply {
+        rvSSELog?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SSELoggingFragment.adapter
         }
@@ -85,11 +85,11 @@ class SSELoggingFragment: Fragment() {
 
     private fun initObserver() {
         viewModel.observableSSELog.observe(viewLifecycleOwner) {
-            swipeRefresh.isRefreshing = false
+            swipeRefresh?.isRefreshing = false
             adapter.updateData(it)
 
-            if(it.isNullOrEmpty()) tvNoData.visible()
-            else tvNoData.hide()
+            if(it.isNullOrEmpty()) tvNoData?.visible()
+            else tvNoData?.hide()
         }
 
         viewModel.observableError.observe(viewLifecycleOwner) {
@@ -98,7 +98,7 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun initListener() {
-        etSSELogSearch.searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
+        etSSELogSearch?.searchBarTextField?.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 loadData()
                 return@setOnEditorActionListener true
@@ -106,15 +106,15 @@ class SSELoggingFragment: Fragment() {
             return@setOnEditorActionListener false
         }
 
-        swipeRefresh.setOnRefreshListener {
+        swipeRefresh?.setOnRefreshListener {
             loadData()
         }
     }
 
     private fun loadData() {
-        val query = etSSELogSearch.searchBarTextField.text.toString()
+        val query = etSSELogSearch?.searchBarTextField?.text.toString()
 
-        swipeRefresh.isRefreshing = true
+        swipeRefresh?.isRefreshing = true
         viewModel.getLog(query)
     }
 
