@@ -45,7 +45,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
-import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
@@ -214,24 +213,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     FavoriteNumberPageConfig.TELCO,
                 )
             startActivityForResult(intent, REQUEST_CODE_DIGITAL_SAVED_NUMBER)
-        }
-    }
-
-    protected fun openContactPicker() {
-        val contactPickerIntent = Intent(
-            Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        )
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    getString(R.string.error_message_contact_not_found),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
-            }
         }
     }
 
