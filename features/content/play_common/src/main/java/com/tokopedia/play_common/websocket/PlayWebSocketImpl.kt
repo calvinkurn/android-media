@@ -83,7 +83,7 @@ class PlayWebSocketImpl(
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
-            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
+            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString() + newMessage.message.tracking.id)
             Log.d("sukses raw", text)
 
             Log.d("SUKSES MESSAGE", newMessage.message.tracking.toString())
@@ -92,7 +92,9 @@ class PlayWebSocketImpl(
              * Send tracking Id
              */
             if (!newMessage.message.isTrackingIdAvailable) return
-            webSocket.send(sendTracking(newMessage.message.tracking.id))
+            val tracking = sendTracking(newMessage.message.tracking.id)
+            Log.d("sukses t send", tracking.toString())
+            webSocket.send(tracking)
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
