@@ -64,6 +64,14 @@ fun NestButton(
     if (variant == Variant.TEXT_ONLY) {
         TextButton(modifier, text, isEnabled, isLoading, size, onClick)
     }
+
+    if (variant == Variant.TRANSACTION_FILLED) {
+        TransactionFilledButton(modifier, text, size, isEnabled, isLoading, onClick)
+    }
+
+    if (variant == Variant.TRANSACTION_GHOST) {
+        TransactionGhostButton(modifier, text, isEnabled, size, isLoading, onClick)
+    }
 }
 
 @Composable
@@ -211,6 +219,88 @@ private fun GhostInvertedButton(
 }
 
 @Composable
+private fun TransactionFilledButton(
+    modifier: Modifier,
+    text: String,
+    size: Size,
+    isEnabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val transactionFilledTextStyle = NestTheme.typography.display1.copy(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    val buttonBackgroundDark = Color(0xFFFF8215)
+    val buttonBackgroundLight = Color(0xFFFA591D)
+    val buttonBackgroundColor = if (isSystemInDarkTheme()) buttonBackgroundDark else buttonBackgroundLight
+
+    val buttonColors = ButtonDefaults.buttonColors(
+        backgroundColor = buttonBackgroundColor,
+        contentColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
+        disabledContentColor = NestTheme.colors.NN._400,
+        disabledBackgroundColor = NestTheme.colors.NN._100
+    )
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        textStyle = transactionFilledTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = buttonColors,
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = BorderStroke(
+            width = 1.dp,
+            color = if (isEnabled) buttonBackgroundColor else NestTheme.colors.NN._100
+        ),
+        progressBarColor = Color.White,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun TransactionGhostButton(
+    modifier: Modifier,
+    text: String,
+    isEnabled: Boolean,
+    size: Size,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    val transactionGhostTextStyle = NestTheme.typography.display2.copy(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = size.toFontSize()
+    )
+
+    val textColorDark = Color(0xFFFF8215)
+    val textColorLight = Color(0xFFFA591D)
+    val textColor = if (isSystemInDarkTheme()) textColorDark else textColorLight
+
+    NestDefaultButton(
+        modifier = modifier,
+        text = text,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        textStyle = transactionGhostTextStyle,
+        buttonCornerRadius = size.toCornerRadius(),
+        buttonColors = ButtonDefaults.outlinedButtonColors(
+            contentColor = textColor,
+            disabledContentColor = NestTheme.colors.NN._400
+        ),
+        buttonHeight = size.toHeightDp(),
+        buttonBorderStroke = BorderStroke(
+            width = 1.dp,
+            color = if (isEnabled) textColor else NestTheme.colors.NN._100
+        ),
+        progressBarColor = textColor,
+        onClick = onClick,
+    )
+}
+
+@Composable
 private fun TextButton(
     modifier: Modifier,
     text: String,
@@ -290,7 +380,9 @@ enum class Variant {
     GHOST,
     GHOST_ALTERNATE,
     GHOST_INVERTED,
-    TEXT_ONLY
+    TEXT_ONLY,
+    TRANSACTION_FILLED,
+    TRANSACTION_GHOST
 }
 
 enum class Size {
@@ -351,6 +443,12 @@ private fun NestButtonPreview() {
 
             NestTypography(text = "Ghost - Inverted", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
             NestButtonGhostInvertedPreview()
+
+            NestTypography(text = "Transaction - Filled (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestButtonTransactionFilledPreview()
+
+            NestTypography(text = "Transaction - Ghost (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+            NestButtonTransactionGhostPreview()
 
             NestTypography(text = "Text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
             NestButtonTextPreview()
@@ -526,6 +624,74 @@ private fun NestButtonTextPreview() {
             modifier = Modifier.weight(1f),
             text = "Loading",
             variant = Variant.TEXT_ONLY,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = true,
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun NestButtonTransactionFilledPreview() {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Enabled",
+            variant = Variant.TRANSACTION_FILLED,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Disabled",
+            variant = Variant.TRANSACTION_FILLED,
+            size = Size.MEDIUM,
+            isEnabled = false,
+            isLoading = false,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Loading",
+            variant = Variant.TRANSACTION_FILLED,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = true,
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun NestButtonTransactionGhostPreview() {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Enabled",
+            variant = Variant.TRANSACTION_GHOST,
+            size = Size.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            onClick = {},
+        )
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Disabled",
+            variant = Variant.TRANSACTION_GHOST,
+            size = Size.MEDIUM,
+            isEnabled = false,
+            isLoading = false,
+            onClick = {},
+        )
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Loading",
+            variant = Variant.TRANSACTION_GHOST,
             size = Size.MEDIUM,
             isEnabled = true,
             isLoading = true,
