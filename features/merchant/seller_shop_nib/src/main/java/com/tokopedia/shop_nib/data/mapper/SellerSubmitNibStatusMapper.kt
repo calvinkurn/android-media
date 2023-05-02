@@ -7,9 +7,12 @@ import javax.inject.Inject
 
 class SellerSubmitNibStatusMapper @Inject constructor() {
 
+    companion object {
+        private const val STATUS_ID_SUBMITTED = 1
+    }
     fun map(response: SellerSubmitNIBStatusResponse) : NibSubmissionResult {
         val isSuccess = response.sellerSubmitNIBStatus.error?.message?.isEmpty().orTrue()
-        val hasPreviousSubmission = response.sellerSubmitNIBStatus.result?.status == 1
+        val hasPreviousSubmission = response.sellerSubmitNIBStatus.result?.status == STATUS_ID_SUBMITTED
         val errorMessage = response.sellerSubmitNIBStatus.error?.message.orEmpty()
         return NibSubmissionResult(isSuccess, hasPreviousSubmission, errorMessage)
     }
