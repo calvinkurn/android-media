@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -412,13 +413,12 @@ private fun Size.toCornerRadius(): Dp {
 }
 //region Preview
 @Preview(
-    showSystemUi = true,
     name = "Light Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true,
     device = "spec:width=411dp,height=891dp"
 )
 @Preview(
-    showSystemUi = true,
     name = "Dark Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
@@ -428,34 +428,38 @@ private fun Size.toCornerRadius(): Dp {
 @Composable
 private fun NestButtonPreview() {
     NestTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            NestTypography(text = "Filled", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonFilledPreview()
+        Column {
+            NestHeader(title = "NestButton Preview")
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                NestTypography(text = "Filled", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonFilledPreview()
 
-            NestTypography(text = "Ghost - Default", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonGhostPreview()
+                NestTypography(text = "Ghost - Default", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonGhostPreview()
 
-            NestTypography(text = "Ghost - Alternate", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonGhostAlternatePreview()
+                NestTypography(text = "Ghost - Alternate", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonGhostAlternatePreview()
 
-            NestTypography(text = "Ghost - Inverted", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonGhostInvertedPreview()
+                NestTypography(text = "Ghost - Inverted", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonGhostInvertedPreview()
 
-            NestTypography(text = "Transaction - Filled (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonTransactionFilledPreview()
+                NestTypography(text = "Transaction - Filled (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonTransactionFilledPreview()
 
-            NestTypography(text = "Transaction - Ghost (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonTransactionGhostPreview()
+                NestTypography(text = "Transaction - Ghost (Deprecated)", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonTransactionGhostPreview()
 
-            NestTypography(text = "Text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonTextPreview()
+                NestTypography(text = "Text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonTextPreview()
 
-            NestTypography(text = "Button sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
-            NestButtonSizesPreview()
+                NestTypography(text = "Button sizes", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonSizesPreview()
+            }
         }
+
     }
 }
 
