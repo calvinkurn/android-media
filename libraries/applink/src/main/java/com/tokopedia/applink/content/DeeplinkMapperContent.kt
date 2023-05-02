@@ -3,6 +3,7 @@ package com.tokopedia.applink.content
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -106,7 +107,7 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+        return UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uri.lastPathSegment)
     }
     private fun handleNavigationFeedVideo(uri: Uri): String {
         val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
