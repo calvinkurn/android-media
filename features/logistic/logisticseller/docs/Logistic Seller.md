@@ -1,6 +1,8 @@
 ---
 title: Logistic Seller
 labels:
+- logistic
+- logistic-seller
 ---
 
 
