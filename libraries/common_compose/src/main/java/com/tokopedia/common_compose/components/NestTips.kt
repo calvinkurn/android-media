@@ -78,6 +78,7 @@ fun NestTips(
 @Composable
 fun NestTipsPreview() {
     NestTips(
+        modifier = Modifier.padding(16.dp),
         title = "Title goes here",
         description = "Be brief, ya! You can add link in the end of a sentence. Test Link"
     )
