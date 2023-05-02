@@ -16,21 +16,20 @@ class EditorAddTextUiModel(
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
     var textPosition: Int = TEXT_POSITION_BOTTOM,
     var textTemplate: Int = TEXT_TEMPLATE_FREE,
-    private val textTemplateLatar: LatarTemplateDetail? = null
+    private var textTemplateLatar: LatarTemplateDetail? = null
 ) : Parcelable {
 
     // need to encapsulate latar template model to prevent error when using `Free Text` but accessing `Latar Text` template
-    private var mTextTemplateLatar = textTemplateLatar
-    get() {
+    fun getLatarTemplate(): LatarTemplateDetail? {
         return if (textTemplate != TEXT_TEMPLATE_BACKGROUND) {
             return null
         } else {
-            field
+            textTemplateLatar
         }
     }
 
     fun setLatarTemplate(latarTemplate: LatarTemplateDetail) {
-        mTextTemplateLatar = latarTemplate
+        textTemplateLatar = latarTemplate
     }
 
     fun getColor(context: Context?): Int {
@@ -82,8 +81,6 @@ class EditorAddTextUiModel(
         const val TEXT_LATAR_TEMPLATE_BLACK = 0
         const val TEXT_LATAR_TEMPLATE_WHITE = 1
         // ---
-
-        private const val TEXT_LATAR_NULL = -1
     }
 }
 

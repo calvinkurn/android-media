@@ -3,10 +3,10 @@ package com.tokopedia.media.editor.utils
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
+import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
@@ -273,4 +273,12 @@ fun roundedBitmap(
     roundedBitmap.cornerRadius = if (isCircular) (source.width.toFloat() / 2) else cornerRadius
 
     return roundedBitmap.toBitmap()
+}
+
+fun Drawable.toWhite() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        colorFilter = BlendModeColorFilter(Color.WHITE, BlendMode.SRC_ATOP)
+    } else {
+        setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+    }
 }

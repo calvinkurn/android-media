@@ -20,6 +20,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_BLACK
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
+import com.tokopedia.media.editor.utils.toWhite
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
@@ -87,20 +88,12 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
             // define is latar color for item preview
             if (latarColor == TEXT_LATAR_TEMPLATE_WHITE) {
                 ContextCompat.getDrawable(context, it)?.let { latarBg ->
-                     filterDrawableColor(latarBg)
+                    latarBg.toWhite()
                     mItemLatar?.background = latarBg
                 }
             } else {
                 mItemLatar?.setBackgroundResource(it)
             }
-        }
-    }
-
-    private fun filterDrawableColor(src: Drawable){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            src.colorFilter = BlendModeColorFilter(Color.WHITE, BlendMode.SRC_ATOP)
-        } else {
-            src.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
         }
     }
 }

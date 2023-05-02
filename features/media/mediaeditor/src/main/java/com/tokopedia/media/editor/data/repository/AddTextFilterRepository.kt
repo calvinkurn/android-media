@@ -17,6 +17,9 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
+import com.tokopedia.media.editor.ui.uimodel.LatarTemplateDetail
+import com.tokopedia.media.editor.utils.toWhite
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -106,7 +109,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             }
         }
 
-        getLatarDrawable(data.getLatarTemplate()?.latarModel)?.let {
+        getLatarDrawable(data.getLatarTemplate())?.let {
             it.toBitmap().scale(canvas.width, mTextLayout.height + padding.toInt()).apply {
                 canvas.drawBitmap(this, -padding, 0f, null)
             }
@@ -118,17 +121,20 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         return bitmap
     }
 
-    private fun getLatarDrawable(latarModel: Int?): Drawable?{
-        if (latarModel == null) return null
+    private fun getLatarDrawable(latarDetail: LatarTemplateDetail?): Drawable?{
+        if (latarDetail == null) return null
 
-        when (latarModel) {
+        when (latarDetail.latarModel) {
             TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
             TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
             TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
             else -> null
         }.apply {
             this?.let {
-                return ContextCompat.getDrawable(context, it)
+                ContextCompat.getDrawable(context, it)?.let { latarBg ->
+                    if (latarDetail.latarColor == TEXT_LATAR_TEMPLATE_WHITE) latarBg.toWhite()
+                    return latarBg
+                }
             }
             return null
         }

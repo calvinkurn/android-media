@@ -97,7 +97,9 @@ class AddTextFragment @Inject constructor(
             textColor = colorList[activeColorIndex],
             textStyle = activeStyleIndex,
             textValue = getUserInput(),
-            textPosition = positionIndex
+            textPosition = positionIndex,
+            textTemplate = viewModel.textData.textTemplate,
+            textTemplateLatar = viewModel.textData.getLatarTemplate()
         )
     }
 
