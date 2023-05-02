@@ -1,12 +1,5 @@
 package com.tokopedia.common_compose.components
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -24,24 +17,18 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.extensions.shimmerBackground
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
@@ -95,14 +82,10 @@ fun NestTextField(
             modifier = modifier
                 .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
                 .fillMaxWidth().onFocusChanged { onFocusChangeListener?.invoke(it) },
-            placeholder = placeholder?.let { { NestTypography(text = it) } },
+            placeholder = placeholder?.let { return NestTypography(text = it) },
             leadingIcon = generatePrefix(prefix, enabled),
             trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled, onClear),
-            label = label?.let {
-                {
-                    NestTypography(text = it)
-                }
-            },
+            label = label?.let { return NestTypography(text = it) },
             enabled = enabled,
             singleLine = true,
             isError = isError,
@@ -201,30 +184,6 @@ fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
             )
         }
     }
-}
-
-fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
-    val transition = rememberInfiniteTransition()
-    val translateAnimation by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            tween(durationMillis = 1000, easing = LinearEasing),
-            RepeatMode.Restart
-        )
-    )
-    val shimmerColors = listOf(
-        Color(0xFFD6DFEB),
-        Color(0xFFE4EBF5),
-        Color(0xFFD6DFEB)
-    )
-    val brush = Brush.linearGradient(
-        colors = shimmerColors,
-        start = Offset(translateAnimation, translateAnimation),
-        end = Offset(translateAnimation + 100f, translateAnimation + 30f),
-        tileMode = TileMode.Clamp
-    )
-    return@composed this.then(background(brush, shape))
 }
 
 @Composable
