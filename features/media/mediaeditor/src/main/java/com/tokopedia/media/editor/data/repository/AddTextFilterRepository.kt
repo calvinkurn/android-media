@@ -1,9 +1,7 @@
 package com.tokopedia.media.editor.data.repository
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -20,6 +18,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.LatarTemplateDetail
 import com.tokopedia.media.editor.utils.toWhite
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -45,7 +44,21 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
-        val padding = 16f.toPx()
+        // base padding
+        var paddingBottom = 6f.toPx()
+        var paddingSide = 16f.toPx()
+        var paddingTop = 0f
+
+        // if floating type
+        data.getLatarTemplate()?.let {
+            if (it.latarModel == TEXT_LATAR_TEMPLATE_FLOATING) {
+                val extraPaddingFloating = 8f.toPx()
+                paddingBottom += extraPaddingFloating
+                paddingSide += extraPaddingFloating
+                paddingTop += extraPaddingFloating
+            }
+        }
+
         val sizePercentage = 1 / 12f // 8,3%
         val fontSize = originalImageHeight * sizePercentage
 
@@ -61,7 +74,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         var mTextLayout = StaticLayout(
             data.textValue,
             mTextPaint,
-            (canvas.width - padding).toInt(),
+            (canvas.width - (paddingSide * 2)).toInt(),
             alignment,
             1.0f,
             0.0f,
@@ -75,43 +88,43 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                 mTextLayout = StaticLayout(
                     data.textValue,
                     mTextPaint,
-                    (canvas.height - padding).toInt(),
+                    (canvas.height - (paddingSide * 2)).toInt(),
                     alignment,
                     1.0f,
                     0.0f,
                     false
                 )
-                val yOffset = canvas.width - mTextLayout.height - padding
+                val yOffset = canvas.width - mTextLayout.height - paddingBottom
                 canvas.rotate(-90f)
-                canvas.translate(-(canvas.height.toFloat() + padding), yOffset)
+                canvas.translate(-(canvas.height.toFloat() - paddingSide), yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
                 mTextLayout = StaticLayout(
                     data.textValue,
                     mTextPaint,
-                    (canvas.height - padding).toInt(),
+                    (canvas.height - paddingSide).toInt(),
                     alignment,
                     1.0f,
                     0.0f,
                     false
                 )
 
-                val yOffset = -(mTextLayout.height + padding)
+                val yOffset = -(mTextLayout.height + paddingBottom)
                 canvas.rotate(90f)
-                canvas.translate(padding, yOffset)
+                canvas.translate(paddingSide, yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
-                var yOffset = canvas.height - mTextLayout.height - padding
-                canvas.translate(padding, yOffset)
+                var yOffset = (canvas.height - mTextLayout.height).toFloat() - paddingBottom
+                canvas.translate(paddingSide, yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_TOP -> {
-                canvas.translate(padding, 0f)
+                canvas.translate(paddingSide, paddingTop)
             }
         }
 
         getLatarDrawable(data.getLatarTemplate())?.let {
-            it.toBitmap().scale(canvas.width, mTextLayout.height + padding.toInt()).apply {
-                canvas.drawBitmap(this, -padding, 0f, null)
+            it.toBitmap().scale(canvas.width, mTextLayout.height + paddingBottom.toInt()).apply {
+                canvas.drawBitmap(this, -paddingSide, 0f, null)
             }
         }
 
