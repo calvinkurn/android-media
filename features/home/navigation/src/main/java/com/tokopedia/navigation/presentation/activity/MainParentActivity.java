@@ -1331,7 +1331,7 @@ public class MainParentActivity extends BaseActivity implements
         } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
         } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
-            getIntent().putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT)
+            getIntent().putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT);
 
             if (isFeedClickedFortheFirstTime) {
                 isFeedClickedFortheFirstTime = false;
