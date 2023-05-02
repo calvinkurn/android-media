@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.websocket
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -74,12 +75,18 @@ class PlayWebSocketImpl(
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
             webSocketLogger.send("Web Socket Open")
+
+            Log.d("sukses url", webSocket.request().url.toString())
+            Log.d("sukses header", webSocket.request().headers.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
             webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
+            Log.d("sukses raw", text)
+
+            Log.d("SUKSES MESSAGE", newMessage.message.tracking.toString())
 
             /**
              * Send tracking Id
