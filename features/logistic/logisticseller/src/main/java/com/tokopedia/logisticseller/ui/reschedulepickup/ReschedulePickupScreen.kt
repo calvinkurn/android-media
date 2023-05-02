@@ -35,9 +35,9 @@ import com.tokopedia.common_compose.components.NestBottomSheetShape
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
+import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.common_compose.utils.toAnnotatedString
