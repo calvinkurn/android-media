@@ -91,12 +91,14 @@ class InboxContactUsViewModel @Inject constructor(
                     val isHasUnreadNotif =
                         topBotStatusResponse.getTopBotStatusInbox()
                             .getTopBotStatusData().unreadNotif
+                    val isChatbotActive = topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().isChatbotActive
                     _uiState.update {
                         it.copy(
                             idMessage = messageId,
                             welcomeMessage = welcomeMessage,
                             unReadNotification = isHasUnreadNotif,
-                            showChatBotWidget = true
+                            showChatBotWidget = true,
+                            isChatbotActive = isChatbotActive ?: false
                         )
                     }
                 } else {

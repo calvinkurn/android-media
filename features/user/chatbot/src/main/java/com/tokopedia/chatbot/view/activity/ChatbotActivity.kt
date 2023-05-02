@@ -29,6 +29,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         val bundle = Bundle()
         var list = emptyList<String>()
         var pageSource = ""
+        var isChatbotActive = ""
         intent?.data?.let {
             bundle.putString(DEEP_LINK_URI, it.toString())
             list = UriUtil.destructureUri(
@@ -37,7 +38,12 @@ class ChatbotActivity : BaseChatToolbarActivity() {
                 true
             )
             pageSource = it.getQueryParameter("page_source").orEmpty()
+            isChatbotActive = it.getQueryParameter("is_chatbot_active").orEmpty()
             bundle.putString(PAGE_SOURCE, pageSource)
+            if (isChatbotActive=="true")
+                bundle.putBoolean(IS_CHATBOT_ACTIVE, true)
+            else
+                bundle.putBoolean(IS_CHATBOT_ACTIVE, false)
         }
         if (!list.isNullOrEmpty()) {
             bundle.putString(MESSAGE_ID, list[0])
@@ -53,6 +59,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         const val MESSAGE_ID = "message_id"
         const val PAGE_SOURCE = "page_source"
         const val DEEP_LINK_URI = "deep_link_uri"
+        const val IS_CHATBOT_ACTIVE = "is_chatbot_active"
     }
 
     override fun onResume() {
