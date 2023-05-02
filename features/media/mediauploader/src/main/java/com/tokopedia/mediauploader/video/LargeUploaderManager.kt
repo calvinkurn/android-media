@@ -9,6 +9,7 @@ import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.logger.trackToTimber
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
@@ -191,7 +192,10 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private fun updateProgressValue() {
-        progressUploader?.onProgress(MAX_PROGRESS_LOADER * partUploaded.size / chunkTotal)
+        progressUploader?.onProgress(
+            percentage = MAX_PROGRESS_LOADER * partUploaded.size / chunkTotal,
+            type = ProgressType.Upload
+        )
     }
 
     private suspend fun initUpload(sourceId: String, file: File) {

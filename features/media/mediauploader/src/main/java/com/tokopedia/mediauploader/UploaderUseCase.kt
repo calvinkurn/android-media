@@ -3,6 +3,7 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isVideoFormat
@@ -81,10 +82,22 @@ class UploaderUseCase @Inject constructor(
     )
 
     // Public Method
-    fun trackProgress(progress: (percentage: Int) -> Unit) {
+    @Deprecated(
+        message = "This method is deprecated due the media-uploader now support to track the video compression state.",
+        replaceWith = ReplaceWith("trackProgress(progress: (Int, ProgressType) -> Unit)")
+    )
+    fun trackProgress(progress: (Int) -> Unit) {
         this.progressUploader = object : ProgressUploader {
-            override fun onProgress(percentage: Int) {
+            override fun onProgress(percentage: Int, type: ProgressType) {
                 progress(percentage)
+            }
+        }
+    }
+
+    fun trackProgress(progress: (Int, ProgressType) -> Unit) {
+        this.progressUploader = object : ProgressUploader {
+            override fun onProgress(percentage: Int, type: ProgressType) {
+                progress(percentage, type)
             }
         }
     }

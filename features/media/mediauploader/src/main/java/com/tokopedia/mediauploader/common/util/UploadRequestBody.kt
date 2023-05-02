@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.common.util
 
 import android.os.Handler
 import android.os.Looper
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -43,7 +44,10 @@ class UploadRequestBody(
         private val uploader: ProgressUploader?
     ): Runnable {
         override fun run() {
-            uploader?.onProgress((MAX_PROGRESS_LOADER * uploaded / total).toInt())
+            uploader?.onProgress(
+                percentage = (MAX_PROGRESS_LOADER * uploaded / total).toInt(),
+                type = ProgressType.Upload
+            )
         }
     }
 

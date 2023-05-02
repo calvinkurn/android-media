@@ -45,6 +45,7 @@ class VideoUploaderManager @Inject constructor(
                 resolution = 540
             )
 
+            videoCompression.progressUploader = loader
             videoCompression(param)
         } else {
             file.path
