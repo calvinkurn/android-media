@@ -8,7 +8,6 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellI
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
@@ -202,7 +201,7 @@ class ShipmentMapper @Inject constructor() {
         isDisablePPP: Boolean
     ): MutableList<GroupShop> {
         val groupShopListResult = arrayListOf<GroupShop>()
-        groupAddress.groupShop2.forEach {
+        groupAddress.groupShop.forEach {
             groupShopListResult.add(
                 GroupShop(
                     groupType = it.groupType,
@@ -260,7 +259,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapProducts(
-        groupShop2: GroupShop2,
+        groupShop2: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
         groupShop: GroupShopV2,
         groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
@@ -387,7 +386,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapAnalyticsProductCheckoutData(
-        groupShop2: GroupShop2,
+        groupShop2: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
         product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
         userAddress: UserAddress,
         groupShop: GroupShopV2,
@@ -473,7 +472,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapGroupShopV2List(
-        groupShop2: GroupShop2,
+        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
         groupShopV2List: List<GroupShopV2>,
         groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
@@ -483,7 +482,7 @@ class ShipmentMapper @Inject constructor() {
         var hasErrorProduct = false
         return groupShopV2List.map {
             val shop = mapShopData(it.shop)
-            val mapProducts = mapProducts(groupShop2, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+            val mapProducts = mapProducts(groupShop, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
             val products = mapProducts.first
             if (!hasErrorProduct) {
                 if (mapProducts.second > -1) {

@@ -10,5 +10,5 @@ data class GroupAddress(
 //    @SerializedName("group_shop")
 //    val groupShop: List<GroupShop> = emptyList(),
     @SerializedName("group_shop_v2")
-    val groupShop2: List<GroupShop2> = emptyList()
+    val groupShop: List<GroupShop> = emptyList()
 )
