@@ -19,7 +19,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_V
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.isAppInstalled
 
 /**
  * Created by jegul on 2019-11-04
@@ -107,14 +106,13 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        val playRoomId = uri.lastPathSegment
-
         return if (GlobalConfig.isSellerApp()) {
-            UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW + "?titlebar=false", playRoomId)
+            UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW + "?titlebar=false", uri.toString())
         } else {
-            "${ApplinkConstInternalContent.INTERNAL_PLAY}/$playRoomId"
+            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
         }
     }
+
     private fun handleNavigationFeedVideo(uri: Uri): String {
         val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
         return getRegisteredNavigationHomeFeedVideo(finalDeeplink)
