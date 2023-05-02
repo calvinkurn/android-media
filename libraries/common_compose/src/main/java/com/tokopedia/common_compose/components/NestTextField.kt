@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -82,10 +83,10 @@ fun NestTextField(
             modifier = modifier
                 .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
                 .fillMaxWidth().onFocusChanged { onFocusChangeListener?.invoke(it) },
-            placeholder = placeholder?.let { return NestTypography(text = it) },
-            leadingIcon = generatePrefix(prefix, enabled),
-            trailingIcon = generateLeadingIcon(icon1, icon2, suffix, enabled, onClear),
-            label = label?.let { return NestTypography(text = it) },
+            placeholder = getTextFieldPlaceholder(placeholder = placeholder),
+            leadingIcon = getPrefixComponent(prefix, enabled),
+            trailingIcon = getLeadingIcon(icon1, icon2, suffix, enabled, onClear),
+            label = getTextFieldLabel(label = label),
             enabled = enabled,
             singleLine = true,
             isError = isError,
@@ -123,7 +124,7 @@ fun NestTextFieldSupportingComponent(
                     .weight(4F)
                     .padding(start = 12.dp),
                 textStyle = NestTheme.typography.paragraph3.copy(
-                    color = generateHelperColor(
+                    color = getHelperColor(
                         enabled = enabled,
                         error = !error.isNullOrEmpty()
                     )
@@ -146,7 +147,7 @@ fun NestTextFieldSupportingComponent(
                     .weight(1F)
                     .padding(end = 12.dp),
                 textStyle = NestTheme.typography.paragraph3.copy(
-                    color = generateCounterColor(
+                    color = getCounterColor(
                         counter = it,
                         currentCount = currentCount,
                         enabled = enabled
@@ -187,7 +188,17 @@ fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun generateCounterColor(counter: Int, currentCount: Int, enabled: Boolean): Color {
+private fun getTextFieldLabel(label: String?): @Composable (() -> Unit)? {
+    if (label != null) return { NestTypography(text = label) } else return null
+}
+
+@Composable
+private fun getTextFieldPlaceholder(placeholder: String?): @Composable (() -> Unit)? {
+    if (placeholder != null) return { NestTypography(text = placeholder) } else return null
+}
+
+@Composable
+private fun getCounterColor(counter: Int, currentCount: Int, enabled: Boolean): Color {
     return if (!enabled) {
         return NestTheme.colors.NN._400
     } else if (currentCount >= counter) {
@@ -198,7 +209,7 @@ private fun generateCounterColor(counter: Int, currentCount: Int, enabled: Boole
 }
 
 @Composable
-private fun generateHelperColor(enabled: Boolean, error: Boolean): Color {
+private fun getHelperColor(enabled: Boolean, error: Boolean): Color {
     return if (!enabled) {
         NestTheme.colors.NN._400
     } else if (error) {
@@ -209,7 +220,7 @@ private fun generateHelperColor(enabled: Boolean, error: Boolean): Color {
 }
 
 @Composable
-private fun generatePrefix(prefix: String? = null, enabled: Boolean): @Composable (() -> Unit)? {
+private fun getPrefixComponent(prefix: String? = null, enabled: Boolean): @Composable (() -> Unit)? {
     if (prefix != null) {
         return {
             NestTypography(
@@ -227,7 +238,7 @@ private fun generatePrefix(prefix: String? = null, enabled: Boolean): @Composabl
 }
 
 @Composable
-private fun generateLeadingIcon(
+private fun getLeadingIcon(
     icon1: @Composable (() -> Unit)? = null,
     icon2: @Composable (() -> Unit)? = null,
     suffix: String? = null,
@@ -276,7 +287,7 @@ private fun ShowAndAddPadding(component: @Composable (() -> Unit)?, addPadding: 
     }
 }
 
-@Preview(name = "All TextField")
+@Preview(name = "All TextField", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NestTextFieldPreview() {
     NestTheme() {
