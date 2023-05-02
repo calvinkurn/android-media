@@ -22,7 +22,6 @@ import com.tokopedia.shop.common.constant.GqlQueryConstant.QUERY_SHOP_SCORE_STRI
 import com.tokopedia.shop.common.constant.GqlQueryConstant.SHOP_REPUTATION_QUERY_STRING
 import com.tokopedia.shop.common.constant.GqlQueryConstant.getShopInfoQuery
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
-import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -33,7 +32,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers.Main
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import javax.inject.Named
 
 @Module
@@ -52,8 +50,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     fun provideGqlQueryShopInfo(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING,
-                DEFAULT_SHOP_INFO_QUERY_NAME
+            GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING,
+            DEFAULT_SHOP_INFO_QUERY_NAME
         )
     }
 
@@ -61,8 +59,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER)
     fun provideGqlQueryShopInfoForHeader(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_HEADER_REQUEST_QUERY_STRING,
-                SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME
+            GqlQueryConstant.SHOP_INFO_FOR_HEADER_REQUEST_QUERY_STRING,
+            SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME
         )
     }
 
@@ -70,8 +68,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
     fun provideGqlQueryShopInfoForTopContent(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING,
-                SHOP_TOP_CONTENT_QUERY_NAME
+            GqlQueryConstant.SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING,
+            SHOP_TOP_CONTENT_QUERY_NAME
         )
     }
 
@@ -79,8 +77,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
     fun provideGqlQueryShopInfoForCoreAndAssets(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING,
-                SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
+            GqlQueryConstant.SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING,
+            SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
         )
     }
 
@@ -88,8 +86,8 @@ class ShopCommonModule {
     @Named(SHOP_INFO_FOR_SHOP_SETTINGS_INFO)
     fun provideGqlQueryShopInfoForShopSettingsInfo(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING,
-                SHOP_INFO_FOR_SHOP_SETTINGS_INFO
+            GqlQueryConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING,
+            SHOP_INFO_FOR_SHOP_SETTINGS_INFO
         )
     }
 
@@ -97,8 +95,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CLOSE_DETAIL)
     fun provideGqlQueryShopCloseDetailInfo(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.SHOP_CLOSE_DETAIL_INFO_QUERY_STRING,
-                SHOP_CLOSE_INFO_QUERY_NAME
+            GqlQueryConstant.SHOP_CLOSE_DETAIL_INFO_QUERY_STRING,
+            SHOP_CLOSE_INFO_QUERY_NAME
         )
     }
 
@@ -106,8 +104,8 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
     fun provideGqlQueryFavoriteStatus(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
-                GqlQueryConstant.FAVORITE_STATUS_GQL_STRING,
-                SHOP_INFO_FAVORITE_QUERY_NAME
+            GqlQueryConstant.FAVORITE_STATUS_GQL_STRING,
+            SHOP_INFO_FAVORITE_QUERY_NAME
         )
     }
 
@@ -125,33 +123,21 @@ class ShopCommonModule {
 
     @ShopQualifier
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            errorResponseInterceptor: ErrorResponseInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        shopAuthInterceptor: ShopAuthInterceptor,
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: ErrorResponseInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(shopAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build()
-    }
-
-    @ShopQualifier
-    @Provides
-    fun provideRetrofit(@ShopQualifier okHttpClient: OkHttpClient?,
-                        retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_URL).client(okHttpClient).build()
+            .addInterceptor(shopAuthInterceptor)
+            .addInterceptor(errorResponseInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
     }
 
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
-    }
-
-    @ShopWSQualifier
-    @Provides
-    fun provideWSRetrofit(@ShopQualifier okHttpClient: OkHttpClient?,
-                          retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build()
     }
 
     @Provides
@@ -166,49 +152,63 @@ class ShopCommonModule {
     }
 
     @Provides
-    fun provideFavorite(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                        @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL) gqlQuery: String?): GQLGetShopFavoriteStatusUseCase {
+    fun provideFavorite(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL) gqlQuery: String?
+    ): GQLGetShopFavoriteStatusUseCase {
         return GQLGetShopFavoriteStatusUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @Provides
-    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                     @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopInfoUseCase(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopInfoForHeaderUseCaseQualifier
     @Provides
-    fun provideGqlGetShopInfoForHeaderUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                              @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopInfoForHeaderUseCase(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopInfoUseCaseTopContentQualifier
     @Provides
-    fun provideGqlGetShopInfoUseCaseTopContent(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                               @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopInfoUseCaseTopContent(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     @Provides
-    fun provideGqlGetShopInfoUseCaseCoreAndAssets(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                                  @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopInfoUseCaseCoreAndAssets(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
     @Provides
-    fun provideGqlGetShopInfoShopSettingsInfo(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                                  @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopInfoShopSettingsInfo(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopCloseDetailInfoQualifier
     @Provides
-    fun provideGqlGetShopCloseDetailInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                                  @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CLOSE_DETAIL) gqlQuery: String?): GQLGetShopInfoUseCase {
+    fun provideGqlGetShopCloseDetailInfoUseCase(
+        graphqlUseCase: MultiRequestGraphqlUseCase?,
+        @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CLOSE_DETAIL) gqlQuery: String?
+    ): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 }

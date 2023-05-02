@@ -179,7 +179,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(true),
+            productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,

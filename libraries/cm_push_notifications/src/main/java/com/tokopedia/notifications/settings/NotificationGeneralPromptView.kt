@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.settings
 
-internal interface NotificationGeneralPromptView {
+interface NotificationGeneralPromptView {
 
-    fun show()
+    fun show(isReminderPrompt: Boolean)
 }
