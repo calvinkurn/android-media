@@ -8,8 +8,10 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
+        app:search_bar_show_icon="false"
+        android:layout_margin="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
