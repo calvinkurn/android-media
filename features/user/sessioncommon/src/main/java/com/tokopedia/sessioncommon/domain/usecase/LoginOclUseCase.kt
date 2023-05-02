@@ -10,6 +10,7 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.ocl.LoginOclParam
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -50,6 +51,7 @@ class LoginOclUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: LoginOclParam): LoginToken {
+        userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
         val result: LoginTokenPojoV2 = repository.request(graphqlQuery(), params)
         if(result.loginToken.errors.isEmpty()) {
             saveAccessToken(result.loginToken)

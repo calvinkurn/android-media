@@ -37,6 +37,7 @@ class OclChooseAccountViewModel @Inject constructor(
     val navigateToSuccessPage: LiveData<Boolean> = _navigateToSuccessPage
 
     fun getOclAccounts() {
+        _mainLoader.value = true
         launch {
             try {
                 val param = GetOclAccountParam(oclPreference.getToken())
@@ -46,7 +47,9 @@ class OclChooseAccountViewModel @Inject constructor(
                 } else {
                     _navigateToNormalLogin.value = true
                 }
+                _mainLoader.value = false
             } catch (e: Exception) {
+                _mainLoader.value = false
                 _toasterError.value = e.message
             }
         }
