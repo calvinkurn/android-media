@@ -234,8 +234,25 @@ class ProductHighlightViewModelTest {
         assert( viewModel.layoutSelector() == R.layout.multi_banner_layout )
     }
 
+    /**************************** test for Login *******************************************/
+    @Test
+    fun `isUser Logged in when isLoggedIn is false`() {
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
+
+        assert(!viewModel.isUserLoggedIn())
+    }
+    @Test
+    fun `isUser Logged in when isLoggedIn is true`() {
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+
+        assert(viewModel.isUserLoggedIn())
+    }
+    /**************************** end of Login *******************************************/
+
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+        unmockkConstructor(UserSession::class)
+        unmockkObject(Utils)
     }
 }

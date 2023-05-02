@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,5 +84,9 @@ class ProductHighlightViewModel(val application: Application, val components: Co
 
     fun shouldShowShimmer(): Boolean {
         return components.noOfPagesLoaded != 1 && !components.verticalProductFailState
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
     }
 }

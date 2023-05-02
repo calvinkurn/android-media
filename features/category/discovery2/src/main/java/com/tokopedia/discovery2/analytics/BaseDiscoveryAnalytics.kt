@@ -172,5 +172,5 @@ open class BaseDiscoveryAnalytics(
     open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>,components: ComponentsItem?) {}
-    open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {}
+    open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {}
 }

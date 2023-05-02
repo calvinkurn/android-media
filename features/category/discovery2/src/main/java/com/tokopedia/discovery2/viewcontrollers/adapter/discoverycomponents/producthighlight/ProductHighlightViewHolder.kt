@@ -123,7 +123,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
 
     private fun sendImpressionEventForProductHighlight(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoProductHighlightImpression(
-            data, mProductHighlightViewModel?.components
+            data, mProductHighlightViewModel?.components,
         )
     }
 
@@ -131,7 +131,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         productHighlightItemList[index].productHighlightView.setOnClickListener {
             mProductHighlightViewModel?.onCardClicked(index, itemView.context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components)
+                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components,mProductHighlightViewModel?.isUserLoggedIn() ?: false)
         }
     }
 

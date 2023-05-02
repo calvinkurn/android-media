@@ -2637,7 +2637,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         productHighlightData.forEach { it ->
-            productMap[KEY_NAME] = it.name.toString()
+            productMap[KEY_NAME] = it.productName.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = convertRupiahToInt(it.price ?: "")
             productMap[KEY_BRAND] = NONE_OTHER
@@ -2651,6 +2651,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME"
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
+            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
         }
         list.add(productMap)
 
@@ -2674,15 +2675,17 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         productCardImpressionLabel = EMPTY_STRING
     }
 
-    override fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {
+    override fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {
         if (!components?.data.isNullOrEmpty()) {
+            val login = if (isLogin) LOGIN else NON_LOGIN
             val list = ArrayList<Map<String, Any>>()
             val listMap = HashMap<String, Any>()
             var productItemList = ""
+            productCardImpressionLabel = "$login - ${ComponentNames.ProductBundling.componentName}"
             productHighlightData.let {
                 productItemList = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
                 productCardImpressionLabel = EMPTY_STRING
-                listMap[KEY_NAME] = it.name.toString()
+                listMap[KEY_NAME] = it.productName.toString()
                 listMap[KEY_ID] = it.productId.toString()
                 listMap[PRICE] = convertRupiahToInt(it.price ?: "")
                 listMap[KEY_BRAND] = NONE_OTHER
@@ -2696,6 +2699,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${components?.let { it1 -> getNotificationStatus(it1) }}"
                 listMap[DIMENSION38] = ""
                 listMap[DIMENSION84] = ""
+                listMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
             }
             list.add(listMap)
 
