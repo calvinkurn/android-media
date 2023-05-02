@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.components
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -70,6 +69,18 @@ fun NestTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onFocusChangeListener: ((FocusState) -> Unit)? = null
 ) {
+    val colors = TextFieldDefaults.outlinedTextFieldColors(
+        unfocusedBorderColor = NestTheme.colors.NN._300,
+        focusedBorderColor = NestTheme.colors.GN._500,
+        errorBorderColor = NestTheme.colors.RN._500,
+        disabledBorderColor = NestTheme.colors.NN._200,
+        disabledTextColor = NestTheme.colors.NN._400,
+        textColor = NestTheme.colors.NN._950
+    )
+    val style = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
+    val textFieldShape = RoundedCornerShape(8.dp)
+    val isError = !error.isNullOrEmpty()
+
     Column {
         OutlinedTextField(
             value = value,
@@ -80,7 +91,7 @@ fun NestTextField(
                     onValueChanged(it)
                 }
             },
-            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
+            textStyle = style,
             modifier = modifier
                 .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
                 .fillMaxWidth().onFocusChanged { onFocusChangeListener?.invoke(it) },
@@ -94,70 +105,79 @@ fun NestTextField(
             },
             enabled = enabled,
             singleLine = true,
-            isError = !error.isNullOrEmpty(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = NestTheme.colors.NN._300,
-                focusedBorderColor = NestTheme.colors.GN._500,
-                errorBorderColor = NestTheme.colors.RN._500,
-                disabledBorderColor = NestTheme.colors.NN._200,
-                disabledTextColor = NestTheme.colors.NN._400,
-                textColor = NestTheme.colors.NN._950
-            ),
-            shape = RoundedCornerShape(8.dp),
+            isError = isError,
+            colors = colors,
+            shape = textFieldShape,
             readOnly = readOnly,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             interactionSource = interactionSource
         )
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-            helper?.takeIf { error.isNullOrEmpty() }?.let {
-                NestTypography(
-                    text = it,
-                    modifier = Modifier
-                        .weight(4F)
-                        .padding(start = 28.dp),
-                    textStyle = NestTheme.typography.paragraph3.copy(
-                        color = generateHelperColor(
-                            enabled = enabled,
-                            error = !error.isNullOrEmpty()
-                        )
+        NestTextFieldSupportingComponent(
+            helper = helper,
+            error = error,
+            enabled = enabled,
+            counter = counter,
+            currentCount = value.length
+        )
+    }
+}
+
+@Composable
+fun NestTextFieldSupportingComponent(
+    helper: String?,
+    error: String?,
+    enabled: Boolean,
+    counter: Int?,
+    currentCount: Int
+) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        helper?.takeIf { error.isNullOrEmpty() }?.let {
+            NestTypography(
+                text = it,
+                modifier = Modifier
+                    .weight(4F)
+                    .padding(start = 12.dp),
+                textStyle = NestTheme.typography.paragraph3.copy(
+                    color = generateHelperColor(
+                        enabled = enabled,
+                        error = !error.isNullOrEmpty()
                     )
                 )
-            }
-            error?.let {
-                NestTypography(
-                    text = it,
-                    modifier = Modifier
-                        .weight(4F)
-                        .padding(start = 28.dp),
-                    textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
+            )
+        }
+        error?.let {
+            NestTypography(
+                text = it,
+                modifier = Modifier
+                    .weight(4F)
+                    .padding(start = 12.dp),
+                textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
+            )
+        }
+        counter?.let {
+            NestTypography(
+                text = "$currentCount/$it",
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(end = 12.dp),
+                textStyle = NestTheme.typography.paragraph3.copy(
+                    color = generateCounterColor(
+                        counter = it,
+                        currentCount = currentCount,
+                        enabled = enabled
+                    ),
+                    textAlign = TextAlign.End
                 )
-            }
-            counter?.let {
-                val currentCount = value.length
-                NestTypography(
-                    text = "$currentCount/$it",
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(end = 28.dp),
-                    textStyle = NestTheme.typography.paragraph3.copy(
-                        color = generateCounterColor(
-                            counter = it,
-                            currentCount = currentCount,
-                            enabled = enabled
-                        ),
-                        textAlign = TextAlign.End
-                    )
-                )
-            }
+            )
         }
     }
 }
 
 @Composable
 fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
-    Column(modifier.padding(horizontal = 16.dp)) {
+    Column() {
         Box(
             modifier = modifier
                 .defaultMinSize(minHeight = 48.dp, minWidth = 75.dp)
@@ -234,6 +254,7 @@ private fun generatePrefix(prefix: String? = null, enabled: Boolean): @Composabl
     if (prefix != null) {
         return {
             NestTypography(
+                modifier = Modifier.padding(start = 12.dp),
                 text = prefix,
                 textStyle = NestTheme.typography.display2.copy(
                     color = if (enabled) NestTheme.colors.NN._600 else NestTheme.colors.NN._400,
@@ -256,7 +277,7 @@ private fun generateLeadingIcon(
 ): @Composable (() -> Unit)? {
     if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty() || onClear != null) {
         return {
-            Row {
+            Row(modifier = Modifier.padding(end = 12.dp)) {
                 onClear?.let {
                     Icon(
                         painter = painterResource(id = R.drawable.iconunify_clear_small),
@@ -296,166 +317,68 @@ private fun ShowAndAddPadding(component: @Composable (() -> Unit)?, addPadding: 
     }
 }
 
-@Preview(name = "Text Field")
+@Preview(name = "All TextField")
 @Composable
 fun NestTextFieldPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        placeholder = "placeholder",
-        helper = "helper"
-    )
-}
-
-@Preview(name = "Text Field (Dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun NestTextFieldDarkPreview() {
-    NestTheme {
-        NestTextField(
-            value = "value",
+    NestTheme() {
+        Column(
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp),
-            label = "label",
-            placeholder = "placeholder",
-            helper = "helper"
-        )
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            NestTextField(
+                value = "value",
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                label = "label",
+                placeholder = "placeholder",
+                helper = "helper"
+            )
+            NestTextField(
+                value = "value",
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                label = "label",
+                placeholder = "placeholder",
+                counter = 30
+            )
+            NestTextField(
+                value = "value",
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                label = "label",
+                placeholder = "placeholder",
+                error = "Error"
+            )
+            NestTextField(
+                value = "value",
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                label = "label",
+                enabled = false,
+                placeholder = "placeholder"
+            )
+            NestTextField(
+                value = "value",
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                label = "label",
+                icon1 = {
+                    NestTypography(text = "aaa")
+                },
+                icon2 = {
+                    NestTypography(text = "bbb")
+                },
+                suffix = "$",
+                prefix = "IDR",
+                placeholder = "placeholder"
+            )
+            NestTextFieldSkeleton()
+            NestTextField(
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                value = "aaa",
+                onClear = {}
+            )
+        }
     }
-}
-
-@Preview(name = "Text Field (Counter)")
-@Composable
-fun NestTextFieldWithCounterPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        placeholder = "placeholder",
-        counter = 30
-    )
-}
-
-@Preview(name = "Text Field (Error)")
-@Composable
-fun NestTextFieldErrorPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        placeholder = "placeholder",
-        error = "Error"
-    )
-}
-
-@Preview(name = "Text Field (Disabled)")
-@Composable
-fun NestTextFieldDisabledPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        enabled = false,
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (Helper)")
-@Composable
-fun NestTextFieldWithHelperPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        helper = "Helper text",
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (Icon 1)")
-@Composable
-fun NestTextFieldWithIcon1Preview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        icon1 = {
-            NestTypography(text = "aaa")
-        },
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (Icon 2)")
-@Composable
-fun NestTextFieldWithIcon2Preview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        icon1 = {
-            NestTypography(text = "aaa")
-        },
-        icon2 = {
-            NestTypography(text = "bbb")
-        },
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (suffix)")
-@Composable
-fun NestTextFieldWithSuffixPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        icon1 = {
-            NestTypography(text = "aaa")
-        },
-        icon2 = {
-            NestTypography(text = "bbb")
-        },
-        suffix = "$",
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (prefix)")
-@Composable
-fun NestTextFieldWithPrefixPreview() {
-    NestTextField(
-        value = "value",
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = "label",
-        icon1 = {
-            NestTypography(text = "aaa")
-        },
-        icon2 = {
-            NestTypography(text = "bbb")
-        },
-        suffix = "$",
-        prefix = "IDR",
-        placeholder = "placeholder"
-    )
-}
-
-@Preview(name = "Text Field (skeleton)")
-@Composable
-fun NestTextFieldSkeletonPreview() {
-    NestTextFieldSkeleton()
-}
-
-@Preview(name = "Text Field (clearable)")
-@Composable
-fun NestTextFieldClearablePreview() {
-    NestTextField(value = "aaa", onClear = {})
 }
