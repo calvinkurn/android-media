@@ -206,6 +206,8 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             append("$SOURCE_ID=${uploadData.authorId}")
             append("&")
             append("$IS_FROM_NOTIF_SUCCESS_UPLOAD=true")
+            append("&")
+            append("$TITLEBAR=false")
         }
     }
 
@@ -247,6 +249,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val SOURCE_ID = "source_id"
         const val AUTHOR_TYPE = "author_type"
         const val IS_FROM_NOTIF_SUCCESS_UPLOAD = "is_from_notif_success_upload"
+        const val TITLEBAR = "titlebar"
         const val SOURCE_TYPE_USER = "SHORT_VIDEO_USER"
         const val SOURCE_TYPE_SHOP = "SHORT_VIDEO_SHOP"
     }
