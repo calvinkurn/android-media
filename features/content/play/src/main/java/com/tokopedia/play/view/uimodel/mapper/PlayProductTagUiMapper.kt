@@ -82,7 +82,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
             buttons = mapButtons(input.buttons),
             rating = input.rating,
-            soldQuantity = if (input.soldQuantity.isNotBlank()) "Terjual ${input.soldQuantity}" else "",
+            soldQuantity = input.soldQuantity,
         )
     }
 
