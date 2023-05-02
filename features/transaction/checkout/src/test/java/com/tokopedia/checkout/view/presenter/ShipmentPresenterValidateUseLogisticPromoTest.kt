@@ -2,18 +2,21 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockkObject
@@ -318,6 +321,86 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
             view.getShipmentCartItemModel(cartPosition)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed with error message & cart has bo code THEN should reset courier & clear bo`() {
+        // Given
+        val cartPosition = 1
+        val errorMessage = "error"
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "ERROR",
+                message = listOf(errorMessage)
+            )
+        every { checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(any()) } just Runs
+        mockkObject(PromoRevampAnalytics)
+        every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartStringGroup = "",
+            boCode = "asdf",
+            cartItemModels = listOf(
+                CartItemModel(cartStringGroup = "")
+            )
+        )
+
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
+        }
+
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed without error message & cart has bo code THEN should show default BO error message & clear bo`() {
+        // Given
+        val cartPosition = 1
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "ERROR",
+                message = emptyList()
+            )
+        every { checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(any()) } just Runs
+        mockkObject(PromoRevampAnalytics)
+        every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
+
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartStringGroup = "",
+            boCode = "asdf",
+            cartItemModels = listOf(
+                CartItemModel(cartStringGroup = "")
+            )
+        )
+
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
+            view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
+        }
+
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
