@@ -107,7 +107,7 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return if (GlobalConfig.isSellerApp()) {
-            "${ApplinkConst.WEBVIEW}&titlebar=false&url=$uri"
+            "${ApplinkConst.WEBVIEW}?titlebar=false&url=$uri"
         } else {
             "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
         }
