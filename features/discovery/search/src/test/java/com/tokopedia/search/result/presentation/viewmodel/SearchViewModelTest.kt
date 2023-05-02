@@ -1,70 +1,59 @@
 package com.tokopedia.search.result.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
+import com.tokopedia.search.result.SearchState
+import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.search.shouldBe
-import org.junit.Rule
+import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertThat
 import org.junit.Test
 
 internal class SearchViewModelTest {
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    private fun SearchViewModel(
+        searchState: SearchState = SearchState(),
+    ) = SearchViewModel(
+        searchState,
+        CoroutineTestDispatchersProvider
+    )
 
-    private val searchViewModel = SearchViewModel(CoroutineTestDispatchersProvider)
+    private val SearchViewModel.stateValue
+        get() = stateFlow.value
 
     @Test
     fun `handle show auto complete view`() {
-        `When show auto complete view`()
+        val searchViewModel = SearchViewModel()
 
-        `Then validate show auto complete view event`()
-    }
-
-    private fun `When show auto complete view`() {
         searchViewModel.showAutoCompleteView()
-    }
 
-    private fun `Then validate show auto complete view event`() {
-        val autoCompleteEvent = searchViewModel.getShowAutoCompleteViewEventLiveData().value
-
-        autoCompleteEvent?.getContentIfNotHandled() shouldBe true
-    }
-
-    @Test
-    fun `handle hide search page loading`() {
-        `When hide search page loading`()
-
-        `Then validate hide search page loading event`()
-    }
-
-    private fun `When hide search page loading`() {
-        searchViewModel.hideSearchPageLoading()
-    }
-
-    private fun `Then validate hide search page loading event`() {
-        val hideLoadingEvent = searchViewModel.getHideLoadingEventLiveData().value
-
-        hideLoadingEvent?.getContentIfNotHandled() shouldBe true
+        assertThat(
+            searchViewModel.stateValue.isOpeningAutoComplete,
+            `is`(true)
+        )
     }
 
     @Test
-    fun `Change bottom navigation visibility to visible`() {
-        `When change bottom navigation visibility`(true)
-        `Then verify bottom navigation visibility live data`(true)
-    }
+    fun `show auto complete handled`() {
+        val searchStateOpenAutoComplete = SearchState().openAutoComplete()
+        val searchViewModel = SearchViewModel(searchStateOpenAutoComplete)
 
-    private fun `When change bottom navigation visibility`(isVisible: Boolean) {
-        searchViewModel.changeBottomNavigationVisibility(isVisible)
-    }
+        searchViewModel.showAutoCompleteHandled()
 
-    private fun `Then verify bottom navigation visibility live data`(expectedIsBottomNavigationVisible: Boolean) {
-        val bottomNavigationVisibilityLiveData = searchViewModel.getBottomNavigationVisibilityLiveData()
-        bottomNavigationVisibilityLiveData.value shouldBe expectedIsBottomNavigationVisible
+        assertThat(
+            searchViewModel.stateValue.isOpeningAutoComplete,
+            `is`(false)
+        )
     }
 
     @Test
-    fun `Change bottom navigation visibility to hidden`() {
-        `When change bottom navigation visibility`(false)
-        `Then verify bottom navigation visibility live data`(false)
+    fun `set active tab`() {
+        val searchViewModel = SearchViewModel()
+
+        searchViewModel.setActiveTab(SearchTabPosition.TAB_SECOND_POSITION)
+
+        assertThat(
+            searchViewModel.stateValue.activeTabPosition,
+            `is`(SearchTabPosition.TAB_SECOND_POSITION)
+        )
     }
 }

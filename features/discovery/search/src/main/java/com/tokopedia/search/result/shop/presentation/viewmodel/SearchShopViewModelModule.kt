@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
@@ -17,6 +19,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
 import javax.inject.Named
 import dagger.Lazy as daggerLazy
 
@@ -25,15 +28,14 @@ import dagger.Lazy as daggerLazy
     GetDynamicFilterCoroutineUseCaseModule::class,
     ShopViewModelMapperModule::class
 ])
-internal class SearchShopViewModelFactoryModule(
-        private val searchParameter: Map<String, Any> = mapOf()
-) {
+internal class SearchShopViewModelModule {
 
-    @Suppress("LongParameterList")
-    @SearchScope
     @Provides
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
-    fun provideSearchShopViewModelFactory(
+    @IntoMap
+    @ViewModelKey(SearchShopViewModel::class)
+    @SearchScope
+    fun providesSearchShopViewModel(
+        searchParameter: SearchParameter,
         @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
         searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
         @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
@@ -46,19 +48,17 @@ internal class SearchShopViewModelFactoryModule(
         shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
         userSession: daggerLazy<UserSessionInterface>,
         coroutineDispatchers: CoroutineDispatchers,
-        chooseAddressWrapper: ChooseAddressWrapper
-    ): ViewModelProvider.Factory {
-        return SearchShopViewModelFactory(
-            coroutineDispatchers,
-            searchParameter,
-            searchShopFirstPageUseCase,
-            searchShopLoadMoreUseCase,
-            getDynamicFilterUseCase,
-            getShopCountUseCase,
-            shopCpmDataViewMapper,
-            shopDataViewMapper,
-            userSession,
-            chooseAddressWrapper
-        )
-    }
+        chooseAddressWrapper: ChooseAddressWrapper,
+    ): ViewModel = SearchShopViewModel(
+        coroutineDispatchers,
+        searchParameter.getSearchParameterMap(),
+        searchShopFirstPageUseCase,
+        searchShopLoadMoreUseCase,
+        getDynamicFilterUseCase,
+        getShopCountUseCase,
+        shopCpmDataViewMapper,
+        shopDataViewMapper,
+        userSession,
+        chooseAddressWrapper,
+    )
 }

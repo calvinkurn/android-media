@@ -136,8 +136,7 @@ class SearchParameter(
                 if(hasQuery1()) add(get(SearchApiConst.Q1))
                 if(hasQuery2()) add(get(SearchApiConst.Q2))
                 if(hasQuery3()) add(get(SearchApiConst.Q3))
-            }
-                .joinToString()
+            }.joinToString()
         }
     }
 
@@ -149,6 +148,14 @@ class SearchParameter(
             else -> ""
         }
     }
+
+    fun getSearchQueryMap(): Map<String?, String> =
+        searchParameterHashMap.filter {
+            it.key == SearchApiConst.Q ||
+                it.key == SearchApiConst.Q1 ||
+                it.key == SearchApiConst.Q2 ||
+                it.key == SearchApiConst.Q3
+        }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(deepLinkUri)

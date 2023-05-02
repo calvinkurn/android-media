@@ -63,7 +63,6 @@ data class ProductCardModel (
         val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
-        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
@@ -82,6 +81,7 @@ data class ProductCardModel (
         val customVideoURL : String = "",
         val cardInteraction: Boolean = false,
         val productListType: ProductListType = ProductListType.CONTROL,
+        val seeOtherProductText: String = "",
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -293,6 +293,8 @@ data class ProductCardModel (
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
+
+    fun willShowButtonSeeOtherProduct() = seeOtherProductText.isNotEmpty()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
