@@ -39,13 +39,6 @@ class FeedNavigationAnalytics @Inject constructor(
         const val CLICK_PROFILE_BUTTON = "click - user profile entry point"
     }
 
-    private fun getPrefix(tabType: String) =
-        when (tabType) {
-            FeedBaseFragment.TAB_TYPE_FOR_YOU -> "untuk kamu tab"
-            FeedBaseFragment.TAB_TYPE_FOLLOWING -> "following tab"
-            else -> ""
-        }
-
     fun eventClickCreationButton(tabType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
@@ -160,4 +153,11 @@ class FeedNavigationAnalytics @Inject constructor(
         KEY_CURRENT_SITE_EVENT to CURRENT_SITE_MARKETPLACE,
         KEY_TRACKER_ID to trackerId
     )
+
+    private fun getPrefix(tabType: String) =
+        when (tabType) {
+            FeedBaseFragment.TAB_TYPE_FOR_YOU -> "untuk kamu tab"
+            FeedBaseFragment.TAB_TYPE_FOLLOWING -> "following tab"
+            else -> ""
+        }
 }

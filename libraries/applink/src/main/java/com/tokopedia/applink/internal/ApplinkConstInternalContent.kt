@@ -56,6 +56,9 @@ object ApplinkConstInternalContent {
     const val UF_TAB_POSITION_FOLLOWING = 1
     const val UF_EXTRA_FEED_RELEVANT_POST = "FEED_RELEVANT_POST"
     const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
+    const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
+
+    const val NAV_BUTTON_ENTRY_POINT = "nav button"
 
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
 }

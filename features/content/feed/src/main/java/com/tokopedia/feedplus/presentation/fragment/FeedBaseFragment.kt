@@ -23,6 +23,7 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -93,6 +94,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             appLinkExtras = arguments ?: Bundle.EMPTY
         )
     }
+
+    private val isFromPushNotif: Boolean
+        get() = activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM).isNullOrEmpty().not()
+            && activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM)
+            ?.contains(PARAM_PUSH_NOTIFICATION, true)
+            ?: false
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
@@ -673,12 +680,21 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    private fun getEntryPoint() = if (isFromPushNotif) {
+        FeedAnalytics.ENTRY_POINT_PUSH_NOTIF
+    } else if (activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT) != null)
+        activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
+    else FeedAnalytics.ENTRY_POINT_SHARE_LINK
+
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+
+        private const val EXTRAS_UTM_MEDIUM = "utm_medium"
+        private const val PARAM_PUSH_NOTIFICATION = "push"
 
         private const val THRESHOLD_OFFSET_HALF = 0.5f
 
