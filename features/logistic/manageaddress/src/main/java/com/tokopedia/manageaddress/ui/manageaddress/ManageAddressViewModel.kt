@@ -57,7 +57,7 @@ class ManageAddressViewModel @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTicker: GetTargetedTickerUseCase
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : ViewModel() {
 
     companion object {
@@ -399,11 +399,7 @@ class ManageAddressViewModel @Inject constructor(
     fun getTargetedTicker(firstTickerContent: String? = null) {
         viewModelScope.launchCatchError(
             block = {
-                val param = GetTargetedTickerParam(
-                    page = GetTargetedTickerParam.ADDRESS_LIST_NON_OCC,
-                    target = listOf()
-                )
-                val response = getTargetedTicker(param)
+                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
                 _tickerState.value = Success(
                     convertTargetedTickerToUiModel(
                         targetedTickerData = response.getTargetedTickerData,

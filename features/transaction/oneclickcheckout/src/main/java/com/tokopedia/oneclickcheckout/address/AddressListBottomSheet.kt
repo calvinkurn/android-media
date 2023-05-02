@@ -48,7 +48,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AddressListBottomSheet(
     private val useCase: GetAddressCornerUseCase,
-    private val getTargetedTicker: GetTargetedTickerUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val listener: AddressListBottomSheetListener
 ) : CoroutineScope {
 
@@ -142,11 +142,7 @@ class AddressListBottomSheet(
     private fun initAddressTicker(context: Context) {
         launch {
             try {
-                val param = GetTargetedTickerParam(
-                    page = GetTargetedTickerParam.ADDRESS_LIST_OCC,
-                    target = listOf()
-                )
-                val response = getTargetedTicker(param)
+                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_OCC)
                 val model = convertTargetedTickerToUiModel(
                     targetedTickerData = response.getTargetedTickerData
                 )

@@ -14,14 +14,24 @@ import javax.inject.Inject
 class GetTargetedTickerUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<GetTargetedTickerParam, GetTargetedTickerResponse>(dispatcher.io) {
+) : CoroutineUseCase<String, GetTargetedTickerResponse>(dispatcher.io) {
 
     @GqlQuery(
         QUERY_GET_TARGETED_TICKER_NAME,
         QUERY_GET_TARGETED_TICKER
     )
-    override suspend fun execute(params: GetTargetedTickerParam): GetTargetedTickerResponse {
-        return repository.request(GetTargetedTicker(), GetTargetedTickerRequest(params))
+
+    override suspend fun execute(params: String): GetTargetedTickerResponse {
+        return repository.request(GetTargetedTicker(), createParams(params))
+    }
+
+    private fun createParams(page: String): GetTargetedTickerRequest {
+        return GetTargetedTickerRequest(
+            GetTargetedTickerParam(
+                page = page,
+                target = listOf()
+            )
+        )
     }
 
     override fun graphqlQuery(): String {
@@ -30,28 +40,28 @@ class GetTargetedTickerUseCase @Inject constructor(
 
     companion object {
         private const val QUERY_GET_TARGETED_TICKER_NAME = "GetTargetedTicker"
-        private const val QUERY_GET_TARGETED_TICKER =
-            """query GetTargetedTicker(${'$'}input: GetTargetedTickerRequest!) {
-  GetTargetedTicker(input: ${'$'}input) {
-    List {
-      Action {
-        Type
-        AppURL
-        Label
-        WebURL
-      }
-      Type
-      Content
-      Priority
-      Metadata {
-        Type
-        Values
-      }
-      Title
-      ID
-    }
-  }
-}
-"""
+        private const val QUERY_GET_TARGETED_TICKER = """
+            query GetTargetedTicker(${'$'}input: GetTargetedTickerRequest!) {
+              GetTargetedTicker(input: ${'$'}input) {
+                List {
+                  Action {
+                    Type
+                    AppURL
+                    Label
+                    WebURL
+                  }
+                  Type
+                  Content
+                  Priority
+                  Metadata {
+                    Type
+                    Values
+                  }
+                  Title
+                  ID
+                }
+              }
+            }
+        """
     }
 }
