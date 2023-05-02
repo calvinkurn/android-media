@@ -3,7 +3,6 @@ package com.tokopedia.applink.content
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -17,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
@@ -27,7 +27,7 @@ import com.tokopedia.kotlin.extensions.view.isAppInstalled
 object DeeplinkMapperContent {
 
     fun getRegisteredNavigationContentFromHttp(context: Context, uri: Uri): String {
-        return if (context.isAppInstalled(CUSTOMER_APP_PACKAGE) && uri.pathSegments
+        return if (uri.pathSegments
             .joinToString("/")
             .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)
         ) {
@@ -107,7 +107,13 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        return UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uri.lastPathSegment)
+        val playRoomId = uri.lastPathSegment
+
+        return if (GlobalConfig.isSellerApp()) {
+            UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW + "?titlebar=false", playRoomId)
+        } else {
+            "${ApplinkConstInternalContent.INTERNAL_PLAY}/$playRoomId"
+        }
     }
     private fun handleNavigationFeedVideo(uri: Uri): String {
         val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
