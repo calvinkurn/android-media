@@ -1609,19 +1609,6 @@ class CartListPresenter @Inject constructor(
                 view?.stopAllCartPerformanceTrace()
             }
         }
-//        val requestParam = getRecentViewUseCase.getRecomParams(
-//            1,
-//            RECENT_VIEW_XSOURCE,
-//            PAGE_NAME_RECENT_VIEW,
-//            allProductIds,
-//            ""
-//        )
-//        compositeSubscription.add(
-//            getRecentViewUseCase.createObservable(requestParam)
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(GetRecentViewSubscriber(view))
-//        )
     }
 
     override fun processGetWishlistV2Data() {
@@ -1686,19 +1673,6 @@ class CartListPresenter @Inject constructor(
                 view?.stopAllCartPerformanceTrace()
             }
         }
-//        val requestParam = getRecommendationUseCase.getRecomParams(
-//            page,
-//            "recom_widget",
-//            "cart",
-//            allProductIds,
-//            ""
-//        )
-//        compositeSubscription.add(
-//            getRecommendationUseCase.createObservable(requestParam)
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(GetRecommendationSubscriber(view))
-//        )
     }
 
     override fun processAddToCart(productModel: Any) {
@@ -1771,11 +1745,6 @@ class CartListPresenter @Inject constructor(
             this.userId = userSessionInterface.userId
         }
 
-//        val requestParams = RequestParams.create()
-//        requestParams.putObject(
-//            AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-//            addToCartRequestParams
-//        )
         launch {
             try {
                 addToCartUseCase.setParams(addToCartRequestParams)
@@ -1808,13 +1777,6 @@ class CartListPresenter @Inject constructor(
                 view?.showToastMessageRed(t)
             }
         }
-//        compositeSubscription.add(
-//            addToCartUseCase.createObservable(requestParams)
-//                .subscribeOn(schedulers.io)
-//                .unsubscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribe(AddToCartSubscriber(view, this, productModel))
-//        )
     }
 
     override fun processAddToCartExternal(productId: Long) {
@@ -2009,10 +1971,6 @@ class CartListPresenter @Inject constructor(
                     Timber.d(t)
                 }
             }
-//            compositeSubscription.add(
-//                // Do nothing on subscribe
-//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-//            )
             setLastApplyNotValid()
             setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
         }
@@ -2237,10 +2195,6 @@ class CartListPresenter @Inject constructor(
                 Timber.d(t)
             }
         }
-//        compositeSubscription.add(
-//            // Do nothing on subscribe
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-//        )
     }
 
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
@@ -2302,9 +2256,7 @@ class CartListPresenter @Inject constructor(
                 Timber.d(t)
             }
         }
-//        compositeSubscription.add(
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe()
-//        )
+        
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
     }

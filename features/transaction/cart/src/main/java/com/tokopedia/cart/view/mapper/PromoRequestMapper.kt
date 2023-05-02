@@ -324,9 +324,10 @@ object PromoRequestMapper {
                         if (order.spId <= 0) {
                             order.spId = voucherOrder.spId
                         }
-                        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull {
-                            it.uniqueId == order.uniqueId
-                        }
+                        val validateOrderRequest =
+                            lastValidateUsePromoRequest?.orders?.firstOrNull {
+                                it.uniqueId == order.uniqueId
+                            }
                         validateOrderRequest?.let {
                             order.shippingMetadata = it.shippingMetadata
                         }
