@@ -16,6 +16,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
     private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
     private var mNextButton: UnifyButton? = null
 
+    // 0 -> black || 1 -> white (please refer to TEXT_LATAR_TEMPLATE_BLACK & TEXT_LATAR_TEMPLATE_WHITE)
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
 
@@ -30,7 +31,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             initializeViewRef(this)
             initializeActiveState()
             initializeButtonListener()
-            initializeLatarItem()
+            setLatarItem()
         }
 
         setTitle(TITLE)
@@ -116,6 +117,9 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
         // update new chip state selected
         colorSelectionIndex = index
         colorButtonRef[colorSelectionIndex].setChipState(true)
+
+        // update BottomSheetItem
+        setLatarItem()
     }
 
     private fun ChipsUnify.setChipState(isActive: Boolean) {
@@ -127,13 +131,14 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
     }
 
     // initialize item image & latar model
-    private fun initializeLatarItem() {
+    private fun setLatarItem() {
         imgUrl?.let { imgUrlReady ->
             templateModelRef.forEachIndexed { index, item ->
                 item.setImage(imgUrlReady)
 
                 // please refer index with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_FULL
-                item.setLatarModel(index)
+                // please refer color with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_BLACK
+                item.setLatarModel(index, colorSelectionIndex)
             }
         }
     }

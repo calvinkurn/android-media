@@ -1,7 +1,13 @@
 package com.tokopedia.media.editor.ui.widget
 
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -12,6 +18,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_BLACK
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
@@ -23,6 +31,7 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
     private var mItemConstraint: ConstraintLayout? = null
     private var mItemChecklist: View? = null
     private var mItemLatar: View? = null
+    private var mLatarModel: Int = 0
 
     init {
         View.inflate(context, editorR.layout.add_text_latar_btm_item, this)?.apply {
@@ -65,7 +74,7 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
         mItemChecklist?.hide()
     }
 
-    fun setLatarModel(latarTemplate: Int) {
+    fun setLatarModel(latarTemplate: Int, latarColor: Int = TEXT_LATAR_TEMPLATE_BLACK) {
         when(latarTemplate) {
             TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
             TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
@@ -73,7 +82,25 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
             else -> 0
         }.let {
             if (it == 0) return
-            mItemLatar?.setBackgroundResource(it)
+            mLatarModel = it
+
+            // define is latar color for item preview
+            if (latarColor == TEXT_LATAR_TEMPLATE_WHITE) {
+                ContextCompat.getDrawable(context, it)?.let { latarBg ->
+                     filterDrawableColor(latarBg)
+                    mItemLatar?.background = latarBg
+                }
+            } else {
+                mItemLatar?.setBackgroundResource(it)
+            }
+        }
+    }
+
+    private fun filterDrawableColor(src: Drawable){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            src.colorFilter = BlendModeColorFilter(Color.WHITE, BlendMode.SRC_ATOP)
+        } else {
+            src.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
         }
     }
 }

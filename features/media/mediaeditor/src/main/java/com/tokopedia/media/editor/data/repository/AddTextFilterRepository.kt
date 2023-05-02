@@ -4,11 +4,19 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.scale
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -98,10 +106,32 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             }
         }
 
+        getLatarDrawable(data.getLatarTemplate()?.latarModel)?.let {
+            it.toBitmap().scale(canvas.width, mTextLayout.height + padding.toInt()).apply {
+                canvas.drawBitmap(this, -padding, 0f, null)
+            }
+        }
+
         mTextLayout.draw(canvas)
         canvas.restore()
 
         return bitmap
+    }
+
+    private fun getLatarDrawable(latarModel: Int?): Drawable?{
+        if (latarModel == null) return null
+
+        when (latarModel) {
+            TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
+            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
+            TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
+            else -> null
+        }.apply {
+            this?.let {
+                return ContextCompat.getDrawable(context, it)
+            }
+            return null
+        }
     }
 
     companion object {
