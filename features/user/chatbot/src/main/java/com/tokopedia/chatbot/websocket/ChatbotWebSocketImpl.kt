@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.websocket
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.HEADER_DEVICE
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
@@ -29,8 +29,6 @@ class ChatbotWebSocketImpl(
 ) : ChatbotWebSocket {
 
     private val client: OkHttpClient
-    private var isSocketErrorSent = false
-    private var isSocketSendMessageError = false
 
     init {
 
@@ -82,10 +80,7 @@ class ChatbotWebSocketImpl(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Failure(ChatbotWebSocketException(t)))
-            if (!isSocketErrorSent) {
-                isSocketErrorSent = true
-                ChatbotNewRelicLogger.logNewRelicForSocket(t)
-            }
+            FirebaseCrashlytics.getInstance().recordException(t)
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -106,12 +101,7 @@ class ChatbotWebSocketImpl(
         try {
             mWebSocket?.send(message.toString())
         } catch (e: Exception) {
-            if (!isSocketSendMessageError) {
-                isSocketSendMessageError = true
-                ChatbotNewRelicLogger.logNewRelicForSocket(
-                    e
-                )
-            }
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

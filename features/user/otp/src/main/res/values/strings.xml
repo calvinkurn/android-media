@@ -14,7 +14,8 @@
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
-    
+    <string name="default_otp_footer_choose_method">Berkendala dengan metode di atas?\nGunakan metode lain</string>
+
     <string name="cotp_miscall_onboarding_title">Kami akan Missed Call nomor kamu, panggilan ini tidak perlu dijawab.</string>
     <string name="cotp_miscall_onboarding_desc">4 digit terakhir dari nomor yang menelpon kamu adalah kode verifikasi kamu.</string>
     <string name="cotp_miscall_onboarding_title_new">Kami akan missed call nomor HP-mu, jangan angkat teleponnya.</string>
@@ -45,6 +46,7 @@
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
     <string name="forgot_pin">Lupa PIN Tokopedia</string>
     <string name="cellphone_number_has_changed">Nomor HP Sudah Berubah</string>
+    <string name="cellphone_number_has_changed_lowercase">nomor HP sudah berubah</string>
     <string name="change_inactive_phone_number">Nomor HP kamu tidak aktif lagi? Ubah Nomor HP</string>
     <string name="otp_change_phone_number">Ubah Nomor HP</string>
     <string name="change_inactive_phone_number_html"><![CDATA[Nomor HP kamu tidak aktif lagi? <a href="(%1$s)">Ubah Nomor HP</a>.]]></string>
@@ -102,4 +104,5 @@
     <string name="inactive_phone_text_footer_pin_challenge_meta">Lupa pin Tokopedia?</string>
     <string name="inactive_phone_text_footer_pin_challenge_action">Ajukan perubahan nomor HP</string>
     <string name="inactive_phone_text_footer_phone_not_active">Nomor saya sudah tidak aktif</string>
+
 </resources>
