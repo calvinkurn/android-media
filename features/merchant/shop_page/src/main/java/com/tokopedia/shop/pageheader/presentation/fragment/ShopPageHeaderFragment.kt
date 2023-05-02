@@ -79,6 +79,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -816,7 +817,7 @@ class ShopPageHeaderFragment :
             owner,
             Observer { result ->
                 if (result is Success) {
-                    shopPageFragmentHeaderViewHolder?.updateShopTicker(
+                    shopPageHeaderFragmentHeaderViewHolder?.updateShopTicker(
                         result.data,
                         isMyShop
                     ) { tickerVisibilityState ->
@@ -825,7 +826,7 @@ class ShopPageHeaderFragment :
                     }
                 }
             }
-        })
+        )
 
         shopHeaderViewModel?.shopPageShopShareData?.observe(
             owner,
