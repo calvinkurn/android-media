@@ -184,4 +184,15 @@ data class RecommendationItem(
     }
 }
 
-data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")
+data class RecommendationSpecificationLabels(
+    var specTitle: String = "",
+    val specSummary: String = "",
+    val recommendationSpecificationLabelsBullet: List<RecommendationSpecificationLabelsBullet> = listOf()
+)
+
+
+data class RecommendationSpecificationLabelsBullet(
+    val specsSummary: String,
+    val icon: String?
+)
+

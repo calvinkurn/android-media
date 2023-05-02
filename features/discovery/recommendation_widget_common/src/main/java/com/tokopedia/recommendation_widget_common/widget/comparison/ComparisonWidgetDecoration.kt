@@ -5,6 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
 
+/**
+ * Created by Frenzel
+ */
 class ComparisonWidgetDecoration : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val itemCount = ((parent.layoutManager?.itemCount?:0)-1)

@@ -264,6 +264,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetV2ViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
@@ -305,6 +306,7 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -442,6 +444,8 @@ open class DynamicProductDetailFragment :
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
 
+    private var recomViewModel: RecomWidgetV2ViewModel? = null
+
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
             PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
@@ -570,6 +574,8 @@ open class DynamicProductDetailFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBtnAction()
+
+        recomViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(RecomWidgetV2ViewModel::class.java)
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         setupToolbarState()
