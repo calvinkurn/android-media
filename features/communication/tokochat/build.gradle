@@ -49,6 +49,7 @@ android {
                 excludes = ['jdk.internal.*']
             }
         }
+        animationsDisabled = true
     }
 }
 
@@ -56,6 +57,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
