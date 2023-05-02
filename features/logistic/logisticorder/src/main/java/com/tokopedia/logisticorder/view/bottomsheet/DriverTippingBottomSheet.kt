@@ -251,6 +251,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     private fun setWrapperWatcherTipping(wrapper: TextInputLayout, minAmount: Int, maxAmount: Int): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // no op
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -282,6 +283,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             }
 
             override fun afterTextChanged(text: Editable) {
+                // no op
             }
         }
     }
