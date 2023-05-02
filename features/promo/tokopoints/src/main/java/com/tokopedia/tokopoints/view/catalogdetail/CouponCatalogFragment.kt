@@ -262,21 +262,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
         tv_coupon_title = view.findViewById(R.id.tv_coupon_title)
         tv_code = view.findViewById(R.id.tv_code)
-        tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
-            context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) }, null)
+        tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) },
+            null
+        )
         tv_dynamic_infos = view.findViewById(R.id.tv_dynamic_infos)
         btn_action_claim = view.findViewById(R.id.btn_action_claim)
-
-//        val img = context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) }
-//
-//        val pixelDrawableSize = tv_code?.getLineHeight()?.times(1.0)?.let { Math.round(it) }; // Or the percentage you like (0.8, 0.9, etc.)
-//        pixelDrawableSize?.toInt()?.let { img?.setBounds(0, 0, it, it) }
-//        tv_code?.setCompoundDrawables(
-//            null, //left
-//            null, //top
-//            img, //right
-//            null //bottom
-//        );
     }
 
     private fun initListener() {
@@ -453,7 +446,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 }
             }
             when (data.actionCTA?.type) {
-                "redirect" -> {
+                CommonConstant.CTA_TYPE_REDIRECT -> {
                     if (data.actionCTA?.isShown == true) {
                         btnContainer?.show()
                         catalog_bottom_section.hide()
@@ -477,7 +470,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                         catalog_bottom_section?.hide()
                     }
                 }
-                "redeem" -> {
+                CommonConstant.CTA_TYPE_REDEEM -> {
                     btn_action_claim?.hide()
                     catalog_bottom_section.show()
                     btnAction2?.text = "Klaim"
@@ -531,18 +524,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 return true
             }
         })
-//        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
-//        if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
-//            tvTnc.text = HtmlUrlHelper(
-//                data.tnc ?: "",
-//                tvTnc.context
-//            ).spannedString
-//            tvTnc.movementMethod = getMovementMethod()
-//        } else {
-//            view?.findViewById<Typography>(R.id.tnc)?.hide()
-//            view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
-//            tvTnc.hide()
-//        }
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
             tvHowToUse.text = HtmlUrlHelper(
                 data.howToUse ?: "",
