@@ -9,68 +9,73 @@ interface CatalogDetailListener {
     /**
      * CatalogInfoViewHolder
      */
-    fun onViewMoreDescriptionClick(){}
+    fun onViewMoreDescriptionClick() {}
 
     /**
      * CatalogImageViewHolder
      */
-    fun onProductImageClick(catalogImage : CatalogImage, position: Int){}
+    fun onProductImageClick(catalogImage: CatalogImage, position: Int) {}
 
     /**
      * CatalogSpecificationsContainerViewHolder
      */
-    fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?){}
+    fun onViewMoreSpecificationsClick(topModel: TopSpecificationsComponentData?) {}
 
     /**
      * CatalogProductsContainerViewHolder
      */
-    fun hideFloatingLayout(){}
+    fun hideFloatingLayout() {}
 
-    fun showFloatingLayout(){}
+    fun showFloatingLayout() {}
 
     /**
      * CatalogVideoViewHolder
      */
-    fun playVideo(catalogVideo : VideoComponentData, position : Int){}
+    fun playVideo(catalogVideo: VideoComponentData, position: Int) {}
 
     /**
      * CatalogComparisionContainerViewHolder
      */
-    fun comparisonCatalogClicked(comparisonCatalogId : String){}
+    fun comparisonCatalogClicked(comparisonCatalogId: String) {}
 
-    fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
+    fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?) {}
 
-    fun openComparisonNewBottomSheet(comparisonNewModel : ComparisonNewModel?) {}
+    fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?) {}
 
-    fun comparisonNewCatalogClicked(comparisonCatalogId : String) {}
+    fun comparisonNewCatalogClicked(comparisonCatalogId: String) {}
 
-    fun changeComparison(comparedCatalogId: String){}
+    fun changeComparison(comparedCatalogId: String) {}
 
-    fun accordionDropUp(tabName : String?) {}
+    fun accordionDropUp(tabName: String?) {}
 
-    fun accordionDropDown(tabName : String?) {}
+    fun accordionDropDown(tabName: String?) {}
+
     /**
      * CatalogReviewContainerViewHolder
      */
-    fun readMoreReviewsClicked(catalogId : String){}
+    fun readMoreReviewsClicked(catalogId: String) {}
 
     /**
      * CatalogReviewViewHolder
      */
-    fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
-                             isFromBottomSheet : Boolean = true){}
+    fun onReviewImageClicked(
+        position: Int,
+        items: ArrayList<CatalogImage>,
+        reviewId: String,
+        isFromBottomSheet: Boolean = true
+    ) {}
 
-    fun onCatalogForYouClick(adapterPosition : Int , catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
+    fun onCatalogForYouClick(adapterPosition: Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
-    fun onCatalogForYouImpressed(model : CatalogForYouModel , adapterPosition: Int){}
+    fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {}
 
-    fun getChildsFragmentManager() : FragmentManager? {
+    fun getChildsFragmentManager(): FragmentManager? {
         return null
     }
 
-    fun getWindowHeight() : Int { return 0 }
+    fun getWindowHeight(): Int { return 0 }
 
-    fun sendWidgetImpressionEvent(widgetImpressionActionName : String, widgetImpressionItemName: String, adapterPosition: Int) {}
+    fun sendWidgetImpressionEvent(widgetImpressionActionName: String, widgetImpressionItemName: String, adapterPosition: Int) {}
 
     fun sendWidgetTrackEvent(actionName: String) { }
 
@@ -80,5 +85,7 @@ interface CatalogDetailListener {
 
     fun setLastAttachItemPosition(adapterPosition: Int) {}
 
-    fun entryPointBannerClicked(categoryName : String) {}
+    fun entryPointBannerClicked(categoryName: String) {}
+
+    fun entryPointBannerImageClicked(appLink: String) {}
 }

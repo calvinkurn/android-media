@@ -57,22 +57,26 @@ class CatalogEntryBannerViewHolder(
 
     private fun renderImages(catalogs: ArrayList<CatalogImage>?) {
         val leftImageUrl = catalogs?.firstOrNull()?.imageURL ?: ""
-        if (leftImageUrl.isNotBlank()) {
-            imageLeft.show()
-            imageLeft.loadImage(leftImageUrl)
-        } else {
-            imageLeft.hide()
-        }
+        renderImage(imageLeft, catalogs?.firstOrNull()?.appLink ?: "", leftImageUrl)
         if ((catalogs?.size ?: 0) > 1) {
             val rightImageUrl = catalogs?.get(1)?.imageURL ?: ""
-            if (rightImageUrl.isNotBlank()) {
-                imageRight.show()
-                imageRight.loadImage(rightImageUrl)
-            } else {
-                imageRight.hide()
-            }
+            renderImage(imageRight, catalogs?.get(1)?.appLink ?: "", rightImageUrl)
         } else {
             imageRight.hide()
+        }
+    }
+
+    private fun renderImage(image: ImageUnify, appLink: String, imageUrl: String) {
+        if (imageUrl.isNotBlank()) {
+            image.apply {
+                show()
+                setOnClickListener {
+                    catalogDetailListener.entryPointBannerImageClicked(appLink)
+                }
+                loadImage(imageUrl)
+            }
+        } else {
+            image.hide()
         }
     }
 }
