@@ -1021,6 +1021,7 @@ class CatalogDetailPageFragment :
     override fun entryPointBannerImageClicked(appLink: String) {
         super.entryPointBannerImageClicked(appLink)
         RouteManager.route(context, appLink)
+        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
     }
 
     override fun onPause() {
