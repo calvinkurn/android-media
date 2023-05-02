@@ -1,6 +1,7 @@
 package com.tokopedia.applink.content
 
 import android.net.Uri
+import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -24,7 +25,12 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapperContent {
 
     fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
-        return if (uri.pathSegments
+        Log.d("<LOG>", "globalConfig.isSellerApp : ${GlobalConfig.isSellerApp()}")
+        Log.d("<LOG>", "getRegisteredNavigationContentFromHttp uri.pathSegments : ${uri.pathSegments}")
+        Log.d("<LOG>", "getRegisteredNavigationContentFromHttp uri.pathSegments complete : ${uri.pathSegments
+            .joinToString("/")
+            .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)}")
+        return if (!GlobalConfig.isSellerApp() && uri.pathSegments
             .joinToString("/")
             .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)
         ) {
@@ -104,6 +110,9 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
+        Log.d("<LOG>", "handleNavigationPlay uri : ${uri}")
+        Log.d("<LOG>", "handleNavigationPlay : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
+        Log.d("<LOG>", "============")
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
     private fun handleNavigationFeedVideo(uri: Uri): String {
