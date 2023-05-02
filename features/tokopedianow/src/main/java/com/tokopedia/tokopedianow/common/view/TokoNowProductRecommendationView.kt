@@ -12,12 +12,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationSt
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADING
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
-import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -86,7 +85,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      */
     fun bind(
         items: List<Visitable<*>> = listOf(),
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+        seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null,
         header: TokoNowDynamicHeaderUiModel? = null,
         state: TokoNowProductRecommendationState = LOADED
     ) {
@@ -108,8 +107,8 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      * The listener will be used when data are set outside of this widget
      */
     fun setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
-        headerCarouselListener: TokoNowDynamicHeaderListener? = null
+        productCardCarouselListener: ProductCardCompactCarouselListener? = null,
+        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
             productCardCarouselListener = productCardCarouselListener,
@@ -175,18 +174,18 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         )
         fun productCardClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             isLogin: Boolean,
             userId: String
         )
         fun productCardImpressed(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             isLogin: Boolean,
             userId: String
         )
         fun seeMoreClicked(
-            seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+            seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )
         fun seeAllClicked(
             appLink: String

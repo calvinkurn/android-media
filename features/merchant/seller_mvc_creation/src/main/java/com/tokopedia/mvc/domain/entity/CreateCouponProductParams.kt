@@ -92,5 +92,8 @@ data class CreateCouponProductParams(
     val periodType: Int = 0,
     @SerializedName("period_repeat")
     @Expose
-    val periodRepeat: Int = 0
+    val periodRepeat: Int = 0,
+    @SerializedName("product_ids_image")
+    @Expose
+    val productIdsImage: String = ""
 )

@@ -1,10 +1,9 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.TokenListrikDataFactory
 import com.tokopedia.network.exception.MessageErrorException
@@ -17,7 +16,7 @@ import kotlinx.coroutines.Job
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFixture() {
+class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestFixture() {
 
     private val dataFactory = TokenListrikDataFactory()
     private val mapperFactory = DigitalDenomMapper()
@@ -161,7 +160,6 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         verifyGetCatalogInputMultitabSuccess(mappedResponse)
     }
 
-
     @Test
     fun `given catalogInputMultitab loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
@@ -210,7 +208,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
@@ -222,7 +220,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -234,7 +232,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -244,7 +242,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -507,8 +505,8 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     @Test
     fun `when getting listInfo should run and give success result`() {
         val response = dataFactory.getOperatorSelectGroup()
-        val expectedlistInfo = response.response.operatorGroups?.first()?.
-        operators?.first()?.attributes?.operatorDescriptions ?: listOf()
+        val expectedlistInfo = response.response.operatorGroups?.first()
+            ?.operators?.first()?.attributes?.operatorDescriptions ?: listOf()
         onGetOperatorSelectGroup_thenReturn(response)
 
         viewModel.getOperatorSelectGroup(MENU_ID)
@@ -526,7 +524,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
-    fun  `when given list denom and productId should run and successfully get selected denom`() {
+    fun `when given list denom and productId should run and successfully get selected denom`() {
         val response = dataFactory.getCatalogInputMultiTabData()
         val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
         val selectedDenom = dataFactory.getSelectedData(mappedResponse.listDenomData.get(0))
@@ -540,7 +538,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
-    fun  `when given list denom and productId should failed and failed get selected denom`() {
+    fun `when given list denom and productId should failed and failed get selected denom`() {
         val response = dataFactory.getCatalogInputMultiTabData()
         val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
         val idDenom = "181"
