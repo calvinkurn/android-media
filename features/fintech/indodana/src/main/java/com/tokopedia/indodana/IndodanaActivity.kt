@@ -5,15 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.DisplayMetrics
 import android.util.Log
-import android.util.Pair
-import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -27,6 +22,7 @@ import com.indodana.whitelabelsdk.webview.jsinterface.WhitelabelCameraJsInterfac
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
+import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -65,7 +61,8 @@ class IndodanaActivity : AppCompatActivity() {
         }
 
         val url = intent.data?.getQueryParameter("url")
-            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
+            ?: "https://csb-ioo7i.netlify.app/"
+//            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
 
         webview.loadUrl(url)
 
@@ -114,7 +111,13 @@ class IndodanaActivity : AppCompatActivity() {
 
     // Handler to display camera view
     private fun takePictureFromCamera(docType: String?, lang: String?) {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE)
+        val applink = if (docType == HomeCreditKTPFragment.TYPE) {
+            ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE
+        } else {
+            ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE
+        }
+
+        val intent = RouteManager.getIntent(this, applink)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
 //        runOnUiThread {
 //            if (cameraController == null) {
@@ -151,7 +154,6 @@ class IndodanaActivity : AppCompatActivity() {
                 imageBase64
             )
             executeJs(script)
-            dismissTakeImageView()
         }
     }
 
@@ -169,92 +171,21 @@ class IndodanaActivity : AppCompatActivity() {
         }
     }
 
-    // set the cameraview to invisible after usage
-    private fun dismissTakeImageView() {
-        cameraController?.onStop()
-        cameraview.visibility = View.INVISIBLE
-        cameraview.onStop()
-        cameraController = null
-    }
-
-    // used to calculate image cropping
-    private fun getRealScreenSize(): Pair<Int, Int>? {
-        val displayMetrics = DisplayMetrics()
-        this.windowManager.defaultDisplay.getRealMetrics(displayMetrics)
-        val realWidth = displayMetrics.widthPixels
-        val realHeight = displayMetrics.heightPixels
-        return Pair(realWidth, realHeight)
-    }
-
-    /****Additional Code to enable camera SDK*****/
-    override fun onResume() {
-        super.onResume()
-        webview.onResume()
-        cameraController?.startTakingPicture()
-    }
-
-    override fun onPause() {
-        webview.onPause()
-        cameraController?.onPause()
-        super.onPause()
-    }
-
+    @SuppressLint("PII Data Exposure")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK) {
             val imageFilePath = data?.getStringExtra(HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH)
+            val type = data?.getStringExtra(HomeCreditRegisterActivity.HCI_TYPE)
 
             val imageBase64 = getBase64FromImagePath(imageFilePath ?: "")?.replace("\n", "")
 
-            finishTakePicture(DOCTYPE_KYC, imageBase64)
+            finishTakePicture(type, imageBase64)
         }
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String, compress: Boolean = false, compressCounter: Int = 0): String {
-        var prescriptionImageBitmap: Bitmap? = null
-        val options: BitmapFactory.Options
-        var finalEncodedString = ""
-        return try {
-            prescriptionImageBitmap = if (compress) {
-                options = BitmapFactory.Options()
-                options.inSampleSize = 2 + compressCounter
-                BitmapFactory.decodeFile(localFilePath, options)
-            } else {
-                BitmapFactory.decodeFile(localFilePath)
-            }
-            val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-            prescriptionImageBitmap?.compress(
-                Bitmap.CompressFormat.JPEG,
-                QUALITY_SAFE_FIX,
-                prescriptionByteArrayOutputStream
-            )
-            val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-            prescriptionImageBitmap?.recycle()
-
-            val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            finalEncodedString = encodedString
-            finalEncodedString
-        } catch (e: Exception) {
-            prescriptionImageBitmap?.recycle()
-            when (e) {
-                is NullPointerException -> {
-                    if ((!compress) || (compress && (compressCounter < MAX_COMPRESSIONS))) {
-                        finalEncodedString = if (compress && localFilePath.isNotBlank()) {
-                            getBase64OfPrescriptionImage(localFilePath, true, compressCounter + 1)
-                        } else {
-                            getBase64OfPrescriptionImage(localFilePath, true, compressCounter + 1)
-                        }
-                    }
-                }
-                else -> {
-                }
-            }
-            finalEncodedString
-        }
-    }
-
-    fun getBase64FromImagePath(imagePath: String): String? {
+    private fun getBase64FromImagePath(imagePath: String): String? {
         try {
             val file = File(imagePath)
             val inputStream = FileInputStream(file)
@@ -273,21 +204,8 @@ class IndodanaActivity : AppCompatActivity() {
         return null
     }
 
-    fun getBitmapFromBase64(base64String: String): Bitmap? {
-        try {
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
     companion object {
         private const val REQUEST_CODE_IMAGE = 123
-        private const val DOCTYPE_KYC = "kyc"
-        private const val MAX_COMPRESSIONS = 5
-        private const val QUALITY_SAFE_FIX = 60
     }
 }
 

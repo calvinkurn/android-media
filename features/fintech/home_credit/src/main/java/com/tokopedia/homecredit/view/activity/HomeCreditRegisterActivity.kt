@@ -101,6 +101,7 @@ open class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeC
 
     companion object {
         const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
+        const val HCI_TYPE = "type"
         private const val REQUEST_CAMERA_PERMISSIONS = 932
         private const val SHOW_KTP = "show_ktp"
     }
