@@ -1014,7 +1014,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun entryPointBannerClicked(categoryName: String) {
-        RouteManager.route(context, CatalogConstant.APPLINK_CATALOG_LIBRARY)
+        RouteManager.route(context, "${CatalogConstant.APPLINK_CATALOG_LIBRARY_CATEGORY_LANDING}$catalogDepartmentId")
         CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
     }
 
