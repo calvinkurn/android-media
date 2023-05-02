@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
@@ -29,7 +28,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
@@ -46,7 +44,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBo
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -73,7 +70,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     TagListViewComponent.Listener,
     PlayBroadcastSetupCoverBottomSheet.Listener {
 
-    private val prepareViewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
     private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
         parentViewModelFactoryCreator.create(
             requireActivity()
@@ -157,39 +153,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
-            }
-            is ProductSetupFragment -> {
-                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
-                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        return parentViewModel.productSectionList
-                    }
-
-                    override fun isEligibleForPin(): Boolean = false
-
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.uiState.value.selectedContentAccount
-                    }
-
-                    override fun creationId(): String {
-                        return parentViewModel.channelId
-                    }
-
-                    override fun maxProduct(): Int {
-                        return parentViewModel.maxProduct
-                    }
-
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Unknown
-                    }
-                })
-
-                childFragment.setListener(object : ProductSetupFragment.Listener {
-                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetProduct(productTagSectionList)
-                        )
-                    }
-                })
             }
         }
     }
@@ -391,8 +354,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     companion object {
-        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
-        private const val PAGE_NAME = "report page"
+        const val PAGE_NAME = "report page"
     }
 
     override fun dismissSetupCover(source: Int) {
@@ -404,15 +366,5 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
-    }
-
-    override fun setupCoverProductClicked() {
-        openSetupProductBottomSheet()
-    }
-
-    private fun openSetupProductBottomSheet() {
-        childFragmentManager.beginTransaction()
-            .add(ProductSetupFragment::class.java, null, null)
-            .commit()
     }
 }

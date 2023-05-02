@@ -152,4 +152,111 @@ class ProductBundlingViewModelTest {
 
         TestCase.assertEquals(viewModel.getEmptyBundleData().value, true)
     }
+
+    /****************************************** test for fetchProductBundlingPaginatedData ****************************************/
+
+    @Test
+    fun `test for fetchProductBundlingPaginatedData returns error`() {
+        viewModel.productBundlingUseCase = productBundlingUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(name = "product_bundling")
+        list.add(item)
+        every { componentsItem.data } returns list
+        coEvery {
+            productBundlingUseCase.getProductBundlingPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+
+        viewModel.fetchProductBundlingPaginatedData()
+
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
+    }
+
+    @Test
+    fun `test for fetchProductBundlingPaginatedData returns true`() {
+        viewModel.productBundlingUseCase = productBundlingUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(name = "product_bundling")
+        list.add(item)
+        every { componentsItem.data } returns list
+        coEvery {
+            productBundlingUseCase.getProductBundlingPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+
+        viewModel.fetchProductBundlingPaginatedData()
+
+        TestCase.assertEquals(viewModel.getEmptyBundleData().value == null, true)
+    }
+
+    @Test
+    fun `test for fetchProductBundlingPaginatedData returns true return emptylist`() {
+        viewModel.productBundlingUseCase = productBundlingUseCase
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        coEvery {
+            productBundlingUseCase.getProductBundlingPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+
+        viewModel.fetchProductBundlingPaginatedData()
+
+        TestCase.assertEquals(viewModel.getEmptyBundleData().value == null, true)
+    }
+
+    @Test
+    fun `test for fetchProductBundlingPaginatedData returns false`() {
+        viewModel.productBundlingUseCase = productBundlingUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(name = "product_bundling")
+        list.add(item)
+        every { componentsItem.data } returns list
+        coEvery {
+            productBundlingUseCase.getProductBundlingPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.fetchProductBundlingPaginatedData()
+
+        TestCase.assertEquals(viewModel.paginationListData().value, arrayListOf<ComponentsItem>())
+    }
+
+    /**************************** test for refreshProductCarouselError() *******************************************/
+    @Test
+    fun `test for refreshProductCarouselError`() {
+        viewModel.refreshProductCarouselError()
+        val list = ArrayList<DataItem>()
+        val item = DataItem(name = "product_bundling")
+        list.add(item)
+        every { componentsItem.data } returns list
+
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
+    }
+
+    /**************************** test for pagination() *******************************************/
+    @Test
+    fun `is last page for pagination when nextPageKey is not empty`() {
+        every { componentsItem.nextPageKey } returns "p"
+
+        assert(!viewModel.isLastPage())
+    }
+
+    @Test
+    fun `is last page for pagination when nextPageKey is empty`() {
+        every { componentsItem.nextPageKey } returns ""
+
+        assert(viewModel.isLastPage())
+    }
+
+    @Test
+    fun `is last page for pagination when nextPageKey is null`() {
+        every { componentsItem.nextPageKey } returns null
+
+        assert(viewModel.isLastPage())
+    }
+
+    /**************************** end of pagination() *******************************************/
+
+    @Test
+    fun `test for resetComponent`(){
+        viewModel.resetComponent()
+
+        TestCase.assertEquals(viewModel.components.noOfPagesLoaded, 0)
+    }
 }

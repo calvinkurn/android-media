@@ -46,18 +46,18 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
     }
 
     private suspend fun getFavoriteShop(): FavoriteShop {
-        val defaultParams = GetFavoriteShopUsecase.defaultParams
-        defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true)
+        val defaultParams = GetFavoriteShopUseCaseWithCoroutine.defaultParams
+        defaultParams.putBoolean(GetFavoriteShopUseCaseWithCoroutine.KEY_IS_FIRST_PAGE, true)
         getFavoriteShopUsecase.requestParams = defaultParams
         return getFavoriteShopUsecase.executeOnBackground()
     }
 
     private suspend fun getTopAdsShop(): TopAdsShop {
-        val requestParams = GetTopAdsShopUseCase.defaultParams(topAdsAddressHelper.getAddressData())
-        requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false)
-        requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
+        val requestParams = GetTopAdsShopUseCaseWithCoroutine.defaultParams(topAdsAddressHelper.getAddressData())
+        requestParams.putBoolean(GetTopAdsShopUseCaseWithCoroutine.KEY_IS_FORCE_REFRESH, false)
+        requestParams.putString(GetTopAdsShopUseCaseWithCoroutine.KEY_USER_ID, userSession.userId)
         val preferredCacheList = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY)
-        requestParams.putInt(GetTopAdsShopUseCase.KEY_DEP_ID, getRandomId(preferredCacheList))
+        requestParams.putInt(GetTopAdsShopUseCaseWithCoroutine.KEY_DEP_ID, getRandomId(preferredCacheList))
         getTopAdsShopUseCase.requestParams = requestParams
 
         return getTopAdsShopUseCase.executeOnBackground()

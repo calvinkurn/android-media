@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.ContentSwitcherUnify
         android:id="@+id/csu_setup_cover"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="54dp"
         android:textOff="@string/play_bro_cover_setup_upload_image"
         android:textOn="@string/play_bro_cover_setup_choose_template"
         app:layout_constraintEnd_toEndOf="parent"
