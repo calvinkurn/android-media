@@ -12,30 +12,34 @@ import com.tokopedia.manageaddress.ui.debugbanner.DebugBannerView
  */
 class DebugApp() {
 
+    /**
+     * not show banner when liveStatus is Empty
+     */
     fun initDebug(activity: Activity, liveStatus: String) {
-        val decorView = activity.window.decorView as ViewGroup
-        val localBanner = Banner()
+        if (liveStatus.isNotEmpty()) {
+            val decorView = activity.window.decorView as ViewGroup
+            val localBanner = Banner()
+            var doubleClick = false
 
-        var doubleClick = false
+            val debugBannerView = DebugBannerView(activity).apply {
+                updateText(liveStatus, localBanner.textColorRes)
+                updateBannerColor(localBanner.bannerColorRes)
+                bannerGravity = localBanner.bannerGravity
 
-        val debugBannerView = DebugBannerView(activity).apply {
-            updateText(liveStatus, localBanner.textColorRes)
-            updateBannerColor(localBanner.bannerColorRes)
-            bannerGravity = localBanner.bannerGravity
+                setOnClickListener {
+                    if (doubleClick) {
+                        // Code here when they double click
 
-            setOnClickListener {
-                if (doubleClick) {
-                    // Code here when they double click
-
-                    this.visibility = View.GONE
+                        this.visibility = View.GONE
+                    }
+                    doubleClick = true
+                    Handler().postDelayed({ doubleClick = false }, 2000)
                 }
-                doubleClick = true
-                Handler().postDelayed({ doubleClick = false }, 2000)
             }
-        }
 
-        val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
-        val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
-        decorView.addView(debugBannerView, params)
+            val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+            val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
+            decorView.addView(debugBannerView, params)
+        }
     }
 }
