@@ -71,7 +71,7 @@ object ReschedulePickupTestDataProvider {
             inputStream.close()
             json = String(buffer)
         } catch (e: IOException) {
-            e.printStackTrace()
+            // no op
         }
         return json
     }
