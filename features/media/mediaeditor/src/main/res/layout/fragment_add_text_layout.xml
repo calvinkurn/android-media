@@ -18,6 +18,7 @@
         android:layout_height="0dp">
         
         <LinearLayout
+            android:visibility="gone"
             android:background="@drawable/editor_text_position_bg"
             android:layout_marginStart="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -41,6 +42,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:background="@drawable/editor_text_position_bg"
             android:layout_marginEnd="16dp"
             app:layout_constraintRight_toRightOf="parent"
@@ -64,6 +66,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:background="@drawable/editor_text_position_bg"
             android:layout_marginTop="16dp"
             app:layout_constraintRight_toRightOf="parent"
@@ -87,6 +90,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:background="@drawable/editor_text_position_bg"
             android:layout_marginBottom="16dp"
             app:layout_constraintRight_toRightOf="parent"

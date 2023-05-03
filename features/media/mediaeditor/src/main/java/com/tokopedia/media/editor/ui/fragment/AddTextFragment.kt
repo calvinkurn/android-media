@@ -26,6 +26,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_REGULAR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.widget.AddTextColorItem
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
 import com.tokopedia.media.loader.loadImage
@@ -197,6 +198,11 @@ class AddTextFragment @Inject constructor(
             // left -> right -> top -> bottom
             val positionViewContainer = it.positionOverlayContainer
             for (i in 0 until positionViewContainer.childCount) {
+                // skip top & left when template is latar
+                if (viewModel.textData.textTemplate == TEXT_TEMPLATE_BACKGROUND && (i == 0 || i == 2)) {
+                    continue
+                }
+
                 positionViewContainer.getChildAt(i).apply {
                     if (i == positionIndex) {
                         this.hide()
