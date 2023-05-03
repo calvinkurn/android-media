@@ -16,21 +16,21 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.FpmDebuggerTypeFactory
+import com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger
+import javax.inject.Inject
 
 class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerTypeFactory>(), com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger.View {
 
     private var buttonSearch: Button? = null
 
-    var presenter: com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger.Presenter? = null
+    @Inject
+    lateinit var presenter: FpmDebugger.Presenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
@@ -47,9 +47,9 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
-                presenter?.reloadData()
+                presenter.reloadData()
             } else {
-                presenter?.search(searchInputView.searchText)
+                presenter.search(searchInputView.searchText)
             }
         }
         searchInputView.setSearchHint("Cari")
@@ -57,7 +57,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -66,7 +66,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
 
     override fun loadInitialData() {
         showLoading()
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -74,7 +74,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun loadData(page: Int) {
-        presenter?.loadMore()
+        presenter.loadMore()
     }
 
     override fun getAdapterTypeFactory(): FpmDebuggerTypeFactory {
@@ -88,18 +88,11 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
-                .builder()
-                .baseAppComponent(
-                        (activity!!.application as BaseMainApplication).baseAppComponent
-                ).build()
+        val component = DaggerAnalyticsDebuggerComponent.builder()
+            .context(activity!!.application).build()
 
-        injectToFragment(component)
-        presenter?.attachView(this)
-    }
-
-    private fun injectToFragment(component: AnalyticsDebuggerComponent) {
-        presenter = component.fpmPresenter
+        component.inject(this)
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String {
@@ -107,11 +100,10 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun onSearchSubmitted(text: String) {
-        presenter?.search(text)
+        presenter.search(text)
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
@@ -129,7 +121,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun onDeleteCompleted() {
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -139,7 +131,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.fpm_action_menu_delete) {
-            presenter?.deleteAll()
+            presenter.deleteAll()
             return true
         } else if (item.itemId == R.id.fpm_action_menu_save) {
             showSaveToDiskDialog()
@@ -149,7 +141,6 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     private fun showSaveToDiskDialog() {
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
 
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -161,18 +152,18 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
             startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
         } else {
             Toast.makeText(
-                    requireContext(), R.string.fpm_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
+                requireContext(),
+                R.string.fpm_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val uri = resultData?.data
             uri?.let { it ->
-                presenter?.writeAllDataToFile(uri)
+                presenter.writeAllDataToFile(uri)
             }
         }
     }

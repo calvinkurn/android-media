@@ -27,7 +27,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestTips(
     modifier: Modifier = Modifier,
     title: String? = null,
-    description: String? = null
+    description: CharSequence? = null
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),

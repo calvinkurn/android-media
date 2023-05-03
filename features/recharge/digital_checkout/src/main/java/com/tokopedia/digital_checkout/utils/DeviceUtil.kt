@@ -6,7 +6,6 @@ import android.text.TextUtils
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.user.session.UserSession
 import java.net.Inet4Address
@@ -40,7 +39,9 @@ object DeviceUtil {
             val model = Build.MODEL ?: ""
             return if (model.startsWith(manufacturer)) {
                 capitalize(model)
-            } else capitalize(manufacturer) + " " + model
+            } else {
+                capitalize(manufacturer) + " " + model
+            }
         }
 
     private fun capitalize(str: String): String {
@@ -64,14 +65,16 @@ object DeviceUtil {
     }
 
     val userAgentForApiCall: String
-        get() = ("Android Tokopedia Application/"
-                + GlobalConfig.getPackageApplicationName()
-                + " v." + GlobalConfig.VERSION_NAME
-                + " (" + deviceName
-                + "; Android; API_"
-                + Build.VERSION.SDK_INT
-                + "; Version"
-                + Build.VERSION.RELEASE + ") ")
+        get() = (
+            "Android Tokopedia Application/" +
+                GlobalConfig.getPackageApplicationName() +
+                " v." + GlobalConfig.VERSION_NAME +
+                " (" + deviceName +
+                "; Android; API_" +
+                Build.VERSION.SDK_INT +
+                "; Version" +
+                Build.VERSION.RELEASE + ") "
+            )
 
     fun getDigitalIdentifierParam(context: Context): RequestBodyIdentifier {
         val requestBodyIdentifier = RequestBodyIdentifier()
@@ -82,18 +85,14 @@ object DeviceUtil {
         return requestBodyIdentifier
     }
 
-    fun getAppsFlyerIdentifierParam(afUniqueId: String?, adsId: String?): RequestBodyCheckout.RequestBodyAppsFlyer {
-        val requestBodyAppsFlyer: RequestBodyCheckout.RequestBodyAppsFlyer = RequestBodyCheckout.RequestBodyAppsFlyer()
-        requestBodyAppsFlyer.appsflyerId = afUniqueId ?: ""
-        requestBodyAppsFlyer.deviceId = adsId ?: ""
-        return requestBodyAppsFlyer
-    }
-
     fun generateATokenRechargeCheckout(context: Context): String {
         val timeMillis = System.currentTimeMillis().toString()
         val token = AuthHelper.getMD5Hash(timeMillis)
         val userSession = UserSession(context)
-        return String.format(context.getString(R.string.digital_cart_generate_token_checkout),
-            userSession.userId, if (token.isEmpty()) timeMillis else token)
+        return String.format(
+            context.getString(R.string.digital_cart_generate_token_checkout),
+            userSession.userId,
+            if (token.isEmpty()) timeMillis else token
+        )
     }
 }

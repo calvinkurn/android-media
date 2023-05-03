@@ -19,7 +19,10 @@ const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
+const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
+const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
+const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"
@@ -49,6 +52,7 @@ const val ON_BOARDING_TUTORIAL_IMAGE_3 =
     "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"
 
 const val AFFILIATE_SPLASH_TIME = 4000L
+const val AFFILIATE_SCROLL_DELAY = 500L
 
 const val PROJECT_ID = 20
 

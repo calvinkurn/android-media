@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.common
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -11,15 +12,23 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.tokopedia.notifications.common.CMConstant.CMPrefKeys.KEY_REMINDER_PROMPT_APP_DATA
+import com.tokopedia.notifications.common.CMConstant.RemoteKeys.KEY_CM_REMINDER_PROMPT_PAGE_FREQ
+import com.tokopedia.notifications.common.CMConstant.SUFFIX_REMINDER_PROMPT_PAGE_DATA
+import com.tokopedia.notifications.data.model.ReminderPromptAppDataObj
+import com.tokopedia.notifications.data.model.ReminderPromptFreqRemoteConfObj
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.utils.CMDeviceConfig
 import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import timber.log.Timber
 import java.net.URLDecoder
 import java.util.*
-import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -41,9 +50,10 @@ object CMNotificationUtils {
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
-
+    var sharedPreference: SharedPreferences? = null
     val sdkVersion: Int
         get() = Build.VERSION.SDK_INT
+    var sessionIdMarker : Long = 0L
 
     private fun tokenUpdateRequired(newToken: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
@@ -282,6 +292,134 @@ object CMNotificationUtils {
         }
         return macAddress
     }
+
+    private fun getRemoteConfigReminderPromptFreqCapping(context: Context, pageName: String): ReminderPromptFreqRemoteConfObj?{
+        val cmReminderPromptFreqObj = CMRemoteConfigUtils(context).getStringRemoteConfig(KEY_CM_REMINDER_PROMPT_PAGE_FREQ)
+        if(!TextUtils.isEmpty(cmReminderPromptFreqObj)){
+            try {
+                val gson = GsonBuilder().create()
+                val reminderPromptFreqRemoteConfObjArray = gson.fromJson(cmReminderPromptFreqObj , Array<ReminderPromptFreqRemoteConfObj>::class.java).toList()
+                if(reminderPromptFreqRemoteConfObjArray.isNotEmpty()){
+                    for (reminderPromptPageFreqObj in reminderPromptFreqRemoteConfObjArray){
+                        if(reminderPromptPageFreqObj.pageName?.isNotEmpty() == true &&
+                            reminderPromptPageFreqObj.pageName.equals(pageName, true)){
+                            return reminderPromptPageFreqObj
+                        }
+                    }
+                }
+            } catch (err: JSONException) {
+                Log.d("Error", err.toString())
+            }
+            return null
+        }
+        return null
+    }
+
+    private fun createReminderPromptFreqRecord(context: Context, pageName: String){
+        val reminderPromptAppDataObj = ReminderPromptAppDataObj()
+        reminderPromptAppDataObj.firstShown = currentLocalTimeStamp
+        reminderPromptAppDataObj.lastShown = 0L
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
+    }
+
+    private fun writeReminderPromptObjToSharedPref(context: Context,
+                                           pageName: String,
+                                           reminderPromptAppDataObj:ReminderPromptAppDataObj){
+        val gson = Gson()
+        val jsonStr: String = gson.toJson(reminderPromptAppDataObj)
+        initReminderPromptSharedPref(context)
+        val editor = sharedPreference?.edit()
+        editor?.putString(pageName ,jsonStr)?.apply()
+        editor?.apply()
+    }
+
+    private fun readReminderPromptFreqRecord(context: Context, pageName: String): ReminderPromptAppDataObj {
+        initReminderPromptSharedPref(context)
+        val pageReminderPromptFreqRecordStr = sharedPreference?.getString(pageName, "")
+        val gson = GsonBuilder().create()
+        return gson.fromJson(pageReminderPromptFreqRecordStr, ReminderPromptAppDataObj::class.java)
+    }
+
+    private fun updateReminderPromptFreqRecord(context: Context,
+                                               pageName: String,
+                                               reminderPromptFreqRemoteConfObj: ReminderPromptFreqRemoteConfObj?): Boolean{
+        val reminderPromptAppDataObj = readReminderPromptFreqRecord(context,
+            pageName+SUFFIX_REMINDER_PROMPT_PAGE_DATA)
+        //check if reset
+        if(reminderPromptFreqRemoteConfObj?.reset == true){
+            deleteReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
+            return false
+        }
+        //validate persistence duration
+        if((currentLocalTimeStamp - reminderPromptAppDataObj.firstShown)
+            > convertDaysToMilliSecs(reminderPromptFreqRemoteConfObj?.persistenceDuration ?: 0f)){
+            deleteReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
+            return false
+        }
+        //validate time cool off duration
+        if(reminderPromptFreqRemoteConfObj?.boundToSession == false && ((currentLocalTimeStamp - reminderPromptAppDataObj.lastShown)
+            < convertDaysToMilliSecs(reminderPromptFreqRemoteConfObj.coolOffDuration))){
+            return false
+        }
+        //validate frequency
+        if(reminderPromptAppDataObj.currentCount >= (reminderPromptFreqRemoteConfObj?.freq ?: 0)){
+            return false
+        }
+        //validate session cool off
+        var lastShownTimeStampHolder = currentLocalTimeStamp
+        if(reminderPromptFreqRemoteConfObj?.boundToSession == true){
+            if(reminderPromptAppDataObj.lastShown == getCurrentSessionMarker()) {
+                return false
+            }else{
+                lastShownTimeStampHolder = getCurrentSessionMarker()
+            }
+        }
+
+        reminderPromptAppDataObj.currentCount += 1
+        reminderPromptAppDataObj.lastShown = lastShownTimeStampHolder
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
+        return true
+    }
+
+    private fun deleteReminderPromptFreqRecord(context: Context, pageName: String){
+        initReminderPromptSharedPref(context)
+        val editor = sharedPreference?.edit()
+        editor?.remove(pageName)
+        editor?.apply()
+    }
+
+    private fun convertDaysToMilliSecs(numberOfDays: Float): Long{
+        return (numberOfDays*24*60*60*1000).toLong()
+    }
+
+    fun validateReminderPromptDisplay(context: Context, pageName: String): Boolean{
+        //create record if does not exist
+        val reminderPromptFreqRemoteConfObj =
+            getRemoteConfigReminderPromptFreqCapping(context, pageName)
+                ?: return false
+        initReminderPromptSharedPref(context)
+        if(sharedPreference?.contains(pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA) == false){
+            createReminderPromptFreqRecord(context, pageName)
+        }
+        return updateReminderPromptFreqRecord(context, pageName, reminderPromptFreqRemoteConfObj)
+    }
+
+    private fun initReminderPromptSharedPref(context: Context){
+        if(sharedPreference == null) {
+            sharedPreference = context.getSharedPreferences(
+                KEY_REMINDER_PROMPT_APP_DATA,
+                Context.MODE_PRIVATE
+            )
+        }
+    }
+
+    private fun getCurrentSessionMarker(): Long{
+        if(sessionIdMarker == 0L){
+            sessionIdMarker = currentLocalTimeStamp
+        }
+        return sessionIdMarker
+    }
+
 }
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,

@@ -62,6 +62,10 @@ class SaveImageRepositoryImpl @Inject constructor(
             }
 
             val file = it.asPickerFile()
+            if (!file.exists()) {
+                onFinish(null, IOException("File ${file.absolutePath} not found"))
+                return
+            }
 
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 

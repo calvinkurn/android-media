@@ -2,14 +2,12 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import java.util.*
 
 /**
  * Created by jegul on 12/10/21
@@ -20,7 +18,6 @@ sealed interface PlayBroadcastAction {
     data class SetPinnedMessage(val message: String) : PlayBroadcastAction
     object CancelEditPinnedMessage : PlayBroadcastAction
 
-    data class SetCover(val cover: PlayCoverUiModel) : PlayBroadcastAction
     data class SetProduct(val productTagSectionList: List<ProductTagSectionUiModel>) :
         PlayBroadcastAction
 
@@ -28,9 +25,7 @@ sealed interface PlayBroadcastAction {
     object DeleteSchedule : PlayBroadcastAction
     object SuccessOnBoardingUGC: PlayBroadcastAction
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
-    data class SwitchAccount(val needLoading: Boolean = true): PlayBroadcastAction
-
-    object ExitLive : PlayBroadcastAction
+    data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
@@ -42,7 +37,7 @@ sealed interface PlayBroadcastAction {
     object GiveawayOngoingEnded : PlayBroadcastAction
     data class CreateGiveaway(
         val title: String,
-        val durationInMs: Long,
+        val durationInMs: Long
     ) : PlayBroadcastAction
 
     /** Quiz */
@@ -69,4 +64,11 @@ sealed interface PlayBroadcastAction {
     data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
+
+    data class SetCoverUploadedSource(
+        val source: Int
+    ) : PlayBroadcastAction
+
+    object SetShowSetupCoverCoachMark: PlayBroadcastAction
+    object ResetUploadState: PlayBroadcastAction
 }
