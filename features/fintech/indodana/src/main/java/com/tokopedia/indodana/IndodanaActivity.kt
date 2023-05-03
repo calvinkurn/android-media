@@ -61,8 +61,8 @@ class IndodanaActivity : AppCompatActivity() {
         }
 
         val url = intent.data?.getQueryParameter("url")
-            ?: "https://csb-ioo7i.netlify.app/"
-//            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
+//            ?: "https://csb-ioo7i.netlify.app/"
+            ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
 
         webview.loadUrl(url)
 
