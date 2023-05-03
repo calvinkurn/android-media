@@ -324,8 +324,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON = "42080"
         const val ID_IMPRESSION_SINGLE_BUNDLE_WIDGET = "42081"
         const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT = "42082"
-        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT = "42082"
-        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON = "42083"
+        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT = "42083"
+        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON = "42084"
     }
 
     fun onClickSearchBar() {
@@ -1875,7 +1875,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             label
         )
 
-        dataLayer[KEY_ITEM_VARIANT] = ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT
+        dataLayer[KEY_TRACKER_ID] = ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_PRODUCT_ID] = productId
