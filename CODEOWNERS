@@ -393,6 +393,7 @@
 /dynamic-features-sellerapp/                            @tokopedia/android-core-dev
 /tools/                                                 @tokopedia/android-core-dev
 /docs/                                                  @tokopedia/android-core-dev
+/docs/internal/                                         @tokopedia/android-core-dev
 
 /tkpddiscovery/                                        	@tokopedia/android-core-dev
 /tkpdsession/                                       	@tokopedia/android-core-dev
