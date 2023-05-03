@@ -17,7 +17,7 @@
             android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|density"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

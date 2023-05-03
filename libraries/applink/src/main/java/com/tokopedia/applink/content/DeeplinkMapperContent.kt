@@ -107,14 +107,15 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        Log.d("<LOG>", "uri : $uri")
-        return if (GlobalConfig.isSellerApp()) {
-            Log.d("<LOG>", "applink seller app : ${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri")
-            "${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri"
-        } else {
-            Log.d("<LOG>", "applink main app : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
-            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
-        }
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+//        Log.d("<LOG>", "uri : $uri")
+//        return if (GlobalConfig.isSellerApp()) {
+//            Log.d("<LOG>", "applink seller app : ${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri")
+//            "${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri"
+//        } else {
+//            Log.d("<LOG>", "applink main app : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
+//            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+//        }
     }
 
     private fun handleNavigationFeedVideo(uri: Uri): String {

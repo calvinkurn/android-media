@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.di.uploader.DaggerPlayShortsUploaderComponent
 import javax.inject.Inject
@@ -46,8 +48,13 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     private fun redirectToPlayRoom() {
         val webLink = intent.getStringExtra(EXTRA_LINK).orEmpty()
         Log.d("<LOG>", "redirectToPlayRoom link : $webLink")
-        RouteManager.route(this, webLink)
-        finish()
+
+        if (isAppInstalled("com.tokopedia.tkpd")) {
+            RouteManager.route(this, webLink)
+            finish()
+        } else {
+            Toast.makeText(this, "Please download MA on Play Store", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
