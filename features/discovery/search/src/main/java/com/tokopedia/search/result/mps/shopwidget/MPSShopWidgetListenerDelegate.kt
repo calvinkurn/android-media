@@ -8,6 +8,7 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class MPSShopWidgetListenerDelegate(
@@ -21,17 +22,22 @@ class MPSShopWidgetListenerDelegate(
     private val keywords
         get() = mpsViewModel?.stateFlow?.value?.parameter?.keywords() ?: ""
 
+    private val analytics: Analytics
+        get() = TrackApp.getInstance().gtm
+
     override fun onShopImpressed(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-        mpsShopWidgetDataView.click(TrackApp.getInstance().gtm)
+        mpsShopWidgetDataView.click(analytics)
     }
 
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-        mpsShopWidgetDataView.buttonList.first().click(TrackApp.getInstance().gtm)
+        mpsShopWidgetDataView.buttonList.first().click(analytics)
 
         openApplink(context, mpsShopWidgetDataView.applink)
     }
 
     override fun onSeeAllCardClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
+        mpsShopWidgetDataView.viewAllCard.click(analytics)
+
         openApplink(context, mpsShopWidgetDataView.viewAllCard.applink)
     }
 
@@ -79,7 +85,7 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
         val seeOtherProductButton = mpsShopWidgetProductDataView?.secondaryButton() ?: return
-        seeOtherProductButton.click(TrackApp.getInstance().gtm)
+        seeOtherProductButton.click(analytics)
 
         openApplink(context, seeOtherProductButton.applink)
     }
