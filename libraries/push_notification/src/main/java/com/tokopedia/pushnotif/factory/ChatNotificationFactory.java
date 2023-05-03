@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 
@@ -44,6 +45,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
 
     private RemoteConfig remoteConfig;
     private BubblesFactory bubblesFactory;
+
+    private Bitmap bubbleBitmap;
 
     private List<HistoryNotification> listHistoryNotification;
 
@@ -94,6 +97,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         }
 
         return builder.build();
+    }
+
+    public void setBubbleBitmaps(Bitmap bubbleBitmap) {
+        this.bubbleBitmap = bubbleBitmap;
     }
 
     private NotificationCompat.Action replyAction(String appLinks, int notificationId) {
@@ -151,19 +158,24 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         try {
             BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
 
-            updateBubblesShortcuts(notificationType, bubbleNotificationModel);
+            updateBubblesShortcuts(notificationType, bubbleNotificationModel, applinkNotificationModel);
             updateBubblesBuilder(builder, bubbleNotificationModel);
         } catch (Exception ignored) { }
     }
 
-    private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel) {
+    private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel, ApplinkNotificationModel applinkNotificationModel) {
         listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
-        List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
-        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
+        List<BubbleHistoryItemModel> historyItemModels;
+        if (applinkNotificationModel.getIsFromUser()) {
+            historyItemModels = getBubbleHistorySingleItems(applinkNotificationModel);
+        } else {
+            historyItemModels = getBubbleHistoryItems(listHistoryNotification);
+        }
+        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel, bubbleBitmap);
     }
 
     private void updateBubblesBuilder(NotificationCompat.Builder builder, BubbleNotificationModel bubbleNotificationModel) {
-        bubblesFactory.setupBubble(builder, bubbleNotificationModel);
+        bubblesFactory.setupBubble(builder, bubbleNotificationModel, bubbleBitmap);
     }
 
     private List<BubbleHistoryItemModel> getBubbleHistoryItems(List<HistoryNotification> historyNotificationList) {
@@ -184,6 +196,23 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         return mappedResult;
     }
 
+    private List<BubbleHistoryItemModel> getBubbleHistorySingleItems(ApplinkNotificationModel applinkNotificationModel) {
+        List<BubbleHistoryItemModel> mappedResult = new ArrayList<>();
+        String applink = applinkNotificationModel.getApplinks() == null ? "" : applinkNotificationModel.getApplinks();
+        String senderName = applinkNotificationModel.getFullName() == null ? "" : applinkNotificationModel.getFullName();
+        String avatarUrl = applinkNotificationModel.getThumbnail() == null ? "" : applinkNotificationModel.getThumbnail();
+        String shortcutId = getMessageId(applinkNotificationModel.getApplinks());
+        BubbleHistoryItemModel historyItemModel = new BubbleHistoryItemModel(
+                shortcutId,
+                applink,
+                senderName,
+                avatarUrl
+        );
+        mappedResult.add(historyItemModel);
+
+        return mappedResult;
+    }
+
     private BubbleNotificationModel getBubbleNotificationModel(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
         String shortcutId = getMessageId(applinkNotificationModel.getApplinks());
         return new BubbleNotificationModel(
@@ -195,7 +224,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getThumbnail(),
                 applinkNotificationModel.getSummary(),
-                applinkNotificationModel.getSentTime()
+                applinkNotificationModel.getSentTime(),
+                applinkNotificationModel.getIsFromUser()
         );
     }
 

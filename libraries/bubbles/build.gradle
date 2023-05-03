@@ -20,6 +20,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
+    implementation rootProject.ext.miscDependencies.coreKtx
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     kapt rootProject.ext.networkDependencies.glideProcessor

@@ -27,6 +27,16 @@ public class ApplinkNotificationModel {
     private String[] images;
     private Long sentTime;
 
+    private boolean isFromUser;
+
+    public boolean getIsFromUser() {
+        return isFromUser;
+    }
+
+    public void setIsFromUser(boolean isFromUser) {
+        this.isFromUser = isFromUser;
+    }
+
     public Long getSentTime() { return sentTime; }
 
     public void setSentTime(Long sentTime) {

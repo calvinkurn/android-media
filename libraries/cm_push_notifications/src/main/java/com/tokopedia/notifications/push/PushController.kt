@@ -15,7 +15,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.IrisAnalyticsEvents
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
@@ -206,10 +209,13 @@ class PushController(val context: Context) : CoroutineScope {
         sendPushExpiryLog(baseNotificationModel)
     }
 
-    private fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
+    private suspend fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
         try {
+            val pushNotificationList = runCatching {
+                PushRepository.getInstance(context).getNotification()
+            }.getOrDefault(arrayListOf())
             val baseNotification = CMNotificationFactory
-                    .getNotification(context.applicationContext, baseNotificationModel)
+                .getNotification(context.applicationContext, baseNotificationModel, pushNotificationList)
             if (checkOtpPushNotif(baseNotificationModel.appLink)) {
                 goToOtpPushNotifReceiver(baseNotificationModel.appLink)
             } else if (null != baseNotification) {
