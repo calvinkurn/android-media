@@ -48,14 +48,14 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     }
 
     private fun redirectToPlayRoom() {
-        val link = intent.getStringExtra(EXTRA_LINK).orEmpty()
+        val appLink = intent.getStringExtra(EXTRA_APP_LINK).orEmpty()
 
         if (GlobalConfig.isSellerApp()) {
             if (isAppInstalled(CUSTOMER_APP_PACKAGE)) {
                 startActivity(
                     Intent(Intent.ACTION_VIEW).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        data = Uri.parse(link)
+                        data = Uri.parse(appLink)
                     }
                 )
                 finish()
@@ -65,7 +65,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
                 }
             }
         } else {
-            RouteManager.route(this, link)
+            RouteManager.route(this, appLink)
             finish()
         }
     }
@@ -74,7 +74,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         private const val EXTRA_CHANNEL_ID = "channel_id"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
-        private const val EXTRA_LINK = "link"
+        private const val EXTRA_APP_LINK = "app_link"
 
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
@@ -83,13 +83,13 @@ class PlayShortsPostUploadActivity : BaseActivity() {
             channelId: String,
             authorId: String,
             authorType: String,
-            link: String,
+            appLink: String,
         ): Intent {
             return Intent(context, PlayShortsPostUploadActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_ID, channelId)
                 putExtra(EXTRA_AUTHOR_ID, authorId)
                 putExtra(EXTRA_AUTHOR_TYPE, authorType)
-                putExtra(EXTRA_LINK, link)
+                putExtra(EXTRA_APP_LINK, appLink)
             }
         }
     }
