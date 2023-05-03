@@ -33,7 +33,7 @@ class ReschedulePickupActivity : AppCompatActivity() {
     }
 
     private val orderId by lazy {
-        intent.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
+        intent?.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID) ?: intent?.data?.getQueryParameter(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
     }
 
     private fun injectComponent() {
