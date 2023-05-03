@@ -21,4 +21,11 @@ data class VariantOptionWithAttribute(
     val flashSale: Boolean = false,
     val hasCustomImages: Boolean = false, // If one of all the child dont have image, it will return false. If all of the child have custom image then will return true
     val impressHolder: ImpressHolder = ImpressHolder()
-)
+) {
+
+    companion object {
+        val EMPTY = VariantOptionWithAttribute()
+    }
+
+    fun isEmpty() = this == EMPTY
+}
