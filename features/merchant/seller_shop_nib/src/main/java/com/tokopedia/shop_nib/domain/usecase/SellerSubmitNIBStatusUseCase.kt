@@ -29,7 +29,7 @@ class SellerSubmitNIBStatusUseCase @Inject constructor(
 
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "sellerSubmitNIBStatus"
-        private val QUERY = """query sellerSubmitNIBStatus(${'$'}shopID: String) {
+        private val QUERY = """query sellerSubmitNIBStatus(${'$'}shopID: String!) {
   sellerSubmitNIBStatus(shopID: ${'$'}shopID) {
     result {
       updateTime
