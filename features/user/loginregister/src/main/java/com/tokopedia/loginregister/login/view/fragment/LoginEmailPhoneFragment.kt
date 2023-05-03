@@ -333,7 +333,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
 
-        if(oclPreferences.getToken().isNotEmpty()) {
+        if(oclPreferences.getToken().isNotEmpty() &&
+            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false
+        ) {
             goToOclChooseAccount()
         }
     }

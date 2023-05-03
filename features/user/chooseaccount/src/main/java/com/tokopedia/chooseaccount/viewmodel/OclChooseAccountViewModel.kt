@@ -88,7 +88,11 @@ class OclChooseAccountViewModel @Inject constructor(
                 }
                 val newItem = _oclAccounts.value
                 newItem?.remove(user)
-                _oclAccounts.value = newItem
+                if(newItem?.isEmpty() == true) {
+                    _navigateToNormalLogin.value = true
+                } else {
+                    _oclAccounts.value = newItem
+                }
             } catch (e: Exception) {
                 _toasterError.value = e.message
             }

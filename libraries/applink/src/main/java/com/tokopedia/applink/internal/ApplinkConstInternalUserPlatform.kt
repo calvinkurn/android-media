@@ -22,6 +22,7 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"
+    const val PARAM_IS_FROM_OCL_LOGIN = "from_ocl_page"
 
     const val PARAM_IS_SAVE_SESSION = "is_save_session"
 

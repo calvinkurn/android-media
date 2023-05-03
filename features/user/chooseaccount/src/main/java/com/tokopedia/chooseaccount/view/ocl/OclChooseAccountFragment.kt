@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.chooseaccount.R
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.databinding.FragmentOclChooseAccountBinding
@@ -111,6 +112,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         viewModel.navigateToNormalLogin.observe(this) {
             if(it) {
                 val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
                 startActivity(intent)
                 activity?.finish()
             }
@@ -129,8 +131,10 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
 
         binding?.oclBtnOtherAcc?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
             intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
             startActivity(intent)
+            activity?.finish()
         }
 
         viewModel.getOclAccounts()
