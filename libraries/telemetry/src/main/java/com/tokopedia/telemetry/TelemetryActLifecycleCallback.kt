@@ -29,6 +29,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.lang.ref.WeakReference
 
+enum class TelemetryType {
+    TYPING, TOUCH, GYRO, ACCEL
+}
+
+data class CapturedTelemetry(
+    var capturedTime: Int,
+    var count: Int
+)
+
 class TelemetryActLifecycleCallback(
     val isEnabled: (() -> (Boolean))
 ) : Application.ActivityLifecycleCallbacks {
@@ -40,17 +49,17 @@ class TelemetryActLifecycleCallback(
         var remoteConfig: RemoteConfig? = null
         var telemetryConfig: TelemetryConfig? = null
         var hasFetch = false
-        val mapSectionToCount = HashMap<Pair<String, String>, Int>()
+        val mapSectionToCount = mutableMapOf<Pair<String, TelemetryType>, CapturedTelemetry>()
     }
 
     private fun getRemoteConfig(context: Context): RemoteConfig {
         val rc = remoteConfig
-        if (rc == null) {
+        return if (rc == null) {
             val tempRc = FirebaseRemoteConfigImpl(context.applicationContext)
             remoteConfig = tempRc
-            return tempRc
+            tempRc
         } else {
-            return rc
+            rc
         }
     }
 
@@ -62,8 +71,7 @@ class TelemetryActLifecycleCallback(
                     return@launch
                 }
                 val telConfig = fetchConfig(activity)
-                val collectType = doCollectType(activity, telConfig)
-                if (collectType) {
+                if (checkNeedCollect(activity, telConfig, TelemetryType.TYPING)) {
                     activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
                         if (newFocus is EditText) {
                             val et: EditText = newFocus
@@ -73,7 +81,7 @@ class TelemetryActLifecycleCallback(
                     }
                 }
                 var sensorManager: SensorManager? = null
-                if (!isTeleActivity || telConfig.accelSamplingInt.isInSamplingArea()) {
+                if (checkNeedCollect(activity, telConfig, TelemetryType.ACCEL)) {
                     sensorManager =
                         activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
                     val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -83,7 +91,7 @@ class TelemetryActLifecycleCallback(
                     TelemetryAccelListener.setActivity(activity)
                 }
 
-                if (!isTeleActivity || telConfig.gyroSamplingInt.isInSamplingArea()) {
+                if (checkNeedCollect(activity, telConfig, TelemetryType.GYRO)) {
                     if (sensorManager == null) {
                         sensorManager =
                             activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
@@ -94,7 +102,7 @@ class TelemetryActLifecycleCallback(
                     TelemetryGyroListener.setActivity(activity)
                 }
 
-                if (!isTeleActivity || telConfig.touchSamplingInt.isInSamplingArea()) {
+                if (checkNeedCollect(activity, telConfig, TelemetryType.TOUCH)) {
                     if (activity is BaseActivity) {
                         activity.addListener(TelemetryTouchListener)
                     }
@@ -106,10 +114,58 @@ class TelemetryActLifecycleCallback(
         }
     }
 
-    private fun doCollectType(activity: Activity, telemetryConfig: TelemetryConfig):Boolean{
+    private fun checkNeedCollect(
+        activity: Activity,
+        telemetryConfig: TelemetryConfig,
+        teleType: TelemetryType
+    ): Boolean {
         if (activity !is ITelemetryActivity) return true
         val sectionName = activity.getTelemetrySectionName()
-        telConfig.gyroSamplingInt.isInSamplingArea()
+        val configCount = when (teleType) {
+            TelemetryType.TYPING -> telemetryConfig.typeCount
+            TelemetryType.ACCEL -> telemetryConfig.accelCount
+            TelemetryType.GYRO -> telemetryConfig.gyroCount
+            TelemetryType.TOUCH -> telemetryConfig.touchCount
+        }
+        val configInterval = when (teleType) {
+            TelemetryType.TYPING -> telemetryConfig.typeInterval
+            TelemetryType.ACCEL -> telemetryConfig.accelInterval
+            TelemetryType.GYRO -> telemetryConfig.gyroInterval
+            TelemetryType.TOUCH -> telemetryConfig.touchInterval
+        }
+        if (configCount >= 0 && configInterval >= 20) {
+            // do checking count and interval
+            val telemetryInPage = mapSectionToCount.getOrDefault(
+                sectionName to teleType,
+                CapturedTelemetry(0, 0)
+            )
+            val now: Int = (System.currentTimeMillis() / 1000L).toInt()
+            val passedInterval = now - telemetryInPage.capturedTime > configInterval
+            if (passedInterval) {
+                //reset
+                mapSectionToCount[sectionName to teleType] = CapturedTelemetry(0, 0)
+            }
+            // if already passed internal or still in interval but count is less than config
+            if (passedInterval || telemetryInPage.count < configCount) {
+                // update the map
+                val capturedTime = if (telemetryInPage.capturedTime == 0) {
+                    now
+                } else {
+                    telemetryInPage.capturedTime
+                }
+                val newCount = telemetryInPage.count + 1
+                mapSectionToCount[sectionName to teleType] =
+                    CapturedTelemetry(capturedTime, newCount)
+                return true
+            }
+        }
+        val configRate = when (teleType) {
+            TelemetryType.TYPING -> telemetryConfig.typeSamplingInt
+            TelemetryType.ACCEL -> telemetryConfig.accelSamplingInt
+            TelemetryType.GYRO -> telemetryConfig.gyroSamplingInt
+            TelemetryType.TOUCH -> telemetryConfig.touchSamplingInt
+        }
+        return configRate.isInSamplingArea()
     }
 
     private fun fetchConfig(context: Context): TelemetryConfig {
