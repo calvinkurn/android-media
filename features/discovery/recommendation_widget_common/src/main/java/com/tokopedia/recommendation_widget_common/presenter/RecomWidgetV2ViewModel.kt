@@ -19,8 +19,8 @@ import com.tokopedia.recommendation_widget_common.viewutil.EmptyRecomException
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.viewutil.isRecomPageNameEligibleForChips
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecomCarouselModel
-import com.tokopedia.recommendation_widget_common.widget.global.RecomVisitable
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -50,30 +50,30 @@ class RecomWidgetV2ViewModel @Inject constructor(
 //    val recommendationsFlow: StateFlow<Map<String, Result<RecommendationWidget>>> = _recommendationsFlow
     val recommendationsFlow = mutableMapOf<String, StateFlow<Result<RecommendationWidget>>>()
 
-    fun loadRecommendation(recom: RecomVisitable) {
+    fun loadRecommendation(recom: RecommendationVisitable) {
         viewModelScope.launchCatchError(block = {
-            val isTokonow = recom is RecomCarouselModel && recom.isTokonow
+            val isTokonow = recom is RecommendationCarouselModel && recom.isTokonow
             val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-            if (recom.recomWidgetMetadata.pageName.isRecomPageNameEligibleForChips()) {
+            if (recom.metadata.pageName.isRecomPageNameEligibleForChips()) {
                 getRecommendationFilterChips.get().setParams(
                     userId = if (userSession.userId.isEmpty()) 0 else userSession.userId.toInt(),
-                    pageName = recom.recomWidgetMetadata.pageName,
-                    productIDs = TextUtils.join(",", recom.recomWidgetMetadata.productIds) ?: "",
+                    pageName = recom.metadata.pageName,
+                    productIDs = TextUtils.join(",", recom.metadata.productIds) ?: "",
                     isTokonow = isTokonow,
-                    xSource = recom.recomWidgetMetadata.pageSource?.value.orEmpty()
+                    xSource = recom.metadata.pageSource?.value.orEmpty()
                 )
                 recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
             }
             val result = getRecommendationUseCase.get().getData(
                 GetRecommendationRequestParam(
-                    pageNumber = recom.recomWidgetMetadata.pageNumber,
-                    productIds = recom.recomWidgetMetadata.productIds,
-                    queryParam = recom.recomWidgetMetadata.queryParam,
-                    pageName = recom.recomWidgetMetadata.pageName,
-                    categoryIds = recom.recomWidgetMetadata.categoryIds,
-                    xSource = recom.recomWidgetMetadata.pageSource?.value.orEmpty(),
-                    xDevice = recom.recomWidgetMetadata.device,
-                    keywords = recom.recomWidgetMetadata.keyword,
+                    pageNumber = recom.metadata.pageNumber,
+                    productIds = recom.metadata.productIds,
+                    queryParam = recom.metadata.queryParam,
+                    pageName = recom.metadata.pageName,
+                    categoryIds = recom.metadata.categoryIds,
+                    xSource = recom.metadata.pageSource?.value.orEmpty(),
+                    xDevice = recom.metadata.device,
+                    keywords = recom.metadata.keyword,
                     isTokonow = isTokonow
                 )
             )
@@ -83,14 +83,14 @@ class RecomWidgetV2ViewModel @Inject constructor(
                 if (isTokonow) {
 //                        mappingMiniCartDataToRecommendation(recomWidget, miniCartData.value)
                 }
-                recommendationsMap[recom.recomWidgetMetadata.pageName] = recomWidget.asSuccess()
+                recommendationsMap[recom.metadata.pageName] = recomWidget.asSuccess()
             } else {
-                recommendationsMap[recom.recomWidgetMetadata.pageName] = EmptyRecomException().asFail()
+                recommendationsMap[recom.metadata.pageName] = EmptyRecomException().asFail()
             }
             _recommendationsFlow.emit(recommendationsMap.toMap())
         }) {
             Log.e("globalrecom", "loadRecommendation: ", it)
-            recommendationsMap[recom.recomWidgetMetadata.pageName] = it.asFail()
+            recommendationsMap[recom.metadata.pageName] = it.asFail()
             _recommendationsFlow.emit(recommendationsMap.toMap())
         }
     }

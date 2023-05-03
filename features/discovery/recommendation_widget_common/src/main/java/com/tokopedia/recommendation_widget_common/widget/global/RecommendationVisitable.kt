@@ -6,9 +6,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 /**
  * Created by frenzel on 11/03/23
  */
-interface RecomVisitable : Visitable<RecomTypeFactory> {
-    val recomWidgetMetadata: RecomWidgetMetadata
-    val recomWidgetTrackingModel: RecomWidgetTrackingModel
-    val recomWidgetAnalyticListener: RecomWidgetAnalyticListener?
+interface RecommendationVisitable : Visitable<RecommendationTypeFactory> {
+    val metadata: RecommendationWidgetMetadata
+    val trackingModel: RecommendationWidgetTrackingModel
+    val analyticListener: RecommendationWidgetAnalyticListener?
     var trackingQueue: TrackingQueue?
 }
