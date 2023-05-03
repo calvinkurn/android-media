@@ -941,8 +941,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean handlePdfUri(Uri uri) {
-        return uri.getPath().endsWith(".pdf") && url.startsWith("http") // Handle e-pharmacy pdf url
-                || url.endsWith(".pdf") && url.startsWith("http"); // Handle regular pdf url
+        // Handle e-pharmacy pdf & regular pdf url
+        return (uri.getPath().endsWith(".pdf") || url.endsWith(".pdf")) && url.startsWith("http");
     }
 
     private boolean handleWebUrlLogin(Uri uri) {
