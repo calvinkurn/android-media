@@ -98,6 +98,11 @@ internal object QueryListProductRecommendationV2 {
         "                        specificationLabels {\n" +
         "                            key\n" +
         "                            value\n" +
+        "                            type\n" +
+        "                            content {\n" +
+        "                               iconURL\n" +
+        "                               description\n" +
+        "                            }\n" +
         "                        }\n" +
         "                        parentID\n" +
         "                      }\n" +
