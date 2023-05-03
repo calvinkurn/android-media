@@ -33,7 +33,7 @@ import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
-import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
@@ -140,7 +140,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             }
             WAITING_PAYMENT -> {
             }
-            SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> {
+            SUCCESS_PAYMENT, SUCCESS_TIPPING -> {
                 setTippingSuccessLayout(logisticDriverModel)
             }
         }
@@ -158,7 +158,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         }
 
         binding.apply {
-            imgTipDriver.urlSrc = "https://images.tokopedia.net/img/android/tipping/illus-tipping-success (1).png"
+            imgTipDriver.urlSrc = IMG_SUCCESS_TIPPING
             tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
             tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)).spannedString
             tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
@@ -300,5 +300,6 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         private const val TIPPING_SPACING = 8
         private const val TIPPING_WIDTH_DIVIDER = 3.2
         private const val TIPPING_DESCRIPTION_BULLET_GAP_WIDTH = 16
+        private const val IMG_SUCCESS_TIPPING = "https://images.tokopedia.net/img/android/tipping/illus-tipping-success (1).png"
     }
 }
