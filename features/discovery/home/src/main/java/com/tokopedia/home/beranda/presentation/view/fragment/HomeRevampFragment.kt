@@ -173,7 +173,11 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
@@ -229,7 +233,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
+import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
