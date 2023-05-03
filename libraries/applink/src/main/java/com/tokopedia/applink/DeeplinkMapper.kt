@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
@@ -129,7 +130,9 @@ object DeeplinkMapper {
             DeeplinkConstant.SCHEME_HTTPS -> {
                 val query = getQuery(deeplink, uri)
                 val tempDeeplink = getRegisteredNavigationFromHttp(context, uri, deeplink)
-                UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
+                UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query).also {
+                    Log.d("<LOG>", "DeeplinkMapper appendDiffDeeplinkWithQuery : $it")
+                }
             }
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = getQuery(deeplink, uri)

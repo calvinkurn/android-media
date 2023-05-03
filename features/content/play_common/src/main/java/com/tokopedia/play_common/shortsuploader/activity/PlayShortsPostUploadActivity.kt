@@ -3,6 +3,7 @@ package com.tokopedia.play_common.shortsuploader.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -22,6 +23,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         inject()
         super.onCreate(savedInstanceState)
 
+        Log.d("<LOG>", "PlayShortsPostUploadActivity onCreate")
         hitAnalytic()
         redirectToPlayRoom()
     }
@@ -43,6 +45,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
 
     private fun redirectToPlayRoom() {
         val webLink = intent.getStringExtra(EXTRA_LINK).orEmpty()
+        Log.d("<LOG>", "redirectToPlayRoom link : $webLink")
         RouteManager.route(this, webLink)
         finish()
     }
