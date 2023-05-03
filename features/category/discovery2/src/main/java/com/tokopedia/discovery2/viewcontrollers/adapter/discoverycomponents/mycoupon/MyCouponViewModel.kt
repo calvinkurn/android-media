@@ -22,7 +22,6 @@ private const val SERVICE_ID = ""
 private const val CATEGORY_ID = 0
 private const val CATEGORY_ID_COUPON = -1
 private const val PAGE = 1
-private const val LIMIT = 10
 private const val INCLUDE_EXTRA_INFO = 1
 private const val API_VERSION = "2.0.0"
 private const val IS_GET_PROMO_INFO = true
@@ -40,7 +39,6 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
     @Inject
     lateinit var hideSectionUseCase: HideSectionUseCase
 
-
     fun getComponentList(): LiveData<ArrayList<ComponentsItem>> {
         return componentList
     }
@@ -53,7 +51,6 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
     private fun getClickCouponData() {
         val dataItem = components.data?.firstOrNull()
         dataItem?.let { couponDataItem ->
@@ -62,9 +59,9 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
                     myCouponUseCase.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
                     setCouponsList()
                 }, onError = {
-                    components.noOfPagesLoaded = 1
-                    hideIfPresentInSection()
-                })
+                        components.noOfPagesLoaded = 1
+                        hideIfPresentInSection()
+                    })
             } else {
                 componentList.value = null
                 hideIfPresentInSection()
@@ -81,9 +78,10 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
 
     private fun hideIfPresentInSection() {
         val response = hideSectionUseCase.checkForHideSectionHandling(components)
-        if(response.shouldHideSection){
-            if(response.sectionId.isNotEmpty())
+        if (response.shouldHideSection) {
+            if (response.sectionId.isNotEmpty()) {
                 _hideSection.value = response.sectionId
+            }
             syncData.value = true
         }
     }
@@ -92,7 +90,7 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
         getCouponsList()?.let {
             if (it.isNotEmpty()) {
                 componentList.value = it
-            }else{
+            } else {
                 componentList.value = null
                 hideIfPresentInSection()
             }
@@ -101,17 +99,17 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
 
     private fun getMyCoupleBundle(dataItem: DataItem): MyCouponsRequest {
         return MyCouponsRequest(
-                serviceID = SERVICE_ID,
-                categoryID = CATEGORY_ID,
-                categoryIDCoupon = CATEGORY_ID_COUPON,
-                page = PAGE,
-                limit = LIMIT,
-                includeExtraInfo = INCLUDE_EXTRA_INFO,
-                apiVersion = API_VERSION,
-                isGetPromoInfo = IS_GET_PROMO_INFO,
-                clientID = CLIENT_ID,
-                catalogSlugs = dataItem.catalogSlug ?: listOf(),
-                source = SOURCE)
+            serviceID = SERVICE_ID,
+            categoryID = CATEGORY_ID,
+            categoryIDCoupon = CATEGORY_ID_COUPON,
+            page = PAGE,
+            limit = dataItem.limit ?: 20,
+            includeExtraInfo = INCLUDE_EXTRA_INFO,
+            apiVersion = API_VERSION,
+            isGetPromoInfo = IS_GET_PROMO_INFO,
+            clientID = CLIENT_ID,
+            catalogSlugs = dataItem.catalogSlug ?: listOf(),
+            source = SOURCE
+        )
     }
-
 }
