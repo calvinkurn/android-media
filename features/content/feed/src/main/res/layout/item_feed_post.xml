@@ -22,6 +22,38 @@
 
     </com.tokopedia.feedcomponent.util.NestedScrollableHost>
 
+    <include
+        android:id="@+id/overlay_top"
+        layout="@layout/layout_feed_top_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        />
+
+    <include
+        android:id="@+id/overlay_bottom"
+        layout="@layout/layout_feed_bottom_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.3"
+        />
+
+    <include
+        android:id="@+id/overlay_right"
+        layout="@layout/layout_feed_right_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.2"
+        />
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/indicator_feed_content"
@@ -107,8 +139,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="18dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="THUMB"
@@ -119,12 +151,12 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="18dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CHAT"
@@ -135,12 +167,12 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="22dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="SHARE"
@@ -151,17 +183,17 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/menu_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="20dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:layout_constraintStart_toStartOf="@id/share_button"
         app:layout_constraintBottom_toTopOf="@id/product_tag_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/share_button"
         app:unify_image_type="circle"
         tools:visibility="visible" />
 
