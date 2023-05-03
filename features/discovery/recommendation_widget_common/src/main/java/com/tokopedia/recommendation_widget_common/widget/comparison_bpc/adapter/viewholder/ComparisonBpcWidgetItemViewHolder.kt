@@ -7,10 +7,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
-import com.tokopedia.recommendation_widget_common.widget.global.RecomWidgetAnalyticListener
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -18,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ComparisonBpcWidgetItemViewHolder(
     val view: View,
-    private val listener: RecomWidgetAnalyticListener
+    private val listener: RecommendationWidgetAnalyticListener
 ) : AbstractViewHolder<ComparisonBpcItemModel>(view) {
 
     private var binding: ItemComparisonBpcWidgetBinding? by viewBinding()
