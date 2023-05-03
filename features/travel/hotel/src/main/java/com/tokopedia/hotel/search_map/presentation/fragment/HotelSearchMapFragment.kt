@@ -25,6 +25,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isNotEmpty
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +79,7 @@ import com.tokopedia.hotel.search_map.presentation.adapter.PropertyAdapterTypeFa
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -87,6 +89,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -214,7 +217,7 @@ class HotelSearchMapFragment :
                     is Success -> {
                         showCollapsingHeader()
                         onSuccessGetResult(it.data)
-                        if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
+                        if (it.data.properties.isNotEmpty() && currentPage == defaultInitialPage) {
                             changeMarkerState(cardListPosition)
                         } else {
                             buildFilter(it.data)
@@ -365,16 +368,33 @@ class HotelSearchMapFragment :
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        binding?.containerError?.root?.visible()
-        context?.run {
-            binding?.containerError?.globalError?.let {
-                ErrorHandlerHotel.getErrorUnify(
-                    this,
-                    throwable,
-                    { onRetryClicked() },
-                    it
-                )
+        if(binding?.rvVerticalPropertiesHotelSearchMap?.isNotEmpty().orFalse()){
+            showToastError(getMessageError(throwable))
+        } else {
+            binding?.containerError?.root?.visible()
+            context?.run {
+                binding?.containerError?.globalError?.let {
+                    ErrorHandlerHotel.getErrorUnify(
+                        this,
+                        throwable,
+                        { onRetryClicked() },
+                        it
+                    )
+                }
             }
+        }
+    }
+
+    private fun getMessageError(throwable: Throwable?): String {
+        return  ErrorHandler.getErrorMessage(
+            context,
+            throwable
+        )
+    }
+
+    private fun showToastError(message: String) {
+        view?.run {
+            Toaster.build(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }
     }
 
