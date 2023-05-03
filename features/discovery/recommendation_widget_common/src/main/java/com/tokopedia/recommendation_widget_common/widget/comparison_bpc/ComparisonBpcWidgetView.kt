@@ -5,18 +5,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.recommendation_widget_common.databinding.ViewComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetV2ViewModel
-import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
-import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
@@ -30,8 +23,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 /**
  * Created by frenzel on 27/03/23
  */
@@ -52,8 +45,6 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
         binding = ViewComparisonBpcWidgetBinding.inflate(LayoutInflater.from(context), this, true)
         try {
             lifecycleOwner = findViewTreeLifecycleOwner() ?: context as LifecycleOwner
-            val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: context.getActivityFromContext() as ViewModelStoreOwner
-            viewModel = ViewModelProvider(viewModelStoreOwner).get(RecomWidgetV2ViewModel::class.java)
         } catch (_: Exception) { }
     }
 
@@ -61,28 +52,15 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
     override val coroutineContext = masterJob + Dispatchers.IO
     private var binding: ViewComparisonBpcWidgetBinding? = null
     private val adapter: ComparisonBpcWidgetAdapter by lazy { ComparisonBpcWidgetAdapter(comparisonBpcTypeFactory) }
-    private var trackingQueue: TrackingQueue? = null
+    private val trackingQueue: TrackingQueue by lazy { TrackingQueue(context) }
     private val userSession: UserSessionInterface by lazy { UserSession(context) }
     private val comparisonBpcTypeFactory: ComparisonBpcTypeFactory = ComparisonBpcTypeFactoryImpl(this)
 
     private var lifecycleOwner: LifecycleOwner? = null
-    private var viewModel: RecomWidgetV2ViewModel? = null
 
     override fun bind(model: RecommendationComparisonBpcModel) {
-        trackingQueue = model.trackingQueue
         setupRecyclerView()
-        viewModel?.loadRecommendation(model)
-        lifecycleOwner?.lifecycleScope?.launch {
-            viewModel?.getRecommendationByPageName(model.metadata.pageName)?.collect { res ->
-                res.doSuccessOrFail({
-                    setComparisonWidgetData(
-                        it.data,
-                        model
-                    )
-                }) {
-                }
-            }
-        }
+        setComparisonWidgetData(model.recommendationWidget, model)
     }
 
     private fun setupRecyclerView() {
@@ -100,24 +78,22 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
         recommendationWidget: RecommendationWidget,
         comparisonBpcModel: RecommendationComparisonBpcModel
     ) {
-        launch {
-            try {
-                launch(Dispatchers.Main) {
-                    binding?.run {
-                        tvHeaderTitle.text = recommendationWidget.title
+        try {
+            launch(Dispatchers.Main) {
+                binding?.run {
+                    tvHeaderTitle.text = recommendationWidget.title
 
-                        val comparisonListModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
-                            recommendationWidget,
-                            comparisonBpcModel.trackingModel,
-                            context
-                        ).toMutableList()
+                    val comparisonListModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
+                        recommendationWidget,
+                        comparisonBpcModel.trackingModel,
+                        context
+                    ).toList()
 
-                        adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel))
-                    }
+                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel))
                 }
-            } catch (_: Exception) {
-                this@ComparisonBpcWidgetView.gone()
             }
+        } catch (_: Exception) {
+            gone()
         }
     }
 

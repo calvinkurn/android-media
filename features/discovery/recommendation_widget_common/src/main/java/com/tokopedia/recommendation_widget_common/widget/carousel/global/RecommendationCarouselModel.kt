@@ -4,6 +4,8 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselC
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 
 /**
  * Created by frenzel on 27/03/23
@@ -21,5 +23,12 @@ data class RecommendationCarouselModel(
 
     companion object {
         private const val PAGE_NAME_TOKONOW = "pdp_9_tokonow"
+
+        fun from(
+            metadata: RecommendationWidgetMetadata,
+            trackingModel: RecommendationWidgetTrackingModel,
+        ) = RecommendationCarouselModel(
+            RecommendationVisitable.create(metadata, trackingModel)
+        )
     }
 }

@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -68,6 +69,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
@@ -75,6 +77,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlin.math.roundToLong
 
@@ -790,20 +793,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateComparisonDataModel(data: RecommendationWidget) {
-        val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
-        if (recomModel != null) {
+        if (data.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
             updateData(data.pageName) {
-                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
-                    recommendationWidget = data
-                }
+                mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
+                    recommendationWidgetModel = RecommendationWidgetModel(
+                        widget = data
+                    )
+                )
             }
         } else {
-            updateData(data.pageName) {
-                mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
-                    "",
-                    data.pageName,
-                    data
-                )
+            val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
+            if (recomModel != null) {
+                updateData(data.pageName) {
+                    (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
+                        recommendationWidget = data
+                    }
+                }
+            } else {
+                updateData(data.pageName) {
+                    mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
+                        "",
+                        data.pageName,
+                        data
+                    )
+                }
             }
         }
     }

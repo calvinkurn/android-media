@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
-import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetV2ViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewViewModel
 import dagger.Binds
 import dagger.Module
@@ -39,9 +38,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ViewToViewViewModel::class)
     internal abstract fun viewToViewViewModel(viewModel: ViewToViewViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(RecomWidgetV2ViewModel::class)
-    abstract fun provideRecomWidgetViewModel(viewModel: RecomWidgetV2ViewModel): ViewModel
 }

@@ -9,6 +9,22 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 interface RecommendationVisitable : Visitable<RecommendationTypeFactory> {
     val metadata: RecommendationWidgetMetadata
     val trackingModel: RecommendationWidgetTrackingModel
-    val analyticListener: RecommendationWidgetAnalyticListener?
-    var trackingQueue: TrackingQueue?
+
+    companion object {
+        fun create(
+            metadata: RecommendationWidgetMetadata,
+            trackingModel: RecommendationWidgetTrackingModel,
+        ): RecommendationVisitable {
+            return object : RecommendationVisitable {
+                override val metadata: RecommendationWidgetMetadata
+                    get() = metadata
+                override val trackingModel: RecommendationWidgetTrackingModel
+                    get() = trackingModel
+
+                override fun type(typeFactory: RecommendationTypeFactory?): Int {
+                    return 0
+                }
+            }
+        }
+    }
 }

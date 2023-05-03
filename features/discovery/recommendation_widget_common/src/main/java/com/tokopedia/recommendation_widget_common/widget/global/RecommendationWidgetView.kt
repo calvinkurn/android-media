@@ -7,9 +7,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.lang.Exception
 
 /**
@@ -23,7 +28,23 @@ class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
     private val typeFactory = RecommendationTypeFactoryImpl()
     private var component: RecommendationComponent? = null
 
-    fun bind(model: RecommendationVisitable) {
+    fun bind(model: RecommendationWidgetModel) {
+        val recommendationWidget = model.widget
+
+        val recommendationVisitable =
+            if (recommendationWidget.layoutType == TYPE_COMPARISON_BPC_WIDGET)
+                RecommendationComparisonBpcModel.from(
+                    model.metadata,
+                    model.trackingModel,
+                    recommendationWidget,
+                )
+            else
+                RecommendationCarouselModel.from(model.metadata, model.trackingModel)
+
+        bind(recommendationVisitable)
+    }
+
+    private fun bind(model: RecommendationVisitable) {
         initInjector()
         val widget = typeFactory.createView(context, model)
         val widgetView = addWidgetView(widget) ?: return

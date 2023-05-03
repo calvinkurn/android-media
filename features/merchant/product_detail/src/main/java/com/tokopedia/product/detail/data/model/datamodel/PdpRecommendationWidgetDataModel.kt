@@ -4,12 +4,13 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 
 /**
  * Created by frenzel on 27/03/23
  */
 data class PdpRecommendationWidgetDataModel(
-    var recommendationWidgetModel: RecommendationVisitable
+    val recommendationWidgetModel: RecommendationWidgetModel,
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -24,10 +25,7 @@ data class PdpRecommendationWidgetDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is PdpRecommendationWidgetDataModel) {
-            recommendationWidgetModel.metadata == newData.recommendationWidgetModel.metadata &&
-                recommendationWidgetModel.metadata.isInitialized == newData.recommendationWidgetModel.metadata.isInitialized &&
-                recommendationWidgetModel.metadata.pageName == newData.recommendationWidgetModel.metadata.pageName &&
-                recommendationWidgetModel.metadata.verticalPosition == newData.recommendationWidgetModel.metadata.verticalPosition
+            this == newData
         } else {
             false
         }
