@@ -65,7 +65,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
-import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -87,8 +86,7 @@ class PlayFragment @Inject constructor(
     PlayFragmentContract,
     FragmentVideoViewComponent.Listener,
     FragmentYouTubeViewComponent.Listener,
-    PlayVideoScalingManager.Listener,
-    AtcVariantAnalyticsListener {
+    PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: View
     private val fragmentVideoView by viewComponent {
@@ -729,46 +727,6 @@ class PlayFragment @Inject constructor(
         }
     }
     //endregion
-
-    override fun onButtonActionClicked(
-        cartType: Int,
-        variantId: String,
-        variantName: String,
-        shopName: String,
-        shopId: String,
-        shopType: String,
-        productInfo: VariantChild,
-        cartId: String,
-        quantity: Int
-    ) {
-        analytic.clickTransactionInVariantSheet(
-            cartType = cartType,
-            variantId = variantId,
-            variantName = variantName,
-            shopName = shopName,
-            shopId = shopId,
-            shopType = shopType,
-            variantChild = productInfo,
-            cartId = cartId,
-            quantity = quantity
-        )
-    }
-
-    override fun clickActionFromToaster(message: String) {
-        analytic.clickActionFromVariantSheet(message)
-    }
-
-    override fun impressErrorToaster(message: String) {
-        analytic.impressErrorToasterVariantSheet(message)
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-
-        if (childFragment is AtcVariantBottomSheet) {
-            childFragment.setAnalytics(this)
-        }
-    }
 
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
