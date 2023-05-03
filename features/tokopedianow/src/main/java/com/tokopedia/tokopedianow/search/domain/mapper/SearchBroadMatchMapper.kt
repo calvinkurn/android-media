@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.search.domain.mapper
 
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -14,7 +14,7 @@ object SearchBroadMatchMapper {
         otherRelated: AceSearchProductModel.OtherRelated,
         cartService: CartService
     ) = BroadMatchDataView(
-            seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+            seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                   appLink = otherRelated.applink
             ),
             headerModel = TokoNowDynamicHeaderUiModel(
@@ -23,9 +23,9 @@ object SearchBroadMatchMapper {
             ),
             broadMatchItemModelList = otherRelated.productList
                 .map { otherRelatedProduct ->
-                    TokoNowProductCardCarouselItemUiModel(
+                    ProductCardCompactCarouselItemUiModel(
                         appLink = otherRelatedProduct.applink,
-                        productCardModel = TokoNowProductCardViewUiModel (
+                        productCardModel = ProductCardCompactUiModel (
                             productId = otherRelatedProduct.id,
                             name = otherRelatedProduct.name,
                             price = otherRelatedProduct.priceString,

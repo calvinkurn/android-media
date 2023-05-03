@@ -123,4 +123,8 @@ abstract class TokoChatBaseActivity<T> : BaseSimpleActivity(), HasComponent<T> {
     fun hideHeaderShimmering() {
         headerShimmering?.hide()
     }
+
+    fun showHeaderShimmering() {
+        headerShimmering?.show()
+    }
 }
