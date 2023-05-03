@@ -13,6 +13,7 @@ import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -46,13 +47,15 @@ class AffiliatePromoViewModelTest {
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
+    private val graphqlRepository: GraphqlRepository = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
             userSessionInterface,
             affiliateSearchUseCase,
             affiliateValidateUserStatus,
             affiliateAffiliateAnnouncementUseCase,
-            affiliateDiscoveryCampaignUseCase
+            affiliateDiscoveryCampaignUseCase,
+            graphqlRepository
         )
     )
 

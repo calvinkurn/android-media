@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
+import com.tokopedia.affiliate.AFFILIATE_TOKONOW_BANNER
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
@@ -190,6 +191,7 @@ class AffiliatePromoFragment :
 
     private fun setData(carouselUnify: CarouselUnify) {
         carouselUnify.slideToShow = 1.05f
+        carouselUnify.autoplay = true
 
         View.inflate(context, R.layout.affiliate_promo_ssa_entry_layout, null)?.let {
             it.setOnClickListener {
@@ -209,16 +211,22 @@ class AffiliatePromoFragment :
 
         val imageView = context?.let { ImageUnify(it) }
         if (imageView != null) {
-            carouselUnify.addItem(imageView)
-        }
-        imageView?.setImageUrl("https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png")
-        imageView?.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            marginStart = 16
-            marginEnd = 56
-        }
-        imageView?.setOnClickListener {
-            tokoNowData = affiliateTokoNowData()
-            affiliatePromoViewModel.getTokoNowBottomSheetInfo(getTokoNowPageId())
+            if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    AFFILIATE_TOKONOW_BANNER,
+                    ""
+                ) == AFFILIATE_TOKONOW_BANNER
+            ) {
+                carouselUnify.addItem(imageView)
+                imageView.setImageUrl("https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png")
+                imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                    marginStart = 16
+                    marginEnd = 56
+                }
+                imageView.setOnClickListener {
+                    tokoNowData = affiliateTokoNowData()
+                    affiliatePromoViewModel.getTokoNowBottomSheetInfo(getTokoNowPageId())
+                }
+            }
         }
     }
 
@@ -390,7 +398,7 @@ class AffiliatePromoFragment :
                         isLinkGenerationEnabled = true,
                         origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_TOKO_NOW,
                         ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
-                            ssaStatus = eligibility.eligibleCommission?.ssaStatus ?: false,
+                            ssaStatus = true,
                             ssaMessage = "",
                             message = eligibility.eligibleCommission?.message.toString(),
                             label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(

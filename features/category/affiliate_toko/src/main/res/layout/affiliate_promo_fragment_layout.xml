@@ -233,7 +233,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
-                            android:text="@string/affiliate_otw_jadi_sultan_komisi"
+                            android:text="@string/affiliate_promo_carousel_title"
                             app:layout_constraintTop_toBottomOf="@id/gamification_container"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
@@ -244,7 +244,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="4dp"
-                            android:text="@string/affiliate_dengan_promosiin_toko_komisi_ekstra"
+                            android:text="@string/affiliate_promo_carousel_subtitle"
                             app:typographyType="display_3"
                             app:typographyWeight="reguler" />
 
