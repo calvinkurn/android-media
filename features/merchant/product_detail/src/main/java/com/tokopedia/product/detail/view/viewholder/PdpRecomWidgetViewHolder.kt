@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.PdpRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.databinding.ItemRecomViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PdpRecomWidgetViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<PdpRecomWidgetDataModel>(view) {
+) : AbstractViewHolder<PdpRecommendationWidgetDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_recom_view_holder
@@ -22,8 +22,8 @@ class PdpRecomWidgetViewHolder(
 
     private val binding: ItemRecomViewHolderBinding? by viewBinding()
 
-    override fun bind(element: PdpRecomWidgetDataModel) {
-        element.recomWidgetModel.let {
+    override fun bind(element: PdpRecommendationWidgetDataModel) {
+        element.recommendationWidgetModel.let {
             binding?.recomWidget?.bind(it)
         }
     }
