@@ -1,8 +1,6 @@
 package com.tokopedia.applink.content
 
-import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -17,7 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -26,7 +23,7 @@ import com.tokopedia.config.GlobalConfig
  */
 object DeeplinkMapperContent {
 
-    fun getRegisteredNavigationContentFromHttp(context: Context, uri: Uri): String {
+    fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
         return if (uri.pathSegments
             .joinToString("/")
             .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)
@@ -108,14 +105,6 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
-//        Log.d("<LOG>", "uri : $uri")
-//        return if (GlobalConfig.isSellerApp()) {
-//            Log.d("<LOG>", "applink seller app : ${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri")
-//            "${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri"
-//        } else {
-//            Log.d("<LOG>", "applink main app : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
-//            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
-//        }
     }
 
     private fun handleNavigationFeedVideo(uri: Uri): String {

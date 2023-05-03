@@ -31,7 +31,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -926,14 +925,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
-        Log.d("<LOG>", "BaseWebViewFragment url : " + url);
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
-            Log.d("<LOG>", "BaseWebViewFragment isNotNetworkUrl");
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent != null) {
                 try {
-                    Log.d("<LOG>", "BaseWebViewFragment intent != null");
                     hasMoveToNativePage = true;
                     startActivity(intent);
                     finishActivityIfBackPressedDisabled(hasMoveToNativePage);
@@ -953,7 +949,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
-        Log.d("<LOG>", "BaseWebViewFragment moveToNativePageFromWebView : " + hasMoveToNativePage);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
     }

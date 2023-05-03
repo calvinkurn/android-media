@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -30,7 +28,6 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         inject()
         super.onCreate(savedInstanceState)
 
-        Log.d("<LOG>", "PlayShortsPostUploadActivity onCreate")
         hitAnalytic()
         redirectToPlayRoom()
     }
