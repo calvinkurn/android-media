@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
@@ -114,7 +114,7 @@ object LeftCarouselMapper {
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null,
         layoutType: String
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,

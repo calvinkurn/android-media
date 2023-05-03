@@ -185,7 +185,6 @@ open class HomeAccountUserFragment :
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
     private var topAdsHeadlineUiModel: TopadsHeadlineUiModel? = null
-    private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
 
@@ -626,7 +625,6 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowHomeAccountTokopoints = getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
             isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
@@ -1021,10 +1019,6 @@ open class HomeAccountUserFragment :
     private fun getWallet() {
         displayBalanceAndPointLocalLoad(false)
         viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
-    }
-
-    private fun showHomeAccountTokopoints(): Boolean {
-        return isShowHomeAccountTokopoints
     }
 
     private fun getData() {
@@ -1833,8 +1827,6 @@ open class HomeAccountUserFragment :
         private const val FPM_BUYER = "mp_account_buyer"
         private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
             "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
-        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS =
-            "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"

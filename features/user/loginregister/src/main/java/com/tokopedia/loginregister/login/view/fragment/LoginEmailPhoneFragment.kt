@@ -119,7 +119,7 @@ import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker

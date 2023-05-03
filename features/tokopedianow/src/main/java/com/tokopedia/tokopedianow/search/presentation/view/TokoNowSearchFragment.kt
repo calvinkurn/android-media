@@ -179,7 +179,8 @@ class TokoNowSearchFragment :
             productRecommendationBindOocListener = createProductRecommendationOocCallback(),
             productRecommendationListener = createProductRecommendationCallback().copy(
                 query = getViewModel().query
-            )
+            ),
+            productCardCompactListener = createProductCardCompactCallback()
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
