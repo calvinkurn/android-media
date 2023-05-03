@@ -89,6 +89,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -368,8 +369,10 @@ class HotelSearchMapFragment :
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        if(binding?.rvVerticalPropertiesHotelSearchMap?.isNotEmpty().orFalse()){
-            showToastError(getMessageError(throwable))
+        if (binding?.rvVerticalPropertiesHotelSearchMap?.isNotEmpty().orFalse()) {
+            throwable?.let {
+                showToastError(throwable)
+            }
         } else {
             binding?.containerError?.root?.visible()
             context?.run {
@@ -385,16 +388,25 @@ class HotelSearchMapFragment :
         }
     }
 
-    private fun getMessageError(throwable: Throwable?): String {
-        return  ErrorHandler.getErrorMessage(
+    private fun getMessageError(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessage(
             context,
             throwable
         )
     }
 
-    private fun showToastError(message: String) {
+    private fun showToastError(throwable: Throwable) {
+        if(isNotEmptyError(throwable))
         view?.run {
-            Toaster.build(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
+            Toaster.build(this, getMessageError(throwable), Toaster.toasterLength, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    private fun isNotEmptyError(throwable: Throwable): Boolean {
+        return if (throwable is MessageErrorException) {
+            throwable.errorCode != ERROR_EMPTY_CODE
+        } else {
+            true
         }
     }
 
@@ -1924,6 +1936,8 @@ class HotelSearchMapFragment :
         private const val MAP_CENTER_DIVIDER = 4
         private const val SLIDE_MINUS_OPACITY: Float = 1f
         private const val SLIDE_MULT_OPACITY: Float = 3f
+
+        private const val ERROR_EMPTY_CODE = "358"
 
         const val PREFERENCES_NAME = "hotel_search_map_preferences"
         const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
