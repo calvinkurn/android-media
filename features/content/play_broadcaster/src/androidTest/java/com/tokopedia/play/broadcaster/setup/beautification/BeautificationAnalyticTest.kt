@@ -497,7 +497,7 @@ class BeautificationAnalyticTest {
         coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
 
         beautificationRobot.launch()
-            .performDelay(1000)
+            .performDelay(3000)
             .clickToasterCTA()
             .verifyEventAction("click - reapply beauty filter")
     }
