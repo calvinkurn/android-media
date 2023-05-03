@@ -17,9 +17,9 @@ object ProductMediaRecomTracker {
     ) {
         val eventAction = "click - product recommendation"
 
-        val postFixLogin = " - non login".takeIf { !common.isLoggedIn } ?: ""
+        val postFixLogin = " - non login".takeIf { common.userId.isBlank() } ?: ""
 
-        val itemListBuilder = StringBuilder("/productmediarecom").apply {
+        val itemListBuilder = StringBuilder("/product").apply {
             append(" - ${item.pageName}")
             append(" - rekomendasi untuk anda")
             append(postFixLogin)
@@ -66,7 +66,7 @@ object ProductMediaRecomTracker {
                     )
                 )
             ),
-            "userId" to common.userID
+            "userId" to common.userId
         )
 
         trackingQueue.putEETracking(mapEvent)
@@ -79,9 +79,9 @@ object ProductMediaRecomTracker {
     ) {
         val eventAction = "impression - product recommendation"
 
-        val postFixLogin = " - non login".takeIf { !common.isLoggedIn } ?: ""
+        val postFixLogin = " - non login".takeIf { common.userId.isBlank() } ?: ""
 
-        val itemListBuilder = StringBuilder("/productmediarecom").apply {
+        val itemListBuilder = StringBuilder("/product").apply {
             append(" - ${item.pageName}")
             append(" - rekomendasi untuk anda")
             append(postFixLogin)
@@ -125,7 +125,7 @@ object ProductMediaRecomTracker {
                     )
                 )
             ),
-            "userId" to common.userID
+            "userId" to common.userId
         )
 
         trackingQueue.putEETracking(mapEvent)

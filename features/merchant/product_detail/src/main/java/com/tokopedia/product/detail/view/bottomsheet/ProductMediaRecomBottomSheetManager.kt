@@ -265,8 +265,7 @@ class ProductMediaRecomBottomSheetManager(
 
         private fun createCommonTracker() = CommonTracker(
             productInfo = pdpListener?.getProductInfo() ?: DynamicProductInfoP1(),
-            userId = pdpListener?.getUserSession()?.userId.orEmpty(),
-            userSession = pdpListener?.getUserSession()
+            userId = pdpListener?.getUserSession()?.userId.orEmpty()
         )
     }
 }
