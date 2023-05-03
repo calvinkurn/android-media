@@ -20,6 +20,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -107,6 +108,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpTicker(element: Detail) {
         itemView.payLaterStatusTicker.shouldShowWithAction(element.ticker.isShown) {
+            val urlList = HtmlLinkHelper(context, element.ticker.content).urlList
+
             itemView.payLaterStatusTicker.setHtmlDescription(element.ticker.content)
             itemView.payLaterStatusTicker.tickerType = when (element.ticker.type) {
                 TICKER_TYPE_GENERAL -> Ticker.TYPE_INFORMATION
@@ -117,8 +120,10 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             itemView.payLaterStatusTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    val urlText = urlList.first { it.linkUrl == linkUrl }.linkText
+
                     interaction.invokeAnalytics(
-                        getGPLTickerCtaCLickEvent(element, linkUrl.toString())
+                        getGPLTickerCtaCLickEvent(element, urlText)
                     )
                     RouteManager.route(
                         itemView.context,
@@ -209,7 +214,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         }
 
     @SuppressLint("PII Data Exposure")
-    private fun getGPLTickerCtaCLickEvent(detail: Detail, ctaApplink: String) =
+    private fun getGPLTickerCtaCLickEvent(detail: Detail, cta: String) =
         PayLaterTickerCtaClick().apply {
             tenureOption = detail.tenure ?: 0
             userStatus = detail.userState ?: ""
@@ -218,7 +223,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             action = PdpSimulationAnalytics.CLICK_PAYLATER_GPL_TICKER
             promoName = detail.promoName.orEmpty()
             tickerType = detail.ticker.type
-            tickerCta = ctaApplink
+            tickerCta = cta
         }
 
     @SuppressLint("PII Data Exposure")
