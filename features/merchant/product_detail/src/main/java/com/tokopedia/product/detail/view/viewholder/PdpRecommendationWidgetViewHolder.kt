@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel on 27/03/23
  */
-class PdpRecomWidgetViewHolder(
+class PdpRecommendationWidgetViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<PdpRecommendationWidgetDataModel>(view) {

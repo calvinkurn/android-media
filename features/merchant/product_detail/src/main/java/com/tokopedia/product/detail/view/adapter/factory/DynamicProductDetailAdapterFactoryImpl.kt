@@ -54,7 +54,7 @@ import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.PdpRecomWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
@@ -251,7 +251,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: PdpRecommendationWidgetDataModel): Int {
-        return PdpRecomWidgetViewHolder.LAYOUT
+        return PdpRecommendationWidgetViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -261,7 +261,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 view,
                 listener
             )
-            PdpRecomWidgetViewHolder.LAYOUT -> PdpRecomWidgetViewHolder(view, listener)
+            PdpRecommendationWidgetViewHolder.LAYOUT -> PdpRecommendationWidgetViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
                 view,
                 listener
