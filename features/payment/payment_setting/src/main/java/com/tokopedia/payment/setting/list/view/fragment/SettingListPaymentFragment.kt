@@ -291,7 +291,7 @@ class SettingListPaymentFragment :
     }
 
     companion object {
-        private const val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 0..3
+        private val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 0..3
         const val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
         const val REQUEST_CODE_ADD_CREDIT_CARD = 4273
         const val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
