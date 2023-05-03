@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -108,8 +109,8 @@ object DeeplinkMapperContent {
     private fun handleNavigationPlay(uri: Uri): String {
         Log.d("<LOG>", "uri : $uri")
         return if (GlobalConfig.isSellerApp()) {
-            Log.d("<LOG>", "applink seller app : ${ApplinkConst.SellerApp.WEBVIEW}?titlebar=false&url=$uri")
-            "${ApplinkConst.SellerApp.WEBVIEW}?titlebar=false&url=$uri"
+            Log.d("<LOG>", "applink seller app : ${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri")
+            "${ApplinkConstInternalGlobal.WEBVIEW_BASE}?titlebar=false&url=$uri"
         } else {
             Log.d("<LOG>", "applink main app : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
             "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
