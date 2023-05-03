@@ -3,8 +3,10 @@ package com.tokopedia.media.editor.data.repository
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -18,7 +20,6 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.LatarTemplateDetail
 import com.tokopedia.media.editor.utils.toWhite
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -36,7 +37,6 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         size: Pair<Int, Int>,
         data: EditorAddTextUiModel
     ): Bitmap {
-        // TODO: create generator for latar text, current only support free text
         val originalImageWidth = size.first
         val originalImageHeight = size.second
 
@@ -44,23 +44,23 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
+        var fontSize = originalImageHeight * FONT_SIZE_PERCENTAGE
+
         // base padding
-        var paddingBottom = 6f.toPx()
-        var paddingSide = 16f.toPx()
-        var paddingTop = 0f
+        val paddingVertical = 0.4f * fontSize
+        val paddingHorizontal = 0.8f * fontSize
+        var paddingFloating = 0f
+        val adjustmentPadding = 0.1f * fontSize
+        var floatingWidthAdjustment = 0f
 
         // if floating type
         data.getLatarTemplate()?.let {
             if (it.latarModel == TEXT_LATAR_TEMPLATE_FLOATING) {
-                val extraPaddingFloating = 8f.toPx()
-                paddingBottom += extraPaddingFloating
-                paddingSide += extraPaddingFloating
-                paddingTop += extraPaddingFloating
+                // when using template floating need extra space
+                paddingFloating = 0.25f * fontSize
+                floatingWidthAdjustment = paddingFloating * 2
             }
         }
-
-        val sizePercentage = 1 / 12f // 8,3%
-        val fontSize = originalImageHeight * sizePercentage
 
         val mTextPaint = TextPaint()
 
@@ -70,65 +70,74 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         val typeFace = getTypeface(context, TYPEFACE)
         mTextPaint.typeface = Typeface.create(typeFace, data.getTypeFaceStyle())
 
-        val alignment = data.getLayoutAlignment()
-        var mTextLayout = StaticLayout(
-            data.textValue,
-            mTextPaint,
-            (canvas.width - (paddingSide * 2)).toInt(),
-            alignment,
-            1.0f,
-            0.0f,
-            false
-        )
+//        val alignment = data.getLayoutAlignment()
+//        var mTextLayout = StaticLayout(
+//            data.textValue,
+//            mTextPaint,
+//            (canvas.width - (paddingHorizontal * 2)).toInt(),
+//            alignment,
+//            1.0f,
+//            0.0f,
+//            false
+//        )
+        var mTextLayout: StaticLayout? = null
 
         canvas.save()
 
+        var latarWidth = originalImageWidth
+
         when (data.textPosition) {
             EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
-                mTextLayout = StaticLayout(
-                    data.textValue,
-                    mTextPaint,
-                    (canvas.height - (paddingSide * 2)).toInt(),
-                    alignment,
-                    1.0f,
-                    0.0f,
-                    false
-                )
-                val yOffset = canvas.width - mTextLayout.height - paddingBottom
+                // update font size according to image width since text on side
+                fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
+                mTextPaint.textSize = fontSize
+
+                // update latar size
+                latarWidth = originalImageHeight
+
+                // update text width bound to follow image height
+                mTextLayout = createStaticLayout(data ,canvas.height - (paddingHorizontal * 2).toInt(), mTextPaint)
+
+                val yOffset = canvas.width - mTextLayout.height - paddingVertical - paddingFloating
                 canvas.rotate(-90f)
-                canvas.translate(-(canvas.height.toFloat() - paddingSide), yOffset)
+                canvas.translate(-(canvas.height.toFloat() - paddingHorizontal), yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
-                mTextLayout = StaticLayout(
-                    data.textValue,
-                    mTextPaint,
-                    (canvas.height - paddingSide).toInt(),
-                    alignment,
-                    1.0f,
-                    0.0f,
-                    false
-                )
+                // update font size according to image width since text on side
+                fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
+                mTextPaint.textSize = fontSize
 
-                val yOffset = -(mTextLayout.height + paddingBottom)
+                // update text width bound to follow image height
+                mTextLayout = createStaticLayout(data, canvas.height - (paddingHorizontal * 2).toInt(), mTextPaint)
+
+                val yOffset = -(mTextLayout.height + paddingVertical)
                 canvas.rotate(90f)
-                canvas.translate(paddingSide, yOffset)
+                canvas.translate(paddingHorizontal, yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
-                var yOffset = (canvas.height - mTextLayout.height).toFloat() - paddingBottom
-                canvas.translate(paddingSide, yOffset)
+                mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
+
+                val yOffset = (canvas.height - mTextLayout.height).toFloat() - (paddingVertical + paddingFloating)
+                canvas.translate(paddingHorizontal, yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_TOP -> {
-                canvas.translate(paddingSide, paddingTop)
+                mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
+
+                canvas.translate(paddingHorizontal, paddingVertical)
             }
         }
 
+        // latar only on bottom & right
         getLatarDrawable(data.getLatarTemplate())?.let {
-            it.toBitmap().scale(canvas.width, mTextLayout.height + paddingBottom.toInt()).apply {
-                canvas.drawBitmap(this, -paddingSide, 0f, null)
+            val latarHeight = (mTextLayout!!.height + paddingVertical + adjustmentPadding).toInt()
+            latarWidth -= floatingWidthAdjustment.toInt()
+
+            it.toBitmap().scale(latarWidth, latarHeight).apply {
+                canvas.drawBitmap(this, -(paddingHorizontal - paddingFloating), -adjustmentPadding, null)
             }
         }
 
-        mTextLayout.draw(canvas)
+        mTextLayout!!.draw(canvas)
         canvas.restore()
 
         return bitmap
@@ -139,7 +148,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
         when (latarDetail.latarModel) {
             TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
-            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
+            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_full
             TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
             else -> null
         }.apply {
@@ -153,7 +162,26 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         }
     }
 
+    private fun createStaticLayout(data: EditorAddTextUiModel, width: Int, paint: TextPaint): StaticLayout {
+        // TODO: adjust only do ellipsize on latar
+        val text = TextUtils.ellipsize(data.textValue, paint, width.toFloat(), TextUtils.TruncateAt.END)
+        val alignment = data.getLayoutAlignment()
+
+        return StaticLayout(
+            text,
+            paint,
+            width,
+            alignment,
+            1f,
+            0f,
+            false
+        )
+    }
+
     companion object {
         private const val TYPEFACE = "OpenSauceOneRegular.ttf"
+
+        // 4,5%
+        private const val FONT_SIZE_PERCENTAGE = 1 / 22f
     }
 }
