@@ -836,7 +836,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (uri.getPath().endsWith(".pdf") && url.startsWith("http")) {
+        if (handlePdfUri(uri)) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -950,6 +950,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handlePdfUri(Uri uri) {
+        return uri.getPath().endsWith(".pdf") && url.startsWith("http") // Handle e-pharmacy pdf url
+                || url.endsWith(".pdf") && url.startsWith("http"); // Handle regular pdf url
     }
 
     private boolean handleWebUrlLogin(Uri uri) {
