@@ -16,7 +16,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -107,7 +106,7 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return if (GlobalConfig.isSellerApp()) {
-            "${ApplinkConst.WEBVIEW}?titlebar=false&url=$uri"
+            "${ApplinkConst.SellerApp.WEBVIEW}?titlebar=false&url=$uri"
         } else {
             "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
         }
@@ -146,6 +145,4 @@ object DeeplinkMapperContent {
             )
         )
     }
-
-    private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 }
