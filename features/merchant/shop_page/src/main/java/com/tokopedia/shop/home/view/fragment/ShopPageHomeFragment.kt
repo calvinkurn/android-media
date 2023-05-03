@@ -1640,6 +1640,7 @@ open class ShopPageHomeFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
+                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
@@ -4152,8 +4153,6 @@ open class ShopPageHomeFragment :
                 shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
                 shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.playWidgetState)
 
-                checkIsShouldShowPerformanceDashboardCoachMark()
-
                 val widget = carouselPlayWidgetUiModel?.playWidgetState
 
                 if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
@@ -4198,10 +4197,8 @@ open class ShopPageHomeFragment :
     }
 
     private fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        if (coachMarkSharedPref.hasBeenShown(
-                Key.PerformanceDashboardEntryPointShopPage,
-                viewModel?.userSessionShopId.orEmpty())
-        ) return
+        val isShownAlreadyShown = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
+        if (isShownAlreadyShown) return
         val recyclerView = getRecyclerView(view)
         recyclerView?.addOneTimeGlobalLayoutListener {
             val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
@@ -4220,12 +4217,12 @@ open class ShopPageHomeFragment :
                 )
                 coachMark.isOutsideTouchable = true
                 coachMark.showCoachMark(ArrayList(coachMarkItems))
+                coachMarkSharedPref.setHasBeenShown(
+                    Key.PerformanceDashboardEntryPointShopPage,
+                    viewModel?.userSessionShopId.orEmpty()
+                )
             }
         }
-        coachMarkSharedPref.setHasBeenShown(
-            Key.PerformanceDashboardEntryPointShopPage,
-            viewModel?.userSessionShopId.orEmpty()
-        )
     }
 
     private fun observePlayWidgetReminder() {
