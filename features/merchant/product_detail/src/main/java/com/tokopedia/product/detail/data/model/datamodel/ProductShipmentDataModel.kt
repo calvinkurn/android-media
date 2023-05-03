@@ -46,6 +46,7 @@ data class ProductShipmentDataModel(
                     && shouldShowShipmentError == newData.shouldShowShipmentError
                     && freeOngkirType == newData.freeOngkirType
                     && tokoCabangIconUrl == newData.tokoCabangIconUrl
+                    && shipmentPlusData == newData.shipmentPlusData
         } else {
             false
         }
