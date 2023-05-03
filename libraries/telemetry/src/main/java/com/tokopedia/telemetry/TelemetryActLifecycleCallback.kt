@@ -13,7 +13,12 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.telemetry.model.TELEMETRY_REMOTE_CONFIG_KEY
 import com.tokopedia.telemetry.model.Telemetry
+import com.tokopedia.telemetry.model.TelemetryConfig
+import com.tokopedia.telemetry.model.TelemetryConfig.Companion.isInSamplingArea
 import com.tokopedia.telemetry.network.TelemetryWorker
 import com.tokopedia.telemetry.sensorlistener.TelemetryAccelListener
 import com.tokopedia.telemetry.sensorlistener.TelemetryGyroListener
@@ -22,7 +27,6 @@ import com.tokopedia.telemetry.sensorlistener.TelemetryTouchListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import java.lang.Exception
 import java.lang.ref.WeakReference
 
 class TelemetryActLifecycleCallback(
@@ -33,38 +37,98 @@ class TelemetryActLifecycleCallback(
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
         const val SAMPLING_RATE_MICRO = 200_000 // 200ms or 0.2s
         const val SAMPLING_RATE_MS = 200 // 200ms or 0.2s
+        var remoteConfig: RemoteConfig? = null
+        var telemetryConfig: TelemetryConfig? = null
+        var hasFetch = false
+        val mapSectionToCount = HashMap<Pair<String, String>, Int>()
+    }
+
+    private fun getRemoteConfig(context: Context): RemoteConfig {
+        val rc = remoteConfig
+        if (rc == null) {
+            val tempRc = FirebaseRemoteConfigImpl(context.applicationContext)
+            remoteConfig = tempRc
+            return tempRc
+        } else {
+            return rc
+        }
     }
 
     private fun registerTelemetryListener(activity: AppCompatActivity) {
         activity.lifecycleScope.launch {
             try {
                 yield()
-                activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
-                    if (newFocus is EditText) {
-                        val et: EditText = newFocus
-                        et.removeTextChangedListener(TelemetryTextWatcher)
-                        et.addTextChangedListener(TelemetryTextWatcher)
+                if (activity.isDestroyed || activity.isFinishing) {
+                    return@launch
+                }
+                val telConfig = fetchConfig(activity)
+                val collectType = doCollectType(activity, telConfig)
+                if (collectType) {
+                    activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
+                        if (newFocus is EditText) {
+                            val et: EditText = newFocus
+                            et.removeTextChangedListener(TelemetryTextWatcher)
+                            et.addTextChangedListener(TelemetryTextWatcher)
+                        }
                     }
                 }
-                val sensorManager: SensorManager? =
-                    activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-                val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+                var sensorManager: SensorManager? = null
+                if (!isTeleActivity || telConfig.accelSamplingInt.isInSamplingArea()) {
+                    sensorManager =
+                        activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+                    val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-                val samplingRate = getSamplingRate()
-                sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
-                TelemetryAccelListener.setActivity(activity)
+                    val samplingRate = getSamplingRate()
+                    sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
+                    TelemetryAccelListener.setActivity(activity)
+                }
 
-                val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-                sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
-                TelemetryGyroListener.setActivity(activity)
+                if (!isTeleActivity || telConfig.gyroSamplingInt.isInSamplingArea()) {
+                    if (sensorManager == null) {
+                        sensorManager =
+                            activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+                    }
+                    val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+                    val samplingRate = getSamplingRate()
+                    sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
+                    TelemetryGyroListener.setActivity(activity)
+                }
 
-                if (activity is BaseActivity) {
-                    activity.addListener(TelemetryTouchListener)
+                if (!isTeleActivity || telConfig.touchSamplingInt.isInSamplingArea()) {
+                    if (activity is BaseActivity) {
+                        activity.addListener(TelemetryTouchListener)
+                    }
                 }
                 // store this activity so it can be stopped later
                 prevActivityRef = WeakReference(activity)
             } catch (ignored: Throwable) {
             }
+        }
+    }
+
+    private fun doCollectType(activity: Activity, telemetryConfig: TelemetryConfig):Boolean{
+        if (activity !is ITelemetryActivity) return true
+        val sectionName = activity.getTelemetrySectionName()
+        telConfig.gyroSamplingInt.isInSamplingArea()
+    }
+
+    private fun fetchConfig(context: Context): TelemetryConfig {
+        val obj: TelemetryConfig
+        if (telemetryConfig == null || !hasFetch) {
+            val remoteConfig = getRemoteConfig(context)
+            val telemetryConfigString = remoteConfig.getString(TELEMETRY_REMOTE_CONFIG_KEY, "")
+            if (telemetryConfigString.isNullOrEmpty()) {
+                obj = TelemetryConfig()
+                telemetryConfig = obj
+                return obj
+            } else {
+                obj = TelemetryConfig.parseFromRemoteConfig(telemetryConfigString)
+                telemetryConfig = obj
+                hasFetch = true
+                return obj
+            }
+        } else {
+            return telemetryConfig ?: TelemetryConfig()
         }
     }
 
