@@ -320,6 +320,8 @@ class PlayBottomSheetFragment @Inject constructor(
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
+        //harus atc dlu walaupun mau buka variant?
+
         playViewModel.submitAction(
             when (action) {
                 ProductAction.Buy -> BuyProductAction(sectionInfo, product)

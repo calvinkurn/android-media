@@ -282,7 +282,8 @@ class PlayFragment @Inject constructor(
                 productId = product.id,
                 shopId = product.shopId,
                 dismissAfterTransaction = false,
-                showQtyEditor = false
+                showQtyEditor = false,
+                trackerCdListName = "" //input here tracker
             )
         )
 
@@ -310,7 +311,7 @@ class PlayFragment @Inject constructor(
 
         if (!forceTop) return
 
-        val height = requireView().height - sheetMaxHeight - ivClose.top - offset24 - requireView().rootView.bottom  // vertical
+        val height = requireView().height - sheetMaxHeight - ivClose.top - offset24  // vertical
         onBottomInsetsViewShown(height)
     }
 
