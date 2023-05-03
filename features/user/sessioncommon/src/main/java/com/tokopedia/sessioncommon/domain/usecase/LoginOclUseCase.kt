@@ -21,11 +21,13 @@ class LoginOclUseCase @Inject constructor(
 ) : CoroutineUseCase<LoginOclParam, LoginToken>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
-        mutation login_email_v2(${'$'}grant_type: String!, ${'$'}ocl_jwt_token: String!){
+        mutation login_email_v2(${'$'}grant_type: String!, ${'$'}ocl_jwt_token: String!, ${'$'}access_token: String!, ${'$'}social_type: String!){
             login_token_v2(
                 input: {
                     grant_type: ${'$'}grant_type
                     ocl_jwt_token: ${'$'}ocl_jwt_token
+                    access_token: ${'$'}access_token
+                    social_type: ${'$'}social_type
                 }
             ) {
                 acc_sid

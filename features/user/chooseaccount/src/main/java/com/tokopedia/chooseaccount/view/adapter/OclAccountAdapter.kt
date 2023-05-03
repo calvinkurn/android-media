@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.databinding.ItemOclAccountBinding
 import com.tokopedia.chooseaccount.view.listener.OclChooseAccountListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 
 class OclAccountAdapter() : RecyclerView.Adapter<OclAccountAdapter.OclViewHolder>() {
 
@@ -15,7 +15,7 @@ class OclAccountAdapter() : RecyclerView.Adapter<OclAccountAdapter.OclViewHolder
 
     inner class OclViewHolder internal constructor(val binding: ItemOclAccountBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: OclAccount) {
-            binding.avatar.loadImage(item.profilePicture)
+            binding.avatar.loadImageCircle(item.profilePicture)
             binding.mainView.setOnClickListener { mListener.onAccountSelected(item) }
             binding.name.text = item.fullName
             binding.email.text = item.loginTypeWording

@@ -17,8 +17,8 @@ class LogoutUseCase @Inject constructor(@ApplicationContext val repository: Grap
     }
 
     override fun graphqlQuery(): String = """
-        mutation logoutUser(${'$'}save_session: String!) {
-            logout_user(save_session: ${'$'}save_session) {
+        mutation logoutUser(${'$'}save_session: String!, ${'$'}ocl_jwt_token: String!) {
+            logout_user(save_session: ${'$'}save_session, ocl_jwt_token: ${'$'}ocl_jwt_token) {
                 success
                 ocl_jwt_token
                 errors {

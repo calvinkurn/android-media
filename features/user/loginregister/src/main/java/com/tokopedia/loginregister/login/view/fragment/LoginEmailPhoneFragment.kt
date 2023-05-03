@@ -333,8 +333,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
 
-        if(getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_STICKY_LOGIN, arguments, savedInstanceState, false) &&
-            oclPreferences.getToken().isNotEmpty()) {
+        if(oclPreferences.getToken().isNotEmpty()) {
             goToOclChooseAccount()
         }
     }
@@ -643,7 +642,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             requireContext(),
             ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_OCL
         )
-        startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun fetchRemoteConfig() {

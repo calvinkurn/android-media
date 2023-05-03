@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/spacing_lvl4"
-    android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginRight="@dimen/spacing_lvl4"
-    android:layout_marginBottom="@dimen/spacing_lvl3">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selectable_background_tokopedia"
-        android:orientation="vertical">
+    android:background="@drawable/selectable_background_tokopedia"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/avatar"
@@ -54,12 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="@dimen/unify_font_8"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/unify_font_16"
-                app:typographyType="body_1"
+                app:typographyType="display_2"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -67,12 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="@dimen/loginphone_sp_6"
-                android:textColor="@color/Unify_N700_44"
-                android:textSize="@dimen/unify_font_14"
-                app:typographyType="body_1"
-                app:typographyWeight="reguler" />
+                app:typographyType="display_3"
+                />
 
             <LinearLayout
                 android:id="@+id/shop_view"
@@ -108,4 +92,3 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>

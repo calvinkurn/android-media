@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chooseaccount.data.DeleteOclParam
 import com.tokopedia.chooseaccount.data.GetOclAccountParam
 import com.tokopedia.chooseaccount.data.OclAccount
+import com.tokopedia.chooseaccount.domain.usecase.DeleteOclAccountUseCase
 import com.tokopedia.chooseaccount.domain.usecase.GetOclAccountUseCase
 import com.tokopedia.sessioncommon.data.ocl.LoginOclParam
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginOclUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -17,6 +20,8 @@ import javax.inject.Inject
 class OclChooseAccountViewModel @Inject constructor(
     val getOclAccountUseCase: GetOclAccountUseCase,
     val loginOclUseCase: LoginOclUseCase,
+    val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    val deleteOclAccountUseCase: DeleteOclAccountUseCase,
     val oclPreference: OclPreference,
     dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.main) {
@@ -42,12 +47,15 @@ class OclChooseAccountViewModel @Inject constructor(
             try {
                 val param = GetOclAccountParam(oclPreference.getToken())
                 val result = getOclAccountUseCase(param)
+                if(result.token.isNotEmpty()) {
+                    oclPreference.storeToken(result.token)
+                }
                 if(result.users.isNotEmpty()) {
                     _oclAccounts.value = result.users
+                    _mainLoader.value = false
                 } else {
                     _navigateToNormalLogin.value = true
                 }
-                _mainLoader.value = false
             } catch (e: Exception) {
                 _mainLoader.value = false
                 _toasterError.value = e.message
@@ -59,8 +67,28 @@ class OclChooseAccountViewModel @Inject constructor(
         launch {
             try {
                 val param = LoginOclParam(oclToken = oclPreference.getToken(), accountToken = token)
-                loginOclUseCase(param)
+                val result = loginOclUseCase(param)
+                if(result.accessToken.isNotEmpty()) {
+                    getUserInfoAndSaveSessionUseCase(Unit)
+                }
                 _navigateToSuccessPage.value = true
+            } catch (e: Exception) {
+                _toasterError.value = e.message
+            }
+        }
+    }
+
+    fun deleteAccount(user: OclAccount) {
+        launch {
+            try {
+                val param = DeleteOclParam(token = oclPreference.getToken(), userToken = user.token)
+                val result = deleteOclAccountUseCase(param)
+                if(result.token.isNotEmpty()) {
+                    oclPreference.storeToken(result.token)
+                }
+                val newItem = _oclAccounts.value
+                newItem?.remove(user)
+                _oclAccounts.value = newItem
             } catch (e: Exception) {
                 _toasterError.value = e.message
             }

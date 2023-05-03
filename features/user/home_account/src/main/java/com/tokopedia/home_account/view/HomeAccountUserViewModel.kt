@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.ocl.GetOclStatusParam
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
@@ -66,6 +67,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val offerInterruptUseCase: OfferInterruptUseCase,
     private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     private val getOclStatusUseCase: GetOclStatusUseCase,
+    private val oclPreference: OclPreference,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -163,7 +165,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getOclStatus() {
         launch {
             try {
-                val param = GetOclStatusParam()
+                val param = GetOclStatusParam(token = oclPreference.getToken())
                 val result = getOclStatusUseCase(param)
                 _getOclStatus.value = result
             } catch (ignored: Exception) { }

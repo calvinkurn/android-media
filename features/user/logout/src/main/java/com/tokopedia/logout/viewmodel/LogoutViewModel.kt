@@ -26,7 +26,7 @@ class LogoutViewModel @Inject constructor(
 
     fun doLogout(saveSession: String = "") {
         launchCatchError(block = {
-            val param = LogoutParam(saveSession)
+            val param = LogoutParam(saveSession = saveSession, token = oclPreference.getToken())
             val result = logoutUseCase(param)
             if(result.response.success) {
                 if(saveSession == LogoutUseCase.PARAM_SAVE_SESSION) {

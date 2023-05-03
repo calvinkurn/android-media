@@ -5,5 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class LogoutParam (
     @SerializedName("save_session")
-    val saveSession: String = ""
+    val saveSession: String = "",
+    @SerializedName("ocl_jwt_token")
+    val token: String = ""
 ): GqlParam

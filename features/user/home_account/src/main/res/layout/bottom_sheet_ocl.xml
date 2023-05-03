@@ -2,75 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageUnify"
-        android:layout_width="180dp"
+        android:layout_width="200dp"
         android:layout_height="180dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="12dp"
-        app:typographyType="heading_3"
+        android:layout_marginTop="16dp"
+        app:typographyType="heading_2"
         android:id="@+id/typography"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Simpan info login di perangkat ini?"
+        android:text="@string/ocl_btm_sheet_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageUnify" />
 
     <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="body_2"
-        android:id="@+id/typography2"
+        app:typographyType="paragraph_2"
+        android:id="@+id/oclSubtitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:textAlignment="center"
-        android:text="Pastikan kamu menggunakan perangkat pribadi dan telah membaca syarat dan ketentuan Tokopedia."
+        android:text="@string/ocl_btm_sheet_subtitle"
         app:layout_constraintEnd_toEndOf="@+id/typography"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/typography"
         app:layout_constraintTop_toBottomOf="@+id/typography" />
 
-    <LinearLayout
-        android:layout_marginTop="12dp"
-        android:gravity="center"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="24dp"
+        android:id="@+id/btmSheetOclPositiveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
+        android:layout_weight="1"
+        android:text="@string/ocl_btm_sheet_positive_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography2">
+        app:layout_constraintTop_toBottomOf="@+id/oclSubtitleText" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_weight="1"
-            android:layout_margin="8dp"
-            android:id="@+id/btmSheetOclNegativeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nanti Saja"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonType="alternate"
-            app:layout_constraintEnd_toEndOf="@+id/imageUnify"
-            app:layout_constraintTop_toBottomOf="@+id/typography2" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_weight="1"
-            android:id="@+id/btmSheetOclPositiveBtn"
-            android:layout_margin="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ya, Simpan"
-            app:unifyButtonVariant="ghost"
-            app:layout_constraintStart_toStartOf="@+id/imageUnify"
-            app:layout_constraintTop_toBottomOf="@+id/typography2" />
-
-    </LinearLayout>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="8dp"
+        android:id="@+id/btmSheetOclNegativeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/ocl_btm_sheet_negative_btn"
+        app:layout_constraintEnd_toEndOf="@+id/btmSheetOclPositiveBtn"
+        app:layout_constraintStart_toStartOf="@+id/btmSheetOclPositiveBtn"
+        app:layout_constraintTop_toBottomOf="@+id/btmSheetOclPositiveBtn"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

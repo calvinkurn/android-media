@@ -3,15 +3,21 @@ package com.tokopedia.chooseaccount.view.ocl
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.chooseaccount.R
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.databinding.FragmentOclChooseAccountBinding
 import com.tokopedia.chooseaccount.di.ChooseAccountComponent
@@ -54,13 +60,38 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         adapter = OclAccountAdapter()
         adapter?.setListener(this)
         binding?.oclChooseAccountList?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding?.oclChooseAccountList?.addItemDecoration(OclItemDivider(requireContext()))
         binding?.oclChooseAccountList?.adapter = adapter
         return binding?.root
+    }
+
+    fun setupSpannableText() {
+        val sourceString = requireContext().resources.getString(R.string.ocl_register_title)
+        val spannable = SpannableString(sourceString)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    (activity as OclChooseAccountActivity).goToRegisterInitial()
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(
+                        activity,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                }
+            },
+            sourceString.indexOf("Daftar"),
+            sourceString.length,
+            0
+        )
+        binding?.oclBtnRegister?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSpannableText()
         viewModel.mainLoader.observe(this) {
             if(it) {
                 binding?.mainView?.hide()
@@ -110,7 +141,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
     }
 
     override fun onDeleteButtonClicked(account: OclAccount) {
-
+        viewModel.deleteAccount(account)
     }
 
     companion object {

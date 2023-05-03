@@ -12,9 +12,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -95,6 +100,7 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_L
 import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -118,7 +124,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.utils.image.ImageUtils
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -197,8 +202,6 @@ open class HomeAccountUserFragment :
     var memberLocalLoad: LocalLoad? = null
     var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
-
-    private var bottomSheetBinding by autoClearedNullable<BottomSheetOclBinding>()
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -1375,8 +1378,34 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun showOclBtmSheet() {
+    fun getTncOclSpan(): SpannableString {
+        val sourceString = requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle)
+        val spannable = SpannableString(sourceString)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    RouteManager.route(
+                        requireContext(),
+                        ApplinkConstInternalUserPlatform.TERM_PRIVACY,
+                        ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+                    )
+                }
 
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(
+                        activity,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                }
+            },
+            sourceString.indexOf("Syarat & Ketentuan"),
+            sourceString.length,
+            0
+        )
+        return spannable
+    }
+
+    private fun showOclBtmSheet() {
         val child = BottomSheetOclBinding.inflate(
             LayoutInflater.from(context),
             null,
@@ -1389,9 +1418,9 @@ open class HomeAccountUserFragment :
         child.btmSheetOclNegativeBtn.setOnClickListener {
             doLogout()
         }
-
+        child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
+        child.imageUnify.loadImage(R.drawable.img_ocl_header)
         BottomSheetUnify().apply {
-//            ImageUtils.loadImage(imagePrimary)
             setChild(child.root)
             setCloseClickListener {
                 doLogout()
