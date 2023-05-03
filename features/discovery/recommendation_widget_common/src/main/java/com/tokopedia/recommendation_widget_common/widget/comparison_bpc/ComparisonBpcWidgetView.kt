@@ -4,12 +4,11 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.recommendation_widget_common.widget.global.BaseRecommendationWidgetView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,11 +17,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetV2ViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetDecoration
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetMapper
+import com.tokopedia.recommendation_widget_common.widget.global.BaseRecommendationWidgetView
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by frenzel on 27/03/23
  */
-class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope {
+class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope, RecommendationWidgetAnalyticListener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -79,7 +80,6 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
                         model
                     )
                 }) {
-
                 }
             }
         }
@@ -108,7 +108,7 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
 
                         val comparisonListModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
                             recommendationWidget,
-                            comparisonBpcModel.recomWidgetTrackingModel,
+                            comparisonBpcModel.trackingModel,
                             context
                         ).toMutableList()
 
