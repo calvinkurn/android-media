@@ -15,22 +15,22 @@ import java.lang.Exception
 /**
  * Created by frenzel on 11/03/23
  */
-class RecomWidgetView : LinearLayout, LifecycleEventObserver {
+class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val typeFactory = RecomTypeFactoryImpl()
+    private val typeFactory = RecommendationTypeFactoryImpl()
     private var component: RecommendationComponent? = null
 
-    fun bind(model: RecomVisitable) {
+    fun bind(model: RecommendationVisitable) {
         initInjector()
         val widget = typeFactory.createView(context, model)
         val widgetView = addWidgetView(widget) ?: return
         widgetView.bind(model)
     }
 
-    private fun addWidgetView(widgetView: BaseRecomWidgetView<*>): BaseRecomWidgetView<RecomVisitable>? {
+    private fun addWidgetView(widgetView: BaseRecommendationWidgetView<*>): BaseRecommendationWidgetView<RecommendationVisitable>? {
         return try {
             removeAllViews()
             val widget = widgetView.apply {
@@ -41,7 +41,7 @@ class RecomWidgetView : LinearLayout, LifecycleEventObserver {
             widget
         } catch (e: Exception) {
             null
-        } as? BaseRecomWidgetView<RecomVisitable>
+        } as? BaseRecommendationWidgetView<RecommendationVisitable>
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

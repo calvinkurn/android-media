@@ -4,12 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.recommendation_widget_common.databinding.LayoutWidgetRecommendationCarouselBinding
-import com.tokopedia.recommendation_widget_common.widget.global.BaseRecomWidgetView
+import com.tokopedia.recommendation_widget_common.widget.global.BaseRecommendationWidgetView
 
 /**
  * Created by frenzel on 27/03/23
  */
-class RecomCarouselWidgetView : BaseRecomWidgetView<RecomCarouselModel> {
+class RecommendationCarouselWidgetView : BaseRecommendationWidgetView<RecommendationCarouselModel> {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -28,6 +28,6 @@ class RecomCarouselWidgetView : BaseRecomWidgetView<RecomCarouselModel> {
         binding = LayoutWidgetRecommendationCarouselBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    override fun bind(model: RecomCarouselModel) {
+    override fun bind(model: RecommendationCarouselModel) {
     }
 }

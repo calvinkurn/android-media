@@ -2,9 +2,9 @@ package com.tokopedia.recommendation_widget_common.widget.global
 
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 
-data class RecomWidgetMetadata(
+data class RecommendationWidgetMetadata(
     var isInitialized: Boolean = false,
-    val pageSource: RecomWidgetSource? = null,
+    val pageSource: RecommendationWidgetSource? = null,
     val pageType: String = "",
     val pageName: String = "",
     val verticalPosition: Int = 0,

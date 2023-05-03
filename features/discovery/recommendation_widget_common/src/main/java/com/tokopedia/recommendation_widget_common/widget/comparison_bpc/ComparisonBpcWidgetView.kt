@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.recommendation_widget_common.widget.global.BaseRecommendationWidgetView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.recommendation_widget_common.databinding.ViewComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.global.BaseRecomWidgetView
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetV2ViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
@@ -23,7 +23,6 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetDecoration
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetMapper
-import com.tokopedia.recommendation_widget_common.widget.global.RecomWidgetAnalyticListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,11 +31,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-
 /**
  * Created by frenzel on 27/03/23
  */
-class ComparisonBpcWidgetView : BaseRecomWidgetView<RecomComparisonBpcModel>, RecomWidgetAnalyticListener, CoroutineScope {
+class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -69,12 +67,12 @@ class ComparisonBpcWidgetView : BaseRecomWidgetView<RecomComparisonBpcModel>, Re
     private var lifecycleOwner: LifecycleOwner? = null
     private var viewModel: RecomWidgetV2ViewModel? = null
 
-    override fun bind(model: RecomComparisonBpcModel) {
+    override fun bind(model: RecommendationComparisonBpcModel) {
         trackingQueue = model.trackingQueue
         setupRecyclerView()
         viewModel?.loadRecommendation(model)
         lifecycleOwner?.lifecycleScope?.launch {
-            viewModel?.getRecommendationByPageName(model.recomWidgetMetadata.pageName)?.collect { res ->
+            viewModel?.getRecommendationByPageName(model.metadata.pageName)?.collect { res ->
                 res.doSuccessOrFail({
                     setComparisonWidgetData(
                         it.data,
@@ -100,7 +98,7 @@ class ComparisonBpcWidgetView : BaseRecomWidgetView<RecomComparisonBpcModel>, Re
 
     private fun setComparisonWidgetData(
         recommendationWidget: RecommendationWidget,
-        recomComparisonBpcModel: RecomComparisonBpcModel
+        comparisonBpcModel: RecommendationComparisonBpcModel
     ) {
         launch {
             try {
@@ -110,7 +108,7 @@ class ComparisonBpcWidgetView : BaseRecomWidgetView<RecomComparisonBpcModel>, Re
 
                         val comparisonListModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
                             recommendationWidget,
-                            recomComparisonBpcModel.recomWidgetTrackingModel,
+                            comparisonBpcModel.recomWidgetTrackingModel,
                             context
                         ).toMutableList()
 
