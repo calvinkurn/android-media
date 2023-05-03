@@ -116,7 +116,7 @@ public class MigratedUserSession {
                         String.valueOf(value)
                 );
             } catch (Exception e) {
-                logUserSessionEvent("set_long_exception", e);
+                logUserSessionEventWithKey("set_long_exception", keyName, e);
             }
         }
         Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
@@ -171,7 +171,7 @@ public class MigratedUserSession {
                     );
                 }
             } catch (Exception e) {
-                logUserSessionEvent("set_string_exception", e);
+                logUserSessionEventWithKey("set_string_exception", keyName, e);
             }
         }
 
@@ -393,7 +393,7 @@ public class MigratedUserSession {
                     );
                 }
             } catch (Exception e) {
-                logUserSessionEvent("set_boolean_exception", e);
+                logUserSessionEventWithKey("set_boolean_exception", keyName, e);
             }
         }
 

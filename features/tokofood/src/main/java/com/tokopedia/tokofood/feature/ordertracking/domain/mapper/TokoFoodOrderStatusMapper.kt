@@ -10,20 +10,31 @@ class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon
     fun mapToOrderStatusLiveTrackingUiModel(
         tokofoodOrderDetail: TokoFoodOrderStatusResponse.TokofoodOrderDetail
     ) = OrderStatusLiveTrackingUiModel(
-        tickerInfoData = if (tokofoodOrderDetail.additionalTickerInfo != null) mapToTickerInfoData(
-            tokofoodOrderDetail.additionalTickerInfo
-        ) else null,
+        tickerInfoData = if (tokofoodOrderDetail.additionalTickerInfo != null) {
+            mapToTickerInfoData(
+                tokofoodOrderDetail.additionalTickerInfo
+            )
+        } else {
+            null
+        },
         orderTrackingStatusInfoUiModel = mapToOrderTrackingStatusInfo(tokofoodOrderDetail.orderStatus),
         orderStatusKey = tokofoodOrderDetail.orderStatus.status,
-        estimationUiModel = if (tokofoodOrderDetail.eta != null)
-            mapToEstimationUiModel(tokofoodOrderDetail.eta) else null,
+        estimationUiModel = if (tokofoodOrderDetail.eta != null) {
+            mapToEstimationUiModel(tokofoodOrderDetail.eta)
+        } else {
+            null
+        },
         invoiceOrderNumberUiModel = mapToInvoiceOrderNumberUiModel(
             tokofoodOrderDetail.invoice,
             tokofoodOrderDetail.payment.paymentDate
         ),
         toolbarLiveTrackingUiModel = mapToToolbarLiveTrackingUiModel(tokofoodOrderDetail),
+        driverSectionUiModel = mapToDriverSectionUiModel(
+            driverDetails = tokofoodOrderDetail.driverDetails,
+            orderStatus = tokofoodOrderDetail.orderStatus,
+            invoice = tokofoodOrderDetail.invoice
+        )
     )
-
     private fun mapToToolbarLiveTrackingUiModel(
         tokofoodOrderDetail: TokoFoodOrderStatusResponse.TokofoodOrderDetail
     ) = ToolbarLiveTrackingUiModel(
@@ -35,6 +46,8 @@ class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon
                 append(" ")
                 append(tokofoodOrderDetail.eta.time)
             }.toString()
-        } else ""
+        } else {
+            ""
+        }
     )
 }

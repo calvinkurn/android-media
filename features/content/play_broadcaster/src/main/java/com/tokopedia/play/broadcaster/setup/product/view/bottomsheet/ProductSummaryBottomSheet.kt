@@ -38,7 +38,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
     private var mListener: Listener? = null
-    private var mDataSource: DataSource? = null
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
@@ -71,7 +70,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupAnalytic()
         setupBottomSheet()
     }
 
@@ -95,15 +93,10 @@ class ProductSummaryBottomSheet @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         mListener = null
-        mDataSource = null
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
-    }
-
-    private fun setupAnalytic() {
-        analytic.setSelectedAccount(mDataSource?.getSelectedAccount().orUnknown())
     }
 
     private fun setupBottomSheet() {
@@ -243,10 +236,6 @@ class ProductSummaryBottomSheet @Inject constructor(
         mListener = listener
     }
 
-    fun setDataSource(dataSource: DataSource?) {
-        mDataSource = dataSource
-    }
-
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
         private const val SCREEN_HEIGHT_DIVIDER = 0.85f
@@ -274,9 +263,5 @@ class ProductSummaryBottomSheet @Inject constructor(
         fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
 
         fun onFinish(bottomSheet: ProductSummaryBottomSheet)
-    }
-
-    interface DataSource {
-        fun getSelectedAccount(): ContentAccountUiModel
     }
 }

@@ -5,7 +5,6 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,8 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,8 +35,10 @@ import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
+import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.CoroutineScope
@@ -50,12 +51,11 @@ import com.tokopedia.play_common.R as commonR
 class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
-    private val scope: CoroutineScope,
-) : ViewComponent(container, R.id.cl_product_sheet) {
+    private val scope: CoroutineScope
+) : BottomSheetViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
-    private val tvSheetTitle: TextView = findViewById(commonR.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
@@ -68,6 +68,8 @@ class ProductSheetViewComponent(
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
     private val voucherInfo: PlayVoucherView = findViewById(R.id.voucher_view)
+
+    private val header: BottomSheetHeader = findViewById(R.id.bottom_sheet_header)
 
     private val impressionSet = mutableSetOf<String>()
 
@@ -139,7 +141,6 @@ class ProductSheetViewComponent(
         productListener = productCardListener,
     )
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val itemDecoration: ProductLineItemDecoration
 
     private val voucherListener = object : PlayVoucherView.Listener {
@@ -162,11 +163,6 @@ class ProductSheetViewComponent(
     }
 
     init {
-        findViewById<ImageView>(commonR.id.iv_sheet_close)
-            .setOnClickListener {
-                listener.onCloseButtonClicked(this@ProductSheetViewComponent)
-            }
-
         rvProductList.apply {
             adapter = productAdapter
             layoutManager = linearLayoutManager
@@ -189,14 +185,16 @@ class ProductSheetViewComponent(
         clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
         clVoucherContent.clipToOutline = true
         voucherInfo.setupListener(voucherListener)
-    }
 
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
+        header.setListener(object : BottomSheetHeader.Listener {
+            override fun onCloseClicked(view: BottomSheetHeader) {
+                listener.onCloseButtonClicked(this@ProductSheetViewComponent)
+            }
 
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            override fun onIconClicked(view: BottomSheetHeader) {
+                listener.onCartClicked(this@ProductSheetViewComponent)
+            }
+        })
     }
 
     fun showWithHeight(height: Int) {
@@ -218,13 +216,21 @@ class ProductSheetViewComponent(
         }
     }
 
+    fun showCart(shouldShow: Boolean) {
+        if (shouldShow) {
+            header.setIconNotification(IconUnify.CART)
+        } else {
+            header.setIconNotification(null)
+        }
+    }
+
     fun setProductSheet(
         sectionList: List<ProductSectionUiModel>,
         voucherList: List<PlayVoucherUiModel>,
-        title: String
+        title: String,
     ) {
         showContent(true)
-        tvSheetTitle.text = title
+        header.setTitle(title)
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
@@ -284,15 +290,22 @@ class ProductSheetViewComponent(
         }
     }
 
+    fun setCartCount(count: Int) {
+        header.setIconNotificationText(
+            if (count <= 0) ""
+            else count.toString()
+        )
+    }
+
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
-            tvSheetTitle.show()
+            header.showTitle(true)
             rvProductList.show()
 
             globalError.hide()
             clProductEmpty.hide()
         } else {
-            tvSheetTitle.hide()
+            header.showTitle(false)
             rvProductList.hide()
             voucherInfo.hide()
 
@@ -301,7 +314,6 @@ class ProductSheetViewComponent(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun buildProductList(
         sectionList: List<ProductSectionUiModel.Section>
     ): List<ProductSheetAdapter.Item> {
@@ -437,5 +449,7 @@ class ProductSheetViewComponent(
         fun onInformationClicked(view: ProductSheetViewComponent)
         fun onInformationImpressed(view: ProductSheetViewComponent)
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
+
+        fun onCartClicked(view: ProductSheetViewComponent)
     }
 }

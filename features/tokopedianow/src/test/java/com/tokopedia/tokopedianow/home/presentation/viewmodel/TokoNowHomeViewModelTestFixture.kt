@@ -18,6 +18,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -29,6 +30,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
@@ -57,7 +59,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,6 +69,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -75,6 +78,7 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 
+@ExperimentalCoroutinesApi
 abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
@@ -114,10 +118,15 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     protected lateinit var viewModel : TokoNowHomeViewModel
 
@@ -134,9 +143,6 @@ abstract class TokoNowHomeViewModelTestFixture {
             getKeywordSearchUseCase,
             getTickerUseCase,
             getMiniCartUseCase,
-            addToCartUseCase,
-            updateCartUseCase,
-            deleteCartUseCase,
             getRecommendationUseCase,
             getChooseAddressWarehouseLocUseCase,
             getRepurchaseWidgetUseCase,
@@ -145,10 +151,13 @@ abstract class TokoNowHomeViewModelTestFixture {
             getHomeReferralUseCase,
             referralEvaluateJoinUseCase,
             getCatalogCouponListUseCase,
-            redeemCouponUseCase,
-            playWidgetTools,
+            redeemCouponUseCase,playWidgetTools,
             userSession,
-            CoroutineTestDispatchersProvider
+            coroutineTestRule.dispatchers,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            addressData,
         )
     }
 
@@ -287,6 +296,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetMiniCartUseCaseCalled() {
+        verify { getMiniCartUseCase.setParams(any(), MiniCartSource.TokonowHome) }
         verify { getMiniCartUseCase.execute(any(), any()) }
     }
 
