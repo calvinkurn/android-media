@@ -25,7 +25,6 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -132,7 +131,7 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5).orZero() }
+    private val offset16 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
 
     /**
      * Global Variant Bottom Sheet
@@ -283,7 +282,7 @@ class PlayFragment @Inject constructor(
                 shopId = product.shopId,
                 dismissAfterTransaction = false,
                 showQtyEditor = false,
-                trackerCdListName = "" //input here tracker
+                trackerCdListName = "" // input here tracker
             )
         )
 
@@ -311,8 +310,16 @@ class PlayFragment @Inject constructor(
 
         if (!forceTop) return
 
-        val height = requireView().height - sheetMaxHeight - ivClose.top - offset24  // vertical
-        onBottomInsetsViewShown(height)
+        val orientation = playViewModel.videoOrientation
+        val height = if (orientation is VideoOrientation.Horizontal) {
+            val dstStart = ivClose.right + offset16
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - sheetMaxHeight - ivClose.top - offset16
+        }
+        onBottomInsetsViewShown(height.toInt())
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -732,7 +739,7 @@ class PlayFragment @Inject constructor(
         shopType: String,
         productInfo: VariantChild,
         cartId: String,
-        quantity: Int,
+        quantity: Int
     ) {
         analytic.clickTransactionInVariantSheet(
             cartType = cartType,
@@ -743,7 +750,7 @@ class PlayFragment @Inject constructor(
             shopType = shopType,
             variantChild = productInfo,
             cartId = cartId,
-            quantity = quantity,
+            quantity = quantity
         )
     }
 
