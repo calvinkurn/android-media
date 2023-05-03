@@ -1322,7 +1322,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
             if (isPersonalizedCampaignActive()) {
                 val campaignName = personalizedCampaignModel?.getCampaignName() ?: ""
-                imageGeneratorParam = this.copy(campaignInfo = personalizedImage, campaignName = campaignName)
+                imageGeneratorParam = this.copy(campaignInfo = personalizedImage, campaignName = campaignName, hasRibbon = true)
             }
         }
 
