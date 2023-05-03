@@ -295,7 +295,7 @@ class PlayFragment @Inject constructor(
                         variantSheet.dialog?.window?.setDimAmount(0f)
                         view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
                             variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
-                                sheetMaxHeight - insets.systemWindowInsetBottom - offset24
+                                sheetMaxHeight - insets.systemWindowInsetBottom - ivClose.top
                         }
                     }
                 }
@@ -310,7 +310,7 @@ class PlayFragment @Inject constructor(
 
         if (!forceTop) return
 
-        val height = 769 // temp hard-coded
+        val height = requireView().height - sheetMaxHeight - ivClose.top - offset24 - requireView().rootView.bottom  // vertical
         onBottomInsetsViewShown(height)
     }
 
