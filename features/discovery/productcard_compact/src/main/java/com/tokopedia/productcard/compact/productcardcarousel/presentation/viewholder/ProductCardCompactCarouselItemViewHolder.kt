@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
@@ -17,7 +18,7 @@ class ProductCardCompactCarouselItemViewHolder(
 ) : AbstractViewHolder<ProductCardCompactCarouselItemUiModel>(view) {
 
     companion object {
-        private const val EXPECTED_WIDTH_PERCENTAGE = 0.3
+        private const val EXPECTED_PRODUCT_ON_SCREEN = 3
 
         @LayoutRes
         val LAYOUT = R.layout.item_product_card_compact_carousel
@@ -76,7 +77,13 @@ class ProductCardCompactCarouselItemViewHolder(
                 context = root.context,
                 id = R.dimen.product_card_compact_product_card_total_space_width
             )
-            productCard.layoutParams.width = (EXPECTED_WIDTH_PERCENTAGE * (getScreenWidth() - spaceWidth)).toInt()
+            val defaultWidth = getDpFromDimen(
+                context = root.context,
+                id = R.dimen.product_card_compact_product_card_default_width
+            )
+            val calculationWidth = (getScreenWidth() - spaceWidth) / EXPECTED_PRODUCT_ON_SCREEN
+            val width = if (calculationWidth < defaultWidth) defaultWidth else calculationWidth
+            productCard.layoutParams.width = width.toIntSafely()
         }
     }
 
