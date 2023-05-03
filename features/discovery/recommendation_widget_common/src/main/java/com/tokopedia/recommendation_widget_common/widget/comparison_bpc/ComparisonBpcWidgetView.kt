@@ -1,9 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison_bpc
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +15,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetDecoration
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetMapper
-import com.tokopedia.recommendation_widget_common.widget.global.BaseRecommendationWidgetView
+import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by frenzel on 27/03/23
  */
-class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope, RecommendationWidgetAnalyticListener {
+class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope, RecommendationWidgetAnalyticListener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -42,7 +42,7 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
     }
 
     init {
-        binding = ViewComparisonBpcWidgetBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = ViewComparisonBpcWidgetBinding.inflate(LayoutInflater.from(context), this)
         try {
             lifecycleOwner = findViewTreeLifecycleOwner() ?: context as LifecycleOwner
         } catch (_: Exception) { }
@@ -70,7 +70,6 @@ class ComparisonBpcWidgetView : BaseRecommendationWidgetView<RecommendationCompa
             if (rvComparisonBpcWidget.itemDecorationCount == 0) {
                 rvComparisonBpcWidget.addItemDecoration(ComparisonBpcWidgetDecoration())
             }
-            comparisonBpcWidgetContainer.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         }
     }
 

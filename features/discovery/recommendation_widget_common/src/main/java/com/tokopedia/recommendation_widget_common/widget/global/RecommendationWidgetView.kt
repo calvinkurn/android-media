@@ -2,19 +2,18 @@ package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.lang.Exception
 
 /**
@@ -51,7 +50,7 @@ class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
         widgetView.bind(model)
     }
 
-    private fun addWidgetView(widgetView: BaseRecommendationWidgetView<*>): BaseRecommendationWidgetView<RecommendationVisitable>? {
+    private fun addWidgetView(widgetView: ViewGroup): IRecommendationWidgetView<RecommendationVisitable>? {
         return try {
             removeAllViews()
             val widget = widgetView.apply {
@@ -62,7 +61,7 @@ class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
             widget
         } catch (e: Exception) {
             null
-        } as? BaseRecommendationWidgetView<RecommendationVisitable>
+        } as? IRecommendationWidgetView<RecommendationVisitable>
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

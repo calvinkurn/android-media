@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
+import android.view.ViewGroup
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.ComparisonBpcWidgetView
@@ -18,7 +19,7 @@ class RecommendationTypeFactoryImpl : RecommendationTypeFactory {
         return RecommendationCarouselWidgetView.LAYOUT
     }
 
-    override fun createView(context: Context, model: RecommendationVisitable): BaseRecommendationWidgetView<out RecommendationVisitable> {
+    override fun createView(context: Context, model: RecommendationVisitable): ViewGroup {
         return when (model.type(this)) {
             ComparisonBpcWidgetView.LAYOUT -> ComparisonBpcWidgetView(context)
             RecommendationCarouselWidgetView.LAYOUT -> RecommendationCarouselWidgetView(context)
