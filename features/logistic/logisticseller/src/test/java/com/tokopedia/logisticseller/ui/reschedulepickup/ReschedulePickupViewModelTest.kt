@@ -12,11 +12,16 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestData
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.getRescheduleInfoWithErrorOrderData
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupAction
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,7 +56,7 @@ class ReschedulePickupViewModelTest {
             val response = ReschedulePickupTestDataProvider.getRescheduleInfo()
             coEvery { getReschedulePickupUseCase(any()) } returns ReschedulePickupTestDataProvider.getRescheduleInfo()
             // when
-            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo("12345"))
             // then
             val result = reschedulePickupViewModel.uiState.value
             val orderData = response.mpLogisticGetReschedulePickup.data.first().orderData
@@ -71,9 +76,19 @@ class ReschedulePickupViewModelTest {
             coEvery { getReschedulePickupUseCase(any()) } returns response
 
             // when
-            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(("12345")))
+
             // then
-            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState("Data Reschedule Pickup tidak ditemukan", RescheduleErrorAction.SHOW_EMPTY_STATE))
+            runCollectingUiEvent {
+                assert(
+                    it.last() == ReschedulePickupAction.ShowError(
+                        ReschedulePickupErrorState(
+                            "Data Reschedule Pickup tidak ditemukan",
+                            RescheduleErrorAction.SHOW_EMPTY_STATE
+                        )
+                    )
+                )
+            }
         }
 
     @Test
@@ -84,9 +99,19 @@ class ReschedulePickupViewModelTest {
             coEvery { getReschedulePickupUseCase(any()) } returns response
 
             // when
-            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(("12345")))
+
             // then
-            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState("error", RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE))
+            runCollectingUiEvent {
+                assert(
+                    it.last() == ReschedulePickupAction.ShowError(
+                        ReschedulePickupErrorState(
+                            "error",
+                            RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE
+                        )
+                    )
+                )
+            }
         }
 
     @Test
@@ -95,9 +120,20 @@ class ReschedulePickupViewModelTest {
             // given
             coEvery { getReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
-            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            // when
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(("12345")))
+
             // then
-            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState(defaultThrowable.message!!, RescheduleErrorAction.SHOW_EMPTY_STATE))
+            runCollectingUiEvent {
+                assert(
+                    it.last() == ReschedulePickupAction.ShowError(
+                        ReschedulePickupErrorState(
+                            defaultThrowable.message!!,
+                            RescheduleErrorAction.SHOW_EMPTY_STATE
+                        )
+                    )
+                )
+            }
         }
 
     @Test
@@ -106,9 +142,7 @@ class ReschedulePickupViewModelTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
             // when
-            reschedulePickupViewModel.saveReschedule(
-                "12345"
-            )
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SaveReschedule)
             // then
             assert(reschedulePickupViewModel.uiState.value.saveRescheduleModel != null)
         }
@@ -119,11 +153,18 @@ class ReschedulePickupViewModelTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
-            reschedulePickupViewModel.saveReschedule(
-                "12345"
-            )
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SaveReschedule)
             // then
-            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState(defaultThrowable.message!!, RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE))
+            runCollectingUiEvent {
+                assert(
+                    it.last() == ReschedulePickupAction.ShowError(
+                        ReschedulePickupErrorState(
+                            defaultThrowable.message!!,
+                            RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE
+                        )
+                    )
+                )
+            }
         }
 
     @Test
@@ -132,7 +173,7 @@ class ReschedulePickupViewModelTest {
             // given
             val day = ReschedulePickupTestDataProvider.getChosenDay()
             // when
-            reschedulePickupViewModel.setDay(day)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
             // then
             assert(reschedulePickupViewModel.input.day == day.day)
             assert(reschedulePickupViewModel.input.time.isEmpty())
@@ -148,7 +189,7 @@ class ReschedulePickupViewModelTest {
             val day = ReschedulePickupTestDataProvider.getChosenDay()
             val time = ReschedulePickupTestDataProvider.getChosenTime(day)
             // when
-            reschedulePickupViewModel.setTime(time)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
             // then
             assert(reschedulePickupViewModel.input.time == time.time)
             assert(reschedulePickupViewModel.uiState.value.info.summary == time.etaPickup)
@@ -160,7 +201,7 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = ReschedulePickupTestDataProvider.getChosenReason()
             // when
-            reschedulePickupViewModel.setReason(reason)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason == reason.reason)
             assert(reschedulePickupViewModel.uiState.value.reason == reason.reason)
@@ -172,7 +213,7 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = ReschedulePickupTestDataProvider.getCustomReason()
             // when
-            reschedulePickupViewModel.setReason(reason)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason != reason.reason)
             assert(reschedulePickupViewModel.uiState.value.reason == reason.reason)
@@ -185,7 +226,7 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = REASON_BELOW_MIN
             // when
-            reschedulePickupViewModel.setCustomReason(reason)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason == reason)
             assert(reschedulePickupViewModel.uiState.value.customReasonError == "Min. 15 karakter")
@@ -197,7 +238,7 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = REASON_MIN
             // when
-            reschedulePickupViewModel.setCustomReason(reason)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason == reason)
             assert(reschedulePickupViewModel.uiState.value.customReasonError == null)
@@ -209,7 +250,7 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = REASON_MAX
             // when
-            reschedulePickupViewModel.setCustomReason(reason)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason == reason)
             assert(reschedulePickupViewModel.uiState.value.customReasonError == null)
@@ -221,7 +262,8 @@ class ReschedulePickupViewModelTest {
             // given
             val reason = REASON_MORE_MAX
             // when
-            reschedulePickupViewModel.setCustomReason(reason)
+            // when
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(reason))
             // then
             assert(reschedulePickupViewModel.input.reason == reason)
             assert(reschedulePickupViewModel.uiState.value.customReasonError == "Sudah mencapai maks. char")
@@ -231,7 +273,7 @@ class ReschedulePickupViewModelTest {
     fun `when closeBottomSheet then bottomsheet state should be none`() =
         coroutineTestRule.runBlockingTest {
             // when
-            reschedulePickupViewModel.closeBottomSheetState()
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
             // then
             assert(reschedulePickupViewModel.uiState.value.bottomSheet == RescheduleBottomSheetState.NONE)
         }
@@ -241,10 +283,14 @@ class ReschedulePickupViewModelTest {
         coroutineTestRule.runBlockingTest {
             // given
             val openedBottomSheet = RescheduleBottomSheetState.REASON
-            reschedulePickupViewModel.openBottomSheetState(openedBottomSheet)
+            reschedulePickupViewModel.onEvent(
+                ReschedulePickupUiEvent.OpenBottomSheet(
+                    openedBottomSheet
+                )
+            )
 
             // when
-            reschedulePickupViewModel.closeBottomSheetState()
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
 
             // then
             assert(reschedulePickupViewModel.uiState.value.bottomSheet != openedBottomSheet)
@@ -258,7 +304,11 @@ class ReschedulePickupViewModelTest {
             val openedBottomSheet = RescheduleBottomSheetState.TIME
 
             // when
-            reschedulePickupViewModel.openBottomSheetState(openedBottomSheet)
+            reschedulePickupViewModel.onEvent(
+                ReschedulePickupUiEvent.OpenBottomSheet(
+                    openedBottomSheet
+                )
+            )
 
             // then
             assert(reschedulePickupViewModel.uiState.value.bottomSheet != openedBottomSheet)
@@ -270,11 +320,15 @@ class ReschedulePickupViewModelTest {
         coroutineTestRule.runBlockingTest {
             // given
             val day = ReschedulePickupTestDataProvider.getChosenDay()
-            reschedulePickupViewModel.setDay(day)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
             val openedBottomSheet = RescheduleBottomSheetState.TIME
 
             // when
-            reschedulePickupViewModel.openBottomSheetState(openedBottomSheet)
+            reschedulePickupViewModel.onEvent(
+                ReschedulePickupUiEvent.OpenBottomSheet(
+                    openedBottomSheet
+                )
+            )
 
             // then
             assert(reschedulePickupViewModel.uiState.value.bottomSheet == openedBottomSheet)
@@ -286,10 +340,10 @@ class ReschedulePickupViewModelTest {
         coroutineTestRule.runBlockingTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
-            reschedulePickupViewModel.saveReschedule("12345")
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SaveReschedule)
 
             // when
-            reschedulePickupViewModel.setDialogState(false)
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseDialog(false))
 
             // then
             assert(reschedulePickupViewModel.uiState.value.saveRescheduleModel?.openDialog == false)
@@ -301,11 +355,11 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getChosenReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
 
         // when
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // then
         assert(reschedulePickupViewModel.uiState.value.valid)
@@ -317,11 +371,11 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getCustomReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
 
         // when
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // then
         assert(!reschedulePickupViewModel.uiState.value.valid)
@@ -333,12 +387,12 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getCustomReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // when
-        reschedulePickupViewModel.setCustomReason(REASON_BELOW_MIN)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(REASON_BELOW_MIN))
 
         // then
         assert(!reschedulePickupViewModel.uiState.value.valid)
@@ -350,12 +404,12 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getCustomReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // when
-        reschedulePickupViewModel.setCustomReason(REASON_MORE_MAX)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(REASON_MORE_MAX))
 
         // then
         assert(!reschedulePickupViewModel.uiState.value.valid)
@@ -367,12 +421,12 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getCustomReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // when
-        reschedulePickupViewModel.setCustomReason(REASON_MIN)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(REASON_MIN))
 
         // then
         assert(reschedulePickupViewModel.uiState.value.valid)
@@ -384,14 +438,66 @@ class ReschedulePickupViewModelTest {
         val day = ReschedulePickupTestDataProvider.getChosenDay()
         val reason = ReschedulePickupTestDataProvider.getCustomReason()
         val time = ReschedulePickupTestDataProvider.getChosenTime(day)
-        reschedulePickupViewModel.setDay(day)
-        reschedulePickupViewModel.setTime(time)
-        reschedulePickupViewModel.setReason(reason)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectTime(time))
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectReason(reason))
 
         // when
-        reschedulePickupViewModel.setCustomReason(REASON_MAX)
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CustomReason(REASON_MAX))
 
         // then
         assert(reschedulePickupViewModel.uiState.value.valid)
+    }
+
+    @Test
+    fun `when clickSubtitle then should show TnC on webview`() {
+        // given
+        val url = "url"
+        // when
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.ClickSubtitle(url))
+
+        // then
+        runCollectingUiEvent {
+            assert(it.last() == ReschedulePickupAction.OpenTnCWebView(url))
+        }
+    }
+
+    @Test
+    fun `when user click dialog after success save reschedule then should close page`() =
+        coroutineTestRule.runBlockingTest {
+            // given
+            val success = true
+            coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SaveReschedule)
+
+            // when
+            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseDialog(success))
+
+            // then
+            assert(reschedulePickupViewModel.uiState.value.saveRescheduleModel?.openDialog == false)
+            runCollectingUiEvent {
+                assert(it.last() == ReschedulePickupAction.ClosePage(success))
+            }
+        }
+
+    @Test
+    fun `when user press back then should close page`() {
+        // when
+        reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.PressBack)
+
+        // then
+        runCollectingUiEvent {
+            assert(it.last() == ReschedulePickupAction.ClosePage(false))
+        }
+    }
+
+    private fun runCollectingUiEvent(block: (List<ReschedulePickupAction>) -> Unit) {
+        val scope = CoroutineScope(coroutineTestRule.dispatchers.coroutineDispatcher)
+        val uiEvent = mutableListOf<ReschedulePickupAction>()
+        val uiEventCollectorJob = scope.launch {
+            reschedulePickupViewModel.uiEffect.toList(uiEvent)
+        }
+        block.invoke(uiEvent)
+        uiEventCollectorJob.cancel()
     }
 }

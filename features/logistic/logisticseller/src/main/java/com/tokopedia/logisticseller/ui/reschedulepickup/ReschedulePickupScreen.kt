@@ -18,8 +18,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,64 +41,38 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.common_compose.utils.toAnnotatedString
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ReschedulePickupScreen(
-    state: State<ReschedulePickupState>,
+    state: ReschedulePickupState,
     input: ReschedulePickupInput,
-    onDayChosen: (RescheduleDayOptionModel) -> Unit,
-    onTimeChosen: (RescheduleTimeOptionModel) -> Unit,
-    onReasonChosen: (RescheduleReasonOptionModel) -> Unit,
-    onSubtitleClicked: (String) -> Unit,
-    onOtherReasonChanged: (String) -> Unit,
-    onSaveReschedule: () -> Unit,
-    onBottomSheetClosed: () -> Unit,
-    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
-    onClickDialogButton: (Boolean) -> Unit,
-    onCloseDialog: (Boolean) -> Unit,
-    onPressBack: () -> Unit
+    onEvent: (ReschedulePickupUiEvent) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
 
-    // to set the current sheet to null when the bottom sheet closes
-    if (!sheetState.isVisible) {
-        onBottomSheetClosed()
-    }
-
-    val closeSheet: () -> Unit = {
-        scope.launch {
-            sheetState.hide()
-            onBottomSheetClosed()
-        }
-    }
-
-    val openSheet: (RescheduleBottomSheetState) -> Unit = {
-        scope.launch {
-            if (input.day.isEmpty() && it == RescheduleBottomSheetState.TIME) return@launch
-            onOpenBottomSheet(it)
+    LaunchedEffect(key1 = state.bottomSheet, block = {
+        if (state.bottomSheet != RescheduleBottomSheetState.NONE) {
             sheetState.show()
+        } else if (sheetState.isVisible) {
+            sheetState.hide()
         }
-    }
+    })
 
     Scaffold(topBar = {
         NestHeader(
             title = stringResource(id = R.string.title_reschedule_pickup_activity),
             showBackIcon = true,
-            onBackIconPressed = onPressBack
+            onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
         )
     }) {
         ModalBottomSheetLayout(
@@ -107,24 +80,16 @@ fun ReschedulePickupScreen(
             sheetState = sheetState,
             sheetContent = {
                 RescheduleBottomSheetLayout(
-                    state.value.bottomSheet,
-                    closeSheet,
-                    state.value.options,
-                    onDayChosen,
-                    onTimeChosen,
-                    onReasonChosen
+                    state.bottomSheet,
+                    state.options,
+                    onEvent
                 )
             }
         ) {
             ReschedulePickupScreenLayout(
                 state = state,
                 input = input,
-                onSubtitleClicked = onSubtitleClicked,
-                onOtherReasonChanged = onOtherReasonChanged,
-                onSaveReschedule = onSaveReschedule,
-                onOpenBottomSheet = openSheet,
-                onClickDialogButton = onClickDialogButton,
-                onCloseDialog = onCloseDialog
+                onEvent = onEvent
             )
         }
     }
@@ -132,14 +97,9 @@ fun ReschedulePickupScreen(
 
 @Composable
 fun ReschedulePickupScreenLayout(
-    state: State<ReschedulePickupState>,
+    state: ReschedulePickupState,
     input: ReschedulePickupInput,
-    onSubtitleClicked: (String) -> Unit,
-    onOtherReasonChanged: (String) -> Unit,
-    onSaveReschedule: () -> Unit,
-    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
-    onClickDialogButton: (Boolean) -> Unit,
-    onCloseDialog: (Boolean) -> Unit
+    onEvent: (ReschedulePickupUiEvent) -> Unit
 ) {
     Column {
         Column(
@@ -151,49 +111,62 @@ fun ReschedulePickupScreenLayout(
         ) {
             Title()
             OrderInfo(
-                courier = state.value.info.courier,
-                invoice = state.value.info.invoice
+                courier = state.info.courier,
+                invoice = state.info.invoice
             )
             Divider(thickness = 8.dp, color = NestTheme.colors.NN._50)
             InputSectionTitle()
             InputSectionSubtitle(
-                onSubtitleClicked = onSubtitleClicked,
-                applink = state.value.info.applink
+                onSubtitleClicked = { onEvent(ReschedulePickupUiEvent.ClickSubtitle(it)) },
+                applink = state.info.applink
             )
-            ReschedulePickupGuide(guide = state.value.info.guide)
+            ReschedulePickupGuide(guide = state.info.guide)
             InputDay(
                 day = input.day,
-                onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }
+                onOpenBottomSheet = {
+                    onEvent(
+                        ReschedulePickupUiEvent.OpenBottomSheet(
+                            it
+                        )
+                    )
+                }
 
             )
             InputTime(
                 time = input.time,
                 onOpenBottomSheet = {
-                    onOpenBottomSheet(
-                        RescheduleBottomSheetState.TIME
+                    onEvent(
+                        ReschedulePickupUiEvent.OpenBottomSheet(
+                            it
+                        )
                     )
                 }
             )
-            if (state.value.info.summary.isNotEmpty()) {
+            if (state.info.summary.isNotEmpty()) {
                 ReschedulePickupSummary(
-                    summary = state.value.info.summary
+                    summary = state.info.summary
                 )
             }
             InputReason(
-                reason = state.value.reason,
-                onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }
+                reason = state.reason,
+                onOpenBottomSheet = {
+                    onEvent(
+                        ReschedulePickupUiEvent.OpenBottomSheet(
+                            it
+                        )
+                    )
+                }
             )
-            if (state.value.isCustomReason) {
+            if (state.isCustomReason) {
                 InputCustomReason(
                     customReason = input.reason,
-                    onOtherReasonChanged = { onOtherReasonChanged(it) },
-                    error = state.value.customReasonError
+                    onOtherReasonChanged = { onEvent(ReschedulePickupUiEvent.CustomReason(it)) },
+                    error = state.customReasonError
                 )
             }
             RescheduleResultDialog(
-                saveRescheduleModel = state.value.saveRescheduleModel,
-                onClickDialogButton = onClickDialogButton,
-                onCloseDialog = onCloseDialog
+                saveRescheduleModel = state.saveRescheduleModel,
+                onCloseDialog = { onEvent(ReschedulePickupUiEvent.CloseDialog(it)) }
             )
         }
         NestButton(
@@ -201,9 +174,9 @@ fun ReschedulePickupScreenLayout(
                 .fillMaxWidth()
                 .padding(16.dp),
             text = stringResource(id = R.string.title_button_reschedule_pickup),
-            enabled = state.value.valid
+            enabled = state.valid
         ) {
-            onSaveReschedule()
+            onEvent(ReschedulePickupUiEvent.SaveReschedule)
         }
     }
 }
@@ -418,7 +391,7 @@ private fun Subtitle(): AnnotatedString {
 }
 
 @Composable
-fun DropDownIcon(onClick: () -> Unit = {}) {
+private fun DropDownIcon(onClick: () -> Unit = {}) {
     IconButton(
         onClick = onClick
     ) {

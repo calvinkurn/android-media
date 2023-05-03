@@ -27,7 +27,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 @Composable
 fun RescheduleResultDialog(
     saveRescheduleModel: SaveRescheduleModel?,
-    onClickDialogButton: (Boolean) -> Unit,
     onCloseDialog: (Boolean) -> Unit
 ) {
     saveRescheduleModel?.takeIf { it.openDialog }?.let {
@@ -36,11 +35,11 @@ fun RescheduleResultDialog(
                 etaPickup = it.etaPickup,
                 onDialogDismiss = { onCloseDialog(it.success) }
             ) {
-                onClickDialogButton(it.success)
+                onCloseDialog(it.success)
             }
         } else {
             FailedDialog(error = it.message, onDialogDismiss = { onCloseDialog(it.success) }) {
-                onClickDialogButton(it.success)
+                onCloseDialog(it.success)
             }
         }
     }

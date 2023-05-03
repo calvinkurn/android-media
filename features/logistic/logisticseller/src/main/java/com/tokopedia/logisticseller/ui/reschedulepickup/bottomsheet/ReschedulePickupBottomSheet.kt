@@ -11,39 +11,37 @@ import com.tokopedia.common_compose.components.NestBottomSheet
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupOptions
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 
 @Composable
 fun RescheduleBottomSheetLayout(
     currentScreen: RescheduleBottomSheetState,
-    onCloseBottomSheet: () -> Unit,
     options: ReschedulePickupOptions,
-    onDayChosen: (RescheduleDayOptionModel) -> Unit,
-    onTimeChosen: (RescheduleTimeOptionModel) -> Unit,
-    onReasonChosen: (RescheduleReasonOptionModel) -> Unit
+    onEvent: (ReschedulePickupUiEvent) -> Unit
 ) {
-    NestBottomSheet(getBottomSheetTitle(currentScreen), onClosePressed = onCloseBottomSheet) {
+    NestBottomSheet(
+        getBottomSheetTitle(currentScreen),
+        onClosePressed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
+    ) {
         when (currentScreen) {
             RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
                 items = options.dayOptions,
-                onItemClicked = { onDayChosen(it) },
-                onBottomSheetClosed = onCloseBottomSheet
+                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectDay(it)) },
+                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
             )
             RescheduleBottomSheetState.TIME -> RescheduleBottomSheetContent(
                 items = options.timeOptions,
-                onItemClicked = { onTimeChosen(it) },
-                onBottomSheetClosed = onCloseBottomSheet
+                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectTime(it)) },
+                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
             )
             RescheduleBottomSheetState.REASON -> RescheduleBottomSheetContent(
                 items = options.reasonOptions,
-                onItemClicked = { onReasonChosen(it) },
-                onBottomSheetClosed = onCloseBottomSheet
+                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectReason(it)) },
+                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
             )
-            RescheduleBottomSheetState.NONE -> onCloseBottomSheet()
+            RescheduleBottomSheetState.NONE -> onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
         }
     }
 }

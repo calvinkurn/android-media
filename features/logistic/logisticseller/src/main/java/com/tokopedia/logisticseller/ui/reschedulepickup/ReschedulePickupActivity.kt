@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,7 +17,11 @@ import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupAction
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class ReschedulePickupActivity : AppCompatActivity() {
@@ -27,7 +32,9 @@ class ReschedulePickupActivity : AppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)[ReschedulePickupViewModel::class.java]
     }
 
-    private var orderId: String = ""
+    private val orderId by lazy {
+        intent.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
+    }
 
     private fun injectComponent() {
         DaggerReschedulePickupComponent.builder()
@@ -39,64 +46,67 @@ class ReschedulePickupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         injectComponent()
         super.onCreate(savedInstanceState)
-        intent?.let {
-            orderId = it.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
-        }
-        observeErrorState()
+        viewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(orderId))
         setContent {
+            LaunchedEffect(key1 = viewModel.uiEffect, block = {
+                viewModel.uiEffect.collectLatest {
+                    when (it) {
+                        is ReschedulePickupAction.OpenTnCWebView -> RouteManager.route(
+                            this@ReschedulePickupActivity,
+                            ApplinkConst.WEBVIEW.plus("?url=${it.url}")
+                        )
+                        is ReschedulePickupAction.ClosePage -> {
+                            onClickDialogButton(it.success)
+                        }
+                        is ReschedulePickupAction.ShowError -> {
+                            mapErrorState(error = it.error)
+                        }
+                    }
+                }
+            })
             NestTheme {
+                val state = viewModel.uiState.collectAsState()
                 ReschedulePickupScreen(
-                    viewModel.uiState.collectAsState(),
-                    viewModel.input,
-                    onDayChosen = { viewModel.setDay(it) },
-                    onTimeChosen = { viewModel.setTime(it) },
-                    onReasonChosen = { viewModel.setReason(it) },
-                    onSubtitleClicked = {
-                        RouteManager.route(this, ApplinkConst.WEBVIEW.plus("?url=$it"))
-                    },
-                    onOtherReasonChanged = { viewModel.setCustomReason(it) },
-                    onSaveReschedule = { viewModel.saveReschedule(orderId) },
-                    onBottomSheetClosed = { viewModel.closeBottomSheetState() },
-                    onOpenBottomSheet = { viewModel.openBottomSheetState(it) },
-                    onCloseDialog = { onClickDialogButton(it) },
-                    onClickDialogButton = { onClickDialogButton(it) },
-                    onPressBack = { finish() }
+                    state = state.value,
+                    input = viewModel.input,
+                    onEvent = viewModel::onEvent
                 )
             }
         }
-
-        getInitialData()
     }
 
-    private fun observeErrorState() {
-        viewModel.errorState.observe(this) {
-            when (it.action) {
-                RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE -> {
-                    showToaster(it.message) { viewModel.saveReschedule(orderId) }
+    private fun mapErrorState(error: ReschedulePickupErrorState) {
+        when (error.action) {
+            RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE -> {
+                showToaster(error.message) {
+                    viewModel.onEvent(
+                        ReschedulePickupUiEvent.SaveReschedule
+                    )
                 }
-                RescheduleErrorAction.SHOW_EMPTY_STATE -> {
-                    this.window.decorView.findViewById<View>(android.R.id.content)
-                        ?.let { rootView ->
-                            NetworkErrorHelper.showEmptyState(
-                                this,
-                                rootView,
-                                this::getInitialData
-                            )
-                        }
-                }
-                RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE -> {
-                    showToaster(it.message) { viewModel.getReschedulePickupDetail(orderId) }
+            }
+            RescheduleErrorAction.SHOW_EMPTY_STATE -> {
+                this.window.decorView.findViewById<View>(android.R.id.content)
+                    ?.let { rootView ->
+                        NetworkErrorHelper.showEmptyState(
+                            this,
+                            rootView,
+                            this@ReschedulePickupActivity::getInitialData
+                        )
+                    }
+            }
+            RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE -> {
+                showToaster(error.message) {
+                    getInitialData()
                 }
             }
         }
     }
 
     private fun onClickDialogButton(success: Boolean) {
-        viewModel.setDialogState(false)
         if (success) {
             setResult(Activity.RESULT_OK, Intent())
-            finish()
         }
+        finish()
     }
 
     private fun showToaster(message: String, onClick: () -> Unit) {
@@ -114,6 +124,10 @@ class ReschedulePickupActivity : AppCompatActivity() {
     }
 
     private fun getInitialData() {
-        viewModel.getReschedulePickupDetail(orderId)
+        viewModel.onEvent(
+            ReschedulePickupUiEvent.LoadRescheduleInfo(
+                orderId = orderId
+            )
+        )
     }
 }
