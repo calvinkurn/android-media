@@ -2,6 +2,7 @@ package com.tokopedia.applink.content
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -105,9 +106,12 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
+        Log.d("<LOG>", "uri : $uri")
         return if (GlobalConfig.isSellerApp()) {
+            Log.d("<LOG>", "applink seller app : ${ApplinkConst.SellerApp.WEBVIEW}?titlebar=false&url=$uri")
             "${ApplinkConst.SellerApp.WEBVIEW}?titlebar=false&url=$uri"
         } else {
+            Log.d("<LOG>", "applink main app : ${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}")
             "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
         }
     }
