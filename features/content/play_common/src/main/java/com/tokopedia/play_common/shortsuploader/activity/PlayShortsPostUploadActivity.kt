@@ -2,15 +2,18 @@ package com.tokopedia.play_common.shortsuploader.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.di.uploader.DaggerPlayShortsUploaderComponent
+import com.tokopedia.play_common.shortsuploader.dialog.PlayInstallMainAppDialog
 import javax.inject.Inject
 
 /**
@@ -20,6 +23,8 @@ class PlayShortsPostUploadActivity : BaseActivity() {
 
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
+
+    private val playInstallMainAppDialog by lazy { PlayInstallMainAppDialog() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -46,14 +51,25 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     }
 
     private fun redirectToPlayRoom() {
-        val webLink = intent.getStringExtra(EXTRA_LINK).orEmpty()
-        Log.d("<LOG>", "redirectToPlayRoom link : $webLink")
+        val link = intent.getStringExtra(EXTRA_LINK).orEmpty()
 
-        if (isAppInstalled("com.tokopedia.tkpd")) {
-            RouteManager.route(this, webLink)
-            finish()
+        if (GlobalConfig.isSellerApp()) {
+            if (isAppInstalled(CUSTOMER_APP_PACKAGE)) {
+                startActivity(
+                    Intent(Intent.ACTION_VIEW).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        data = Uri.parse(link)
+                    }
+                )
+                finish()
+            } else {
+                playInstallMainAppDialog.openPlayStore(this) {
+                    finish()
+                }
+            }
         } else {
-            Toast.makeText(this, "Please download MA on Play Store", Toast.LENGTH_SHORT).show()
+            RouteManager.route(this, link)
+            finish()
         }
     }
 
@@ -62,6 +78,8 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
         private const val EXTRA_LINK = "link"
+
+        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
         fun getIntent(
             context: Context,
