@@ -42,7 +42,7 @@ class RemoteDataSource @Inject constructor(
         val response = service.uploadFile(authToken, filePart)
 
         //Remove the file from app cache directory if it was successfully submitted
-        if (response.data?.resultStatus?.code == "200") {
+        if (response.header.errorCode == "200") {
             fileHelper.delete(file)
         }
 

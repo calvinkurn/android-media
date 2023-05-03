@@ -7,8 +7,8 @@ import javax.inject.Inject
 class UploadFileMapper @Inject constructor() {
 
     fun map(response: UploadFileResponse) : UploadFileResult {
-        val success = response.data.resultStatus.code == "200"
-        val errorMessage = response.data.resultStatus.message.firstOrNull().orEmpty()
+        val success = response.header.errorCode == "200"
+        val errorMessage = response.header.reason
         return UploadFileResult(success, errorMessage)
     }
 }
