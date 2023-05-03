@@ -102,7 +102,6 @@ class SharingUtil {
                 })
         }
 
-
         fun triggerSS(view: View?, imageSaved: (savedImgPath: String) -> Unit) {
             val bitmap = takeScreenshot(view)
             if (bitmap != null) {
@@ -325,7 +324,7 @@ class SharingUtil {
                     is ShareModel.Whatsapp -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                if (shareImageFileUri != null) {
+                                if (shareImageFileUri != null && shareModel.shareOnlyLink) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
                                 type = UniversalShareBottomSheet.MimeType.TEXT.type
