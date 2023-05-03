@@ -870,7 +870,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         verify {
             view.updateAddOnsData(
                 0,
-                shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup
+                shipmentCartItemModelList[0].cartItemModels[0].cartStringGroup,
+                shipmentCartItemModelList[0].cartItemModels[0].cartId
             )
         }
     }
@@ -923,7 +924,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup)
+            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup, 0)
         }
     }
 
@@ -981,7 +982,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
 
         // Then
         verify {
-            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup)
+            view.updateAddOnsData(1, shipmentCartItemModelList[0].cartStringGroup, 0)
         }
     }
 

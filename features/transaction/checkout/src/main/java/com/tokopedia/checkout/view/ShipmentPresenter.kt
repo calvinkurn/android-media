@@ -5113,7 +5113,7 @@ class ShipmentPresenter @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-        view?.updateAddOnsData(identifier, cartString)
+        view?.updateAddOnsData(identifier, cartString, cartId)
         if (isUsingDynamicDataPassing()) {
             view?.updateAddOnsDynamicDataPassing(
                 addOnResult,

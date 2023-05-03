@@ -1053,16 +1053,12 @@ class ShipmentAdapter @Inject constructor(
         return 0
     }
 
-    fun getAddOnProductLevelPosition(cartString: String): Int {
+    fun getAddOnProductLevelPosition(cartString: String, cartId: Long): Int {
         for (i in shipmentDataList.indices) {
-            if (shipmentDataList[i] is ShipmentCartItemModel) {
-                val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
-                if (shipmentCartItemModel.cartStringGroup == cartString && shipmentCartItemModel.cartItemModels.isNotEmpty()) {
-                    for (j in shipmentCartItemModel.cartItemModels.indices) {
-                        if (shipmentCartItemModel.cartItemModels[j].addOnProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
-                            return i
-                        }
-                    }
+            if (shipmentDataList[i] is CartItemModel) {
+                val cartItemModel = shipmentDataList[i] as CartItemModel
+                if (cartItemModel.cartStringGroup == cartString && cartItemModel.cartId == cartId && cartItemModel.addOnProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
+                    return i
                 }
             }
         }

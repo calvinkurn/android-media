@@ -3580,17 +3580,16 @@ class ShipmentFragment :
 
     fun updateAddOnsData(
         identifier: Int,
-        cartString: String
+        cartString: String,
+        cartId: Long
     ) {
         // identifier : 0 = product level, 1  = order level
         if (identifier == 0) {
-            shipmentAdapter.notifyItemChanged(
-                shipmentAdapter.getAddOnProductLevelPosition(
-                    cartString
-                )
+            onNeedUpdateViewItem(
+                shipmentAdapter.getAddOnProductLevelPosition(cartString, cartId)
             )
         } else {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
+            onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
         }
         shipmentPresenter.updateShipmentCostModel()
     }
@@ -3870,7 +3869,7 @@ class ShipmentFragment :
         if (index != RecyclerView.NO_POSITION) {
             (shipmentAdapter.getShipmentDataList()[index] as? ShipmentNewUpsellModel)?.isLoading =
                 isLoading
-            shipmentAdapter.notifyItemChanged(index)
+            onNeedUpdateViewItem(index)
         }
     }
     // endregion
