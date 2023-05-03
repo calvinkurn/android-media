@@ -80,9 +80,9 @@ public class ApplinkNotificationHelper {
     }
 
     private static int getTruncatedMessageId(String messageId) {
-        int LIMIT_NOTIFICATION_ID = 4;
+        int LIMIT_NOTIFICATION_ID = 9;
         int result;
-        if (messageId.length() > LIMIT_NOTIFICATION_ID) {
+        if (messageId.length() >= LIMIT_NOTIFICATION_ID) {
             String tempId = messageId.substring(messageId.length() - LIMIT_NOTIFICATION_ID);
             result = safelyCastStringToInt(tempId);
         } else {

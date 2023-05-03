@@ -407,6 +407,7 @@ class SearchProductFirstPageGqlUseCase(
                         layout
                         type
                         position
+                        input_type
                         options {
                             text
                             img

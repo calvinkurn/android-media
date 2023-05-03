@@ -1,7 +1,14 @@
 package com.tokopedia.updateinactivephone.features.successpage.regular
 
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.successpage.BaseSuccessPageTest
@@ -20,17 +27,21 @@ import org.junit.runner.RunWith
 class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
 
     @Test
-    fun show_success_page() {
+    fun basic_test() {
         runTest(source = "") {
-            checkSuccessPageIsDisplayed()
-        }
-    }
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    null
+                )
+            )
 
-    @Test
-    fun should_render_ticker() {
-        runTest(source = "") {
+            checkSuccessPageIsDisplayed()
             isTickerDisplayed()
             checkTickerContent("Jangan pakai nomor HP ini di akun Tokopedia lainnya, biar nomor HP-mu berhasil diubah.")
+
+            clickOnGotoHomeButton()
+            intended(hasData(ApplinkConst.HOME))
         }
     }
 
@@ -69,13 +80,6 @@ class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
         // Then
         runTest(source = "") {
             isDescriptionForEmailAndPhoneNumber(text)
-        }
-    }
-
-    @Test
-    fun click_on_button_goto_home() {
-        runTest(source = "") {
-            clickOnGotoHomeButton()
         }
     }
 }
