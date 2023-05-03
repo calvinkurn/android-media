@@ -139,6 +139,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultiloca
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -2582,7 +2583,8 @@ open class DynamicProductDetailFragment :
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            viewModel.getP2ShipmentPlusByProductId()
         )
         pdpUiUpdater?.updateProductBundlingData(viewModel.p2Data.value, selectedChild?.productId)
 
@@ -2812,6 +2814,7 @@ open class DynamicProductDetailFragment :
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
             val ratesData = viewModel.getP2RatesEstimateByProductId()
+            val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
@@ -2835,7 +2838,7 @@ open class DynamicProductDetailFragment :
                 )
             }
 
-            onSuccessGetDataP2(it, boeData, ratesData)
+            onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
@@ -3249,7 +3252,8 @@ open class DynamicProductDetailFragment :
     private fun onSuccessGetDataP2(
         it: ProductInfoP2UiData,
         boeData: BebasOngkirImage,
-        ratesData: P2RatesEstimateData?
+        ratesData: P2RatesEstimateData?,
+        shipmentPlus: ShipmentPlus?
     ) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice ?: 0.0
         if (minimumShippingPriceP2 != 0.0) {
@@ -3268,7 +3272,8 @@ open class DynamicProductDetailFragment :
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            shipmentPlus
         )
 
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
@@ -5760,6 +5765,21 @@ open class DynamicProductDetailFragment :
             common,
             componentTrackDataModel
         )
+    }
+
+    override fun onClickShipmentPlusBanner(link: String) {
+        context?.let { context ->
+            val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
+                UriUtil
+                    .buildUriAppendParam(
+                        ApplinkConst.WEBVIEW,
+                        mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
+                    )
+            } else {
+                link
+            }
+            RouteManager.route(context, processedLink)
+        }
     }
 
     override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {

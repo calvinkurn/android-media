@@ -390,6 +390,8 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
+    fun onClickShipmentPlusBanner(link: String)
+
     /**
      * ProductArViewHolder
      */

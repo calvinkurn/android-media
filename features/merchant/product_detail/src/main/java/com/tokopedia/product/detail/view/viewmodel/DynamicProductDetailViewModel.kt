@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -451,6 +452,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
         var result: P2RatesEstimateData? = null
         p2Data.value?.ratesEstimate?.forEach {
             if (productId in it.listfProductId) result = it.p2RatesData
+        }
+        return result
+    }
+
+    fun getP2ShipmentPlusByProductId(): ShipmentPlus? {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        var result: ShipmentPlus? = null
+        p2Data.value?.ratesEstimate?.forEach {
+            if (productId in it.listfProductId) result = it.shipmentPlus
         }
         return result
     }

@@ -11,11 +11,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
@@ -93,7 +95,7 @@ class ShipmentViewHolder(
             }
             else -> {
                 loading(false)
-                loadShipmentState(element, rates)
+                loadShipmentState(element, rates, element.shipmentPlusData)
             }
         }
     }
@@ -122,7 +124,8 @@ class ShipmentViewHolder(
 
     private fun loadShipmentState(
         element: ProductShipmentDataModel,
-        rates: P2RatesEstimateData
+        rates: P2RatesEstimateData,
+        shipmentPlus: ShipmentPlusData
     ) = with(viewMain) {
         initialState()
         pdpShipmentTitle.text = rates.title
@@ -132,6 +135,7 @@ class ShipmentViewHolder(
         renderCourier(element, rates)
         renderTickers(rates)
         renderTips(rates)
+        renderShipmentPlus(shipmentPlus)
 
         itemView.addOnImpressionListener(element.impressHolder) {
             val componentTrackData = getComponentTrackData(element)
@@ -308,6 +312,20 @@ class ShipmentViewHolder(
         }
     }
 
+    private fun renderShipmentPlus(shipmentPlus: ShipmentPlusData) {
+        if (shipmentPlus.isShow) {
+            with(viewMain) {
+                pdpShipmentPlusBackground.loadImage(shipmentPlus.getBackgroundUrl(context))
+                pdpShipmentPlusLogo.loadImage(shipmentPlus.getLogoUrl(context))
+                pdpShipmentPlusText.text = HtmlLinkHelper(context, shipmentPlus.text).spannedString
+                pdpShipmentPlus.setOnClickListener {
+                    listener.onClickShipmentPlusBanner(shipmentPlus.actionLink)
+                }
+                pdpShipmentPlus.show()
+            }
+        }
+    }
+
     private fun loadErrorState() = with(viewError) {
         root.show()
         pdpShipmentLocalLoad.apply {
@@ -351,6 +369,7 @@ class ShipmentViewHolder(
             pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
             pdpShipmentTips.hide()
+            pdpShipmentPlus.hide()
         }
     }
 
