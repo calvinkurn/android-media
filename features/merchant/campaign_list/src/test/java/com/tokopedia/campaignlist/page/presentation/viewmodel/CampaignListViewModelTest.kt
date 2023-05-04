@@ -912,6 +912,50 @@ class CampaignListViewModelTest {
     }
 
     @Test
+    fun `When check ticker state, should return false if ticker is not dismissed previously`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            coEvery { preferenceDataStore.isTickerDismissed() } returns false
+
+            //When
+            viewModel.checkTickerState()
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(false, actual.isTickerDismissed)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When check ticker state, should return true if ticker is dismissed previously`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            coEvery { preferenceDataStore.isTickerDismissed() } returns true
+
+            //When
+            viewModel.checkTickerState()
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.isTickerDismissed)
+
+            job.cancel()
+        }
+    }
+
+    @Test
     fun `When ClearFilter event is triggered, should re-fetch campaign list to remote`() {
         runBlockingTest {
             //Given
