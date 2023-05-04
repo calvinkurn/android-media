@@ -17,7 +17,7 @@ class AddTextToolUiComponent constructor(
 
     private val mRv = findViewById<RecyclerView>(R.id.add_text_rv)
 
-    fun setupView(data: EditorAddTextUiModel?) {
+    fun setupView(data: EditorAddTextUiModel?, isLocalTemplateReady: Boolean) {
         container().show()
 
         mRv.layoutManager = LinearLayoutManager(
@@ -25,7 +25,7 @@ class AddTextToolUiComponent constructor(
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        mRv.adapter = AddTextToolAdapter(listener)
+        mRv.adapter = AddTextToolAdapter(listener, isLocalTemplateReady)
 
         updateItemActiveState(data)
     }
@@ -52,9 +52,13 @@ class AddTextToolUiComponent constructor(
         }
     }
 
+    fun updateSaveToApply() {
+        (mRv.adapter as AddTextToolAdapter).updateTemplateText(true, needRefresh = true)
+    }
+
     interface Listener {
         fun onChangePosition()
-        fun onTemplateSave()
+        fun onTemplateSave(isSave: Boolean)
         fun onAddFreeText()
         fun onAddSingleBackgroundText()
     }

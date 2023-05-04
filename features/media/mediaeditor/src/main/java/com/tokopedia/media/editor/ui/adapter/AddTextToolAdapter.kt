@@ -13,7 +13,8 @@ import com.tokopedia.media.editor.ui.widget.ToolSelectionItem
 import com.tokopedia.unifycomponents.toPx
 
 class AddTextToolAdapter(
-    private val listener: AddTextToolUiComponent.Listener
+    private val listener: AddTextToolUiComponent.Listener,
+    private val isLocalTemplateReady: Boolean
 ): RecyclerView.Adapter<AddTextViewHolder>() {
     private var selectedIndex = FREE_TEXT_INDEX
 
@@ -34,10 +35,12 @@ class AddTextToolAdapter(
     }
 
     override fun onBindViewHolder(holder: AddTextViewHolder, position: Int) {
+        updateTemplateText()
+
         holder.bind(mAddTextMenu[position]){
             when (position) {
                 CHANGE_POSITION_INDEX -> listener.onChangePosition()
-                SAVE_TEMPLATE_INDEX -> listener.onTemplateSave()
+                SAVE_TEMPLATE_INDEX -> listener.onTemplateSave(!isLocalTemplateReady)
                 FREE_TEXT_INDEX -> listener.onAddFreeText()
                 BACKGROUND_TEXT_INDEX -> listener.onAddSingleBackgroundText()
             }
@@ -57,6 +60,18 @@ class AddTextToolAdapter(
             TYPE_DIVIDER
         } else {
             TYPE_ITEM
+        }
+    }
+
+    // change text between "Simpan Template" & "Gunakan Template"
+    fun updateTemplateText(isTemplateReady: Boolean = isLocalTemplateReady, needRefresh: Boolean = false) {
+        if (isTemplateReady){
+            mAddTextMenu.find {
+                it.textRef == editorR.string.add_text_save_template
+            }?.apply {
+                this.textRef = editorR.string.add_text_apply_template
+                if (needRefresh) notifyItemChanged(mAddTextMenu.indexOf(this))
+            }
         }
     }
 
@@ -131,7 +146,7 @@ class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
 }
 
 data class AddTextAction(
-    val textRef: Int,
+    var textRef: Int,
     val iconId: Int? = null,
     val isDivider: Boolean = false,
     val iconRef: Int = 0,

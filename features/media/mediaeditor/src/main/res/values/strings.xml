@@ -71,6 +71,7 @@
     <!-- Add Text tools list -->
     <string name="add_text_change_position">Ubah Posisi</string>
     <string name="add_text_save_template">Jadikan Template</string>
+    <string name="add_text_apply_template">Gunakan Template</string>
     <string name="add_text_free_text">Teks Bebas</string>
     <string name="add_text_single_background_text">Latar Teks</string>
     <string name="add_text_overlay_input_placeholder">Tambah teks</string>

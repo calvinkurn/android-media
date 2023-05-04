@@ -450,8 +450,18 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
-    override fun onTemplateSave() {
-        showAddTextTemplateSaveDialog()
+    override fun onTemplateSave(isSave: Boolean) {
+        if (isSave) {
+            showAddTextTemplateSaveDialog()
+        } else {
+            val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+
+            data.addTextValue = savedTemplate.apply {
+                textValue = data.addTextValue?.textValue ?: ""
+            }
+
+            implementAddTextData()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -670,7 +680,11 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.ADD_TEXT -> {
-                addTextComponent.setupView(data.addTextValue)
+                // check if user have saved template or not
+                val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+
+                addTextComponent.setupView(data.addTextValue, (savedTemplate != null))
+
                 setImageView(data.resultUrl ?: url, false)
                 viewBinding?.imgPreviewOverlay?.setOnClickListener {
                     openAddTextActivity()
@@ -1434,6 +1448,8 @@ class DetailEditorFragment @Inject constructor(
                 setPrimaryCTAClickListener {
                     val saveTemplate = Gson().toJson(data.addTextValue)
                     addTextCacheManager.set(saveTemplate)
+                    addTextComponent.updateSaveToApply()
+                    dismiss()
                 }
             }
         }

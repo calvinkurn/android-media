@@ -76,7 +76,7 @@ class AddTextFragment @Inject constructor(
         }
 
     private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
-    private var activeColorIndex = 1
+    private var activeColorIndex = DEFAULT_COLOR_INDEX
         set(value) {
             field = if (value in colorList.indices) {
                 value
@@ -398,7 +398,7 @@ class AddTextFragment @Inject constructor(
 
         activeStyleIndex = viewModel.textData.textStyle
         alignmentIndex = viewModel.textData.textAlignment
-        activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: 0
+        activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: DEFAULT_COLOR_INDEX
         positionIndex = viewModel.textData.textPosition
     }
 
@@ -434,5 +434,7 @@ class AddTextFragment @Inject constructor(
         private const val SCREEN_NAME = "AddTextInputPage"
 
         private const val POSITION_BOX_PERCENTAGE = 0.2f
+
+        private const val DEFAULT_COLOR_INDEX = 1
     }
 }
