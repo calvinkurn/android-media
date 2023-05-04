@@ -34,6 +34,7 @@ abstract class ViewModelModule {
     @ViewModelKey(BsProductDetailInfoViewModel::class)
     internal abstract fun productBsProductDetail(viewModel: BsProductDetailInfoViewModel): ViewModel
 
+
     @Binds
     @IntoMap
     @ViewModelKey(ViewToViewViewModel::class)
