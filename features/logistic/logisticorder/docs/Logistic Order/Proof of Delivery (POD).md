@@ -109,13 +109,13 @@ since load image Pod need to include accessToken. here is extension can be use t
 
 
 ```
-   imgPod.loadImagePod(
-            context,
-            accessToken,
-            url,
-            imagePlaceholder,
-            imageError
-    )
+imgPod.loadImagePod(
+        context,
+        accessToken,
+        url,
+        imagePlaceholder,
+        imageError
+)
 ```
 
 - imgPod : ImageView
