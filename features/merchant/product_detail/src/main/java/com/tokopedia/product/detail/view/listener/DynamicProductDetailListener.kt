@@ -254,6 +254,7 @@ interface DynamicProductDetailListener {
     )
 
     fun onRecomAddToCartNonVariantQuantityChangedClick(
+        recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,
         quantity: Int,
         adapterPosition: Int,
