@@ -347,3 +347,5 @@ public static com.tokopedia.stability.ChangeDelegate *;
     # Keep the public no-argument constructor while allowing other methods to be optimized.
     <init>();
 }
+
+-keep class androidx.profileinstaller.ProfileInstallerInitializer
