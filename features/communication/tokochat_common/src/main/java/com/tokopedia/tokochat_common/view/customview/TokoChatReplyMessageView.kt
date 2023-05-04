@@ -159,7 +159,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
         replyAreaListener: TokoChatReplyAreaListener?
     ) {
         attachmentButton?.showWithCondition(
-            replyAreaListener?.shouldShowAttachmentButton() != true
+            replyAreaListener?.shouldShowAttachmentButton() == true
         )
         attachmentButton?.setOnClickListener {
             replyAreaListener?.onClickAttachmentButton()
