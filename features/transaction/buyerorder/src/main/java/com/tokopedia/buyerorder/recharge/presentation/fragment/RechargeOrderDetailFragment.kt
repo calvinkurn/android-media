@@ -309,7 +309,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                             primaryActionButton.name,
                             primaryActionButton.buttonType
                         )
-                        onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                        if (!primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
+                            onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                        } else {
+                            showVoidDialog()
+                        }
                     }
                 }
             }
@@ -517,6 +521,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         private const val IDEM_POTENCY_KEY = "idem_potency_key"
 
         private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
+        private const val MAPPING_URI_VOID = "void"
 
         fun getInstance(
             orderId: String,
