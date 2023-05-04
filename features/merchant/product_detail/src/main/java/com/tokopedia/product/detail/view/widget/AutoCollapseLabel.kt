@@ -14,15 +14,19 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.animation.addListener
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.AutoCollapseLabelBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
-import java.lang.Float.min
 
 class AutoCollapseLabel @JvmOverloads constructor(
     context: Context,
@@ -36,9 +40,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private const val ANIMATION_DURATION = 400L
         private const val IDLE_DURATION = 3000L
         private const val PADDING_HORIZONTAL_TEXT_WITH_ICON = 8
-        private const val PADDING_HORIZONTAL_ICON_ONLY = 5
+        private const val PADDING_HORIZONTAL_ICON_ONLY = 8
+        private const val PADDING_VERTICAL_TEXT_WITH_ICON = 4
+        private const val PADDING_VERTICAL_ICON_ONLY = 7
+        private const val MARGIN_BOTTOM_TEXT_WITH_ICON = 8
+        private const val MARGIN_BOTTOM_ICON_ONLY = 4
         private const val BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON = 6
-        private const val BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY = 20
+        private const val BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY = 16
         private const val PROPERTY_NAME_ALPHA = "alpha"
         private const val PROPERTY_NAME_MAX_WIDTH = "maxWidth"
     }
@@ -165,6 +173,14 @@ class AutoCollapseLabel @JvmOverloads constructor(
                 binding.root.createHorizontalPaddingAnimator(
                     binding.root.paddingStart,
                     PADDING_HORIZONTAL_ICON_ONLY.toPx()
+                ),
+                binding.root.createVerticalPaddingAnimator(
+                    binding.root.paddingTop,
+                    PADDING_VERTICAL_ICON_ONLY.toPx()
+                ),
+                binding.root.createMarginBottomAnimator(
+                    binding.root.marginBottom,
+                    MARGIN_BOTTOM_ICON_ONLY.toPx()
                 )
             )
             collapseAnimatorListener = addListener(onStart = ::onStartCollapseAnimator)
@@ -199,9 +215,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
             binding.root.setBackgroundDrawableCornerRadius(
                 BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
             )
-            binding.root.updateContainerHorizontalPadding(
-                PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx()
+            binding.root.updatePadding(
+                left = PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
+                top = PADDING_VERTICAL_TEXT_WITH_ICON.toPx(),
+                right = PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
+                bottom = PADDING_VERTICAL_TEXT_WITH_ICON.toPx()
             )
+            binding.root.updateMargin(bottom = MARGIN_BOTTOM_TEXT_WITH_ICON.toPx())
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -220,20 +240,22 @@ class AutoCollapseLabel @JvmOverloads constructor(
             binding.tvAutoCollapseLabel.ellipsize = null
         }
 
-        private fun View.updateContainerHorizontalPadding(padding: Int) {
-            setPadding(
-                padding,
-                binding.root.paddingTop,
-                padding,
-                binding.root.paddingBottom
-            )
+        private fun View.updatePadding(
+            left: Int = paddingLeft,
+            top: Int = paddingTop,
+            right: Int = paddingRight,
+            bottom: Int = paddingBottom
+        ) {
+            setPadding(left, top, right, bottom)
         }
 
-        private fun applyHideAnimatorUpdate(alpha: Float) {
-            binding.root.alpha = min(
-                binding.root.alpha,
-                alpha
-            )
+        private fun View.updateMargin(
+            left: Int = marginLeft,
+            top: Int = marginTop,
+            right: Int = marginRight,
+            bottom: Int = marginBottom
+        ) {
+            setMargin(left, top, right, bottom)
         }
 
         private fun View.createAlphaAnimator(start: Float, end: Float): Animator {
@@ -246,7 +268,25 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
         private fun View.createHorizontalPaddingAnimator(start: Int, end: Int): Animator {
             return ValueAnimator.ofInt(start, end).apply {
-                addUpdateListener { updateContainerHorizontalPadding(it.animatedValue as Int) }
+                addUpdateListener {
+                    val padding = it.animatedValue as Int
+                    updatePadding(left = padding, right = padding)
+                }
+            }
+        }
+
+        private fun View.createVerticalPaddingAnimator(start: Int, end: Int): Animator {
+            return ValueAnimator.ofInt(start, end).apply {
+                addUpdateListener {
+                    val padding = it.animatedValue as Int
+                    updatePadding(top = padding, bottom = padding)
+                }
+            }
+        }
+
+        private fun View.createMarginBottomAnimator(start: Int, end: Int): Animator {
+            return ValueAnimator.ofInt(start, end).apply {
+                addUpdateListener { updateMargin(bottom = it.animatedValue as Int) }
             }
         }
 
