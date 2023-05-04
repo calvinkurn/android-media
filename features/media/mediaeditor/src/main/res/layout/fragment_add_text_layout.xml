@@ -123,7 +123,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/action_btn_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:elevation="1dp"
@@ -134,7 +134,7 @@
         app:layout_constraintTop_toTopOf="@id/add_text_fragment_img"
         app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/text_overlay_container"
