@@ -879,10 +879,11 @@ class CampaignListViewModelTest {
             //Then
             val actual = emittedEffects.last()
 
-            Assert.assertEquals(
+            assertEquals(
                 CampaignListViewModel.UiEffect.ShowShareBottomSheet(bannerResponse.getMerchantCampaignBannerGeneratorData),
                 actual
             )
+            assertEquals(bannerResponse.getMerchantCampaignBannerGeneratorData, actual.bannerOrNull())
 
             job.cancel()
         }
@@ -986,6 +987,14 @@ class CampaignListViewModelTest {
             Assert.assertEquals(null, actualEffect)
 
             job.cancel()
+        }
+    }
+
+    private fun CampaignListViewModel.UiEffect.bannerOrNull(): GetMerchantCampaignBannerGeneratorData? {
+        return if (this is CampaignListViewModel.UiEffect.ShowShareBottomSheet) {
+            banner
+        } else {
+            null
         }
     }
 
