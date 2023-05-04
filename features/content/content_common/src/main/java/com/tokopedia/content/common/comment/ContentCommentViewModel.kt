@@ -9,6 +9,7 @@ import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -31,6 +32,12 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     val event: Flow<CommentEvent>
         get() = _event
+
+    val userInfo: UserSessionInterface
+        get() = userSession
+
+    val isCreator: Boolean
+        get() = _comments.value.commenterType == UserType.Shop
 
     @AssistedFactory
     interface Factory {
@@ -58,15 +65,18 @@ class ContentCommentViewModel @AssistedInject constructor(
         fun handleParent() {
             viewModelScope.launchCatchError(block = {
                 val result = repo.getComments(
-                    PageSource.Play(source.id),
+                    source,
                     commentType = param.commentType,
                     cursor = param.lastParentCursor
                 )
                 _comments.update {
+                    val contentSame =
+                        it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = it.list + result.list
+                        list = if (contentSame) it.list else it.list + result.list,
+                        commenterType = result.commenterType
                     )
                 }
                 _query.update {
@@ -81,7 +91,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 }
                 _query.update {
                     it.copy(
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }
@@ -90,18 +100,18 @@ class ContentCommentViewModel @AssistedInject constructor(
         fun handleChild() {
             viewModelScope.launchCatchError(block = {
                 val result = repo.getComments(
-                    PageSource.Play(source.id),
+                    source,
                     commentType = param.commentType,
                     cursor = param.lastChildCursor
                 )
-                _comments.getAndUpdate {
-                    val selected = it.list
+                _comments.update { curr ->
+                    val selected = curr.list
                         .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
                     val parent =
-                        it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
+                        curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
                         addAll(
-                            it.list.mapIndexed { index, model ->
+                            curr.list.mapIndexed { index, model ->
                                 if (index == selected && model is CommentUiModel.Expandable) {
                                     model.copy(
                                         isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
@@ -113,8 +123,8 @@ class ContentCommentViewModel @AssistedInject constructor(
                             }
                         )
                     }
-                    newChild.addAll(selected, result.list)
-                    it.copy(
+                    newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
+                    curr.copy(
                         cursor = result.cursor,
                         list = newChild
                     )
@@ -131,13 +141,13 @@ class ContentCommentViewModel @AssistedInject constructor(
                 }
                 _query.update {
                     it.copy(
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }
         }
 
-        if (param.commentType is CommentType.Parent) {
+        if (param.commentType.isParent) {
             handleParent()
         } else {
             handleChild()
@@ -150,13 +160,20 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.LoadNextPage -> updateQuery(action.commentType)
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
-            is CommentAction.DeleteComment -> deleteComment(action.isFromToaster)
+            is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
-            CommentAction.RequestReportAction ->  handleOpenReport()
+            CommentAction.RequestReportAction -> handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
+            }
+            is CommentAction.EditTextClicked -> handleEditTextClicked(action.item)
+            is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
+            is CommentAction.OpenAppLinkAction -> {
+                viewModelScope.launch {
+                    _event.emit(CommentEvent.OpenAppLink(action.appLink))
+                }
             }
             else -> {}
         }
@@ -205,7 +222,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun deleteComment(isFromToaster: Boolean) {
         fun removeComment() {
             _comments.update {
-                it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
+                it.copy(list = it.list.filterNot { item -> (item is CommentUiModel.Item && (item.id == _selectedComment.value.first.id || item.commentType.parentId == _selectedComment.value.first.id)) || item is CommentUiModel.Expandable && item.commentType.parentId == _selectedComment.value.first.id })
             }
         }
 
@@ -225,8 +242,9 @@ class ContentCommentViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             repo.deleteComment(_selectedComment.value.first.id)
         }) {
+            undoComment()
             _event.emit(
-                CommentEvent.ShowErrorToaster(message = it) {
+                CommentEvent.ShowErrorToaster(message = MessageErrorException(CommentException.FailedDelete.message)) {
                     deleteComment(isFromToaster = false)
                 }
             )
@@ -254,6 +272,52 @@ class ContentCommentViewModel @AssistedInject constructor(
             val newList = it.list.toMutableList()
             newList.add(_selectedComment.value.second, _selectedComment.value.first)
             it.copy(list = newList)
+        }
+    }
+
+    private fun handleEditTextClicked(item: CommentUiModel.Item) {
+        requireLogin {
+            viewModelScope.launch {
+                _event.emit(CommentEvent.AutoType(item))
+            }
+        }
+    }
+
+    private fun sendReply(comment: String, commentType: CommentType) {
+        requireLogin {
+            val regex = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))""".toRegex()
+            viewModelScope.launchCatchError(block = {
+                _event.emit(CommentEvent.HideKeyboard)
+                if (regex.findAll(comment)
+                    .count() > 0 && !comment.contains("tokopedia")
+                ) {
+                    throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                }
+                val result =
+                    repo.replyComment(source, commentType, comment, _comments.value.commenterType)
+                var index = 0
+                _comments.getAndUpdate {
+                    index = if (result.commentType.isChild) {
+                        val selected = it.list
+                            .indexOfFirst { item -> item is CommentUiModel.Item && item.id == result.commentType.parentId } + 1
+                        selected
+                    } else {
+                        0
+                    }
+                    val newList = it.list.toMutableList().apply {
+                        add(index, result)
+                    }
+                    it.copy(list = newList)
+                }
+                _event.emit(CommentEvent.ReplySuccess(index))
+            }) {
+                _event.emit(
+                    CommentEvent.ShowErrorToaster(
+                        message = if (it.message?.isBlank() == true) MessageErrorException(CommentException.SendCommentFailed.message) else it,
+                        onClick = { sendReply(comment, commentType) }
+                    )
+                )
+            }
         }
     }
 

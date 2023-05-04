@@ -16,6 +16,8 @@ sealed interface CommentUiModel {
         val childCount: String,
         val isOwner: Boolean,
         val isReportAllowed: Boolean,
+        val userId: String,
+        val userType: UserType,
     ) : CommentUiModel {
         companion object {
             val Empty = Item(
@@ -29,6 +31,8 @@ sealed interface CommentUiModel {
                 childCount = "",
                 isOwner = false,
                 isReportAllowed = false,
+                userId = "",
+                userType = UserType.People,
             )
         }
     }
@@ -54,9 +58,30 @@ sealed class CommentType {
     }
 }
 
+val CommentType.isParent : Boolean
+    get() = this == CommentType.Parent
+
+val CommentType.isChild : Boolean
+    get() = this is CommentType.Child
+
 data class CommentParam(
     val commentType: CommentType = CommentType.Parent,
     val lastParentCursor: String = "",
     val lastChildCursor: String = "",
     val needToRefresh: Boolean = true,
 )
+
+enum class UserType(val value: String) {
+    Shop("shop"), People("user"), Unknown("");
+
+    companion object {
+        private val values = values()
+
+        fun getByValue(value: String): UserType {
+            values.forEach {
+                if (it.value.equals(value, true)) return it
+            }
+            return Unknown
+        }
+    }
+}

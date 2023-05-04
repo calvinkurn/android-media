@@ -13,7 +13,7 @@ sealed interface CommentAction {
     object RefreshComment : CommentAction
     object DismissComment: CommentAction
 
-    data class ReplyComment(val comment: CommentUiModel) : CommentAction
+    data class ReplyComment(val comment: String, val commentType: CommentType) : CommentAction
 
     data class DeleteComment(val isFromToaster: Boolean) : CommentAction
     object PermanentRemoveComment : CommentAction
@@ -22,7 +22,10 @@ sealed interface CommentAction {
         val param: FeedReportRequestParamModel
     ) : CommentAction
 
+    data class EditTextClicked(val item: CommentUiModel.Item): CommentAction
     object RequestReportAction : CommentAction
 
     data class SelectComment(val comment: CommentUiModel.Item) : CommentAction
+
+    data class OpenAppLinkAction(val appLink: String) : CommentAction
 }

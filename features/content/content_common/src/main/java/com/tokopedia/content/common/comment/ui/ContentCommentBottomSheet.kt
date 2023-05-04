@@ -1,12 +1,18 @@
 package com.tokopedia.content.common.comment.ui
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
+import android.icu.text.BreakIterator
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Toast
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,8 +23,10 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
+import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -26,22 +34,24 @@ import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -60,6 +70,10 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private val newHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
+    private val keyboardHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
     }
 
     private var mSource: EntrySource? = null
@@ -87,6 +101,58 @@ class ContentCommentBottomSheet @Inject constructor(
         )
     }
 
+    private val textWatcher by lazyThreadSafetyNone {
+        object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                val newLength = p0.toString().getGraphemeLength()
+                val isBtnEnabled = p0.isNullOrBlank() || newLength > 140
+                binding.ivCommentSend.background.setTint(
+                    if (isBtnEnabled) {
+                        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+                    } else {
+                        MethodChecker.getColor(
+                            requireContext(),
+                            unifyR.color.Unify_GN500
+                        )
+                    }
+                )
+                binding.ivCommentSend.isClickable = !isBtnEnabled
+
+                if (p0 == null) return
+                binding.newComment.removeTextChangedListener(this)
+
+                if (newLength > MAX_CHAR) {
+                    Toaster.showError(
+                        requireView().rootView,
+                        CommentException.SendCommentFailed.message,
+                        Toaster.LENGTH_SHORT
+                    )
+                }
+
+                val prevLength = binding.newComment.length()
+                val selEnd = binding.newComment.selectionEnd
+                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from text end
+
+                val newText =
+                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = newLength.orZero())
+                binding.newComment.setText(newText)
+
+                val currentLength = binding.newComment.length()
+                if (distanceFromEnd in 1 until currentLength) {
+                    binding.newComment.setSelection(selEnd)
+                } else {
+                    binding.newComment.setSelection(currentLength)
+                }
+
+                binding.newComment.addTextChangedListener(this)
+            }
+        }
+    }
+
     private val toasterCallback by lazyThreadSafetyNone {
         object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -97,10 +163,33 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var analytics: IContentCommentAnalytics? = null
+    private var isFromChild: Boolean = false
 
+    fun String.getGraphemeLength(): Int {
+        val it: BreakIterator = BreakIterator.getCharacterInstance()
+        it.setText(this)
+        var count = 0
+        while (it.next() != BreakIterator.DONE) {
+            count++
+        }
+        return count
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding =
+            FragmentContentCommentBottomSheetBinding.inflate(
+                LayoutInflater.from(requireContext()),
+                container,
+                false
+            )
+        setChild(binding.root)
         setupBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,10 +201,6 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding =
-            FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
-        setChild(binding.root)
-
         clearContentPadding = true
         isDragable = false
         showKnob = false
@@ -125,12 +210,42 @@ class ContentCommentBottomSheet @Inject constructor(
     private fun setupView() {
         binding.commentHeader.title = getString(R.string.content_comment_header)
         binding.commentHeader.closeListener = View.OnClickListener {
+            mSource?.onCommentDismissed()
+            analytics?.closeCommentSheet()
             dismiss()
         }
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
 
+        binding.ivCommentSend.setOnClickListener {
+            handleSendComment()
+        }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
+        binding.newComment.addTextChangedListener(textWatcher)
+        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+            val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+            } else {
+                windowInsets.systemWindowInsetBottom
+            }
+            val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowInsets.isVisible(WindowInsets.Type.ime())
+            } else {
+                height > keyboardHeight
+            }
+            if (isKeyboardOnScreen) {
+                binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
+            } else {
+                binding.root.setPadding(0, 0, 0, 16.toPx())
+            }
+            windowInsets
+        }
+        binding.newComment.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                analytics?.clickTextBox()
+            }
+            false
+        }
     }
 
     private fun observeData() {
@@ -139,7 +254,14 @@ class ContentCommentBottomSheet @Inject constructor(
                 when (it.state) {
                     ResultState.Success -> {
                         showError(false)
-                        commentAdapter.setItemsAndAnimateChanges(it.list)
+                        scrollListener.updateStateAfterGetData()
+                        commentAdapter.setItemsAndAnimateChanges(
+                            it.list.ifEmpty {
+                                listOf(
+                                    CommentUiModel.Empty
+                                )
+                            }
+                        )
                     }
                     ResultState.Loading -> {
                         showError(false)
@@ -165,29 +287,70 @@ class ContentCommentBottomSheet @Inject constructor(
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true))
-                                binding.rvComment.scrollToPosition(0)
                             }
                         )
                         toaster.addCallback(toasterCallback)
                         toaster.show()
                     }
                     is CommentEvent.ShowErrorToaster -> {
-                        val view = if(sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
+                        val view =
+                            if (sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
                         Toaster.build(
                             view,
-                            text = event.message.message.orEmpty(),
-                            actionText = getString(R.string.feed_content_coba_lagi_text),
+                            text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
+                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message)
+                                .orFalse()
+                            ) {
+                                ""
+                            } else {
+                                getString(R.string.feed_content_coba_lagi_text)
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
+                            },
+                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
+                                .orFalse()
+                            ) {
+                                Toaster.TYPE_ERROR
+                            } else {
+                                Toaster.TYPE_NORMAL
                             }
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
-                        router.route(context = requireContext(), appLinkPattern = event.appLink)
+                        router.route(
+                            context = requireContext(),
+                            appLinkPattern = event.appLink
+                        )
+                    }
+                    CommentEvent.ShowKeyboard -> {
+                        showKeyboard(true)
+                    }
+                    CommentEvent.HideKeyboard -> {
+                        binding.newComment.setText("")
+                        showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    is CommentEvent.ReplySuccess -> {
+                        binding.newComment.text = null
+                        binding.rvComment.scrollToPosition(event.position)
+                        isFromChild = false
+                    }
+                    is CommentEvent.AutoType -> {
+                        binding.newComment.setText("")
+                        val mention = TagMentionBuilder.createNewMentionTag(
+                            event.parentItem
+                        )
+                        binding.newComment.tag = if (event.parentItem.commentType.isParent) {
+                            event.parentItem.id
+                        } else {
+                            event.parentItem.commentType.parentId
+                        }
+                        binding.newComment.setText(mention)
+                        showKeyboard(true)
+                    }
                 }
             }
         }
@@ -202,7 +365,8 @@ class ContentCommentBottomSheet @Inject constructor(
         if (throwable is UnknownHostException) {
             binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
             binding.commentGlobalError.errorSecondaryAction.show()
-            binding.commentGlobalError.errorSecondaryAction.text = getString(R.string.content_comment_error_secondary)
+            binding.commentGlobalError.errorSecondaryAction.text =
+                getString(R.string.content_comment_error_secondary)
             binding.commentGlobalError.setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)
@@ -227,27 +391,52 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
-        // TODO("Not yet implemented")
+        isFromChild = true
+        viewModel.submitAction(CommentAction.EditTextClicked(item))
+        analytics?.clickReplyChild()
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
+        analytics?.longClickComment()
+
         viewModel.submitAction(CommentAction.SelectComment(item))
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
     }
 
+    override fun onMentionClicked(appLink: String) {
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+    }
+
+    override fun onProfileClicked(appLink: String) {
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickProfilePicture()
+    }
+
+    override fun onUserNameClicked(appLink: String) {
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickCommentName()
+    }
+
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
         viewModel.submitAction(CommentAction.ExpandComment(item))
+        if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
+    }
+
+    override fun onImpressedExpandable() {
+        analytics?.impressLihatBalasan()
     }
 
     override fun dismiss() {
         if (!isAdded) return
+        mSource?.onCommentDismissed()
         viewModel.submitAction(CommentAction.DismissComment)
         super.dismiss()
     }
 
     override fun onCancel(dialog: DialogInterface) {
+        mSource?.onCommentDismissed()
         viewModel.submitAction(CommentAction.DismissComment)
         super.onCancel(dialog)
     }
@@ -255,8 +444,32 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onResume() {
         super.onResume()
 
+        val window = dialog?.window
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         binding.root.layoutParams.height = newHeight
+        val avatar =
+            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.ivUserPhoto.loadImage(avatar)
         viewModel.submitAction(CommentAction.RefreshComment)
+    }
+
+    private fun showKeyboard(needToShow: Boolean) {
+        val imm =
+            binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (needToShow) {
+            imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
+            binding.newComment.apply {
+                isFocusable = true
+                isFocusableInTouchMode = true
+            }
+        } else {
+            imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
+            binding.newComment.apply {
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -272,14 +485,23 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.DELETE -> {
-                viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
+            FeedMenuIdentifier.DELETE -> deleteCommentChecker()
+            FeedMenuIdentifier.LAPORKAN -> {
+                viewModel.submitAction(CommentAction.RequestReportAction)
+                analytics?.clickReportComment()
             }
-            FeedMenuIdentifier.LAPORKAN -> viewModel.submitAction(CommentAction.RequestReportAction)
+        }
+    }
+
+    private fun deleteCommentChecker() {
+        requireInternet {
+            analytics?.clickRemoveComment()
+            viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
         viewModel.submitAction(
             CommentAction.ReportComment(
                 feedReportRequestParamModel.copy(
@@ -289,9 +511,12 @@ class ContentCommentBottomSheet @Inject constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
+    override fun onMenuBottomSheetCloseClick(contentId: String) {
+        sheetMenu.dismiss()
+    }
+
     private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
-        if (item.isOwner) {
+        if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
                     name = getString(R.string.content_common_menu_delete),
@@ -303,7 +528,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
-        if (item.isReportAllowed && !item.isOwner) {
+        if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(
@@ -319,18 +544,75 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
-        Toast.LENGTH_LONG
+    }
+
+    private fun handleSendComment() {
+        showKeyboard(false)
+        val newLength = binding.newComment.text.toString().getGraphemeLength()
+        if (newLength > MAX_CHAR) {
+            Toaster.showError(
+                requireView().rootView,
+                CommentException.SendCommentFailed.message,
+                Toaster.LENGTH_SHORT
+            )
+        } else {
+            val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
+            val type = TagMentionBuilder.isChildOrParent(
+                binding.newComment.text?.toSpanned(),
+                binding.newComment.tag.toString()
+            )
+            viewModel.submitAction(
+                CommentAction.ReplyComment(
+                    convert,
+                    type
+                )
+            )
+            if (type.isParent) analytics?.clickSendParentComment() else analytics?.clickSendChildComment()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        dismiss()
+    }
+
+    private fun requireInternet(action: (isAvailable: Boolean) -> Unit) {
+        val isInetAvailable =
+            ConnectionHelper.isConnectWifi(requireContext()) || ConnectionHelper.isConnectCellular(
+                requireContext()
+            )
+        if (isInetAvailable) {
+            action(true)
+        } else {
+            Toaster.showErrorWithAction(
+                requireView().rootView,
+                getString(R.string.content_comment_error_connection),
+                Toaster.LENGTH_LONG,
+                getString(R.string.feed_content_coba_lagi_text)
+            ) {
+                action(false)
+            }
+        }
+    }
+
+    fun setAnalytic(tracker: IContentCommentAnalytics) {
+        analytics = tracker
     }
 
     interface EntrySource {
         fun getPageSource(): PageSource
+
+        fun onCommentDismissed()
     }
 
     companion object {
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val SHIMMER_VALUE = 10
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
+        private const val SHIMMER_VALUE = 6
+
+        private const val MAX_CHAR = 140
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
