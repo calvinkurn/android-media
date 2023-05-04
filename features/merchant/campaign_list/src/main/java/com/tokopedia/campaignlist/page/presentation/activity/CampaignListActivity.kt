@@ -2,11 +2,11 @@ package com.tokopedia.campaignlist.page.presentation.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.constant.CampaignStatusIdTypeDef
 import com.tokopedia.campaignlist.common.constant.ShopTypeDef
@@ -34,7 +34,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
+class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
 
     companion object {
         private const val SHARE = "share"
@@ -343,7 +343,5 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
             userSession.shopId
         )
     }
-
-
 
 }
