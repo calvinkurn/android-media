@@ -1,0 +1,55 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.tokopedia.media.loader/DebugMediaLoaderActivity.Companion///PointingToDeclaration/medialoader/com.tokopedia.media.loader/[android-jvm]-debug-media-loader-activity/-companion/index.html
+$dokka.location:com.tokopedia.media.loader/DebugMediaLoaderActivity///PointingToDeclaration/medialoader/com.tokopedia.media.loader/[android-jvm]-debug-media-loader-activity/index.html
+$dokka.location:com.tokopedia.media.loader/DebugMediaLoaderActivity/DebugMediaLoaderActivity/#/PointingToDeclaration/medialoader/com.tokopedia.media.loader/[android-jvm]-debug-media-loader-activity/-debug-media-loader-activity.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver.Companion///PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-companion/index.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver.Companion/BROADCAST_CANCEL_UPLOAD/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-companion/-b-r-o-a-d-c-a-s-t_-c-a-n-c-e-l_-u-p-l-o-a-d.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver.Companion/BROADCAST_FILE_PATH/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-companion/-b-r-o-a-d-c-a-s-t_-f-i-l-e_-p-a-t-h.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver.Companion/BROADCAST_NOTIFICATION_ID/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-companion/-b-r-o-a-d-c-a-s-t_-n-o-t-i-f-i-c-a-t-i-o-n_-i-d.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver.Companion/BROADCAST_SOURCE_ID/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-companion/-b-r-o-a-d-c-a-s-t_-s-o-u-r-c-e_-i-d.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver///PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/index.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver/UploaderReceiver/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/-uploader-receiver.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver/coroutineContext/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/coroutine-context.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver/lazyUploaderUseCase/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/lazy-uploader-use-case.html
+$dokka.location:com.tokopedia.mediauploader.services/UploaderReceiver/onReceive/#android.content.Context#android.content.Intent?/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader.services/[android-jvm]-uploader-receiver/on-receive.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity.Companion///PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/-companion/index.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity///PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/index.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity/MediaUploaderActivity/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/-media-uploader-activity.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity/coroutineContext/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/coroutine-context.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity/sourceId/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/source-id.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity/uploaderUseCase/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/uploader-use-case.html
+$dokka.location:com.tokopedia.mediauploader/MediaUploaderActivity/userSession/#/PointingToDeclaration/mediauploader/com.tokopedia.mediauploader/[android-jvm]-media-uploader-activity/user-session.html
+module:medialoader
+com.tokopedia.media.loader
+com.tokopedia.media.loader.common
+com.tokopedia.media.loader.common.factory
+com.tokopedia.media.loader.data
+com.tokopedia.media.loader.listener
+com.tokopedia.media.loader.module
+com.tokopedia.media.loader.tracker
+com.tokopedia.media.loader.transform
+com.tokopedia.media.loader.utils
+com.tokopedia.media.loader.wrapper
+module:mediauploader
+com.tokopedia.mediauploader
+com.tokopedia.mediauploader.common.data.consts
+com.tokopedia.mediauploader.common.data.entity
+com.tokopedia.mediauploader.common.data.mapper
+com.tokopedia.mediauploader.common.di
+com.tokopedia.mediauploader.common.logger
+com.tokopedia.mediauploader.common.state
+com.tokopedia.mediauploader.common.util
+com.tokopedia.mediauploader.di
+com.tokopedia.mediauploader.image
+com.tokopedia.mediauploader.image.data
+com.tokopedia.mediauploader.image.data.entity
+com.tokopedia.mediauploader.image.data.params
+com.tokopedia.mediauploader.image.domain
+com.tokopedia.mediauploader.manager
+com.tokopedia.mediauploader.services
+com.tokopedia.mediauploader.video
+com.tokopedia.mediauploader.video.data
+com.tokopedia.mediauploader.video.data.entity
+com.tokopedia.mediauploader.video.data.params
+com.tokopedia.mediauploader.video.domain

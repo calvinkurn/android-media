@@ -1,0 +1,478 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Properties</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../../index.html">
+<span>Tokopedia @ Android</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="medialoader::com.tokopedia.media.loader.common/Properties///PointingToDeclaration//-1772134097">
+  <div class="breadcrumbs"><a href="../../index.html">medialoader</a><span class="delimiter">/</span><a href="../index.html">com.tokopedia.media.loader.common</a><span class="delimiter">/</span><span class="current">Properties</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Properties</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">Properties</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">data<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">renderDelay<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">thumbnailUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">blurHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isAnimate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isCircular<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">roundedRadius<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter ">signatureKey<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Key///PointingToDeclaration/">Key</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">error<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>ERROR_RES_UNIFY<span class="token punctuation">, </span></span><span class="parameter ">placeHolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">isCache<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">cacheStrategy<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-cache-strategy/index.html">MediaCacheStrategy</a><span class="token operator">?</span><span class="token operator"> = </span>MediaCacheStrategy.RESOURCE<span class="token punctuation">, </span></span><span class="parameter ">overrideSize<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.data/-resize/index.html">Resize</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">decodeFormat<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-decode-format/index.html">MediaDecodeFormat</a><span class="token operator">?</span><span class="token operator"> = </span>MediaDecodeFormat.DEFAULT<span class="token punctuation">, </span></span><span class="parameter ">loaderListener<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.listener/-media-listener/index.html">MediaListener</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">transform<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">transforms<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">centerCrop<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">centerInside<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">fitCenter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isAdaptiveSizeImageRequest<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">accessToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">userId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-476451014%2FConstructors%2F-1772134097" anchor-label="Properties" id="-476451014%2FConstructors%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-properties.html"><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-476451014%2FConstructors%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-properties.html"><span class="token function">Properties</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">data<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">renderDelay<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">thumbnailUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">blurHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isAnimate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isCircular<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">roundedRadius<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter ">signatureKey<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Key///PointingToDeclaration/">Key</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">error<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>ERROR_RES_UNIFY<span class="token punctuation">, </span></span><span class="parameter ">placeHolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">isCache<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">cacheStrategy<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-cache-strategy/index.html">MediaCacheStrategy</a><span class="token operator">?</span><span class="token operator"> = </span>MediaCacheStrategy.RESOURCE<span class="token punctuation">, </span></span><span class="parameter ">overrideSize<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.data/-resize/index.html">Resize</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">decodeFormat<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-decode-format/index.html">MediaDecodeFormat</a><span class="token operator">?</span><span class="token operator"> = </span>MediaDecodeFormat.DEFAULT<span class="token punctuation">, </span></span><span class="parameter ">loaderListener<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.listener/-media-listener/index.html">MediaListener</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">transform<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">transforms<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">centerCrop<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">centerInside<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">fitCenter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isAdaptiveSizeImageRequest<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">accessToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">userId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-1909882365%2FFunctions%2F-1772134097" anchor-label="adaptiveImageSizeRequest" id="-1909882365%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="adaptive-image-size-request.html"><span>adaptive</span><wbr><span>Image</span><wbr><span>Size</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1909882365%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="adaptive-image-size-request.html"><span class="token function">adaptiveImageSizeRequest</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isAdaptive<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1684842174%2FFunctions%2F-1772134097" anchor-label="centerCrop" id="-1684842174%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="center-crop.html"><span>center</span><wbr><span><span>Crop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1684842174%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="center-crop.html"><span class="token function">centerCrop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1003568106%2FFunctions%2F-1772134097" anchor-label="centerInside" id="-1003568106%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="center-inside.html"><span>center</span><wbr><span><span>Inside</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1003568106%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="center-inside.html"><span class="token function">centerInside</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2088773362%2FFunctions%2F-1772134097" anchor-label="decodeFormat" id="2088773362%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="decode-format.html"><span>decode</span><wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2088773362%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="decode-format.html"><span class="token function">decodeFormat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">format<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-decode-format/index.html">MediaDecodeFormat</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2044841286%2FFunctions%2F-1772134097" anchor-label="equals" id="-2044841286%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2044841286%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="505239309%2FFunctions%2F-1772134097" anchor-label="fitCenter" id="505239309%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="fit-center.html"><span>fit</span><wbr><span><span>Center</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="505239309%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="fit-center.html"><span class="token function">fitCenter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="390143212%2FFunctions%2F-1772134097" anchor-label="hashCode" id="390143212%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="390143212%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="564710369%2FFunctions%2F-1772134097" anchor-label="isAnimate" id="564710369%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-animate.html"><span>is</span><wbr><span><span>Animate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="564710369%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-animate.html"><span class="token function">isAnimate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">condition<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-308709597%2FFunctions%2F-1772134097" anchor-label="isCircular" id="-308709597%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-circular.html"><span>is</span><wbr><span><span>Circular</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-308709597%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-circular.html"><span class="token function">isCircular</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">condition<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1657999351%2FFunctions%2F-1772134097" anchor-label="isIcon" id="-1657999351%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-icon.html"><span>is</span><wbr><span><span>Icon</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1657999351%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-icon.html"><span class="token function">isIcon</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-673124687%2FFunctions%2F-1772134097" anchor-label="listener" id="-673124687%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="listener.html"><span><span>listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-673124687%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="listener.html"><span class="token function">listener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onSuccess<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">?</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.tokopedia.media.loader.wrapper/-media-data-source/index.html">MediaDataSource</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ _, _ -&gt; }<span class="token punctuation">, </span></span><span class="parameter ">onError<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.tokopedia.media.loader.utils/index.html#1095893706%2FClasslikes%2F-1772134097">MediaException</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ _ -&gt; }</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-831460416%2FFunctions%2F-1772134097" anchor-label="overrideSize" id="-831460416%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="override-size.html"><span>override</span><wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-831460416%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="override-size.html"><span class="token function">overrideSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">newSize<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.data/-resize/index.html">Resize</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1329390364%2FFunctions%2F-1772134097" anchor-label="setCacheStrategy" id="-1329390364%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-cache-strategy.html"><span>set</span><wbr><span>Cache</span><wbr><span><span>Strategy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1329390364%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-cache-strategy.html"><span class="token function">setCacheStrategy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">strategy<span class="token operator">: </span><a href="../../com.tokopedia.media.loader.wrapper/-media-cache-strategy/index.html">MediaCacheStrategy</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="909010419%2FFunctions%2F-1772134097" anchor-label="setDelay" id="909010419%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-delay.html"><span>set</span><wbr><span><span>Delay</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="909010419%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-delay.html"><span class="token function">setDelay</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeInMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-58118271%2FFunctions%2F-1772134097" anchor-label="setErrorDrawable" id="-58118271%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-error-drawable.html"><span>set</span><wbr><span>Error</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-58118271%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-error-drawable.html"><span class="token function">setErrorDrawable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">resourceId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="979934356%2FFunctions%2F-1772134097" anchor-label="setPlaceHolder" id="979934356%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-place-holder.html"><span>set</span><wbr><span>Place</span><wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="979934356%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-place-holder.html"><span class="token function">setPlaceHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">resourceId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="375808891%2FFunctions%2F-1772134097" anchor-label="setRoundedRadius" id="375808891%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-rounded-radius.html"><span>set</span><wbr><span>Rounded</span><wbr><span><span>Radius</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="375808891%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-rounded-radius.html"><span class="token function">setRoundedRadius</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">radius<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1722982240%2FFunctions%2F-1772134097" anchor-label="setSignatureKey" id="1722982240%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-signature-key.html"><span>set</span><wbr><span>Signature</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1722982240%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-signature-key.html"><span class="token function">setSignatureKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Key///PointingToDeclaration/">Key</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1623660884%2FFunctions%2F-1772134097" anchor-label="setSource" id="-1623660884%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-source.html"><span>set</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1623660884%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-source.html"><span class="token function">setSource</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">data<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1972009824%2FFunctions%2F-1772134097" anchor-label="thumbnailUrl" id="1972009824%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="thumbnail-url.html"><span>thumbnail</span><wbr><span><span>Url</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1972009824%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="thumbnail-url.html"><span class="token function">thumbnailUrl</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1430848407%2FFunctions%2F-1772134097" anchor-label="transform" id="-1430848407%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="transform.html"><span><span>transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1430848407%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="transform.html"><span class="token function">transform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="426299422%2FFunctions%2F-1772134097" anchor-label="transforms" id="426299422%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="transforms.html"><span><span>transforms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="426299422%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="transforms.html"><span class="token function">transforms</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transforms<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.bumptech.glide.load/Transformation///PointingToDeclaration/">Transformation</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">Bitmap</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1199596636%2FFunctions%2F-1772134097" anchor-label="useBlurHash" id="1199596636%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="use-blur-hash.html"><span>use</span><wbr><span>Blur</span><wbr><span><span>Hash</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1199596636%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="use-blur-hash.html"><span class="token function">useBlurHash</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">condition<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1667574033%2FFunctions%2F-1772134097" anchor-label="useCache" id="1667574033%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="use-cache.html"><span>use</span><wbr><span><span>Cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1667574033%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="use-cache.html"><span class="token function">useCache</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">cache<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1073920771%2FFunctions%2F-1772134097" anchor-label="userId" id="1073920771%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="user-id.html"><span>user</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1073920771%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="user-id.html"><span class="token function">userId</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">userId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="134315879%2FFunctions%2F-1772134097" anchor-label="userSessionAccessToken" id="134315879%2FFunctions%2F-1772134097" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":features:media:medialoader:dokkaHtmlPartial/release" data-filterable-set=":features:media:medialoader:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="user-session-access-token.html"><span>user</span><wbr><span>Session</span><wbr><span>Access</span><wbr><span><span>Token</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="134315879%2FFunctions%2F-1772134097"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":features:media:medialoader:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="user-session-access-token.html"><span class="token function">userSessionAccessToken</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Properties</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Made with <svg class="fa-heart" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512"> <path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path></svg> by <a href="https://github.com/tokopedia/android-tokopedia-core/graphs/contributors" target="_blank">Tokopedia Android Engineering Team</a>.</span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
