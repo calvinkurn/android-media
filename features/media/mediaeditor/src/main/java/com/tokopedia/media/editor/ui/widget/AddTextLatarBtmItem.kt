@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
@@ -32,7 +33,6 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
     private var mItemConstraint: ConstraintLayout? = null
     private var mItemChecklist: View? = null
     private var mItemLatar: View? = null
-    private var mLatarModel: Int = 0
 
     init {
         View.inflate(context, editorR.layout.add_text_latar_btm_item, this)?.apply {
@@ -78,12 +78,15 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
     fun setLatarModel(latarTemplate: Int, latarColor: Int = TEXT_LATAR_TEMPLATE_BLACK) {
         when(latarTemplate) {
             TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
-            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
+            TEXT_LATAR_TEMPLATE_FLOATING -> {
+                val margin = 4.toPx()
+                mItemLatar?.setMargin(margin, 0,margin,margin)
+                editorR.drawable.add_text_latar_floating
+            }
             TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
             else -> 0
         }.let {
             if (it == 0) return
-            mLatarModel = it
 
             // define is latar color for item preview
             if (latarColor == TEXT_LATAR_TEMPLATE_WHITE) {
