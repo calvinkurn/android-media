@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -49,7 +50,8 @@ object ComparisonBpcWidgetMapper {
                 productCardHeight = productCardHeight,
                 productCardWidth = productCardWidth,
                 recommendationItem = it.value,
-                recomWidgetTrackingModel = recommendationTrackingModel
+                trackingModel = recommendationTrackingModel,
+                anchorProductId = recommendationItems.getOrNull(0)?.productId.orZero().toString()
             )
         }
     }

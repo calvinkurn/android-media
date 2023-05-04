@@ -19,7 +19,7 @@ import java.lang.Exception
 /**
  * Created by frenzel on 11/03/23
  */
-class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
+class RecommendationWidgetView : LinearLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -62,18 +62,6 @@ class RecommendationWidgetView : LinearLayout, LifecycleEventObserver {
         } catch (e: Exception) {
             null
         } as? IRecommendationWidgetView<RecommendationVisitable>
-    }
-
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when (event) {
-            Lifecycle.Event.ON_CREATE -> { }
-            Lifecycle.Event.ON_START -> { }
-            Lifecycle.Event.ON_PAUSE -> { }
-            Lifecycle.Event.ON_RESUME -> { }
-            Lifecycle.Event.ON_STOP -> { }
-            Lifecycle.Event.ON_DESTROY -> { }
-            else -> { }
-        }
     }
 
     private fun initInjector() {

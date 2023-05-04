@@ -17,7 +17,8 @@ data class ComparisonBpcItemModel(
     val productCardHeight: Int,
     val productCardWidth: Int,
     val recommendationItem: RecommendationItem,
-    val recomWidgetTrackingModel: RecommendationWidgetTrackingModel
+    val anchorProductId: String,
+    val trackingModel: RecommendationWidgetTrackingModel
 ) : Visitable<ComparisonBpcTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ComparisonBpcTypeFactory): Int {
         return typeFactory.type(this)

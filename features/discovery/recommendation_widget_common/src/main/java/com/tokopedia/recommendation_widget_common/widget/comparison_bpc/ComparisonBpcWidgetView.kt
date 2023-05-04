@@ -4,19 +4,26 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.recommendation_widget_common.databinding.ViewComparisonBpcWidgetBinding
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetDecoration
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetMapper
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,7 +35,8 @@ import kotlinx.coroutines.launch
 /**
  * Created by frenzel on 27/03/23
  */
-class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope, RecommendationWidgetAnalyticListener {
+class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope,
+    ComparisonBpcAnalyticListener, LifecycleEventObserver {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -88,7 +96,7 @@ class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<Reco
                         context
                     ).toList()
 
-                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel))
+                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel, comparisonBpcModel.trackingModel))
                 }
             }
         } catch (_: Exception) {
@@ -96,7 +104,37 @@ class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<Reco
         }
     }
 
-    override fun onViewAllCardClicked(applink: String?) {
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_PAUSE -> {
+                trackingQueue.sendAll()
+            }
+            else -> { }
+        }
+    }
+
+    override fun onViewAllCardClicked(trackingModel: RecommendationWidgetTrackingModel) {
         adapter.showNextPage()
+        ComparisonBpcWidgetTracking.sendClickSeeAll(trackingModel.androidPageName, userSession.userId)
+    }
+
+    override fun onProductCardImpressed(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String) {
+        ComparisonBpcWidgetTracking.putImpressionToQueue(
+            trackingQueue = trackingQueue,
+            recommendationItem = recommendationItem,
+            androidPageName = trackingModel.androidPageName,
+            anchorProductId = anchorProductId,
+            userId = userSession.userId
+        )
+    }
+
+    override fun onProductCardClicked(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String) {
+        ComparisonBpcWidgetTracking.sendClick(
+            trackingModel.androidPageName,
+            userSession.userId,
+            recommendationItem,
+            anchorProductId
+        )
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
     }
 }

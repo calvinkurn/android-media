@@ -74,12 +74,12 @@ object BpcSpecsMapper {
         return if(summary.specSummary.isNotEmpty()) {
             measureEachSummaryHeight(summary.specSummary, textWidth, context)
         } else if(summary.recommendationSpecificationLabelsBullet.isNotEmpty()) {
-            val bulletWidth = textWidth - (2 * context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_bullet_margin)) - context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_bullet_size)
             var totalHeight = 0
             for(i in summary.recommendationSpecificationLabelsBullet) {
-                val heightText = (measureEachSummaryHeight(
+                val heightText = (measureEachSummaryBulletHeight(
                     i.specsSummary,
-                    bulletWidth,
+                    !i.icon.isNullOrBlank(),
+                    textWidth,
                     context
                 ))
                 totalHeight += heightText
@@ -108,6 +108,35 @@ object BpcSpecsMapper {
         linearLayout.measure(0,0)
         typography.post {}.run {
             return typography.measuredHeight
+        }
+    }
+
+    private fun measureEachSummaryBulletHeight(
+        text: CharSequence?,
+        useIcon: Boolean,
+        containerWidth: Int,
+        context: Context
+    ): Int {
+        val iconSize = if(useIcon) context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_icon_size)
+        else context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_bullet_size)
+        val textWidth = if(useIcon) {
+            containerWidth - context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_icon_margin) - iconSize
+        } else containerWidth - (2 * context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_bullet_margin)) - iconSize
+        val params =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsTextView =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val typography = Typography(context)
+        typography.setType(DISPLAY_3)
+        typography.layoutParams = paramsTextView
+        typography.text = MethodChecker.fromHtml(text.toString())
+        typography.measure(0,0)
+        val linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = params
+        linearLayout.addView(typography)
+        linearLayout.measure(0,0)
+        typography.post {}.run {
+            return typography.measuredHeight.coerceAtLeast(iconSize)
         }
     }
 

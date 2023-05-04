@@ -56,7 +56,7 @@ class ComparisonBpcWidgetAdapter(
     private fun List<Visitable<ComparisonBpcTypeFactory>>.appendViewAllIfNeeded(model: ComparisonBpcListModel): List<Visitable<ComparisonBpcTypeFactory>>{
         return this.toMutableList().apply {
             if(model.isShowViewAllCard()) {
-                add(ComparisonBpcSeeMoreDataModel())
+                add(ComparisonBpcSeeMoreDataModel(model.trackingModel))
             }
         }
     }

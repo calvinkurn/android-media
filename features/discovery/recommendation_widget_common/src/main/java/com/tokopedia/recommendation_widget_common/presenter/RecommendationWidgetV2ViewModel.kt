@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presenter
 
 import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -31,7 +30,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-class RecomWidgetV2ViewModel @Inject constructor(
+class RecommendationWidgetV2ViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     val userSession: UserSessionInterface,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
@@ -42,12 +41,9 @@ class RecomWidgetV2ViewModel @Inject constructor(
     private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>
 ) : BaseViewModel(dispatcher.main) {
 
-    val titleFlow = MutableStateFlow("BPC Header")
-
     private val recommendationsMap: MutableMap<String, Result<RecommendationWidget>> = mutableMapOf()
     private val _recommendationsFlow: MutableStateFlow<Map<String, Result<RecommendationWidget>>> = MutableStateFlow(recommendationsMap.toMap())
 
-//    val recommendationsFlow: StateFlow<Map<String, Result<RecommendationWidget>>> = _recommendationsFlow
     val recommendationsFlow = mutableMapOf<String, StateFlow<Result<RecommendationWidget>>>()
 
     fun loadRecommendation(recom: RecommendationVisitable) {
@@ -60,7 +56,7 @@ class RecomWidgetV2ViewModel @Inject constructor(
                     pageName = recom.metadata.pageName,
                     productIDs = TextUtils.join(",", recom.metadata.productIds) ?: "",
                     isTokonow = isTokonow,
-                    xSource = recom.metadata.pageSource?.value.orEmpty()
+                    xSource = recom.metadata.pageSource
                 )
                 recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
             }
@@ -71,16 +67,16 @@ class RecomWidgetV2ViewModel @Inject constructor(
                     queryParam = recom.metadata.queryParam,
                     pageName = recom.metadata.pageName,
                     categoryIds = recom.metadata.categoryIds,
-                    xSource = recom.metadata.pageSource?.value.orEmpty(),
+                    xSource = recom.metadata.pageSource,
                     xDevice = recom.metadata.device,
                     keywords = recom.metadata.keyword,
                     isTokonow = isTokonow
                 )
             )
-            Log.d("globalrecom", "loadRecommendation: $result")
             if (result.isNotEmpty()) {
                 val recomWidget = result[0].copy(recommendationFilterChips = recomFilterList)
                 if (isTokonow) {
+                    //to be added later
 //                        mappingMiniCartDataToRecommendation(recomWidget, miniCartData.value)
                 }
                 recommendationsMap[recom.metadata.pageName] = recomWidget.asSuccess()
@@ -89,7 +85,6 @@ class RecomWidgetV2ViewModel @Inject constructor(
             }
             _recommendationsFlow.emit(recommendationsMap.toMap())
         }) {
-            Log.e("globalrecom", "loadRecommendation: ", it)
             recommendationsMap[recom.metadata.pageName] = it.asFail()
             _recommendationsFlow.emit(recommendationsMap.toMap())
         }

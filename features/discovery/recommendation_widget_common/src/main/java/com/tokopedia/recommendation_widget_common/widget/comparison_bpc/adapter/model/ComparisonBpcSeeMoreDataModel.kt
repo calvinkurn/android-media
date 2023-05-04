@@ -2,11 +2,14 @@ package com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 
 /**
  * Created by Frenzel
  */
-class ComparisonBpcSeeMoreDataModel: Visitable<ComparisonBpcTypeFactory> {
+data class ComparisonBpcSeeMoreDataModel(
+    val trackingModel: RecommendationWidgetTrackingModel
+): Visitable<ComparisonBpcTypeFactory> {
     override fun type(typeFactory: ComparisonBpcTypeFactory): Int {
         return typeFactory.type(this)
     }

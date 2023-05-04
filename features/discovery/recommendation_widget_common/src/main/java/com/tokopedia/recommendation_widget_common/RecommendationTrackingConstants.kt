@@ -2,6 +2,8 @@ package com.tokopedia.recommendation_widget_common
 
 object RecommendationTrackingConstants {
     object Tracking {
+        const val DEFAULT_VALUE = ""
+        const val DEFAULT_QUANTITY = 0
 
         const val TRACKER_ID = "trackerId"
 
@@ -39,6 +41,21 @@ object RecommendationTrackingConstants {
         const val IMPRESSIONS = "impressions"
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
+
+        const val ITEMS_DIMENSION_40 = "dimension40"
+        const val ITEMS_DIMENSION_84 = "dimension84"
+        const val ITEMS_DIMENSION_90 = "dimension90"
+        const val ITEMS_PRODUCT_NAME = "name"
+        const val ITEMS_PRODUCT_ID = "id"
+        const val ITEMS_PRODUCT_PRICE = "price"
+        const val ITEMS_PRODUCT_BRAND = "brand"
+        const val ITEMS_PRODUCT_VARIANT = "variant"
+        const val ITEMS_PRODUCT_CATEGORY = "category"
+        const val ITEMS_PRODUCT_LIST = "list"
+        const val ITEMS_PRODUCT_POSITION = "position"
+        const val ITEMS_ACTION_FIELD = "actionField"
+
+        const val VALUE_NONE_OTHER = "none / other"
     }
 
     object Action {

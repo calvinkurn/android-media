@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ComparisonBpcWidgetItemViewHolder(
     val view: View,
-    private val listener: RecommendationWidgetAnalyticListener
+    private val listener: ComparisonBpcAnalyticListener
 ) : AbstractViewHolder<ComparisonBpcItemModel>(view) {
 
     private var binding: ItemComparisonBpcWidgetBinding? by viewBinding()
@@ -48,19 +48,7 @@ class ComparisonBpcWidgetItemViewHolder(
                         product.imageUrl
                     )
                 }
-//                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-//                    ProductRecommendationTracking.getClickProductTracking(
-//                        recommendationItem = comparisonModel.recommendationItem,
-//                        androidPageName = recommendationTrackingModel.androidPageName,
-//                        headerTitle = recommendationTrackingModel.headerTitle,
-//                        position = adapterPosition,
-//                        isLoggedIn = userSession.isLoggedIn,
-//                        anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString(),
-//                        userId = userSession.userId,
-//                        widgetType = ProductRecommendationTracking.COMPARISON_WIDGET
-//                    )
-//                )
-                listener.onProductCardClicked(element.recommendationItem)
+                listener.onProductCardClicked(element.recommendationItem, element.trackingModel, element.anchorProductId)
             }
             productCardView.addOnImpressionListener(element) {
                 if (element.recommendationItem.isTopAds) {
@@ -73,16 +61,7 @@ class ComparisonBpcWidgetItemViewHolder(
                         product.imageUrl
                     )
                 }
-//                element.trackingQueue?.putEETracking(
-//                    ComparisonWidgetTracking.getImpressionProductTrackingComparisonWidget(
-//                        recommendationItem = comparisonModel.recommendationItem,
-//                        androidPageName = recommendationTrackingModel.androidPageName,
-//                        headerTitle = recommendationTrackingModel.headerTitle,
-//                        position = adapterPosition,
-//                        userId = userSession.userId
-//                    )
-//                )
-                listener.onProductCardImpressed(element.recommendationItem)
+                listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId)
             }
         }
     }

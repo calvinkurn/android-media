@@ -33,6 +33,8 @@
     <dimen name="comparison_bpc_specs_margin_start">8dp</dimen>
     <dimen name="comparison_bpc_specs_margin_end">8dp</dimen>
     <dimen name="comparison_bpc_specs_margin_bottom">8dp</dimen>
+    <dimen name="comparison_bpc_specs_icon_size">24dp</dimen>
     <dimen name="comparison_bpc_specs_bullet_size">3dp</dimen>
+    <dimen name="comparison_bpc_specs_icon_margin">4dp</dimen>
     <dimen name="comparison_bpc_specs_bullet_margin">8dp</dimen>
 </resources>

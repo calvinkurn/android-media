@@ -3,17 +3,17 @@ package com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.recommendation_widget_common.widget.common.horizontal.viewholder.ComparisonBpcSeeMoreViewHolder
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.viewholder.ComparisonBpcSeeMoreViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.viewholder.ComparisonBpcWidgetItemViewHolder
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetAnalyticListener
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
 
 /**
  * Created by Frenzel
  */
 class ComparisonBpcTypeFactoryImpl(
-    private val listener: RecommendationWidgetAnalyticListener
+    private val listener: ComparisonBpcAnalyticListener
 ) : ComparisonBpcTypeFactory {
     override fun type(dataModel: ComparisonBpcSeeMoreDataModel): Int {
         return ComparisonBpcSeeMoreViewHolder.LAYOUT
