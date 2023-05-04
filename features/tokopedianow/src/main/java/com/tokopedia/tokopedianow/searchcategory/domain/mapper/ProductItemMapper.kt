@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.domain.mapper
 
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -13,7 +13,7 @@ object ProductItemMapper {
     private fun mapAceSearchProductToProductCard(
         product: AceSearchProductModel.Product,
         cartService: CartService,
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
         imageUrl = product.imageUrl300,
         minOrder = product.minOrder,

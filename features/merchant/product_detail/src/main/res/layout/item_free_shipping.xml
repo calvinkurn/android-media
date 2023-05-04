@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/free_shipping_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_width="40dp"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/free_shipping_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/free_shipping_logo"
+        app:layout_constraintTop_toBottomOf="@id/free_shipping_logo"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="NOW! 2 jam tiba"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/free_shipping_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/free_shipping_title"
+        app:layout_constraintTop_toBottomOf="@id/free_shipping_title"
+        app:typographyType="display_3"
+        tools:text="Bebas Ongkir 2 kg khusus Surabaya &amp; sekitarnya"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/free_shipping_estimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/free_shipping_description"
+        app:layout_constraintTop_toBottomOf="@id/free_shipping_description"
+        app:typographyType="display_3"
+        tools:text="Estimasi tiba 23-25 Nov"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/free_shipping_final_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Rp0"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/free_shipping_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/Unify_NN400"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/free_shipping_final_price"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Rp30.000"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/free_shipping_etas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@id/free_shipping_estimation"
+        app:layout_constraintTop_toBottomOf="@+id/free_shipping_estimation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
