@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.Color
 import com.tokopedia.common_compose.components.NestNotification
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
 
@@ -58,14 +58,14 @@ internal fun PrefixFilterItem(
             }
             if (text != null) {
                 val padding = if (textWidth == 0.dp) 0.dp else 4.dp
-                Text(
+                NestTypography(
                     modifier = Modifier
                         .padding(start = padding)
                         .run { if (textWidth != null) width(textWidth) else this }
                         .onGloballyPositioned {
                             textWidthChange(it.size.width)
                         },
-                    style = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600),
+                    textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600),
                     text = text,
                     maxLines = 1
                 )

@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
 
@@ -207,7 +208,7 @@ fun NestSortFilterPreview() {
                     Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                     Text("L", fontWeight = FontWeight.Bold)
                 }
-                Text(text = "Quick Filter")
+                NestTypography(text = "Quick Filter", textStyle = NestTheme.typography.heading5)
                 NestSortFilter(
                     size = size,
                     items = items,
@@ -224,7 +225,7 @@ fun NestSortFilterPreview() {
                     onClearFilter = { items = items.map { it.copy(isSelected = false) } }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Advanced Filter")
+                NestTypography(text = "Advanced Filter", textStyle = NestTheme.typography.heading5)
                 NestSortFilterAdvanced(items = advItems, size = size, onItemClicked = { sf ->
                     advItems = advItems.map {
                         if (it == sf) {

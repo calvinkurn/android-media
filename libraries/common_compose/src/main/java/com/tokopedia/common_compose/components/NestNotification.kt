@@ -6,7 +6,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,10 +82,10 @@ fun NotificationPreview() {
     NestTheme {
         Surface {
             Row(
+                modifier = Modifier.padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Notification: ")
                 NestNotification("12")
                 NestNotification(text = "122", colorType = Color.SECONDARY)
                 NestNotification(text = "")
