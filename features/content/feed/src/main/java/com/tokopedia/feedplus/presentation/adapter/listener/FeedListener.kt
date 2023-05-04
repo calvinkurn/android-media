@@ -96,4 +96,10 @@ interface FeedListener {
         authorName: String
     )
 
+    fun onPostImpression(
+        trackerModel: FeedTrackerDataModel?,
+        activityId: String,
+        positionInFeed: Int
+    )
+
 }

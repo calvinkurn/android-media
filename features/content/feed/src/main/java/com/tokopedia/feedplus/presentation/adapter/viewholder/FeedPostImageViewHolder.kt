@@ -216,6 +216,14 @@ class FeedPostImageViewHolder(
                 showClearView()
             }
             if (payloads.contains(FEED_POST_SELECTED)) {
+                listener.onPostImpression(
+                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
+                        it
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
+                )
+
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
                 updateProductTagText(it)

@@ -101,13 +101,17 @@ class FeedAnalytics @Inject constructor(
         const val KEY_CREATIVE_SLOT = "creative_slot"
 
         const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottomsheet"
+        const val UNIFIED_FEED_CONTENT = "unified-feed-content\\\""
+        const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
     }
 
     fun eventPostImpression(
-        trackerData: FeedTrackerDataModel
+        trackerData: FeedTrackerDataModel,
+        activityId: String,
+        index: Int
     ) {
-        sendEventTracker(
-            generateGeneralTrackerData(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM,
+            generateGeneralTrackerBundleData(
                 Event.VIEW_ITEM,
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_POST,
@@ -126,7 +130,25 @@ class FeedAnalytics @Inject constructor(
                     )
                 } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
                 "41567"
-            )
+            ).also {
+                it.putParcelableArrayList(
+                    EnhanceEcommerce.KEY_PROMOTIONS,
+                    arrayListOf(
+                        Bundle().apply {
+                            putString(
+                                EnhanceEcommerce.KEY_CREATIVE_NAME,
+                                EnhanceEcommerce.UNIFIED_FEED_CONTENT
+                            )
+                            putInt(EnhanceEcommerce.KEY_CREATIVE_SLOT, index + 1)
+                            putString(EnhanceEcommerce.KEY_ITEM_ID, activityId)
+                            putString(
+                                EnhanceEcommerce.KEY_ITEM_NAME,
+                                EnhanceEcommerce.CONTENT_IN_UNIFIED_FEED
+                            )
+                        }
+                    )
+                )
+            }
         )
     }
 

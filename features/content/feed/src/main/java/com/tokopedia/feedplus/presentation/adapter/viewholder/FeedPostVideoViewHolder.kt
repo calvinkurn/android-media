@@ -139,6 +139,13 @@ class FeedPostVideoViewHolder(
                 showClearView()
             }
             if (payloads.contains(FEED_POST_SELECTED)) {
+                listener.onPostImpression(
+                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                        it
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
+                )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
                 listener.onWatchPostVideo(

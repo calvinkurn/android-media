@@ -384,6 +384,20 @@ class FeedFragment :
         }
     }
 
+    override fun onPostImpression(
+        trackerModel: FeedTrackerDataModel?,
+        activityId: String,
+        positionInFeed: Int
+    ) {
+        trackerModel?.let {
+            feedAnalytics.eventPostImpression(
+                it,
+                activityId,
+                positionInFeed
+            )
+        }
+    }
+
     override fun onProductTagButtonClicked(
         postId: String,
         author: FeedAuthorModel,

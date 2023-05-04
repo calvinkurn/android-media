@@ -64,6 +64,14 @@ class FeedPostLiveViewHolder(
             trackerDataModel = trackerMapper.transformLiveContentToTrackerModel(it)
 
             if (payloads.contains(FEED_POST_SELECTED)) {
+                listener.onPostImpression(
+                    trackerDataModel ?: trackerMapper.transformLiveContentToTrackerModel(
+                        it
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
+                )
+
                 bindVideoPlayer(it)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
