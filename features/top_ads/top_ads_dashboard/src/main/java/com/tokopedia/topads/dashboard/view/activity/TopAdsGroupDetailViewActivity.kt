@@ -218,25 +218,25 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
-        val list: MutableList<FragmentTabItem> = mutableListOf()
-        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
-        tabLayout?.addNewTab(PRODUK)
-        if (autoBidStatus.isEmpty()) {
-            tabLayout?.addNewTab(KATA_KUNCI)
-            tabLayout?.addNewTab(NEG_KATA_KUNCI)
-            tabLayout?.customTabMode = TabLayout.MODE_FIXED
-        } else {
-            tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
-        }
         val bundle = Bundle()
         bundle.putString(GROUP_ID, groupId)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         bundle.putInt("placementType", placementType)
         bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+        val list: MutableList<FragmentTabItem> = mutableListOf()
+        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
+        tabLayout?.addNewTab(PRODUK)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
-        list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
-        list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
+        if (autoBidStatus.isEmpty()) {
+            tabLayout?.addNewTab(KATA_KUNCI)
+            tabLayout?.addNewTab(NEG_KATA_KUNCI)
+            list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
+            list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
+            tabLayout?.customTabMode = TabLayout.MODE_FIXED
+        } else {
+            tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
         val detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
