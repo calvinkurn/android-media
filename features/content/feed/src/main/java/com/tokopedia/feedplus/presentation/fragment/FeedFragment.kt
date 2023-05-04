@@ -117,8 +117,10 @@ class FeedFragment :
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
-        // TODO : Fix Entry Point
-        MapperFeedModelToTrackerDataModel(data?.type ?: "", "")
+        MapperFeedModelToTrackerDataModel(
+            data?.type ?: "",
+            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ""
+        )
     }
 
     private val reportPostLoginResult =
@@ -1034,6 +1036,7 @@ class FeedFragment :
 
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
+        private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
 
         private const val MINIMUM_ENDLESS_CALL = 3
 
@@ -1045,11 +1048,13 @@ class FeedFragment :
 
         fun createFeedFragment(
             data: FeedDataModel,
-            extras: Bundle
+            extras: Bundle,
+            entryPoint: String
         ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
                 putAll(extras)
+                putString(ARGUMENT_ENTRY_POINT, entryPoint)
             }
         }
     }
