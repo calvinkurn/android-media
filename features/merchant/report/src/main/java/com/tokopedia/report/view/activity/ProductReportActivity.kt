@@ -83,7 +83,7 @@ class ProductReportActivity : AppCompatActivity() {
     }
 
     private fun setScreenImpression() {
-        ServerLogger.log(Priority.P1, "ProductReportCompose", mapOf("impression" to "compose"))
+        ServerLogger.log(Priority.P1, SERVER_LOG_TAG, mapOf("impression" to "compose"))
     }
 
     private fun onFooterClicked() {
@@ -128,5 +128,6 @@ class ProductReportActivity : AppCompatActivity() {
     companion object {
         private const val ARG_PRODUCT_ID = "arg_product_id"
         private const val REQ_CODE_GO_FORM = 32
+        private const val SERVER_LOG_TAG = "PRODUCT_REPORT_COMPOSE"
     }
 }
