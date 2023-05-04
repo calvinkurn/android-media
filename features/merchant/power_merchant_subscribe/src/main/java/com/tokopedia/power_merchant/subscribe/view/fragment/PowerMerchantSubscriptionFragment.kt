@@ -338,7 +338,7 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun showRegularPmDeactivationBottomSheet() {
-        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmPro = pmBasicInfo?.pmStatus?.isPowerMerchantPro() == true
         val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(isPmPro)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.setListener(object :
