@@ -9,7 +9,7 @@ import com.tokopedia.productcard.compact.common.util.ViewUtil
 object ProductCardExtension {
     private const val EXPECTED_PRODUCT_ON_SCREEN = 3
 
-    fun View.setProductWidth() {
+    fun View.setProductCarouselWidth() {
         val spaceWidth = ViewUtil.getDpFromDimen(
             context = context,
             id = R.dimen.product_card_compact_product_card_total_space_width
