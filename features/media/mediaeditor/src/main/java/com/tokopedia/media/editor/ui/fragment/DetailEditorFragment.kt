@@ -5,12 +5,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.text.StaticLayout
-import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.analytics.addLogoToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
@@ -45,6 +40,8 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.*
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_BLACK
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
@@ -380,7 +377,6 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    // === Listener add logo
     override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
         viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
             viewBinding?.imgPreviewOverlay?.apply {
@@ -431,11 +427,15 @@ class DetailEditorFragment @Inject constructor(
                         latarColor = color,
                         latarModel = model
                     ))
+
+                    it.textColor = latarSelectionTextColor(color)
                 }
+
                 tempTemplateMode = templateIndex
             }
 
             implementAddTextData()
+            openAddTextActivity()
         }
     }
 
@@ -1398,6 +1398,15 @@ class DetailEditorFragment @Inject constructor(
             childFragmentManager,
             ADD_TEXT_BOTTOM_SHEET_TAG
         )
+    }
+
+    // color mapping for latar -> text (automatic choose text color according to latar color)
+    private fun latarSelectionTextColor(latarColor: Int): Int {
+        return when(latarColor){
+            TEXT_LATAR_TEMPLATE_BLACK -> editorR.color.Unify_NN0
+            TEXT_LATAR_TEMPLATE_WHITE -> editorR.color.Unify_NN1000
+            else -> 0
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME
