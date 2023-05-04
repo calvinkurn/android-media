@@ -57,14 +57,16 @@ open class BaseTokoNowViewModel(
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
 
+    protected var hasBlockedAddToCart: Boolean = false
     protected var miniCartData: MiniCartSimplifiedData? = null
         private set
+
+    protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    protected val _blockAddToCart = MutableLiveData<Unit>()
 
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
-
-    protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
@@ -84,21 +86,26 @@ open class BaseTokoNowViewModel(
         onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit = { _, _ -> },
         onError: (Throwable) -> Unit = {}
     ) {
-        changeQuantityJob?.cancel()
+        if (hasBlockedAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            _blockAddToCart.value = Unit
+        } else {
+            changeQuantityJob?.cancel()
 
-        val miniCartItem = getMiniCartItem(productId)
-        val cartQuantity = miniCartItem.quantity
-        if (cartQuantity == quantity) return
+            val miniCartItem = getMiniCartItem(productId)
+            val cartQuantity = miniCartItem.quantity
+            if (cartQuantity == quantity) return
 
-        launchWithDelay(block = {
-            miniCartItem.quantity = quantity
-            when {
-                cartQuantity.isZero() -> addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
-                quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                else -> updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
+            launchWithDelay(block = {
+                miniCartItem.quantity = quantity
+                when {
+                    cartQuantity.isZero() -> addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
+                    quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
+                    else -> updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
+                }
+            }, delay = CHANGE_QUANTITY_DELAY).let {
+                changeQuantityJob = it
             }
-        }, delay = CHANGE_QUANTITY_DELAY).let {
-            changeQuantityJob = it
         }
     }
 

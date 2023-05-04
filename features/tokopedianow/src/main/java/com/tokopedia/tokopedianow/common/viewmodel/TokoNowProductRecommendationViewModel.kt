@@ -68,7 +68,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var productRecommendationPageNames: MutableList<String> = mutableListOf()
-    private var hasBlockedAddToCart: Boolean = false
     private var job: Job? = null
 
     val productRecommendation: LiveData<Result<TokoNowProductRecommendationViewUiModel>>

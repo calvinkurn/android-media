@@ -31,12 +31,10 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
-import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.HOME_PAGE
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -112,7 +110,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -206,14 +203,12 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
     private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
-    private val _blockAddToCart = MutableLiveData<Unit>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var channelToken = ""
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
-    private var hasBlockedAddToCart: Boolean = false
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -471,36 +466,31 @@ class TokoNowHomeViewModel @Inject constructor(
         shopId: String,
         @TokoNowLayoutType type: String
     ) {
-        if (hasBlockedAddToCart) {
-            // this only blocks add to cart when using repurchase widget
-            _blockAddToCart.value = Unit
-        } else {
-            onCartQuantityChanged(
-                productId = productId,
-                shopId = shopId,
-                quantity = quantity,
-                onSuccessAddToCart = {
-                    trackProductAddToCart(productId, quantity, type, it.data.cartId)
-                    updateProductCartQuantity(productId, quantity, type)
-                    checkRealTimeRecommendation(channelId, productId, type)
-                    updateToolbarNotification()
-                },
-                onSuccessUpdateCart = { miniCartItem, _ ->
-                    val cartId = miniCartItem.cartId
-                    trackProductUpdateCart(productId, quantity, type, cartId)
-                    updateProductCartQuantity(productId, quantity, type)
-                    updateToolbarNotification()
-                },
-                onSuccessDeleteCart = { miniCartItem, _ ->
-                    trackProductRemoveCart(productId, type, miniCartItem.cartId)
-                    updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
-                    updateToolbarNotification()
-                },
-                onError = {
-                    updateProductCartQuantity(productId, quantity, type)
-                }
-            )
-        }
+        onCartQuantityChanged(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            onSuccessAddToCart = {
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
+                updateProductCartQuantity(productId, quantity, type)
+                checkRealTimeRecommendation(channelId, productId, type)
+                updateToolbarNotification()
+            },
+            onSuccessUpdateCart = { miniCartItem, _ ->
+                val cartId = miniCartItem.cartId
+                trackProductUpdateCart(productId, quantity, type, cartId)
+                updateProductCartQuantity(productId, quantity, type)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { miniCartItem, _ ->
+                trackProductRemoveCart(productId, type, miniCartItem.cartId)
+                updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                updateToolbarNotification()
+            },
+            onError = {
+                updateProductCartQuantity(productId, quantity, type)
+            }
+        )
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
