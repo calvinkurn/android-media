@@ -7,10 +7,13 @@ import com.tokopedia.logisticCommon.data.module.CoreModule
 import dagger.Component
 
 @DropoffPickerScope
-@Component(modules = [
-    DropoffPickerViewModelsModule::class,
-    CoreModule::class
-], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        DropoffPickerViewModelsModule::class,
+        CoreModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface DropoffPickerComponent {
     fun inject(activity: DropoffPickerActivity)
     fun inject(fragment: AutoCompleteFragment)

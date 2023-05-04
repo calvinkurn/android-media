@@ -14,9 +14,13 @@ class AutoCompleteActivity : BaseActivity() {
         setContentView(R.layout.activity_autocomplete)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this,
-                com.tokopedia.design.R.drawable.ic_close_default));
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(
+            ContextCompat.getDrawable(
+                this,
+                com.tokopedia.design.R.drawable.ic_close_default
+            )
+        )
     }
 
     override fun onBackPressed() {
@@ -33,5 +37,4 @@ class AutoCompleteActivity : BaseActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

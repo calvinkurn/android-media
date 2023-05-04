@@ -28,5 +28,4 @@ abstract class DropoffPickerViewModelsModule {
     @IntoMap
     @ViewModelKey(AutoCompleteViewModel::class)
     internal abstract fun bindAutoCompleteViewModel(viewModel: AutoCompleteViewModel): ViewModel
-
 }
