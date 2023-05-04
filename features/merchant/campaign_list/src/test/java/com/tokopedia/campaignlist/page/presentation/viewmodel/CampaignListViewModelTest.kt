@@ -66,11 +66,11 @@ class CampaignListViewModelTest {
     private val shop = ShopData(name = "Compass")
     private val campaign = Campaign(name = "Flash Deal")
     private val merchantBannerData = GetMerchantCampaignBannerGeneratorData()
-    
+
     companion object {
         private const val EMPTY_STRING = ""
     }
-    
+
     private val viewModel by lazy {
         CampaignListViewModel(
             resourceProvider,
@@ -174,8 +174,8 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When set campaign status, should set correct campaign status`() {
-        val campaignType = listOf(5,6,7)
-        val expected = listOf(5,6,7)
+        val campaignType = listOf(5, 6, 7)
+        val expected = listOf(5, 6, 7)
 
         viewModel.setCampaignStatusId(campaignType)
 
@@ -205,7 +205,8 @@ class CampaignListViewModelTest {
             CampaignTypeSelection(campaignTypeName = "Flash Sale 12.12", isSelected = false)
         )
 
-        val expected = CampaignTypeSelection(campaignTypeName = "Flash Sale 11.11", isSelected = true)
+        val expected =
+            CampaignTypeSelection(campaignTypeName = "Flash Sale 11.11", isSelected = true)
 
         viewModel.setDefaultCampaignTypeSelection(selectedCampaignType)
 
@@ -373,16 +374,17 @@ class CampaignListViewModelTest {
         val campaign = Campaign(name = "Flash Deal")
         val expected =
             "Wah, ada ${campaign.name} dari ${shop.name} di @Tokopedia, lho. Mulai 03 Jan 2022 pukul 11:20 WIB! Cek sekarang, yuk! $shareUri"
-        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+        val merchantBanner =
+            GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
 
         every { resourceProvider.getShareCampaignDescriptionWording() } returns "Wah, ada %s dari %s di @Tokopedia, lho. Mulai %s pukul %s! Cek sekarang, yuk!"
 
         val actual = viewModel.getShareDescriptionWording(
-                shopData = shop,
-                campaignData = campaign,
-                merchantBannerData = merchantBanner,
-                shareUri = shareUri,
-                campaignStatusId = campaignStatusUpcoming
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusUpcoming
         )
 
         assertEquals(expected, actual)
@@ -394,7 +396,8 @@ class CampaignListViewModelTest {
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
         val campaign = Campaign(name = "Flash Deal")
         val expected = " $shareUri"
-        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+        val merchantBanner =
+            GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
 
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
 
@@ -415,7 +418,8 @@ class CampaignListViewModelTest {
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
         val campaign = Campaign(name = "Flash Deal")
         val expected = " $shareUri"
-        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+        val merchantBanner =
+            GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
 
         every { resourceProvider.getShareCampaignDescriptionWording() } returns null
 
@@ -440,11 +444,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareCampaignDescriptionWording() } returns null
 
         val actual = viewModel.getShareDescriptionWording(
-                shopData = shop,
-                campaignData = campaign,
-                merchantBannerData = merchantBannerData,
-                shareUri = shareUri,
-                campaignStatusId = campaignStatusOngoing
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBannerData,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusOngoing
         )
 
         assertEquals(expected, actual)
@@ -457,16 +461,17 @@ class CampaignListViewModelTest {
         val campaign = Campaign(name = "Flash Deal")
         val expected =
             "Kejar eksklusif launching ${campaign.name} dari ${shop.name} hanya di @Tokopedia. Hanya sampai 03 Jan 2022 pukul 14:00 WIB! $shareUri"
-        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedEndDate = "03 Jan 2022, 14:00 WIB")
+        val merchantBanner =
+            GetMerchantCampaignBannerGeneratorData(formattedEndDate = "03 Jan 2022, 14:00 WIB")
 
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s!"
 
         val actual = viewModel.getShareDescriptionWording(
-                shopData = shop,
-                campaignData = campaign,
-                merchantBannerData = merchantBanner,
-                shareUri = shareUri,
-                campaignStatusId = campaignStatusOngoing
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusOngoing
         )
 
         assertEquals(expected, actual)
@@ -482,11 +487,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
 
         val actual = viewModel.getShareDescriptionWording(
-                shopData = shop,
-                campaignData = campaign,
-                merchantBannerData = merchantBannerData,
-                shareUri = shareUri,
-                campaignStatusId = campaignStatusUpcoming
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBannerData,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusUpcoming
         )
 
         assertEquals(expected, actual)
@@ -501,7 +506,7 @@ class CampaignListViewModelTest {
 
         val expected = LinkerData().apply {
             name = "Flash Deal dari Compass"
-            ogTitle  = "Flash Deal dari Compass"
+            ogTitle = "Flash Deal dari Compass"
         }
 
 
@@ -525,7 +530,7 @@ class CampaignListViewModelTest {
 
         val expected = LinkerData().apply {
             name = EMPTY_STRING
-            ogTitle  = EMPTY_STRING
+            ogTitle = EMPTY_STRING
         }
 
 
@@ -546,7 +551,7 @@ class CampaignListViewModelTest {
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
-            ogDescription  = EMPTY_STRING
+            ogDescription = EMPTY_STRING
         }
 
         every { resourceProvider.getShareOngoingDescription() } returns null
@@ -568,7 +573,7 @@ class CampaignListViewModelTest {
         val stubbedDescription = "Kejar eksklusif launching"
 
         val expected = LinkerData().apply {
-            ogDescription  = stubbedDescription
+            ogDescription = stubbedDescription
         }
 
         every { resourceProvider.getShareOngoingDescription() } returns stubbedDescription
@@ -585,12 +590,12 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get linker data while campaign status is empty, should produce empty string`() {
-        val campaignStatus= EMPTY_STRING
+        val campaignStatus = EMPTY_STRING
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
             description = EMPTY_STRING
-            ogDescription  = EMPTY_STRING
+            ogDescription = EMPTY_STRING
         }
 
         val actual = viewModel.generateLinkerShareData(
@@ -883,7 +888,10 @@ class CampaignListViewModelTest {
                 CampaignListViewModel.UiEffect.ShowShareBottomSheet(bannerResponse.getMerchantCampaignBannerGeneratorData),
                 actual
             )
-            assertEquals(bannerResponse.getMerchantCampaignBannerGeneratorData, actual.bannerOrNull())
+            assertEquals(
+                bannerResponse.getMerchantCampaignBannerGeneratorData,
+                actual.bannerOrNull()
+            )
 
             job.cancel()
         }
@@ -907,6 +915,54 @@ class CampaignListViewModelTest {
             assertEquals(null, actual.selectedCampaignStatus)
 
             coVerify { getCampaignListUseCase.executeOnBackground() }
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When ClearFilter event is triggered, selectedCampaignType values should be intact and preserved`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            val campaignTypeId = NPL_CAMPAIGN_TYPE.toString()
+            val campaignTypeName = "Rilisan Spesial"
+
+            val selectedCampaignType = CampaignTypeSelection(
+                campaignTypeId = campaignTypeId,
+                campaignTypeName = campaignTypeName,
+                statusText = "",
+                isSelected = true
+            )
+
+            coEvery { getSellerMetaDataUseCase.executeOnBackground() } returns GetSellerCampaignSellerAppMetaResponse(
+                getSellerCampaignSellerAppMeta = GetSellerCampaignSellerAppMeta(
+                    campaignStatus = listOf(),
+                    campaignTypeData = listOf(
+                        CampaignTypeData(
+                            campaignTypeId = "52",
+                            campaignTypeName = "Flash Sale Toko"
+                        ),
+                        CampaignTypeData(
+                            campaignTypeId = campaignTypeId,
+                            campaignTypeName = campaignTypeName,
+                        )
+                    )
+                )
+            )
+
+            viewModel.getSellerMetaData()
+
+            //When
+            viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter)
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(selectedCampaignType, actual.selectedCampaignType)
 
             job.cancel()
         }
