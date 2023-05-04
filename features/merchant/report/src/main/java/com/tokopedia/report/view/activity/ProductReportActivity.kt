@@ -83,7 +83,7 @@ class ProductReportActivity : AppCompatActivity() {
     }
 
     private fun setScreenImpression() {
-        ServerLogger.log(Priority.P1, SERVER_LOG_TAG, mapOf("impression" to "compose"))
+        ServerLogger.log(Priority.P2, SERVER_LOG_TAG, mapOf("impression" to "compose"))
     }
 
     private fun onFooterClicked() {
