@@ -3,6 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -30,6 +31,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
@@ -80,6 +82,19 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
 
         setContent {
             NestTheme {
+                //Observe for any effect / one-time event
+                LaunchedEffect(Unit) {
+                    viewModel.uiEffect.collectLatest { effect ->
+                        when (effect) {
+                            is CampaignListViewModel.UiEffect.ShowShareBottomSheet -> {
+                                val banner = effect.banner
+                                viewModel.setMerchantBannerData(banner)
+                                showShareBottomSheet(banner)
+                            }
+                        }
+                    }
+                }
+
                 val uiState = viewModel.uiState.collectAsState()
 
                 CampaignListScreen(
@@ -116,17 +131,10 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
                 )
             }
 
-            val uiEffect = viewModel.uiEffect.collectAsState(initial = CampaignListViewModel.UiEffect.None)
-            when (uiEffect.value) {
-                CampaignListViewModel.UiEffect.None -> {}
-                is CampaignListViewModel.UiEffect.ShowShareBottomSheet -> {
-                    val banner = (uiEffect.value as CampaignListViewModel.UiEffect.ShowShareBottomSheet).banner
-                    viewModel.setMerchantBannerData(banner)
-                    showShareBottomSheet(banner)
-                }
-            }
+
         }
     }
+
 
     private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
         tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
