@@ -6,4 +6,5 @@
     <color name="mvcw_green_200">#D6FFDE</color>
     <color name="mvc_widget_dms_31353b">#31353B</color>
     <color name="mvcw_6831353B">#AD31353B</color>
+    <color name="mvc_background_color">@color/Unify_NN0</color>
 </resources>
