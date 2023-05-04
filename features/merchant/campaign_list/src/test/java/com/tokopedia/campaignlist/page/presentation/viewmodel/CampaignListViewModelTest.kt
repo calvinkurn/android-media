@@ -3,6 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.viewmodel
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant
 import com.tokopedia.campaignlist.common.data.model.response.*
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
@@ -22,12 +23,18 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -713,6 +720,229 @@ class CampaignListViewModelTest {
 
         val actual = viewModel.getProductCount(productCount)
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When CampaignStatusFilterApplied event is triggered, selectedCampaignStatus should be updated and showClearFilterIcon should be true`() {
+        runBlockingTest {
+            //Given
+            val selectedCampaignStatus = CampaignStatusSelection(
+                statusId = listOf(CampaignStatusConstant.ONGOING_STATUS_ID.toInt()),
+                statusText = "Berlangsung",
+                isSelected = true
+            )
+
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.onEvent(
+                CampaignListViewModel.UiEvent.CampaignStatusFilterApplied(selectedCampaignStatus = selectedCampaignStatus)
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(selectedCampaignStatus, actual.selectedCampaignStatus)
+            assertEquals(true, actual.showClearFilterIcon)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When CampaignTypeFilterApplied event is triggered, selectedCampaignType should be null and showClearFilterIcon should be true`() {
+        runBlockingTest {
+            //Given
+            val newProductLaunchCampaignType = "73"
+            val selectedCampaignType = CampaignTypeSelection(
+                campaignTypeId = newProductLaunchCampaignType,
+                campaignTypeName = "Rilisan Spesial",
+                statusText = "Berlangsung",
+                isSelected = true
+            )
+
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.onEvent(
+                CampaignListViewModel.UiEvent.CampaignTypeFilterApplied(selectedCampaignType)
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(selectedCampaignType, actual.selectedCampaignType)
+            assertEquals(true, actual.showClearFilterIcon)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When NoCampaignStatusFilterApplied event is triggered, selectedCampaignStatus should be null and showClearFilterIcon should be true`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.onEvent(
+                CampaignListViewModel.UiEvent.NoCampaignStatusFilterApplied
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(null, actual.selectedCampaignStatus)
+            assertEquals(true, actual.showClearFilterIcon)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When DismissTicker event is triggered, isTickerDismissed should be true`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.onEvent(
+                CampaignListViewModel.UiEvent.DismissTicker
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.isTickerDismissed)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When DismissTicker event is triggered, should update shared preference`() {
+        runBlockingTest {
+            //Given
+            val event = CampaignListViewModel.UiEvent.DismissTicker
+
+
+            //When
+            viewModel.onEvent(event)
+
+            //Then
+            coVerify { preferenceDataStore.markTickerAsDismissed() }
+        }
+    }
+
+    @Test
+    fun `When TapShareButton event is triggered, should get seller banner from remote`() {
+        runBlockingTest {
+            //Given
+            val campaignId = 100
+            val event = CampaignListViewModel.UiEvent.TapShareButton(campaignId)
+            coEvery { getMerchantBannerUseCase.executeOnBackground() } returns GetMerchantCampaignBannerGeneratorDataResponse()
+
+            //When
+            viewModel.onEvent(event)
+
+            //Then
+            coVerify { getMerchantBannerUseCase.executeOnBackground() }
+        }
+    }
+
+    @Test
+    fun `When TapShareButton event is triggered and get banner from remote success, should emit ShowShareBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val campaignId = 100
+            val event = CampaignListViewModel.UiEvent.TapShareButton(campaignId)
+
+            val bannerResponse = GetMerchantCampaignBannerGeneratorDataResponse()
+            coEvery { getMerchantBannerUseCase.executeOnBackground() } returns bannerResponse
+
+            val emittedEffects = arrayListOf<CampaignListViewModel.UiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.onEvent(event)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            Assert.assertEquals(
+                CampaignListViewModel.UiEffect.ShowShareBottomSheet(bannerResponse.getMerchantCampaignBannerGeneratorData),
+                actual
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When ClearFilter event is triggered, state should be updated correctly`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<CampaignListViewModel.UiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter)
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(false, actual.showClearFilterIcon)
+            assertEquals(null, actual.selectedCampaignStatus)
+
+            coVerify { getCampaignListUseCase.executeOnBackground() }
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When ClearFilter event is triggered, should re-fetch campaign list to remote`() {
+        runBlockingTest {
+            //Given
+            val event = CampaignListViewModel.UiEvent.ClearFilter
+
+            //When
+            viewModel.onEvent(event)
+
+            coVerify { getCampaignListUseCase.executeOnBackground() }
+        }
+    }
+
+    @Test
+    fun `When unlisted event is triggered, should not emit any effect`() {
+        runBlockingTest {
+            //When
+            viewModel.onEvent(mockk())
+
+            val emittedEffects = arrayListOf<CampaignListViewModel.UiEffect>()
+
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //Then
+            val actualEffect = emittedEffects.lastOrNull()
+
+            Assert.assertEquals(null, actualEffect)
+
+            job.cancel()
+        }
     }
 
     @After
