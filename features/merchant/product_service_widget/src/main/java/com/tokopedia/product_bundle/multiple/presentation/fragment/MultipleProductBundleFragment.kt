@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -232,7 +233,7 @@ class MultipleProductBundleFragment :
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                 val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
 
-                if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+                if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART || viewModel.pageSource == BundlingPageSource.CART_RECOMMENDATION_PAGE) {
                     sendTrackerBundleAtcClickEvent(
                         selectedProductIds = selectedProductIds,
                         bundleId = it.requestParams.bundleId,
