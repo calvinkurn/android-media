@@ -329,17 +329,17 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
-                    || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
-                    || it.startsWithPattern(PLAY_SHORTS)
-                    || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS)
-                    || it.startsWithPattern(INTERNAL_MEDIA_PICKER)
-                    || it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM)
-                    || it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+                || it.startsWithPattern(PLAY_SHORTS)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS)
+                || it.startsWithPattern(INTERNAL_MEDIA_PICKER)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
             add(DFP({
                 it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
-                        it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
-                        it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)
+                    it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
+                    it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2) }, DF_FEED_CONTENT_CREATION, R.string.title_feed_create_post))
@@ -348,14 +348,14 @@ object DeeplinkDFMapper : CoroutineScope {
             // Digital
             add(DFP({
                 it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
-                        it.startsWith(TELCO_POSTPAID_DIGITAL) ||
-                        it.startsWith(TELCO_PREPAID_DIGITAL) ||
-                        it.startsWith(DIGITAL_PRODUCT_FORM) ||
-                        it.startsWith(GENERAL_TEMPLATE) ||
-                        it.startsWith(CAMERA_OCR) ||
-                        it.startsWith(VOUCHER_GAME) ||
-                        it.startsWith(DIGITAL_CART) ||
-                        it.startsWith(CHECKOUT_DIGITAL)
+                    it.startsWith(TELCO_POSTPAID_DIGITAL) ||
+                    it.startsWith(TELCO_PREPAID_DIGITAL) ||
+                    it.startsWith(DIGITAL_PRODUCT_FORM) ||
+                    it.startsWith(GENERAL_TEMPLATE) ||
+                    it.startsWith(CAMERA_OCR) ||
+                    it.startsWith(VOUCHER_GAME) ||
+                    it.startsWith(DIGITAL_CART) ||
+                    it.startsWith(CHECKOUT_DIGITAL)
             }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))
@@ -380,7 +380,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(SALDO_DEPOSIT) ||
-                        it.startsWith(SALDO_INTRO)
+                    it.startsWith(SALDO_INTRO)
             }, DF_USER_SETTINGS, R.string.applink_saldo_deposit_title, { DFWebviewFallbackUrl.FINTECH_SALDO }))
 
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DF_BASE, R.string.title_ovop2p))
@@ -425,14 +425,14 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({
                 it.startsWith(PRODUCT_MANAGE)
-                        || it.startsWith(PRODUCT_MANAGE_LIST)
-                        || it.startsWith(RESERVED_STOCK_BASE)
-                        || it.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)
+                    || it.startsWith(PRODUCT_MANAGE_LIST)
+                    || it.startsWith(RESERVED_STOCK_BASE)
+                    || it.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
             add(DFP({
                 it.startsWith(POWER_MERCHANT_SUBSCRIBE) || it.startsWith(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        || it.startsWith(PM_BENEFIT_PACKAGE)
-                        || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+                    || it.startsWith(PM_BENEFIT_PACKAGE)
+                    || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
@@ -457,14 +457,14 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SELLER_MENU) }, DF_MERCHANT_SELLER, R.string.title_seller_menu))
             add(DFP({
                 it.startsWithPattern(SHOP_PAGE_BASE) ||
-                        it.startsWithPattern(SHOP) ||
-                        it.startsWithPattern(SHOP_ETALASE) ||
-                        it.startsWithPattern(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
-                        it.startsWithPattern(SHOP_REVIEW) ||
-                        it.startsWithPattern(SHOP_NOTE) ||
-                        it.startsWithPattern(SHOP_INFO) ||
-                        it.startsWithPattern(SHOP_HOME) ||
-                        it.startsWith(SHOP_SETTINGS_NOTE)
+                    it.startsWithPattern(SHOP) ||
+                    it.startsWithPattern(SHOP_ETALASE) ||
+                    it.startsWithPattern(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
+                    it.startsWithPattern(SHOP_REVIEW) ||
+                    it.startsWithPattern(SHOP_NOTE) ||
+                    it.startsWithPattern(SHOP_INFO) ||
+                    it.startsWithPattern(SHOP_HOME) ||
+                    it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
             add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_widget))
             add(DFP({
@@ -494,7 +494,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW_FULL_PAGE) ||
-                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW)
+                    it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW)
             }, DF_MERCHANT_NONLOGIN, R.string.title_product_review))
 
             add(DFP({
@@ -515,9 +515,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
             }, DF_BASE, R.string.title_product_detail))
 
             add(DFP({
@@ -527,7 +527,7 @@ object DeeplinkDFMapper : CoroutineScope {
             // Operational
             add(DFP({
                 it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) ||
-                        it.startsWith(INTERNAL_INBOX_LIST)
+                    it.startsWith(INTERNAL_INBOX_LIST)
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
@@ -548,38 +548,38 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
-                        it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
-                        it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
-                        it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT) ||
-                        it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
             }, DF_PROMO_GAMIFICATION, R.string.internet_title_gamification))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DIGITAL) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_FLIGHT) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DEALS) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DEALS) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_HOTEL) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_UMROH) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_UMROH) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_EVENT) ||
-                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_FLIGHT) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DEALS) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DEALS) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_HOTEL) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_UMROH) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_UMROH) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_EVENT) ||
+                    it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
             }, DF_PROMO_CHECKOUT, R.string.title_promo_checkout))
 
             //Entertainment
             add(DFP({
                 it.startsWith(EVENT_HOME) ||
-                        it.startsWith(EVENT_PDP)
+                    it.startsWith(EVENT_PDP)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_EVENT }))
 
             add(DFP({
                 it.startsWith(DEALS_HOMEPAGE) ||
-                        it.startsWith(DEALS_BRAND_PAGE) ||
-                        it.startsWith(DEALS_CATEGORY_PAGE) ||
-                        it.startsWith(DEALS_BRAND_DETAIL_PAGE)
+                    it.startsWith(DEALS_BRAND_PAGE) ||
+                    it.startsWith(DEALS_CATEGORY_PAGE) ||
+                    it.startsWith(DEALS_BRAND_DETAIL_PAGE)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_DEALS }))
 
             // Salam
@@ -596,19 +596,19 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 (it.startsWith(SETTING_PROFILE)
-                        || it.startsWith(ADD_PHONE)
-                        || it.startsWith(NEW_ADD_PHONE)
-                        || it.startsWith(ADD_EMAIL)
-                        || it.startsWith(ADD_BOD)
-                        || it.startsWithPattern(CHANGE_NAME)
-                        || it.startsWith(CHANGE_GENDER)
-                        || it.startsWith(ADD_NAME_REGISTER)
-                        || it.startsWith(CHANGE_PIN)
-                        || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
-                        || it.startsWith(ADD_PIN)
-                        || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
-                        || it.startsWith(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
-                        )
+                    || it.startsWith(ADD_PHONE)
+                    || it.startsWith(NEW_ADD_PHONE)
+                    || it.startsWith(ADD_EMAIL)
+                    || it.startsWith(ADD_BOD)
+                    || it.startsWithPattern(CHANGE_NAME)
+                    || it.startsWith(CHANGE_GENDER)
+                    || it.startsWith(ADD_NAME_REGISTER)
+                    || it.startsWith(CHANGE_PIN)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
+                    || it.startsWith(ADD_PIN)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+                    )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
 
@@ -635,9 +635,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
             add(DFP({ it.startsWith(KYC_LIVENESS_BASE) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
-                    it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
+                it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
                     it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)
-                    }, DF_BASE, R.string.applink_fingerprint))
+            }, DF_BASE, R.string.applink_fingerprint))
 
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DF_BASE, R.string.title_notification_center))
@@ -648,10 +648,10 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
             add(DFP({
                 it.startsWithPattern(PRIVACY_CENTER) ||
-                it.startsWithPattern(CONSENT_WITHDRAWAL_NEW) ||
-                it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
-                it.startsWithPattern(SEARCH_HISTORY) ||
-                it.startsWithPattern(SHARING_WISHLIST)
+                    it.startsWithPattern(CONSENT_WITHDRAWAL_NEW) ||
+                    it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
+                    it.startsWithPattern(SEARCH_HISTORY) ||
+                    it.startsWithPattern(SHARING_WISHLIST)
             }, DF_USER_SETTINGS, R.string.title_privacy_center))
 
             // Media
@@ -671,20 +671,20 @@ object DeeplinkDFMapper : CoroutineScope {
             // buyerorder
             add(DFP({
                 it.startsWith(INTERNAL_ORDER) ||
-                        it.startsWith(INTERNAL_BUYER) ||
-                        it.startsWith(ORDER_LIST_INTERNAL) ||
-                        it.startsWith(INTERNAL_TRANSACTION_ORDERLIST) ||
-                        it.startsWith(ApplinkConstInternalOrder.DIGITAL_ORDER) ||
-                        it.startsWith(DIGITAL_ORDER_LIST_INTERNAL) ||
-                        it.startsWith(ORDERLIST_DIGITAL_INTERNAL) ||
-                        it.startsWith(DEALS_INTERNAL_ORDER) ||
-                        it.startsWith(EVENTS_INTERNAL_ORDER) ||
-                        it.startsWith(GIFTCARDS_INTERNAL_ORDER) ||
-                        it.startsWith(INSURANCE_INTERNAL_ORDER) ||
-                        it.startsWith(MODALTOKO_INTERNAL_ORDER) ||
-                        it.startsWith(HOTEL_INTERNAL_ORDER) ||
-                        it.startsWith(PESAWAT_INTERNAL_ORDER) ||
-                        it.startsWith(BELANJA_INTERNAL_ORDER)
+                    it.startsWith(INTERNAL_BUYER) ||
+                    it.startsWith(ORDER_LIST_INTERNAL) ||
+                    it.startsWith(INTERNAL_TRANSACTION_ORDERLIST) ||
+                    it.startsWith(ApplinkConstInternalOrder.DIGITAL_ORDER) ||
+                    it.startsWith(DIGITAL_ORDER_LIST_INTERNAL) ||
+                    it.startsWith(ORDERLIST_DIGITAL_INTERNAL) ||
+                    it.startsWith(DEALS_INTERNAL_ORDER) ||
+                    it.startsWith(EVENTS_INTERNAL_ORDER) ||
+                    it.startsWith(GIFTCARDS_INTERNAL_ORDER) ||
+                    it.startsWith(INSURANCE_INTERNAL_ORDER) ||
+                    it.startsWith(MODALTOKO_INTERNAL_ORDER) ||
+                    it.startsWith(HOTEL_INTERNAL_ORDER) ||
+                    it.startsWith(PESAWAT_INTERNAL_ORDER) ||
+                    it.startsWith(BELANJA_INTERNAL_ORDER)
             }, DF_BASE, R.string.title_buyerorder))
 
             // snapshot
@@ -698,21 +698,21 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
             add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) ||
-                    it.startsWith(BUYER_ORDER_EXTENSION) ||
-                    it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION) ||
-                    it.startsWith(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT) ||
-                    it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT)
+                it.startsWith(BUYER_ORDER_EXTENSION) ||
+                it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION) ||
+                it.startsWith(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT) ||
+                it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT)
             }, DF_BASE, R.string.title_revamped_buyer_order_detail)
             )
 
             // Shop Admin
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_ACCEPTED) ||
-                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
-                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
-                    it.startsWith(ApplinkConst.ADMIN_INVITATION) ||
-                    it.startsWith(ApplinkConst.ADMIN_ACCEPTED) ||
-                    it.startsWith(ApplinkConst.ADMIN_REDIRECTION)
-                }, DF_MERCHANT_SELLER, R.string.title_shop_admin)
+                it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
+                it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
+                it.startsWith(ApplinkConst.ADMIN_INVITATION) ||
+                it.startsWith(ApplinkConst.ADMIN_ACCEPTED) ||
+                it.startsWith(ApplinkConst.ADMIN_REDIRECTION)
+            }, DF_MERCHANT_SELLER, R.string.title_shop_admin)
             )
 
 
@@ -754,7 +754,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             //Feedback Form
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
-                    it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
+                it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
 
             //Toko Chat
             add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_TOKOCHAT, R.string.title_applink_toko_chat))
@@ -769,22 +769,22 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_title_auto_withdraw))
 
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST)
-                    || it.startsWith(RESERVED_STOCK_BASE) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
+                || it.startsWith(RESERVED_STOCK_BASE) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_BASE_SELLER_APP, R.string.user_identification_info_simple))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
-                        it.startsWith(TOPADS_DASHBOARD_INTERNAL)
+                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE_SELLER_APP, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
-                    || it.startsWith(SHOP_SCORE_DETAIL)
-                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
-                    || it.startsWith(SHOP_PENALTY)
-                    || it.startsWith(SHOP_PENALTY_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+                || it.startsWith(SHOP_SCORE_DETAIL)
+                || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
+                || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                || it.startsWith(SHOP_PENALTY)
+                || it.startsWith(SHOP_PENALTY_DETAIL)
+                || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
             }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
@@ -830,14 +830,14 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWithPattern(SHOP_PAGE_BASE) ||
-                        it.startsWithPattern(SHOP) ||
-                        it.startsWithPattern(SHOP_ETALASE) ||
-                        it.startsWithPattern(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
-                        it.startsWithPattern(SHOP_REVIEW) ||
-                        it.startsWithPattern(SHOP_NOTE) ||
-                        it.startsWithPattern(SHOP_INFO) ||
-                        it.startsWithPattern(SHOP_HOME) ||
-                        it.startsWith(SHOP_SETTINGS_NOTE)
+                    it.startsWithPattern(SHOP) ||
+                    it.startsWithPattern(SHOP_ETALASE) ||
+                    it.startsWithPattern(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
+                    it.startsWithPattern(SHOP_REVIEW) ||
+                    it.startsWithPattern(SHOP_NOTE) ||
+                    it.startsWithPattern(SHOP_INFO) ||
+                    it.startsWithPattern(SHOP_HOME) ||
+                    it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
             add(DFP({
@@ -869,9 +869,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
             }, DF_BASE_SELLER_APP, R.string.title_product_detail))
             // User
             add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
@@ -890,11 +890,11 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Shop Admin
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_ACCEPTED) ||
-                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
-                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
-                    it.startsWith(SellerApp.ADMIN_INVITATION) ||
-                    it.startsWith(SellerApp.ADMIN_ACCEPTED) ||
-                    it.startsWith(SellerApp.ADMIN_REDIRECTION)
+                it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
+                it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
+                it.startsWith(SellerApp.ADMIN_INVITATION) ||
+                it.startsWith(SellerApp.ADMIN_ACCEPTED) ||
+                it.startsWith(SellerApp.ADMIN_REDIRECTION)
             }, DF_BASE_SELLER_APP, R.string.title_shop_admin))
 
             // Tokomember dashboard
@@ -919,6 +919,13 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
             }, DF_BASE_SELLER_APP, R.string.title_centralized_promo))
+
+            // Power Merchant Subscribe
+            add(DFP({
+                    it.startsWith(SellerApp.POWER_MERCHANT_SUBSCRIBE) || it.startsWith(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE) ||
+                        it.startsWith(SellerApp.PM_BENEFIT_PACKAGE) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+                }, DF_BASE_SELLER_APP, R.string.title_applink_pm_subscribe, { DFWebviewFallbackUrl.POWER_MERCHANT }))
         }
     }
 
@@ -962,7 +969,7 @@ object DeeplinkDFMapper : CoroutineScope {
         list?.forEach {
             if (it.logic(deeplink)) {
                 return getDFDeeplinkIfNotInstalled(context,
-                        deeplink, it.moduleId, context.getString(it.moduleNameResourceId), (it.webviewFallbackLogic?.invoke(deeplink))
+                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId), (it.webviewFallbackLogic?.invoke(deeplink))
                         ?: "")
             }
         }
@@ -979,11 +986,11 @@ object DeeplinkDFMapper : CoroutineScope {
                 null
             } else {
                 UriUtil.buildUri(
-                        DYNAMIC_FEATURE_INSTALL,
-                        moduleId,
-                        moduleName,
-                        Uri.encode(deeplink).toString(),
-                        fallbackUrl)
+                    DYNAMIC_FEATURE_INSTALL,
+                    moduleId,
+                    moduleName,
+                    Uri.encode(deeplink).toString(),
+                    fallbackUrl)
             }
         } ?: return null
     }
@@ -1071,10 +1078,10 @@ object DeeplinkDFMapper : CoroutineScope {
  * Class to hold dynamic feature pattern, used for mapping
  */
 class DFP(
-        val logic: ((deeplink: String) -> Boolean),
-        val moduleId: String,
-        val moduleNameResourceId: Int,
-        val webviewFallbackLogic: ((deeplink: String) -> String)? = null
+    val logic: ((deeplink: String) -> Boolean),
+    val moduleId: String,
+    val moduleNameResourceId: Int,
+    val webviewFallbackLogic: ((deeplink: String) -> String)? = null
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {
