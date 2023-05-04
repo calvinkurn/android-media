@@ -18,7 +18,11 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
-fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
+fun NestNotification(
+    modifier: Modifier = Modifier,
+    text: String,
+    colorType: Color = Color.PRIMARY
+) {
     val color = getNotificationColor(colorType)
     var textFinal = text
     val isText = try {
@@ -46,7 +50,7 @@ fun NestNotification(text: String, colorType: Color = Color.PRIMARY) {
     ).let { if (isText) it.copy(fontSize = 7.sp) else it }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(rad))
             .background(color)
             .defaultMinSize(minWidth = minWidth)
@@ -86,7 +90,7 @@ fun NotificationPreview() {
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                NestNotification("12")
+                NestNotification(text = "12")
                 NestNotification(text = "122", colorType = Color.SECONDARY)
                 NestNotification(text = "")
                 NestNotification(text = "", colorType = Color.SECONDARY)
