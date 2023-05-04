@@ -40,6 +40,7 @@ import com.tokopedia.common_compose.components.NestLabel
 import com.tokopedia.common_compose.components.NestLabelType
 import com.tokopedia.common_compose.components.NestSearchBar
 import com.tokopedia.common_compose.components.ticker.NestTicker
+import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestImage
@@ -186,9 +187,11 @@ private fun FilterWidget(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
     NestTicker(
-        modifier = modifier,
-        text = stringResource(id = R.string.another_campaign_type_wording),
-        onDismissed = onDismissed
+        modifier = modifier.fillMaxWidth(),
+        title = "",
+        description = stringResource(id = R.string.another_campaign_type_wording),
+        onDismissed = onDismissed,
+        type = TickerType.ANNOUNCEMENT
     )
 }
 
