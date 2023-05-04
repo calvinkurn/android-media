@@ -1,8 +1,8 @@
 package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
@@ -16,8 +16,13 @@ import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -58,13 +63,13 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         shopEditBasicInfoViewModel = ShopEditBasicInfoViewModel(
-                getShopBasicDataUseCase,
-                updateShopBasicDataUseCase,
-                uploaderUseCase,
-                getAllowShopNameDomainChangesUseCase,
-                getShopDomainNameSuggestionUseCase,
-                validateDomainShopNameUseCase,
-                coroutineTestRule.dispatchers
+            getShopBasicDataUseCase,
+            updateShopBasicDataUseCase,
+            uploaderUseCase,
+            getAllowShopNameDomainChangesUseCase,
+            getShopDomainNameSuggestionUseCase,
+            validateDomainShopNameUseCase,
+            coroutineTestRule.dispatchers
         )
 
         privateCurrentShopNameField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShopName").apply {
@@ -156,7 +161,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
             uploaderUseCase(any())
         } returns mockk<UploadResult>()
     }
-
 
     protected fun _onUploadShopImage_thenReturnFail() {
         coEvery {

@@ -24,8 +24,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
@@ -304,15 +302,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
-            }
-            return false
-        }
+        return !isOcc
     }
 
     override fun onShippingDurationAndRecommendCourierChosen(

@@ -47,21 +47,26 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
+    const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
+    const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
+    // Product Card Experiment
+    const val PRODUCT_CARD_EXPERIMENT = "newcard1"
+    const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
+    const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
+    const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
+
     // Global Menu (Me Page)
     const val ME_PAGE_EXP = "mepage_secondexp"
     const val ME_PAGE_CONTROL = "control_variant"
     const val ME_PAGE_VARIANT_1 = "Mepage_1"
     const val ME_PAGE_VARIANT_2 = "Mepage_2"
-
-    // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -78,6 +83,9 @@ object RollenceKey {
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
 
-    //DG SBM Transition
+    // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
+
+    // Payment
+    const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
 }

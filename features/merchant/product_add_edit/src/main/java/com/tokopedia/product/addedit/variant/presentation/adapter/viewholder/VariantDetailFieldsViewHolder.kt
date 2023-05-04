@@ -12,7 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.MAX_LENGTH_STOCK_INPUT
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
@@ -26,7 +28,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 class VariantDetailFieldsViewHolder(
     itemView: View?,
     private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
-): AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
+) : AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface VariantDetailFieldsViewHolderListener {
         fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int)
@@ -174,7 +176,7 @@ class VariantDetailFieldsViewHolder(
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
 
             // show weight coachmark
-            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark){
+            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark) {
                 showCoachmark()
                 displayWeightCoachmark = false
             }

@@ -158,11 +158,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     fun hideConsent() {
         binding.viewUserConsentWidget.hide()
-    }
-
-    fun hideCrossSellConsent() {
-        binding.viewUserConsentWidget.hide()
-    }
 
     fun isConsentWidgetVisible(): Boolean {
         return binding.viewUserConsentWidget.isVisible

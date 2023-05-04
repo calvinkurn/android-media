@@ -965,16 +965,16 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         )
         bottomSheet.setOnDownloadSuccess {
             binding?.layoutButtonGroup.showToaster(
-                getString(
+                context?.getString(
                     R.string.smvc_placeholder_download_voucher_image_success,
                     voucherDetail.voucherName
-                ),
+                ).orEmpty(),
                 getString(R.string.smvc_ok)
             )
         }
         bottomSheet.setOnDownloadError {
             binding?.layoutButtonGroup.showToaster(
-                getString(R.string.smvc_download_voucher_image_failed),
+                context?.getString(R.string.smvc_download_voucher_image_failed).orEmpty(),
                 getString(R.string.smvc_ok)
             )
         }
