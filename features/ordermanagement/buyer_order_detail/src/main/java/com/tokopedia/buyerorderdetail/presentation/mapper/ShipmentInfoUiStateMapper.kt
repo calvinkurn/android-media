@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -89,6 +90,7 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
+                buyerOrderDetailData.additionalData.groupOrderData,
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,
                 buyerOrderDetailData.orderId,
@@ -109,6 +111,7 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapShipmentInfoUiModel(
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData,
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
         meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
         orderId: String,
@@ -120,6 +123,9 @@ object ShipmentInfoUiStateMapper {
         userSession: UserSessionInterface
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
+            owocInfoUiModel = mapOwocBomDetailSectionUiModel(
+                owocSection
+            ),
             awbInfoUiModel = mapAwbInfoUiModel(
                 shipment.shippingRefNum,
                 orderStatusId,
@@ -142,6 +148,18 @@ object ShipmentInfoUiStateMapper {
                 shipment.shippingInfo,
                 BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
             )
+        )
+    }
+
+    private fun mapOwocBomDetailSectionUiModel(
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData
+    ): OwocBomDetailSectionUiModel {
+        return OwocBomDetailSectionUiModel(
+            buttonKey = owocSection.button.key,
+            sectionTitle = owocSection.button.displayName,
+            sectionDesc = owocSection.button.description,
+            // TODO will update later
+            imageUrl = ""
         )
     }
 

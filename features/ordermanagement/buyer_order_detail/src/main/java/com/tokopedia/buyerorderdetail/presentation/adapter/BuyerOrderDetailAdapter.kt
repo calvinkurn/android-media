@@ -129,6 +129,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         shipmentInfoUiModel: ShipmentInfoUiModel
     ) {
         addThickDividerSection()
+        addOwocSection(context, shipmentInfoUiModel.owocInfoUiModel)
         addPlainHeaderSection(context, shipmentInfoUiModel.headerUiModel)
         addTickerSection(context, shipmentInfoUiModel.ticker)
         addCourierInfoSection(context, shipmentInfoUiModel.courierInfoUiModel)
@@ -144,7 +145,6 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         paymentInfoUiModel: PaymentInfoUiModel
     ) {
         addThickDividerSection()
-        addOwocSection(context, OwocBomDetailSectionUiModel("", "", ""))
         addPlainHeaderSection(context, paymentInfoUiModel.headerUiModel)
         addPaymentMethodSection(context, paymentInfoUiModel.paymentMethodInfoItem)
         addThinDividerSection()

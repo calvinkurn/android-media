@@ -100,8 +100,24 @@ data class GetBuyerOrderDetailResponse(
             data class BomAdditionalData(
                 @SerializedName("epharmacy_data")
                 @Expose
-                val epharmacyData: EpharmacyData = EpharmacyData()
+                val epharmacyData: EpharmacyData = EpharmacyData(),
+                @SerializedName("group_order_data")
+                val groupOrderData: GroupOrderData = GroupOrderData()
             ) {
+
+                data class GroupOrderData(
+                    @SerializedName("button")
+                    val button: Button = Button()
+                ) {
+                    data class Button(
+                        @SerializedName("description")
+                        val description: String = "",
+                        @SerializedName("display_name")
+                        val displayName: String = "",
+                        @SerializedName("key")
+                        val key: String = ""
+                    )
+                }
                 data class EpharmacyData(
                     @SerializedName("consultation_date")
                     @Expose
@@ -120,7 +136,7 @@ data class GetBuyerOrderDetailResponse(
                     val consultationPatientName: String = String.EMPTY,
                     @SerializedName("consultation_prescription_number")
                     @Expose
-                    val consultationPrescriptionNumber: String = String.EMPTY,
+                    val consultationPrescriptionNumber: String = String.EMPTY
                 )
             }
 

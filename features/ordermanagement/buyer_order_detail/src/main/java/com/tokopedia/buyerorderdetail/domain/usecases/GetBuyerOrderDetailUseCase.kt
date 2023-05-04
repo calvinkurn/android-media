@@ -427,6 +427,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   }
                 }
                 additional_data {
+                  group_order_data {
+                    button {
+                      key
+                      display_name
+                      description
+                    }
+                  }
                   epharmacy_data {
                     consultation_name
                     consultation_date

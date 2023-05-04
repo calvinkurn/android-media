@@ -1,11 +1,11 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 
 data class OwocBomDetailSectionUiModel(
+    val buttonKey: String,
     val sectionTitle: String,
     val sectionDesc: String,
     val imageUrl: String
