@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +30,7 @@ internal fun PrefixFilterItem(
     modifier: Modifier = Modifier,
     size: Size = Size.DEFAULT,
     selectedSize: Int = 0,
-    painterId: Int = R.drawable.iconunify_sort_filter,
+    iconPainter: Painter = painterResource(id = R.drawable.iconunify_sort_filter),
     text: String? = null,
     textWidth: Dp? = null,
     textWidthChange: (Int) -> Unit = {},
@@ -52,7 +56,7 @@ internal fun PrefixFilterItem(
             } else {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    painter = painterResource(id = painterId),
+                    painter = iconPainter,
                     contentDescription = "Clear Filter Icon"
                 )
             }
@@ -82,7 +86,7 @@ fun PrefixSortFilterPreview() {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             PrefixFilterItem(text = "Filter")
             PrefixFilterItem(text = "Filter", selectedSize = 3)
-            PrefixFilterItem(painterId = R.drawable.iconunify_close)
+            PrefixFilterItem(iconPainter = rememberVectorPainter(image = Icons.Outlined.Close))
         }
     }
 }
