@@ -33,7 +33,8 @@ class ReschedulePickupActivity : AppCompatActivity() {
     }
 
     private val orderId by lazy {
-        intent?.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID) ?: intent?.data?.getQueryParameter(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
+        intent?.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID)
+            ?: intent?.data?.getQueryParameter(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
     }
 
     private fun injectComponent() {
@@ -51,10 +52,7 @@ class ReschedulePickupActivity : AppCompatActivity() {
             LaunchedEffect(key1 = viewModel.uiEffect, block = {
                 viewModel.uiEffect.collectLatest {
                     when (it) {
-                        is ReschedulePickupAction.OpenTnCWebView -> RouteManager.route(
-                            this@ReschedulePickupActivity,
-                            ApplinkConst.WEBVIEW.plus("?url=${it.url}")
-                        )
+                        is ReschedulePickupAction.OpenTnCWebView -> goToWebView(it.url)
                         is ReschedulePickupAction.ClosePage -> {
                             onClickDialogButton(it.success)
                         }
@@ -100,6 +98,13 @@ class ReschedulePickupActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun goToWebView(url: String) {
+        RouteManager.route(
+            this@ReschedulePickupActivity,
+            ApplinkConst.WEBVIEW.plus("?url=$url")
+        )
     }
 
     private fun onClickDialogButton(success: Boolean) {
