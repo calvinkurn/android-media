@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.databinding.LayoutDigitalCheckoutBottomViewBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -158,6 +157,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     fun hideConsent() {
         binding.viewUserConsentWidget.hide()
+    }
 
     fun isConsentWidgetVisible(): Boolean {
         return binding.viewUserConsentWidget.isVisible

@@ -396,7 +396,7 @@ class DigitalCartFragment :
             it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
         }?.checkBoxDisabled
         if (ifSubscriptionCheckboxDisabled == true) {
-            binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
+            binding?.checkoutBottomViewWidget?.hideConsent()
         }
 
         renderMyBillsLayout(cartInfo)
