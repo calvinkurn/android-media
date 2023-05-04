@@ -38,7 +38,7 @@ import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewMo
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestLabel
 import com.tokopedia.common_compose.components.NestLabelType
-import com.tokopedia.common_compose.components.NestSearchBar
+import com.tokopedia.common_compose.principles.NestSearchBar
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag

@@ -10,7 +10,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
@@ -74,4 +73,3 @@ fun NestLabelRedPreview() {
         nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
     )
 }
-

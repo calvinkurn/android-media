@@ -6,7 +6,7 @@
         <activity
             android:name=".page.presentation.activity.CampaignListActivity"
             android:configChanges="orientation"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
