@@ -1,13 +1,16 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.url.TokopediaUrl
 
 object ApplinkConstInternalContent {
     const val HOST_CONTENT = "content"
     const val HOST_AFFILIATE = "affiliate"
+    const val HOST_WEB_VIEW = "webview"
 
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
+    const val SCHEMA_WEB_VIEW = DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH + HOST_WEB_VIEW
 
     const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_AFFILIATE/create_post_v2/"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
@@ -42,6 +45,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_CONTENT_POST_DETAIL = "$INTERNAL_CONTENT/post-detail/"
 
     const val PLAY_PATH_LITE = "play/channel/"
+    const val PLAY_LIVE = "play/live"
     const val FEED_VIDEO = "feed/video"
 
     const val TAB_POSITION_EXPLORE = 2
@@ -50,4 +54,9 @@ object ApplinkConstInternalContent {
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
+
+    private val tokopediaUrl = TokopediaUrl.getInstance().WEB
+    private val performanceDashboardUrl = tokopediaUrl + PLAY_LIVE
+    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW = "$SCHEMA_WEB_VIEW?pull_to_refresh=true&url=%s"
+    val PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK = String.format(PERFORMANCE_DASHBOARD_URL_WEB_VIEW, performanceDashboardUrl)
 }

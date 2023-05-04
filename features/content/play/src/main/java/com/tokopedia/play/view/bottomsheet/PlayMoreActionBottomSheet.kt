@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
-import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -133,7 +133,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 )
                 RouteManager.route(
                     requireContext(),
-                    PerformanceDashboardNavigation.getPerformanceDashboardAppLink()
+                    PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
                 )
             },
             priority = 2,

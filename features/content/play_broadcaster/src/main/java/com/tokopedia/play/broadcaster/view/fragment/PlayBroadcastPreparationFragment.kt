@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -795,7 +795,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             TYPE_DASHBOARD -> {
                 analytic.onClickPerformanceDashboardEntryPointPrepPage(parentViewModel.authorId)
-                RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
+                RouteManager.route(requireContext(), PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
             }
         }
     }

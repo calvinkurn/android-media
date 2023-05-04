@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
@@ -52,7 +53,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
-import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
@@ -4362,7 +4362,7 @@ open class ShopPageHomeFragment :
                 playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointNative(
                     viewModel?.userSessionShopId.orEmpty()
                 )
-                RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
+                RouteManager.route(requireContext(), PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
             }
 
             override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
