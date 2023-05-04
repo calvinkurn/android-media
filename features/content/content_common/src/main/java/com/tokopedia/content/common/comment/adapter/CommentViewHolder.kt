@@ -1,17 +1,26 @@
 package com.tokopedia.content.common.comment.adapter
 
+import android.text.method.LinkMovementMethod
+import androidx.core.view.updateLayoutParams
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.comment.MentionedSpanned
+import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isChild
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
-import com.tokopedia.feedcomponent.util.bold
-import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.content.common.R as contentR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -22,21 +31,60 @@ class CommentViewHolder {
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
+        private val parentListener by lazyThreadSafetyNone {
+            object : MentionedSpanned.Listener {
+                override fun onClicked(appLink: String) {
+                    listener.onUserNameClicked(appLink)
+                }
+            }
+        }
+
+        private val mentionListener by lazyThreadSafetyNone {
+            object : MentionedSpanned.Listener {
+                override fun onClicked(appLink: String) {
+                    listener.onMentionClicked(appLink)
+                }
+            }
+        }
+
+        private val parentColor by lazyThreadSafetyNone {
+            MethodChecker.getColor(itemView.context, unifyR.color.Unify_NN950)
+        }
+
+        private val mentionColor by lazyThreadSafetyNone {
+            MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
+        }
+
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
+                val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
+                val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+                ivCommentPhoto.updateLayoutParams {
+                    width = if (item.commentType.isChild) layout24 else layout32
+                    height = if (item.commentType.isChild) layout24 else layout32
+                }
                 root.setPadding(
-                    if (item.commentType is CommentType.Child) 40 else 8,
+                    if (item.commentType.isChild) 48.toPx() else 8.toPx(),
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom
                 )
 
                 ivCommentPhoto.loadImage(item.photo)
-                tvCommentContent.text = buildSpannedString {
-                    bold { append(item.username) }
-                    append("   ")
-                    append(item.content)
+                ivCommentPhoto.setOnClickListener {
+                    listener.onProfileClicked(item.appLink)
                 }
+
+                tvCommentContent.text = TagMentionBuilder
+                    .getMentionTag(
+                        item = item,
+                        mentionColor,
+                        parentColor,
+                        mentionListener,
+                        parentListener,
+                        context = itemView.context
+                    )
+                tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 
                 tvCommentReply.setOnClickListener {
@@ -47,27 +95,46 @@ class CommentViewHolder {
                     listener.onLongClicked(item)
                     true
                 }
+                tvCommentReply.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                ivCommentPhoto.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                tvCommentContent.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
             }
         }
 
         interface Listener {
             fun onReplyClicked(item: CommentUiModel.Item)
             fun onLongClicked(item: CommentUiModel.Item)
+            fun onMentionClicked(appLink: String)
+            fun onProfileClicked(appLink: String)
+            fun onUserNameClicked(appLink: String)
         }
     }
 
     internal class Empty(
-        binding: ItemCommentEmptyBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentEmptyBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Shimmering(
-        binding: ItemCommentShimmeringBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentShimmeringBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Expandable(
         private val binding: ItemCommentExpandableBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
+
+        private val impressHolder by lazyThreadSafetyNone {
+            ImpressHolder()
+        }
         fun bind(item: CommentUiModel.Expandable) {
             if (item.isExpanded) {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_UP)
@@ -82,10 +149,15 @@ class CommentViewHolder {
             binding.root.setOnClickListener {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
+
+            binding.root.addOnImpressionListener(impressHolder){
+                listener.onImpressedExpandable()
+            }
         }
 
         interface Listener {
             fun onClicked(item: CommentUiModel.Expandable, position: Int)
+            fun onImpressedExpandable()
         }
     }
 }

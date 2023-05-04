@@ -154,11 +154,11 @@ class PlayViewerIdGenerator {
                     pipAnalytic = mockk(relaxed = true),
                     analytic = mockk(relaxed = true),
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
-                    castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
                     analyticManager = mockk(relaxed = true),
                     router = mockk(relaxed = true),
+                    commentAnalytics = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {

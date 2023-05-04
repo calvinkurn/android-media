@@ -4,6 +4,7 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 
 /**
@@ -15,8 +16,9 @@ interface ContentCommentRepository {
     suspend fun replyComment(
         source: PageSource,
         commentType: CommentType,
-        comment: String
-    ): CommentUiModel
+        comment: String,
+        commenterType: UserType,
+    ): CommentUiModel.Item
 
     suspend fun reportComment(
         param: FeedReportRequestParamModel,

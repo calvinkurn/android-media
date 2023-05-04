@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -128,7 +130,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
-    private val router: Router
+    private val router: Router,
+    private val commentAnalytics: ContentCommentAnalytics.Creator,
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -277,6 +280,13 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    private val commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+        override fun getPageSource(): PageSource  = PageSource.Play(channelId)
+        override fun onCommentDismissed() {
+            playViewModel.submitAction(CommentVisibilityAction(isOpen = false))
+        }
+    }
+
     override fun getScreenName(): String = "Play User Interaction"
 
     private val components = mutableListOf<UiComponent<PlayViewerNewUiState>>()
@@ -404,6 +414,18 @@ class PlayUserInteractionFragment @Inject constructor(
         when (childFragment) {
             is InteractiveDialogFragment -> {
                 childFragment.setDataSource(interactiveDialogDataSource)
+            }
+            is ContentCommentBottomSheet -> {
+                childFragment.setEntrySource(commentEntrySource)
+                childFragment.setAnalytic(
+                    commentAnalytics.create(
+                        PageSource.Play(channelId),
+                        model = ContentCommentAnalyticsModel(
+                            eventCategory = "groupchat room",
+                            eventLabel = "$channelId - ${playViewModel.partnerId}"
+                        )
+                    )
+                )
             }
         }
     }
@@ -1024,6 +1046,13 @@ class PlayUserInteractionFragment @Inject constructor(
                                 playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
                             }
                         )
+                    }
+                    is CommentVisibilityEvent -> {
+                        val sheet = ContentCommentBottomSheet.getOrCreate(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+                        if (event.isOpen) sheet.show(childFragmentManager) else sheet.dismiss()
                     }
                 }
             }
@@ -1992,22 +2021,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
-        when (event) {
-            CommentIconUiComponent.Event.OnCommentClicked -> {
-                ContentCommentBottomSheet.getOrCreate(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                )
-                    .apply {
-                        setEntrySource(object : ContentCommentBottomSheet.EntrySource {
-                            override fun getPageSource(): PageSource = PageSource.Play(channelId)
-                        })
-                    }.show(childFragmentManager)
-            }
-        }
-    }
-
     /**
      * Explore Widget
      */
@@ -2025,6 +2038,15 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
         eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
+    }
+
+    private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
+        when (event) {
+            CommentIconUiComponent.Event.OnCommentClicked -> {
+                playViewModel.submitAction(CommentVisibilityAction(isOpen = true))
+                analytic.clickCommentIcon(playViewModel.partnerId.toString())
+            }
+        }
     }
 
     companion object {

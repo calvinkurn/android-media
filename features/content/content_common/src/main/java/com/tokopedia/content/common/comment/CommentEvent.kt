@@ -1,5 +1,7 @@
 package com.tokopedia.content.common.comment
 
+import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+
 /**
  * @author by astidhiyaa on 20/02/23
  */
@@ -13,8 +15,14 @@ sealed interface CommentEvent {
         val onClick: () -> Unit
     ) : CommentEvent
 
+    object ShowKeyboard: CommentEvent
+    object HideKeyboard: CommentEvent
+
+    data class ReplySuccess(val position: Int): CommentEvent
     data class OpenAppLink(val appLink: String) : CommentEvent
     object OpenReportEvent : CommentEvent
 
     object ReportSuccess : CommentEvent
+
+    data class AutoType(val parentItem: CommentUiModel.Item) : CommentEvent
 }

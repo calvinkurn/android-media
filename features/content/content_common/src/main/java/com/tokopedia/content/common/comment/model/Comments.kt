@@ -20,7 +20,7 @@ data class Comments(
         val nextRepliesCountFmt: String = "",
 
         @SerializedName("isReplyAsShop")
-        val isReplyAsShop: String = "",
+        val isReplyAsShop: Boolean = false,
 
         @SerializedName("totalData")
         val totalData: String = "",
