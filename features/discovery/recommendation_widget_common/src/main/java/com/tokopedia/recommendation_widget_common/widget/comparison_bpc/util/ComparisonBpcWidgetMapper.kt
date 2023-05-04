@@ -36,12 +36,9 @@ object ComparisonBpcWidgetMapper {
         )
 
         return recommendationItems.withIndex().map {
-            val isEdgeStart = it.index == 0
-
             ComparisonBpcItemModel(
                 specsModel = BpcSpecsMapper.mapToSpecsListModel(
                     it.value.specs,
-                    isEdgeStart,
                     specsConfig,
                     it.index,
                     recommendationItems.size
