@@ -78,6 +78,8 @@ data class Config(
                     val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
+                    @SerializedName("active")
+                    val active: Boolean = false,
                     @SerializedName("min_value")
                     val minValue: Double = 0.0,
                     @SerializedName("max_value")

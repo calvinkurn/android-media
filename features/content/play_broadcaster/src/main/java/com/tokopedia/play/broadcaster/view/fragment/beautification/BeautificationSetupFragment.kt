@@ -57,16 +57,33 @@ class BeautificationSetupFragment @Inject constructor(
     private val bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
         get() = _bottomSheetBehavior!!
 
+    private var isSliderPreviouslyShown: Boolean = false
+    private var prevBottomSheetState: Int = BottomSheetBehavior.STATE_HIDDEN
+
     private val bottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when(newState) {
                 BottomSheetBehavior.STATE_EXPANDED -> {
-                    beautificationAnalytic.openScreenBeautificationBottomSheet()
+                    if (prevBottomSheetState == BottomSheetBehavior.STATE_DRAGGING) {
+                        if (isSliderPreviouslyShown) {
+                            showSlider()
+                        } else {
+                            hideSlider()
+                        }
+                    }
                 }
                 BottomSheetBehavior.STATE_HIDDEN -> {
                     beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 }
+                BottomSheetBehavior.STATE_DRAGGING -> {
+                    isSliderPreviouslyShown = binding.sliderBeautification.visibility == View.VISIBLE
+                    hideSlider()
+                }
                 else -> {}
+            }
+
+            if (newState != BottomSheetBehavior.STATE_SETTLING) {
+                prevBottomSheetState = newState
             }
         }
 
@@ -352,6 +369,9 @@ class BeautificationSetupFragment @Inject constructor(
 
         beautificationAnalyticStateHolder.pageSource = pageSource
         beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetShown(binding.bottomSheet.height))
+
+        beautificationAnalytic.openScreenBeautificationBottomSheet()
+
         setupSlider()
     }
 

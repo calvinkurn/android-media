@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 
 sealed interface PlayBroadcastEvent {
 
-    data class InitializeBroadcaster(val data: BroadcastingConfigUiModel): PlayBroadcastEvent
+    data class InitializeBroadcaster(val data: BroadcastingConfigUiModel) : PlayBroadcastEvent
 
     object ShowLoading : PlayBroadcastEvent
     object ShowResumeLiveDialog : PlayBroadcastEvent
@@ -54,4 +54,5 @@ sealed interface PlayBroadcastEvent {
 
     /** Beautification */
     data class BeautificationDownloadAssetFailed(val throwable: Throwable, val preset: PresetFilterUiModel) : PlayBroadcastEvent
+    object BeautificationRebindEffect : PlayBroadcastEvent
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.play.broadcaster.domain.model.Config
 import kotlinx.android.parcel.Parcelize
 
@@ -20,13 +22,16 @@ data class BeautificationConfigUiModel(
         get() = this == Empty
 
     val isBeautificationApplied: Boolean
-        get() = faceFilters.any { it.isChecked } || presets.any { it.active && !it.isRemoveEffect }
+        get() = (faceFilters.any { it.isChecked } && !selectedFaceFilter?.isRemoveEffect.orFalse()) || presets.any { it.isSelected && it.value != 0.0 && !it.isRemoveEffect }
+
+    val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
+        get() = faceFilters.filter { !it.isRemoveEffect }
 
     val selectedFaceFilter: FaceFilterUiModel?
         get() = faceFilters.firstOrNull { it.isSelected }
 
     val selectedPreset: PresetFilterUiModel?
-        get() = presets.firstOrNull { it.active }
+        get() = presets.firstOrNull { it.isSelected }
 
     fun convertToDTO() = Config.BeautificationConfig(
         license = licenseLink,
@@ -35,7 +40,9 @@ data class BeautificationConfigUiModel(
             assetAndroid = customFaceAssetLink,
             menu = faceFilters.map { faceFilter ->
                 Config.BeautificationConfig.CustomFace.Menu(
+                    id = faceFilter.id,
                     name = faceFilter.name,
+                    active = faceFilter.active,
                     minValue = faceFilter.minValue,
                     maxValue = faceFilter.maxValue,
                     defaultValue = faceFilter.defaultValue,
@@ -45,8 +52,9 @@ data class BeautificationConfigUiModel(
         ),
         presets = presets.map { preset ->
             Config.BeautificationConfig.Preset(
+                id = preset.id,
                 name = preset.name,
-                active = preset.active,
+                active = preset.isSelected,
                 minValue = preset.minValue,
                 maxValue = preset.maxValue,
                 defaultValue = preset.defaultValue,

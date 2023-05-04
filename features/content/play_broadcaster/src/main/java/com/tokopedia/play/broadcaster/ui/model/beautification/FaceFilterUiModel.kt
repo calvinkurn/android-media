@@ -13,15 +13,14 @@ import kotlinx.android.parcel.Parcelize
 data class FaceFilterUiModel(
     val id: String,
     val name: String,
+    val active: Boolean,
     val minValue: Double,
     val maxValue: Double,
     val defaultValue: Double,
     val value: Double,
+    val isChecked: Boolean,
     val isSelected: Boolean,
 ) : Parcelable {
-
-    val isChecked: Boolean
-        get() = value != 0.0
 
     val isRemoveEffect: Boolean
         get() = id == Type.None.id
@@ -43,16 +42,17 @@ data class FaceFilterUiModel(
 
     fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
         return copy(
-            value = newValueFromSlider.toFuzzyPercent()
+            value = newValueFromSlider.toFuzzyPercent(),
+            isChecked = newValueFromSlider > 0,
         )
     }
 
     enum class Type(val id: String, val iconUnifyId: Int) {
         Unknown("", UNKNOWN_ICON_UNIFY),
         None("none", IconUnify.BLOCK),
-        Blur("blur", IconUnify.BLUR),
+        Blur("buffing", IconUnify.BLUR),
         Sharpen("sharpen", IconUnify.SHARPEN),
-        Clarity("clarity", IconUnify.CLARITY);
+        Clarity("toning", IconUnify.CLARITY);
 
         companion object {
             fun getIconUnifyById(id: String): Int {

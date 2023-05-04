@@ -170,10 +170,12 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     FaceFilterUiModel(
                         id = if(it == 0) "none" else "Custom Face id $it",
                         name = if(it == 0) "Tidak Ada" else "Custom Face $it",
+                        active = false,
                         minValue = it * 0.1,
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
+                        isChecked = false,
                         isSelected = false,
                     )
                 },
@@ -189,6 +191,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         iconUrl = "",
                         assetLink = "asset link $it",
                         assetStatus = BeautificationAssetStatus.Available,
+                        isSelected = false,
                     )
                 }
             )

@@ -138,6 +138,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         fun create(handle: SavedStateHandle): PlayBroadcastViewModel
     }
 
+    private val jobMap = mutableMapOf<String, Job>()
+
     val mDataStore = dataStore
 
     val channelId: String
@@ -268,6 +270,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val title = getCurrentSetupDataStore().getTitle()
             return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
         }
+
+    val isBeautificationEnabled: Boolean
+        get() = !_beautificationConfig.value.isUnknown
+
+    val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
+        get() = _beautificationConfig.value.faceFiltersWithoutNoneOption
 
     val selectedFaceFilter: FaceFilterUiModel?
         get() = _beautificationConfig.value.selectedFaceFilter
@@ -539,8 +547,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
 
             /** Beautification */
+            is PlayBroadcastAction.RemoveBeautificationMenu -> handleRemoveBeautificationMenu()
             is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
-            is PlayBroadcastAction.SaveBeautificationConfig -> handleSaveBeautificationConfig()
 
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
             is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
@@ -585,7 +593,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private suspend fun getBroadcastingConfig() {
         val request = repo.getBroadcastingConfig(authorId, authorType)
         hydraConfigStore.saveBroadcastingConfig(request)
-        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
     }
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
@@ -652,6 +659,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
 
             setBeautificationConfig(configUiModel.beautificationConfig)
+
+            _uiEvent.emit(
+                PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
+            )
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
@@ -1700,31 +1711,33 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     /** Beautification */
+    private fun handleRemoveBeautificationMenu() {
+        removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+    }
+
     private fun handleResetBeautification() {
         _beautificationConfig.update {
             it.copy(
                 faceFilters = it.faceFilters.map { faceFilter ->
                     faceFilter.copy(
-                        value = faceFilter.defaultValue
+                        value = faceFilter.defaultValue,
+                        isSelected = false,
                     )
                 },
                 presets = it.presets.map { preset ->
                     preset.copy(
-                        value = preset.defaultValue
+                        value = preset.defaultValue,
+                        isSelected = preset.active,
                     )
                 }
             )
         }
-    }
 
-    private fun handleSaveBeautificationConfig() {
-        viewModelScope.launchCatchError(block = {
-            repo.saveBeautificationConfig(
-                authorId = authorId,
-                authorType = authorType,
-                beautificationConfig = _beautificationConfig.value
-            )
-        }) {}
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.BeautificationRebindEffect)
+        }
+
+        saveBeautificationConfig()
     }
 
     private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
@@ -1733,13 +1746,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 it.copy(
                     faceFilters = it.faceFilters.map { item ->
                         item.copy(
+                            active = item.id == faceFilter.id,
+                            isChecked = when {
+                                 faceFilter.isRemoveEffect -> false
+                                 item.id == faceFilter.id -> item.value > 0.0
+                                 else -> item.isChecked
+                             },
                             isSelected = item.id == faceFilter.id,
-                            value = if(faceFilter.isRemoveEffect) 0.0 else item.value
                         )
                     }
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleChangeFaceFilterValue(newValue: Int) {
@@ -1753,42 +1773,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleSelectPresetOption(preset: PresetFilterUiModel) {
         viewModelScope.launch {
             if(preset.isRemoveEffect || preset.assetStatus == BeautificationAssetStatus.Available) {
-                _beautificationConfig.update {
-                    it.copy(
-                        presets = it.presets.map { item ->
-                            item.copy(active = item.id == preset.id)
-                        }
-                    )
-                }
+                updateSelectPreset(preset)
             }
             else if(preset.assetStatus == BeautificationAssetStatus.NotDownloaded) {
-                updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
-
-                viewModelScope.launchCatchError(block = {
-                    val isSuccess = repo.downloadPresetAsset(
-                        url = preset.assetLink,
-                        fileName = preset.id,
-                    )
-
-                    if(isSuccess) {
-                        updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
-                    }
-                    else {
-                        throw Exception("Something went wrong")
-                    }
-                }) { throwable ->
-                    updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
-                    _uiEvent.emit(
-                        PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
-                    )
-                }
+                downloadPreset(preset)
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private fun handleChangePresetValue(newValue: Int) {
@@ -1796,12 +1795,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _beautificationConfig.update {
                 it.copy(
                     presets = it.presets.map { preset ->
-                        if(preset.active) preset.copyWithNewValue(newValueFromSlider = newValue)
+                        if(preset.isSelected) preset.copyWithNewValue(newValueFromSlider = newValue)
                         else preset
                     }
                 )
             }
         }
+
+        saveBeautificationConfig()
     }
 
     private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
@@ -1810,14 +1811,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         if (!beautificationConfig.isUnknown) {
             try {
                 downloadInitialBeautificationAsset(beautificationConfig)
+                setupOnDemandAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
-                /** TODO: reinit broadcaster & setup beautification sdk on the next PR */
             } catch (e: Exception) {
+                _beautificationConfig.value = BeautificationConfigUiModel.Empty
+
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
 
-                if(_allowRetryDownloadAsset.value) {
+                if (_allowRetryDownloadAsset.value) {
                     _allowRetryDownloadAsset.value = false
-                    throw e
+                    setBeautificationConfig(beautificationConfig)
                 }
             }
         }
@@ -1866,16 +1869,82 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun setupOnDemandAsset(beautificationConfig: BeautificationConfigUiModel) {
+
+        val presetActive = beautificationConfig.presets.firstOrNull { it.active }
+
+        if(presetActive != null) {
+            when (presetActive.assetStatus) {
+                BeautificationAssetStatus.Available -> updateSelectPreset(presetActive)
+                BeautificationAssetStatus.NotDownloaded -> downloadPreset(presetActive, forceSelect = true)
+            }
+        }
+    }
+
+    private fun downloadPreset(preset: PresetFilterUiModel, forceSelect: Boolean = false) {
+        viewModelScope.launchCatchError(block = {
+            if(preset.isRemoveEffect) return@launchCatchError
+
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
+
+            val isSuccess = repo.downloadPresetAsset(
+                url = preset.assetLink,
+                fileName = preset.id,
+            )
+
+            if (isSuccess) {
+                updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
+
+                if (forceSelect) {
+                    updateSelectPreset(preset)
+                }
+            }
+            else {
+                throw Exception("Something went wrong")
+            }
+        }) { throwable ->
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
+            _uiEvent.emit(
+                PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
+            )
+        }
+    }
+
+    private fun updateSelectPreset(preset: PresetFilterUiModel) {
+        _beautificationConfig.update {
+            it.copy(
+                presets = it.presets.map { item ->
+                    item.copy(isSelected = item.id == preset.id)
+                }
+            )
+        }
+    }
+
     private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
         _beautificationConfig.update {
             it.copy(
                 presets = it.presets.map { item ->
                     item.copy(
-                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus
+                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus,
+                        isSelected = if(preset.id == item.id) false else item.isSelected
                     )
                 }
             )
         }
+    }
+
+    private fun saveBeautificationConfig() {
+        val job = viewModelScope.launchCatchError(block = {
+            delay(SAVE_BEAUTIFICATION_DELAY)
+
+            repo.saveBeautificationConfig(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = _beautificationConfig.value
+            )
+        }) {}
+
+        saveJob(SAVE_BEAUTIFICATION_JOB_ID, job)
     }
 
     private fun getSelectedAccount(
@@ -2154,6 +2223,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun saveJob(jobId: String, job: Job) {
+        cancelJob(jobId)
+        jobMap[jobId] = job
+    }
+
+    private fun cancelJob(jobId: String) {
+        jobMap[jobId]?.cancel()
+    }
+
     companion object {
 
         private const val UI_STATE_STOP_TIMEOUT = 5000L
@@ -2175,5 +2253,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
 
         private const val FAIL_SAVE_ERROR_MESSAGE = "fail to save asset to local storage"
+
+        private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
+        private const val SAVE_BEAUTIFICATION_DELAY = 500L
     }
 }

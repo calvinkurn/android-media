@@ -5,9 +5,9 @@ import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificationRepository
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.play.broadcaster.util.asset.AssetHelper
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
+import com.tokopedia.byteplus.effect.util.asset.AssetHelper
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,9 +28,6 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         authorType: String,
         beautificationConfig: BeautificationConfigUiModel
     ): Boolean = withContext(dispatchers.io) {
-        /** TODO: for mocking purpose, delete this soon when GQL is available in prod */
-        return@withContext true
-
         setBeautificationConfigUseCase(
             SetBeautificationConfigUseCase.RequestParam(
                 authorId = authorId,
@@ -43,7 +40,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     override suspend fun downloadLicense(url: String): Boolean = withContext(dispatchers.io) {
         val licenseName = assetHelper.getFileNameFromLink(url)
 
-        if(assetChecker.isLicenseAvailable(licenseName)) {
+        if (assetChecker.isLicenseAvailable(licenseName)) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.licenseDir)
@@ -59,7 +56,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadModel(url: String): Boolean = withContext(dispatchers.io) {
-        if(assetChecker.isModelAvailable()) {
+        if (assetChecker.isModelAvailable()) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.modelDir)
@@ -76,7 +73,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadCustomFace(url: String): Boolean = withContext(dispatchers.io) {
-        if(assetChecker.isCustomFaceAvailable()) {
+        if (assetChecker.isCustomFaceAvailable()) {
             true
         } else {
             assetManager.deleteDirectory(assetHelper.customFaceDir)
@@ -93,13 +90,18 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadPresetAsset(url: String, fileName: String): Boolean = withContext(dispatchers.io) {
-        val responseBody = beautificationAssetApi.downloadAsset(url)
+        if (assetChecker.isPresetFileAvailable(fileName)) {
+            true
+        } else {
+            assetManager.deleteDirectory(assetHelper.getPresetFilePath(fileName))
+            val responseBody = beautificationAssetApi.downloadAsset(url)
 
-        assetManager.unzipAndSave(
-            responseBody = responseBody,
-            fileName = fileName,
-            filePath = assetHelper.getPresetFilePath(fileName),
-            folderPath = assetHelper.presetDir,
-        )
+            assetManager.unzipAndSave(
+                responseBody = responseBody,
+                fileName = fileName,
+                filePath = assetHelper.getPresetFilePath(fileName),
+                folderPath = assetHelper.presetDir,
+            )
+        }
     }
 }

@@ -37,7 +37,14 @@ class PlayBroadcaster(
             remoteConfig: RemoteConfig,
             broadcastingConfigUiModel: BroadcastingConfigUiModel,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig, broadcastingConfigUiModel)
+            return PlayBroadcaster(
+                activityContext,
+                handler,
+                broadcaster,
+                callback,
+                remoteConfig,
+                broadcastingConfigUiModel,
+            )
         }
     }
 
@@ -89,8 +96,12 @@ class PlayBroadcaster(
         isStartedBefore = true
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
-        broadcaster.create(holder, surfaceSize)
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
+    ) {
+        broadcaster.create(holder, surfaceSize, withByteplus)
         updateAspectFrameSize()
     }
 

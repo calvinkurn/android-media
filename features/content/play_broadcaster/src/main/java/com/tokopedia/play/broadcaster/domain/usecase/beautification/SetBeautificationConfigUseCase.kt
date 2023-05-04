@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.play.broadcaster.domain.model.beautification.SetBeautificationConfigResponse
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
@@ -29,15 +26,13 @@ class SetBeautificationConfigUseCase @Inject constructor(
 
     override suspend fun execute(params: RequestParam): SetBeautificationConfigResponse {
         val param = mapOf(
-            PARAM_REQ to mapOf(
-                PARAM_AUTHOR_ID to params.authorId,
-                PARAM_AUTHOR_TYPE to when (params.authorType) {
-                    ContentCommonUserType.TYPE_USER -> ContentCommonUserType.VALUE_TYPE_ID_USER
-                    ContentCommonUserType.TYPE_SHOP -> ContentCommonUserType.VALUE_TYPE_ID_SHOP
-                    else -> 0
-                },
-                PARAM_BEAUTIFICATION_CONFIG to gson.toJson(params.beautificationConfig.convertToDTO())
-            )
+            PARAM_AUTHOR_ID to params.authorId,
+            PARAM_AUTHOR_TYPE to when (params.authorType) {
+                ContentCommonUserType.TYPE_USER -> ContentCommonUserType.VALUE_TYPE_ID_USER
+                ContentCommonUserType.TYPE_SHOP -> ContentCommonUserType.VALUE_TYPE_ID_SHOP
+                else -> 0
+            },
+            PARAM_BEAUTIFICATION_CONFIG to gson.toJson(params.beautificationConfig.convertToDTO())
         )
 
         return repository.request(graphqlQuery(), param)
@@ -50,7 +45,6 @@ class SetBeautificationConfigUseCase @Inject constructor(
     )
 
     companion object {
-        private const val PARAM_REQ = "req"
         private const val PARAM_AUTHOR_ID = "authorID"
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_BEAUTIFICATION_CONFIG = "beautificationConfig"
@@ -58,10 +52,14 @@ class SetBeautificationConfigUseCase @Inject constructor(
         const val QUERY_NAME = "SetBeautificationConfigUseCaseQuery"
         const val QUERY = """
             mutation BroadcasterSetBeautificationConfig(
-                ${"$${PARAM_REQ}"}: BroadcasterSetBeautificationConfig!
+                ${"$${PARAM_AUTHOR_ID}"}: String!,
+                ${"$${PARAM_AUTHOR_TYPE}"}: Int!,
+                ${"$${PARAM_BEAUTIFICATION_CONFIG}"}: String!
             ) {
                 broadcasterSetBeautificationConfig(
-                    ${PARAM_REQ}: ${"$${PARAM_REQ}"}
+                    ${PARAM_AUTHOR_ID}: ${"$${PARAM_AUTHOR_ID}"},
+                    ${PARAM_AUTHOR_TYPE}: ${"$${PARAM_AUTHOR_TYPE}"},
+                    ${PARAM_BEAUTIFICATION_CONFIG}: ${"$${PARAM_BEAUTIFICATION_CONFIG}"}
                 ) {
                   success
                 }

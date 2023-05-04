@@ -20,6 +20,7 @@ data class PresetFilterUiModel(
     val iconUrl: String,
     val assetLink: String,
     val assetStatus: BeautificationAssetStatus,
+    val isSelected: Boolean,
 ) : Parcelable {
 
     val isRemoveEffect: Boolean
@@ -45,5 +46,7 @@ data class PresetFilterUiModel(
 
     companion object {
         private const val OPTION_NONE = "none"
+
+        fun isNone(id: String) = id == OPTION_NONE
     }
 }
