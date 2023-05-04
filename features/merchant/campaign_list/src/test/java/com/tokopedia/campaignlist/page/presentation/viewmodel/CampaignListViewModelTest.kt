@@ -8,6 +8,7 @@ import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
+import com.tokopedia.campaignlist.common.util.PreferenceDataStore
 import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
@@ -49,6 +50,9 @@ class CampaignListViewModelTest {
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
+    @RelaxedMockK
+    lateinit var preferenceDataStore: PreferenceDataStore
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -66,7 +70,8 @@ class CampaignListViewModelTest {
             CoroutineTestDispatchersProvider,
             getCampaignListUseCase,
             getMerchantBannerUseCase,
-            getSellerMetaDataUseCase
+            getSellerMetaDataUseCase,
+            preferenceDataStore
         )
     }
 
