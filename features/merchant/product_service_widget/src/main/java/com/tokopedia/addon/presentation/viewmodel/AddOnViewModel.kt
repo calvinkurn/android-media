@@ -4,39 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gifting.domain.model.GetAddOnByID
-import com.tokopedia.addon.domain.usecase.GetAddOnUseCase
-import com.tokopedia.addon.presentation.uimodel.AddOnMapper
+import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getAddOnUseCase: GetAddOnUseCase
+    private val getAddOnUseCase: GetAddOnByProductUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val mGetAddOnResult = MutableLiveData<GetAddOnByID>()
-    val getAddOnResult: LiveData<GetAddOnByID> get() = mGetAddOnResult
+    private val mGetAddOnResult = MutableLiveData<String>()
+    val getAddOnResult: LiveData<String> get() = mGetAddOnResult
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
-    val isTokoCabang: LiveData<Boolean> = AddOnMapper.isTokoCabang(mGetAddOnResult)
-
     fun getAddOn(addOnId: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(addOnId)
-                getAddOnUseCase.executeOnBackground().getAddOnByID
+                getAddOnUseCase.setParams(addOnId, "123", false)
+                getAddOnUseCase.executeOnBackground()
             }
-            mGetAddOnResult.value = result
-            result.error.let {
-                if (it.messages.isNotEmpty()) {
-                    mErrorThrowable.value = MessageErrorException(it.messages, it.errorCode)
-                }
-            }
+            mGetAddOnResult.value = result.toString()
         }, onError = {
             mErrorThrowable.value = it
         })

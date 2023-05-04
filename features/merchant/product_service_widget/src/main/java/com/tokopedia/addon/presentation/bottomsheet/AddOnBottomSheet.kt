@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product_service_widget.databinding.BottomsheetGiftingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,7 +53,6 @@ class AddOnBottomSheet(private val addOnId: String) : BottomSheetUnify() {
         initInjector()
 
         observeGetAddOnByProduct()
-        observeIsTokoCabang()
 
         viewModel.getAddOn(addOnId)
     }
@@ -65,18 +66,9 @@ class AddOnBottomSheet(private val addOnId: String) : BottomSheetUnify() {
 
     private fun observeGetAddOnByProduct() {
         viewModel.getAddOnResult.observe(viewLifecycleOwner) {
-            shopTier = it.addOnByIDResponse.firstOrNull()?.shop?.shopTier
-            shopIdDisplayed = it.addOnByIDResponse.firstOrNull()?.basic?.shopID.orEmpty()
-        }
-    }
-
-    private fun observeIsTokoCabang() {
-        viewModel.isTokoCabang.observe(viewLifecycleOwner) {
-            if (it) {
-                titleTips?.text = getString(R.string.gifting_title_tips_tokocabang)
-                textCaptionShopName?.text = getString(R.string.gifting_caption_shop_name_tokocabang)
-                textShopName?.text = ""
-            }
+            titleTips?.text = it
+            layoutShimmer?.gone()
+            layoutContent?.visible()
         }
     }
 }
