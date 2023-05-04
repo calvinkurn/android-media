@@ -1,15 +1,12 @@
 package com.tokopedia.productcard
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -28,14 +25,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.utils.CLOSE_BOLD_TAG
 import com.tokopedia.productcard.utils.CustomTypefaceSpan
-import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
 import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
 import com.tokopedia.productcard.utils.ROBOTO_BOLD
 import com.tokopedia.productcard.utils.ROBOTO_REGULAR
 import com.tokopedia.productcard.utils.applyConstraintSet
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.productcard.utils.toUnifyLabelType
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -65,13 +60,13 @@ internal fun View.renderProductCardContent(
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
     renderTextETA(productCardModel)
-    productCardModel.fashionStrategy.configContentPosition(this)
+    productCardModel.layoutStrategy.configContentPosition(this)
 
     if (isWideContent) configureWideContent(productCardModel)
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    productCardModel.fashionStrategy.renderTextGimmick(this, productCardModel)
+    productCardModel.layoutStrategy.renderTextGimmick(this, productCardModel)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
@@ -96,7 +91,7 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
     val willShowVariant = productCardModel.willShowVariant()
 
-    if (productCardModel.fashionStrategy.isSingleLine(willShowVariant)) {
+    if (productCardModel.layoutStrategy.isSingleLine(willShowVariant)) {
         textViewProductName?.isSingleLine = true
     }
     else {
@@ -105,7 +100,7 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
         textViewProductName?.ellipsize = TextUtils.TruncateAt.END
     }
 
-    productCardModel.fashionStrategy.renderVariant(
+    productCardModel.layoutStrategy.renderVariant(
         willShowVariant,
         this,
         productCardModel,
@@ -162,8 +157,8 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     val labelDiscount = findViewById<Label?>(R.id.labelDiscount)
     val textViewSlashedPrice = findViewById<Typography?>(R.id.textViewSlashedPrice)
 
-    productCardModel.fashionStrategy.moveDiscountConstraint(this, productCardModel)
-    productCardModel.fashionStrategy.setDiscountMargin(labelDiscount)
+    productCardModel.layoutStrategy.moveDiscountConstraint(this, productCardModel)
+    productCardModel.layoutStrategy.setDiscountMargin(labelDiscount)
 
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
@@ -176,7 +171,7 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    productCardModel.fashionStrategy.renderLabelPrice(this, productCardModel)
+    productCardModel.layoutStrategy.renderLabelPrice(this, productCardModel)
 }
 
 private fun ProductCardModel.getPriceToRender(): String {
@@ -394,8 +389,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextETA(productCardModel: ProductCardModel) {
-    val textViewETA = findViewById<Typography?>(R.id.textViewETA)
-    textViewETA?.initLabelGroup(productCardModel.getLabelETA())
+    productCardModel.layoutStrategy.renderTextEta(this, productCardModel)
 }
 
 private fun View.configureWideContent(productCardModel: ProductCardModel) {

@@ -6,11 +6,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -31,6 +27,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
@@ -120,6 +117,9 @@ class ShipmentPresenterEnhancedEcommerceTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -153,7 +153,8 @@ class ShipmentPresenterEnhancedEcommerceTest {
             gson,
             TestSchedulers,
             eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
@@ -633,11 +634,10 @@ class ShipmentPresenterEnhancedEcommerceTest {
                         add(
                             CartItemModel().apply {
                                 this.productId = productId
-                                analyticsProductCheckoutData =
-                                    AnalyticsProductCheckoutData().apply {
-                                        this.promoCode = promoCodes
-                                        this.promoDetails = promoDetails
-                                    }
+                                analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                                    this.promoCode = promoCodes
+                                    this.promoDetails = promoDetails
+                                }
                             }
                         )
                     }
@@ -703,11 +703,10 @@ class ShipmentPresenterEnhancedEcommerceTest {
                         add(
                             CartItemModel().apply {
                                 this.productId = productId
-                                analyticsProductCheckoutData =
-                                    AnalyticsProductCheckoutData().apply {
-                                        this.promoCode = promoCodes
-                                        this.promoDetails = promoDetails
-                                    }
+                                analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                                    this.promoCode = promoCodes
+                                    this.promoDetails = promoDetails
+                                }
                             }
                         )
                     }

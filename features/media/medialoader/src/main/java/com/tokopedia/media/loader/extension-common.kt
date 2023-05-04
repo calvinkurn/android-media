@@ -64,6 +64,12 @@ inline fun ImageView.loadImage(
 ) = call(url, Properties()
     .apply(properties))
 
+inline fun ImageView.loadImage(
+    url: Uri?,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties))
+
 inline fun ImageView.loadImageFitCenter(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}

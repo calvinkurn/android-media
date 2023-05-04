@@ -51,6 +51,10 @@ class ShopOpenRevampCreateShopUseCase @Inject constructor(
                 "        success\n" +
                 "        message\n" +
                 "        createdId\n" +
+                "        cta{\n" +
+                "           title\n" +
+                "           url\n" +
+                "        }\n" +
                 "    }\n" +
                 "}"
 

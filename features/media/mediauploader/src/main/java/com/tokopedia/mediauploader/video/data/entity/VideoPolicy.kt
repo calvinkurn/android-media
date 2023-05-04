@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.video.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mediauploader.common.util.mbToBytes
 
 data class VideoPolicy(
@@ -15,28 +16,34 @@ data class VideoPolicy(
 ) {
 
     fun thresholdSizeOfVideo(): Int {
-        return thresholdSize?: THRESHOLD_VIDEO_FILE_SIZE
+        return thresholdSize ?: THRESHOLD_VIDEO_FILE_SIZE
     }
 
     fun chunkSizePerFileInBytes(): Int {
-        return (largeChunkSize?: THRESHOLD_LARGE_CHUNK_SIZE).mbToBytes()
+        return (largeChunkSize ?: THRESHOLD_LARGE_CHUNK_SIZE).mbToBytes()
     }
 
     fun timeOutOfTranscode(): Int {
-        return timeOutTranscode?: TIME_OUT_TRANSCODE
+        if (timeOutTranscode.isZero()) return TIME_OUT_TRANSCODE
+        return timeOutTranscode ?: TIME_OUT_TRANSCODE
+    }
+
+    fun retryInterval(): Int {
+        if (retryInterval.isZero()) return THRESHOLD_RETRY_INTERVAL
+        return (retryInterval ?: THRESHOLD_RETRY_INTERVAL)
     }
 
     fun retryIntervalInSec(): Long {
-        return (retryInterval?: THRESHOLD_RETRY_INTERVAL) * RETRY_INTERVAL_TO_SEC.toLong()
+        return retryInterval() * RETRY_INTERVAL_TO_SEC.toLong()
     }
 
     companion object {
         private const val THRESHOLD_VIDEO_FILE_SIZE = 10
         private const val THRESHOLD_LARGE_CHUNK_SIZE = 5
-        private const val THRESHOLD_RETRY_INTERVAL = 5
+        private const val THRESHOLD_RETRY_INTERVAL = 3
 
         private const val RETRY_INTERVAL_TO_SEC = 1000
-        private const val TIME_OUT_TRANSCODE = 600
+        private const val TIME_OUT_TRANSCODE = 360
     }
 
 }

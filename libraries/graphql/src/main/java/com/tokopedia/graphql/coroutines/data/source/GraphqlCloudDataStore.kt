@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.tokopedia.akamai_bot_lib.getAkamaiQuery
+import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -17,6 +17,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const
+import com.tokopedia.graphql.util.registeredGqlForTopAds
+import com.tokopedia.graphql.util.STATUS_QUERY
+import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.Const.TKPD_AKAMAI
@@ -51,11 +54,13 @@ class GraphqlCloudDataStore @Inject constructor(
    * the hash will be passing into header of
    * X-acf-sensor-data;
    * */
+
     private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         val header = mutableMapOf<String, String>()
 
         putAkamaiHeader(header, requests)
+        putTopAdsTrackingHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -92,6 +97,25 @@ class GraphqlCloudDataStore @Inject constructor(
             api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
+    }
+
+    private fun putTopAdsTrackingHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
+        var isQueryWhiteListed = false
+        for (req in requests) {
+            val list: List<String> = getQueryListFromQueryString(req.query)
+            for (temp in list) {
+                if (temp.startsWith(STATUS_QUERY, ignoreCase = true) || registeredGqlForTopAds.contains(temp)) {
+                    isQueryWhiteListed = true
+                    break
+                }
+            }
+        }
+        if (isQueryWhiteListed) {
+            val newHeader = GraphqlClient.getFunction().topAdsHeader
+            if (!newHeader.isNullOrEmpty()) {
+                header[TOP_ADS_TRACKING_KEY] = newHeader
+            }
         }
     }
 

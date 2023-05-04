@@ -57,10 +57,15 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
                     binding.minutesLayout.text = itemView.context?.getString(R.string.hari_small)
                     binding.hoursSeparatorTextView.gone()
+                    binding.minutesSeparatorTextView.gone()
+                    binding.secondsLayout.gone()
                 } else {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
                     binding.minutesLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+                    binding.secondsLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
                     binding.hoursSeparatorTextView.show()
+                    binding.minutesSeparatorTextView.show()
+                    binding.secondsLayout.show()
                 }
             }
             contentCardItemViewModel?.getTimerText()?.observe(it) {

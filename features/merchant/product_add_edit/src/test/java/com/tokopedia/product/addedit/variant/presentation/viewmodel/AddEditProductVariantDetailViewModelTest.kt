@@ -17,12 +17,15 @@ import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
 @ExperimentalCoroutinesApi
-class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewModelTestFixture() {
+class AddEditProductVariantDetailViewModelTest : AddEditProductVariantDetailViewModelTestFixture() {
 
     @Test
     fun `When updateProductInputModel Expect correct initialize values`() {
@@ -86,7 +89,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(viewModel.getInputFieldSize() == 2)
     }
 
-    private fun initVariantDetailInputMap(){
+    private fun initVariantDetailInputMap() {
         viewModel.productInputModel.value = productInputModel
 
         // test for 2x2 variant
@@ -97,57 +100,69 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.updateVariantDetailHeaderMap(3, false)
 
         // create
-        viewModel.addToVariantDetailInputMap(1,
-                VariantDetailInputLayoutModel(
-                        headerPosition=0,
-                        visitablePosition=1,
-                        unitValueLabel="8",
-                        isActive=true,
-                        price="9.999",
-                        isPriceError=false,
-                        stock=1,
-                        isStockError=false,
-                        isSkuFieldVisible=true,
-                        priceEditEnabled=true,
-                        isPrimary=false,
-                        combination= listOf(0, 0)))
+        viewModel.addToVariantDetailInputMap(
+            1,
+            VariantDetailInputLayoutModel(
+                headerPosition = 0,
+                visitablePosition = 1,
+                unitValueLabel = "8",
+                isActive = true,
+                price = "9.999",
+                isPriceError = false,
+                stock = 1,
+                isStockError = false,
+                isSkuFieldVisible = true,
+                priceEditEnabled = true,
+                isPrimary = false,
+                combination = listOf(0, 0)
+            )
+        )
 
-        viewModel.addToVariantDetailInputMap(2,
-                VariantDetailInputLayoutModel(
-                        headerPosition=0,
-                        visitablePosition=2,
-                        unitValueLabel="10",
-                        isActive=true,
-                        price="9.999",
-                        isPriceError=false,
-                        stock=1,
-                        isStockError=false,
-                        isSkuFieldVisible=true,
-                        priceEditEnabled=true,
-                        isPrimary=false,
-                        combination= listOf(0, 1)))
+        viewModel.addToVariantDetailInputMap(
+            2,
+            VariantDetailInputLayoutModel(
+                headerPosition = 0,
+                visitablePosition = 2,
+                unitValueLabel = "10",
+                isActive = true,
+                price = "9.999",
+                isPriceError = false,
+                stock = 1,
+                isStockError = false,
+                isSkuFieldVisible = true,
+                priceEditEnabled = true,
+                isPrimary = false,
+                combination = listOf(0, 1)
+            )
+        )
 
-        viewModel.addToVariantDetailInputMap(4,
-                VariantDetailInputLayoutModel(
-                        headerPosition=3,
-                        visitablePosition=4,
-                        unitValueLabel="8",
-                        isActive=true,
-                        price="9.999",
-                        isPriceError=false,
-                        stock=1000000000,
-                        isStockError=false,
-                        isSkuFieldVisible=true,
-                        priceEditEnabled=true,
-                        isPrimary=false,
-                        combination= listOf(1, 0)))
+        viewModel.addToVariantDetailInputMap(
+            4,
+            VariantDetailInputLayoutModel(
+                headerPosition = 3,
+                visitablePosition = 4,
+                unitValueLabel = "8",
+                isActive = true,
+                price = "9.999",
+                isPriceError = false,
+                stock = 1000000000,
+                isStockError = false,
+                isSkuFieldVisible = true,
+                priceEditEnabled = true,
+                isPrimary = false,
+                combination = listOf(1, 0)
+            )
+        )
 
-        viewModel.updateVariantDetailInputMap(4,
-                viewModel.generateVariantDetailInputModel(2, 3, "8", true))
+        viewModel.updateVariantDetailInputMap(
+            4,
+            viewModel.generateVariantDetailInputModel(2, 3, "8", true)
+        )
 
-        viewModel.addToVariantDetailInputMap(5,
-                viewModel.generateVariantDetailInputModel(3, 3, "10", true))
-
+        viewModel.addToVariantDetailInputMap(
+            5,
+            viewModel.generateVariantDetailInputModel(3, 3, "10", true)
+        )
     }
 
     @Test
@@ -216,15 +231,18 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     fun `When update productInputModel Expect update main product price`() {
         val expectedPrice = 100.toBigInteger()
         initVariantDetailInputMap()
-        viewModel.updateVariantDetailInputMap(1,
+        viewModel.updateVariantDetailInputMap(
+            1,
             VariantDetailInputLayoutModel(
-                headerPosition=0,
-                visitablePosition=1,
-                unitValueLabel="8",
-                price=expectedPrice.toString(),
-                stock=1,
+                headerPosition = 0,
+                visitablePosition = 1,
+                unitValueLabel = "8",
+                price = expectedPrice.toString(),
+                stock = 1,
                 isActive = false,
-                combination= listOf(0, 0)))
+                combination = listOf(0, 0)
+            )
+        )
         viewModel.updateProductInputModel()
 
         val mainPrice = viewModel.productInputModel.getOrAwaitValue().detailInputModel.price
@@ -344,20 +362,44 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
     @Test
     fun `When refreshInputDataValidStatus, expect inputDataValid value correctness`() {
-        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
-            isPriceError = true, isWeightError = true, isStockError = true))
+        viewModel.addToVariantDetailInputMap(
+            0,
+            VariantDetailInputLayoutModel(
+                isPriceError = true,
+                isWeightError = true,
+                isStockError = true
+            )
+        )
         val test0False = viewModel.getInputDataValidStatus()
 
-        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
-            isPriceError = false, isWeightError = true, isStockError = true))
+        viewModel.addToVariantDetailInputMap(
+            0,
+            VariantDetailInputLayoutModel(
+                isPriceError = false,
+                isWeightError = true,
+                isStockError = true
+            )
+        )
         val test1False = viewModel.getInputDataValidStatus()
 
-        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
-            isPriceError = false, isWeightError = true, isStockError = false))
+        viewModel.addToVariantDetailInputMap(
+            0,
+            VariantDetailInputLayoutModel(
+                isPriceError = false,
+                isWeightError = true,
+                isStockError = false
+            )
+        )
         val test2False = viewModel.getInputDataValidStatus()
 
-        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
-            isPriceError = false, isWeightError = false, isStockError = false))
+        viewModel.addToVariantDetailInputMap(
+            0,
+            VariantDetailInputLayoutModel(
+                isPriceError = false,
+                isWeightError = false,
+                isStockError = false
+            )
+        )
         val test3False = viewModel.getInputDataValidStatus()
 
         assertFalse(test0False)
@@ -381,7 +423,8 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         // create stub
         coEvery {
             getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
-        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
                 data = MaxStockThresholdResponse.GetIMSMeta.Data(
                     maxStockThreshold = expectedMaxStockThreshold
                 ),
@@ -427,7 +470,8 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         // create stub
         coEvery {
             getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
-        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
                 data = MaxStockThresholdResponse.GetIMSMeta.Data(
                     maxStockThreshold = expectedMaxStockThreshold
                 ),
@@ -497,5 +541,4 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
         assertNotEquals(expectedErrorMessage, actualErrorMessage)
     }
-
 }
