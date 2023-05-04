@@ -686,7 +686,7 @@ open class TokoChatFragment :
                     if (readModeLong != 0L) {
                         readModeStartsAt = readModeLong
                     }
-                    if (isChannelReadOnly()) {
+                    if (channel.readOnly || isChannelReadOnly()) {
                         // Hide reply component
                         setupReplySection(
                             false,
