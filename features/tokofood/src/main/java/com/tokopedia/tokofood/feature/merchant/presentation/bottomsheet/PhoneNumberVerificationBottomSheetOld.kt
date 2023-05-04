@@ -21,8 +21,8 @@ class PhoneNumberVerificationBottomSheetOld : BottomSheetUnify() {
         private const val TAG = "PhoneNumberVerificationBottomSheet"
 
         @JvmStatic
-        fun createInstance(bottomSheetData: CartTokoFoodBottomSheet): PhoneNumberVerificationBottomSheet {
-            return PhoneNumberVerificationBottomSheet().apply {
+        fun createInstance(bottomSheetData: CartTokoFoodBottomSheet): PhoneNumberVerificationBottomSheetOld {
+            return PhoneNumberVerificationBottomSheetOld().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA, bottomSheetData)
                 }
