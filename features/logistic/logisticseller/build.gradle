@@ -95,10 +95,6 @@ dependencies {
     //-------------------------------------------------------------------//
 
     // Compose
-    implementation rootProject.ext.composeDependencies.composeUi
-    implementation rootProject.ext.composeDependencies.composeRuntime
-    implementation rootProject.ext.composeDependencies.composeFoundation
-    implementation rootProject.ext.composeDependencies.composeMaterial
     implementation rootProject.ext.composeDependencies.composeActivity
 }
 
