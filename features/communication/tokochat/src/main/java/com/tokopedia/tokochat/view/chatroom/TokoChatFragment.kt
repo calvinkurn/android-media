@@ -1336,7 +1336,7 @@ open class TokoChatFragment :
 
     companion object {
         private const val TAG = "TokoChatFragment"
-        private const val TOKOCHAT_ATTACHMENT_MENU = "android_show_attachment_menu_tokochat"
+        const val TOKOCHAT_ATTACHMENT_MENU = "android_show_attachment_menu_tokochat"
 
         fun getFragment(
             fragmentManager: FragmentManager,
