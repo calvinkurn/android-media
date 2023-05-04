@@ -117,7 +117,7 @@ fun List(
 ) {
     val lazyListState = rememberLazyListState()
     LazyColumn(modifier = modifier, state = lazyListState) {
-        items(campaigns.size, key = { campaigns[it].campaignId.toInt() }) {
+        items(campaigns.size, key = { campaigns[it].campaignId.toIntOrZero() }) {
             val campaign = campaigns[it]
             CampaignItem(lazyListState, campaign, onTapShareButton, onCampaignScrolled)
         }
@@ -202,7 +202,7 @@ fun CampaignItem(
     onTapShareButton: (ActiveCampaign) -> Unit,
     onCampaignScrolled: (ActiveCampaign) -> Unit
 ) {
-    ItemImpression(key = campaign.campaignId.toInt(), lazyListState = state) {
+    ItemImpression(key = campaign.campaignId.toIntOrZero(), lazyListState = state) {
         onCampaignScrolled(campaign)
     }
 
