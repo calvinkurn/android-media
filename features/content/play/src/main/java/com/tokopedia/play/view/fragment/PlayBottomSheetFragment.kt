@@ -318,17 +318,15 @@ class PlayBottomSheetFragment @Inject constructor(
         if (product.isVariantAvailable) {
             playViewModel.submitAction(ShowVariantAction(product, false))
             analytic.clickActionProductWithVariant(product.id, action)
+        } else {
+            playViewModel.submitAction(
+                when (action) {
+                    ProductAction.Buy -> BuyProductAction(sectionInfo, product)
+                    ProductAction.AddToCart -> AtcProductAction(sectionInfo, product)
+                    ProductAction.OCC -> OCCProductAction(sectionInfo, product)
+                }
+            )
         }
-
-        //harus atc dlu walaupun mau buka variant?
-
-        playViewModel.submitAction(
-            when (action) {
-                ProductAction.Buy -> BuyProductAction(sectionInfo, product)
-                ProductAction.AddToCart -> AtcProductAction(sectionInfo, product)
-                ProductAction.OCC -> OCCProductAction(sectionInfo, product)
-            }
-        )
     }
 
     private fun showLoadingView() {
