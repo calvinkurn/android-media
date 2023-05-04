@@ -148,7 +148,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
         shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
         shippingCourierAdapter.setCartPosition(cartPosition)
-        shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
+//        shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -186,16 +186,16 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.dismiss()
     }
 
-    private fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                return true
-            }
-            return false
-        }
-    }
+//    private fun isToogleYearEndPromotionOn(): Boolean {
+//        if (isOcc) {
+//            return false
+//        } else {
+//            if (activity != null) {
+//                return true
+//            }
+//            return false
+//        }
+//    }
 
     override fun showLoading() {
         llContent?.visibility = View.GONE

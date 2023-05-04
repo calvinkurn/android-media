@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
-import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -41,20 +40,19 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
     fun bindData(
         shippingCourierUiModel: ShippingCourierUiModel,
         shippingCourierAdapterListener: ShippingCourierAdapterListener?,
-        isLastItem: Boolean,
-        isEndYearPromotion: Boolean
+        isLastItem: Boolean
     ) {
         if (isLastItem) {
             separator.visibility = View.GONE
         } else {
             separator.visibility = View.VISIBLE
         }
-        if (isEndYearPromotion && !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
-        ) {
-            tvPromoPotency.visibility = View.VISIBLE
-        } else {
-            tvPromoPotency.visibility = View.GONE
-        }
+//        if (isEndYearPromotion && !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
+//        ) {
+//            tvPromoPotency.visibility = View.VISIBLE
+//        } else {
+        tvPromoPotency.visibility = View.GONE
+//        }
 
         if (shippingCourierUiModel.productData.codProductData != null) {
             /*cod label*/
