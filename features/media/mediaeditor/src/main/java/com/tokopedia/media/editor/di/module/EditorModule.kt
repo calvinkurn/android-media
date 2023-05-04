@@ -6,12 +6,7 @@ import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsIm
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
 import com.tokopedia.media.editor.data.repository.*
-import com.tokopedia.picker.common.cache.EditorAddLogoCacheManager
-import com.tokopedia.picker.common.cache.EditorAddLogoCacheManagerImpl
-import com.tokopedia.picker.common.cache.EditorCacheManager
-import com.tokopedia.picker.common.cache.EditorParamCacheManager
-import com.tokopedia.picker.common.cache.PickerCacheManager
-import com.tokopedia.picker.common.cache.PickerParamCacheManager
+import com.tokopedia.picker.common.cache.*
 import dagger.Binds
 import dagger.Module
 
@@ -35,6 +30,12 @@ abstract class EditorModule {
     internal abstract fun provideEditorAddLogoCacheManager(
         manager: EditorAddLogoCacheManagerImpl
     ): EditorAddLogoCacheManager
+
+    @Binds
+    @ActivityScope
+    internal abstract fun provideEditorAddTextCacheManager(
+        manager: EditorAddTextCacheManagerImpl
+    ): EditorAddTextCacheManager
 
     @Binds
     @ActivityScope

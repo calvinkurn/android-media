@@ -17,6 +17,7 @@ import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -67,6 +68,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.cache.EditorAddLogoCacheManager
+import com.tokopedia.picker.common.cache.EditorAddTextCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.types.ModeType
@@ -83,7 +85,8 @@ class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val editorDetailAnalytics: EditorDetailAnalytics,
     private val pickerParam: PickerCacheManager,
-    private val addLogoCacheManager: EditorAddLogoCacheManager
+    private val addLogoCacheManager: EditorAddLogoCacheManager,
+    private val addTextCacheManager: EditorAddTextCacheManager
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -377,6 +380,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener add Logo
     override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
         viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
             viewBinding?.imgPreviewOverlay?.apply {
@@ -447,7 +451,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onTemplateSave() {
-        isEdited = true
+        showAddTextTemplateSaveDialog()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1402,10 +1406,36 @@ class DetailEditorFragment @Inject constructor(
 
     // color mapping for latar -> text (automatic choose text color according to latar color)
     private fun latarSelectionTextColor(latarColor: Int): Int {
-        return when(latarColor){
-            TEXT_LATAR_TEMPLATE_BLACK -> editorR.color.Unify_NN0
-            TEXT_LATAR_TEMPLATE_WHITE -> editorR.color.Unify_NN1000
-            else -> 0
+        context?.let {
+            return ContextCompat.getColor(
+                it, when (latarColor) {
+                    TEXT_LATAR_TEMPLATE_BLACK -> editorR.color.Unify_Static_White
+                    TEXT_LATAR_TEMPLATE_WHITE -> editorR.color.Unify_Static_Black
+                    else -> 0
+                }
+            )
+        }
+        return 0
+    }
+
+    private fun showAddTextTemplateSaveDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Mau simpan buat template?")
+                setDescription("Kamu bisa pakai lagi hasil edit teks ini di foto produk lainnya, praktis!")
+                setPrimaryCTAText("Ya, Simpan")
+                setSecondaryCTAText("Tidak")
+                show()
+
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+
+                setPrimaryCTAClickListener {
+                    val saveTemplate = Gson().toJson(data.addTextValue)
+                    addTextCacheManager.set(saveTemplate)
+                }
+            }
         }
     }
 
