@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -51,6 +53,7 @@ class ProductReportActivity : AppCompatActivity() {
         injectComponent()
         super.onCreate(savedInstanceState)
 
+        setScreenImpression()
         viewModel.onEvent(ProductReportUiEvent.LoadData)
 
         setContent {
@@ -77,6 +80,10 @@ class ProductReportActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun setScreenImpression() {
+        ServerLogger.log(Priority.P1, "ProductReportCompose", mapOf("impression" to "compose"))
     }
 
     private fun onFooterClicked() {
