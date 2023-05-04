@@ -187,14 +187,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     private fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                return true
-            }
-            return false
-        }
+        return !isOcc
     }
 
     override fun showLoading() {

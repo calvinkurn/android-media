@@ -302,14 +302,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                return true
-            }
-            return false
-        }
+        return !isOcc
     }
 
     override fun onShippingDurationAndRecommendCourierChosen(
