@@ -45,10 +45,12 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
-    private val colorList = listOf(
-        editorR.color.Unify_NN0,
-        editorR.color.Unify_NN1000
+    // add new text color here
+    private val rawColor = listOf(
+        editorR.color.Unify_Static_Black,
+        editorR.color.Unify_Static_White
     )
+    private var colorList = arrayListOf<Int>()
 
     /**
      * 0 -> regular
@@ -74,7 +76,7 @@ class AddTextFragment @Inject constructor(
         }
 
     private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
-    private var activeColorIndex = 0
+    private var activeColorIndex = 1
         set(value) {
             field = if (value in colorList.indices) {
                 value
@@ -238,9 +240,8 @@ class AddTextFragment @Inject constructor(
     // color item click listener
     private fun changeFontColor(colorRef: Int) {
         viewBinding?.addTextInput?.let {
-            val color = ContextCompat.getColor(requireContext(), colorRef)
-            it.setTextColor(color)
-            it.setHintTextColor(color)
+            it.setTextColor(colorRef)
+            it.setHintTextColor(colorRef)
         }
     }
 
@@ -386,6 +387,15 @@ class AddTextFragment @Inject constructor(
     }
 
     private fun initStartValue() {
+        context?.let {
+            rawColor.forEach { colorAddress ->
+                ContextCompat.getColor(it, colorAddress).apply {
+                    colorList.add(this)
+                    return@forEach
+                }
+            }
+        }
+
         activeStyleIndex = viewModel.textData.textStyle
         alignmentIndex = viewModel.textData.textAlignment
         activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: 0

@@ -29,7 +29,7 @@ class AddTextColorItem(context: Context) : AppCompatImageView(context) {
     }
 
     fun setColor(colorRef: Int) {
-        shapeDrawable.setColor(ContextCompat.getColor(context, colorRef))
+        shapeDrawable.setColor(colorRef)
         shapeDrawable.setStroke(
             COLOR_CIRCLE_STROKE.toPx(),
             ContextCompat.getColor(context, strokeInactiveColor)

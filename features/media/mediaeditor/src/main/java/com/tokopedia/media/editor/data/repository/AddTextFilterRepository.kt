@@ -63,7 +63,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         val mTextPaint = TextPaint()
 
         mTextPaint.textSize = fontSize
-        mTextPaint.color = data.getColor(context)
+        mTextPaint.color = data.textColor
 
         val typeFace = getTypeface(context, TYPEFACE)
         mTextPaint.typeface = Typeface.create(typeFace, data.getTypeFaceStyle())

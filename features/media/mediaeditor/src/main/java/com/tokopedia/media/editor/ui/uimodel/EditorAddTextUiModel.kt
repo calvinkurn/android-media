@@ -1,10 +1,8 @@
 package com.tokopedia.media.editor.ui.uimodel
 
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Parcelable
 import android.text.Layout
-import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.adapter.AddTextToolAdapter
 import kotlinx.parcelize.Parcelize
 
@@ -30,11 +28,6 @@ class EditorAddTextUiModel(
 
     fun setLatarTemplate(latarTemplate: LatarTemplateDetail) {
         textTemplateLatar = latarTemplate
-    }
-
-    fun getColor(context: Context?): Int {
-        if (context == null || textColor == 0) return 0
-        return ContextCompat.getColor(context, textColor)
     }
 
     fun getLayoutAlignment(): Layout.Alignment {
