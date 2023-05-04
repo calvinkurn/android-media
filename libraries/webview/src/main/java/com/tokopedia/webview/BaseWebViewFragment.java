@@ -947,7 +947,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (!allowOverride) {
             return false;
         }
-
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
