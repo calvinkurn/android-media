@@ -293,6 +293,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
+    const val DF_SELLER_PERSONA = "df_seller_persona"
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
 
@@ -908,6 +909,12 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(INTERNAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
+
+            add(DFP({
+                it.startsWith(SellerApp.SELLER_PERSONA) || it.startsWith(
+                    ApplinkConstInternalSellerapp.SELLER_PERSONA
+                )
+            }, DF_SELLER_PERSONA, R.string.title_seller_persona))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
