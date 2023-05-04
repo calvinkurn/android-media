@@ -64,6 +64,7 @@ import com.tokopedia.play.broadcaster.util.idling.PlayBroadcasterIdlingResource
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcasterContract
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFragment
@@ -133,6 +134,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder
+
+    @Inject
+    lateinit var valueWrapper: PlayBroadcastValueWrapper
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -489,7 +493,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 showToaster(
                     err = Exception("fail to apply face filter & preset for the first time"),
                     customErrMessage = getString(R.string.play_broadcaster_fail_save_filter),
-                    duration = Toaster.LENGTH_SHORT,
+                    duration = valueWrapper.rebindEffectToasterDuration,
                     actionLabel = getString(R.string.play_broadcaster_retry),
                     actionListener = {
                         analytic.clickRetryReapplyBeautyFilter(account = viewModel.selectedAccount)

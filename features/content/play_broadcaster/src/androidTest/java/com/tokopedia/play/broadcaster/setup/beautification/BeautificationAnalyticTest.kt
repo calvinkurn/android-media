@@ -4,10 +4,9 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.play.broadcaster.setup.buildBeautificationConfig
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
-import com.tokopedia.play.broadcaster.setup.channelPausedResponse
-import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coEvery
 import org.junit.Before
 import org.junit.Test
@@ -494,10 +493,10 @@ class BeautificationAnalyticTest {
     @Test
     fun testAnalytic_clickRetryReapplyBeautyFilter() {
 
+        coEvery { beautificationRobot.mockValueWrapper.rebindEffectToasterDuration } returns Toaster.LENGTH_INDEFINITE
         coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
 
         beautificationRobot.launch()
-            .performDelay(3000)
             .clickToasterCTA()
             .verifyEventAction("click - reapply beauty filter")
     }

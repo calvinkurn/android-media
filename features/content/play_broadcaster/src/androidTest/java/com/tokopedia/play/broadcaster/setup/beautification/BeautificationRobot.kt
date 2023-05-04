@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.setup.di.PlayBroadcastRepositoryTestModule
 import com.tokopedia.play.broadcaster.setup.di.PlayBroadcastTestModule
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -51,6 +52,7 @@ class BeautificationRobot {
     val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
+    val mockValueWrapper: PlayBroadcastValueWrapper = mockk(relaxed = true)
 
     private val playBroadcastTestModule = PlayBroadcastTestModule(
         activityContext = context,
@@ -59,6 +61,7 @@ class BeautificationRobot {
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
+        mockValueWrapper = mockValueWrapper,
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(

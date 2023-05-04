@@ -33,6 +33,7 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
@@ -42,7 +43,6 @@ import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -59,6 +59,7 @@ class PlayBroadcastTestModule(
     private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
     private val mockBroadcastTimer: PlayBroadcastTimer,
     private val mockGetChannelUseCase: GetChannelUseCase,
+    private val mockValueWrapper: PlayBroadcastValueWrapper,
 ) {
 
     @Provides
@@ -84,6 +85,10 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideGetChannelUseCase(): GetChannelUseCase = mockGetChannelUseCase
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideValueWrapper(): PlayBroadcastValueWrapper = mockValueWrapper
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {

@@ -46,6 +46,8 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapperImpl
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManagerImpl
 import com.tokopedia.play_common.util.device.PlayDeviceSpec
@@ -177,4 +179,8 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindEffectManager(effectManager: EffectManagerImpl): EffectManager
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindPlayBroadcastValueWrapper(valueWrapper: PlayBroadcastValueWrapperImpl): PlayBroadcastValueWrapper
 }
