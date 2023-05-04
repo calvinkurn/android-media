@@ -34,7 +34,7 @@ class PhoneNumberVerificationBottomSheet : BottomSheetUnify() {
     private var clickListener: OnButtonCtaClickListener? = null
 
     private val bottomSheetData: CartListBusinessDataBottomSheet by lazy {
-        arguments?.getParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA, CartListBusinessDataBottomSheet::class.java) ?: CartListBusinessDataBottomSheet()
+        arguments?.getParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA) as? CartListBusinessDataBottomSheet ?: CartListBusinessDataBottomSheet()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

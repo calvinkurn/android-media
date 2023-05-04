@@ -17,8 +17,8 @@ class PhoneNumberVerificationBottomSheetOld : BottomSheetUnify() {
     }
 
     companion object {
-        private const val BUNDLE_KEY_BOTTOM_SHEET_DATA = "BOTTOM_SHEET_DATA"
-        private const val TAG = "PhoneNumberVerificationBottomSheet"
+        private const val BUNDLE_KEY_BOTTOM_SHEET_DATA = "BOTTOM_SHEET_DATA_OLD"
+        private const val TAG = "PhoneNumberVerificationBottomSheetOld"
 
         @JvmStatic
         fun createInstance(bottomSheetData: CartTokoFoodBottomSheet): PhoneNumberVerificationBottomSheetOld {

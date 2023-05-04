@@ -303,6 +303,12 @@ class MultipleFragmentsViewModelOld @Inject constructor(
                             data = it.data.bottomSheet
                         )
                     )
+                    cartDataValidationState.emit(
+                        UiEvent(
+                            state = UiEvent.EVENT_NOTHING,
+                            source = source
+                        )
+                    )
                 } else {
                     cartDataValidationState.emit(
                         UiEvent(

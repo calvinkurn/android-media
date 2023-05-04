@@ -25,5 +25,6 @@ data class UiEvent(
         const val EVENT_FAILED_UPDATE_QUANTITY = 17
         const val EVENT_FAILED_UPDATE_CART = 18
         const val EVENT_FAILED_ADD_TO_CART = 19
+        const val EVENT_NOTHING = 20
     }
 }

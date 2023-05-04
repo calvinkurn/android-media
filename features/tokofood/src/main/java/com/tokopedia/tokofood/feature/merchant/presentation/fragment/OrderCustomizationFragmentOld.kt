@@ -23,7 +23,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModelOld
@@ -36,6 +36,7 @@ import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.PhoneNumberVerificationBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.PhoneNumberVerificationBottomSheetOld
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -56,7 +57,7 @@ import javax.inject.Inject
 class OrderCustomizationFragmentOld : BaseMultiFragment(),
     ProductAddOnViewHolder.OnAddOnSelectListener,
     OrderNoteInputViewHolder.OnNoteTextChangeListener,
-    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
+    PhoneNumberVerificationBottomSheetOld.OnButtonCtaClickListener {
 
     companion object {
 
@@ -314,10 +315,10 @@ class OrderCustomizationFragmentOld : BaseMultiFragment(),
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
                         binding?.atcButton?.isLoading = false
-                        val bottomSheetData = it.data as? CartListBusinessDataBottomSheet
+                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
-                                val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
+                                val bottomSheet = PhoneNumberVerificationBottomSheetOld.createInstance(bottomSheetData = this)
                                 bottomSheet.setClickListener(this@OrderCustomizationFragmentOld)
                                 bottomSheet.show(childFragmentManager)
                             }
