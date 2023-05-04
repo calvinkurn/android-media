@@ -133,11 +133,11 @@ data class RecommendationEntity(
             @SerializedName("type")
             val type: String = ""
 
-            @SerializedName("content")
+            @SerializedName("specificationContent")
             val content: List<SpecificationContents> = listOf()
 
             class SpecificationContents {
-                @SerializedName("iconURL")
+                @SerializedName("url")
                 val iconUrl: String = ""
 
                 @SerializedName("description")

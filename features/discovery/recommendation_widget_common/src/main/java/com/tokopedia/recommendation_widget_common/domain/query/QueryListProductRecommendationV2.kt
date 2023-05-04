@@ -99,8 +99,8 @@ internal object QueryListProductRecommendationV2 {
         "                            key\n" +
         "                            value\n" +
         "                            type\n" +
-        "                            content {\n" +
-        "                               iconURL\n" +
+        "                            specificationContent {\n" +
+        "                               url\n" +
         "                               description\n" +
         "                            }\n" +
         "                        }\n" +
