@@ -325,7 +325,7 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `check open shop appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-open"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
     }
 
     @Test
