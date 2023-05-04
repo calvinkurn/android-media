@@ -70,7 +70,7 @@ fun CampaignListScreen(
         .fillMaxSize()) {
         Column {
             Toolbar(
-                title = stringResource(id = R.string.active_campaign_list),
+                title = stringResource(id = R.string.cl_active_campaign_list),
                 onToolbarBackIconPressed = onToolbarBackIconPressed
             )
 
@@ -132,7 +132,7 @@ private fun SearchBar(
 ) {
     NestSearchBar(
         modifier = modifier.fillMaxWidth(),
-        placeholderText = stringResource(id = R.string.search_active_campaign),
+        placeholderText = stringResource(id = R.string.cl_search_active_campaign),
         onSearchBarCleared = onSearchbarCleared,
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
@@ -163,13 +163,13 @@ private fun FilterWidget(
 ) {
 
     val campaignStatus = SortFilter(
-        title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.campaign_list_label_status) else selectedCampaignStatus,
+        title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
         onClick = onTapCampaignStatusFilter
     )
 
     val campaignType = SortFilter(
-        title = if (selectedCampaignType.isEmpty()) stringResource(id = R.string.campaign_type) else selectedCampaignType,
+        title = if (selectedCampaignType.isEmpty()) stringResource(id = R.string.cl_campaign_type) else selectedCampaignType,
         isSelected = selectedCampaignType.isNotEmpty(),
         onClick = onTapCampaignTypeFilter
     )
@@ -189,7 +189,7 @@ private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Un
     NestTicker(
         modifier = modifier.fillMaxWidth(),
         title = "",
-        description = stringResource(id = R.string.another_campaign_type_wording),
+        description = stringResource(id = R.string.cl_another_campaign_type_wording),
         onDismissed = onDismissed,
         type = TickerType.ANNOUNCEMENT
     )
@@ -293,7 +293,7 @@ fun CampaignItem(
             )
 
             NestTypography(
-                text = stringResource(id = R.string.campaign_list_product_quantity_label, campaign.productQty),
+                text = stringResource(id = R.string.cl_campaign_list_product_quantity_label, campaign.productQty),
                 modifier = Modifier.constrainAs(productQty) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
@@ -312,7 +312,7 @@ fun CampaignItem(
 
 
             NestTypography(
-                text = stringResource(id = R.string.campaign_time_template, campaign.startTime),
+                text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
                 modifier = Modifier.constrainAs(campaignStartTime) {
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
@@ -341,7 +341,7 @@ fun CampaignItem(
             )
 
             NestTypography(
-                text = stringResource(id = R.string.campaign_time_template, campaign.endTime),
+                text = stringResource(id = R.string.cl_campaign_time_template, campaign.endTime),
                 modifier = Modifier.constrainAs(campaignEndTime) {
                     top.linkTo(campaignStartTime.top)
                     bottom.linkTo(campaignStartTime.bottom)
@@ -360,7 +360,7 @@ fun CampaignItem(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                text = stringResource(id = R.string.action_share),
+                text = stringResource(id = R.string.cl_action_share),
                 onClick = { onTapShareButton(campaign) }
             )
 
