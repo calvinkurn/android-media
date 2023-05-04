@@ -168,6 +168,10 @@ open class TokoChatFragment :
 
     override fun onResume() {
         super.onResume()
+        updateReplySectionView()
+    }
+
+    private fun updateReplySectionView() {
         if (isChannelExpired()) {
             showUnavailableBottomSheet()
         } else {
