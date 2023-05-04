@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -95,15 +94,12 @@ class OrderHistoryFragment :
     }
 
     private fun setupObservers() {
-        viewModel.product.observe(
-            viewLifecycleOwner,
-            Observer { result ->
-                when (result) {
-                    is Success -> onSuccessGetProductDate(result.data)
-                    is Fail -> showGetListError(result.throwable)
-                }
+        viewModel.product.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> onSuccessGetProductDate(result.data)
+                is Fail -> showGetListError(result.throwable)
             }
-        )
+        }
 
         viewModel.addToCartResult.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -111,7 +107,8 @@ class OrderHistoryFragment :
                     val dataModel = result.data.first
                     val product = result.data.second
                     analytic.trackSuccessDoBuy(product, dataModel)
-                    RouteManager.route(context, ApplinkConst.CART)
+                    val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                    startActivity(intent)
                 }
                 is Fail -> {
                     showErrorMessage(result.throwable.message.toString())
