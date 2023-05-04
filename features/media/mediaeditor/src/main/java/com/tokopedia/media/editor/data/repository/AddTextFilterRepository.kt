@@ -3,7 +3,6 @@ package com.tokopedia.media.editor.data.repository
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
@@ -11,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
@@ -70,16 +68,6 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         val typeFace = getTypeface(context, TYPEFACE)
         mTextPaint.typeface = Typeface.create(typeFace, data.getTypeFaceStyle())
 
-//        val alignment = data.getLayoutAlignment()
-//        var mTextLayout = StaticLayout(
-//            data.textValue,
-//            mTextPaint,
-//            (canvas.width - (paddingHorizontal * 2)).toInt(),
-//            alignment,
-//            1.0f,
-//            0.0f,
-//            false
-//        )
         var mTextLayout: StaticLayout? = null
 
         canvas.save()
@@ -148,7 +136,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
         when (latarDetail.latarModel) {
             TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
-            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_full
+            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
             TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
             else -> null
         }.apply {
@@ -163,8 +151,11 @@ class AddTextFilterRepositoryImpl @Inject constructor(
     }
 
     private fun createStaticLayout(data: EditorAddTextUiModel, width: Int, paint: TextPaint): StaticLayout {
-        // TODO: adjust only do ellipsize on latar
-        val text = TextUtils.ellipsize(data.textValue, paint, width.toFloat(), TextUtils.TruncateAt.END)
+        val text = if (data.getLatarTemplate() != null){
+            TextUtils.ellipsize(data.textValue, paint, width.toFloat(), TextUtils.TruncateAt.END)
+        } else {
+            data.textValue
+        }
         val alignment = data.getLayoutAlignment()
 
         return StaticLayout(
