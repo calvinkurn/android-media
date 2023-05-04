@@ -396,10 +396,15 @@ class HotelSearchMapFragment :
     }
 
     private fun showToastError(throwable: Throwable) {
-        if(isNotEmptyError(throwable))
-        view?.run {
-            Toaster.build(this, getMessageError(throwable), Toaster.toasterLength, Toaster.TYPE_ERROR).show()
-        }
+        if (isNotEmptyError(throwable))
+            view?.run {
+                Toaster.build(
+                    this,
+                    getMessageError(throwable),
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
     }
 
     private fun isNotEmptyError(throwable: Throwable): Boolean {
