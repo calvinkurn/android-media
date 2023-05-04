@@ -26,6 +26,7 @@ class PlayInstallMainAppDialog {
     }
 
     fun clear() {
+        dialog?.dismiss()
         dialog = null
     }
 
