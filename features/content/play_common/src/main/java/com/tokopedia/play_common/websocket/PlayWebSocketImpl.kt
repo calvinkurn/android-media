@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
@@ -113,7 +112,7 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source, mWebSocket?.request()?.headers.toString()).toString())
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     override fun close() {
@@ -142,13 +141,13 @@ class PlayWebSocketImpl(
         }
     }
 
-    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String, header: String): Map<String, String> {
+    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
         return mapOf(
             "source" to source.ifEmpty { "\"\"" },
             "channelId" to channelId.ifEmpty { "\"\"" },
             "warehouseId" to warehouseId.ifEmpty { "\"\"" },
             "gcToken" to gcToken.ifEmpty { "\"\"" },
-            "header" to header.toEmptyStringIfNull().ifEmpty { "\"\"" },
+            "header" to deviceVersion.ifEmpty { "\"\"" }
         )
     }
 
