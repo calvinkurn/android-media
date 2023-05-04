@@ -136,7 +136,7 @@ class GqlSymbolProcessor(
         return this
             .replace("\\n", "")
             .replace("\\t", "")
-            .replace("\"", "")
+            .replace("\"", "\\\"")
             .replace("+", "")
             .replace("\\s+".toRegex(), " ")
             .replace(System.getProperty("line.separator"), "")
