@@ -391,6 +391,9 @@ class FeedPostImageViewHolder(
             shareButton.hide()
             productTagButton.root.hide()
             productTagView.root.hide()
+            overlayTop.root.hide()
+            overlayBottom.root.hide()
+            overlayRight.root.hide()
             btnDisableClearMode.show()
         }
     }
@@ -405,6 +408,9 @@ class FeedPostImageViewHolder(
             shareButton.show()
             productTagButton.root.show()
             productTagView.root.show()
+            overlayTop.root.show()
+            overlayBottom.root.show()
+            overlayRight.root.show()
             btnDisableClearMode.hide()
         }
     }
