@@ -687,7 +687,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
-    fun `when addToCart success but should show bottomsheet, should send phone verification event`() {
+    fun `when addToCart success but should show bottomsheet, should send nothing event`() {
         runBlocking {
             val rawSuccessResponse =
                 JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
@@ -709,7 +709,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             viewModel.loadInitial(SOURCE)
             viewModel.addToCart(updateParam, SOURCE)
-            val expectedUiEventState = UiEvent.EVENT_PHONE_VERIFICATION
+            val expectedUiEventState = UiEvent.EVENT_NOTHING
             assertEquals(expectedUiEventState, viewModel.cartDataValidationFlow.value.state)
         }
     }
