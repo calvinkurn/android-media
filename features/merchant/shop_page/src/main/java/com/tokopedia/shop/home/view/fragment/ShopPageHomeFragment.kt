@@ -4203,7 +4203,7 @@ open class ShopPageHomeFragment :
         recyclerView?.addOneTimeGlobalLayoutListener {
             val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
             val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
-            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(R.id.play_widget_iv_action)
+            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
             if (ivAction?.isVisible == true) {
                 val coachMarkItems = mutableListOf<CoachMark2Item>()
                 val coachMark = CoachMark2(requireContext())
