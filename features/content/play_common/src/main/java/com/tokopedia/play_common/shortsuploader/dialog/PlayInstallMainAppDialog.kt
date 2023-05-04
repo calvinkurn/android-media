@@ -16,20 +16,24 @@ class PlayInstallMainAppDialog {
         private const val CUSTOMER_APP_PLAY_STORE = "https://play.google.com/store/apps/details?id=$CUSTOMER_APP_PACKAGE"
     }
 
-    private lateinit var dialog: DialogUnify
+    private var dialog: DialogUnify? = null
 
     fun openPlayStore(
         context: Context,
         onDismiss: () -> Unit,
     ) {
-        getDialog(context, onDismiss).show()
+        getDialog(context, onDismiss)?.show()
+    }
+
+    fun clear() {
+        dialog = null
     }
 
     private fun getDialog(
         context: Context,
         onDismiss: () -> Unit,
-    ): DialogUnify {
-        if (!::dialog.isInitialized) {
+    ): DialogUnify? {
+        if (dialog == null) {
             dialog = DialogUnify(
                 context = context,
                 actionType = DialogUnify.VERTICAL_ACTION,
@@ -49,13 +53,15 @@ class PlayInstallMainAppDialog {
                 )
             }
         }
-        dialog.setPrimaryCTAClickListener {
+
+        dialog?.setPrimaryCTAClickListener {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(CUSTOMER_APP_PLAY_STORE)))
         }
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
+        dialog?.setSecondaryCTAClickListener {
+            dialog?.dismiss()
             onDismiss()
         }
+
         return dialog
     }
 }

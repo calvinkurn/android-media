@@ -22,7 +22,9 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
-    private val playInstallMainAppDialog by lazy { PlayInstallMainAppDialog() }
+    private val playInstallMainAppDialog by lazy(LazyThreadSafetyMode.NONE) {
+        PlayInstallMainAppDialog()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -30,6 +32,11 @@ class PlayShortsPostUploadActivity : BaseActivity() {
 
         hitAnalytic()
         redirectToPlayRoom()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playInstallMainAppDialog.clear()
     }
 
     private fun inject() {
