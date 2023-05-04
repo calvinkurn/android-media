@@ -4,9 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
