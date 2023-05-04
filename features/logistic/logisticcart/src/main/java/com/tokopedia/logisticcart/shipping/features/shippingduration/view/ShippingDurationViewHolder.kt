@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.util.*
 import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
@@ -60,20 +59,20 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     fun bindData(
         shippingDurationUiModel: ShippingDurationUiModel,
         shippingDurationAdapterListener: ShippingDurationAdapterListener?,
-        isDisableOrderPrioritas: Boolean,
-        isYearEndPromotion: Boolean
+        isDisableOrderPrioritas: Boolean
+//        isYearEndPromotion: Boolean
     ) {
         if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
             tvShippingInformation.visibility = View.VISIBLE
         } else {
             tvShippingInformation.visibility = View.GONE
         }
-
-        if (isYearEndPromotion && shippingDurationUiModel.serviceData.isPromo == 1) {
-            tvPromoPotency.visibility = View.VISIBLE
-        } else {
-            tvPromoPotency.visibility = View.GONE
-        }
+// always gone because serviceData.isPromo value currently only 0
+//        if (isYearEndPromotion && shippingDurationUiModel.serviceData.isPromo == 1) {
+//            tvPromoPotency.visibility = View.VISIBLE
+//        } else {
+        tvPromoPotency.visibility = View.GONE
+//        }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
             tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, RUnify.color.Unify_N700_44))

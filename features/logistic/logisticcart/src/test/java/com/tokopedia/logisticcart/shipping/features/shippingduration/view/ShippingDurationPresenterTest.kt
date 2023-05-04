@@ -564,7 +564,7 @@ class ShippingDurationPresenterTest {
      */
 
     @Test
-    fun `When in checkout and year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
+    fun `When in checkout and service is pinpoint error Then set pinpoint error flag`() {
         // Given
         // selected shipping duration ui model
         val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
@@ -572,7 +572,7 @@ class ShippingDurationPresenterTest {
             errorId = ERROR_PINPOINT_NEEDED
             errorMessage = "error pinpoint"
         }
-        every { view.isToogleYearEndPromotionOn() } returns true
+//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When
@@ -596,39 +596,39 @@ class ShippingDurationPresenterTest {
         }
     }
 
-    // pointer this is not possible because togle only true in checkout
-    @Test
-    fun `When in occ and year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
-        // Given
-        // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = ErrorServiceData().apply {
-            errorId = ERROR_PINPOINT_NEEDED
-            errorMessage = "error pinpoint"
-        }
-        every { view.isToogleYearEndPromotionOn() } returns true
-        presenter.attachView(view)
-
-        // When
-        presenter.onChooseDuration(
-            selectedService.shippingCourierViewModelList,
-            0,
-            selectedService.serviceData,
-            true
-        )
-
-        // Then
-        verify(exactly = 0) {
-            view.onShippingDurationAndRecommendCourierChosen(
-                selectedService.shippingCourierViewModelList,
-                any(),
-                any(),
-                selectedService.serviceData.serviceId,
-                selectedService.serviceData,
-                true
-            )
-        }
-    }
+    // todo this is not possible because togle only true in checkout
+//    @Test
+//    fun `When in occ and year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
+//        // Given
+//        // selected shipping duration ui model
+//        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+//        selectedService.serviceData.error = ErrorServiceData().apply {
+//            errorId = ERROR_PINPOINT_NEEDED
+//            errorMessage = "error pinpoint"
+//        }
+// //        every { view.isToogleYearEndPromotionOn() } returns true
+//        presenter.attachView(view)
+//
+//        // When
+//        presenter.onChooseDuration(
+//            selectedService.shippingCourierViewModelList,
+//            0,
+//            selectedService.serviceData,
+//            true
+//        )
+//
+//        // Then
+//        verify(exactly = 0) {
+//            view.onShippingDurationAndRecommendCourierChosen(
+//                selectedService.shippingCourierViewModelList,
+//                any(),
+//                any(),
+//                selectedService.serviceData.serviceId,
+//                selectedService.serviceData,
+//                true
+//            )
+//        }
+//    }
 
     @Test
     fun `When year end promotion toggle is on and service is error Then pinpoint error flag is false`() {
@@ -639,7 +639,7 @@ class ShippingDurationPresenterTest {
             errorId = "1"
             errorMessage = "error"
         }
-        every { view.isToogleYearEndPromotionOn() } returns true
+//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When
@@ -670,7 +670,7 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         selectedService.serviceData.error = null
-        every { view.isToogleYearEndPromotionOn() } returns true
+//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When

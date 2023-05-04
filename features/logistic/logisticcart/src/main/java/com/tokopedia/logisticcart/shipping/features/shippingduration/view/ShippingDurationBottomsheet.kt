@@ -235,7 +235,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private fun setupRecyclerView(cartPosition: Int) {
         shippingDurationAdapter?.setShippingDurationAdapterListener(this)
         shippingDurationAdapter?.setCartPosition(cartPosition)
-        shippingDurationAdapter?.setToggleYearPromotion(isToogleYearEndPromotionOn())
+//        shippingDurationAdapter?.setToggleYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -301,16 +301,16 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         return activity!!
     }
 
-    override fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                return true
-            }
-            return false
-        }
-    }
+//    override fun isToogleYearEndPromotionOn(): Boolean {
+//        if (isOcc) {
+//            return false
+//        } else {
+//            if (activity != null) {
+//                return true
+//            }
+//            return false
+//        }
+//    }
 
     override fun onShippingDurationAndRecommendCourierChosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
