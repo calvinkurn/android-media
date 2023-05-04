@@ -32,10 +32,7 @@ class PlayBroadcastPreparationBannerAdapter(
     }
 
     fun getPerformanceDashboardPosition(): Int {
-        itemList.forEachIndexed { index, playBroadcastPreparationBannerModel ->
-            if (playBroadcastPreparationBannerModel.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD)
-                return index
-        }
+        itemList.indexOfFirst { it.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD }
         return -1
     }
 
