@@ -268,7 +268,7 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check seller feedback appLink should return DF_SELLER_FEEDBACK in seller app`() {
-        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP+"/seller-feedback"
+        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/seller-feedback"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_FEEDBACK)
     }
 }
