@@ -122,16 +122,16 @@ class TelemetryActLifecycleCallback(
         if (activity !is ITelemetryActivity) return true
         val sectionName = activity.getTelemetrySectionName()
         val configCount = when (teleType) {
-            TelemetryType.TYPING -> telemetryConfig.typeCount
-            TelemetryType.ACCEL -> telemetryConfig.accelCount
-            TelemetryType.GYRO -> telemetryConfig.gyroCount
-            TelemetryType.TOUCH -> telemetryConfig.touchCount
+            TelemetryType.TYPING -> telemetryConfig.typeConfig.count
+            TelemetryType.ACCEL -> telemetryConfig.accelConfig.count
+            TelemetryType.GYRO -> telemetryConfig.gyroConfig.count
+            TelemetryType.TOUCH -> telemetryConfig.touchConfig.count
         }
         val configInterval = when (teleType) {
-            TelemetryType.TYPING -> telemetryConfig.typeInterval
-            TelemetryType.ACCEL -> telemetryConfig.accelInterval
-            TelemetryType.GYRO -> telemetryConfig.gyroInterval
-            TelemetryType.TOUCH -> telemetryConfig.touchInterval
+            TelemetryType.TYPING -> telemetryConfig.typeConfig.interval
+            TelemetryType.ACCEL -> telemetryConfig.accelConfig.interval
+            TelemetryType.GYRO -> telemetryConfig.gyroConfig.interval
+            TelemetryType.TOUCH -> telemetryConfig.touchConfig.interval
         }
         if (configCount >= 0 && configInterval >= 20) {
             // do checking count and interval
@@ -171,15 +171,15 @@ class TelemetryActLifecycleCallback(
         if (telemetryConfig == null || !hasFetch) {
             val remoteConfig = getRemoteConfig(context)
             val telemetryConfigString = remoteConfig.getString(TELEMETRY_REMOTE_CONFIG_KEY, "")
-            if (telemetryConfigString.isNullOrEmpty()) {
+            return if (telemetryConfigString.isNullOrEmpty()) {
                 obj = TelemetryConfig()
                 telemetryConfig = obj
-                return obj
+                obj
             } else {
                 obj = TelemetryConfig.parseFromRemoteConfig(telemetryConfigString)
                 telemetryConfig = obj
                 hasFetch = true
-                return obj
+                obj
             }
         } else {
             return telemetryConfig ?: TelemetryConfig()
