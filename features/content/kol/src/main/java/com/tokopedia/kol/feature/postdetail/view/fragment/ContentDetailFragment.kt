@@ -1782,7 +1782,11 @@ class ContentDetailFragment :
         }
     }
 
-    private fun onTagSheetItemBuy(
+    override fun onBuyButtonClicked(item: ProductPostTagModelNew) {
+        // do nothing
+    }
+
+        private fun onTagSheetItemBuy(
         activityId: String,
         positionInFeed: Int,
         postTagItem: FeedXProduct,
