@@ -84,7 +84,6 @@ class CampaignListViewModel @Inject constructor(
     }
 
     sealed class UiEffect {
-        object None : UiEffect()
         data class ShowShareBottomSheet(val banner: GetMerchantCampaignBannerGeneratorData) : UiEffect()
     }
 
