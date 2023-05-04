@@ -2139,41 +2139,37 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check gofood appLink then should return tokopedia internal tokofood home in customerapp`() {
-        setRemoteConfig(true)
-        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
+        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME_OLD
         val goFoodAppLink = ApplinkConst.TokoFood.GOFOOD
         assertEqualsDeepLinkMapper(goFoodAppLink, expectedDeepLink)
     }
 
     @Test
     fun `check tokofood home appLink then should return tokopedia internal tokofood home in customerapp`() {
-        setRemoteConfig(true)
-        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
+        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME_OLD
         val appLink = ApplinkConst.TokoFood.HOME
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
     fun `check tokofood merchant appLink then should return tokopedia internal tokofood merchant in customerapp`() {
-        setRemoteConfig(true)
         val merchantId = "cbdb87be-acca-439e-ae0f-4829a608b811"
         val productId = "1111"
         val expectedDeepLink =
-            "${ApplinkConstInternalTokoFood.MERCHANT}?merchantId=$merchantId&product_id=$productId"
+            "${ApplinkConstInternalTokoFood.MERCHANT_OLD}?merchantId=$merchantId&product_id=$productId"
         val appLink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchantId, productId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
     fun `check tokofood category appLink then should return tokopedia internal tokofood category in customerapp`() {
-        setRemoteConfig(true)
         val pageTitle = "Terlaris"
         val cuisine = "Coffee"
         val option = "1"
         val sortBy = "2"
         val brandUId = "226ea0d5-c763-40dc-aad3-9a233ed04f86"
         val expectedDeepLink =
-            "${ApplinkConstInternalTokoFood.CATEGORY}?pageTitle=$pageTitle&option=$option&cuisine=$cuisine&sortBy=$sortBy&brand_uid=$brandUId"
+            "${ApplinkConstInternalTokoFood.CATEGORY_OLD}?pageTitle=$pageTitle&option=$option&cuisine=$cuisine&sortBy=$sortBy&brand_uid=$brandUId"
         val appLink = "${ApplinkConst.TokoFood.CATEGORY}?pageTitle=$pageTitle&option=$option&cuisine=$cuisine&sortBy=$sortBy&brand_uid=$brandUId"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2189,8 +2185,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokofood search appLink then should return tokopedia internal tokofood home in customerapp`() {
-        setRemoteConfig(true)
-        val expectedDeepLink = ApplinkConstInternalTokoFood.SEARCH
+        val expectedDeepLink = ApplinkConstInternalTokoFood.SEARCH_OLD
         val appLink = ApplinkConst.TokoFood.SEARCH
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2598,9 +2593,4 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 
-    private fun setRemoteConfig(isEnabled: Boolean) {
-        every {
-            FirebaseRemoteConfigInstance.get(mockk(relaxed = true)).getBoolean(any())
-        } returns isEnabled
-    }
 }
