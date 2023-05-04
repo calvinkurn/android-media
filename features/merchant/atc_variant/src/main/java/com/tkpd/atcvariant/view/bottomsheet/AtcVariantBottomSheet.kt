@@ -139,11 +139,6 @@ class AtcVariantBottomSheet :
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
 
-    /**
-     * Custom Analytics
-     */
-    private var mAnalyticsListener: AtcVariantAnalyticsListener? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
@@ -174,7 +169,6 @@ class AtcVariantBottomSheet :
         compositeSubscription.clear()
         super.onDestroyView()
         Toaster.onCTAClick = View.OnClickListener { }
-        mAnalyticsListener = null
     }
 
     private fun initLayout() {
@@ -622,7 +616,6 @@ class AtcVariantBottomSheet :
                     productId,
                     pageSource
                 )
-                mAnalyticsListener?.clickActionFromToaster(message)
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
             }
             viewModel.updateActivityResult(
@@ -847,10 +840,6 @@ class AtcVariantBottomSheet :
                 sharedData?.trackerListNamePdp ?: "",
                 sharedData?.showQtyEditor ?: false
             )
-
-            with(viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category) {
-                mAnalyticsListener?.onButtonActionClicked(variantId = this?.id.orEmpty(), variantName =  this?.name.orEmpty())
-            }
         }
     }
 
@@ -996,8 +985,6 @@ class AtcVariantBottomSheet :
             pageSource
         )
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
-
-        mAnalyticsListener?.impressErrorToaster(variantErrorMessage)
     }
 
     private fun renderButton(data: PartialButtonDataModel) {
@@ -1075,22 +1062,8 @@ class AtcVariantBottomSheet :
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
     }
-
-    fun setAnalytics(analyticsListener: AtcVariantAnalyticsListener) {
-        mAnalyticsListener = analyticsListener
-    }
 }
 
 interface AtcVariantBottomSheetListener {
     fun onTokoCabangClicked(uspImageUrl: String)
-}
-
-/**
- * Custom Analytic
- */
-interface AtcVariantAnalyticsListener {
-    // [PLAY] row 13,16,61,62,63 https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
-    fun onButtonActionClicked(variantId: String, variantName: String)
-    fun clickActionFromToaster(message: String) // Click Lihat Keranjang from toaster
-    fun impressErrorToaster(message: String) // Impress toaster [Belum pilih varian]
 }

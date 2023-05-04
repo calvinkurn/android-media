@@ -11,13 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tkpd.atcvariant.util.roundToIntOrZero
-import com.tkpd.atcvariant.view.bottomsheet.AtcVariantAnalyticsListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
