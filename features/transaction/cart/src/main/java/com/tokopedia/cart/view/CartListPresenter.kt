@@ -45,7 +45,6 @@ import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -423,15 +422,18 @@ class CartListPresenter @Inject constructor(
                     updateCartUseCase.execute(onSuccess = {}, onError = {})
                     return@let
                 } else {
-//                    updateCartUseCase.setParams(updateCartRequestList)
-//                    updateCartUseCase.execute(
-//                        onSuccess = { updateCartV2Data ->
-                    onSuccessUpdateCartForCheckout(UpdateCartV2Data(data = Data(status = true)), cartItemDataList)
-//                        },
-//                        onError = { throwable ->
-//                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
-//                        }
-//                    )
+                    updateCartUseCase.setParams(updateCartRequestList)
+                    updateCartUseCase.execute(
+                        onSuccess = { updateCartV2Data ->
+                            onSuccessUpdateCartForCheckout(
+                                updateCartV2Data,
+                                cartItemDataList
+                            )
+                        },
+                        onError = { throwable ->
+                            onErrorUpdateCartForCheckout(throwable, cartItemDataList)
+                        }
+                    )
                 }
             } else {
                 if (!fireAndForget) {
@@ -2238,9 +2240,8 @@ class CartListPresenter @Inject constructor(
                                     boType = group.boMetadata.boType,
                                     codes = if (isNoCodeExistInCurrentGroup) {
                                         mutableListOf(group.boCode)
-                                    }
-                                    else {
-                                        mutableListOf() 
+                                    } else {
+                                        mutableListOf()
                                     },
                                     shopId = it.shopId.toLongOrZero(),
                                     isPo = group.isPo,
@@ -2256,7 +2257,7 @@ class CartListPresenter @Inject constructor(
                 Timber.d(t)
             }
         }
-        
+
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
     }
@@ -2269,14 +2270,13 @@ class CartListPresenter @Inject constructor(
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
-    
+
     private fun syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel: PromoUiModel) {
         view?.let { cartListView ->
             val groupDataList = cartListView.getAllGroupDataList()
             promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
                 if (
-                    voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && 
-                    voucherOrder.type == "logistic" && voucherOrder.messageUiModel.state == "green"
+                    voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && voucherOrder.type == "logistic" && voucherOrder.messageUiModel.state == "green"
                 ) {
                     groupDataList.firstOrNull { it.cartString == voucherOrder.cartStringGroup }?.apply {
                         boCode = voucherOrder.code
