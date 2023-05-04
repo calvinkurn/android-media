@@ -8,6 +8,8 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
  */
 data class FeedCardLivePreviewContentModel(
     val id: String,
+    val typename: String,
+    val type: String,
     val author: FeedAuthorModel,
     val title: String,
     val subtitle: String,
@@ -17,6 +19,14 @@ data class FeedCardLivePreviewContentModel(
     val hashtagApplinkFmt: String,
     val hashtagWeblinkFmt: String,
     val playChannelId: String,
+    val followers: FeedFollowModel,
+    val detailScore: List<FeedScoreModel>,
+    val hasVoucher: Boolean,
+    val campaign: FeedCardCampaignModel,
+    val products: List<FeedCardProductModel>,
 ) : Visitable<FeedAdapterTypeFactory> {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
+
+    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
+
 }

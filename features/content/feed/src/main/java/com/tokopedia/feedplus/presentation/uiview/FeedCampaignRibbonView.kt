@@ -15,6 +15,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,7 +37,7 @@ enum class FeedCampaignRibbonType {
 
 class FeedCampaignRibbonView(
     private val binding: LayoutFeedCampaignRibbonMotionBinding,
-    private val listener: FeedListener
+    private val listener: FeedListener,
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -45,6 +46,7 @@ class FeedCampaignRibbonView(
     private var mCampaign: FeedCardCampaignModel? = null
     private var mCta: FeedCardCtaModel? = null
     private var mHasVoucher: Boolean = false
+    private var trackerData: FeedTrackerDataModel? = null
 
     fun bindData(
         modelType: String,
@@ -52,7 +54,8 @@ class FeedCampaignRibbonView(
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
         hasVoucher: Boolean,
-        isTypeHighlight: Boolean
+        isTypeHighlight: Boolean,
+        trackerDataModel: FeedTrackerDataModel
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
@@ -60,6 +63,7 @@ class FeedCampaignRibbonView(
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
+            trackerData = trackerDataModel
 
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
@@ -255,7 +259,8 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         listener.onReminderClicked(
                             mCampaign?.id.toLongOrZero(),
-                            !(mCampaign?.isReminderActive ?: false)
+                            !(mCampaign?.isReminderActive ?: false),
+                            trackerData
                         )
                     }
                 }

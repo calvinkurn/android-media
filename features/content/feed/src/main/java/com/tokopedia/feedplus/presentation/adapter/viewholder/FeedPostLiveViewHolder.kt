@@ -7,10 +7,12 @@ import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
+import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,31 +27,44 @@ import kotlinx.coroutines.launch
  */
 class FeedPostLiveViewHolder(
     private val binding: ItemFeedPostLiveBinding,
-    private val listener: FeedListener
-) : AbstractViewHolder<FeedCardVideoContentModel>(binding.root) {
+    private val listener: FeedListener,
+    private val trackerMapper: MapperFeedModelToTrackerDataModel
+) : AbstractViewHolder<FeedCardLivePreviewContentModel>(binding.root) {
 
     private var feedVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     private var videoPlayer: FeedExoPlayer? = null
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
 
-    override fun bind(element: FeedCardVideoContentModel?) {
+    private var trackerDataModel: FeedTrackerDataModel? = null
+
+    override fun bind(element: FeedCardLivePreviewContentModel?) {
         element?.let { data ->
+            trackerDataModel = trackerMapper.transformLiveContentToTrackerModel(data)
+
             bindAuthor(data)
             bindCaption(data)
 
             binding.root.setOnClickListener {
+                listener.onLivePreviewClicked(
+                    trackerDataModel,
+                    absoluteAdapterPosition,
+                    data.products.firstOrNull()?.id ?: "",
+                    data.author.name
+                )
                 RouteManager.route(binding.root.context, data.applink)
             }
         }
     }
 
-    override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
+    override fun bind(element: FeedCardLivePreviewContentModel?, payloads: MutableList<Any>) {
         element?.let {
+            trackerDataModel = trackerMapper.transformLiveContentToTrackerModel(it)
+
             if (payloads.contains(FEED_POST_SELECTED)) {
-                bindVideoPlayer(element)
+                bindVideoPlayer(it)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 videoPlayer?.stop()
@@ -61,15 +76,15 @@ class FeedPostLiveViewHolder(
         videoPlayer?.destroy()
     }
 
-    private fun bindAuthor(data: FeedCardVideoContentModel) {
-        authorView.bindData(data.author, false, !data.followers.isFollowed)
+    private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
+        authorView.bindData(data.author, true, !data.followers.isFollowed, trackerDataModel)
     }
 
-    private fun bindCaption(data: FeedCardVideoContentModel) {
-        captionView.bind(data.text)
+    private fun bindCaption(data: FeedCardLivePreviewContentModel) {
+        captionView.bind(data.text, trackerDataModel)
     }
 
-    private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
+    private fun bindVideoPlayer(element: FeedCardLivePreviewContentModel) {
         feedVideoJob?.cancel()
         with(binding) {
             if (videoPlayer == null) {

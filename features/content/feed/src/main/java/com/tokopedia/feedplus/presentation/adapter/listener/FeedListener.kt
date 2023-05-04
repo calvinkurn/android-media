@@ -4,16 +4,35 @@ import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 
 interface FeedListener {
-    fun onMenuClicked(id: String)
-    fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
+    fun onMenuClicked(id: String, trackerModel: FeedTrackerDataModel)
+    fun onFollowClicked(
+        id: String,
+        encryptedId: String,
+        isShop: Boolean,
+        trackerData: FeedTrackerDataModel?
+    )
+
     fun changeTab()
     fun reload()
-    fun onReminderClicked(campaignId: Long, setReminder: Boolean)
+    fun onReminderClicked(
+        campaignId: Long,
+        setReminder: Boolean,
+        trackerModel: FeedTrackerDataModel?
+    )
+
     fun onTimerFinishUpcoming()
     fun onTimerFinishOnGoing()
-    fun onTopAdsImpression(adViewUrl: String, id: String, shopId: String, uri: String, fullEcs: String?, position: Int)
+    fun onTopAdsImpression(
+        adViewUrl: String,
+        id: String,
+        shopId: String,
+        uri: String,
+        fullEcs: String?,
+        position: Int
+    )
 
     fun onProductTagButtonClicked(
         postId: String,
@@ -22,7 +41,8 @@ interface FeedListener {
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
-        products: List<FeedCardProductModel>
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?
     )
 
     fun onProductTagViewClicked(
@@ -33,7 +53,8 @@ interface FeedListener {
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        totalProducts: Int
+        totalProducts: Int,
+        trackerModel: FeedTrackerDataModel?
     )
 
     fun onSharePostClicked(
@@ -44,7 +65,13 @@ interface FeedListener {
         imageUrl: String
     )
 
-    fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int)
+    fun onLikePostCLicked(
+        id: String,
+        isLiked: Boolean,
+        rowNumber: Int,
+        trackerModel: FeedTrackerDataModel,
+        isDoubleClick: Boolean
+    )
 
     /**
      * Video
@@ -52,5 +79,21 @@ interface FeedListener {
     fun getVideoPlayer(id: String): FeedExoPlayer
 
     fun detachPlayer(player: FeedExoPlayer)
+    fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)
+    fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel)
+    fun onWatchPostVideo(trackerModel: FeedTrackerDataModel)
+
+    fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel)
+
+    fun onAuthorNameClicked(trackerModel: FeedTrackerDataModel?)
+    fun onAuthorProfilePictureClicked(trackerModel: FeedTrackerDataModel?)
+    fun onCaptionClicked(trackerModel: FeedTrackerDataModel?)
+
+    fun onLivePreviewClicked(
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int,
+        productId: String,
+        authorName: String
+    )
 
 }

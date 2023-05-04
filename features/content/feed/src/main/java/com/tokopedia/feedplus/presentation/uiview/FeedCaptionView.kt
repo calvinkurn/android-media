@@ -11,19 +11,26 @@ import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 
 /**
  * Created By : Muhammad Furqan on 06/03/23
  */
-class FeedCaptionView(private val textView: AppCompatTextView) {
+class FeedCaptionView(private val textView: AppCompatTextView,
+                      private val listener: FeedListener) {
 
     var fullText = ""
     var isCollapsed = true
 
-    fun bind(text: String) {
+    fun bind(text: String, trackerDataModel: FeedTrackerDataModel?) {
         fullText = text
         textView.text = text
         textView.maxLines = MAX_LINES_COLLAPSED
+        textView.setOnClickListener {
+            listener.onCaptionClicked(trackerDataModel)
+        }
+
         handleEllipsize()
     }
 

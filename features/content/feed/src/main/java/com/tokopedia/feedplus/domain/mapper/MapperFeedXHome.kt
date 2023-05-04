@@ -159,6 +159,8 @@ object MapperFeedHome {
     private fun transformToFeedCardLivePreview(card: FeedXCard): FeedCardLivePreviewContentModel =
         FeedCardLivePreviewContentModel(
             id = card.id,
+            typename = card.typename,
+            type = card.type,
             author = transformAuthor(card.author),
             title = card.title,
             subtitle = card.subtitle,
@@ -167,7 +169,15 @@ object MapperFeedHome {
             media = card.media.map { media -> transformMedia(media) },
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
-            playChannelId = card.playChannelId
+            playChannelId = card.playChannelId,
+            followers = transformFollow(card.followers),
+            detailScore = card.detailScore.map { score -> transformDetailScore(score) },
+            hasVoucher = card.hasVoucher,
+            campaign = transformCampaign(card.campaign),
+            products = if (card.products.isNotEmpty()) card.products.map { product ->
+                transformProduct(product)
+            }
+            else card.tags.map { product -> transformProduct(product) }
         )
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(

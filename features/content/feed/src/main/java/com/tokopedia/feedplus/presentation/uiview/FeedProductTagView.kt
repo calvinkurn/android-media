@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -13,7 +14,8 @@ import com.tokopedia.kotlin.extensions.view.show
  * Created By : Muhammad Furqan on 14/03/23
  */
 class FeedProductTagView(
-    private val binding: FeedProductTagViewBinding, private val listener: FeedListener
+    private val binding: FeedProductTagViewBinding,
+    private val listener: FeedListener
 ) {
     fun bindData(
         postId: String,
@@ -23,7 +25,8 @@ class FeedProductTagView(
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        totalProducts: Int
+        totalProducts: Int,
+        trackerData: FeedTrackerDataModel?
     ) {
         with(binding) {
             bindText(products)
@@ -37,7 +40,8 @@ class FeedProductTagView(
                     campaign,
                     hasVoucher,
                     products,
-                    totalProducts
+                    totalProducts,
+                    trackerData
                 )
             }
         }

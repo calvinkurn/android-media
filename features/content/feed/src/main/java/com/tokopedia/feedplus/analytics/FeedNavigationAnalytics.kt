@@ -6,7 +6,7 @@ import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_BUSINESS_UNI
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_CURRENT_SITE_EVENT
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_EVENT_USER_ID
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_TRACKER_ID
-import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
+import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPrefix
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -153,11 +153,4 @@ class FeedNavigationAnalytics @Inject constructor(
         KEY_CURRENT_SITE_EVENT to CURRENT_SITE_MARKETPLACE,
         KEY_TRACKER_ID to trackerId
     )
-
-    private fun getPrefix(tabType: String) =
-        when (tabType) {
-            FeedBaseFragment.TAB_TYPE_FOR_YOU -> "untuk kamu tab"
-            FeedBaseFragment.TAB_TYPE_FOLLOWING -> "following tab"
-            else -> ""
-        }
 }

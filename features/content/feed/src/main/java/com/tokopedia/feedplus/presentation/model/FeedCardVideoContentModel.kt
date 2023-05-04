@@ -42,5 +42,7 @@ data class FeedCardVideoContentModel(
     val isTypeProductHighlight: Boolean
         get() = typename == FeedXCard.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 
+    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
+
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 }

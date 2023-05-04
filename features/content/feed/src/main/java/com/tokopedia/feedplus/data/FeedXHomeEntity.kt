@@ -119,8 +119,8 @@ class FeedXCard(
         const val TYPE_FEED_X_CARD_PLACEHOLDER = "FeedXCardPlaceholder"
         const val TYPE_FEED_X_CARD_PLAY = "FeedXCardPlay"
         const val TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT = "FeedXCardProductsHighlight"
-        const val TYPE_FEED_LONG_VIDEO = "long-video"
 
+        const val TYPE_FEED_LONG_VIDEO = "long-video"
         const val TYPE_FEED_PLAY_CHANNEL = "sgc_play_channel"
         const val TYPE_FEED_PLAY_SHORT_VIDEO = "sgc_play_short_video"
         const val TYPE_FEED_PLAY_LIVE = "sgc_play_livestream"
@@ -344,7 +344,11 @@ class FeedXScore(
     val label: String = "",
     @SerializedName("value")
     val value: String = ""
-)
+) {
+    companion object {
+        const val LABEL_TOTAL_SCORE = "TotalScore"
+    }
+}
 
 class FeedXCta(
     @SerializedName("text")
