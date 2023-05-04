@@ -314,7 +314,7 @@ class AffiliatePromoFragment :
                 view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
                     val discoBannerAdapter =
                         AffiliateAdapter(
-                            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+                            source = AffiliateAdapter.PageSource.SOURCE_PROMOSIKAN,
                             affiliateAdapterFactory = AffiliateAdapterFactory(
                                 promotionClickInterface = this@AffiliatePromoFragment
                             ),

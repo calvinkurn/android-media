@@ -100,7 +100,6 @@ class ReschedulePickupViewModelTest {
 
             // when
             reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(("12345")))
-
             // then
             runCollectingUiEvent {
                 assert(
@@ -122,7 +121,6 @@ class ReschedulePickupViewModelTest {
             // when
             // when
             reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.LoadRescheduleInfo(("12345")))
-
             // then
             runCollectingUiEvent {
                 assert(
