@@ -81,6 +81,7 @@ class MPSFragment @Inject constructor(
         initQuickFilterView()
         initBottomSheetFilter()
         initAddToCartView()
+        initSwipeRefreshLayout()
     }
 
     private fun initRecyclerView() {
@@ -111,6 +112,12 @@ class MPSFragment @Inject constructor(
         mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
     }
 
+    private fun initSwipeRefreshLayout() {
+        binding?.mpsSwipeRefreshLayout?.setOnRefreshListener {
+            viewModel?.onViewReloadData()
+        }
+    }
+
     private fun endlessScrollListener(layoutManager: LayoutManager?): EndlessScrollListener =
         object: EndlessScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -138,7 +145,10 @@ class MPSFragment @Inject constructor(
 
     override fun refresh() = withState(viewModel) { state ->
         binding?.mpsLoadingView?.showWithCondition(state.result is State.Loading)
-        binding?.mpsSwipeRefreshLayout?.showWithCondition(state.result is Success)
+        binding?.mpsSwipeRefreshLayout?.apply {
+            isRefreshing = state.result is State.Loading
+            showWithCondition(state.result is Success)
+        }
         if (state.result is Error) showNetworkError(state.result)
 
         if (state.loadMoreThrowable != null) showNetworkErrorLoadMore(state.loadMoreThrowable)
