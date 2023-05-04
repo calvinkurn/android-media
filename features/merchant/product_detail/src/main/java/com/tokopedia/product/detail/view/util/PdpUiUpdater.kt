@@ -210,6 +210,26 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data?.campaign?.discountedPriceFmt =
                         it.data.campaign.discountedPrice.getCurrencyFormatted()
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
+
+                    shouldShowCampaign = ongoingCampaignData == null
+                }
+            }
+
+            updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
+                ongoingCampaignData?.apply {
+                    data = ProductContentMainData(
+                        campaign = it.data.campaign,
+                        thematicCampaign = it.data.thematicCampaign,
+                        cashbackPercentage = it.data.isCashback.percentage,
+                        price = it.data.price,
+                        stockWording = it.data.stock.stockWording,
+                        isVariant = it.data.variant.isVariant,
+                        productName = it.data.name,
+                        isProductActive = it.basic.isActive()
+                    ).apply {
+                        campaign.originalPriceFmt = campaign.originalPrice.getCurrencyFormatted()
+                        campaign.discountedPriceFmt = campaign.discountedPrice.getCurrencyFormatted()
+                    }
                 }
             }
 

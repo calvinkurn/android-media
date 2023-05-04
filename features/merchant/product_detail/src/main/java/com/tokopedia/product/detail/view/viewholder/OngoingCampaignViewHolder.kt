@@ -22,6 +22,7 @@ class OngoingCampaignViewHolder(
     private val campaignRibbon = binding.pdpCampaignRibbon
 
     override fun bind(element: OngoingCampaignDataModel) = with(campaignRibbon) {
+        val data = element.data ?: return
 
         setCampaignCountDownCallback(this@OngoingCampaignViewHolder)
         setDynamicProductDetailListener(listener)
@@ -29,12 +30,10 @@ class OngoingCampaignViewHolder(
         if (element.isNpl()) {
             campaignRibbon.hide()
         } else {
-            val data = element.data
-
-            when (data?.campaign?.campaignIdentifier) {
+            when (data.campaign.campaignIdentifier) {
                 CampaignRibbon.NO_CAMPAIGN -> campaignRibbon.hide()
                 CampaignRibbon.THEMATIC_CAMPAIGN -> campaignRibbon.renderOnGoingCampaign(data)
-                else -> if (data != null) campaignRibbon.renderOnGoingCampaign(data)
+                else -> campaignRibbon.renderOnGoingCampaign(data)
             }
         }
     }

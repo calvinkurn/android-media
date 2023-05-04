@@ -27,8 +27,12 @@ class PartialContentView(
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
 
-    fun renderData(data: ProductContentMainData,
-                   isUpcomingNplType: Boolean, freeOngkirImgUrl: String) = with(binding) {
+    fun renderData(
+        data: ProductContentMainData,
+        isUpcomingNplType: Boolean,
+        freeOngkirImgUrl: String,
+        shouldShowCampaign: Boolean
+    ) = with(binding) {
         txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         productName.text = MethodChecker.fromHtml(data.productName)
@@ -70,13 +74,14 @@ class PartialContentView(
         }
 
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
-        // TODO vindo - use this to hide current campaign ribbon. will trigger by remote config
-        campaignRibbon.hide()
+
+        if (!shouldShowCampaign) {
+            campaignRibbon.hide()
+        }
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) { hide() }
-        else {
+        if (!shouldShowWishlist) { hide() } else {
             if (wishlisted) {
                 hide()
                 isActivated = true
@@ -112,14 +117,20 @@ class PartialContentView(
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(binding) {
         txtMainPrice.run {
-            text = context.getString(R.string.template_price, "",
-                    campaign.discountedPriceFmt)
+            text = context.getString(
+                R.string.template_price,
+                "",
+                campaign.discountedPriceFmt
+            )
             show()
         }
 
         textSlashPrice.run {
-            text = context.getString(R.string.template_price, "",
-                    campaign.originalPriceFmt)
+            text = context.getString(
+                R.string.template_price,
+                "",
+                campaign.originalPriceFmt
+            )
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
@@ -147,8 +158,11 @@ class PartialContentView(
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = context.getString(R.string.template_price, "",
-                campaign.originalPrice.getCurrencyFormatted())
+        txtMainPrice.text = context.getString(
+            R.string.template_price,
+            "",
+            campaign.originalPrice.getCurrencyFormatted()
+        )
         campaignRibbon.hide()
         textDiscountRed.gone()
         textSlashPrice.gone()

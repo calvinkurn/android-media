@@ -8,7 +8,7 @@ data class OngoingCampaignDataModel(
     private val type: String = "",
     private val name: String = "",
     override val impressHolder: ImpressHolder = ImpressHolder(),
-    var data: ProductContentMainData,
+    var data: ProductContentMainData? = null,
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
     override fun type(): String = type
