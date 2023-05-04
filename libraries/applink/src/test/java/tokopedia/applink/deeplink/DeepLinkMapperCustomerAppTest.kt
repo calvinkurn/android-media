@@ -3,7 +3,6 @@ package tokopedia.applink.deeplink
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -30,8 +29,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     override fun setup() {
         super.setup()
-        mockkStatic(RemoteConfigInstance::class)
-        mockkObject(FirebaseRemoteConfigInstance.get(mockk(relaxed = true)))
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
@@ -2550,7 +2547,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check tokochat applink customerapp`() {
         val expectedDeepLink = ApplinkConstInternalCommunication.TOKO_CHAT
-        tokochatRollenceEnabler()
+        setRemoteConfig(true)
         assertEqualsDeepLinkMapper(ApplinkConst.TOKO_CHAT, expectedDeepLink)
     }
 
@@ -2559,16 +2556,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParams = "?orderId=F-123&tokochatSource=tokofood"
         val deepLink = "${ApplinkConst.TOKO_CHAT}$queryParams"
         val expectedDeepLink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$queryParams"
-        tokochatRollenceEnabler()
+        setRemoteConfig(true)
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 
     @Test
-    fun `check tokochat applink customerapp with rollence turn off`() {
+    fun `check tokochat applink customerapp with remote config turn off`() {
         val queryParams = "orderId=F-123&tokochatSource=tokofood"
         val deepLink = "${ApplinkConst.TOKO_CHAT}?$queryParams"
         val expectedDeepLink = "${ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD}&$queryParams"
-        tokochatRollenceEnabler("")
+        setRemoteConfig(false)
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 
