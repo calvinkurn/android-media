@@ -10,13 +10,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.iconunify.R
 
 @Composable
 fun NestSortFilter(
@@ -46,7 +45,7 @@ fun NestSortFilter(
             PrefixFilterItem(
                 modifier = Modifier.padding(end = 4.dp),
                 size = size,
-                iconPainter = rememberVectorPainter(image = Icons.Outlined.Close),
+                iconPainter = painterResource(id = R.drawable.iconunify_close),
                 onClick = onClearFilter
             )
         }

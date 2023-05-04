@@ -86,6 +86,7 @@ fun PrefixSortFilterPreview() {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             PrefixFilterItem(text = "Filter")
             PrefixFilterItem(text = "Filter", selectedSize = 3)
+            PrefixFilterItem(iconPainter = painterResource(id = R.drawable.iconunify_close))
             PrefixFilterItem(iconPainter = rememberVectorPainter(image = Icons.Outlined.Close))
         }
     }
