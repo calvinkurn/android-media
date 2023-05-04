@@ -33,6 +33,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
 import org.junit.Before
@@ -228,6 +229,7 @@ class TokomemberCreateViewModelTest {
         coEvery {
             tokomemberDashEditCardUsecase.modifyShopCard(any(), any(), any())
         } coAnswers {
+            delay(3000)
             firstArg<(MembershipCreateEditCardResponse) -> Unit>().invoke(data)
         }
         viewModel.modifyShopCard(TmCardModifyInput())
