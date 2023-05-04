@@ -289,4 +289,10 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/pm-benefit-package"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
+
+    @Test
+    fun `check seller feedback appLink should return DF_SELLER_FEEDBACK in seller app`() {
+        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/seller-feedback"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_FEEDBACK)
+    }
 }
