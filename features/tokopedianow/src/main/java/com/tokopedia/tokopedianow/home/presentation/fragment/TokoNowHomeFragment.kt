@@ -62,6 +62,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -1820,6 +1821,12 @@ class TokoNowHomeFragment :
         }
     }
 
+    private fun isEnableAffiliate(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+            .getString(RollenceKey.TOKOPEDIA_NOW_AFFILIATE, "")
+            .isNotEmpty()
+    }
+
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             val shareInput = viewModelTokoNow.getAffiliateShareInput()
@@ -1838,7 +1845,9 @@ class TokoNowHomeFragment :
             // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
 
-            enableAffiliateCommission(shareInput)
+            if (isEnableAffiliate()) {
+                enableAffiliateCommission(shareInput)
+            }
         }
 
         if (shareHomeTokonow?.isScreenShot == true) {

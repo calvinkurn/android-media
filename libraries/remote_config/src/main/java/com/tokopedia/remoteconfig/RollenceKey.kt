@@ -88,4 +88,7 @@ object RollenceKey {
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+
+    // TokopediaNOW
+    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
 }
