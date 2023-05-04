@@ -117,6 +117,8 @@
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <string name="title_seller_persona">Seller Persona</string>
+
     <string name="title_seller_feedback">Seller Feedback</string>
 
 <!--    pms-->
