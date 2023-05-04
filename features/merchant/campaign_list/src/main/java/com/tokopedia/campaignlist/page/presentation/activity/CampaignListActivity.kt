@@ -17,8 +17,6 @@ import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBott
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
-import com.tokopedia.common_compose.ui.AdaptiveStatusBarColor
-import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -83,8 +81,6 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
         setContent {
             NestTheme {
                 val uiState = viewModel.uiState.collectAsState()
-
-                AdaptiveStatusBarColor(statusBarColor = NestTheme.colors.NN._0)
 
                 CampaignListScreen(
                     uiState = uiState.value,

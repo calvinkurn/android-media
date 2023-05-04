@@ -35,13 +35,12 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestLabel
 import com.tokopedia.common_compose.components.NestLabelType
 import com.tokopedia.common_compose.components.NestSearchBar
 import com.tokopedia.common_compose.components.ticker.NestTicker
-import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestImage
 import com.tokopedia.common_compose.principles.NestTypography
@@ -187,11 +186,9 @@ private fun FilterWidget(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
     NestTicker(
-        modifier = modifier.fillMaxWidth(),
-        title = "",
-        description = stringResource(id = R.string.another_campaign_type_wording),
-        onDismissed = onDismissed,
-        type = TickerType.ANNOUNCEMENT
+        modifier = modifier,
+        text = stringResource(id = R.string.another_campaign_type_wording),
+        onDismissed = onDismissed
     )
 }
 

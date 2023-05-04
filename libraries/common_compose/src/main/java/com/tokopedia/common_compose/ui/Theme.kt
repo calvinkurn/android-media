@@ -54,7 +54,7 @@ fun NestTheme(
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val nestColors = if (darkTheme) NestDarkColor() else NestLightColor()
 
-    AdaptiveStatusBarColor(darkTheme = darkTheme, statusBarColor = colors.primary)
+    AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = colors)
 
     CompositionLocalProvider(
         LocalElevations provides elevation,
@@ -73,7 +73,7 @@ fun NestTheme(
 @Composable
 private fun AdaptiveStatusBarColor(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    statusBarColor: Colors
+    themeColors: Colors
 ) {
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -82,7 +82,7 @@ private fun AdaptiveStatusBarColor(
             window.statusBarColor = if (!darkTheme && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 NestNN.light._200.toArgb()
             } else {
-                statusBarColor.onPrimary.toArgb()
+                themeColors.onPrimary.toArgb()
             }
 
             WindowCompat.getInsetsController(window, view)?.isAppearanceLightStatusBars = !darkTheme
