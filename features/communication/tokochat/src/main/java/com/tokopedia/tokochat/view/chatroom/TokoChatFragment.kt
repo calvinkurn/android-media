@@ -121,6 +121,7 @@ open class TokoChatFragment :
     private var selfUiModel: TokoChatHeaderUiModel? = null
     private var firstTimeOpen = true
     private var readModeStartsAt: Long = 0
+    private var expiresAt: Long = 0
 
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
     private val consentBottomSheet = TokoChatConsentBottomSheet()
@@ -163,6 +164,28 @@ open class TokoChatFragment :
         setDataFromArguments(savedInstanceState)
         askTokoChatConsent()
         setupLifeCycleObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateReplySectionView()
+    }
+
+    private fun updateReplySectionView() {
+        if (isChannelExpired()) {
+            showUnavailableBottomSheet()
+        } else {
+            if (isChannelReadOnly()) {
+                // Hide reply component
+                setupReplySection(
+                    false,
+                    getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                )
+            } else {
+                // Show reply component
+                setupReplySection(true)
+            }
+        }
     }
 
     private fun askTokoChatConsent() {
@@ -658,7 +681,8 @@ open class TokoChatFragment :
         observe(viewModel.getLiveChannel(viewModel.channelId)) {
             it?.let { channel ->
                 // Show bottom sheet if channel expires
-                if (channel.expiresAt < System.currentTimeMillis() && channel.expiresAt > 0) {
+                expiresAt = channel.expiresAt
+                if (isChannelExpired()) {
                     showUnavailableBottomSheet()
                 } else {
                     // Check if channel is read only
@@ -679,6 +703,10 @@ open class TokoChatFragment :
                 }
             }
         }
+    }
+
+    private fun isChannelExpired(): Boolean {
+        return expiresAt < System.currentTimeMillis() && expiresAt > 0
     }
 
     private fun isChannelReadOnly(): Boolean {
