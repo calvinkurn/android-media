@@ -135,18 +135,16 @@ class TelemetryActLifecycleCallback(
         }
         if (configCount >= 0 && configInterval >= 20) {
             // do checking count and interval
-            val telemetryInPage = mapSectionToCount.getOrDefault(
+            var telemetryInPage = mapSectionToCount.getOrDefault(
                 sectionName to teleType,
                 CapturedTelemetry(0, 0)
             )
             val now: Int = (System.currentTimeMillis() / 1000L).toInt()
-            val passedInterval = now - telemetryInPage.capturedTime > configInterval
-            if (passedInterval) {
+            if (now - telemetryInPage.capturedTime > configInterval) {
                 //reset
-                mapSectionToCount[sectionName to teleType] = CapturedTelemetry(0, 0)
+                telemetryInPage = CapturedTelemetry(0, 0)
             }
-            // if already passed internal or still in interval but count is less than config
-            if (passedInterval || telemetryInPage.count < configCount) {
+            if (telemetryInPage.count < configCount) {
                 // update the map
                 val capturedTime = if (telemetryInPage.capturedTime == 0) {
                     now
