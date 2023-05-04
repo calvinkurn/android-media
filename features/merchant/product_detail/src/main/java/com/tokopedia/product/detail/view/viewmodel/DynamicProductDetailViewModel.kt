@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -447,31 +448,25 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun getP2RatesEstimateByProductId(): P2RatesEstimateData? {
+    private fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: P2RatesEstimateData? = null
+        var result: P2RatesEstimate? = null
         p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it.p2RatesData
+            if (productId in it.listfProductId) result = it
         }
         return result
+    }
+
+    fun getP2RatesEstimateDataByProductId(): P2RatesEstimateData? {
+        return getP2RatesEstimateByProductId()?.p2RatesData
     }
 
     fun getP2ShipmentPlusByProductId(): ShipmentPlus? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: ShipmentPlus? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it.shipmentPlus
-        }
-        return result
+        return getP2RatesEstimateByProductId()?.shipmentPlus
     }
 
     fun getP2RatesBottomSheetData(): ErrorBottomSheet? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: ErrorBottomSheet? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it.errorBottomSheet
-        }
-        return result
+        return getP2RatesEstimateByProductId()?.errorBottomSheet
     }
 
     fun getBebasOngkirDataByProductId(): BebasOngkirImage {

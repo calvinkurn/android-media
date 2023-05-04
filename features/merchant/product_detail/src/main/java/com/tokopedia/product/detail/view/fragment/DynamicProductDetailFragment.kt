@@ -2579,7 +2579,7 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateTicker(selectedTicker)
 
         pdpUiUpdater?.updateShipmentData(
-            viewModel.getP2RatesEstimateByProductId(),
+            viewModel.getP2RatesEstimateDataByProductId(),
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
@@ -2813,7 +2813,7 @@ open class DynamicProductDetailFragment :
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
-            val ratesData = viewModel.getP2RatesEstimateByProductId()
+            val ratesData = viewModel.getP2RatesEstimateDataByProductId()
             val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
@@ -3095,7 +3095,7 @@ open class DynamicProductDetailFragment :
             ),
             productInfo = viewModel.getDynamicProductInfoP1,
             boType = boData.boType,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId()
@@ -3653,7 +3653,7 @@ open class DynamicProductDetailFragment :
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
-            val rates = viewModel.getP2RatesEstimateByProductId()
+            val rates = viewModel.getP2RatesEstimateDataByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
 
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
@@ -4058,7 +4058,7 @@ open class DynamicProductDetailFragment :
             boType = boType,
             affiliateUniqueId = affiliateUniqueId,
             uuid = uuid,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId(),
