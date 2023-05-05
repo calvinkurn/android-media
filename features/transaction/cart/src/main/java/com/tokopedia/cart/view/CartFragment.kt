@@ -3852,17 +3852,20 @@ class CartFragment :
         // Check if cart list has exactly 1 shop, and it's a toko now
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
-                it.isCollapsible = false
-                it.isCollapsed = false
-                it.isShowPin = false
                 val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                 if (index != RecyclerView.NO_POSITION) {
-//                    onNeedToUpdateViewItem(index)
-                    if (groupData.last() is CartShopBottomHolderData) {
-                        val bottomIndex = index + groupData.lastIndex
-                        cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
-//                        onNeedToUpdateViewItem(bottomIndex)
+                    if (it.isCollapsed) {
+                        cartAdapter.addItems(index + 1, it.productUiModelList)
                     }
+                    it.isCollapsible = false
+                    it.isCollapsed = false
+                    it.isShowPin = false
+//                    onNeedToUpdateViewItem(index)
+//                    if (groupData.last() is CartShopBottomHolderData) {
+//                        val bottomIndex = index + groupData.lastIndex
+//                        cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+//                        onNeedToUpdateViewItem(bottomIndex)
+//                    }
                 }
             }
         }
@@ -3871,16 +3874,19 @@ class CartFragment :
         if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 if (it.productUiModelList.size == 1) {
-                    it.isCollapsible = false
-                    it.isCollapsed = false
                     val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                     if (index != RecyclerView.NO_POSITION) {
-//                        onNeedToUpdateViewItem(index)
-                        if (groupData.last() is CartShopBottomHolderData) {
-                            val bottomIndex = index + groupData.lastIndex
-                            cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
-//                            onNeedToUpdateViewItem(bottomIndex)
+                        if (it.isCollapsed) {
+                            cartAdapter.addItems(index + 1, it.productUiModelList)
                         }
+                        it.isCollapsible = false
+                        it.isCollapsed = false
+//                        onNeedToUpdateViewItem(index)
+//                        if (groupData.last() is CartShopBottomHolderData) {
+//                            val bottomIndex = index + groupData.lastIndex
+//                            cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+//                            onNeedToUpdateViewItem(bottomIndex)
+//                        }
                     }
                 }
             }
