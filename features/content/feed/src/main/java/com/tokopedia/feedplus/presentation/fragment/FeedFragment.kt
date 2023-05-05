@@ -97,7 +97,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Created By : Muhammad Furqan on 01/02/23
  */
 @Suppress("DEPRECATION")
-class FeedFragment :
+class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creator):
     BaseDaggerFragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
@@ -1020,7 +1020,18 @@ class FeedFragment :
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ContentCommentBottomSheet -> childFragment.setEntrySource(commentEntrySource)
+            is ContentCommentBottomSheet -> {
+                childFragment.setEntrySource(commentEntrySource)
+                childFragment.setAnalytic(
+                    commentAnalytics.create(
+                        PageSource.Feed(""), //PostId
+                        model = ContentCommentAnalyticsModel(
+                            eventCategory = "",
+                            eventLabel = ""
+                        )
+                    )
+                )
+            }
         }
     }
 
