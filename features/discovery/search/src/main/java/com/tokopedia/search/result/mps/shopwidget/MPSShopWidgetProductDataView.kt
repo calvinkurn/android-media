@@ -70,7 +70,7 @@ data class MPSShopWidgetProductDataView(
             position = position,
             buttonList = product.buttonList
                 .map {
-                    MPSButtonDataView.create(it, keywords, shop.id, "")
+                    MPSButtonDataView.create(it, keywords, shop.id, "${shop.name} ^ 0")
                  },
             labelGroupList = product.labelGroupList.map(MPSProductLabelGroupDataView::create),
         )
