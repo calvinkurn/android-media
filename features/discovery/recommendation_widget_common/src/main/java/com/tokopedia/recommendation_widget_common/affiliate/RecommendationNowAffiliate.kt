@@ -37,6 +37,7 @@ class RecommendationNowAffiliate @Inject constructor(
             affiliateUUID = recommendationNowAffiliateData.affiliateUniqueId,
             affiliateChannel = recommendationNowAffiliateData.affiliateChannel,
             affiliatePageDetail = AffiliatePageDetail(
+                pageId = recommendationItem.productId.toString(),
                 source = AffiliateSdkPageSource.DirectATC(
                     atcSource = AffiliateAtcSource.SHOP_PAGE,
                     shopId = getNowShopId(),
