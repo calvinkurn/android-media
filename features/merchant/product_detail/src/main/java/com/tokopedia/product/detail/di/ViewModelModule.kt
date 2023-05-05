@@ -4,14 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.library.subviewmodel.SubViewModelProvider
-import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.IPlayWidgetSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewViewModel
 import dagger.Binds
@@ -20,25 +14,6 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class ViewModelModule {
-
-    @ProductDetailScope
-    @Binds
-    internal abstract fun bindSubViewModelProvider(
-        provider: SubViewModelProviderImpl
-    ): SubViewModelProvider
-
-    @ProductDetailScope
-    @Binds
-    internal abstract fun bindProductRecommSubViewModel(
-        subViewModel: ProductRecommSubViewModel
-    ): IProductRecommSubViewModel
-
-    @ProductDetailScope
-    @Binds
-    internal abstract fun bindPlayWidgetSubViewModel(
-        subViewModel: PlayWidgetSubViewModel
-    ): IPlayWidgetSubViewModel
-
     @ProductDetailScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

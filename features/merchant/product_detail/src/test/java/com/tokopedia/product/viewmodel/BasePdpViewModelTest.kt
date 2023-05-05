@@ -205,8 +205,7 @@ abstract class BasePdpViewModelTest {
             userSessionInterface,
             { affiliateCookieHelper },
             productRecommSubViewModel = productRecommSubViewModel,
-            playWidgetSubViewModel = playWidgetSubViewModel,
-            subViewModelProvider = subViewModelProvider
+            playWidgetSubViewModel = playWidgetSubViewModel
         )
     }
 }

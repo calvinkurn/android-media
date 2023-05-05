@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.library.subviewmodel.SubViewModel
-import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.library.subviewmodel.extension.getMediator
 import com.tokopedia.library.subviewmodel.extension.launch
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -24,9 +23,8 @@ import javax.inject.Inject
  **/
 
 class PlayWidgetSubViewModel @Inject constructor(
-    private val playWidgetTools: PlayWidgetTools,
-    subViewModelProvider: SubViewModelProvider
-) : SubViewModel(subViewModelProvider), IPlayWidgetSubViewModel {
+    private val playWidgetTools: PlayWidgetTools
+) : SubViewModel(), IPlayWidgetSubViewModel {
 
     val productDetailMediator: GetProductDetailDataMediator by getMediator()
 
@@ -40,18 +38,18 @@ class PlayWidgetSubViewModel @Inject constructor(
 
     override fun getPlayWidgetData() {
         launch {
-            runCatching {
-                val productIds = productDetailMediator.getVariant()?.let { variant ->
-                    listOf(variant.parentId) + variant.children.map { it.productId }
-                } ?: emptyList()
-                val categoryIds = productDetailMediator.getP1()?.basic?.category?.detail?.map {
-                    it.id
-                } ?: emptyList()
+            val productIds = productDetailMediator.getVariant()?.let { variant ->
+                listOf(variant.parentId) + variant.children.map { it.productId }
+            } ?: emptyList()
+            val categoryIds = productDetailMediator.getP1()?.basic?.category?.detail?.map {
+                it.id
+            } ?: emptyList()
+            val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
+                productIds,
+                categoryIds
+            )
 
-                val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                    productIds,
-                    categoryIds
-                )
+            runCatching {
                 val response = playWidgetTools.getWidgetFromNetwork(widgetType)
                 val uiModel = playWidgetTools.mapWidgetToModel(response)
                 _playWidgetModel.value = Success(uiModel)

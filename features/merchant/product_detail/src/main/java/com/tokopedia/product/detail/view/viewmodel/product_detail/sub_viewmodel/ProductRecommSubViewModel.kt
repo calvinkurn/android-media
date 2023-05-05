@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.library.subviewmodel.SubViewModel
-import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.library.subviewmodel.extension.launch
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -31,9 +30,8 @@ import javax.inject.Inject
 
 class ProductRecommSubViewModel @Inject constructor(
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
-    private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>,
-    subViewModelProvider: SubViewModelProvider
-) : SubViewModel(subViewModelProvider), IProductRecommSubViewModel {
+    private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>
+) : SubViewModel(), IProductRecommSubViewModel {
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()

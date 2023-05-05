@@ -22,8 +22,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.library.subviewmodel.BaseViewModelV2
-import com.tokopedia.library.subviewmodel.SubViewModelProvider
+import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -80,6 +79,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -144,10 +145,9 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: IProductRecommSubViewModel,
-    playWidgetSubViewModel: IPlayWidgetSubViewModel,
-    subViewModelProvider: SubViewModelProvider
-) : BaseViewModelV2(dispatcher.main, subViewModelProvider),
+    productRecommSubViewModel: ProductRecommSubViewModel,
+    playWidgetSubViewModel: PlayWidgetSubViewModel
+) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     GetProductDetailDataMediator {

@@ -1,11 +1,12 @@
 package com.tokopedia.library.subviewmodel.extension
 
-import com.tokopedia.library.subviewmodel.BaseViewModelV2
+import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.library.subviewmodel.SubViewModel
 import com.tokopedia.library.subviewmodel.SubViewModelMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /***
  * helper function to process something in a coroutine
@@ -16,7 +17,7 @@ fun SubViewModel.launch(
     context: CoroutineContext? = viewModelScope.coroutineContext,
     block: suspend CoroutineScope.() -> Unit
 ) {
-    viewModelScope.launch(context = context ?: viewModelScope.coroutineContext) {
+    viewModelScope.launch(context = context ?: EmptyCoroutineContext) {
         block()
     }
 }
@@ -26,12 +27,13 @@ fun SubViewModel.launch(
  * @return inheritance subview model mediator
  */
 @Suppress("UNCHECKED_CAST")
-fun <T : SubViewModelMediator> SubViewModel.getMediator(): Lazy<T> = lazy {
-    if (mediator == null) {
-        throw IllegalAccessException(
-            "Mediator is not registered yet, make sure your ViewModel extend ${BaseViewModelV2::class.simpleName}"
-        )
-    }
+fun <T : SubViewModelMediator> SubViewModel.getMediator(): Lazy<T> =
+    lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        if (mediator == null) {
+            throw IllegalAccessException(
+                "Mediator is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}"
+            )
+        }
 
-    mediator as T
-}
+        mediator as T
+    }

@@ -2,7 +2,6 @@ package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
@@ -65,11 +64,10 @@ class ProductRecommSubViewModelTest {
 
         viewModel = ProductRecommSubViewModel(
             getRecommendationUseCase = { getRecommendationUseCase },
-            getProductRecommendationUseCase = { getProductRecommendationUseCase },
-            subViewModelScope = SubViewModelProviderImpl().apply {
-                registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
-            }
-        )
+            getProductRecommendationUseCase = { getProductRecommendationUseCase }
+        ).apply {
+            registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
+        }
     }
 
     @After

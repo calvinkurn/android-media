@@ -1,7 +1,6 @@
 package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.library.subviewmodel.SubViewModelProviderImpl
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -84,13 +83,10 @@ class PlayWidgetSubViewModelTest {
     fun beforeTest() {
         MockKAnnotations.init(this)
 
-        viewModel = PlayWidgetSubViewModel(
-            playWidgetTools = playWidgetTools,
-            subViewModelScope = SubViewModelProviderImpl().apply {
-                registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
-                registerMediator { this@PlayWidgetSubViewModelTest.mediator }
-            }
-        )
+        viewModel = PlayWidgetSubViewModel(playWidgetTools = playWidgetTools).apply {
+            registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
+            registerMediator { this@PlayWidgetSubViewModelTest.mediator }
+        }
     }
 
     @After
