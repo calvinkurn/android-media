@@ -117,6 +117,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
+import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -133,11 +134,13 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home2hSwitcher
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
@@ -146,6 +149,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBan
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCarouselChipListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
@@ -270,7 +274,8 @@ class TokoNowHomeFragment :
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
-                claimCouponWidgetListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetListener = createClaimCouponWidgetCallback(),
+                productCarouselChipListener = createProductCarouselChipListener()
             ),
             differ = HomeListDiffer()
         )
@@ -319,6 +324,7 @@ class TokoNowHomeFragment :
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
     private val rtrAnalytics by lazy { createRealTimeRecomAnalytics() }
+    private val chipCarouselAnalytics by lazy { HomeProductCarouselChipsAnalytics(userSession) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -1070,6 +1076,12 @@ class TokoNowHomeFragment :
                     it.cartId,
                     it.data
                 )
+                is HomeProductCarouselChipsUiModel -> trackCarouselChipsAddToCart(
+                    it.quantity,
+                    it.position,
+                    it.cartId,
+                    it.data
+                )
             }
         }
 
@@ -1250,6 +1262,23 @@ class TokoNowHomeFragment :
             quantity = quantity.toString(),
             uiModel = product,
             cartId = cartId
+        )
+    }
+
+    private fun trackCarouselChipsAddToCart(
+        quantity: Int,
+        position: Int,
+        cartId: String,
+        data: HomeProductCarouselChipsUiModel
+    ) {
+        val chipName = data.chipList.first { it.selected }.text
+        chipCarouselAnalytics.trackClickAddToCart(
+            position = position,
+            channelId = data.id,
+            chipName = chipName,
+            cartId = cartId,
+            quantity = quantity,
+            carousel = data
         )
     }
 
@@ -1968,6 +1997,15 @@ class TokoNowHomeFragment :
 
     private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
         return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
+    private fun createProductCarouselChipListener(): HomeProductCarouselChipsViewListener {
+        return HomeProductCarouselChipListener(
+            requireContext(),
+            viewModelTokoNow,
+            chipCarouselAnalytics,
+            ::startActivityForResult
+        )
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
