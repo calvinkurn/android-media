@@ -294,7 +294,7 @@ class ChatbotFragment :
     var replyBubbleOnBoardingHasBeenShow: Boolean = false
     var videoUploadOnBoardingHasBeenShow: Boolean = false
     private val coachmarkHandler = Handler(Looper.getMainLooper())
-    private var showAddAttachmentMenu: Boolean = false
+    private var showAddAttachmentMenu: Boolean = true
     private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
 
@@ -2452,10 +2452,13 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
+        showUploadImageButton = true
         if (state) {
+            showUploadVideoButton = state
             checkCoachMarkStatus()
             handleAddAttachmentButtonViewState(showAddAttachmentMenu)
         }
+        createAttachmentMenus()
     }
 
     override fun disableSendButton() {
