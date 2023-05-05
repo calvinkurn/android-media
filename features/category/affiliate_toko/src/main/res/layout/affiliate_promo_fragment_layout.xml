@@ -31,7 +31,7 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:minHeight="?attr/actionBarSize"
             app:elevation="@dimen/layout_lvl0">
 
@@ -234,7 +234,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:text="@string/affiliate_promo_carousel_title"
-                            app:layout_constraintTop_toBottomOf="@id/gamification_container"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
 
@@ -250,13 +249,10 @@
 
                         <com.tokopedia.carousel.CarouselUnify
                             android:id="@+id/promo_carousel"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:layout_marginBottom="8dp" />
 
                     </LinearLayout>
 
@@ -330,12 +326,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_4"
-                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabIndicatorColor="@color/Unify_GN500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabSelectedTextColor="@color/Unify_GN500"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@color/Unify_N700_68" />
+                app:tabTextColor="@color/Unify_NN600" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/affiliate_announcement_ticker"

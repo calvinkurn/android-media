@@ -9,7 +9,7 @@ android:layout_height="wrap_content">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_ssa_promo_entry"
-    android:paddingVertical="16dp"
+    android:paddingVertical="13dp"
     android:paddingStart="12dp"
     android:paddingEnd="16dp">
 
