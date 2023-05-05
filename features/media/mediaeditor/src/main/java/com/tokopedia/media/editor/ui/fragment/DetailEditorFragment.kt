@@ -145,14 +145,19 @@ class DetailEditorFragment @Inject constructor(
 
     private fun saveOverlay() {
         viewBinding?.imgPreviewOverlay?.let {
-            val logoBitmap = it.drawable.toBitmap()
+            val overlayBitmap = it.drawable.toBitmap()
             viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)
                 ?.let { fileResult ->
-                    data.addLogoValue = EditorAddLogoUiModel(
-                        Pair(logoBitmap.width, logoBitmap.height),
-                        fileResult.path,
-                        addLogoComponent.getLogoUrl()
-                    )
+                    if (data.isToolAddLogo()) {
+                        data.addLogoValue = EditorAddLogoUiModel(
+                            Pair(overlayBitmap.width, overlayBitmap.height),
+                            fileResult.path,
+                            addLogoComponent.getLogoUrl()
+                        )
+                    } else {
+                        data.addTextValue?.textImagePath = fileResult.path
+                    }
+
                 }
         }
     }
@@ -208,7 +213,7 @@ class DetailEditorFragment @Inject constructor(
                 }
             }
         } else {
-            if (data.isToolAddLogo()) {
+            if (data.isToolAddLogo() || data.isToolAddText()) {
                 saveOverlay()
             }
 
@@ -476,6 +481,7 @@ class DetailEditorFragment @Inject constructor(
                     textTemplate = tempTemplateMode
                 }
                 implementAddTextData()
+                isEdited = true
             }
         } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
             // if user back from add text input page & no input state, direct user to editor home
