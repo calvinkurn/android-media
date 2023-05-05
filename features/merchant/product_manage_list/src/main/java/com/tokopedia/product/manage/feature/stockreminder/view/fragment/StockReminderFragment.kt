@@ -70,11 +70,10 @@ class StockReminderFragment : BaseDaggerFragment(),
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
 
-        fun createInstance(productId: Long, productName: String, isVariant: Boolean): Fragment {
+        fun createInstance(productId: Long, isVariant: Boolean): Fragment {
             val fragment = StockReminderFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId.toString())
-                putString(ARG_PRODUCT_NAME, productName)
                 putBoolean(ARG_IS_VARIANT, isVariant)
             }
             return fragment
@@ -82,7 +81,6 @@ class StockReminderFragment : BaseDaggerFragment(),
     }
 
     private var productId: String? = null
-    private var productName: String? = null
     private var warehouseId: String? = null
 
     private var maxStock: Int? = null
@@ -124,7 +122,6 @@ class StockReminderFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(ARG_PRODUCT_ID)?.let { productId = it }
-        arguments?.getString(ARG_PRODUCT_NAME)?.let { productName = it }
         arguments?.getBoolean(ARG_IS_VARIANT)?.let { isVariant = it }
     }
 
@@ -174,16 +171,17 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         } else {
             if (oldData?.stockAlertStatus.orZero() != REMINDER_INACTIVE
-                && oldData?.stockAlertStatus.orZero() != Int.ZERO) {
+                && oldData?.stockAlertStatus.orZero() != Int.ZERO
+            ) {
                 haveChanges[productId] = true
             } else {
                 haveChanges.remove(productId)
             }
         }
 
-        val dataIsValid = getProductWareHouseList().firstOrNull{
+        val dataIsValid = getProductWareHouseList().firstOrNull {
             it.thresholdStatus == REMINDER_ACTIVE.toString() &&
-                    (it.threshold.toIntOrZero() < MINIMUM_STOCK_REMINDER || it.threshold.toIntOrZero() > maxStock ?: MAXIMUM_STOCK_REMINDER)
+                (it.threshold.toIntOrZero() < MINIMUM_STOCK_REMINDER || it.threshold.toIntOrZero() > maxStock ?: MAXIMUM_STOCK_REMINDER)
         } == null
 
         val haveValidChanges = haveChanges.size.orZero() > 0
@@ -325,7 +323,11 @@ class StockReminderFragment : BaseDaggerFragment(),
                         stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(
                             0
                         )?.wareHouseId
-                    viewModel.getProduct(productId.orEmpty(), warehouseId.orEmpty(), userSession.shopId)
+                    viewModel.getProduct(
+                        productId.orEmpty(),
+                        warehouseId.orEmpty(),
+                        userSession.shopId
+                    )
                 }
                 is Fail -> {
                     binding?.cardSaveBtn?.visibility = View.GONE
@@ -362,7 +364,11 @@ class StockReminderFragment : BaseDaggerFragment(),
                 binding?.geStockReminder?.setActionClickListener {
                     binding?.globalErrorStockReminder?.visibility = View.GONE
                     binding?.cardSaveBtn?.visibility = View.VISIBLE
-                    viewModel.getProduct(productId.toString(), warehouseId.toString(), userSession.shopId)
+                    viewModel.getProduct(
+                        productId.toString(),
+                        warehouseId.toString(),
+                        userSession.shopId
+                    )
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(productData.throwable)
                 ProductManageListErrorHandler.logExceptionToServer(
@@ -382,7 +388,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         dataFirstProducts = ArrayList(products)
         adapter?.setItems(products)
         if (isVariant) {
-            binding?.tvProductName?.text = productName
+            binding?.tvProductName?.text = products.firstOrNull()?.productParentName.orEmpty()
             binding?.clGroupProductVariant?.show()
         } else {
             binding?.clGroupProductVariant?.gone()
@@ -469,7 +475,10 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun showSetOnceStockReminderBottomSheet(selection: List<ProductStockReminderUiModel>) {
         val setStockForVariantSelectionReminderBottomSheet =
-            SetStockForVariantSelectionReminderBottomSheet.createInstance(maxStock, childFragmentManager)
+            SetStockForVariantSelectionReminderBottomSheet.createInstance(
+                maxStock,
+                childFragmentManager
+            )
         setStockForVariantSelectionReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
             updateFromBulkSetting(stockReminder, reminderStatus, selection)
         }

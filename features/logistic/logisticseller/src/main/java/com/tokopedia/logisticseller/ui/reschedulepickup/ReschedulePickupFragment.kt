@@ -315,6 +315,7 @@ class ReschedulePickupFragment :
     private fun setWrapperWatcherOtherReason(wrapper: TextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // no op
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -335,6 +336,7 @@ class ReschedulePickupFragment :
             }
 
             override fun afterTextChanged(text: Editable) {
+                // no op
             }
         }
     }

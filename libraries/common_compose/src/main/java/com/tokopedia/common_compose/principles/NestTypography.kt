@@ -22,7 +22,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestTypography(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}
@@ -41,7 +41,7 @@ fun NestTypography(
 fun NestTypography(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}
@@ -54,6 +54,36 @@ fun NestTypography(
         overflow = overflow,
         onTextLayout = onTextLayout
     )
+}
+
+@Composable
+fun NestTypography(
+    text: CharSequence,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    if (text is AnnotatedString) {
+        Text(
+            text = text,
+            modifier = modifier,
+            style = textStyle,
+            maxLines = maxLines,
+            overflow = overflow,
+            onTextLayout = onTextLayout
+        )
+    } else {
+        Text(
+            text = text.toString(),
+            modifier = modifier,
+            style = textStyle,
+            maxLines = maxLines,
+            overflow = overflow,
+            onTextLayout = onTextLayout
+        )
+    }
 }
 
 @Preview(name = "Typography")
