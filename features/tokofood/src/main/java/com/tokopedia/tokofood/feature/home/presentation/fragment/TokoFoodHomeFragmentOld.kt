@@ -107,7 +107,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class TokoFoodHomeFragmentOld :
     BaseMultiFragment(),
@@ -941,6 +943,7 @@ class TokoFoodHomeFragmentOld :
                 lat = chooseAddressData.data.latitude,
                 long = chooseAddressData.data.longitude,
                 label = String.format(
+                    Locale.getDefault(),
                     "%s %s",
                     chooseAddressData.data.addressName,
                     chooseAddressData.data.receiverName
