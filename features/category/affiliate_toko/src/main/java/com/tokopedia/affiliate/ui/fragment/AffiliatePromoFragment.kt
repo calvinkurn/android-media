@@ -74,6 +74,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -96,8 +97,11 @@ class AffiliatePromoFragment :
     private var tokoNowData: TokonowRemoteConfigData? = null
 
     companion object {
+        private const val MARGIN_HORIZONTAL_56 = 56
+        private const val MARGIN_HORIZONTAL_16 = 16
+        private const val CAROUSEL_SHOW_BANNER = 1.05f
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
-
+        private const val TOKONOW_BANNER_LINK = "https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png"
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -190,7 +194,7 @@ class AffiliatePromoFragment :
     }
 
     private fun setData(carouselUnify: CarouselUnify) {
-        carouselUnify.slideToShow = 1.05f
+        carouselUnify.slideToShow = CAROUSEL_SHOW_BANNER
         carouselUnify.autoplay = true
 
         View.inflate(context, R.layout.affiliate_promo_ssa_entry_layout, null)?.let {
@@ -204,23 +208,24 @@ class AffiliatePromoFragment :
             }
             carouselUnify.addItem(it)
             it.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                marginStart = 56
-                marginEnd = 16
+                marginStart = MARGIN_HORIZONTAL_56
+                marginEnd = MARGIN_HORIZONTAL_16
             }
         }
 
         val imageView = context?.let { ImageUnify(it) }
         if (imageView != null) {
-            if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            if (
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     AFFILIATE_TOKONOW_BANNER,
                     ""
                 ) == AFFILIATE_TOKONOW_BANNER
             ) {
                 carouselUnify.addItem(imageView)
-                imageView.setImageUrl("https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png")
+                imageView.setImageUrl(TOKONOW_BANNER_LINK)
                 imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                    marginStart = 16
-                    marginEnd = 56
+                    marginStart = MARGIN_HORIZONTAL_16
+                    marginEnd = MARGIN_HORIZONTAL_56
                 }
                 imageView.setOnClickListener {
                     tokoNowData = affiliateTokoNowData()
@@ -394,13 +399,14 @@ class AffiliatePromoFragment :
                         tokoNowData?.name.toString(),
                         tokoNowData?.imageURL.toString(),
                         tokoNowData?.weblink.toString(),
-                        pageId,
+                        type = PageType.SHOP.value,
+                        productIdentifier = pageId,
                         isLinkGenerationEnabled = true,
                         origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_TOKO_NOW,
                         ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
                             ssaStatus = true,
                             ssaMessage = "",
-                            message = eligibility.eligibleCommission?.message.toString(),
+                            message = eligibility?.eligibleCommission?.message.toString(),
                             label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
                                 labelType = "",
                                 labelText = ""

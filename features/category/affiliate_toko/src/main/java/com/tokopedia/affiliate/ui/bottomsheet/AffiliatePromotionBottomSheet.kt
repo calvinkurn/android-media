@@ -273,6 +273,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         )
                     }
                 }
+
+                if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
+                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        RouteManager.route(
+                            context,
+                            ApplinkConst.TokopediaNow.HOME
+                        )
+                    }
+                }
             }
 
             if (sheetType == SheetType.ADD_SOCIAL) {
