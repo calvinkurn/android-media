@@ -68,7 +68,6 @@ class PlayBroadcastModule(
     @ActivityRetainedScope
     @Provides
     fun provideBroadcaster(
-        dispatchers: CoroutineDispatchers,
         effectManager: EffectManager
     ): Broadcaster {
         return BroadcastManager(effectManager)
