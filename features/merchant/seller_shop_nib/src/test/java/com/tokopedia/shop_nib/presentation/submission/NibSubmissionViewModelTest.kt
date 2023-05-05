@@ -1,5 +1,7 @@
 package com.tokopedia.shop_nib.presentation.submission
 
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop_nib.domain.entity.UploadFileResult
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
@@ -7,7 +9,10 @@ import com.tokopedia.shop_nib.presentation.submission.uimodel.UiState
 import com.tokopedia.shop_nib.util.tracker.NibSubmissionPageTracker
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -216,10 +221,66 @@ class NibSubmissionViewModelTest {
 
         job.cancel()
     }
+
+    //endregion
+
+    //region validateInput
+    @Test
+    fun `When change file, if all file requirements are fulfilled and date is selected, isInputValid should be true`() = runBlockingTest {
+        val selectedDate = Date()
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 5_242_879 //Max is 5_242_880
+        val fileState = UiState.FileState.Valid(fileUri, fileSizeBytes)
+
+        val emittedValues = arrayListOf<UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        viewModel.processEvent(UiEvent.ConfirmDate(selectedDate))
+
+        //When
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        val actual = emittedValues.last()
+
+        assertEquals(fileUri, actual.selectedFileUri)
+        assertEquals(fileExtension, actual.selectedFileExtension)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileState, actual.fileState)
+        assertEquals(true, actual.isInputValid)
+
+        job.cancel()
+    }
     //endregion
 
     //region UnselectFile
+    @Test
+    fun `When unselect file, should reset all the selected file properties`() = runBlockingTest {
+        val fileUri = ""
+        val fileExtension = ""
+        val fileSizeBytes : Long = 0 //Max is 5_242_880
+        val fileState = UiState.FileState.NotSelected
 
+        val emittedValues = arrayListOf<UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        //When
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        val actual = emittedValues.last()
+
+        assertEquals(fileUri, actual.selectedFileUri)
+        assertEquals(fileExtension, actual.selectedFileExtension)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileState, actual.fileState)
+        assertEquals(false, actual.isInputValid)
+
+        job.cancel()
+    }
     //endregion
 
     //region TapChangeDate
@@ -246,65 +307,231 @@ class NibSubmissionViewModelTest {
     //endregion
 
     //region ConfirmDate
+    @Test
+    fun `When confirm date, selectedDate should be updated with newly selected date`() = runBlockingTest {
+        val newlySelectedDate = Date()
 
-    //endregion
-
-
-    //region SubmitFile
-
-    //endregion
-
-
-    //region RecordImpression
-
-    //endregion
-    /*@Test
-    fun `When fetch category from remote success, should successfully receive the data`() = runBlockingTest {
-        val categories = listOf(FlashSaleCategory(1, "Book"))
-
-        val tabName = "upcoming"
-
-        coEvery { getFlashSaleListForSellerCategoryUseCase.execute(tabName) } returns categories
-
-        val emittedValues = arrayListOf<FlashSaleListUiState>()
+        val emittedValues = arrayListOf<UiState>()
         val job = launch {
             viewModel.uiState.toList(emittedValues)
         }
 
         //When
-        viewModel.processEvent(FlashSaleListUiEvent.GetFlashSaleCategory(tabName))
+        viewModel.processEvent(UiEvent.ConfirmDate(newlySelectedDate))
 
-        val actualCategories = emittedValues.last().flashSaleCategories
-        val actualTabName = emittedValues.last().tabName
+        val actual = emittedValues.last()
 
-        Assert.assertEquals(tabName, actualTabName)
-        Assert.assertEquals(categories, actualCategories)
+        assertEquals(newlySelectedDate, actual.selectedDate)
+        assertEquals(false, actual.isInputValid)
+
+        job.cancel()
+    }
+    //endregion
+
+
+    //region SubmitFile
+    @Test
+    fun `When file submission success, error should be null`() = runBlockingTest {
+        val nibPublishDate = buildFakeDate()
+
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+        val result = UploadFileResult(isSuccess = true, errorMessage = "")
+
+        val emittedValues = arrayListOf<UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } returns result
+
+        viewModel.processEvent(UiEvent.ConfirmDate(nibPublishDate))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        //When
+        viewModel.processEvent(UiEvent.SubmitFile)
+
+        val actual = emittedValues.last()
+
+        assertEquals(null, actual.error)
+        assertEquals(false, actual.isLoading)
 
         job.cancel()
     }
 
     @Test
-    fun `When fetch category from remote error, should emit correct error event`() = runBlockingTest {
-        //Given
-        val tabName = "upcoming"
-        val error = MessageErrorException("Server Error")
-        val expectedEvent = FlashSaleListUiEffect.FetchCategoryError(error)
+    fun `When file submission success, should emit RedirectToSubmissionSuccess effect`() = runBlockingTest {
+        val nibPublishDate = buildFakeDate()
+        val expectedEffect = UiEffect.RedirectToSubmissionSuccess
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+        val result = UploadFileResult(isSuccess = true, errorMessage = "")
 
-        coEvery { getFlashSaleListForSellerCategoryUseCase.execute(tabName) } throws error
-
-        val emittedValues = arrayListOf<FlashSaleListUiEffect>()
+        val emittedEffects = arrayListOf<UiEffect>()
         val job = launch {
-            viewModel.uiEffect.toList(emittedValues)
+            viewModel.uiEffect.toList(emittedEffects)
         }
 
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } returns result
+
+        viewModel.processEvent(UiEvent.ConfirmDate(nibPublishDate))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
         //When
-        viewModel.processEvent(FlashSaleListUiEvent.GetFlashSaleCategory(tabName))
+        viewModel.processEvent(UiEvent.SubmitFile)
 
-        val actualEvent = emittedValues.last()
-
-        Assert.assertEquals(expectedEvent, actualEvent)
+        //Then
+        val actualEffect = emittedEffects.last()
+        assertEquals(expectedEffect, actualEffect)
 
         job.cancel()
     }
-*/
+
+    @Test
+    fun `When file submission error, should emit ShowUploadError effect`() = runBlockingTest {
+        val nibPublishDate = buildFakeDate()
+        val errorMessage = "File sudah di upload"
+        val expectedEffect = UiEffect.ShowUploadError(errorMessage)
+
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+        val result = UploadFileResult(isSuccess = false, errorMessage = errorMessage)
+
+        val emittedEffects = arrayListOf<UiEffect>()
+        val job = launch {
+            viewModel.uiEffect.toList(emittedEffects)
+        }
+
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } returns result
+
+        viewModel.processEvent(UiEvent.ConfirmDate(nibPublishDate))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        //When
+        viewModel.processEvent(UiEvent.SubmitFile)
+
+        //Then
+        val actualEffect = emittedEffects.last()
+        assertEquals(expectedEffect, actualEffect)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When file submission error because of exception, should emit ShowError effect`() = runBlockingTest {
+        val nibPublishDate = buildFakeDate()
+        val error = MessageErrorException("Server error")
+        val expectedEffect = UiEffect.ShowError(error)
+
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+
+        val emittedEffects = arrayListOf<UiEffect>()
+        val job = launch {
+            viewModel.uiEffect.toList(emittedEffects)
+        }
+
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } throws error
+
+        viewModel.processEvent(UiEvent.ConfirmDate(nibPublishDate))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        //When
+        viewModel.processEvent(UiEvent.SubmitFile)
+
+        //Then
+        val actualEffect = emittedEffects.last()
+        assertEquals(expectedEffect, actualEffect)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When file submission error, error should be updated with the error cause`() = runBlockingTest {
+        val nibPublishDate = buildFakeDate()
+        val error = MessageErrorException("Server error")
+
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+
+        val emittedValues = arrayListOf<UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } throws error
+
+        viewModel.processEvent(UiEvent.ConfirmDate(nibPublishDate))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        //When
+        viewModel.processEvent(UiEvent.SubmitFile)
+
+        val actual = emittedValues.last()
+
+        assertEquals(error, actual.error)
+        assertEquals(false, actual.isLoading)
+
+        job.cancel()
+    }
+
+    //endregion
+
+
+    //region RecordImpression
+    @Test
+    fun `When record page impression, should call impression tracker`() = runBlockingTest {
+        //Given
+        val event = UiEvent.RecordImpression
+
+        //When
+        viewModel.processEvent(event)
+
+        //Then
+        coVerify { tracker.sendPageImpression() }
+    }
+    //endregion
+
+    //region processEvent
+    @Test
+    fun `When unlisted event is triggered, should not emit any effect`() {
+        runBlockingTest {
+            //When
+            viewModel.processEvent(mockk())
+
+            val emittedEffects = arrayListOf<UiEffect>()
+
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //Then
+            val actualEffect = emittedEffects.lastOrNull()
+
+            assertEquals(null, actualEffect)
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    private fun buildFakeDate(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, 2023)
+        calendar.set(Calendar.MONTH, 0)
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+
+        return calendar.time
+    }
+
 }
