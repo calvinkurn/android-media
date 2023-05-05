@@ -40,7 +40,7 @@ class CommentUiModelMapper @Inject constructor() {
         commenterType = if (comments.parent.isReplyAsShop) UserType.Shop else UserType.People
     )
 
-    fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
+    private fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
         val username =
             if (comment.isShop) comment.fullName else comment.username.ifBlank { comment.firstName }
         return CommentUiModel.Item(
@@ -48,7 +48,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username.parseAsHtml().toString(),
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
-            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
+            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(), // to make sure new line doesn't skip
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
@@ -67,7 +67,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username.parseAsHtml().toString(),
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
-            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
+            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(), // to make sure new line doesn't skip
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",

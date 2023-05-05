@@ -101,28 +101,32 @@ class ContentCommentBottomSheet @Inject constructor(
         )
     }
 
+    private val disabledColor by lazyThreadSafetyNone {
+        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+    }
+
+    private val enabledColor by lazyThreadSafetyNone {
+        MethodChecker.getColor(
+            requireContext(),
+            unifyR.color.Unify_GN500
+        )
+    }
+
     private val textWatcher by lazyThreadSafetyNone {
         object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun afterTextChanged(p0: Editable?) {
-                val newLength = p0.toString().getGraphemeLength()
-                val isBtnEnabled = p0.isNullOrBlank() || newLength > 140
+            override fun afterTextChanged(txt: Editable?) {
+                val newLength = txt.toString().getGraphemeLength()
+                val isBtnDisabled = txt.isNullOrBlank() || newLength > MAX_CHAR
                 binding.ivCommentSend.background.setTint(
-                    if (isBtnEnabled) {
-                        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
-                    } else {
-                        MethodChecker.getColor(
-                            requireContext(),
-                            unifyR.color.Unify_GN500
-                        )
-                    }
+                    if (isBtnDisabled) disabledColor else enabledColor
                 )
-                binding.ivCommentSend.isClickable = !isBtnEnabled
+                binding.ivCommentSend.isClickable = !isBtnDisabled
 
-                if (p0 == null) return
+                if (txt == null) return
                 binding.newComment.removeTextChangedListener(this)
 
                 if (newLength > MAX_CHAR) {
@@ -135,10 +139,10 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val prevLength = binding.newComment.length()
                 val selEnd = binding.newComment.selectionEnd
-                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from text end
+                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
-                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = newLength.orZero())
+                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
                 binding.newComment.setText(newText)
 
                 val currentLength = binding.newComment.length()
@@ -166,7 +170,8 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    fun String.getGraphemeLength(): Int {
+    //to escape Emoji length
+    private fun String.getGraphemeLength(): Int {
         val it: BreakIterator = BreakIterator.getCharacterInstance()
         it.setText(this)
         var count = 0
@@ -234,7 +239,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
+                binding.root.setPadding(0, 0, 0, 16.toPx() + height)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
@@ -298,13 +303,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message)
-                                .orFalse()
-                            ) {
-                                ""
-                            } else {
-                                getString(R.string.feed_content_coba_lagi_text)
-                            },
+                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
