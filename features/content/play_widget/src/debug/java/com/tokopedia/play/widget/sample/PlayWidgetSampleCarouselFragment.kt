@@ -67,6 +67,8 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
             binding.rvCarousel.smoothScrollToPosition(FAKE_COUNT_PER_SIDE)
         }
 
+        binding.playWidgetCarousel.setData(getSampleData().first().model)
+
         val offset12 = resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12)
 
         binding.rvCarousel.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -102,10 +104,11 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
                     items = List(5) {
                         PlayWidgetUiMock.getSampleChannelModel(
                             if (it % 2 == 0) PlayWidgetChannelType.Live
-                            else PlayWidgetChannelType.Vod
+                            else PlayWidgetChannelType.Upcoming
                         ).copy(
                             channelId = it.toString(),
-                            title = "Channel $it"
+                            title = "Channel $it",
+                            startTime = "17 Apr 2023 | 17.00"
                         )
                     }
                 )

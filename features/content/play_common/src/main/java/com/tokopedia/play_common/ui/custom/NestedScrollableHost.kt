@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample.util
+package com.tokopedia.play_common.ui.custom
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.play_common.R
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 /**
- * Created by kenny.hadisaputra on 04/05/23
+ * Created by kenny.hadisaputra on 05/05/23
  */
 class NestedScrollableHost : FrameLayout {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initWithAttrs(context, attrs)
+    }
 
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var initialX = 0f
@@ -30,7 +33,7 @@ class NestedScrollableHost : FrameLayout {
             return v as? ViewPager2
         }
 
-    private var isScrollLocked: Boolean = true
+    private var isScrollLocked: Boolean = false
 
     private val child: View?
         get() = if (childCount > 0) getChildAt(0) else null
@@ -38,6 +41,12 @@ class NestedScrollableHost : FrameLayout {
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
         handleInterceptTouchEvent(e)
         return super.onInterceptTouchEvent(e)
+    }
+
+    private fun initWithAttrs(context: Context, attrs: AttributeSet) {
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.NestedScrollableHost)
+        isScrollLocked = attributeArray.getBoolean(R.styleable.NestedScrollableHost_lockScroll, false)
+        attributeArray.recycle()
     }
 
     private fun canChildScroll(orientation: Int, delta: Float): Boolean {

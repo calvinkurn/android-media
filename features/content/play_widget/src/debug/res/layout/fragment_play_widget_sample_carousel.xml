@@ -6,16 +6,19 @@
     android:layout_height="match_parent"
     >
 
-    <com.tokopedia.play.widget.sample.util.NestedScrollableHost
+    <com.tokopedia.play_common.ui.custom.NestedScrollableHost
+        android:id="@+id/scrollable_host"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="W0.5625:0.65"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         >
 
         <androidx.recyclerview.widget.RecyclerView
@@ -25,6 +28,16 @@
             android:orientation="vertical"
             />
 
-    </com.tokopedia.play.widget.sample.util.NestedScrollableHost>
+    </com.tokopedia.play_common.ui.custom.NestedScrollableHost>
+
+    <com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
+        android:id="@+id/play_widget_carousel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollable_host"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

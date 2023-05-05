@@ -31,13 +31,31 @@ class PlayWidgetCarouselAdapter : ListAdapter<PlayWidgetChannelUiModel, Recycler
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder {
-        return PlayWidgetVideoContentViewHolder.create(parent)
+        return when (viewType) {
+            TYPE_UPCOMING -> PlayWidgetUpcomingContentViewHolder.create(parent)
+            TYPE_VIDEO -> PlayWidgetVideoContentViewHolder.create(parent)
+            else -> error("View Type $viewType is not supported")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val data = getItem(position % currentList.size)
+        val data = getItem(position)
         when (holder) {
             is PlayWidgetVideoContentViewHolder -> holder.bind(data)
+            is PlayWidgetUpcomingContentViewHolder -> holder.bind(data)
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val item = getItem(position)
+        return when {
+            item.isUpcoming -> TYPE_UPCOMING
+            else -> TYPE_VIDEO
+        }
+    }
+
+    companion object {
+        private const val TYPE_VIDEO = 0
+        private const val TYPE_UPCOMING = 1
     }
 }

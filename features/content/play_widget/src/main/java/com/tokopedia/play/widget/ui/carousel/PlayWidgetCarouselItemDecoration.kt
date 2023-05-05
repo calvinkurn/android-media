@@ -25,6 +25,9 @@ class PlayWidgetCarouselItemDecoration(
     )
     private val maxShrink = 0.96f
 
+    fun getOffset(): Int {
+        return offset12
+    }
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
