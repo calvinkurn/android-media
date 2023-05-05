@@ -15,7 +15,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,7 +22,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.constant.TkpdCache
@@ -1095,16 +1093,6 @@ open class HomeAccountUserFragment :
         if (activityManager is ActivityManager) {
             activityManager.clearApplicationUserData()
         }
-    }
-
-    fun RecyclerView.runWhenReady(action: () -> Unit) {
-        val globalLayoutListener = object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                action()
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        }
-        viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     private fun setupList() {
