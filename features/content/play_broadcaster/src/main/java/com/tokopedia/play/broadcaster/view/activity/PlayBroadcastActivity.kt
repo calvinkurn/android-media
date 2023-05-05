@@ -175,8 +175,7 @@ class PlayBroadcastActivity : BaseActivity(),
         get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        SplitInstallHelper.loadLibrary(this, "c++_shared")
-        SplitInstallHelper.loadLibrary(this, "effect")
+        loadEffectNativeLibrary()
 
         inject()
         setFragmentFactory()
@@ -331,6 +330,11 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun loadEffectNativeLibrary() {
+        SplitInstallHelper.loadLibrary(this, "c++_shared")
+        SplitInstallHelper.loadLibrary(this, "effect")
     }
 
     private fun observeUiState() {
