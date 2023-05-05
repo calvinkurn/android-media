@@ -2,7 +2,6 @@ package com.tokopedia.content.common.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
 import com.tokopedia.content.common.comment.uimodel.*
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
  */
 class ContentCommentViewModel @AssistedInject constructor(
     @Assisted private val source: PageSource,
-    private val dispatchers: CoroutineDispatchers,
     private val repo: ContentCommentRepository,
     private val userSession: UserSessionInterface
 ) : ViewModel() {
@@ -285,16 +283,15 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     private fun sendReply(comment: String, commentType: CommentType) {
         requireLogin {
-            val regex = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))""".toRegex()
+            val regex = LINK_REGEX.toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
-                    .count() > 0 && !comment.contains("tokopedia")
+                    .count() > 0 && !comment.contains(TOKPED_ESCAPE)
                 ) {
                     throw MessageErrorException(CommentException.LinkNotAllowed.message)
                 }
-                val result =
-                    repo.replyComment(source, commentType, comment, _comments.value.commenterType)
+                val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 var index = 0
                 _comments.getAndUpdate {
                     index = if (result.commentType.isChild) {
@@ -341,5 +338,10 @@ class ContentCommentViewModel @AssistedInject constructor(
         } else {
             action(true)
         }
+    }
+
+    companion object {
+        private val LINK_REGEX = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))"""
+        private const val TOKPED_ESCAPE = "tokopedia"
     }
 }

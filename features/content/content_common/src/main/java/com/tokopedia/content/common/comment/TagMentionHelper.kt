@@ -21,10 +21,9 @@ import com.tokopedia.feedcomponent.util.buildSpannedString
  */
 
 class MentionedSpanned(
-    @ColorInt val color: Int,
+    @ColorInt val colorRes: Int,
     private val userType: UserType = UserType.Unknown,
     private val appLink: String = "",
-    val userName: String,
     val id: String,
     val listener: Listener,
     val ctx: Context
@@ -34,29 +33,28 @@ class MentionedSpanned(
         get() {
             return appLink.ifBlank {
                 when (userType) {
-                    UserType.People -> ApplinkConst.PROFILE.replace(
-                        ApplinkConst.Profile.PARAM_USER_ID,
-                        id
-                    )
+                    UserType.People -> ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id)
                     UserType.Shop -> ApplinkConst.SHOP.replace("{shop_id}", id)
-                    else -> ""
+                    else -> { ""}
                 }
             }
         }
 
-    override fun onClick(p0: View) {
+    override fun onClick(view: View) {
         listener.onClicked(newAppLink)
     }
 
-    override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
-        ds.color = color
-        ds.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
-            ctx,
-            appLink.isNotBlank(),
-            com.tokopedia.unifyprinciples.Typography.PARAGRAPH_2
-        )
-        ds.isUnderlineText = false
+    override fun updateDrawState(tp: TextPaint) {
+        super.updateDrawState(tp)
+        tp.apply {
+            color = colorRes
+            isUnderlineText = false
+            typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
+                ctx,
+                appLink.isNotBlank(),
+                com.tokopedia.unifyprinciples.Typography.PARAGRAPH_2
+            )
+        }
     }
 
     interface Listener {
@@ -136,9 +134,8 @@ object TagMentionBuilder {
         context: Context
     ): SpannedString {
         val parentSpanned = MentionedSpanned(
-            color = parentColor,
+            colorRes = parentColor,
             id = item.id,
-            userName = item.username,
             appLink = item.appLink,
             listener = parentListener,
             userType = item.userType,
@@ -154,9 +151,8 @@ object TagMentionBuilder {
                 val length = find.sumOf { it.value.length } + 4 // total escape character [{}|||]
 
                 val mentionSpanned = MentionedSpanned(
-                    color = mentionColor,
+                    colorRes = mentionColor,
                     id = id,
-                    userName = name,
                     userType = UserType.getByValue(type),
                     listener = mentionListener,
                     ctx = context
