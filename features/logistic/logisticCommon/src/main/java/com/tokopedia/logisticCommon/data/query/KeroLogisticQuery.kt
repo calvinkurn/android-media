@@ -191,8 +191,8 @@ object KeroLogisticQuery {
     """.trimIndent()
 
     val kero_addr_get_default = """
-        query KeroAddrGetDefaultAddress(${'$'}source: String!) {
-          KeroAddrGetDefaultAddress(source: ${'$'}source) {
+        query KeroAddrGetDefaultAddress(${'$'}source: String!, ${'$'}track_activity: Boolean) {
+          KeroAddrGetDefaultAddress(source: ${'$'}source, track_activity: ${'$'}track_activity) {
             data {
               addr_id
               receiver_name
