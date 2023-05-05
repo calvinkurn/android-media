@@ -1,12 +1,13 @@
 package com.tokopedia.dropoff.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteFragment
 import com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerActivity
 import com.tokopedia.logisticCommon.data.module.CoreModule
 import dagger.Component
 
-@DropoffPickerScope
+@ActivityScope
 @Component(
     modules = [
         DropoffPickerViewModelsModule::class,
