@@ -100,4 +100,11 @@
     <string name="error_default_fp_choose_account">Terjadi kesalahan, silahkan coba sesaat lagi</string>
     <string name="ocl_register_title">Belum punya akun? Daftar</string>
     <string name="ocl_other_acc_text">Masuk ke akun lain</string>
+
+    <string name="ocl_delete_confirmation_title">Hilangkan dari daftar?</string>
+    <string name="ocl_delete_confirmation_subtitle">Kalau kamu hilangkan akun ini, kamu perlu login lagi.</string>
+
+    <string name="ocl_delete_confirmation_positive_btn_title">Ya, Hilangkan</string>
+    <string name="ocl_delete_confirmation_negative_btn_title">Batal</string>
+
 </resources>

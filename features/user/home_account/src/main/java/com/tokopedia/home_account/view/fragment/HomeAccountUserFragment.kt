@@ -112,6 +112,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -1406,10 +1407,12 @@ open class HomeAccountUserFragment :
             false
         )
         child.btmSheetOclPositiveBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonSimpanLoginAccountEvent()
             doLogoutAndSaveSession()
         }
 
         child.btmSheetOclNegativeBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonNantiLoginAccountEvent()
             doLogout()
         }
         child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
@@ -1417,6 +1420,7 @@ open class HomeAccountUserFragment :
         BottomSheetUnify().apply {
             setChild(child.root)
             setCloseClickListener {
+                OclTracker.sendClickOnCloseButtonEvent()
                 doLogout()
                 dismiss()
             }

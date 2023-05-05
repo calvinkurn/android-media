@@ -25,8 +25,10 @@ import com.tokopedia.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.chooseaccount.view.adapter.OclAccountAdapter
 import com.tokopedia.chooseaccount.view.listener.OclChooseAccountListener
 import com.tokopedia.chooseaccount.viewmodel.OclChooseAccountViewModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -60,9 +62,12 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         binding = FragmentOclChooseAccountBinding.inflate(inflater, container, false)
         adapter = OclAccountAdapter()
         adapter?.setListener(this)
-        binding?.oclChooseAccountList?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding?.oclChooseAccountList?.addItemDecoration(OclItemDivider(requireContext()))
-        binding?.oclChooseAccountList?.adapter = adapter
+        binding?.oclChooseAccountList?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(OclItemDivider(requireContext()))
+        }.also {
+            it?.adapter = adapter
+        }
         return binding?.root
     }
 
@@ -72,6 +77,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
+                    OclTracker.sendClickOnButtonDaftarEvent()
                     (activity as OclChooseAccountActivity).goToRegisterInitial()
                 }
 
@@ -130,6 +136,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         }
 
         binding?.oclBtnOtherAcc?.setOnClickListener {
+            OclTracker.sendClickOnMasukKeAkunLainEvent()
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
             intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
@@ -141,11 +148,34 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
     }
 
     override fun onAccountSelected(account: OclAccount) {
+        OclTracker.sendClickOnOneClickLoginEvent()
         viewModel.loginOcl(account.token)
     }
 
     override fun onDeleteButtonClicked(account: OclAccount) {
-        viewModel.deleteAccount(account)
+        OclTracker.sendClickOnButtonHapusEvent()
+        showDeleteConfirmationDialog(account)
+    }
+
+    private fun showDeleteConfirmationDialog(account: OclAccount) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.ocl_delete_confirmation_title))
+            dialog.setDescription(getString(R.string.ocl_delete_confirmation_subtitle))
+            dialog.setPrimaryCTAText(getString(R.string.ocl_delete_confirmation_negative_btn_title))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                OclTracker.sendClickOnButtonBatalEvent()
+            }
+            dialog.setSecondaryCTAText(getString(R.string.ocl_delete_confirmation_positive_btn_title))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+                viewModel.deleteAccount(account)
+                OclTracker.sendClickOnButtonHapusDialogEvent()
+
+            }
+            dialog.show()
+        }
     }
 
     companion object {
