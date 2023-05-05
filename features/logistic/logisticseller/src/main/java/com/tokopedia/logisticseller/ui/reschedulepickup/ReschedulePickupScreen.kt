@@ -60,10 +60,16 @@ fun ReschedulePickupScreen(
         initialValue = ModalBottomSheetValue.Hidden
     )
 
+    LaunchedEffect(sheetState.targetValue) {
+        if (sheetState.targetValue == ModalBottomSheetValue.Hidden && state.bottomSheet != RescheduleBottomSheetState.NONE) {
+            onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
+        }
+    }
+
     LaunchedEffect(key1 = state.bottomSheet, block = {
         if (state.bottomSheet != RescheduleBottomSheetState.NONE) {
             sheetState.show()
-        } else if (sheetState.isVisible) {
+        } else if (sheetState.isVisible && state.bottomSheet == RescheduleBottomSheetState.NONE) {
             sheetState.hide()
         }
     })
