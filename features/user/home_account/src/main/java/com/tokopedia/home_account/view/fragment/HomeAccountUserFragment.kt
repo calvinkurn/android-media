@@ -610,7 +610,7 @@ open class HomeAccountUserFragment :
                     balanceAndPointUiModel
                 )
             )
-            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle)
+            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle, balanceAndPointUiModel.title)
         } else if (!balanceAndPointUiModel.applink.isEmpty()) {
             goToApplink(balanceAndPointUiModel.applink)
         }
@@ -821,7 +821,7 @@ open class HomeAccountUserFragment :
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            viewModel.getBalanceAndPoint(it.id, it.hideTitle)
+            viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
 
             if (it.id == AccountConstants.WALLET.GOPAY) {
                 balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
