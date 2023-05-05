@@ -4,7 +4,7 @@ import android.net.Uri
 import com.tokopedia.shop_nib.data.mapper.UploadFileMapper
 import com.tokopedia.shop_nib.data.service.UploadFileService
 import com.tokopedia.shop_nib.domain.entity.UploadFileResult
-import com.tokopedia.shop_nib.util.FileHelper
+import com.tokopedia.shop_nib.util.helper.FileHelper
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

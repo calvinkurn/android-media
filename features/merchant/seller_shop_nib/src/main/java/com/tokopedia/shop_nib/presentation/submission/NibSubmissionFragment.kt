@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.startLoading
@@ -31,7 +32,8 @@ import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiState
 import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessActivity
-import com.tokopedia.shop_nib.util.FileHelper
+import com.tokopedia.shop_nib.util.helper.FileHelper
+import com.tokopedia.shop_nib.util.constant.UrlConstant
 import com.tokopedia.shop_nib.util.extension.toMb
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -86,6 +88,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.processEvent(UiEvent.RecordImpression)
         setupView()
         observeUiState()
         observeUiEffect()
@@ -100,9 +103,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             tpgNibBenefit.setHyperlinkText(
                 fullText = context?.getString(R.string.ssn_nib_benefit).orEmpty(),
                 hyperlinkSubstring = context?.getString(R.string.ssn_here).orEmpty(),
-                onHyperlinkClick = {
-
-                }
+                onHyperlinkClick = { routeToUrl(UrlConstant.URL_SELLER_EDU_SHOP_NIB) }
             )
 
             imgFile.scaleType = ImageView.ScaleType.CENTER_CROP

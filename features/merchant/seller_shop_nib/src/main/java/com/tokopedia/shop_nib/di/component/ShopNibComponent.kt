@@ -7,6 +7,8 @@ import com.tokopedia.shop_nib.di.module.ShopNibViewModelModule
 import com.tokopedia.shop_nib.di.scope.ShopNibScope
 import com.tokopedia.shop_nib.presentation.landing_page.LandingPageActivity
 import com.tokopedia.shop_nib.presentation.submission.NibSubmissionFragment
+import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSuccessFragment
+import com.tokopedia.shop_nib.presentation.submitted.NibAlreadySubmittedFragment
 import dagger.Component
 
 @ShopNibScope
@@ -17,5 +19,6 @@ import dagger.Component
 interface ShopNibComponent {
     fun inject(activity: LandingPageActivity)
     fun inject(fragment: NibSubmissionFragment)
-
+    fun inject(fragment: NibAlreadySubmittedFragment)
+    fun inject(fragment: NibSubmissionSuccessFragment)
 }

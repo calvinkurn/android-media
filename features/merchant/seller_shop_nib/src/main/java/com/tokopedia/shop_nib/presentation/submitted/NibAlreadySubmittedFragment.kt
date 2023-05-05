@@ -4,23 +4,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibAlreadySubmittedBinding
+import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
+import com.tokopedia.shop_nib.util.constant.UrlConstant
+import com.tokopedia.shop_nib.util.tracker.NibAlreadySubmittedPageTracker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
-class NibAlreadySubmittedFragment : Fragment() {
+class NibAlreadySubmittedFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
         fun newInstance(): NibAlreadySubmittedFragment {
             return NibAlreadySubmittedFragment()
         }
-        private const val URL_TOKOPEDIA_CARE_SELLER = "https://www.tokopedia.com/help/seller"
-        private const val IMAGE_URL_ALREADY_SUBMITTED = "https://images.tokopedia.net/img/android/campaign/shop-nib/already_submitted.png"
+
+        private const val IMAGE_URL_ALREADY_SUBMITTED =
+            "https://images.tokopedia.net/img/android/campaign/shop-nib/already_submitted.png"
     }
 
     private var binding by autoClearedNullable<SsnFragmentNibAlreadySubmittedBinding>()
+
+    @Inject
+    lateinit var tracker: NibAlreadySubmittedPageTracker
+
+    override fun getScreenName(): String = NibAlreadySubmittedFragment::class.java.canonicalName.orEmpty()
+
+    override fun initInjector() {
+        DaggerShopNibComponent.builder()
+            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .build()
+            .inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +52,7 @@ class NibAlreadySubmittedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        tracker.sendPageImpression()
     }
 
     private fun setupView() {
@@ -41,7 +60,7 @@ class NibAlreadySubmittedFragment : Fragment() {
             emptyState.setImageUrl(IMAGE_URL_ALREADY_SUBMITTED)
             emptyState.setPrimaryCTAClickListener { activity?.finish() }
             emptyState.setSecondaryCTAClickListener {
-                routeToUrl(URL_TOKOPEDIA_CARE_SELLER)
+                routeToUrl(UrlConstant.URL_TOKOPEDIA_CARE_SELLER)
             }
         }
     }

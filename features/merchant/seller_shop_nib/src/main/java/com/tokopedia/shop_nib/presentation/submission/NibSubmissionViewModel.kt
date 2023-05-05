@@ -6,6 +6,7 @@ import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiState
+import com.tokopedia.shop_nib.util.tracker.NibSubmissionPageTracker
 import java.util.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class NibSubmissionViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val uploadFileUseCase: UploadFileUseCase
+    private val uploadFileUseCase: UploadFileUseCase,
+    private val tracker: NibSubmissionPageTracker
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -43,6 +45,7 @@ class NibSubmissionViewModel @Inject constructor(
             is UiEvent.TapChangeDate -> _uiEffect.tryEmit(UiEffect.ShowDatePicker(currentState.selectedDate))
             is UiEvent.ConfirmDate -> handleConfirmDate(event.newDate)
             UiEvent.SubmitFile -> handleSubmitFile()
+            UiEvent.RecordImpression -> handleRecordImpression()
         }
     }
 
@@ -79,6 +82,8 @@ class NibSubmissionViewModel @Inject constructor(
     }
 
     private fun handleSubmitFile() {
+        tracker.sendClickSubmitNibButtonEvent()
+
         _uiState.update { it.copy(isLoading = true) }
 
         val fileUri = currentState.selectedFileUri
@@ -102,6 +107,10 @@ class NibSubmissionViewModel @Inject constructor(
                 _uiEffect.tryEmit(UiEffect.ShowError(error))
             }
         )
+    }
+
+    private fun handleRecordImpression() {
+        tracker.sendPageImpression()
     }
 
 

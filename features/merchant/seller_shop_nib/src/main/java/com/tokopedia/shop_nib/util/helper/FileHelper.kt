@@ -1,4 +1,4 @@
-package com.tokopedia.shop_nib.util
+package com.tokopedia.shop_nib.util.helper
 
 import android.content.Context
 import android.database.Cursor
