@@ -1080,6 +1080,7 @@ class CartAdapter constructor(
                             toBeRemovedIndices.add(index)
                         } else {
                             // update selection
+                            data.productUiModelList.last().isFinalItem = true
                             data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
                             data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {

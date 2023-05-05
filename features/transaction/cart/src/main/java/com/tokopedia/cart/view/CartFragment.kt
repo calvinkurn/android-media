@@ -3826,17 +3826,17 @@ class CartFragment :
     ) {
         val updateIndices = updateListResult.second
         val removeIndices = updateListResult.first
-        if (removeIndices.size > 1) {
-            // on multiple deletion, notify data set changed to prevent indices race condition
-            cartAdapter.notifyDataSetChanged()
-        } else {
-            updateIndices.forEach {
-                onNeedToUpdateViewItem(it)
-            }
-            removeIndices.forEach {
-                onNeedToRemoveViewItem(it)
-            }
-        }
+//        if (removeIndices.size > 1) {
+//            // on multiple deletion, notify data set changed to prevent indices race condition
+//            cartAdapter.notifyDataSetChanged()
+//        } else {
+//            updateIndices.forEach {
+//                onNeedToUpdateViewItem(it)
+//            }
+//            removeIndices.forEach {
+//                onNeedToRemoveViewItem(it)
+//            }
+//        }
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
         if (cartAdapter.allDisabledCartItemData.size > 1) {
@@ -3857,11 +3857,11 @@ class CartFragment :
                 it.isShowPin = false
                 val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                 if (index != RecyclerView.NO_POSITION) {
-                    onNeedToUpdateViewItem(index)
+//                    onNeedToUpdateViewItem(index)
                     if (groupData.last() is CartShopBottomHolderData) {
                         val bottomIndex = index + groupData.lastIndex
                         cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
-                        onNeedToUpdateViewItem(bottomIndex)
+//                        onNeedToUpdateViewItem(bottomIndex)
                     }
                 }
             }
@@ -3875,22 +3875,25 @@ class CartFragment :
                     it.isCollapsed = false
                     val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                     if (index != RecyclerView.NO_POSITION) {
-                        onNeedToUpdateViewItem(index)
+//                        onNeedToUpdateViewItem(index)
                         if (groupData.last() is CartShopBottomHolderData) {
                             val bottomIndex = index + groupData.lastIndex
                             cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
-                            onNeedToUpdateViewItem(bottomIndex)
+//                            onNeedToUpdateViewItem(bottomIndex)
                         }
                     }
                 }
             }
         }
 
+        // use notify data set changed due to massive update
+        cartAdapter.notifyDataSetChanged()
+
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         notifyBottomCartParent()
     }
 
-    private fun onNeedToInserViewItem(position: Int) {
+    private fun onNeedToInsertViewItem(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
             binding?.rvCart?.post { cartAdapter.notifyItemInserted(position) }
