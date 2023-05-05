@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.content.common.comment.MentionedSpanned
 import com.tokopedia.content.common.comment.TagMentionBuilder
-import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.isChild
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
@@ -55,10 +54,11 @@ class CommentViewHolder {
             MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
         }
 
+        private val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
+        private val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
-                val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
-                val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
                 ivCommentPhoto.updateLayoutParams {
                     width = if (item.commentType.isChild) layout24 else layout32
                     height = if (item.commentType.isChild) layout24 else layout32
@@ -150,7 +150,7 @@ class CommentViewHolder {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
 
-            binding.root.addOnImpressionListener(impressHolder){
+            binding.root.addOnImpressionListener(impressHolder) {
                 listener.onImpressedExpandable()
             }
         }
