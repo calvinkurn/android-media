@@ -239,7 +239,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, 16.toPx() + keyboardHeight)
+                binding.root.setPadding(0, 0, 0, 16.toPx() + height)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
