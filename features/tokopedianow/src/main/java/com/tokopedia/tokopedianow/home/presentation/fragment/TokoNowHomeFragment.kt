@@ -150,15 +150,19 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHol
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
+import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCarouselChipListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unifycomponents.Toaster
@@ -267,7 +271,8 @@ class TokoNowHomeFragment : Fragment(),
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
-                claimCouponWidgetListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetListener = createClaimCouponWidgetCallback(),
+                productCarouselChipListener = createProductCarouselChipListener()
             ),
             differ = HomeListDiffer()
         )
@@ -314,6 +319,7 @@ class TokoNowHomeFragment : Fragment(),
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
     private val rtrAnalytics by lazy { createRealTimeRecomAnalytics() }
+    private val chipCarouselAnalytics by lazy { HomeProductCarouselChipsAnalytics(userSession) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -1058,6 +1064,12 @@ class TokoNowHomeFragment : Fragment(),
                     it.cartId,
                     it.data
                 )
+                is HomeProductCarouselChipsUiModel -> trackCarouselChipsAddToCart(
+                    it.quantity,
+                    it.position,
+                    it.cartId,
+                    it.data
+                )
             }
         }
 
@@ -1229,6 +1241,23 @@ class TokoNowHomeFragment : Fragment(),
             quantity = quantity.toString(),
             uiModel = product,
             cartId = cartId,
+        )
+    }
+
+    private fun trackCarouselChipsAddToCart(
+        quantity: Int,
+        position: Int,
+        cartId: String,
+        data: HomeProductCarouselChipsUiModel
+    ) {
+        val chipName = data.chipList.first { it.selected }.text
+        chipCarouselAnalytics.trackClickAddToCart(
+            position = position,
+            channelId = data.id,
+            chipName = chipName,
+            cartId = cartId,
+            quantity = quantity,
+            carousel = data
         )
     }
 
@@ -1930,6 +1959,15 @@ class TokoNowHomeFragment : Fragment(),
 
     private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
         return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
+    private fun createProductCarouselChipListener(): HomeProductCarouselChipsViewListener {
+        return HomeProductCarouselChipListener(
+            requireContext(),
+            viewModelTokoNow,
+            chipCarouselAnalytics,
+            ::startActivityForResult
+        )
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {

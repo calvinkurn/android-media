@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTy
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -58,6 +59,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCarouselChipsViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
@@ -80,6 +82,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
@@ -131,7 +134,8 @@ class HomeAdapterTypeFactory(
     private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
     private val claimCouponWidgetItemListener: HomeClaimCouponWidgetItemListener? = null,
     private val claimCouponWidgetItemTracker: HomeClaimCouponWidgetItemTracker? = null,
-    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null
+    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null,
+    private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -170,6 +174,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int = HomeClaimCouponWidgetItemViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetUiModel): Int = HomeClaimCouponWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int = HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT
+    override fun type(uiModel: HomeProductCarouselChipsUiModel): Int = HomeProductCarouselChipsViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -218,6 +223,7 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetItemViewHolder.LAYOUT -> HomeClaimCouponWidgetItemViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker)
             HomeClaimCouponWidgetViewHolder.LAYOUT -> HomeClaimCouponWidgetViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker, claimCouponWidgetListener)
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
+            HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
             // endregion
 
             // region Global Home Component

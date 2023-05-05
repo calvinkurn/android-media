@@ -48,7 +48,9 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
+    const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
+    const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -67,9 +69,6 @@ object RollenceKey {
     const val ME_PAGE_VARIANT_1 = "Mepage_1"
     const val ME_PAGE_VARIANT_2 = "Mepage_2"
 
-    // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
@@ -87,4 +86,7 @@ object RollenceKey {
 
     // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
+
+    // Payment
+    const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
 }

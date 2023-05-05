@@ -9,8 +9,11 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.mockkObject
-import junit.framework.TestCase.*
-import kotlinx.coroutines.*
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
@@ -44,7 +47,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         }
     }
 
-
     @Test
     fun `when get status allow shop name domain changes should return success`() {
         runBlocking {
@@ -77,7 +79,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         }
     }
 
-
     @Test
     fun `when upload shop image should return upload result success`() {
         runBlocking {
@@ -90,7 +91,12 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnUploadResultSuccess()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                    imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
             val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
 
@@ -110,7 +116,12 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnUploadResultError()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
             val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
 
@@ -130,14 +141,18 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnNull()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
             val subscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
 
             assertTrue(subscribe == null)
         }
     }
-
 
     @Test
     fun `when upload shop image should return fail`() {
@@ -151,14 +166,18 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnFail()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
             val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
 
             assertTrue(isSuccessSubscribe is Fail)
         }
     }
-
 
     @Test
     fun `when update shop basic data should return success`() {
@@ -171,7 +190,11 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUpdateShopBasicData_thenReturn()
 
             shopEditBasicInfoViewModel.updateShopBasicData(
-                    shopName, shopDomain, shopTagLine, shopDescription)
+                shopName,
+                shopDomain,
+                shopTagLine,
+                shopDescription
+            )
 
             val isSuccessSubscribe = shopEditBasicInfoViewModel.updateShopBasicData.observeAwaitValue()
 

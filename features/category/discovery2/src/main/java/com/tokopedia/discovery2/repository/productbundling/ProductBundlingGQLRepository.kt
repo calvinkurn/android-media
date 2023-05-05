@@ -14,12 +14,14 @@ class ProductBundlingGQLRepository @Inject constructor() : BaseRepository(), Pro
             queryParamterMap: MutableMap<String, Any>,
             pageEndPoint: String,
             productBundlingComponentName: String?
-    ): List<DataItem>? {
+    ): Pair<List<DataItem>?,String?> {
         val response = (getGQLData(
                 GQL_COMPONENT,
                 DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME
         ) as DataResponse)
 
-        return response.data.component?.data
+        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+
+        return Pair(response.data.component?.data,nextPage)
     }
 }
