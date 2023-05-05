@@ -8,8 +8,8 @@ class UploadFileUseCase @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ) {
 
-    suspend fun execute(fileUri: String): UploadFileResult {
-        return remoteDataSource.uploadFile(fileUri)
+    suspend fun execute(fileUri: String, nibPublishedDate: String): UploadFileResult {
+        return remoteDataSource.uploadFile(fileUri, nibPublishedDate)
     }
 
 }

@@ -8,7 +8,9 @@ import com.tokopedia.shop_nib.util.helper.FileHelper
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
@@ -19,9 +21,10 @@ class RemoteDataSource @Inject constructor(
 ) {
     companion object {
         private const val REQUEST_PARAM_KEY_FILE = "file_upload"
+        private const val REQUEST_PARAM_KEY_RELEASE_DATE = "release_date"
     }
 
-    suspend fun uploadFile(fileUri: String): UploadFileResult {
+    suspend fun uploadFile(fileUri: String, nibPublishDate: String): UploadFileResult {
         val uri = Uri.parse(fileUri)
 
         val fileExtension = fileHelper.getFileExtension(uri)
@@ -38,8 +41,11 @@ class RemoteDataSource @Inject constructor(
         val fileBody = file.asRequestBody(fileMime.toMediaTypeOrNull())
         val filePart = MultipartBody.Part.createFormData(REQUEST_PARAM_KEY_FILE, file.name, fileBody)
 
+        val params = HashMap<String, RequestBody>()
+        params[REQUEST_PARAM_KEY_RELEASE_DATE] = nibPublishDate.toRequestBody("text/plain".toMediaTypeOrNull())
+
         val authToken = "Bearer ${userSession.accessToken}"
-        val response = service.uploadFile(authToken, filePart)
+        val response = service.uploadFile(authToken, filePart, params)
 
         //Remove the file from app cache directory if it was successfully submitted
         if (response.header.errorCode == "200") {

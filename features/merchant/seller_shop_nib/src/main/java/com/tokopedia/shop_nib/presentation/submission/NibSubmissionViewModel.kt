@@ -2,6 +2,8 @@ package com.tokopedia.shop_nib.presentation.submission
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.shop_nib.domain.usecase.UploadFileUseCase
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEffect
 import com.tokopedia.shop_nib.presentation.submission.uimodel.UiEvent
@@ -82,17 +84,18 @@ class NibSubmissionViewModel @Inject constructor(
     }
 
     private fun handleSubmitFile() {
+        val fileUri = currentState.selectedFileUri
+        val nibPublishDate = currentState.selectedDate ?: return
+        val formattedNibPublishDate = nibPublishDate.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC)
+
         tracker.sendClickSubmitNibButtonEvent()
 
         _uiState.update { it.copy(isLoading = true) }
 
-        val fileUri = currentState.selectedFileUri
-        val nibPublishDate = currentState.selectedDate
-
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = uploadFileUseCase.execute(fileUri)
+                val result = uploadFileUseCase.execute(fileUri, formattedNibPublishDate)
 
                 _uiState.update { it.copy(isLoading = false, error = null) }
                 if (result.isSuccess) {
