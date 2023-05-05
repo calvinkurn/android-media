@@ -25,7 +25,6 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.isNotEmpty
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,7 +78,6 @@ import com.tokopedia.hotel.search_map.presentation.adapter.PropertyAdapterTypeFa
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -369,22 +367,45 @@ class HotelSearchMapFragment :
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        if (binding?.rvVerticalPropertiesHotelSearchMap?.isNotEmpty().orFalse()) {
-            throwable?.let {
-                showToastError(throwable)
+        val error = throwable?:return
+        when {
+            isEmptyError(error) && adapter.data.isEmpty() -> {
+                hideCardListView()
+                hideSearchWithMap()
+                hideHotelResultList()
+                showErrorNoResult()
             }
-        } else {
-            binding?.containerError?.root?.visible()
-            context?.run {
-                binding?.containerError?.globalError?.let {
-                    ErrorHandlerHotel.getErrorUnify(
-                        this,
-                        throwable,
-                        { onRetryClicked() },
-                        it
-                    )
+
+            isEmptyError(error) && adapter.data.isNotEmpty() -> {
+                disableLoadMore()
+                hideLoading()
+            }
+
+            adapter.data.isEmpty() -> {
+                binding?.containerError?.root?.visible()
+                context?.run {
+                    binding?.containerError?.globalError?.let {
+                        ErrorHandlerHotel.getErrorUnify(
+                            this,
+                            error,
+                            { onRetryClicked() },
+                            it
+                        )
+                    }
                 }
             }
+
+            else -> {
+                showToastError(error)
+            }
+        }
+    }
+
+    private fun isEmptyError(throwable: Throwable): Boolean {
+        return if (throwable is MessageErrorException) {
+            throwable.errorCode == ERROR_EMPTY_CODE
+        } else {
+            false
         }
     }
 
@@ -394,25 +415,15 @@ class HotelSearchMapFragment :
             throwable
         )
     }
-
     private fun showToastError(throwable: Throwable) {
-        if (isNotEmptyError(throwable))
-            view?.run {
-                Toaster.build(
-                    this,
-                    getMessageError(throwable),
-                    Toaster.toasterLength,
-                    Toaster.TYPE_ERROR
-                ).show()
+        view?.run {
+            Toaster.build(
+                this,
+                getMessageError(throwable),
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR
+            ).show()
             }
-    }
-
-    private fun isNotEmptyError(throwable: Throwable): Boolean {
-        return if (throwable is MessageErrorException) {
-            throwable.errorCode != ERROR_EMPTY_CODE
-        } else {
-            true
-        }
     }
 
     override fun onRetryClicked() {
