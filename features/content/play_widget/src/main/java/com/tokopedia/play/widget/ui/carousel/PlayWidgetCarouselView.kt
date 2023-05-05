@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.carousel
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,16 @@ class PlayWidgetCarouselView : ConstraintLayout {
         this
     )
 
-    private val adapter = PlayWidgetCarouselAdapter()
+    private val adapter = PlayWidgetCarouselAdapter(
+        object : PlayWidgetVideoContentViewHolder.Listener {
+            override fun onMuteButtonClicked(
+                viewHolder: PlayWidgetVideoContentViewHolder,
+                shouldMute: Boolean
+            ) {
+                Toast.makeText(context, "Mute Button Clicked", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
     private val snapHelper = PagerSnapHelper()
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty

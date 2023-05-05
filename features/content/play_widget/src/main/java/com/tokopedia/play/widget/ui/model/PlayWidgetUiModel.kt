@@ -68,6 +68,7 @@ data class PlayWidgetChannelUiModel(
     val hasAction: Boolean,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
     val gridType: PlayGridType = PlayGridType.Unknown,
+    val extras: Map<String, Any> = emptyMap(),
 ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

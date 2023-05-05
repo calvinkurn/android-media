@@ -9,7 +9,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by kenny.hadisaputra on 04/05/23
  */
-class PlayWidgetCarouselAdapter : ListAdapter<PlayWidgetChannelUiModel, RecyclerView.ViewHolder>(
+class PlayWidgetCarouselAdapter(
+    private val videoContentListener: PlayWidgetVideoContentViewHolder.Listener,
+) : ListAdapter<PlayWidgetChannelUiModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<PlayWidgetChannelUiModel>() {
         override fun areItemsTheSame(
             oldItem: PlayWidgetChannelUiModel,
@@ -33,7 +35,7 @@ class PlayWidgetCarouselAdapter : ListAdapter<PlayWidgetChannelUiModel, Recycler
     ): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_UPCOMING -> PlayWidgetUpcomingContentViewHolder.create(parent)
-            TYPE_VIDEO -> PlayWidgetVideoContentViewHolder.create(parent)
+            TYPE_VIDEO -> PlayWidgetVideoContentViewHolder.create(parent, videoContentListener)
             else -> error("View Type $viewType is not supported")
         }
     }
