@@ -15,11 +15,13 @@ class RecommendationNowAffiliate @Inject constructor(
 ) {
 
     suspend fun initCookie(affiliateTrackerId: String) {
+        val shopId = getNowShopId()
         affiliateCookieHelper.get().initCookie(
             "",
             "",
             AffiliatePageDetail(
-                source = AffiliateSdkPageSource.Shop(getNowShopId())
+                pageId = shopId,
+                source = AffiliateSdkPageSource.Shop(shopId),
             ),
             affiliateTrackerId,
         )
