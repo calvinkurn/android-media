@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -116,7 +116,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
                     headerName = "Lagi Diskon",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "5",
                         name = "Tahu Bulat",
                         isVariant = true,
@@ -274,7 +274,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopType = "",
                     appLink = "tokopedia://product/detail/2",
                     headerName = "Lagi Diskon",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         name = "Tahu Kotak",
                         isVariant = false,
@@ -472,7 +472,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
                     headerName = "Lagi Diskon",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "5",
                         name = "Tahu Bulat",
                         isVariant = true,
@@ -681,7 +681,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopType = "",
                     appLink = "tokopedia://product/detail/1",
                     headerName = "Lagi Diskon",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         name = "Tahu Kotak",
                         isVariant = true,
@@ -698,7 +698,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopType = "",
                     appLink = "tokopedia://product/detail/2",
                     headerName = "Lagi Diskon",
-                    productCardModel = TokoNowProductCardViewUiModel(
+                    productCardModel = ProductCardCompactUiModel(
                         productId = "5",
                         name = "Tahu Bulat",
                         isVariant = true,

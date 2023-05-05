@@ -26,7 +26,8 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs),
-    ProductCardCompactCarouselView.ProductCardCarouseBasicListener, ChipListener {
+    ProductCardCompactCarouselView.ProductCardCompactCarouselBasicListener,
+    ChipListener {
 
     companion object {
         private const val FIRST_POSITION_INDEX = 0
@@ -40,13 +41,17 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
     private var listener: HomeProductCarouselChipsViewListener? = null
 
     private val chipAdapter by lazy {
-        TokoNowChipListAdapter(TokoNowChipListAdapterTypeFactory(
-            this@HomeProductCarouselChipsView
-        ))
+        TokoNowChipListAdapter(
+            TokoNowChipListAdapterTypeFactory(
+                this@HomeProductCarouselChipsView
+            )
+        )
     }
 
     private val binding = LayoutTokopedianowProductCarouselChipsViewBinding.inflate(
-        LayoutInflater.from(context), this, true
+        LayoutInflater.from(context),
+        this,
+        true
     )
 
     init {
@@ -96,7 +101,7 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
 
         binding.productCardCarousel.bindItems(items = carouselItemList)
 
-        if(previousState == TokoNowProductRecommendationState.LOADING) {
+        if (previousState == TokoNowProductRecommendationState.LOADING) {
             binding.productCardCarousel.scrollToPosition(FIRST_POSITION_INDEX)
         }
 
