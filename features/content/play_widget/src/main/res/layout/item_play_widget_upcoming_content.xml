@@ -2,6 +2,7 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN300"
@@ -48,33 +49,35 @@
         app:layout_constraintVertical_bias="1"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_live_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_clock"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
         android:layout_marginStart="12dp"
-        android:background="@drawable/bg_play_widget_live_badge"
-        android:gravity="center"
-        android:paddingHorizontal="4dp"
-        android:text="LIVE"
-        android:textColor="@color/Unify_Static_White"
+        android:layout_marginTop="12dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOCK"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
-        app:layout_constraintBottom_toBottomOf="@id/view_play_widget_total_views"
-        app:typographyType="small"
-        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
-    <include
-        android:id="@+id/view_play_widget_total_views"
-        layout="@layout/view_play_widget_total_views"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toEndOf="@id/tv_live_badge"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/icon_clock"
+        app:layout_constraintStart_toEndOf="@id/icon_clock"
+        app:layout_constraintTop_toTopOf="@id/icon_clock"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="17 Apr 2023 | 17.00"
         />
 
     <include
@@ -83,7 +86,7 @@
         android:layout_height="28dp"
         android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
+        app:layout_constraintTop_toTopOf="@id/tv_start_time"
         />
 
     <include

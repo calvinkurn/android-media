@@ -100,7 +100,10 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(
                     items = List(5) {
-                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod).copy(
+                        PlayWidgetUiMock.getSampleChannelModel(
+                            if (it % 2 == 0) PlayWidgetChannelType.Live
+                            else PlayWidgetChannelType.Vod
+                        ).copy(
                             channelId = it.toString(),
                             title = "Channel $it"
                         )

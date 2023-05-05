@@ -31,13 +31,13 @@ class PlayWidgetCarouselAdapter : ListAdapter<PlayWidgetChannelUiModel, Recycler
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder {
-        return PlayWidgetLiveContentViewHolder.create(parent)
+        return PlayWidgetVideoContentViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = getItem(position % currentList.size)
         when (holder) {
-            is PlayWidgetLiveContentViewHolder -> holder.bind(data)
+            is PlayWidgetVideoContentViewHolder -> holder.bind(data)
         }
     }
 }

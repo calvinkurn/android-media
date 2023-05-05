@@ -13,12 +13,8 @@
         android:radius="28dp"
         />
 
-<!--    <solid-->
-<!--        android:color="#4C4E54"-->
-<!--        />-->
-
     <solid
-        android:color="@color/Unify_N600"
+        android:color="@color/Unify_NN900_70"
         />
 
 </shape>
