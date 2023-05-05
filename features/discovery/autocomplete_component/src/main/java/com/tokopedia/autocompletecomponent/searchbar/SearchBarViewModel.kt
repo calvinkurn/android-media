@@ -78,7 +78,7 @@ class SearchBarViewModel @Inject constructor(
         if (searchParameter.hasQuery1()) {
             searchBarKeywords.add(
                 SearchBarKeyword(
-                    keyword = searchParameter.get(SearchApiConst.Q1).orEmpty(),
+                    keyword = searchParameter[SearchApiConst.Q1].orEmpty(),
                 )
             )
         }
@@ -86,7 +86,7 @@ class SearchBarViewModel @Inject constructor(
             searchBarKeywords.add(
                 SearchBarKeyword(
                     position = 1,
-                    keyword = searchParameter.get(SearchApiConst.Q2).orEmpty(),
+                    keyword = searchParameter[SearchApiConst.Q2].orEmpty(),
                 )
             )
         }
@@ -94,7 +94,7 @@ class SearchBarViewModel @Inject constructor(
             searchBarKeywords.add(
                 SearchBarKeyword(
                     position = 2,
-                    keyword = searchParameter.get(SearchApiConst.Q3).orEmpty(),
+                    keyword = searchParameter[SearchApiConst.Q3].orEmpty(),
                 )
             )
         }
