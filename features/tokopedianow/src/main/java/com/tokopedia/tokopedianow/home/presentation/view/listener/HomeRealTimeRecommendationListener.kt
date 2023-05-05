@@ -25,7 +25,8 @@ class HomeRealTimeRecommendationListener(
         position: Int,
         product: ProductCardCompactCarouselItemUiModel
     ) {
-        RouteManager.route(context, product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        RouteManager.route(context, appLink)
     }
 
     override fun onAddToCartProductNonVariant(
@@ -39,6 +40,8 @@ class HomeRealTimeRecommendationListener(
                 productId = item.getProductId(),
                 quantity = quantity,
                 shopId = item.shopId,
+                stock = item.productCardModel.availableStock,
+                isVariant = item.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {

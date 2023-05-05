@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -75,6 +76,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
+    affiliateService: NowAffiliateService,
     userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
     baseDispatcher,
@@ -86,6 +88,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     getWarehouseUseCase,
     setUserPreferenceUseCase,
     chooseAddressWrapper,
+    affiliateService,
     userSession,
 ) {
 

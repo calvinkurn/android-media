@@ -10,6 +10,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
@@ -24,7 +26,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +45,9 @@ class ProductCardCompactSimilarProductViewModelTest {
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
     private lateinit var chooseAddressData: LocalCacheModel
+    private lateinit var affiliateService: NowAffiliateService
 
-    protected lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
+    private lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
 
     @Before
     fun setUp() {
@@ -56,6 +59,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         userSession = mockk(relaxed = true)
         getSimilarProductUseCase = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
+        affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
@@ -65,6 +69,7 @@ class ProductCardCompactSimilarProductViewModelTest {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            affiliateService,
             CoroutineTestDispatchers
         )
     }
@@ -80,6 +85,7 @@ class ProductCardCompactSimilarProductViewModelTest {
     @Test
     fun `get similar products list success`(){
         val recommendationItem = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem(
+            "",
             "",
             "",
             ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
@@ -274,6 +280,7 @@ class ProductCardCompactSimilarProductViewModelTest {
             name = "kaos testing 112",
             quantity = quantity,
             stock = 7,
+            isVariant = false,
             minOrder = 1,
             maxOrder = 7,
             priceFmt = "Rp150",

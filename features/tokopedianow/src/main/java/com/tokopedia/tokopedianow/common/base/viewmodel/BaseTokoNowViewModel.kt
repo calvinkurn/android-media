@@ -18,6 +18,9 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
+import com.tokopedia.tokopedianow.common.model.ProductCartItem
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,6 +34,7 @@ open class BaseTokoNowViewModel(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val affiliateService: NowAffiliateService,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -57,7 +61,6 @@ open class BaseTokoNowViewModel(
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
-
     protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var changeQuantityJob: Job? = null
@@ -73,6 +76,8 @@ open class BaseTokoNowViewModel(
         productId: String,
         shopId: String,
         quantity: Int,
+        stock: Int,
+        isVariant: Boolean,
         onSuccessAddToCart: (AddToCartDataModel) -> Unit = {},
         onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit = { _, _ -> },
         onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit = { _, _ -> },
@@ -85,11 +90,11 @@ open class BaseTokoNowViewModel(
         if (cartQuantity == quantity) return
 
         launchWithDelay(block = {
-            miniCartItem.quantity = quantity
+            val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
             when {
-                cartQuantity.isZero() -> addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
+                cartQuantity.isZero() -> addItemToCart(product, onSuccessAddToCart, onError)
                 quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                else -> updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
+                else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
             }
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
@@ -135,13 +140,59 @@ open class BaseTokoNowViewModel(
 
     fun updateAddressData() = addressData.updateLocalData()
 
-    private fun addItemToCart(
+    fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
+
+    fun getAffiliateShareInput() = affiliateService.createShareInput()
+
+    fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
+        launchCatchError(block = {
+            affiliateService.initAffiliateCookie(
+                affiliateUuid,
+                affiliateChannel
+            )
+        }) {
+        }
+    }
+
+    private fun checkAtcAffiliateCookie(
         productId: String,
         shopId: String,
-        quantity: Int,
+        stock: Int,
+        isVariant: Boolean,
+        quantity: Int
+    ) {
+        val miniCartItem = getMiniCartItem(productId)
+        val currentQuantity = miniCartItem.quantity
+        val data = NowAffiliateAtcData(
+            productId,
+            shopId,
+            stock,
+            isVariant,
+            quantity,
+            currentQuantity
+        )
+
+        launchCatchError(block = {
+            affiliateService.checkAtcAffiliateCookie(data)
+        }) {
+        }
+    }
+
+    private fun updateMiniCartItemQuantity(miniCartItem: MiniCartItemProduct, quantity: Int) {
+        miniCartItem.quantity = quantity
+    }
+
+    private fun addItemToCart(
+        product: ProductCartItem,
         onSuccessAddToCart: (AddToCartDataModel) -> Unit,
         onError: (Throwable) -> Unit
     ) {
+        val productId = product.id
+        val shopId = product.shopId
+        val quantity = product.quantity
+        val stock = product.stock
+        val isVariant = product.isVariant
+
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId,
@@ -149,6 +200,7 @@ open class BaseTokoNowViewModel(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, shopId, stock, isVariant, quantity)
             onSuccessAddToCart.invoke(it)
             _addItemToCart.postValue(Success(it))
         }, {
@@ -158,14 +210,19 @@ open class BaseTokoNowViewModel(
     }
 
     private fun updateCartItem(
+        product: ProductCartItem,
         miniCartItem: MiniCartItemProduct,
-        quantity: Int,
         onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val productId = miniCartItem.productId
+        val productId = product.id
+        val shopId = product.shopId
+        val quantity = product.quantity
+        val stock = product.stock
+        val isVariant = product.isVariant
         val cartId = miniCartItem.cartId
         val notes = miniCartItem.notes
+
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
             quantity = quantity,
@@ -176,8 +233,11 @@ open class BaseTokoNowViewModel(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
+            val data = Triple(productId, it, quantity)
+            checkAtcAffiliateCookie(productId, shopId, stock, isVariant, quantity)
+            updateMiniCartItemQuantity(miniCartItem, quantity)
             onSuccessUpdateCart.invoke(miniCartItem, it)
-            _updateCartItem.postValue(Success(Triple(productId, it, quantity)))
+            _updateCartItem.postValue(Success(data))
         }, {
             onError.invoke(it)
             _updateCartItem.postValue(Fail(it))

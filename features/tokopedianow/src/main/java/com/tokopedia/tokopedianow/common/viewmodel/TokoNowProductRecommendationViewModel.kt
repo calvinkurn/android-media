@@ -25,10 +25,11 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    affiliateService: NowAffiliateService,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -48,6 +50,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
     addressData,
     userSession,
     dispatchers
@@ -170,11 +173,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (productModels.size > position && productModels[position] is ProductCardCompactCarouselItemUiModel) {
             val product = productModels[position] as ProductCardCompactCarouselItemUiModel
             val productId = product.getProductId()
+            val stock = product.productCardModel.availableStock
+            val isVariant = product.productCardModel.isVariant
 
             onCartQuantityChanged(
                 productId = productId,
                 quantity = quantity,
                 shopId = shopId,
+                stock = stock,
+                isVariant = isVariant,
                 onSuccessAddToCart = {
                     updateProductItemQuantity(productId, quantity)
                     trackProductAddToCart(position, it, product)

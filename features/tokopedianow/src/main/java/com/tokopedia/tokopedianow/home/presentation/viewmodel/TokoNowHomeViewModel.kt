@@ -39,6 +39,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
@@ -152,12 +153,14 @@ class TokoNowHomeViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
-    addressData: TokoNowLocalAddress
+    affiliateService: NowAffiliateService,
+    addressData: TokoNowLocalAddress,
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
     addressData,
     userSession,
     dispatchers
@@ -470,12 +473,16 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         quantity: Int,
         shopId: String,
+        stock: Int,
+        isVariant: Boolean,
         @TokoNowLayoutType type: String
     ) {
         onCartQuantityChanged(
             productId = productId,
             shopId = shopId,
             quantity = quantity,
+            stock = stock,
+            isVariant = isVariant,
             onSuccessAddToCart = {
                 trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateProductCartQuantity(productId, quantity, type)
@@ -1133,7 +1140,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
-        setMiniCartSimplifiedData(miniCart)
+        setMiniCartData(miniCart)
         updateProductQuantity(miniCart)
     }
 
@@ -1142,10 +1149,6 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.updateProductRecomQuantity(miniCart)
         homeLayoutItemList.updateLeftCarouselProductQuantity(miniCart)
         homeLayoutItemList.updateCarouselChipsQuantity(miniCart)
-    }
-
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
-        setMiniCartData(miniCart)
     }
 
     private fun trackProductAddToCart(
