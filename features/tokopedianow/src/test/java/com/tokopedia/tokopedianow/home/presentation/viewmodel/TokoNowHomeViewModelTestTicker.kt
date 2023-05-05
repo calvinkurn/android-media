@@ -97,6 +97,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseProductTitle = "Kamu pernah beli"
         val repurchaseProductMaxOrder = 4
         val repurchaseProductMinOrder = 3
+        val repurchaseProductStock = 4
+        val repurchaseProductIsVariant = false
         val repurchaseProductShopId = "5"
         val repurchaseProductType = TokoNowLayoutType.REPURCHASE_PRODUCT
         val repurchaseProductQuantityChanged = 10
@@ -144,7 +146,9 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
             productId = repurchaseProductId,
             quantity = repurchaseProductQuantityChanged,
             shopId = repurchaseProductShopId,
-            type = repurchaseProductType
+            type = repurchaseProductType,
+            stock = repurchaseProductStock,
+            isVariant = repurchaseProductIsVariant
         )
         advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -164,6 +168,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                         channelId = repurchaseChannelId,
                         productId = repurchaseProductId,
                         quantity = repurchaseProductMaxOrder,
+                        stock = repurchaseProductStock,
                         product = ProductCardModel(
                             nonVariant = ProductCardModel.NonVariant(
                                 quantity = DEFAULT_QUANTITY,
