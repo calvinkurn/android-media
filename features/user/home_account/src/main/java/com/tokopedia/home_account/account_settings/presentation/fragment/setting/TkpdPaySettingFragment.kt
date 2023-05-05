@@ -140,6 +140,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
                             RouteManager.route(
                                 context,
                                 String.format(
+                                    Locale.getDefault(),
                                     "%s?url=%s",
                                     ApplinkConst.WEBVIEW,
                                     ApplinkConst.WebViewUrl.SALDO_DETAIL
@@ -158,6 +159,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
                     RouteManager.route(
                         activity,
                         String.format(
+                            Locale.getDefault(),
                             "%s?url=%s",
                             ApplinkConst.WEBVIEW,
                             ApplinkConst.WebViewUrl.SALDO_DETAIL
