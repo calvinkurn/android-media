@@ -477,6 +477,8 @@ class DetailEditorFragment @Inject constructor(
                 }
                 implementAddTextData()
             }
+        } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
+            activity?.finish()
         }
     }
 
