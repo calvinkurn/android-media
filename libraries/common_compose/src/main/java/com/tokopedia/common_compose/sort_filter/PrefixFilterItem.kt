@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -45,6 +46,7 @@ internal fun PrefixFilterItem(
         border = BorderStroke(1.dp, borderColor),
         modifier = modifier
             .height(size.prefixHeight)
+            .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() }
     ) {
         Row(
