@@ -923,7 +923,7 @@ class TokoFoodHomeFragment :
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val addressDataModel = data.getParcelableExtra(NEW_ADDRESS_PARCELABLE, SaveAddressDataModel::class.java)
+                val addressDataModel = data.getParcelableExtra(NEW_ADDRESS_PARCELABLE) as? SaveAddressDataModel
                 addressDataModel?.let {
                     setupChooseAddress(it)
                 }

@@ -1639,6 +1639,7 @@ class MerchantPageFragmentOld : BaseMultiFragment(),
                     lat = chooseAddressData.data.latitude,
                     long = chooseAddressData.data.longitude,
                     label = String.format(
+                        Locale.getDefault(),
                         "%s %s",
                         chooseAddressData.data.addressName,
                         chooseAddressData.data.receiverName

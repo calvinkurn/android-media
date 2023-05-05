@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visible
@@ -45,6 +46,7 @@ class TokoFoodMiniCartWidgetOld @JvmOverloads constructor(
                         context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
                     }
                 } catch (ex: Resources.NotFoundException) {
+                    FirebaseCrashlytics.getInstance().recordException(ex)
                     String.EMPTY
                 }
             viewBinding?.totalAmountMiniCart?.setCtaText(ctaText)
@@ -134,6 +136,7 @@ class TokoFoodMiniCartWidgetOld @JvmOverloads constructor(
         return try {
             context?.getString(com.tokopedia.tokofood.R.string.text_purchase_dash).orEmpty()
         } catch (ex: Resources.NotFoundException) {
+            FirebaseCrashlytics.getInstance().recordException(ex)
             String.EMPTY
         }
     }
