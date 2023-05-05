@@ -136,7 +136,7 @@ class PlayWidgetUiMapper @Inject constructor(
 
     private fun mapPartnerInfo(partner: PlayWidgetItemPartner) = PlayWidgetPartnerUiModel(
         id = partner.id,
-        name = htmlTextTransformer.transform(partner.name)
+        name = htmlTextTransformer.transform(partner.name),
     )
 
     private fun mapShare(item: PlayWidgetItemShare): PlayWidgetShareUiModel {
