@@ -80,7 +80,7 @@ fun CampaignListScreen(
                 onSearchbarCleared = onSearchbarCleared
             )
 
-            FilterWidget(
+            Filter(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 selectedCampaignStatus = uiState.selectedCampaignStatus?.statusText.orEmpty(),
                 selectedCampaignType = uiState.selectedCampaignType?.campaignTypeName.orEmpty(),
@@ -152,7 +152,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun FilterWidget(
+private fun Filter(
     modifier: Modifier = Modifier,
     selectedCampaignStatus: String,
     selectedCampaignType: String,
@@ -165,13 +165,15 @@ private fun FilterWidget(
     val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
-        onClick = onTapCampaignStatusFilter
+        onClick = onTapCampaignStatusFilter,
+        showChevron = true
     )
 
     val campaignType = SortFilter(
         title = if (selectedCampaignType.isEmpty()) stringResource(id = R.string.cl_campaign_type) else selectedCampaignType,
         isSelected = selectedCampaignType.isNotEmpty(),
-        onClick = onTapCampaignTypeFilter
+        onClick = onTapCampaignTypeFilter,
+        showChevron = true
     )
 
     val sortFilterItems = arrayListOf(campaignStatus, campaignType)
@@ -180,7 +182,8 @@ private fun FilterWidget(
         modifier = modifier.fillMaxWidth(),
         items = sortFilterItems,
         onClearFilter = onClearFilter,
-        showClearFilterIcon = shouldShowClearFilterIcon
+        showClearFilterIcon = shouldShowClearFilterIcon,
+        onItemClicked = {}
     )
 }
 
