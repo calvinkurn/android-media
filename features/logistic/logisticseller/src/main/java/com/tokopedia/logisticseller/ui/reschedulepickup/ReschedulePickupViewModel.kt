@@ -48,43 +48,25 @@ class ReschedulePickupViewModel @Inject constructor(
 
     fun onEvent(event: ReschedulePickupUiEvent) {
         when (event) {
-            is ReschedulePickupUiEvent.OpenBottomSheet -> {
-                openBottomSheetState(event.bottomSheetState)
-            }
-            is ReschedulePickupUiEvent.SaveReschedule -> {
-                saveReschedule(orderId)
-            }
+            is ReschedulePickupUiEvent.OpenBottomSheet -> openBottomSheetState(event.bottomSheetState)
+            is ReschedulePickupUiEvent.SaveReschedule -> saveReschedule(orderId)
             is ReschedulePickupUiEvent.LoadRescheduleInfo -> {
                 orderId = event.orderId
                 getReschedulePickupDetail(event.orderId)
             }
-            is ReschedulePickupUiEvent.SelectDay -> {
-                setDay(event.selectedDay)
-            }
-            is ReschedulePickupUiEvent.SelectTime -> {
-                setTime(event.selectedTime)
-            }
-            is ReschedulePickupUiEvent.SelectReason -> {
-                setReason(event.selectedReason)
-            }
-            is ReschedulePickupUiEvent.CustomReason -> {
-                setCustomReason(event.reason)
-            }
-            is ReschedulePickupUiEvent.ClickSubtitle -> {
-                setAction(ReschedulePickupAction.OpenTnCWebView(event.url))
-            }
-            is ReschedulePickupUiEvent.CloseBottomSheet -> {
-                closeBottomSheetState()
-            }
+            is ReschedulePickupUiEvent.SelectDay -> setDay(event.selectedDay)
+            is ReschedulePickupUiEvent.SelectTime -> setTime(event.selectedTime)
+            is ReschedulePickupUiEvent.SelectReason -> setReason(event.selectedReason)
+            is ReschedulePickupUiEvent.CustomReason -> setCustomReason(event.reason)
+            is ReschedulePickupUiEvent.ClickSubtitle -> setAction(ReschedulePickupAction.OpenTnCWebView(event.url))
+            is ReschedulePickupUiEvent.CloseBottomSheet -> closeBottomSheetState()
             is ReschedulePickupUiEvent.CloseDialog -> {
                 setDialogState(false)
                 if (event.success) {
                     setAction(ReschedulePickupAction.ClosePage(true))
                 }
             }
-            is ReschedulePickupUiEvent.PressBack -> {
-                setAction(ReschedulePickupAction.ClosePage(false))
-            }
+            is ReschedulePickupUiEvent.PressBack -> setAction(ReschedulePickupAction.ClosePage(false))
         }
     }
 

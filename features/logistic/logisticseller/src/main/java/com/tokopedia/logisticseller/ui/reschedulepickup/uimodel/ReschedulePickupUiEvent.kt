@@ -19,7 +19,6 @@ sealed class ReschedulePickupUiEvent {
 
     data class ClickSubtitle(val url: String) : ReschedulePickupUiEvent()
     object CloseBottomSheet : ReschedulePickupUiEvent()
-    data class ClickDialogButton(val success: Boolean) : ReschedulePickupUiEvent()
     data class CloseDialog(val success: Boolean) : ReschedulePickupUiEvent()
     object PressBack : ReschedulePickupUiEvent()
 }

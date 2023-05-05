@@ -53,12 +53,8 @@ class ReschedulePickupActivity : AppCompatActivity() {
                 viewModel.uiEffect.collectLatest {
                     when (it) {
                         is ReschedulePickupAction.OpenTnCWebView -> goToWebView(it.url)
-                        is ReschedulePickupAction.ClosePage -> {
-                            onClickDialogButton(it.success)
-                        }
-                        is ReschedulePickupAction.ShowError -> {
-                            mapErrorState(error = it.error)
-                        }
+                        is ReschedulePickupAction.ClosePage -> onClickDialogButton(it.success)
+                        is ReschedulePickupAction.ShowError -> mapErrorState(error = it.error)
                     }
                 }
             })
