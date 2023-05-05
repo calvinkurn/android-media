@@ -10,7 +10,6 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestData
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.REASON_MIN
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.REASON_MORE_MAX
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.getRescheduleInfoWithErrorOrderData
-import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupAction
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
@@ -265,72 +264,6 @@ class ReschedulePickupViewModelTest {
             // then
             assert(reschedulePickupViewModel.input.reason == reason)
             assert(reschedulePickupViewModel.uiState.value.customReasonError == "Sudah mencapai maks. char")
-        }
-
-    @Test
-    fun `when closeBottomSheet then bottomsheet state should be none`() =
-        coroutineTestRule.runBlockingTest {
-            // when
-            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
-            // then
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet == RescheduleBottomSheetState.NONE)
-        }
-
-    @Test
-    fun `when closeBottomSheet after opening bottomsheet then bottomsheet state should be none`() =
-        coroutineTestRule.runBlockingTest {
-            // given
-            val openedBottomSheet = RescheduleBottomSheetState.REASON
-            reschedulePickupViewModel.onEvent(
-                ReschedulePickupUiEvent.OpenBottomSheet(
-                    openedBottomSheet
-                )
-            )
-
-            // when
-            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
-
-            // then
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet != openedBottomSheet)
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet == RescheduleBottomSheetState.NONE)
-        }
-
-    @Test
-    fun `when openBottomSheet time before choosing day then bottomsheet state should be none`() =
-        coroutineTestRule.runBlockingTest {
-            // given
-            val openedBottomSheet = RescheduleBottomSheetState.TIME
-
-            // when
-            reschedulePickupViewModel.onEvent(
-                ReschedulePickupUiEvent.OpenBottomSheet(
-                    openedBottomSheet
-                )
-            )
-
-            // then
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet != openedBottomSheet)
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet == RescheduleBottomSheetState.NONE)
-        }
-
-    @Test
-    fun `when openBottomSheet time after choosing day then bottomsheet state should be time`() =
-        coroutineTestRule.runBlockingTest {
-            // given
-            val day = ReschedulePickupTestDataProvider.getChosenDay()
-            reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SelectDay(day))
-            val openedBottomSheet = RescheduleBottomSheetState.TIME
-
-            // when
-            reschedulePickupViewModel.onEvent(
-                ReschedulePickupUiEvent.OpenBottomSheet(
-                    openedBottomSheet
-                )
-            )
-
-            // then
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet == openedBottomSheet)
-            assert(reschedulePickupViewModel.uiState.value.bottomSheet != RescheduleBottomSheetState.NONE)
         }
 
     @Test

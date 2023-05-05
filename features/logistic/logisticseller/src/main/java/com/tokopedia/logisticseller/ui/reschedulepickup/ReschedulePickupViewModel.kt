@@ -13,7 +13,6 @@ import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.domain.mapper.ReschedulePickupMapper
 import com.tokopedia.logisticseller.domain.usecase.GetReschedulePickupUseCase
 import com.tokopedia.logisticseller.domain.usecase.SaveReschedulePickupUseCase
-import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupAction
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
@@ -57,7 +56,6 @@ class ReschedulePickupViewModel @Inject constructor(
 
     fun onEvent(event: ReschedulePickupUiEvent) {
         when (event) {
-            is ReschedulePickupUiEvent.OpenBottomSheet -> openBottomSheetState(event.bottomSheetState)
             is ReschedulePickupUiEvent.SaveReschedule -> saveReschedule(orderId)
             is ReschedulePickupUiEvent.LoadRescheduleInfo -> {
                 orderId = event.orderId
@@ -72,7 +70,6 @@ class ReschedulePickupViewModel @Inject constructor(
                     event.url
                 )
             )
-            is ReschedulePickupUiEvent.CloseBottomSheet -> closeBottomSheetState()
             is ReschedulePickupUiEvent.CloseDialog -> {
                 setDialogState(false)
                 if (event.success) {
@@ -80,6 +77,9 @@ class ReschedulePickupViewModel @Inject constructor(
                 }
             }
             is ReschedulePickupUiEvent.PressBack -> setAction(ReschedulePickupAction.ClosePage(false))
+            else -> {
+                // no op
+            }
         }
     }
 
@@ -245,20 +245,5 @@ class ReschedulePickupViewModel @Inject constructor(
                 )
             }
         )
-    }
-
-    private fun closeBottomSheetState() {
-        val state = _uiState.value
-        if (state.bottomSheet != RescheduleBottomSheetState.NONE) {
-            _uiState.update { it.copy(bottomSheet = RescheduleBottomSheetState.NONE) }
-        }
-    }
-
-    private fun openBottomSheetState(bottomSheetState: RescheduleBottomSheetState) {
-        if (input.day.isEmpty() && bottomSheetState == RescheduleBottomSheetState.TIME) {
-            closeBottomSheetState()
-        } else {
-            _uiState.update { it.copy(bottomSheet = bottomSheetState) }
-        }
     }
 }

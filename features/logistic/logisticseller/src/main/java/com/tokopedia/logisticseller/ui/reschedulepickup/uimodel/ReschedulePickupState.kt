@@ -13,7 +13,6 @@ data class ReschedulePickupState(
     val isCustomReason: Boolean = false,
     val reason: String = "",
     val customReasonError: String? = null,
-    val bottomSheet: RescheduleBottomSheetState = RescheduleBottomSheetState.NONE,
     val saveRescheduleModel: SaveRescheduleModel? = null
 )
 

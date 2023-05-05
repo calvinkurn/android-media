@@ -18,7 +18,9 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +50,7 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickup
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,23 +59,41 @@ fun ReschedulePickupScreen(
     input: ReschedulePickupInput,
     onEvent: (ReschedulePickupUiEvent) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
 
-    LaunchedEffect(sheetState.targetValue) {
-        if (sheetState.targetValue == ModalBottomSheetValue.Hidden && state.bottomSheet != RescheduleBottomSheetState.NONE) {
-            onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
+    val (rescheduleBottomSheetState, setRescheduleBottomSheetState) = remember {
+        mutableStateOf(RescheduleBottomSheetState.NONE)
+    }
+
+    fun openBottomSheet(bottomSheetState: RescheduleBottomSheetState) {
+        scope.launch {
+            if (bottomSheetState != RescheduleBottomSheetState.NONE) {
+                if (bottomSheetState != RescheduleBottomSheetState.TIME || input.day.isNotEmpty()) {
+                    setRescheduleBottomSheetState(bottomSheetState)
+                    sheetState.show()
+                }
+            } else {
+                sheetState.hide()
+            }
         }
     }
 
-    LaunchedEffect(key1 = state.bottomSheet, block = {
-        if (state.bottomSheet != RescheduleBottomSheetState.NONE) {
-            sheetState.show()
-        } else if (sheetState.isVisible && state.bottomSheet == RescheduleBottomSheetState.NONE) {
-            sheetState.hide()
+    fun dispatchEvent(event: ReschedulePickupUiEvent) {
+        when (event) {
+            is ReschedulePickupUiEvent.OpenBottomSheet -> {
+                openBottomSheet(event.bottomSheetState)
+            }
+            is ReschedulePickupUiEvent.CloseBottomSheet -> {
+                openBottomSheet(RescheduleBottomSheetState.NONE)
+            }
+            else -> {
+                onEvent(event)
+            }
         }
-    })
+    }
 
     Scaffold(topBar = {
         NestHeader(
@@ -86,16 +107,15 @@ fun ReschedulePickupScreen(
             sheetState = sheetState,
             sheetContent = {
                 RescheduleBottomSheetLayout(
-                    state.bottomSheet,
-                    state.options,
-                    onEvent
-                )
+                    rescheduleBottomSheetState,
+                    state.options
+                ) { dispatchEvent(it) }
             }
         ) {
             ReschedulePickupScreenLayout(
                 state = state,
                 input = input,
-                onEvent = onEvent
+                onEvent = { dispatchEvent(it) }
             )
         }
     }
