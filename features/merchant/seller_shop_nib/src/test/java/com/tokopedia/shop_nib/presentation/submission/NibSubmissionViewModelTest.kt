@@ -269,7 +269,7 @@ class NibSubmissionViewModelTest {
         }
 
         //When
-        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+        viewModel.processEvent(UiEvent.UnselectFile)
 
         val actual = emittedValues.last()
 
@@ -330,6 +330,23 @@ class NibSubmissionViewModelTest {
 
 
     //region SubmitFile
+    @Test
+    fun `When submit file while date is not selected yet, should not do any gql call`() = runBlockingTest {
+        val formattedNibPublishDate = "2023-01-01"
+        val fileUri = "file://image.png"
+        val fileExtension = "png"
+        val fileSizeBytes : Long = 500
+        val result = UploadFileResult(isSuccess = true, errorMessage = "")
+
+        coEvery { uploadFileUseCase.execute(fileUri, formattedNibPublishDate) } returns result
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri, fileExtension, fileSizeBytes))
+
+        //When
+        viewModel.processEvent(UiEvent.SubmitFile)
+
+        coVerify(exactly = 0) { uploadFileUseCase.execute(fileUri, formattedNibPublishDate)}
+    }
+
     @Test
     fun `When file submission success, error should be null`() = runBlockingTest {
         val nibPublishDate = buildFakeDate()
