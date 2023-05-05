@@ -85,7 +85,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -111,7 +111,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -137,7 +137,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -163,7 +163,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -189,7 +189,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -215,7 +215,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 
@@ -247,7 +247,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(true, actual.isInputValid)
 
@@ -275,7 +275,7 @@ class NibSubmissionViewModelTest {
 
         assertEquals(fileUri, actual.selectedFileUri)
         assertEquals(fileExtension, actual.selectedFileExtension)
-        assertEquals(fileSizeBytes, actual.selectedFileSizeKb)
+        assertEquals(fileSizeBytes, actual.selectedFileSizeBytes)
         assertEquals(fileState, actual.fileState)
         assertEquals(false, actual.isInputValid)
 

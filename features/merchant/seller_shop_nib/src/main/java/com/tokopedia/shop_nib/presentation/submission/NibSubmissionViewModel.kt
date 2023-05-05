@@ -42,7 +42,7 @@ class NibSubmissionViewModel @Inject constructor(
     fun processEvent(event: UiEvent) {
         when(event) {
             is UiEvent.TapSelectFile -> _uiEffect.tryEmit(UiEffect.ShowFilePicker)
-            is UiEvent.ConfirmFile -> handleConfirmFile(event.fileUri, event.fileExtension, event.fileSizeKb)
+            is UiEvent.ConfirmFile -> handleConfirmFile(event.fileUri, event.fileExtension, event.fileSizeBytes)
             UiEvent.UnselectFile -> handleUnselectFile()
             is UiEvent.TapChangeDate -> _uiEffect.tryEmit(UiEffect.ShowDatePicker(currentState.selectedDate))
             is UiEvent.ConfirmDate -> handleConfirmDate(event.newDate)
@@ -51,15 +51,15 @@ class NibSubmissionViewModel @Inject constructor(
         }
     }
 
-    private fun handleConfirmFile(fileUri: String, fileExtension: String, fileSizeKb: Long) {
+    private fun handleConfirmFile(fileUri: String, fileExtension: String, fileSizeBytes: Long) {
         _uiState.update {
-            val fileState = validateFileInput(fileUri, fileExtension, fileSizeKb)
+            val fileState = validateFileInput(fileUri, fileExtension, fileSizeBytes)
             val isInputValid = validateInput(currentState.selectedDate, fileState)
 
             it.copy(
                 selectedFileUri = fileUri,
                 selectedFileExtension = fileExtension,
-                selectedFileSizeKb = fileSizeKb,
+                selectedFileSizeBytes = fileSizeBytes,
                 fileState = fileState,
                 isInputValid = isInputValid
             )
@@ -76,7 +76,7 @@ class NibSubmissionViewModel @Inject constructor(
             it.copy(
                 selectedFileUri = "",
                 selectedFileExtension = "",
-                selectedFileSizeKb = 0,
+                selectedFileSizeBytes = 0,
                 fileState = UiState.FileState.NotSelected,
                 isInputValid = false
             )
@@ -121,7 +121,7 @@ class NibSubmissionViewModel @Inject constructor(
         return selectedDate != null && fileState is UiState.FileState.Valid
     }
 
-    private fun validateFileInput(fileUri: String, fileExtension: String, fileSizeKb: Long): UiState.FileState {
+    private fun validateFileInput(fileUri: String, fileExtension: String, fileSizeBytes: Long): UiState.FileState {
         if (!isFileSelected(fileUri)) {
             return UiState.FileState.NotSelected
         }
@@ -130,11 +130,11 @@ class NibSubmissionViewModel @Inject constructor(
             return UiState.FileState.InvalidFileExtension
         }
 
-        if (!isValidFileSize(fileSizeKb)) {
+        if (!isValidFileSize(fileSizeBytes)) {
             return UiState.FileState.ExceedMaxFileSize
         }
 
-        return UiState.FileState.Valid(fileUri, fileSizeKb)
+        return UiState.FileState.Valid(fileUri, fileSizeBytes)
     }
 
     private fun isFileSelected(fileUri: String): Boolean {
@@ -146,7 +146,7 @@ class NibSubmissionViewModel @Inject constructor(
         return fileExtension in allowedFileExtensions
     }
 
-    private fun isValidFileSize(fileSizeKb: Long): Boolean {
-        return fileSizeKb <= MAX_FILE_SIZE_BYTES
+    private fun isValidFileSize(fileSizeBytes: Long): Boolean {
+        return fileSizeBytes <= MAX_FILE_SIZE_BYTES
     }
 }

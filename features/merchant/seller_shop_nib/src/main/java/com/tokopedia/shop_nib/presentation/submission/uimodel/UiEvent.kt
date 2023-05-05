@@ -6,7 +6,7 @@ sealed class UiEvent {
     object RecordImpression : UiEvent()
 
     object TapSelectFile : UiEvent()
-    data class ConfirmFile(val fileUri: String, val fileExtension: String, val fileSizeKb: Long) : UiEvent()
+    data class ConfirmFile(val fileUri: String, val fileExtension: String, val fileSizeBytes: Long) : UiEvent()
     object UnselectFile : UiEvent()
     object TapChangeDate : UiEvent()
     data class ConfirmDate(val newDate: Date) : UiEvent()

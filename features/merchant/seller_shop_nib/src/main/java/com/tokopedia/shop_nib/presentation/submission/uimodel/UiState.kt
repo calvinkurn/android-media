@@ -5,7 +5,7 @@ import java.util.*
 data class UiState(
     val isLoading: Boolean = false,
     val selectedFileUri: String = "",
-    val selectedFileSizeKb: Long = 0,
+    val selectedFileSizeBytes: Long = 0,
     val selectedFileExtension: String = "",
     val selectedDate: Date? = null,
     val fileState: FileState = FileState.NotSelected,

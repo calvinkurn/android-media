@@ -220,10 +220,10 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
     private fun handleSelectedFile(intent: Intent) {
         val fileUri = intent.data ?: return
-        val fileSizeKb = fileHelper.getFileSizeInBytes(fileUri)
+        val fileSizeBytes = fileHelper.getFileSizeInBytes(fileUri)
         val fileExtension = fileHelper.getFileExtension(fileUri)
 
-        viewModel.processEvent(UiEvent.ConfirmFile(fileUri.toString(), fileExtension, fileSizeKb))
+        viewModel.processEvent(UiEvent.ConfirmFile(fileUri.toString(), fileExtension, fileSizeBytes))
     }
 
     private fun renderSelectedFileThumbnail(uri: String, fileSizeInKb: Long) {
