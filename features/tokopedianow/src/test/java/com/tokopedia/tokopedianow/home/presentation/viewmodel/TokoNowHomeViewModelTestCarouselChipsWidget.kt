@@ -582,6 +582,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             val productId = "5"
             val shopId = "5"
             val quantity = 2
+            val stock = 5
 
             val productCarouselItemList = listOf(
                 RecommendationItem(
@@ -596,7 +597,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = shopId.toInt(),
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/2"
+                    appUrl = "tokopedia://product/detail/2",
+                    stock = stock
                 )
             )
 
@@ -645,6 +647,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 productId = productId,
                 quantity = quantity,
                 shopId = shopId,
+                stock = stock,
+                isVariant = true,
                 type = TokoNowLayoutType.CHIP_CAROUSEL
             )
             advanceTimeBy(ADD_TO_CART_DELAY)
@@ -706,7 +710,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        availableStock = 5
                     ),
                     parentId = "1"
                 )
@@ -812,6 +817,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 productId = "99",
                 quantity = quantity,
                 shopId = shopId,
+                stock = 0,
+                isVariant = false,
                 type = TokoNowLayoutType.CHIP_CAROUSEL
             )
             advanceTimeBy(ADD_TO_CART_DELAY)

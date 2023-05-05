@@ -28,6 +28,8 @@ class HomeProductRecomCallback(
         headerName: String,
         position: Int
     ) {
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -35,7 +37,7 @@ class HomeProductRecomCallback(
             position = position
         )
 
-        openAppLink(product.appLink)
+        openAppLink(appLink)
     }
 
     override fun onProductRecomImpressed(
@@ -85,6 +87,8 @@ class HomeProductRecomCallback(
                 productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {

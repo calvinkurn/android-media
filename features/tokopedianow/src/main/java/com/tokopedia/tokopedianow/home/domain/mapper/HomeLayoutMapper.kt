@@ -638,7 +638,8 @@ object HomeLayoutMapper {
                 }
             }?.let {
                 updateItemById(layout.getVisitableId()) {
-                    productList[index] = productUiModel.copy(product = it)
+                    val newProductUiModel = productUiModel.copy(quantity = quantity)
+                    productList[index] = newProductUiModel.copy(product = it)
                     copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }

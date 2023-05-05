@@ -34,6 +34,7 @@ import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -59,6 +60,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -66,6 +68,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUi
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -127,34 +130,32 @@ abstract class BaseSearchCategoryViewModel(
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
-    protected val userSession: UserSessionInterface
+    private val affiliateService: NowAffiliateService,
+    protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
+    protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
-    protected var chooseAddressDataView = ChooseAddressDataView()
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
-    protected var feedbackFieldToggle = false
     protected var hasBlockedAddToCart = false
 
-    private val filterController = FilterController()
     private var headerYCoordinate = 0f
+    private val filterController = FilterController()
     private var totalFetchedData = 0
     private var nextPage = 1
     private var currentProductPosition: Int = 1
+    protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
-
-    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
-        private set
     var warehouseId = ""
         private set
     var autoCompleteApplink = ""
@@ -207,8 +208,12 @@ abstract class BaseSearchCategoryViewModel(
     private val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
-    private val addToCartTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
-    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> = addToCartTrackingMutableLiveData
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
+
+    private val addToCartTrackingMutableLiveData =
+            SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
+    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
+            addToCartTrackingMutableLiveData
 
     private val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val decreaseQtyTrackingLiveData: LiveData<String> = decreaseQtyTrackingMutableLiveData
@@ -231,8 +236,12 @@ abstract class BaseSearchCategoryViewModel(
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
-    private val addToCartRepurchaseWidgetTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
-    val addToCartRepurchaseWidgetTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardUiModel>> = addToCartRepurchaseWidgetTrackingMutableLiveData
+    private val addToCartRepurchaseWidgetTrackingMutableLiveData =
+        SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
+
+    val addToCartRepurchaseWidgetTrackingLiveData:
+        LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
+        addToCartRepurchaseWidgetTrackingMutableLiveData
 
     private val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
     val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
@@ -280,6 +289,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated(source: MiniCartSource? = null) {
+        initAffiliateCookie()
         processLoadDataPage(source)
     }
 
@@ -1146,17 +1156,21 @@ abstract class BaseSearchCategoryViewModel(
         val productId = productItem.productCardModel.productId
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
+        val stock = productItem.productCardModel.availableStock
+        val isVariant = productItem.productCardModel.isVariant
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = {
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 sendTrackingUpdateQuantity(quantity, productItem)
                 onAddToCartSuccess(productItem, quantity)
                 updateToolbarNotification()
@@ -1428,8 +1442,41 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
+    fun createAffiliateLink(url: String): String {
+        return affiliateService.createAffiliateLink(url)
+    }
+
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
             val repurchaseWidget: RepurchaseData = RepurchaseData()
     )
+
+    private fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
+        launchCatchError(block = {
+            affiliateService.initAffiliateCookie(
+                affiliateUuid,
+                affiliateChannel
+            )
+        }) {
+
+        }
+    }
+
+    private fun checkAtcAffiliateCookie(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
+        val miniCartItem = cartService.getMiniCartItem(productId)
+        val currentQuantity = miniCartItem?.quantity.orZero()
+        val data = NowAffiliateAtcData(productId, shopId, stock, isVariant, quantity, currentQuantity)
+
+        launchCatchError(block = {
+            affiliateService.checkAtcAffiliateCookie(data)
+        }) {
+
+        }
+    }
 }
