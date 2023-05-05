@@ -77,7 +77,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
-    userSession: UserSessionInterface,
+    userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
     baseDispatcher,
     queryParamMap,
@@ -89,7 +89,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     setUserPreferenceUseCase,
     chooseAddressWrapper,
     affiliateService,
-    userSession,
+    userSession
 ) {
 
     private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
@@ -153,6 +153,7 @@ class TokoNowCategoryViewModel @Inject constructor (
                 categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
                 bannerChannel = categoryModel.bannerChannel,
+                targetedTicker = categoryModel.targetedTicker
         )
 
         val contentDataView = ContentDataView(

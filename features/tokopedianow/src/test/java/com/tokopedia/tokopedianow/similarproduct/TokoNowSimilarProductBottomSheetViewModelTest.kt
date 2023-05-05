@@ -11,11 +11,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -32,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class ProductCardCompactSimilarProductViewModelTest {
+class TokoNowSimilarProductBottomSheetViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -41,9 +41,10 @@ class ProductCardCompactSimilarProductViewModelTest {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
-    private lateinit var localAddressHelper: TokoNowLocalAddress
+    private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var chooseAddressData: LocalCacheModel
     private lateinit var affiliateService: NowAffiliateService
 
@@ -55,21 +56,23 @@ class ProductCardCompactSimilarProductViewModelTest {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
-        localAddressHelper = mockk(relaxed = true)
+        addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         getSimilarProductUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
         affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
             userSession,
-            localAddressHelper,
+            addressData,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
             affiliateService,
+            getTargetedTickerUseCase,
             CoroutineTestDispatchers
         )
     }
@@ -113,7 +116,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -130,7 +133,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -145,7 +148,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -238,15 +241,15 @@ class ProductCardCompactSimilarProductViewModelTest {
         )
 
         every {
-            localAddressHelper.isOutOfCoverage()
+            addressData.isOutOfCoverage()
         } returns false
 
         every {
-            localAddressHelper.getShopId()
+            addressData.getShopId()
         } returns shopId
 
         every {
-            localAddressHelper.getWarehouseId()
+            addressData.getWarehouseId()
         } returns warehouseId
 
         every {

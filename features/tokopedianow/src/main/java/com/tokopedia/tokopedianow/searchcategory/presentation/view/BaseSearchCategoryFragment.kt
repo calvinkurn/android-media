@@ -518,6 +518,10 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
+        getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
+            showToasterWhenAddToCartBlocked()
+        }
+
         productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -1132,6 +1136,7 @@ abstract class BaseSearchCategoryFragment:
         eventActionClicked = getClickEventAction(false),
         eventActionImpressed = getImpressionEventAction(false),
         eventCategory = getEventCategory(false),
+        onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
         getListValue = { recommendationItem ->
             getListValue(false, recommendationItem)
         },
@@ -1146,5 +1151,14 @@ abstract class BaseSearchCategoryFragment:
             val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
             startActivity(intent)
         }
+    }
+
+    override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+
+    protected fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            toasterType = Toaster.TYPE_ERROR
+        )
     }
 }

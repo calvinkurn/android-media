@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -34,6 +35,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -64,7 +66,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProduct
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
@@ -88,7 +89,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapReal
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRefreshRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.removeRealTimeRecommendation
-import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -98,7 +98,6 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
@@ -118,7 +117,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
@@ -136,7 +134,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-    private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
@@ -154,13 +151,15 @@ class TokoNowHomeViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    addressData: TokoNowLocalAddress,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    addressData: TokoNowLocalAddress
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
     affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -201,6 +200,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _referralEvaluate
     val couponClaimed: LiveData<Result<HomeClaimCouponDataModel>>
         get() = _couponClaimed
+    val blockAddToCart: LiveData<Unit>
+        get() = _blockAddToCart
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -218,7 +219,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
-    private var hasTickerBeenRemoved = false
     private var channelToken = ""
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
@@ -272,18 +272,23 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
+            val tickerData = getTickerDataAsync(localCacheModel.warehouse_id).await()
+
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
             )
+
             channelToken = homeLayoutResponse.first().token
+            hasBlockedAddToCart = tickerData?.first.orFalse()
 
             homeLayoutItemList.mapHomeLayoutList(
-                homeLayoutResponse,
-                hasTickerBeenRemoved,
-                removeAbleWidgets,
-                miniCartData,
-                localCacheModel,
-                userSession.isLoggedIn
+                response = homeLayoutResponse,
+                removeAbleWidgets = removeAbleWidgets,
+                miniCartData = miniCartData,
+                localCacheModel = localCacheModel,
+                isLoggedIn = userSession.isLoggedIn,
+                hasBlockedAddToCart = hasBlockedAddToCart,
+                tickerList = tickerData?.second.orEmpty()
             )
 
             val data = HomeLayoutListUiModel(
@@ -323,10 +328,11 @@ class TokoNowHomeViewModel @Inject constructor(
 
                 homeLayoutItemList.removeProgressBar()
                 homeLayoutItemList.addMoreHomeLayout(
-                    homeLayoutResponse,
-                    removeAbleWidgets,
-                    miniCartData,
-                    localCacheModel
+                    response = homeLayoutResponse,
+                    removeAbleWidgets = removeAbleWidgets,
+                    miniCartData = miniCartData,
+                    localCacheModel = localCacheModel,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -519,20 +525,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun updateToolbarNotification() {
         _updateToolbarNotification.postValue(true)
-    }
-
-    fun removeTickerWidget(id: String) {
-        launchCatchError(block = {
-            hasTickerBeenRemoved = true
-            homeLayoutItemList.removeItem(id)
-
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
-        }) {}
     }
 
     fun removeLeftCarouselAtc(id: String) {
@@ -784,7 +776,6 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel) {
         when (item) {
-            is HomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
@@ -871,16 +862,6 @@ class TokoNowHomeViewModel @Inject constructor(
             getCarouselChipsProductList(carouselModel, selectedChip)
         }) {
 
-        }
-    }
-
-    private suspend fun getTickerDataAsync(item: HomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val tickerList = getTickerUseCase.execute(localCacheModel = localCacheModel).ticker.tickerList
-            val tickerData = TickerMapper.mapTickerData(tickerList)
-            homeLayoutItemList.mapTickerData(item, tickerData)
-        }) {
-            homeLayoutItemList.removeItem(item.id)
         }
     }
 

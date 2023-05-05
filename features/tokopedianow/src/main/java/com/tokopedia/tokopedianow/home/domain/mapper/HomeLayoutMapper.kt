@@ -89,8 +89,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -156,23 +156,24 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
-        hasTickerBeenRemoved: Boolean,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean
+        isLoggedIn: Boolean,
+        hasBlockedAddToCart: Boolean,
+        tickerList: List<TickerData>
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 
-        if (!hasTickerBeenRemoved) {
-            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
-            add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
+        if (tickerList.isNotEmpty()) {
+            val ticker = TokoNowTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerList)
+            add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED))
         }
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
                     add(item)
                 }
 
@@ -196,11 +197,12 @@ object HomeLayoutMapper {
         response: List<HomeLayoutResponse>,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
-        localCacheModel: LocalCacheModel
+        localCacheModel: LocalCacheModel,
+        hasBlockedAddToCart: Boolean
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
                     add(item)
                 }
             }
@@ -350,12 +352,11 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapTickerData(
-        item: HomeTickerUiModel,
+        item: TokoNowTickerUiModel,
         tickerData: List<TickerData>
     ) {
-        updateItemById(item.visitableId) {
-            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
-            HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        updateItemById(item.id) {
+            HomeLayoutItemUiModel(item.copy(tickers = tickerData), HomeLayoutItemState.LOADED)
         }
     }
 
@@ -825,7 +826,8 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse,
         miniCartData: MiniCartSimplifiedData? = null,
-        localCacheModel: LocalCacheModel
+        localCacheModel: LocalCacheModel,
+        hasBlockedAddToCart: Boolean,
     ): HomeLayoutItemUiModel? {
         val serviceType = localCacheModel.service_type
         val warehouseId = localCacheModel.warehouse_id
@@ -837,10 +839,10 @@ object HomeLayoutMapper {
             // Layout content data already returned from dynamic channel query, set state to loaded.
             LEGO_3_IMAGE, LEGO_6_IMAGE, LAYOUT_LEGO_4_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
-            PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId)
+            PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId, hasBlockedAddToCart)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL_ATC)
-            MIX_LEFT_CAROUSEL -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL)
+            MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL_ATC, hasBlockedAddToCart)
+            MIX_LEFT_CAROUSEL -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL, hasBlockedAddToCart)
             PRODUCT_RECOM_OOC -> mapResponseToProductRecomOoc(loadedState)
             // endregion
 

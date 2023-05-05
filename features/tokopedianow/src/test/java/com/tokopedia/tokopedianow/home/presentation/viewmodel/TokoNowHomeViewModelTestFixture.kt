@@ -26,8 +26,10 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -41,14 +43,12 @@ import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
 import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
@@ -92,7 +92,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getKeywordSearchUseCase: GetKeywordSearchUseCase
 
     @RelaxedMockK
-    lateinit var getTickerUseCase: GetTickerUseCase
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
@@ -164,7 +164,6 @@ abstract class TokoNowHomeViewModelTestFixture {
             getHomeLayoutDataUseCase,
             getCategoryListUseCase,
             getKeywordSearchUseCase,
-            getTickerUseCase,
             getMiniCartUseCase,
             getRecommendationUseCase,
             getChooseAddressWarehouseLocUseCase,
@@ -181,6 +180,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             updateCartUseCase,
             deleteCartUseCase,
             affiliateService,
+            getTargetedTickerUseCase,
             addressData,
         )
     }
@@ -198,6 +198,16 @@ abstract class TokoNowHomeViewModelTestFixture {
     protected fun verifyMiniCartNullResponse() {
         val actualResponse = viewModel.miniCart.value
         Assert.assertNull(actualResponse)
+    }
+
+    protected fun verifyBlockAddToCartNotNull() {
+        val actualResponse = viewModel.blockAddToCart.value
+        Assert.assertTrue(actualResponse != null)
+    }
+
+    protected fun verifyBlockAddToCartNull() {
+        val actualResponse = viewModel.blockAddToCart.value
+        Assert.assertTrue(actualResponse == null)
     }
 
     protected fun verifyTrackOpeningScreen() {
@@ -316,7 +326,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
-        coVerify { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) }
+        coVerify { getTargetedTickerUseCase.execute(page = any(), warehouseId = any()) }
     }
 
     protected fun verifyGetChooseAddress() {
@@ -387,8 +397,8 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = 0) { getQuestWidgetListUseCase.execute(any()) }
     }
 
-    protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
-        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } returns tickerResponse
+    protected fun onGetTicker_thenReturn(tickerResponse: GetTargetedTickerResponse) {
+        coEvery { getTargetedTickerUseCase.execute(page = any(), warehouseId = any()) } returns tickerResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(
@@ -432,7 +442,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
-        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } throws errorThrowable
+        coEvery { getTargetedTickerUseCase.execute(page = any(), warehouseId = any()) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {

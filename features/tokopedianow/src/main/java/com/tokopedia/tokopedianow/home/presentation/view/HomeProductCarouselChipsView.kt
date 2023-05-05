@@ -161,6 +161,8 @@ class HomeProductCarouselChipsView @JvmOverloads constructor(
         listener?.onClickVariantAddToCart(product.getProductId(), product.shopId)
     }
 
+    override fun onProductCardAddToCartBlocked() { /* nothing to do */ }
+
     override fun onClickChipItem(chip: TokoNowChipUiModel) {
         val selectedChipIndex = chipList.indexOf(chip)
 

@@ -20,6 +20,7 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
@@ -52,6 +53,9 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+
+    @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
@@ -64,7 +68,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
-    lateinit var addressData: TokoNowLocalAddress
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -244,12 +248,13 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         viewModel = TokoNowProductRecommendationViewModel(
             getRecommendationUseCase = getRecommendationUseCase,
             getMiniCartUseCase = getMiniCartUseCase,
+            addressData = addressData,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
             affiliateService = affiliateService,
+            getTargetedTickerUseCase = getTargetedTickerUseCase,
             userSession = userSession,
-            addressData = addressData,
             dispatchers = coroutineTestRule.dispatchers
         )
     }
