@@ -7,31 +7,20 @@ import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
-import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
-import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
-import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
-import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
+import com.tokopedia.checkout.view.uimodel.*
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticcart.shipping.model.CodModel
-import com.tokopedia.logisticcart.shipping.model.CourierItemData
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
-import com.tokopedia.logisticcart.shipping.model.Product
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
@@ -41,14 +30,11 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import rx.subjects.PublishSubject
+
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -195,6 +181,9 @@ interface ShipmentContract {
         fun showCoachMarkEpharmacy(epharmacyGroupIds: UploadPrescriptionUiModel?)
         fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel)
         fun setShipmentNewUpsellLoading(isLoading: Boolean)
+        fun showPaymentFeeSkeletonLoading()
+        fun showPaymentFeeTickerFailedToLoad(ticker: String)
+        fun showPaymentFeeData(platformFeeData: PaymentFeeGqlResponse)
     }
 
     interface AnalyticsActionListener {
@@ -465,5 +454,9 @@ interface ShipmentContract {
             dynamicDataPassingParamRequest: DynamicDataPassingParamRequest?,
             isFireAndForget: Boolean
         )
+
+        fun getDynamicPaymentFee(paymentFeeCheckoutRequest: PaymentFeeCheckoutRequest?)
+
+        fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData?
     }
 }

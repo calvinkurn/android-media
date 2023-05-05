@@ -234,7 +234,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
-                return ShipmentCostViewHolder(view, layoutInflater)
+                return ShipmentCostViewHolder(view, layoutInflater, shipmentAdapterActionListener)
             }
 
             ITEM_VIEW_PROMO_CHECKOUT -> {
@@ -575,6 +575,7 @@ class ShipmentAdapter @Inject constructor(
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList!!.size) {
                 val priceTotal: Double =
                     if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
+                val platformFee = shipmentCostModel
                 val priceTotalFormatted =
                     removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem)
