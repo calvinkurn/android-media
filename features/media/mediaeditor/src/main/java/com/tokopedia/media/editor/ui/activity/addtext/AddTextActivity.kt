@@ -83,6 +83,11 @@ class AddTextActivity : BaseEditorActivity() {
         return fragmentProvider().addTextFragment()
     }
 
+    override fun onStart() {
+        super.onStart()
+        hideHeaderAction()
+    }
+
     private fun initObserverInput() {
         viewModel.textInput.observe(this) {
             if (it.isNotEmpty()) {
