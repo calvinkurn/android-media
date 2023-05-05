@@ -182,6 +182,10 @@ class BeautificationRobot {
         click(com.tokopedia.dialog.R.id.dialog_btn_primary)
     }
 
+    fun clickDialogSecondaryCTA() = chainable {
+        click(com.tokopedia.dialog.R.id.dialog_btn_secondary)
+    }
+
     fun slideBeautificationSlider(distance: Float) = chainable {
         horizontalSlide(com.tokopedia.unifycomponents.R.id.range_slider_max_button, distance)
     }
