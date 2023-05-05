@@ -1780,7 +1780,7 @@ open class HomeAccountUserFragment :
         private const val PROFILE_POS = 0
         private const val ACC_SETTING_POS = 1
 
-        private val COACHMARK_DELAY_MS = 1500L
+        private val COACHMARK_DELAY_MS = 1000L
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
                 arguments = bundle
