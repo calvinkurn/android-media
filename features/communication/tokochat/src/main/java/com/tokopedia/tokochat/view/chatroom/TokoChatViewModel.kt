@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
@@ -35,6 +37,8 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
+import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_PREF
+import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_ROLLENCE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.IMAGE_EXTENSION
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
@@ -600,6 +604,34 @@ class TokoChatViewModel @Inject constructor(
                 _error.value = Pair(throwable, ::getUserConsent.name)
             }
         }
+    }
+
+    fun shouldShowTickerBubblesCache(): Boolean {
+        var cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        if (cacheResult == null || cacheResult.channelId.isEmpty()) {
+            val newTokoChatBubblesCache = TokoChatBubblesCache(
+                hasShown = false, channelId = channelId
+            )
+            cacheManager.saveCache(BUBBLES_PREF, newTokoChatBubblesCache)
+            cacheResult = newTokoChatBubblesCache
+        }
+        return !cacheResult.hasShown && cacheResult.channelId == channelId
+    }
+
+    fun shouldShowTickerBubblesRollence(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                BUBBLES_ROLLENCE, ""
+            ) == BUBBLES_ROLLENCE
+        } catch (e: Throwable) {
+            false
+        }
+    }
+
+    fun setBubblesClose() {
+        cacheManager.saveCache(BUBBLES_PREF, TokoChatBubblesCache(
+            hasShown = true, channelId = channelId
+        ))
     }
 
     companion object {

@@ -12,6 +12,7 @@ import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 
 open class TokoChatBaseAdapter(
     reminderTickerListener: TokochatReminderTickerListener,
@@ -33,6 +34,28 @@ open class TokoChatBaseAdapter(
         itemList.forEachIndexed { index, item ->
             if (item is TokoChatImageBubbleUiModel && item.imageId == id) {
                 return Pair(index, item)
+            }
+        }
+        return null
+    }
+
+    fun getTickerPairWithTag(tag: String): Pair<Int, TokoChatReminderTickerUiModel>? {
+        itemList.forEachIndexed { index, item ->
+            if (item is TokoChatReminderTickerUiModel && item.tag == tag) {
+                return Pair(index, item)
+            }
+        }
+        return null
+    }
+
+    fun getLastPositionOfFirstTickersGroup(): Int? {
+        var position: Int? = null
+        itemList.forEachIndexed { index, item ->
+            // If item is not ticker & last index was a ticker
+            if (item !is TokoChatReminderTickerUiModel && position != null) {
+                return index
+            } else if (item is TokoChatReminderTickerUiModel) {
+                position = index // Save pointer to ticker
             }
         }
         return null

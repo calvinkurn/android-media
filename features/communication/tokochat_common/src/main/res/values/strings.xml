@@ -45,4 +45,5 @@
     <string name="tokochat_consent_desc">Kami perlu beberapa datamu agar komunikasi kamu dengan driver lewat Chat bisa lancar.</string>
     <string name="tokochat_consent_button">Mulai Chat Driver</string>
 
+    <string name="tokochat_bubbles_ticker_desc"><![CDATA[Chat sama Driver sambil multitasking bisa <a href="https://www.tokopedia.com">cek di sini</a>]]>.</string>
 </resources>

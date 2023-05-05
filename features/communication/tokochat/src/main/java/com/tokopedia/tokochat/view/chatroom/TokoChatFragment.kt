@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.observe
@@ -45,6 +46,7 @@ import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
+import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_NOTIF
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
@@ -548,9 +550,38 @@ open class TokoChatFragment :
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
+
+                    addBubbleTicker()
                 }
                 is Fail -> {
                     // no op
+                }
+            }
+        }
+    }
+
+    private fun addBubbleTicker() {
+        if (viewModel.shouldShowTickerBubblesRollence() &&
+            viewModel.shouldShowTickerBubblesCache()
+        ) {
+            val tickerBubble = TokoChatReminderTickerUiModel(
+                message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
+                tickerType = 0,
+                showCloseButton = true,
+                tag = BUBBLES_NOTIF
+            )
+            mapper.setBubbleTicker(tickerBubble)
+
+            // If the ticker is not in list, manually add ticker
+            val tickerBubblePair = adapter.getTickerPairWithTag(BUBBLES_NOTIF)
+            if (tickerBubblePair == null) {
+                val position = adapter.getLastPositionOfFirstTickersGroup()
+                if (position != null && position != adapter.lastIndex) {
+                    adapter.addItem(position, tickerBubble)
+                    adapter.notifyItemInserted(position)
+                } else { //No ticker at all
+                    adapter.addItem(Int.ZERO, tickerBubble)
+                    adapter.notifyItemInserted(Int.ZERO)
                 }
             }
         }
@@ -1018,6 +1049,10 @@ open class TokoChatFragment :
         adapter.removeItem(element)
         if (position == adapter.itemCount) {
             mapper.setFirstTicker(null)
+        }
+        if (position == Int.ZERO && element.tag == BUBBLES_NOTIF) {
+            mapper.setBubbleTicker(null)
+            viewModel.setBubblesClose()
         }
     }
 

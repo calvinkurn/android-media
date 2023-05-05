@@ -25,4 +25,11 @@ object TokoChatValueUtil {
      * Censor values
      */
     const val CENSOR_TEXT = "******"
+
+    /**
+     * Bubbles
+     */
+    const val BUBBLES_NOTIF = "bubbles_notif"
+    const val BUBBLES_ROLLENCE = "tokochat_bubbles_rollence"
+    const val BUBBLES_PREF = "tokochat_bubbles_awareness"
 }
