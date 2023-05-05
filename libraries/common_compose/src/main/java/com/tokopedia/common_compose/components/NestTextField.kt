@@ -109,7 +109,7 @@ fun NestTextField(
 }
 
 @Composable
-fun NestTextFieldSupportingComponent(
+internal fun NestTextFieldSupportingComponent(
     helper: String?,
     error: String?,
     enabled: Boolean,
@@ -160,7 +160,7 @@ fun NestTextFieldSupportingComponent(
 }
 
 @Composable
-fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
+internal fun NestTextFieldSkeleton(modifier: Modifier = Modifier) {
     Column() {
         Box(
             modifier = modifier
@@ -220,7 +220,10 @@ private fun getHelperColor(enabled: Boolean, error: Boolean): Color {
 }
 
 @Composable
-private fun getPrefixComponent(prefix: String? = null, enabled: Boolean): @Composable (() -> Unit)? {
+private fun getPrefixComponent(
+    prefix: String? = null,
+    enabled: Boolean
+): @Composable (() -> Unit)? {
     if (prefix != null) {
         return {
             NestTypography(
