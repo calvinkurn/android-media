@@ -364,11 +364,13 @@ object DeeplinkMapper {
         DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
         DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
+        DLP.startWith(ApplinkConst.CATALOG_LIBRARY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_EDU_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_SSA_SHOP_LIST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_DISCO_PAGE_LIST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
         DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
         DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
@@ -555,7 +557,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.PAYLATER, ApplinkConstInternalFintech.PAYLATER),
         DLP.startWith(ApplinkConst.ACTIVATION_GOPAY, ApplinkConstInternalFintech.ACTIVATE_GOPAY),
         DLP.startWith(ApplinkConst.OPTIMIZED_CHECKOUT, ApplinkConstInternalFintech.OCC_CHECKOUT),
-        DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
+        DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE),
         DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER),
         DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalUserPlatform.PROFILE_COMPLETION),
         DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
@@ -631,7 +633,7 @@ object DeeplinkMapper {
             UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0))
         }),
         DLP.exact(ApplinkConst.PRIVACY_CENTER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.TOKO_CHAT) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(deeplink) },
+        DLP.startWith(ApplinkConst.TOKO_CHAT) { ctx, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(ctx, deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
     )
@@ -738,11 +740,9 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(context)
             ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE -> ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
-            ApplinkConst.SellerApp.CREATE_VOUCHER -> DeeplinkMapperMerchant.getRegisteredNavigationForOldMvcSellerCreate(context)
-            ApplinkConst.SellerApp.VOUCHER_LIST -> DeeplinkMapperMerchant.getRegisteredNavigationForOldMvcSellerList(context)
-            ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.VOUCHER_ACTIVE
-            ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
-            ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+            ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+            ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+            ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
             ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
@@ -772,11 +772,13 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)
                 DeeplinkMapperMerchant.isCreateShowcaseApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShowcase(deeplink)
-                DeeplinkMapperMerchant.isCreateVoucherProductApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct(deeplink)
+                DeeplinkMapperMerchant.isCreateVoucherProductApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct()
+                DeeplinkMapperMerchant.isCreateShopVoucherApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShopVoucher()
                 DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(deeplink)
+                DeeplinkMapperMerchant.isShopVoucherDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForShopVoucherDetail(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
-                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale(deeplink)
+                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
                 DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)

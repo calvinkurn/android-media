@@ -25,8 +25,8 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs),
-    ProductCardCompactCarouselItemViewHolder.TokoNowCarouselProductCardItemListener,
-    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselItemViewHolder.ProductCardCarouselItemListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
     CoroutineScope {
 
     private val adapter: ProductCardCompactCarouselAdapter by lazy {
@@ -41,7 +41,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
 
     private var binding: LayoutProductCardCompactCarouselViewBinding
     private var layoutManager: LinearLayoutManager = ProductCardCompactCarouselLinearLayoutManager(context)
-    private var listener: TokoNowProductCardCarouselListener? = null
+    private var listener: ProductCardCompactCarouselListener? = null
 
     init {
         binding = LayoutProductCardCompactCarouselViewBinding.inflate(
@@ -127,7 +127,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
     }
 
     fun setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselListener? = null
+        productCardCarouselListener: ProductCardCompactCarouselListener? = null
     ) {
         listener = productCardCarouselListener
     }
@@ -138,7 +138,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         }
     }
 
-    interface TokoNowProductCardCarouselListener {
+    interface ProductCardCompactCarouselListener {
         fun onProductCardClicked(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
@@ -161,7 +161,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         )
     }
 
-    interface ProductCardCarouseBasicListener: TokoNowProductCardCarouselListener {
+    interface ProductCardCompactCarouselBasicListener: ProductCardCompactCarouselListener {
         override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {}
     }
 }

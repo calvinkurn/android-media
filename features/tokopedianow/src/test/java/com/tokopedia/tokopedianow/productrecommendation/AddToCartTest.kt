@@ -61,6 +61,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
             viewModel.addItemToCart.verifySuccessEquals(Success(response))
             viewModel.atcDataTracker.verifyValueEquals(expectedAddToCartDataTrackerModel)
+            viewModel.updateToolbarNotification.verifyValueEquals(true)
         }
     }
 
@@ -109,6 +110,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             viewModel.updateCartItem.verifySuccessEquals(Success(Triple(productId, response, quantity)))
+            viewModel.updateToolbarNotification.verifyValueEquals(true)
         }
     }
 
@@ -169,6 +171,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             viewModel.removeCartItem.verifySuccessEquals(Success(Pair(productId, response.data.message.joinToString(separator = ", "))))
+            viewModel.updateToolbarNotification.verifyValueEquals(true)
         }
     }
 

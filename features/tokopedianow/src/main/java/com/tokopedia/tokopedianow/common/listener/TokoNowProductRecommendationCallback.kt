@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel,
     private val listener: TokoNowProductRecommendationListener?
-): ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+): ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     override fun onProductCardClicked(

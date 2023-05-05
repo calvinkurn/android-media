@@ -78,7 +78,10 @@ class BulkReviewPageUiStateMapper @Inject constructor(
             shouldSubmitReview &&
             submitBulkReviewRequestState is BulkReviewSubmitRequestState.Requesting
         ) {
-            BulkReviewPageUiState.Submitting
+            BulkReviewPageUiState.Submitting(
+                items = bulkReviewVisitableList,
+                stickyButtonUiState = bulkReviewStickyButtonUiState
+            )
         } else if (
             submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success && submitBulkReviewRequestState.result.success
         ) {
