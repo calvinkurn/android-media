@@ -5,8 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetShopInfoUseCase
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
@@ -14,16 +18,23 @@ import javax.inject.Inject
 class RecommendationViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGetShopInfoUseCase: TopAdsGetShopInfoUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
-    init {
+    fun loadRecommendationPage() {
         getShopInfo()
+        getAdGroupWithInsight()
     }
 
     private val _shopInfo =
         MutableLiveData<Result<TopAdsGetShopInfoUiModel>>()
     val shopInfo: LiveData<Result<TopAdsGetShopInfoUiModel>>
         get() = _shopInfo
+
+    private val _adGroupWithInsight =
+        MutableLiveData<TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse>>()
+    val adGroupWithInsight: LiveData<TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse>>
+        get() = _adGroupWithInsight
 
     private fun getShopInfo() {
         launchCatchError(dispatcher.main, block = {
@@ -32,4 +43,16 @@ class RecommendationViewModel @Inject constructor(
             _shopInfo.value = Fail(it)
         })
     }
+
+    private fun getAdGroupWithInsight() {
+        launchCatchError(dispatcher.main, block = {
+            _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase()
+        }, onError = {
+            _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)
+        })
+    }
+
+    val emptyStateData = EmptyStateData.getData()
+
+
 }

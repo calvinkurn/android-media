@@ -23,6 +23,8 @@ data class TopAdsListAllInsightCountsResponse(
             val adGroupID: String = "",
             @SerializedName("adGroupType")
             val adGroupType: String = "",
+            @SerializedName("adGroupName")
+            val adGroupName: String = "",
             @SerializedName("count")
             val count: Int = 0
         )
@@ -37,7 +39,14 @@ data class TopAdsListAllInsightCountsResponse(
     }
 
     private fun toInsightListUiModel(adGroups: List<TopAdsListAllInsightCounts.AdGroup>): List<InsightListUiModel> {
-        return adGroups.map { AdGroupUiModel(it.adGroupID, it.adGroupType, it.count) }
+        return adGroups.map {
+            AdGroupUiModel(
+                it.adGroupID,
+                it.adGroupName,
+                it.adGroupType,
+                it.count
+            )
+        }
 
     }
 }

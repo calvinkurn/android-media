@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
@@ -16,15 +17,6 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : GraphqlUseCase<TopAdsListAllInsightCountsResponse>(graphqlRepository) {
 
-    val list = mutableListOf(
-        SaranTopAdsChipsUiModel("Semua"),
-        SaranTopAdsChipsUiModel("keyword_bid"),
-        SaranTopAdsChipsUiModel("group_daily_budget"),
-        SaranTopAdsChipsUiModel("group_bid"),
-        SaranTopAdsChipsUiModel("keyword_new_negative"),
-        SaranTopAdsChipsUiModel("keyword_new_positive"),
-    )
-
     init {
         setGraphqlQuery(GqlQuery)
         setTypeClass(TopAdsListAllInsightCountsResponse::class.java)
@@ -35,6 +27,7 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
         adGroupType: String,
         insightType: Int,
         startCursor: String,
+        mapper: InsightDataMapper,
     ):
         TopAdsListAllInsightState<InsightUiModel> {
         setRequestParams(
@@ -42,7 +35,8 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
                 source,
                 adGroupType,
                 insightType,
-                startCursor
+                startCursor,
+                mapper
             ).parameters
         )
         val data = executeOnBackground()
@@ -61,11 +55,12 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
         adGroupType: String,
         insightType: Int,
         startCursor: String,
+        mapper: InsightDataMapper,
     ): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(
             "filter", mapOf(
-                "shopID" to "13124489",
+                "shopID" to userSession.shopId,
                 "adGroupTypes" to listOf(adGroupType),
                 if (insightType == 0) {
                     "insightTypes" to listOf(
@@ -76,7 +71,7 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
                         "keyword_new_positive"
                     )
                 } else {
-                    "insightTypes" to listOf(list[insightType].name)
+                    "insightTypes" to listOf(mapper.insightTypeInputList[insightType])
                 }
 
             )
@@ -98,6 +93,7 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
               $OPERATION_NAME(filter: ${'$'}filter, source: ${'$'}source, pageSetting: ${'$'}pageSetting) {
                 adGroups {
                   adGroupID
+                  adGroupName
                   adGroupType
                   count
                 }

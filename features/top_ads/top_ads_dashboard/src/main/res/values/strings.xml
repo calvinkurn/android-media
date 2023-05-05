@@ -526,5 +526,8 @@
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
     <string name="topads_layout_chips_text">Semua</string>
 
+<!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
+    <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
+
 </resources>
 

@@ -1,12 +1,14 @@
 package com.tokopedia.topads.dashboard.recommendation.fragment
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -16,12 +18,16 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.adapter.ChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
+import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState.*
 import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment.Companion.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment.Companion.TYPE_SHOP
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
 class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
@@ -32,16 +38,6 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     private var chipsAdapter: ChipsAdapter? = null
     private val loadingModel = LoadingUiModel()
 
-    val productInsightData: MutableMap<Int, InsightUiModel> = mutableMapOf(
-        0 to InsightUiModel(),
-        1 to InsightUiModel(),
-        2 to InsightUiModel(),
-        3 to InsightUiModel(),
-        4 to InsightUiModel(),
-        5 to InsightUiModel(),
-    )
-
-
     private val layoutManager by lazy {
         LinearLayoutManager(
             context,
@@ -51,18 +47,11 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     }
     private val recyclerviewScrollListener by lazy { onRecyclerViewListener(layoutManager) }
 
-
-    val list = mutableListOf(
-        SaranTopAdsChipsUiModel("Semua", true),
-        SaranTopAdsChipsUiModel("Kata Kunci"),
-        SaranTopAdsChipsUiModel("Biaya Kata Kunci"),
-        SaranTopAdsChipsUiModel("Biaya Iklan"),
-        SaranTopAdsChipsUiModel("Anggaran Harian"),
-        SaranTopAdsChipsUiModel("Kata Kunci Negatif"),
-    )
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mapper: InsightDataMapper
 
     private val viewModel: TopAdsListAllInsightViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory)[TopAdsListAllInsightViewModel::class.java]
@@ -99,8 +88,14 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         chipsRecyclerView?.adapter = chipsAdapter
 
-        chipsAdapter?.submitList(list)
+        chipsAdapter?.submitList(viewModel.getChipsData())
+        val itemDecoration =
+            RecommendationInsightItemDecoration(
+                groupCardRecyclerView?.context,
+                layoutManager.orientation
+            )
         groupCardRecyclerView?.layoutManager = layoutManager
+        groupCardRecyclerView?.addItemDecoration(itemDecoration)
         groupCardRecyclerView?.adapter = insightListAdapter
         groupCardRecyclerView?.addOnScrollListener(recyclerviewScrollListener)
 
@@ -111,6 +106,15 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     }
 
     private fun onClick(): (List<SaranTopAdsChipsUiModel>, Int) -> Unit = { list, position ->
+        chipsRecyclerView?.layoutManager?.startSmoothScroll(object : LinearSmoothScroller(context) {
+            override fun getHorizontalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+            }
+        }.apply { targetPosition = position })
         val mList = mutableListOf<SaranTopAdsChipsUiModel>()
         list.forEachIndexed { index, saranTopAdsChipsModel ->
             mList.add(SaranTopAdsChipsUiModel(saranTopAdsChipsModel.name, position == index))
@@ -118,14 +122,15 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         }
         chipsAdapter?.submitList(mList)
 
-        if (productInsightData[position]?.adGroups?.isEmpty() == true) {
+        if (mapper.insightDataMap[position]?.adGroups?.isEmpty() == true) {
             viewModel.getFirstPageData(
                 adGroupType = "product",
                 insightType = position,
+                mapper = mapper,
             )
         }
 
-        insightListAdapter.submitList(productInsightData[position]?.adGroups?.toMutableList())
+        insightListAdapter.submitList(mapper.insightDataMap[position]?.adGroups?.toMutableList())
         recyclerviewScrollListener.updateStateAfterGetData()
     }
 
@@ -135,18 +140,18 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         viewModel.productInsights.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    onSucessProductInsight(it)
+                    onSuccessProductInsight(it)
                 }
                 is Fail -> {
 
                 }
                 is Loading -> {
-                    if (productInsightData[it.type]?.nextCursor?.isNotEmpty() == true) {
-                        productInsightData[it.type]?.adGroups?.add(loadingModel)
-                        insightListAdapter.submitList(productInsightData[it.type]?.adGroups?.toMutableList())
+                    if (mapper.insightDataMap[it.type]?.nextCursor?.isNotEmpty() == true) {
+                        mapper.insightDataMap[it.type]?.adGroups?.add(loadingModel)
+                        insightListAdapter.submitList(mapper.insightDataMap[it.type]?.adGroups?.toMutableList())
                     } else {
-                        productInsightData[it.type]?.adGroups?.add(loadingModel)
-                        insightListAdapter.submitList(productInsightData[it.type]?.adGroups?.toMutableList())
+                        mapper.insightDataMap[it.type]?.adGroups?.add(loadingModel)
+                        insightListAdapter.submitList(mapper.insightDataMap[it.type]?.adGroups?.toMutableList())
                     }
                 }
 
@@ -158,19 +163,29 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
                 is Success -> {
                     it.data.adGroups.forEach {
                     }
+                    onSuccessProductInsight(it, TYPE_SHOP)
+                }
+                is Fail -> {
+
+                }
+                is Loading -> {
+
                 }
             }
         }
     }
 
-    private fun onSucessProductInsight(it: Success<InsightUiModel>) {
+    private fun onSuccessProductInsight(it: Success<InsightUiModel>, tabType: Int = TYPE_PRODUCT) {
         recyclerviewScrollListener.updateStateAfterGetData()
         val type = it.data.insightType
-        productInsightData[type]?.adGroups?.remove(loadingModel)
-        productInsightData[type]?.adGroups?.addAll(it.data.adGroups)
-        productInsightData[type]?.nextCursor = it.data.nextCursor
-        val list = productInsightData[type]?.adGroups?.toMutableList()
-        insightListAdapter.submitList(productInsightData[type]?.adGroups?.toMutableList())
+        mapper.insightDataMap[type]?.adGroups?.remove(loadingModel)
+        mapper.insightDataMap[type]?.adGroups?.addAll(it.data.adGroups)
+        mapper.insightDataMap[type]?.nextCursor = it.data.nextCursor
+        if (mapper.insightDataMap[type]?.adGroups?.size == 0) {
+            mapper.insightDataMap[type]?.adGroups?.clear()
+            mapper.insightDataMap[type]?.adGroups?.add(viewModel.getEmptyStateData(type))
+        }
+        insightListAdapter.submitList(mapper.insightDataMap[type]?.adGroups?.toMutableList())
     }
 
     private fun onRecyclerViewListener(layoutManager: LinearLayoutManager): EndlessRecyclerViewScrollListener {
@@ -178,12 +193,13 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 Toast.makeText(context, "scdjn", Toast.LENGTH_LONG).show()
                 val selected = chipsAdapter?.getSelectedChips()
-                val nextCursor = productInsightData[selected]?.nextCursor
+                val nextCursor = mapper.insightDataMap[selected]?.nextCursor
                 if (nextCursor?.isNotEmpty() == true) {
                     viewModel.getNextPageData(
                         adGroupType = "product",
                         insightType = selected ?: 0,
-                        startCursor = nextCursor
+                        startCursor = nextCursor,
+                        mapper = mapper
                     )
                 }
             }
@@ -193,7 +209,8 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     private fun getFirstPageData() {
         viewModel.getFirstPageData(
             adGroupType = if (tabType == TYPE_PRODUCT) "product" else "headline",
-            insightType = 0,
+            insightType = if (tabType == TYPE_PRODUCT) 0 else 5,
+            mapper = mapper,
         )
     }
 

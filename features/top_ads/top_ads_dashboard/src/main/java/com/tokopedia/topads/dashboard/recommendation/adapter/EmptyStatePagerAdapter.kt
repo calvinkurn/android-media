@@ -1,0 +1,53 @@
+package com.tokopedia.topads.dashboard.recommendation.adapter
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStatesUiModel
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+
+class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewHolder>() {
+
+    var emptyStatePages = listOf<EmptyStatesUiModel>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.empty_state_item_layout, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val page = emptyStatePages[position]
+        holder.bind(page)
+    }
+
+    override fun getItemCount(): Int = emptyStatePages.size
+
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val emptyStateTitle: Typography = view.findViewById(R.id.emptyStateTitle)
+        private val emptyStateAnimation: LottieAnimationView =
+            view.findViewById(R.id.emptyStateAnimation)
+        private val stateType: Typography = view.findViewById(R.id.stateType)
+        private val stateTypeDescription: Typography = view.findViewById(R.id.stateTypeDescription)
+        private val btnEmptyState: UnifyButton = view.findViewById(R.id.btnEmptyState)
+        fun bind(item: EmptyStatesUiModel) {
+            emptyStateTitle.text = item.heading
+            stateType.text = item.stateType
+            stateTypeDescription.text = item.stateTypeDescription
+            emptyStateAnimation.setAnimationFromUrl(item.lottieUrl)
+            if (item.buttonText.isEmpty()) {
+                btnEmptyState.invisible()
+            } else {
+                btnEmptyState.text = item.buttonText
+                btnEmptyState.show()
+            }
+        }
+    }
+}
