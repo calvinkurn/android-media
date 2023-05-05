@@ -478,7 +478,10 @@ class DetailEditorFragment @Inject constructor(
                 implementAddTextData()
             }
         } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
-            activity?.finish()
+            // if user back from add text input page & no input state, direct user to editor home
+            if (this.data.addTextValue == null) {
+                activity?.finish()
+            }
         }
     }
 
