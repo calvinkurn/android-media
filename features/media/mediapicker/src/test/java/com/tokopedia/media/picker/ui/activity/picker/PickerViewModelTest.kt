@@ -11,7 +11,6 @@ import com.tokopedia.media.picker.data.repository.MediaFileRepository
 import com.tokopedia.media.picker.ui.publisher.*
 import com.tokopedia.media.picker.utils.internal.NetworkStateManager
 import com.tokopedia.media.picker.utils.internal.ResourceManager
-import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
 import com.tokopedia.picker.common.EditorParam
@@ -224,8 +223,9 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `fetch local gallery data should be return list of media`() = coroutineScopeRule.runBlockingTest {
+    fun `fetch local gallery data should be return list of media less than threshold size`() = coroutineScopeRule.runBlockingTest {
         // Given
+        every { mediaRepository.maxLimitSize() } returns 3
         every { mediaRepository.invoke(any(), any()) } returns flow {
             emit(mediaList)
         }
@@ -237,6 +237,35 @@ class PickerViewModelTest {
         assert(viewModel.medias.value?.size == mediaList.size)
         assert(viewModel.isFetchMediaLoading.value != null)
         assert(viewModel.isMediaEmpty.value != null)
+    }
+
+    @Test
+    fun `fetch local gallery data should be return list of media more than threshold size`() = coroutineScopeRule.runBlockingTest {
+        // Given
+        every { mediaRepository.maxLimitSize() } returns 5
+        every { mediaRepository.invoke(any(), any()) } returns flow {
+            emit(mediaList)
+        }
+
+        // When
+        viewModel.loadMedia(-1)
+
+        // Then
+        assert(viewModel.medias.value?.size == mediaList.size)
+        assert(viewModel.isFetchMediaLoading.value != null)
+        assert(viewModel.isMediaEmpty.value != null)
+    }
+
+    @Test
+    fun `fetch local gallery data should be throw an exception`() = coroutineScopeRule.runBlockingTest {
+        // Given
+        every { mediaRepository.invoke(any(), any()) } returns flow { throw Throwable("") }
+
+        // When
+        viewModel.loadMedia(-1)
+
+        // Then
+        assertEquals(false, viewModel.isFetchMediaLoading.value)
     }
 
     @Test
