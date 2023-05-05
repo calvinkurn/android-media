@@ -89,6 +89,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
+    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.common_promo)
@@ -237,7 +238,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
-    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
