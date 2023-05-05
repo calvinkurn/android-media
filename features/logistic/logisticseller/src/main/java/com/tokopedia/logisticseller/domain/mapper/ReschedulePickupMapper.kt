@@ -1,14 +1,14 @@
 package com.tokopedia.logisticseller.domain.mapper
 
-import com.tokopedia.logisticseller.data.param.GetReschedulePickupParam
-import com.tokopedia.logisticseller.data.response.GetReschedulePickupResponse
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleDetailModel
 import com.tokopedia.logisticseller.data.model.RescheduleOptionsModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
+import com.tokopedia.logisticseller.data.param.GetReschedulePickupParam
 import com.tokopedia.logisticseller.data.param.SaveReschedulePickupParam
+import com.tokopedia.logisticseller.data.response.GetReschedulePickupResponse
 import com.tokopedia.logisticseller.data.response.SaveReschedulePickupResponse
 
 object ReschedulePickupMapper {
@@ -91,9 +91,11 @@ object ReschedulePickupMapper {
         )
     }
 
-    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String) : String {
+    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String): String {
         return if (data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isNotEmpty()) {
             data.mpLogisticInsertReschedulePickup.errors.first().replaceFirst("$orderId: ", "")
-        } else data.mpLogisticInsertReschedulePickup.message
+        } else {
+            data.mpLogisticInsertReschedulePickup.message
+        }
     }
 }

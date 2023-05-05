@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedWidgetUiModel
@@ -35,4 +36,5 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int
     fun type(uiModel: HomeClaimCouponWidgetUiModel): Int
     fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int
+    fun type(uiModel: HomeProductCarouselChipsUiModel): Int
 }
