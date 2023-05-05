@@ -538,6 +538,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observeToasterAlreadyShown()
         observeToggleTopadsCount()
         observeIsShowTageCentralizePromo()
+        observeIsTopAdsShopUsed()
     }
 
     private fun observeShopBadge() {
@@ -713,6 +714,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun observeIsShowTageCentralizePromo() {
         viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
             viewHolder?.setCentralizePromoTag(it)
+        }
+    }
+
+    private fun observeIsTopAdsShopUsed(){
+        viewModel.isTopAdsShopUsed.observe(viewLifecycleOwner){
+            viewHolder?.setTopAdsShop(it)
         }
     }
 

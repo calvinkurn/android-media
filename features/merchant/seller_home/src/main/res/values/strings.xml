@@ -39,7 +39,8 @@
     <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_statistic">Statistik</string>
-    <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
+    <string name="setting_menu_ads_and_shop_promotion">Promosi Toko</string>
+    <string name="setting_menu_iklan_topads">Iklan TopAds</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
