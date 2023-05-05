@@ -79,7 +79,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
@@ -200,7 +199,6 @@ class TokoNowHomeFragment :
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
-        private const val DEFAULT_INTERVAL_HINT: Long = 10000L
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 1800000L
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_PLAY_WIDGET = 100
@@ -292,7 +290,6 @@ class TokoNowHomeFragment :
     private var stickyLoginTokonow: StickyLoginView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
-    private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
@@ -334,7 +331,6 @@ class TokoNowHomeFragment :
         shareHomeTokonow = createShareHomeTokonow()
         firebaseRemoteConfig.let {
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
-            durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
     }
 
@@ -1768,7 +1764,6 @@ class TokoNowHomeFragment :
                 ),
                 searchbarClickCallback = { onSearchBarClick() },
                 searchbarImpressionCallback = {},
-                durationAutoTransition = durationAutoTransition,
                 shouldShowTransition = shouldShowTransition()
             )
         }
