@@ -36,6 +36,15 @@ class ReschedulePickupViewModel @Inject constructor(
     private val saveReschedulePickup: SaveReschedulePickupUseCase
 ) : BaseViewModel(dispatcher.main) {
 
+    companion object {
+        private const val DEFAULT_ERROR_MESSAGE = "Data Reschedule Pickup tidak ditemukan"
+        private const val BELOW_MIN_CHAR_ERROR_MESSAGE = "Min. 15 karakter"
+        private const val ABOVE_MAX_CHAR_ERROR_MESSAGE = "Sudah mencapai maks. char"
+        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
+        private const val OTHER_REASON_MIN_CHAR = 15
+        private const val OTHER_REASON_MAX_CHAR = 160
+    }
+
     private var orderId: String = ""
     private val _uiState = MutableStateFlow(ReschedulePickupState())
     val uiState: StateFlow<ReschedulePickupState> = _uiState.asStateFlow()
@@ -58,7 +67,11 @@ class ReschedulePickupViewModel @Inject constructor(
             is ReschedulePickupUiEvent.SelectTime -> setTime(event.selectedTime)
             is ReschedulePickupUiEvent.SelectReason -> setReason(event.selectedReason)
             is ReschedulePickupUiEvent.CustomReason -> setCustomReason(event.reason)
-            is ReschedulePickupUiEvent.ClickSubtitle -> setAction(ReschedulePickupAction.OpenTnCWebView(event.url))
+            is ReschedulePickupUiEvent.ClickSubtitle -> setAction(
+                ReschedulePickupAction.OpenTnCWebView(
+                    event.url
+                )
+            )
             is ReschedulePickupUiEvent.CloseBottomSheet -> closeBottomSheetState()
             is ReschedulePickupUiEvent.CloseDialog -> {
                 setDialogState(false)
@@ -247,14 +260,5 @@ class ReschedulePickupViewModel @Inject constructor(
         } else {
             _uiState.update { it.copy(bottomSheet = bottomSheetState) }
         }
-    }
-
-    companion object {
-        private const val DEFAULT_ERROR_MESSAGE = "Data Reschedule Pickup tidak ditemukan"
-        private const val BELOW_MIN_CHAR_ERROR_MESSAGE = "Min. 15 karakter"
-        private const val ABOVE_MAX_CHAR_ERROR_MESSAGE = "Sudah mencapai maks. char"
-        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
-        private const val OTHER_REASON_MIN_CHAR = 15
-        private const val OTHER_REASON_MAX_CHAR = 160
     }
 }
