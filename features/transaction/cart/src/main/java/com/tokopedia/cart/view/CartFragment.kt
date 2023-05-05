@@ -2161,8 +2161,9 @@ class CartFragment :
         }
         if (isCollapsed) {
             onNeedToUpdateViewItem(index)
+            onNeedToUpdateViewItem(index + 1)
         } else {
-            onNeedToUpdateMultipleViewItem(index, productSize)
+            onNeedToUpdateMultipleViewItem(index, productSize + 1)
         }
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
@@ -2276,7 +2277,7 @@ class CartFragment :
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index > 0) {
             val selected = !cartItemHolderData.isSelected
             groupData.forEachIndexed { position, data ->
@@ -2380,7 +2381,7 @@ class CartFragment :
     }
 
     override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartShopHolderData) {
@@ -2395,7 +2396,7 @@ class CartFragment :
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartShopHolderData) {
@@ -3854,7 +3855,7 @@ class CartFragment :
                 it.isCollapsible = false
                 it.isCollapsed = false
                 it.isShowPin = false
-                val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString)
+                val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                 if (index != RecyclerView.NO_POSITION) {
                     onNeedToUpdateViewItem(index)
                     if (groupData.last() is CartShopBottomHolderData) {
@@ -3872,7 +3873,7 @@ class CartFragment :
                 if (it.productUiModelList.size == 1) {
                     it.isCollapsible = false
                     it.isCollapsed = false
-                    val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString)
+                    val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                     if (index != RecyclerView.NO_POSITION) {
                         onNeedToUpdateViewItem(index)
                         if (groupData.last() is CartShopBottomHolderData) {
@@ -4396,7 +4397,8 @@ class CartFragment :
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
         val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
-            cartItemHolderData.cartString
+            cartItemHolderData.cartString,
+            false
         )
         if (shopIndex >= 0) {
             val cartShopHolderData = groupData.first()
@@ -4528,7 +4530,7 @@ class CartFragment :
     }
 
     override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartShopHolderData.cartString, cartShopHolderData.isError)
         if (index >= 0) {
             onNeedToUpdateViewItem(index + groupData.lastIndex)
         }
