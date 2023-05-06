@@ -26,7 +26,6 @@ open class FundsAndInvestmentActivity : BaseSimpleActivity(), HasComponent<HomeA
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .homeAccountUserModules(HomeAccountUserModules(this))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
             .sessionModule(SessionModule())
             .build()
     }

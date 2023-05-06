@@ -13,11 +13,15 @@ import dagger.Component
  */
 @ActivityScope
 @SessionCommonScope
-@Component(modules = [HomeAccountUserModules::class,
-    HomeAccountUserUsecaseModules::class,
-    HomeAccountUserViewModelModules::class,
-    HomeAccountUserQueryModules::class,
-    SessionModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        HomeAccountUserModules::class,
+        HomeAccountUserUsecaseModules::class,
+        HomeAccountUserViewModelModules::class,
+        SessionModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface HomeAccountUserComponents {
     fun inject(view: HomeAccountUserFragment?)
     fun inject(view: FundsAndInvestmentFragment?)

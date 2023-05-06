@@ -17,7 +17,7 @@ import com.tokopedia.sessioncommon.di.SessionModule
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
+open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
 
     private var homeAccountUserComponents: HomeAccountUserComponents? = null
 
@@ -46,13 +46,11 @@ open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccou
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .homeAccountUserModules(HomeAccountUserModules(this))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
             .sessionModule(SessionModule())
             .build().also {
                 homeAccountUserComponents = it
             }
     }
-
 
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
