@@ -4,11 +4,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.di.*
+import com.tokopedia.home_account.di.ActivityComponentFactory
+import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 
@@ -41,11 +41,8 @@ open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAcco
         HomeAccountUserFragment.newInstance(intent?.extras)
 
     protected open fun initializeHomeAccountUserComponents(): HomeAccountUserComponents {
-        return DaggerHomeAccountUserComponents.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .homeAccountUserModules(HomeAccountUserModules(this))
-            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .build().also {
+        return ActivityComponentFactory.instance.createHomeAccountComponent(this, application)
+            .also {
                 homeAccountUserComponents = it
             }
     }
