@@ -2,17 +2,16 @@ package com.tokopedia.home_account.base
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
-import com.tokopedia.home_account.di.*
+import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
-import com.tokopedia.home_account.stub.di.user.*
+import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
+import com.tokopedia.home_account.stub.di.user.HomeAccountUserComponentsStub
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
@@ -22,12 +21,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 abstract class HomeAccountTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        HomeAccountUserActivityStub::class.java,
+        HomeAccountUserActivity::class.java,
         false,
         false
     )
@@ -35,8 +35,10 @@ abstract class HomeAccountTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
+    @Inject
     lateinit var repo: GraphqlRepositoryStub
 
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     protected open lateinit var activity: HomeAccountUserActivity
@@ -52,15 +54,19 @@ abstract class HomeAccountTest {
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        val appComponent = DaggerFakeBaseAppComponent.builder().fakeAppModule(FakeAppModule(applicationContext)).build()
-        repo = appComponent.graphqlRepository() as GraphqlRepositoryStub
-        homeAccountUserComponents = DaggerHomeAccountUserComponentsStub.builder()
-            .fakeBaseAppComponent(appComponent)
-            .fakeHomeAccountUserModules(FakeHomeAccountUserModules(context))
-            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .build()
-        userSession = homeAccountUserComponents.userSession()
-        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
+//        val appComponent = DaggerFakeBaseAppComponent.builder().fakeAppModule(FakeAppModule(applicationContext)).build()
+//        repo = appComponent.graphqlRepository() as GraphqlRepositoryStub
+//        homeAccountUserComponents = DaggerHomeAccountUserComponentsStub.builder()
+//            .fakeBaseAppComponent(appComponent)
+//            .fakeHomeAccountUserModules(FakeHomeAccountUserModules(context))
+//            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
+//            .build()
+//        userSession = homeAccountUserComponents.userSession()
+
+        val stub = ActivityComponentFactoryStub()
+        ActivityComponentFactory.instance = stub
+        stub.component.inject(this)
+//        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
