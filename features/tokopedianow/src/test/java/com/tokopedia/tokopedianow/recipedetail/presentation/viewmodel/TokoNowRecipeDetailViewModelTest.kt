@@ -52,7 +52,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetRecipe_thenReturn(response = recipeResponse)
 
         viewModel.setRecipeData(recipeId, slug)
-        viewModel.checkAddressData()
+        viewModel.onViewCreated()
 
         verifyGetAddressDataUseCaseCalled()
         verifyGetRecipeUseCaseCalled(
@@ -69,7 +69,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetShopId_thenReturn(shopId)
         onGetAddressData_thenReturn(NullPointerException())
 
-        viewModel.checkAddressData()
+        viewModel.onViewCreated()
 
         verifyGetAddressDataUseCaseCalled()
 
@@ -108,7 +108,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
-        viewModel.checkAddressData()
+        viewModel.onViewCreated()
 
         val mediaItems = listOf(
             MediaItemUiModel(
@@ -172,6 +172,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
                 name = "kaos testing 112",
                 quantity = 5,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -337,7 +338,8 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
                 similarProducts = emptyList(),
                 categoryId = "983",
                 categoryName = "Dapur",
-                position = 1
+                position = 1,
+                isVariant = false
             )
         )
 
@@ -417,7 +419,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
-        viewModel.checkAddressData()
+        viewModel.onViewCreated()
 
         val mediaSlider = MediaSliderUiModel(emptyList())
 
@@ -477,7 +479,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetShopId_thenReturn(shopId)
         onGetRecipe_thenReturn(NullPointerException())
 
-        viewModel.checkAddressData()
+        viewModel.onViewCreated()
 
         verifyGetRecipeUseCaseCalled()
 
@@ -507,7 +509,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             onGetRecipe_thenReturn(response = recipeResponse)
             onAddRecipeBookmark_thenReturn(response = addBookmarkResponse)
 
-            viewModel.checkAddressData()
+            viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
             viewModel.onClickBookmarkBtn(addBookmark)
 
@@ -575,7 +577,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             onGetWarehouseId_thenReturn(warehouseId)
             onGetRecipe_thenReturn(response = recipeResponse)
 
-            viewModel.checkAddressData()
+            viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
 
             advanceTimeBy(500L)
@@ -604,7 +606,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             onGetRecipe_thenReturn(response = recipeResponse)
             onRemoveRecipeBookmark_thenReturn(response = removeBookmarkResponse)
 
-            viewModel.checkAddressData()
+            viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
             viewModel.onClickBookmarkBtn(addBookmark)
 
@@ -647,7 +649,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             onGetRecipe_thenReturn(response = recipeResponse)
             onRemoveRecipeBookmark_thenReturn(NullPointerException())
 
-            viewModel.checkAddressData()
+            viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
 
             advanceTimeBy(500L)
@@ -685,7 +687,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             onGetWarehouseId_thenReturn(warehouseId)
             onGetRecipe_thenReturn(response = recipeResponse)
 
-            viewModel.checkAddressData()
+            viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
 
             advanceTimeBy(500L)
@@ -716,5 +718,12 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         viewModel.layoutList
             .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when onViewCreated should call initAffiliateCookie`() {
+        viewModel.onViewCreated()
+
+        verifyInitAffiliateCookieCalled()
     }
 }

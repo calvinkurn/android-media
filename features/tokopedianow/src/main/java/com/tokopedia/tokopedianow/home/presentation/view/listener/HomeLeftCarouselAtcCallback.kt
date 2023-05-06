@@ -51,6 +51,8 @@ class HomeLeftCarouselAtcCallback(
                 productId = product.id.orEmpty(),
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
             )
         } else {
@@ -62,7 +64,8 @@ class HomeLeftCarouselAtcCallback(
         position: Int,
         product: HomeLeftCarouselAtcProductCardUiModel
     ) {
-        openAppLink(product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        openAppLink(appLink)
 
         analytics.trackClickProductLeftCarousel(
             position = position,

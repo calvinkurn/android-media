@@ -15,6 +15,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
@@ -43,12 +44,14 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    affiliateService: NowAffiliateService,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
     addressData,
     userSession,
     dispatchers
@@ -95,7 +98,13 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         _layoutList.postValue(layoutItemList)
     }
 
-    fun checkAddressData() {
+    fun onViewCreated() {
+        updateAddressData()
+        checkAddressData()
+        initAffiliateCookie()
+    }
+
+    private fun checkAddressData() {
         val shopId = addressData.getShopId()
 
         if (shopId == INVALID_SHOP_ID) {

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerfeedback
+package com.tokopedia.seller.active.common.features.sellerfeedback
 
 import android.app.Activity
 import android.content.Context
@@ -13,15 +13,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.screenshot_observer.Screenshot
-import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
-import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
-import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
+import com.tokopedia.seller.active.common.R
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
+
+/**
+ * Created by @ilhamsuaib on 21/03/23.
+ */
 
 class SellerFeedbackScreenshot(private val context: Context) : Screenshot(context.contentResolver) {
 
     companion object {
+        private const val EXTRA_URI_IMAGE = "uri_image"
+        private const val EXTRA_ACTIVITY_NAME = "extra_activity_name"
         private const val ACTIVITY_STATUS_PAUSED = 0
         private const val ACTIVITY_STATUS_RESUMED = 1
         private const val TOASTER_MARGIN_BOTTOM = 104
@@ -55,16 +59,16 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun triggerScreenShotTaken(uri: Uri) {
-        SellerFeedbackTracking.Impression.eventViewHomepage()
+        SellerFeedbackTracking.eventViewHomepage()
         super.onScreenShotTaken(uri)
     }
 
     private fun openFeedbackForm(uri: Uri, currentActivity: Activity) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
         val activityName = getActivityName(currentActivity)
-        intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
+        intent.putExtra(EXTRA_URI_IMAGE, uri)
         intent.putExtra(
-            SellerFeedbackFragment.EXTRA_ACTIVITY_NAME,
+            EXTRA_ACTIVITY_NAME,
             activityName
         )
         currentActivity.startActivity(intent)
@@ -135,7 +139,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
                 duration = Toaster.LENGTH_LONG,
                 clickListener = {
                     uri?.let { uri ->
-                        SellerFeedbackTracking.Click.eventClickFeedbackButton()
+                        SellerFeedbackTracking.eventClickFeedbackButton()
                         openFeedbackForm(uri, currentActivity)
                     }
                 }
