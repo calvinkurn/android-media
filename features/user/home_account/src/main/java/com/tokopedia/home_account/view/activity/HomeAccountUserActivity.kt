@@ -11,7 +11,6 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
-import com.tokopedia.sessioncommon.di.SessionModule
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -46,7 +45,6 @@ open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAcco
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .homeAccountUserModules(HomeAccountUserModules(this))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .sessionModule(SessionModule())
             .build().also {
                 homeAccountUserComponents = it
             }

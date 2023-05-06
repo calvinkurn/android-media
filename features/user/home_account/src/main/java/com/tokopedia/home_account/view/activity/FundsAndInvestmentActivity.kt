@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
-import com.tokopedia.sessioncommon.di.SessionModule
 
 open class FundsAndInvestmentActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents> {
 
@@ -26,7 +25,6 @@ open class FundsAndInvestmentActivity : BaseSimpleActivity(), HasComponent<HomeA
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .homeAccountUserModules(HomeAccountUserModules(this))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .sessionModule(SessionModule())
             .build()
     }
 }

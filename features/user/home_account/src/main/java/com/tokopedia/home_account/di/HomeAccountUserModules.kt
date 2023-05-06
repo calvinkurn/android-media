@@ -18,6 +18,8 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
@@ -108,5 +110,11 @@ class HomeAccountUserModules(val context: Context) {
     @ActivityScope
     fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
         return AddVerifyPhoneAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideFingerprintPrefManager(@ApplicationContext context: Context): FingerprintPreference {
+        return FingerprintPreferenceManager(context)
     }
 }

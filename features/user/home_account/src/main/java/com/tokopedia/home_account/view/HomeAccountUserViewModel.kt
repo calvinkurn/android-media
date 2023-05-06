@@ -20,7 +20,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -35,10 +34,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-    @Named(SessionModule.SESSION_MODULE)
     private val userSession: UserSessionInterface,
     private val accountPref: AccountPreference,
     private val fingerprintPreference: FingerprintPreference,

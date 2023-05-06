@@ -4,21 +4,17 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
-import com.tokopedia.sessioncommon.di.SessionCommonScope
-import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
 
 /**
  * @author by nisie on 10/15/18.
  */
 @ActivityScope
-@SessionCommonScope
 @Component(
     modules = [
         HomeAccountUserModules::class,
         HomeAccountUserUsecaseModules::class,
-        HomeAccountUserViewModelModules::class,
-        SessionModule::class
+        HomeAccountUserViewModelModules::class
     ],
     dependencies = [BaseAppComponent::class]
 )
