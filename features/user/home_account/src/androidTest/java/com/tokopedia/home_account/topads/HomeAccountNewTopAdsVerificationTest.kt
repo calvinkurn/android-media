@@ -84,7 +84,6 @@ class HomeAccountNewTopAdsVerificationTest {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .fakeHomeAccountTopAdsModules(FakeHomeAccountTopAdsModules(context))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
             .sessionModule(SessionModule())
             .build()
         setCoachMarkToFalse()

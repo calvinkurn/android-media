@@ -27,7 +27,9 @@ abstract class HomeAccountTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        HomeAccountUserActivityStub::class.java, false, false
+        HomeAccountUserActivityStub::class.java,
+        false,
+        false
     )
 
     @get:Rule
@@ -56,7 +58,6 @@ abstract class HomeAccountTest {
             .fakeBaseAppComponent(appComponent)
             .fakeHomeAccountUserModules(FakeHomeAccountUserModules(context))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
             .build()
         userSession = homeAccountUserComponents.userSession()
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
@@ -76,7 +77,9 @@ abstract class HomeAccountTest {
     fun Unit.validate(query: List<Map<String, String>>) {
         Thread.sleep(5000)
         val queryMatcher = cassavaTestRule.validate(
-                query,  CassavaTestRule.MODE_SUBSET)
+            query,
+            CassavaTestRule.MODE_SUBSET
+        )
         ViewMatchers.assertThat(queryMatcher, hasAllSuccess())
     }
 
@@ -95,11 +98,10 @@ abstract class HomeAccountTest {
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
         fragmentTransactionIdling = FragmentTransactionIdle(
-                activity.supportFragmentManager,
-                HomeAccountUserActivity.TAG
+            activity.supportFragmentManager,
+            HomeAccountUserActivity.TAG
         )
         fragment = activity.fragment
-
     }
 
     companion object {
