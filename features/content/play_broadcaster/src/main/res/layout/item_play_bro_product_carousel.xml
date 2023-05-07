@@ -62,7 +62,7 @@
         tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_tag_stock"
+        android:id="@+id/tv_product_tag__empty_stock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl2"

@@ -38,7 +38,7 @@ class ProductCarouselViewHolder private constructor() {
         @SuppressLint("ResourceType")
         fun bind(item: ProductUiModel) {
             binding.ivProductTag.setImageUrl(item.imageUrl)
-            binding.tvProductTagStock.showWithCondition(item.stock.isLessThanEqualZero())
+            binding.tvProductTagEmptyStock.showWithCondition(item.stock.isLessThanEqualZero())
             binding.ivProductTagCover.showWithCondition(item.stock.isLessThanEqualZero())
 
             when (item.price) {
