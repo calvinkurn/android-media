@@ -8,6 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/icon_spec_bullet"
+        android:contentDescription="@string/content_desc_comparison_bpc_spec_bullet"
         android:layout_width="@dimen/comparison_bpc_specs_bullet_size"
         android:layout_height="@dimen/comparison_bpc_specs_bullet_size"
         android:layout_gravity="center_vertical"
