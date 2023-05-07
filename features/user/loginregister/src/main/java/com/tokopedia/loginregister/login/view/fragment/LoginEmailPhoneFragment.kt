@@ -702,6 +702,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareView() {
         viewBinding?.loginInputView?.showForgotPassword()
+        viewBinding?.loginLoadingOverlay?.root?.background?.alpha = 178
         socmedBottomSheet = SocmedBottomSheet().apply {
             listener = object : SocmedBottomSheetListener {
                 override fun onItemClick(provider: ProviderData) {

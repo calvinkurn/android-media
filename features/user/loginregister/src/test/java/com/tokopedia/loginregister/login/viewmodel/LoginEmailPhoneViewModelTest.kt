@@ -22,6 +22,7 @@ import com.tokopedia.loginregister.goto_seamless.model.TempKeyResponse
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -86,6 +87,7 @@ class LoginEmailPhoneViewModelTest {
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
     private var getTemporaryKeyObserver = mockk<Observer<Boolean>>(relaxed = true)
+    private var getLoginOptionObserver = mockk<Observer<LoginOption>>(relaxed = true)
 
     private var showLocationAdminPopUp = mockk<Observer<Result<Boolean>>>(relaxed = true)
 
@@ -149,6 +151,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.getTemporaryKeyResponse.observeForever(getTemporaryKeyObserver)
         viewModel.navigateToGojekSeamless.observeForever(navigateGojekSeamlessObserver)
         viewModel.adminRedirection.observeForever(adminRedirection)
+        viewModel.getLoginOption.observeForever(getLoginOptionObserver)
     }
 
     private val throwable = Throwable("Error")
@@ -1032,6 +1035,108 @@ class LoginEmailPhoneViewModelTest {
             tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and biometrics`() {
+
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify { getLoginOptionObserver.onChanged(
+            LoginOption(
+                isEnableSeamless = true,
+                isEnableBiometrics = true,
+                biometricsData = responseData))
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and enable biometrics`() {
+
+        // Given
+        val exception = Exception("error")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify { getLoginOptionObserver.onChanged(
+            LoginOption(
+                isEnableSeamless = false,
+                isEnableBiometrics = true,
+                biometricsData = responseData))
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and disable biometrics`() {
+
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult()
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify { getLoginOptionObserver.onChanged(
+            LoginOption(
+                isEnableSeamless = true,
+                isEnableBiometrics = false,
+                biometricsData = responseData))
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and disable biometrics`() {
+
+        // Given
+        val exception = Exception("error")
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+        val responseData = RegisterCheckFingerprintResult()
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify { getLoginOptionObserver.onChanged(
+            LoginOption(
+                isEnableSeamless = false,
+                isEnableBiometrics = false,
+                biometricsData = responseData))
         }
     }
 }
