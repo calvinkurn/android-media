@@ -14,6 +14,9 @@ import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
  * Created by Frenzel
  */
 object BpcSpecsMapper {
+    private const val SUMMARY_BULLET_MAX_LINES = 1
+    private const val SUMMARY_TEXT_MAX_LINES = 2
+
     fun mapToSpecsListModel(
         recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
         specsConfig: BpcSpecsConfig,
@@ -99,6 +102,7 @@ object BpcSpecsMapper {
         val paramsTextView = LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
         val typography = Typography(context)
         typography.setType(DISPLAY_3)
+        typography.maxLines = SUMMARY_TEXT_MAX_LINES
         typography.layoutParams = paramsTextView
         typography.text = MethodChecker.fromHtml(text.toString())
         typography.measure(0, 0)
@@ -135,6 +139,7 @@ object BpcSpecsMapper {
         val paramsTextView = LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
         val typography = Typography(context)
         typography.setType(DISPLAY_3)
+        typography.maxLines = SUMMARY_BULLET_MAX_LINES
         typography.layoutParams = paramsTextView
         typography.text = MethodChecker.fromHtml(text.toString())
         typography.measure(0, 0)
