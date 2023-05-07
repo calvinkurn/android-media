@@ -1,6 +1,5 @@
 package com.tokopedia.library.subviewmodel.extension
 
-import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.library.subviewmodel.SubViewModel
 import com.tokopedia.library.subviewmodel.SubViewModelMediator
 import kotlinx.coroutines.CoroutineScope
@@ -29,11 +28,5 @@ fun SubViewModel.launch(
 @Suppress("UNCHECKED_CAST")
 fun <T : SubViewModelMediator> SubViewModel.getMediator(): Lazy<T> =
     lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-        if (mediator == null) {
-            throw IllegalAccessException(
-                "Mediator is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}"
-            )
-        }
-
         mediator as T
     }

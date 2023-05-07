@@ -23,8 +23,9 @@ abstract class SubViewModel : SubViewModelProvider {
         get() = viewModelScopeProvider?.invoke()
             ?: throw IllegalAccessException("viewModelScope is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}")
 
-    override val mediator: SubViewModelMediator?
+    override val mediator: SubViewModelMediator
         get() = mediatorProvider?.invoke()
+            ?: throw IllegalAccessException("Mediator is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}")
 
     /**
      * register [viewModelScope] and store to [viewModelScopeProvider]
