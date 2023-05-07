@@ -24,44 +24,13 @@
             android:importantForAccessibility="no"
             android:transitionName="@string/home_transition_root"
             tools:targetApi="lollipop" />
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:textSize="18sp"
-            android:textColor="@color/Unify_N700"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3"
-            tools:text="Tonton Keseruannya"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/play_txt_see_all"
-            android:layout_width="wrap_content"
+        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+            android:id="@+id/home_component_header_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:focusableInTouchMode="false"
-            android:text="@string/lihat_semua"
-            android:textColor="@color/Unify_G500"
-            android:textStyle="bold"
-            android:textSize="@dimen/fontSize_lvl2"
-            app:typographyType="heading_6"
-            app:typographyWeight="bold"
-            app:layout_constraintLeft_toRightOf="@+id/title"
-            app:layout_constraintBottom_toTopOf="@+id/video_player"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
             android:id="@+id/video_player"
             android:layout_width="match_parent"
@@ -70,7 +39,7 @@
             android:layout_gravity="center"
             app:layout_constraintDimensionRatio="2:1"
             app:show_play_buffering="when_playing"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"/>
         <ImageView
             android:id="@+id/thumbnail_image_play"
             android:layout_width="match_parent"
@@ -81,7 +50,7 @@
             android:contentDescription="@string/content_desc_thumbnail_image_play"
             app:layout_constraintDimensionRatio="2:1"
             tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"/>
 
         <View android:background="@drawable/home_gradient_action_play"
             android:layout_width="match_parent"

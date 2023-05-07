@@ -16,7 +16,9 @@ import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
-import com.tokopedia.home.beranda.presentation.view.helper.setValue
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -34,9 +36,8 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
-    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
-    private val title = view.findViewById<TextView>(R.id.title)
+    private val header = view.findViewById<DynamicChannelHeaderView>(R.id.home_component_header_view)
     private var isClickable = false
     private val masterJob = Job()
     private var playCardDataModel: PlayCardDataModel? = null
@@ -93,13 +94,7 @@ class PlayCardViewHolder(
     private fun initView(model: PlayCardDataModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
-            title.setValue(model.channel.name)
-
-            if (model.channel.header.applink.isNotEmpty()) {
-                seeAll.visible()
-            } else {
-                seeAll.gone()
-            }
+            setHeaderComponent(model)
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
@@ -130,11 +125,21 @@ class PlayCardViewHolder(
             play.setSafeOnClickListener {
                 goToPlayChannel(model)
             }
-
-            seeAll.setOnClickListener {
-                goToChannelList(model.channel.header.applink)
-            }
         }
+    }
+
+    private fun setHeaderComponent(element: PlayCardDataModel) {
+        header?.setChannel(
+            element.channel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    goToChannelList(element.channel.channelHeader.applink)
+                }
+
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                }
+            }
+        )
     }
 
     private fun handlingTracker(model: PlayCardDataModel){
