@@ -6,4 +6,11 @@
             <enum name="green" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="DynamicChannelHeaderRevampView">
+        <attr name="header_mode" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="inverted" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

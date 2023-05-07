@@ -62,4 +62,7 @@
     <dimen name="home_todo_widget_image_size">44dp</dimen>
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
     <dimen name="home_todo_widget_cta_height">32dp</dimen>
+
+    <dimen name="home_dynamic_header_cta_container">32dp</dimen>
+    <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
 </resources>
