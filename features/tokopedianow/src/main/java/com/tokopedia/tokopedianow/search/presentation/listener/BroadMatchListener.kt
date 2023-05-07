@@ -27,4 +27,6 @@ interface BroadMatchListener {
         title: String,
         appLink: String
     )
+
+    fun onBroadMatchAddToCartBlocked()
 }

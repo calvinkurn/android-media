@@ -32,7 +32,6 @@ class ReschedulePickupLoadingDialog(private val context: Context) {
         }
     }
 
-
     fun show() {
         dialogUnify?.show()
     }

@@ -39,6 +39,7 @@ internal object ProductRecommendationQuery: GqlQueryInterface {
                   pageName
                   recommendation {
                     id
+                    parentID
                     name
                     categoryBreadcrumbs
                     url
