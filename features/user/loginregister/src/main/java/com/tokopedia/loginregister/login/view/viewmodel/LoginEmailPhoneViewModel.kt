@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.icp.identity.loginsso.data.models.Profile
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
@@ -448,6 +449,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     try {
                         gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
                     } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                         false
                     }
                 }
@@ -468,6 +470,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 val isEnablebiometrics = resultBiometricsAwait?.data?.errorMessage?.isEmpty() ?: false
                 mutableLoginOption.value = LoginOption(enableSeamless.await(), isEnablebiometrics, resultBiometricsAwait?.data ?: RegisterCheckFingerprintResult())
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 mutableLoginOption.value = LoginOption(isEnableSeamless = false, isEnableBiometrics = false, biometricsData = RegisterCheckFingerprintResult())
             }
         }
