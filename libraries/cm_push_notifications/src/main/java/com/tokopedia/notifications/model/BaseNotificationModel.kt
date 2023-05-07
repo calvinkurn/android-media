@@ -1,10 +1,12 @@
 package com.tokopedia.notifications.model
 
+import android.net.Uri
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.model.WebHookParams.Companion.getWebHookData
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import kotlinx.android.parcel.Parcelize
@@ -193,7 +195,32 @@ data class BaseNotificationModel(
         } ?: false
     }
 
+    fun isEnableBubbleOnSellerTopChat(): Boolean {
+        return GlobalConfig.isSellerApp() && isTopChatOn() && getShouldEnableBubbleOnTopChat()
+    }
+
+    fun isTopChatOn(): Boolean {
+        return try {
+            val uri = Uri.parse(appLink)
+            when (uri.host) {
+               TOPCHAT -> {
+                   true
+               }
+               else -> {
+                   false
+               }
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun getShouldEnableBubbleOnTopChat(): Boolean {
+        return true
+    }
+
     companion object {
         private const val REPLY_TYPE_CHAT = "Chat"
+        private const val TOPCHAT = "topchat"
     }
 }
