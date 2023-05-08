@@ -1867,24 +1867,24 @@ class PlayUserInteractionFragment @Inject constructor(
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 if (event.product.isVariantAvailable) {
                     playViewModel.submitAction(ShowVariantAction(event.product, true))
+                } else {
+                    playViewModel.submitAction(
+                        when (event.action) {
+                            ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                        }
+                    )
                 }
-
-                playViewModel.submitAction(
-                    when (event.action) {
-                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                    }
-                )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
                 if (event.product.applink == null) return

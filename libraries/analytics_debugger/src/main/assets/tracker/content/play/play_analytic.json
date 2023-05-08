@@ -773,56 +773,6 @@
       "userId": ".*"
     },
     {
-      "event": "clickContent",
-      "eventAction": "click - lihat on add to cart success toaster",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod) - .*",
-      "trackerId": "42904",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "viewContentIris",
-      "eventAction": "view error when add to cart",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod) - not success - .*",
-      "trackerId": "42905",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "add_to_cart",
-      "eventAction": "click - tambah ke keranjang on global variant bottomsheet",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod) - \\d+",
-      "trackerId": "13889",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "items": [
-        {
-          "category_id": ".*",
-          "dimension40": "/groupchat - varian page",
-          "dimension45": ".*",
-          "item_brand": ".*",
-          "item_category": ".*",
-          "item_id": ".*",
-          "item_name": ".*",
-          "item_variant": ".*",
-          "price": "\\d+",
-          "quantity": "\\d+",
-          "shop_id": ".*",
-          "shop_name": ".*",
-          "shop_type": ".*"
-        }
-      ],
-      "sessionIris": "{sessions_Iris}",
-      "userId": "{user_id}"
-    },
-    {
       "event": "viewContentIris",
       "eventAction": "view - cart button bottom sheet",
       "eventCategory": "groupchat room",

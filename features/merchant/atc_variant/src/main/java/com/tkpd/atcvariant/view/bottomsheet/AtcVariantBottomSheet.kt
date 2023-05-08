@@ -61,7 +61,6 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
-import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -140,11 +139,6 @@ class AtcVariantBottomSheet :
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
 
-    /**
-     * Custom Analytics
-     */
-    private var mAnalyticsListener: AtcVariantAnalyticsListener? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
@@ -175,7 +169,6 @@ class AtcVariantBottomSheet :
         compositeSubscription.clear()
         super.onDestroyView()
         Toaster.onCTAClick = View.OnClickListener { }
-        mAnalyticsListener = null
     }
 
     private fun initLayout() {
@@ -568,10 +561,6 @@ class AtcVariantBottomSheet :
             sellerDistrictId = sellerDistrictId,
             lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
-
-        mAnalyticsListener?.onButtonActionClicked(
-            cartType = buttonActionType, variantId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted().orEmpty(), variantName =  variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted().orEmpty(),
-            shopId = variantAggregatorData?.simpleBasicInfo?.shopID.orEmpty(), shopType = shopType, shopName = variantAggregatorData?.simpleBasicInfo?.shopName.orEmpty(), cartId = cartId, productInfo = selectedChild ?: VariantChild(), quantity = selectedQuantity)
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -592,7 +581,9 @@ class AtcVariantBottomSheet :
     }
 
     private fun getAtcActivity(): Activity {
-        return context as AtcVariantActivity
+        return if (activity is AtcVariantActivity)
+            context as AtcVariantActivity
+        else requireActivity()
     }
 
     private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
@@ -627,7 +618,6 @@ class AtcVariantBottomSheet :
                     productId,
                     pageSource
                 )
-                mAnalyticsListener?.clickActionFromToaster(message)
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
             }
             viewModel.updateActivityResult(
@@ -997,8 +987,6 @@ class AtcVariantBottomSheet :
             pageSource
         )
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
-
-        mAnalyticsListener?.impressErrorToaster(variantErrorMessage)
     }
 
     private fun renderButton(data: PartialButtonDataModel) {
@@ -1076,22 +1064,8 @@ class AtcVariantBottomSheet :
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
     }
-
-    fun setAnalytics(analyticsListener: AtcVariantAnalyticsListener) {
-        mAnalyticsListener = analyticsListener
-    }
 }
 
 interface AtcVariantBottomSheetListener {
     fun onTokoCabangClicked(uspImageUrl: String)
-}
-
-/**
- * Custom Analytic
- */
-interface AtcVariantAnalyticsListener {
-    // [PLAY] row 13,16,61,62,63 https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
-    fun onButtonActionClicked(cartType: Int, variantId: String, variantName: String, shopName: String, shopId: String, shopType: String, productInfo: VariantChild, cartId: String, quantity: Int)
-    fun clickActionFromToaster(message: String) // Click Lihat Keranjang from toaster
-    fun impressErrorToaster(message: String) // Impress toaster [Belum pilih varian]
 }

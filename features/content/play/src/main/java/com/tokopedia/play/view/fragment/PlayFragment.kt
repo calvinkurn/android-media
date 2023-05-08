@@ -11,13 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tkpd.atcvariant.util.roundToIntOrZero
-import com.tkpd.atcvariant.view.bottomsheet.AtcVariantAnalyticsListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -25,7 +23,6 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -66,7 +63,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
-import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -88,8 +84,7 @@ class PlayFragment @Inject constructor(
     PlayFragmentContract,
     FragmentVideoViewComponent.Listener,
     FragmentYouTubeViewComponent.Listener,
-    PlayVideoScalingManager.Listener,
-    AtcVariantAnalyticsListener {
+    PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: View
     private val fragmentVideoView by viewComponent {
@@ -132,7 +127,7 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5).orZero() }
+    private val offset16 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
 
     /**
      * Global Variant Bottom Sheet
@@ -282,7 +277,8 @@ class PlayFragment @Inject constructor(
                 productId = product.id,
                 shopId = product.shopId,
                 dismissAfterTransaction = false,
-                showQtyEditor = false
+                showQtyEditor = false,
+                trackerCdListName = channelId
             )
         )
 
@@ -295,7 +291,7 @@ class PlayFragment @Inject constructor(
                         variantSheet.dialog?.window?.setDimAmount(0f)
                         view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
                             variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
-                                sheetMaxHeight - insets.systemWindowInsetBottom - offset24
+                                sheetMaxHeight - insets.systemWindowInsetBottom - ivClose.top
                         }
                     }
                 }
@@ -310,8 +306,18 @@ class PlayFragment @Inject constructor(
 
         if (!forceTop) return
 
-        val height = 769 // temp hard-coded
-        onBottomInsetsViewShown(height)
+        view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
+            val orientation = playViewModel.videoOrientation
+            val height = if (orientation is VideoOrientation.Horizontal) {
+                val dstStart = ivClose.right + offset16
+                val dstEnd = requireView().right - dstStart
+                val dstWidth = dstEnd - dstStart
+                (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
+            } else {
+                requireView().height - sheetMaxHeight - ivClose.top - offset16
+            }.toInt() + insets.systemWindowInsetBottom
+            onBottomInsetsViewShown(height)
+        }
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -721,46 +727,6 @@ class PlayFragment @Inject constructor(
         }
     }
     //endregion
-
-    override fun onButtonActionClicked(
-        cartType: Int,
-        variantId: String,
-        variantName: String,
-        shopName: String,
-        shopId: String,
-        shopType: String,
-        productInfo: VariantChild,
-        cartId: String,
-        quantity: Int,
-    ) {
-        analytic.clickTransactionInVariantSheet(
-            cartType = cartType,
-            variantId = variantId,
-            variantName = variantName,
-            shopName = shopName,
-            shopId = shopId,
-            shopType = shopType,
-            variantChild = productInfo,
-            cartId = cartId,
-            quantity = quantity,
-        )
-    }
-
-    override fun clickActionFromToaster(message: String) {
-        analytic.clickActionFromVariantSheet(message)
-    }
-
-    override fun impressErrorToaster(message: String) {
-        analytic.impressErrorToasterVariantSheet(message)
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-
-        if (childFragment is AtcVariantBottomSheet) {
-            childFragment.setAnalytics(this)
-        }
-    }
 
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"

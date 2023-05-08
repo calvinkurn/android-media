@@ -5,11 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.product.estimasiongkir.data.model.shipping.FreeShippingDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
+import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.FreeShippingViewHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingErrorViewHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingHeaderViewHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingSellyViewHolder
@@ -42,6 +44,10 @@ class ProductShippingFactoryImpl(val listener: ProductDetailShippingListener,
         return ProductShippingSellyViewHolder.LAYOUT
     }
 
+    override fun type(dataProduct: FreeShippingDataModel): Int {
+        return FreeShippingViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ProductShippingHeaderViewHolder.LAYOUT -> ProductShippingHeaderViewHolder(view, listener, chooseAddressListener)
@@ -49,6 +55,7 @@ class ProductShippingFactoryImpl(val listener: ProductDetailShippingListener,
             ProductShippingShimmerViewHolder.LAYOUT -> ProductShippingShimmerViewHolder(view)
             ProductShippingErrorViewHolder.LAYOUT -> ProductShippingErrorViewHolder(view, listener)
             ProductShippingSellyViewHolder.LAYOUT -> ProductShippingSellyViewHolder(view, listener)
+            FreeShippingViewHolder.LAYOUT -> FreeShippingViewHolder(view)
             else -> return super.createViewHolder(view, type)
         }
     }

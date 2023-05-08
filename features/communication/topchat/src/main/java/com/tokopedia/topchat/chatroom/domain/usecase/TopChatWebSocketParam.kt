@@ -36,9 +36,10 @@ object TopChatWebSocketParam {
         localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null,
-        referredMsg: ParentReply? = null
+        referredMsg: ParentReply? = null,
+        sourceReply: String
     ): String {
-        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg)
+        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg, sourceReply)
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
@@ -46,7 +47,7 @@ object TopChatWebSocketParam {
             addProperty("local_id", localId)
             addProperty("message_id", roomeMetaData.msgId.toLongOrZero())
             addProperty("message", messageText)
-            addProperty("source", "inbox")
+            addProperty("source", sourceReply)
             addProperty("start_time", startTime)
             if (attachments.isNotEmpty()) {
                 val extras = createMessageExtrasAttachments(
@@ -65,7 +66,8 @@ object TopChatWebSocketParam {
     }
 
     fun generateParentReplyRequestPayload(
-        parentReply: ParentReply?
+        parentReply: ParentReply?,
+        sourceReply: String
     ): JsonElement? {
         if (parentReply == null) return null
         val requestContract = ParentReplyWsRequest(
@@ -77,7 +79,7 @@ object TopChatWebSocketParam {
             sub_text = parentReply.subText,
             image_url = parentReply.imageUrl,
             local_id = parentReply.localId,
-            source = "inbox"
+            source = sourceReply
         )
         return gson.toJsonTree(requestContract)
     }
@@ -89,7 +91,8 @@ object TopChatWebSocketParam {
         toUid: String,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -107,6 +110,7 @@ object TopChatWebSocketParam {
 
         data.add("extras", extras)
         data.add("product_profile", productProfile)
+        data.addProperty("source", sourceReply)
         json.add("data", data)
         return json
     }
@@ -236,9 +240,10 @@ object TopChatWebSocketParam {
         thisMessageId: String,
         path: String,
         image: ImageUploadUiModel,
-        isSecure: Boolean
+        isSecure: Boolean,
+        sourceReply: String
     ): String {
-        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply)
+        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply, sourceReply)
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
@@ -256,6 +261,7 @@ object TopChatWebSocketParam {
         if (referredMsgRequest != null) {
             data.add("parent_reply", referredMsgRequest)
         }
+        data.addProperty("source", sourceReply)
         json.add("data", data)
         return json.toString()
     }
