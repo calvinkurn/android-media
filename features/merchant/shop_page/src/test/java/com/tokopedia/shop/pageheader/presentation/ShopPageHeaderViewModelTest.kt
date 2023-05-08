@@ -33,7 +33,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
