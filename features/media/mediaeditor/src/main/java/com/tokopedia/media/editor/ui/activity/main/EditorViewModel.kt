@@ -107,16 +107,26 @@ class EditorViewModel @Inject constructor(
 
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
-                // if use 'add logo' feature then need to flatten image first
-                it.getOverlayLogoValue()?.let { overlayData ->
-                    addLogoFilterRepository.flattenImage(
+                // if use 'add logo' & 'add text' feature then need to flatten image first
+                var flattenBitmap = it.getOverlayTextValue()?.let { overlayData ->
+                    saveImageRepository.flattenImage(
                         it.getImageUrl(),
-                        overlayData.overlayLogoUrl,
+                        overlayData.textImagePath,
                         it.getOriginalUrl()
                     )
                 } ?: run {
                     it.getImageUrl()
                 }
+
+                it.getOverlayLogoValue()?.let { overlayData ->
+                    flattenBitmap = saveImageRepository.flattenImage(
+                        flattenBitmap,
+                        overlayData.overlayLogoUrl,
+                        it.getOriginalUrl()
+                    )
+                }
+
+                flattenBitmap
             } else {
                 it.getOriginalUrl().apply {
                     if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
