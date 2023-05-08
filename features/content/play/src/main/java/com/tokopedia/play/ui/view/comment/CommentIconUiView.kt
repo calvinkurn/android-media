@@ -1,25 +1,31 @@
 package com.tokopedia.play.ui.view.comment
 
+import android.view.View
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.databinding.ViewVodCommentBinding
+import com.tokopedia.play.R
 
 /**
  * @author by astidhiyaa on 07/02/23
  */
-class CommentIconUiView(private val binding: ViewVodCommentBinding, listener: Listener) {
+class CommentIconUiView(private val group: Group, listener: Listener) {
 
+    private val view = group.rootView
     init {
-        binding.root.setOnClickListener {
-            listener.onCommentClicked(this)
+        group.referencedIds.forEach {
+            view.findViewById<View>(it).setOnClickListener {
+                  listener.onCommentClicked(this)
+            }
         }
     }
 
     fun show(isShown: Boolean) {
-        binding.root.showWithCondition(isShown)
+        group.showWithCondition(isShown)
     }
 
     fun setCounter(value: String) {
-        binding.viewCommentCount.text = value
+        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_vod_comment_counter)
+            .text = value
     }
 
     interface Listener {
