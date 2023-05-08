@@ -792,7 +792,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(
                 DFP(
                     {
-                        it.startsWith(SellerApp.SELLER_TOKOPEDIA_FLASH_SALE) || it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE)
+                        it.startsWith(SellerApp.SELLER_TOKOPEDIA_FLASH_SALE) || it.startsWithPattern(SELLER_TOKOPEDIA_FLASH_SALE)
                     },
                     DF_FLASH_SALE_TOKOPEDIA,
                     R.string.title_tokopedia_flash_sale
