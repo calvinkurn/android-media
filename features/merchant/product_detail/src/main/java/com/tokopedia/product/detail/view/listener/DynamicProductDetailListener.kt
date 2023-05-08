@@ -364,6 +364,11 @@ interface DynamicProductDetailListener {
         trackData: ComponentTrackDataModel?
     )
 
+    fun onAnnotationGenericImpression(
+        key: String,
+        trackData: ComponentTrackDataModel?
+    )
+
     /**
      * ProductReportViewHolder
      */

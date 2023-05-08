@@ -19,11 +19,13 @@ object ProductDetailInfoTracking {
         key: String,
         userId: String
     ) {
+        val annotation = key.replace("_", " ")
+
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-            action = "click - annotation lihat panduan ukuran on pdp",
+            action = "click - annotation $annotation on pdp",
             trackerId = "43296",
             userId = userId
         )
@@ -32,13 +34,16 @@ object ProductDetailInfoTracking {
     fun onImpressionAnnotationGeneric(
         trackDataModel: ComponentTrackDataModel,
         productInfo: DynamicProductInfoP1?,
+        key: String,
         userId: String
     ) {
+        val annotation = key.replace("_", " ")
+
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS,
-            action = "impression - annotation lihat panduan ukuran on pdp",
+            action = "impression - annotation $annotation on pdp",
             trackerId = "43295",
             userId = userId
         )

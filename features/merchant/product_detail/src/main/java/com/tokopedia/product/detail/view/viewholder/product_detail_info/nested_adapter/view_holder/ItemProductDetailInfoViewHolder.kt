@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import timber.log.Timber
 
 class ItemProductDetailInfoViewHolder(
     private val binding: ItemInfoProductDetailBinding,
@@ -115,7 +114,10 @@ class ItemProductDetailInfoViewHolder(
     private fun setImpression(data: ProductDetailInfoContent, trackData: ComponentTrackDataModel?) {
         if (data.key == Content.KEY_PANDUAN_UKURAN) {
             binding.root.addOnImpressionListener(data.impressionHolder) {
-                Timber.tag("pdp_info_bs").d("impression")
+                listener.onAnnotationGenericImpression(
+                    key = data.key,
+                    trackData = trackData
+                )
             }
         }
     }

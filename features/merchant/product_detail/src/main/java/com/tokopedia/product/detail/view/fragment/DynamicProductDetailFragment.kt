@@ -1190,6 +1190,15 @@ open class DynamicProductDetailFragment :
         )
     }
 
+    override fun onAnnotationGenericImpression(key: String, trackData: ComponentTrackDataModel?) {
+        ProductDetailInfoTracking.onImpressionAnnotationGeneric(
+            trackDataModel = trackData ?: ComponentTrackDataModel(),
+            productInfo = viewModel.getDynamicProductInfoP1,
+            key = key,
+            userId = viewModel.userId
+        )
+    }
+
     override fun getParentViewModelStoreOwner(): ViewModelStore {
         return viewModelStore
     }
