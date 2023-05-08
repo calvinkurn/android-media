@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -33,6 +34,7 @@ internal class PlayBroProductSetupViewModelRobot(
     isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
+    source: PlayBroPageSource = PlayBroPageSource.Live,
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
@@ -42,6 +44,7 @@ internal class PlayBroProductSetupViewModelRobot(
         productSectionList,
         handle,
         isEligibleForPin,
+        source,
         channelRepo,
         userSession,
         dispatchers,

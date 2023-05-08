@@ -5,12 +5,10 @@ import com.tokopedia.productcard.compact.common.di.module.CommonModule
 import com.tokopedia.productcard.compact.common.di.module.CommonViewModelModule
 import com.tokopedia.productcard.compact.common.di.scope.CommonScope
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
-import com.tokopedia.productcard.compact.similarproduct.presentation.fragment.ProductCardCompactSimilarProductFragment
 import dagger.Component
 
 @CommonScope
 @Component(modules = [CommonModule::class, CommonViewModelModule::class], dependencies = [BaseAppComponent::class])
 internal interface CommonComponent {
     fun inject(view: ProductCardCompactWishlistButtonView)
-    fun inject(fragment: ProductCardCompactSimilarProductFragment)
 }
