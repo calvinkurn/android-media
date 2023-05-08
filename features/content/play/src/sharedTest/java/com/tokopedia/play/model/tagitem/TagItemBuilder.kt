@@ -45,6 +45,8 @@ interface TagItemBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        rating: String = "",
+        soldQuantity: String = "",
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(

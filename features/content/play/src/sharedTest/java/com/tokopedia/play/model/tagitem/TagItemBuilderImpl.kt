@@ -55,6 +55,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isPinned: Boolean,
         isRilisanSpesial: Boolean,
         buttons: List<ProductButtonUiModel>,
+        rating: String,
+        soldQuantity: String,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -70,6 +72,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
+        rating = rating,
+        soldQuantity = soldQuantity,
     )
 
     override fun buildMerchantVoucher(
