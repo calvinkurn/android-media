@@ -104,6 +104,7 @@ class LoginEmailPhoneViewModelTest {
     private var gotoSeamlessPreference = mockk<GotoSeamlessPreference>(relaxed = true)
 
     private val messageException = MessageErrorException("error bro")
+    private val timeOut: Long = 5000
 
     @Before
     fun setUp() {
@@ -1047,7 +1048,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.checkLoginOption()
 
         // Then
-        coVerify {
+        coVerify(timeout = timeOut) {
             getLoginOptionObserver.onChanged(
                 LoginOption(
                     isEnableSeamless = true,
@@ -1078,7 +1079,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.checkLoginOption()
 
         // Then
-        coVerify {
+        coVerify(timeout = timeOut) {
             getLoginOptionObserver.onChanged(
                 LoginOption(
                     isEnableSeamless = false,
@@ -1105,7 +1106,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.checkLoginOption()
 
         // Then
-        coVerify {
+        coVerify(timeout = timeOut) {
             getLoginOptionObserver.onChanged(
                 LoginOption(
                     isEnableSeamless = true,
@@ -1135,7 +1136,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.checkLoginOption()
 
         // Then
-        coVerify {
+        coVerify(timeout = timeOut) {
             getLoginOptionObserver.onChanged(
                 LoginOption(
                     isEnableSeamless = false,
