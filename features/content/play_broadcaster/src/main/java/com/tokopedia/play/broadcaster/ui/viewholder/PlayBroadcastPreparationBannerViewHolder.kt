@@ -33,7 +33,7 @@ class PlayBroadcastPreparationBannerViewHolder(
             }
             PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD -> {
                 title = mContext.getString(R.string.play_bro_banner_performance_title)
-                description = mContext.getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle)
+                description = mContext.getString(R.string.play_bro_banner_performance_subtitle)
                 icon = IconUnify.GRAPH_REPORT
             }
             else -> {

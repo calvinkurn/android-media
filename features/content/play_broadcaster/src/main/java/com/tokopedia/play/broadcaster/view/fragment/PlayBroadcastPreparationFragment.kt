@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.navigation.performancedashboard.PerformanceDashboardNavigation
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -123,6 +123,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+
+    /** TODO better to migrate this implementation with Carousel from Unify
+     * read: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/706284924/Carousel
+     **/
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
@@ -551,17 +555,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
-        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
+        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
         if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
 
         val coachMarkPerformanceDashboard = CoachMark2Item(
             anchorView = binding.rvBannerPreparation,
-            title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
-            description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
             position = CoachMark2.POSITION_BOTTOM,
         )
 
-        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPoint, PAGE_NAME + userSession.userId)
+        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
         return coachMarkPerformanceDashboard
     }
 
@@ -586,11 +590,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (coachMark == null) coachMark = CoachMark2(requireContext())
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
+        autoScrollToPerformanceDashBoardBanner()
+
         if (coachMarkItems.size == 1) {
             coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
         } else {
             coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
+    }
+
+    private fun autoScrollToPerformanceDashBoardBanner() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+                    val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
+                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
+                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                }
+            }
+        })
     }
 
     private fun observeConfigInfo() {
@@ -777,7 +795,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             TYPE_DASHBOARD -> {
                 analytic.onClickPerformanceDashboardEntryPointPrepPage(parentViewModel.authorId)
-                RouteManager.route(requireContext(), PerformanceDashboardNavigation.getPerformanceDashboardAppLink())
+                RouteManager.route(requireContext(), PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
             }
         }
     }
