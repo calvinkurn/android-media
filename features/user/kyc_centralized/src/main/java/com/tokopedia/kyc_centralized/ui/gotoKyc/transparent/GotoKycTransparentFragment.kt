@@ -15,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
@@ -71,7 +73,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
             val parameter = GotoKycMainParam(
                 projectId = viewModel.projectId,
-                isCameFromAccountPage = viewModel.source.isEmpty(),
                 sourcePage = viewModel.source,
                 status = it.status,
                 dataSource = it.dataSource,
@@ -115,9 +116,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun showProgressiveBottomSheet(source: String) {
+    private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
-            source = source
+            source = source,
+            encryptedName = encryptedName
         )
 
         onBoardProgressiveBottomSheet.show(

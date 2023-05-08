@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class GotoKycMainParam (
     val projectId: String = "",
-    val isCameFromAccountPage: Boolean = false,
     val dataSource: String = "",
     val status: String = "",
     val sourcePage: String = "",

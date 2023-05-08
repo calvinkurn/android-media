@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.transparent
+package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
