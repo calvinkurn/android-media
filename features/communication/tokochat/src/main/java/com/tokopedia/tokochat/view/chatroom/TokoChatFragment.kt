@@ -84,6 +84,7 @@ import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -567,7 +568,7 @@ open class TokoChatFragment :
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
                 message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
-                tickerType = 0,
+                tickerType = Ticker.TYPE_ANNOUNCEMENT,
                 showCloseButton = true,
                 tag = BUBBLES_NOTIF
             )
@@ -1047,7 +1048,7 @@ open class TokoChatFragment :
         }
         if (position == Int.ZERO && element.tag == BUBBLES_NOTIF) {
             mapper.setBubbleTicker(null)
-//            viewModel.setBubblesClose()
+            viewModel.setBubblesClose()
         }
         adapter.removeItem(element)
         adapter.notifyItemRemoved(position)
