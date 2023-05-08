@@ -392,7 +392,7 @@ enum class ButtonSize(
     val fontSize: TextUnit,
 ) {
     LARGE(48.dp, 8.dp, 16.sp),
-    MEDIUM(40.dp,  8.dp, 14.sp),
+    MEDIUM(40.dp, 8.dp, 14.sp),
     SMALL(32.dp, 8.dp, 12.sp),
     MICRO(24.dp, 6.dp, 12.sp)
 }

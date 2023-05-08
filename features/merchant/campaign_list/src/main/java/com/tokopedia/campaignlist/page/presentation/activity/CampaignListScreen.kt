@@ -1,5 +1,6 @@
 package com.tokopedia.campaignlist.page.presentation.activity
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -215,160 +216,153 @@ fun CampaignItem(
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+        Column {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-            val (ribbon,
-                statusImage,
-                campaignType,
-                campaignStatus,
-                campaignImage,
-                campaignName,
-                productQty,
-                campaignStartDate,
-                campaignStartTime,
-                separator,
-                campaignEndDate,
-                campaignEndTime,
-                buttonShare
-            ) = createRefs()
+                val (ribbon,
+                    statusImage,
+                    campaignType,
+                    campaignStatus,
+                    campaignImage,
+                    campaignName,
+                    productQty,
+                    campaignStartDate,
+                    campaignStartTime,
+                    separator,
+                    campaignEndDate,
+                    campaignEndTime
+                ) = createRefs()
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_green_top_drawing),
-                contentDescription = null,
-                modifier = Modifier.constrainAs(ribbon) {
-                    top.linkTo(parent.top, margin = 12.dp)
-                    start.linkTo(parent.start)
-                }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_rocket),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .constrainAs(statusImage) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_green_top_drawing),
+                    contentDescription = null,
+                    modifier = Modifier.constrainAs(ribbon) {
                         top.linkTo(parent.top, margin = 12.dp)
-                        start.linkTo(ribbon.end, margin = 12.dp)
+                        start.linkTo(parent.start)
                     }
-            )
-
-            NestTypography(
-                text = campaign.campaignType,
-                modifier = Modifier.constrainAs(campaignType) {
-                    top.linkTo(statusImage.top)
-                    bottom.linkTo(statusImage.bottom)
-                    start.linkTo(statusImage.end, margin = 4.dp)
-                },
-                textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
                 )
-            )
 
-            CampaignLabel(
-                modifier = Modifier.constrainAs(campaignStatus) {
-                    top.linkTo(campaignType.top)
-                    bottom.linkTo(campaignType.bottom)
-                    end.linkTo(parent.end, margin = 16.dp)
-                },
-                campaignStatus = campaign.campaignStatus,
-                campaignStatusId = campaign.campaignStatusId.toIntOrZero()
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_rocket),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .constrainAs(statusImage) {
+                            top.linkTo(parent.top, margin = 12.dp)
+                            start.linkTo(ribbon.end, margin = 12.dp)
+                        }
+                )
 
-            NestImage(
-                modifier = Modifier
-                    .size(62.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .constrainAs(campaignImage) {
-                        start.linkTo(parent.start, margin = 12.dp)
-                        top.linkTo(campaignType.bottom, margin = 12.dp)
+                NestTypography(
+                    text = campaign.campaignType,
+                    modifier = Modifier.constrainAs(campaignType) {
+                        top.linkTo(statusImage.top)
+                        bottom.linkTo(statusImage.bottom)
+                        start.linkTo(statusImage.end, margin = 4.dp)
                     },
-                imageUrl = campaign.campaignPictureUrl
-            )
+                    textStyle = NestTheme.typography.display3.copy(
+                        color = NestTheme.colors.GN._500,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
 
-            NestTypography(
-                text = campaign.campaignName,
-                modifier = Modifier.constrainAs(campaignName) {
-                    top.linkTo(campaignImage.top)
-                    start.linkTo(campaignImage.end, margin = 12.dp)
-                },
-                textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = NestTheme.colors.NN._950)
-            )
+                CampaignLabel(
+                    modifier = Modifier.constrainAs(campaignStatus) {
+                        top.linkTo(campaignType.top)
+                        bottom.linkTo(campaignType.bottom)
+                        end.linkTo(parent.end, margin = 16.dp)
+                    },
+                    campaignStatus = campaign.campaignStatus,
+                    campaignStatusId = campaign.campaignStatusId.toIntOrZero()
+                )
 
-            NestTypography(
-                text = stringResource(id = R.string.cl_campaign_list_product_quantity_label, campaign.productQty),
-                modifier = Modifier.constrainAs(productQty) {
-                    top.linkTo(campaignName.bottom, margin = 12.dp)
-                    start.linkTo(campaignName.start)
-                },
-                textStyle = NestTheme.typography.display3
-            )
+                NestImage(
+                    modifier = Modifier
+                        .size(62.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .constrainAs(campaignImage) {
+                            start.linkTo(parent.start, margin = 12.dp)
+                            top.linkTo(campaignType.bottom, margin = 12.dp)
+                        },
+                    imageUrl = campaign.campaignPictureUrl
+                )
 
-            NestTypography(
-                text = campaign.startDate,
-                modifier = Modifier.constrainAs(campaignStartDate) {
-                    top.linkTo(productQty.bottom, margin = 12.dp)
-                    start.linkTo(productQty.start)
-                },
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
-            )
+                NestTypography(
+                    text = campaign.campaignName,
+                    modifier = Modifier.constrainAs(campaignName) {
+                        top.linkTo(campaignImage.top)
+                        start.linkTo(campaignImage.end, margin = 12.dp)
+                    },
+                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = NestTheme.colors.NN._950)
+                )
+
+                NestTypography(
+                    text = stringResource(id = R.string.cl_campaign_list_product_quantity_label, campaign.productQty),
+                    modifier = Modifier.constrainAs(productQty) {
+                        top.linkTo(campaignName.bottom, margin = 12.dp)
+                        start.linkTo(campaignName.start)
+                    },
+                    textStyle = NestTheme.typography.display3
+                )
+
+                NestTypography(
+                    text = campaign.startDate,
+                    modifier = Modifier.constrainAs(campaignStartDate) {
+                        top.linkTo(productQty.bottom, margin = 12.dp)
+                        start.linkTo(productQty.start)
+                    },
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
+                )
 
 
-            NestTypography(
-                text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
-                modifier = Modifier.constrainAs(campaignStartTime) {
-                    top.linkTo(campaignStartDate.bottom)
-                    start.linkTo(campaignStartDate.start)
-                },
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-            )
+                NestTypography(
+                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
+                    modifier = Modifier.constrainAs(campaignStartTime) {
+                        top.linkTo(campaignStartDate.bottom)
+                        start.linkTo(campaignStartDate.start)
+                    },
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+                )
 
-            NestTypography(
-                text = "-",
-                modifier = Modifier.constrainAs(separator) {
-                    top.linkTo(campaignStartDate.top)
-                    bottom.linkTo(campaignStartTime.bottom)
-                    start.linkTo(campaignStartDate.end, margin = 12.dp)
-                },
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-            )
+                NestTypography(
+                    text = "-",
+                    modifier = Modifier.constrainAs(separator) {
+                        top.linkTo(campaignStartDate.top)
+                        bottom.linkTo(campaignStartTime.bottom)
+                        start.linkTo(campaignStartDate.end, margin = 12.dp)
+                    },
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+                )
 
-            NestTypography(
-                text = campaign.endDate,
-                modifier = Modifier.constrainAs(campaignEndDate) {
-                    top.linkTo(campaignStartDate.top)
-                    bottom.linkTo(campaignStartDate.bottom)
-                    start.linkTo(separator.end, margin = 12.dp)
-                },
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
-            )
+                NestTypography(
+                    text = campaign.endDate,
+                    modifier = Modifier.constrainAs(campaignEndDate) {
+                        top.linkTo(campaignStartDate.top)
+                        bottom.linkTo(campaignStartDate.bottom)
+                        start.linkTo(separator.end, margin = 12.dp)
+                    },
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
+                )
 
-            NestTypography(
-                text = stringResource(id = R.string.cl_campaign_time_template, campaign.endTime),
-                modifier = Modifier.constrainAs(campaignEndTime) {
-                    top.linkTo(campaignStartTime.top)
-                    bottom.linkTo(campaignStartTime.bottom)
-                    start.linkTo(separator.end, margin = 12.dp)
-                },
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-            )
-
+                NestTypography(
+                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.endTime),
+                    modifier = Modifier.constrainAs(campaignEndTime) {
+                        top.linkTo(campaignStartTime.top)
+                        bottom.linkTo(campaignStartTime.bottom)
+                        start.linkTo(separator.end, margin = 12.dp)
+                    },
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+                )
+            }
             NestButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
-                    .constrainAs(buttonShare) {
-                        top.linkTo(campaignStartTime.bottom)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
+                    .padding(12.dp),
                 text = stringResource(id = R.string.cl_action_share),
                 onClick = { onTapShareButton(campaign) }
             )
-
-
         }
+
 
     }
 }
@@ -400,10 +394,10 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
     NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
 }
 
-
-@Preview(name = "Campaign Item")
+@Preview(name = "Campaign List - Light Mode")
+@Preview(name = "Campaign List - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun CampaignItemPreview() {
+private fun CampaignListPreview() {
     val campaign = ActiveCampaign(
         campaignType = "Rilisan Spesial",
         campaignStatus = "Ditolak",
@@ -415,6 +409,30 @@ fun CampaignItemPreview() {
         endTime = "22:00 WIB"
     )
 
-    CampaignItem(state = LazyListState(), campaign = campaign, onTapShareButton = {}, onCampaignScrolled = {})
+
+    val state = CampaignListViewModel.UiState(
+        campaigns = listOf(campaign),
+        campaignStatus = emptyList(),
+        campaignType = emptyList(),
+        selectedCampaignStatus = null,
+        selectedCampaignType = null,
+        isTickerDismissed = false,
+        showClearFilterIcon = true
+    )
+
+    NestTheme {
+        CampaignListScreen(
+            uiState = state,
+            onTapCampaignStatusFilter = {},
+            onTapCampaignTypeFilter = {},
+            onClearFilter = {},
+            onSearchBarKeywordSubmit = {},
+            onSearchbarCleared = {},
+            onTickerDismissed = {},
+            onTapShareCampaignButton = {},
+            onToolbarBackIconPressed = {},
+            onCampaignScrolled = {}
+        )
+    }
 }
 
