@@ -3,14 +3,12 @@ package com.tokopedia.centralizedpromo.view
 import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoList
 
 object PromoCreationMapper {
 
     const val TAB_ID_ALL_FEATURE = "0"
     const val TAB_NAME_ALL_FEATURE = "Semua Fitur"
-    const val PAGE_NAME_TOPADS = "TopAds"
 
     fun mapperToPromoCreationUiModel(merchantPromotionGetPromoList: MerchantPromotionGetPromoList): PromoCreationListUiModel {
 
@@ -19,11 +17,8 @@ object PromoCreationMapper {
             filterItems.add(FilterPromoUiModel(it.id, it.name))
         }
 
-        val list = merchantPromotionGetPromoList.data.pages.toMutableList()
-        list.removeFirst { it.pageName == PAGE_NAME_TOPADS } // TopAds button has been migrated to sidebar menu
-
         val promotionItem =
-            list.map {
+            merchantPromotionGetPromoList.data.pages.map {
                 PromoCreationUiModel(
                     pageId = it.pageId,
                     icon = it.iconImage,
