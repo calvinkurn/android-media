@@ -51,10 +51,4 @@ class MediaUploaderTestModule(
         return UploadMediaNotificationManager(context)
     }
 
-    @Provides
-    @MediaUploaderTestScope
-    fun provideVideoCompressionCacheManager(): VideoCompressionCacheManager {
-        return VideoCompressionCacheManager(context)
-    }
-
 }
