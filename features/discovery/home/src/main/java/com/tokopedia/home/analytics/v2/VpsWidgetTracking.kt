@@ -8,13 +8,14 @@ import com.tokopedia.homenav.common.TrackingConst
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
-import com.tokopedia.track.builder.util.BaseTrackerConst.Label.FORMAT_2_ITEMS
 
 /**
  * Created by frenzel
  */
 object VpsWidgetTracking : BaseTrackerConst() {
     private const val VPS_NAME = "lego banner 4 image auto v2"
+    const val PROMOTION_NAME = "/ - p%s - %s - %s - %s"
+    const val FORMAT_3_ITEMS = "%s - %s - %s"
 
     fun getVpsImpression(channel: ChannelModel, position: Int, userId: String): HashMap<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
@@ -22,7 +23,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                 event = PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.IMPRESSION.format(VPS_NAME),
-                eventLabel = Label.NONE,
+                eventLabel = channel.layout,
                 promotions = channel.channelGrids.mapIndexed { index, grid ->
                 Promotion(
                         id = FORMAT_4_VALUE_UNDERSCORE.format(
@@ -31,7 +32,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                             channel.trackingAttributionModel.categoryId
                         ),
                         creative = grid.attribution,
-                        name = Ecommerce.PROMOTION_NAME.format(position, VPS_NAME, channel.channelHeader.name),
+                        name = PROMOTION_NAME.format(position, VPS_NAME, channel.layout, channel.channelHeader.name),
                         position = (index + 1).toString()
                 )})
                 .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
@@ -47,8 +48,8 @@ object VpsWidgetTracking : BaseTrackerConst() {
             putString(Category.KEY, Category.HOMEPAGE)
             putString(
                 Label.KEY,
-                FORMAT_2_ITEMS.format(
-                    channel.id, channel.channelHeader.name
+                FORMAT_3_ITEMS.format(
+                    channel.id, channel.layout, channel.channelHeader.name
                 )
             )
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -71,7 +72,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                 )
                 putString(
                     Promotion.ITEM_NAME,
-                    Ecommerce.PROMOTION_NAME.format(channel.verticalPosition, VPS_NAME, channel.channelHeader.name)
+                    PROMOTION_NAME.format(channel.verticalPosition, VPS_NAME, channel.layout, channel.channelHeader.name)
                 )
             }
             putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
