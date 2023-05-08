@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.tokopedia.config.GlobalConfig
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.IOException
 
 class BannerDebugInterceptor(private val context: Context) : Interceptor {
 
@@ -13,10 +12,10 @@ class BannerDebugInterceptor(private val context: Context) : Interceptor {
         .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
 
     companion object {
-        val URL_BETA = "1"
-        val HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "x-tkpd-beta"
-        val BETA_INTERCEPTOR_PREF_NAME = "BetaInterceptor_banner_debug"
-        val IS_BETA_TOKOPEDIA = "IS_BETA_TOKOPEDIA_BANNER_DEBUG"
+        const val URL_BETA = "1"
+        const val HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "x-tkpd-beta"
+        const val BETA_INTERCEPTOR_PREF_NAME = "BetaInterceptor_banner_debug"
+        const val IS_BETA_TOKOPEDIA = "IS_BETA_TOKOPEDIA_BANNER_DEBUG"
 
         @JvmStatic
         fun isBeta(context: Context): Boolean {
@@ -28,12 +27,7 @@ class BannerDebugInterceptor(private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response: Response
-        try {
-            response = chain.proceed(request)
-        } catch (e: IOException) {
-            throw e
-        }
+        var response: Response = chain.proceed(request)
 
         fun saveBeta(isBeta: Boolean) {
             val sharedPreferences = context

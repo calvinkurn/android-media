@@ -1,8 +1,6 @@
 package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.app.Activity
-import android.os.Handler
-import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.R
 
@@ -11,12 +9,10 @@ import com.tokopedia.abstraction.R
  */
 class DebugBanner {
 
-
     /**
      * not show banner when liveStatus is Empty
      */
     fun initView(activity: Activity, liveStatus: String) {
-
         if (liveStatus.isNotEmpty()) {
             val decorView = activity.window.decorView as ViewGroup
             val localBanner = Banner()
