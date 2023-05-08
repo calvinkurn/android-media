@@ -120,7 +120,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             itemView.payLaterStatusTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    val urlText = urlList.first { it.linkUrl == linkUrl }.linkText
+                    val urlText = urlList.firstOrNull { it.linkUrl == linkUrl }?.linkText ?: ""
 
                     interaction.invokeAnalytics(
                         getGPLTickerCtaCLickEvent(element, urlText)
