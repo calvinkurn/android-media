@@ -876,6 +876,41 @@ class PlayAnalytic(
         return base
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
+    // Tracker ID: 42864
+    fun clickCartFromSheet () {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - cart button bottom sheet")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - ${mChannelType.value}")
+            .setCustomProperty(KEY_TRACKER_ID, "42864")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
+    // Tracker ID: 42863
+    fun impressCartFromBottomSheet () {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEventAction("view - cart button bottom sheet")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - ${mChannelType.value}")
+            .setCustomProperty(KEY_TRACKER_ID, "42863")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_CATEGORY = "eventCategory"

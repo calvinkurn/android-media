@@ -78,6 +78,8 @@ class BottomSheetHeader : ConstraintLayout {
             NotificationUnify.COUNTER_TYPE,
             NotificationUnify.COLOR_PRIMARY,
         )
+
+        if (text.isNotBlank()) mListener?.impressIcon(this)
     }
 
     fun setListener(listener: Listener?) {
@@ -87,5 +89,7 @@ class BottomSheetHeader : ConstraintLayout {
     interface Listener {
         fun onCloseClicked(view: BottomSheetHeader)
         fun onIconClicked(view: BottomSheetHeader)
+
+        fun impressIcon(view: BottomSheetHeader)
     }
 }
