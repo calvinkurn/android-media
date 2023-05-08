@@ -29,6 +29,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 112",
                 quantity = 5,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -46,6 +47,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 113",
                 quantity = 3,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -69,6 +71,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 112",
                 quantity = 0,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -86,6 +89,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 113",
                 quantity = 100,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -128,7 +132,8 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 discountPercentage = "20",
                 similarProducts = emptyList(),
                 categoryId = "983",
-                position = 1
+                position = 1,
+                isVariant = false
             ),
             RecipeProductUiModel(
                 id = "2148241524",
@@ -145,7 +150,8 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 discountPercentage = "20",
                 similarProducts = emptyList(),
                 categoryId = "983",
-                position = 2
+                position = 2,
+                isVariant = false
             )
         )
 
@@ -168,7 +174,8 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 discountPercentage = "20",
                 similarProducts = emptyList(),
                 categoryId = "983",
-                position = 1
+                position = 1,
+                isVariant = false
             ),
             RecipeProductUiModel(
                 id = "2148241524",
@@ -185,7 +192,8 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 discountPercentage = "20",
                 similarProducts = emptyList(),
                 categoryId = "983",
-                position = 2
+                position = 2,
+                isVariant = false
             )
         )
 
@@ -202,6 +210,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 112",
                 quantity = 5,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
@@ -224,6 +233,7 @@ class TokoNowRecipeSimilarProductViewModelTest : TokoNowRecipeSimilarProductView
                 name = "kaos testing 112",
                 quantity = 5,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",

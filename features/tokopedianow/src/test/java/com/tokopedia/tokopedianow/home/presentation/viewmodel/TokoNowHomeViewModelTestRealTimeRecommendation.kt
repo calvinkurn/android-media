@@ -86,7 +86,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
         val productList = listOf(
@@ -246,9 +246,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, "2", 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, "2", 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
-            viewModel.onCartQuantityChanged(channelId, "5", 2, "1", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, "5", 2, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
         val productList = listOf(
@@ -421,7 +421,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             onGetRecommendation_thenReturn(emptyRtrWidgetListResponse)
@@ -576,7 +576,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             val productList = listOf(
@@ -692,7 +692,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetRealTimeRecommendationCalled(
@@ -754,7 +754,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
+            viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             viewModel.removeRealTimeRecommendation(channelId, TokoNowLayoutType.PRODUCT_RECOM)
@@ -863,6 +863,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productId = "2",
                 quantity = 1,
                 shopId = "5",
+                stock = 0,
+                isVariant = false,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
             advanceTimeBy(CHANGE_QUANTITY_DELAY)

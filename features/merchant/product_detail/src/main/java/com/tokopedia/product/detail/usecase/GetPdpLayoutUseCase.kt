@@ -120,6 +120,13 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         variantOptionID
                         URLMaxRes
                       }
+                      recommendation {
+                        lightIcon
+                        darkIcon
+                        iconText
+                        bottomsheetTitle
+                        recommendation
+                      }
                       videos {
                         source
                         url

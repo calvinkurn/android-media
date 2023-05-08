@@ -20,7 +20,9 @@ data class AdGroupsParams(
     @SerializedName("group_type")
     val groupType:Int = 0,
     @SerializedName("page")
-    val page:Int = 1
+    val page:Int = 1,
+    @SerializedName("group_id")
+    val groupId:String = ""
 )
 
 data class AdGroupStatsParam(

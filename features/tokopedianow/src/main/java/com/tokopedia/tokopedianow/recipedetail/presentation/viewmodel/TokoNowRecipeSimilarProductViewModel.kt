@@ -12,6 +12,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateProductQuantity
@@ -24,6 +26,8 @@ class TokoNowRecipeSimilarProductViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -32,6 +36,8 @@ class TokoNowRecipeSimilarProductViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -54,12 +60,19 @@ class TokoNowRecipeSimilarProductViewModel @Inject constructor(
     }
 
     fun onViewCreated(productList: List<RecipeProductUiModel>) {
-        layoutItemList.addAll(productList)
+        initAffiliateCookie()
+        addVisitableItems(productList)
+        setMiniCartData()
+    }
 
+    private fun setMiniCartData() {
         miniCartData?.let {
             updateProductQuantity(it)
         }
+    }
 
+    private fun addVisitableItems(productList: List<RecipeProductUiModel>) {
+        layoutItemList.addAll(productList)
         _visitableItems.postValue(layoutItemList)
     }
 
