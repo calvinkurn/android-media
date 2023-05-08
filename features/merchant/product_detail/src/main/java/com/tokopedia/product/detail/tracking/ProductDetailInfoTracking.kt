@@ -5,7 +5,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.track.constant.TrackerConstant
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by yovi.putra on 28/04/23"
@@ -15,60 +14,60 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 object ProductDetailInfoTracking {
 
     fun onClickAnnotationGeneric(
-        component: ComponentTrackDataModel,
+        trackDataModel: ComponentTrackDataModel,
         productInfo: DynamicProductInfoP1?,
-        key: String
+        key: String,
+        userId: String
     ) {
-        val action = "click - information button on oneliner component"
-
-        TrackingUtil.addComponentTracker(
-            mutableMapOf(
-                TrackerConstant.EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                TrackerConstant.EVENT_ACTION to action,
-                TrackerConstant.EVENT_CATEGORY to ProductTrackingConstant.Category.PDP,
-                TrackerConstant.EVENT_LABEL to key,
-                TrackingConstant.Hit.TRACKER_ID to "38045",
-                TrackerConstant.BUSINESS_UNIT to ProductTrackingConstant.Category.PDP,
-                TrackerConstant.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
-            ),
+        doTracking(
+            component = trackDataModel,
             productInfo = productInfo,
-            componentTrackDataModel = component,
-            elementName = action
+            event = ProductTrackingConstant.PDP.EVENT_CLICK_PG,
+            action = "click - annotation lihat panduan ukuran on pdp",
+            trackerId = "43296",
+            userId = userId
         )
     }
 
     fun onImpressionAnnotationGeneric(
-        trackingQueue: TrackingQueue?,
-        componentTrackDataModel: ComponentTrackDataModel,
+        trackDataModel: ComponentTrackDataModel,
         productInfo: DynamicProductInfoP1?,
-        userId: String,
-        lcaWarehouseId: String,
-        label: String
+        userId: String
     ) {
-        val productId = productInfo?.basic?.productID ?: ""
-        val mapEvent = TrackingUtil.createCommonImpressionTracker(
+        doTracking(
+            component = trackDataModel,
             productInfo = productInfo,
-            componentTrackDataModel = componentTrackDataModel,
-            userId = userId,
-            lcaWarehouseId = lcaWarehouseId,
-            customAction = "view - pdp oneliner component",
-            customCreativeName = "",
-            customItemName = "product detail page - $productId",
-            customLabel = "",
-            customPromoCode = "",
-            customItemId = "text:$label"
-        )?.apply {
-            put(TrackingConstant.Hit.TRACKER_ID, "18022")
-            put(
-                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT,
-                ProductTrackingConstant.Category.PDP
-            )
-            put(
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE,
-                ProductTrackingConstant.Tracking.CURRENT_SITE
-            )
-        }
+            event = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS,
+            action = "impression - annotation lihat panduan ukuran on pdp",
+            trackerId = "43295",
+            userId = userId
+        )
+    }
 
-        trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
+    private fun doTracking(
+        component: ComponentTrackDataModel,
+        productInfo: DynamicProductInfoP1?,
+        event: String,
+        action: String,
+        trackerId: String,
+        userId: String
+    ) {
+        val productId = productInfo?.basic?.productID.orEmpty()
+        val label = "Product_ID : $productId"
+        val category = "product detail category"
+        val user = "$userId User ID: $userId"
+
+        TrackingUtil.addClickEvent(
+            productInfo = productInfo,
+            trackDataModel = component,
+            action = action,
+            trackerId = trackerId,
+            eventLabel = label,
+            modifier = {
+                it[TrackerConstant.EVENT] = event
+                it[TrackerConstant.EVENT_CATEGORY] = category
+                it[TrackerConstant.USERID] = user
+            }
+        )
     }
 }

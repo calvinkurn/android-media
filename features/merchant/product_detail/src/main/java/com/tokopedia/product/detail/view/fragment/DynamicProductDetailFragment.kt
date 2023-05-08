@@ -147,7 +147,6 @@ import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
-import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -309,6 +308,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.android.synthetic.main.topads_pdp_bottom_sheet_single_ad.*
 import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -1184,9 +1184,10 @@ open class DynamicProductDetailFragment :
         )
 
         ProductDetailInfoTracking.onClickAnnotationGeneric(
-            component = trackData ?: ComponentTrackDataModel(),
+            trackDataModel = trackData ?: ComponentTrackDataModel(),
             productInfo = viewModel.getDynamicProductInfoP1,
-            key = key
+            key = key,
+            userId = viewModel.userId
         )
     }
 
@@ -4444,7 +4445,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }
