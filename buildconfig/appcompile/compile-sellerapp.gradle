@@ -119,6 +119,7 @@ includeIfEnabled("features:merchant:seller_feedback")
 includeIfEnabled("features:merchant:campaign_list")
 includeIfEnabled("features:merchant:campaign_common")
 includeIfEnabled("features:merchant:seller_persona")
+includeIfEnabled("features:merchant:centralized_promo")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")

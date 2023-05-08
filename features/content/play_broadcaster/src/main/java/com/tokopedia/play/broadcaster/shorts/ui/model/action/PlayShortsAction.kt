@@ -52,4 +52,6 @@ sealed interface PlayShortsAction {
     data class SetCoverUploadedSource(
         val source: Int
     ) : PlayShortsAction
+
+    object ResetUploadState : PlayShortsAction
 }

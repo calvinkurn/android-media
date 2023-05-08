@@ -184,10 +184,10 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -451,7 +451,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
@@ -459,7 +459,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
@@ -467,7 +467,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startCustomMetric(it, tag)
             }
@@ -475,7 +475,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopCustomMetric(it, tag)
             }
@@ -483,7 +483,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.invalidateMonitoringPlt(it)
             }
@@ -491,7 +491,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageActivity)?.stopShopHomeTabPerformanceMonitoring()
+        (activity as? ShopPageHeaderActivity)?.stopShopHomeTabPerformanceMonitoring()
     }
 
     override fun onCreateView(
@@ -527,7 +527,7 @@ open class ShopPageHomeFragment :
 
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     getRecyclerView(view)?.visible()
                     setShopHomeWidgetLayoutData(it.data)
@@ -555,12 +555,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeShowHomeTabConfetti() {
-        viewModel?.isShowHomeTabConfettiLiveData?.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                setConfettiAlreadyShown()
-                showConfetti()
+        viewModel?.isShowHomeTabConfettiLiveData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it) {
+                    setConfettiAlreadyShown()
+                    showConfetti()
+                }
             }
-        })
+        )
     }
 
     open fun initView() {
@@ -752,7 +755,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
+        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onResume() {
@@ -1606,7 +1609,7 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -2465,7 +2468,7 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            if(!isOwner) {
+            if (!isOwner) {
                 shopPageHomeTracking.clickProduct(
                     isLogin,
                     shopHomeProductViewModel.name ?: "",
@@ -2498,7 +2501,7 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            if(!isOwner) {
+            if (!isOwner) {
                 shopPageHomeTracking.impressionProduct(
                     isLogin,
                     shopHomeProductViewModel.name ?: "",
@@ -2907,7 +2910,7 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
                 shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
-            if(!isOwner) {
+            if (!isOwner) {
                 shopPageHomeTracking.clickProductShopDecoration(
                     ShopPageHomeTrackingMapper.mapToProductShopDecorationTrackerDataModel(
                         shopId,
@@ -3175,7 +3178,7 @@ open class ShopPageHomeFragment :
     }
 
     override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        if(!isOwner) {
+        if (!isOwner) {
             shopPageHomeTracking.clickCta(
                 ShopPageHomeTrackingMapper.mapToShopHomeCarouselProductWidgetClickCtaTrackerModel(
                     shopId,
@@ -3475,7 +3478,7 @@ open class ShopPageHomeFragment :
             shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            if(!isOwner){
+            if (!isOwner) {
                 shopPageHomeTracking.clickCampaignWidgetProduct(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
                         shopId,
@@ -3506,7 +3509,7 @@ open class ShopPageHomeFragment :
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            if(!isOwner){
+            if (!isOwner) {
                 shopPageHomeTracking.onImpressionCampaignWidgetProduct(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
                         shopId,
@@ -3554,7 +3557,7 @@ open class ShopPageHomeFragment :
         context?.run {
             if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
                 model.data?.firstOrNull()?.let { flashSaleItem ->
-                    if(!isOwner){
+                    if (!isOwner) {
                         shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
                             ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
                                 shopId,
@@ -3602,7 +3605,7 @@ open class ShopPageHomeFragment :
                 handleClickRemindMe(model)
             } else {
                 model.data?.firstOrNull()?.let {
-                    if(!isOwner){
+                    if (!isOwner) {
                         shopPageHomeTracking.clickReminderCampaignWidget(
                             ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
                                 shopId,
@@ -3632,7 +3635,7 @@ open class ShopPageHomeFragment :
                 redirectToLoginPage()
             }
             model.data?.firstOrNull()?.let {
-                if(!isOwner){
+                if (!isOwner) {
                     shopPageHomeTracking.clickReminderCampaignWidget(
                         ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
                             shopId,
@@ -3651,7 +3654,7 @@ open class ShopPageHomeFragment :
 
     override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
         widgetModel.data?.firstOrNull()?.let {
-            if(!isOwner){
+            if (!isOwner) {
                 shopPageHomeTracking.clickCampaignWidgetProduct(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
                         shopId,
@@ -3680,7 +3683,7 @@ open class ShopPageHomeFragment :
         parentPosition: Int
     ) {
         flashSaleUiModel?.data?.firstOrNull()?.let {
-            if(!isOwner){
+            if (!isOwner) {
                 shopPageHomeTracking.onImpressionCampaignWidgetProduct(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
                         shopId,
@@ -3733,7 +3736,7 @@ open class ShopPageHomeFragment :
 
     override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            if(!isOwner){
+            if (!isOwner) {
                 shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
                         shopId,
@@ -3802,7 +3805,7 @@ open class ShopPageHomeFragment :
                 shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
                 shopHomeNewProductLaunchCampaignUiModel.isFestivity
             )
-            if(!isOwner) {
+            if (!isOwner) {
                 shopPageHomeTracking.impressionShopHomeCampaignWidget(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
                         shopId,
@@ -3824,7 +3827,7 @@ open class ShopPageHomeFragment :
             val campaignId = itemFlashSale.campaignId
             val campaignName = itemFlashSale.name
             val statusCampaign = itemFlashSale.statusCampaign
-            if(!isOwner) {
+            if (!isOwner) {
                 shopPageHomeTracking.impressionShopHomeCampaignWidget(
                     ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
                         shopId,
@@ -3855,7 +3858,7 @@ open class ShopPageHomeFragment :
         getLatestShopHomeWidgetLayoutData()
     }
 
-    private fun getLatestShopHomeWidgetLayoutData(){
+    private fun getLatestShopHomeWidgetLayoutData() {
         globalErrorShopPage?.hide()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -3999,15 +4002,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
     private fun getSelectedTabName(): String {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
+        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
@@ -4019,15 +4022,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
+        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
     }
 
     private fun setConfettiAlreadyShown() {
-        (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
+        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
     }
 
     fun setHomeTabListBackgroundColor(listBackgroundColor: List<String>) {
@@ -4038,7 +4041,7 @@ open class ShopPageHomeFragment :
         this.homeTabBackgroundPatternImage = backgroundPatternImage
     }
 
-    fun setHomeTabLottieUrl(lottieUrl: String){
+    fun setHomeTabLottieUrl(lottieUrl: String) {
         this.homeTabLottieUrl = lottieUrl
     }
 
@@ -4322,7 +4325,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? NewShopPageFragment)?.updateMiniCartWidget()
+        (parentFragment as? ShopPageHeaderFragment)?.updateMiniCartWidget()
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
@@ -4331,7 +4334,6 @@ open class ShopPageHomeFragment :
     }
 
     private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetActionMenuBottomSheet {
-
         val playWidgetActionMenuBottomSheet = PlayWidgetActionMenuBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader

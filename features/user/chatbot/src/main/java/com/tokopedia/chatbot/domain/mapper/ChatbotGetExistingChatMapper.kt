@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.domain.mapper
 
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
@@ -11,6 +10,7 @@ import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
@@ -18,12 +18,14 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTI
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -36,8 +38,11 @@ import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyButton
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -61,14 +66,88 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CHAT_SEPARATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
-            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
+            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickyButtonActionsViewModel(
+                chatItemPojoByDateByTime
+            )
             TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
-            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(
+                chatItemPojoByDateByTime,
+                attachmentIds
+            )
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
-            DYNAMIC_ATTACHMENT -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+            DYNAMIC_ATTACHMENT -> {
+                val dynamicAttachment = gson.fromJson(
+                    chatItemPojoByDateByTime.attachment.attributes,
+                    DynamicAttachment::class.java
+                )
+                val contentCode =
+                    dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+                if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(
+                        contentCode
+                    )
+                ) {
+                    when (contentCode) {
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+                    }
+                } else {
+                    convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+                }
+            }
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    private fun convertToDynamicAttachmentwithContentCode105(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicStickyButtonUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicStickyButton::class.java
+        )
+        return DynamicStickyButtonUiModel(
+            messageId = pojo.msgId,
+            fromUid = pojo.senderId,
+            from = pojo.senderName,
+            fromRole = pojo.role,
+            attachmentId = pojo.attachment.id,
+            attachmentType = pojo.attachmentType.toString(),
+            actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
+            contentText = dynamicStickyButton.textMessage,
+            replyTime = pojo.replyTime,
+            status = pojo.status
+        )
+    }
+
+    private fun convertToDynamicAttachment105withContentCode106(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            ChatActionPojo::class.java
+        )
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsgContent(dynamicStickyButton.text)
+            .build()
+    }
+
+    private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {
+        return ChatActionBubbleUiModel(
+            pojo.text,
+            pojo.value,
+            pojo.action
+        )
     }
 
     /**
@@ -88,7 +167,10 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             .build()
     }
 
-    private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {
+    private fun convertToInvoiceSentUiModel(
+        pojo: Reply,
+        attachmentIds: List<String>
+    ): AttachInvoiceSentUiModel {
         val invoiceAttributes = pojo.attachment.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
         val needSync = attachmentIds.contains(pojo.attachment.id)
@@ -102,19 +184,19 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////////////// QUICK REPLIES
 
     private fun convertToQuickReply(reply: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create()
-            .fromJson<QuickReplyAttachmentAttributes>(
-                reply.attachment?.attributes,
+        val pojoAttribute = gson
+            .fromJson(
+                reply.attachment.attributes,
                 QuickReplyAttachmentAttributes::class.java
             )
         return QuickReplyListUiModel(
-            reply.msgId.toString(),
-            reply.senderId.toString(),
+            reply.msgId,
+            reply.senderId,
             reply.senderName,
             reply.role,
             reply.msg,
-            reply.attachment?.id ?: "",
-            reply.attachment?.type.toString(),
+            reply.attachment.id,
+            reply.attachment.type.toString(),
             reply.replyTime,
             convertToQuickRepliesList(pojoAttribute.quickReplies),
             reply.source
@@ -138,17 +220,17 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////////////// CHAT BALLOON
 
     private fun convertToBalloonAction(pojo: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(
-            pojo.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(
+            pojo.attachment.attributes,
             ChatActionBalloonSelectionAttachmentAttributes::class.java
         )
         return ChatActionSelectionBubbleUiModel(
-            pojo.msgId.toString(),
-            pojo.senderId.toString(),
+            pojo.msgId,
+            pojo.senderId,
             pojo.senderName,
             pojo.role,
-            pojo.attachment?.id ?: "",
-            pojo.attachment?.type.toString(),
+            pojo.attachment.id,
+            pojo.attachment.type.toString(),
             pojo.replyTime,
             pojo.msg,
             convertToChatActionBubbleViewModelList(pojoAttribute),
@@ -169,9 +251,9 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////////////// INVOICE SELECTION
 
     private fun convertToInvoicesSelection(pojo: Reply): AttachInvoiceSelectionUiModel {
-        val invoicesSelectionPojo = GsonBuilder().create().fromJson<ListInvoicesSelectionPojo>(
+        val invoicesSelectionPojo = gson.fromJson(
             pojo
-                .attachment?.attributes,
+                .attachment.attributes,
             ListInvoicesSelectionPojo::class.java
         )
         val invoiceAttr = invoicesSelectionPojo.invoices
@@ -200,12 +282,12 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         }
 
         return AttachInvoiceSelectionUiModel(
-            pojo.msgId.toString(),
-            pojo.senderId.toString(),
+            pojo.msgId,
+            pojo.senderId,
             pojo.senderName,
             pojo.role,
-            pojo.attachment?.id ?: "",
-            pojo.attachment?.type.toString(),
+            pojo.attachment.id,
+            pojo.attachment.type.toString(),
             pojo.replyTime,
             list,
             pojo.msg,
@@ -217,9 +299,9 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////// CHAT SEPRATOR
 
     private fun convertToChatSeprator(pojo: Reply): ChatSepratorUiModel {
-        val chatDividerPojo = GsonBuilder().create().fromJson<ChatDividerResponse>(
+        val chatDividerPojo = gson.fromJson(
             pojo
-                .attachment?.attributes,
+                .attachment.attributes,
             ChatDividerResponse::class.java
         )
         return ChatSepratorUiModel(
@@ -232,18 +314,17 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////// HELPFULL QUESTIONS
 
     private fun convertToHelpQuestionViewModel(chatItemPojoByDateByTime: Reply): HelpFullQuestionsUiModel {
-        val helpFullQuestionPojo = GsonBuilder().create()
-            .fromJson<HelpFullQuestionPojo>(
-                chatItemPojoByDateByTime.attachment?.attributes,
-                HelpFullQuestionPojo::class.java
-            )
+        val helpFullQuestionPojo = gson.fromJson(
+            chatItemPojoByDateByTime.attachment.attributes,
+            HelpFullQuestionPojo::class.java
+        )
         return HelpFullQuestionsUiModel(
-            chatItemPojoByDateByTime.msgId.toString(),
-            chatItemPojoByDateByTime.senderId.toString(),
+            chatItemPojoByDateByTime.msgId,
+            chatItemPojoByDateByTime.senderId,
             chatItemPojoByDateByTime.senderName,
             chatItemPojoByDateByTime.role,
-            chatItemPojoByDateByTime.attachment?.id ?: "",
-            chatItemPojoByDateByTime.attachment?.type.toString(),
+            chatItemPojoByDateByTime.attachment.id,
+            chatItemPojoByDateByTime.attachment.type.toString(),
             chatItemPojoByDateByTime.replyTime,
             chatItemPojoByDateByTime.msg,
             helpFullQuestionPojo.helpfulQuestion,
@@ -254,18 +335,17 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////// CSAT OPTIONS
 
     private fun convertToCsatOptionsViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val csatAttributesPojo = GsonBuilder().create()
-            .fromJson<CsatAttributesPojo>(
-                chatItemPojoByDateByTime.attachment?.attributes,
-                CsatAttributesPojo::class.java
-            )
+        val csatAttributesPojo = gson.fromJson(
+            chatItemPojoByDateByTime.attachment.attributes,
+            CsatAttributesPojo::class.java
+        )
         return CsatOptionsUiModel(
-            chatItemPojoByDateByTime.msgId.toString(),
-            chatItemPojoByDateByTime.senderId.toString(),
+            chatItemPojoByDateByTime.msgId,
+            chatItemPojoByDateByTime.senderId,
             chatItemPojoByDateByTime.senderName,
             chatItemPojoByDateByTime.role,
-            chatItemPojoByDateByTime.attachment?.id ?: "",
-            chatItemPojoByDateByTime.attachment?.type.toString(),
+            chatItemPojoByDateByTime.attachment.id,
+            chatItemPojoByDateByTime.attachment.type.toString(),
             chatItemPojoByDateByTime.replyTime,
             chatItemPojoByDateByTime.msg,
             csatAttributesPojo.csat,
@@ -276,14 +356,13 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     // ///////// STICKY BUTTON
 
     private fun convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val stickyActionButtonPojo = GsonBuilder().create()
-            .fromJson<StickyActionButtonPojo>(
-                chatItemPojoByDateByTime.attachment?.attributes,
-                StickyActionButtonPojo::class.java
-            )
+        val stickyActionButtonPojo = gson.fromJson(
+            chatItemPojoByDateByTime.attachment.attributes,
+            StickyActionButtonPojo::class.java
+        )
         return StickyActionButtonUiModel(
-            chatItemPojoByDateByTime.msgId.toString(),
-            chatItemPojoByDateByTime.senderId.toString(),
+            chatItemPojoByDateByTime.msgId,
+            chatItemPojoByDateByTime.senderId,
             chatItemPojoByDateByTime.senderName,
             chatItemPojoByDateByTime.role,
             chatItemPojoByDateByTime.attachment.id,
@@ -297,8 +376,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply):
         ImageUploadUiModel {
-        val pojoAttribute = gson.fromJson<ChatbotImageUploadAttributes>(
-            chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(
+            chatItemPojoByDateByTime.attachment.attributes,
             ChatbotImageUploadAttributes::class.java
         )
 
@@ -311,7 +390,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
 
     private fun convertToVideoUpload(chatItemPojoByDateByTime: Reply):
         VideoUploadUiModel {
-        val pojoAttribute = gson.fromJson<ChatbotVideoUploadAttributes>(
+        val pojoAttribute = gson.fromJson(
             chatItemPojoByDateByTime.attachment.attributes,
             ChatbotVideoUploadAttributes::class.java
         )

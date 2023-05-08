@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class RestRepositoryStub @Inject constructor(): RestRepository {
+class RestRepositoryStub @Inject constructor() : RestRepository {
     lateinit var responses: Map<Type, RestResponse>
     var isError = false
     var delayMs = 0L
