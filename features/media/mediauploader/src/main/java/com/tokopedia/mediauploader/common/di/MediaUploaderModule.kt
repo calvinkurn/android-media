@@ -133,7 +133,6 @@ class MediaUploaderModule {
     }
 
     @Provides
-    @MediaUploaderQualifier
     fun provideVideoCompressionRepository(
         @ApplicationContext context: Context,
         videoCompressionCacheManager: VideoCompressionCacheManager
