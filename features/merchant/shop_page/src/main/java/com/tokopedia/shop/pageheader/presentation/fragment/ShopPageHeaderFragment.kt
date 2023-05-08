@@ -497,9 +497,9 @@ class ShopPageHeaderFragment :
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ShopContentCreationOptionBottomSheet -> {
+            is ShopPageHeaderContentCreationOptionBottomSheet -> {
                 childFragment.setData(mBroadcasterConfig)
-                childFragment.setListener(object : ShopContentCreationOptionBottomSheet.Listener {
+                childFragment.setListener(object : ShopPageHeaderContentCreationOptionBottomSheet.Listener {
                     override fun onShortsCreationClicked() {
                         goToShortsCreation()
                     }
@@ -510,7 +510,7 @@ class ShopPageHeaderFragment :
 
                     override fun onPerformanceDashboardEntryClicked() {
                         playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
-                            shopViewModel?.userShopId.orEmpty()
+                            shopHeaderViewModel?.userShopId.orEmpty()
                         )
                         goToPerformanceDashboard()
                     }

@@ -87,7 +87,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
     private val getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>,
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
