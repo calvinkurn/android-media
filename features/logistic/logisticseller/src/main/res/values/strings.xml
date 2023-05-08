@@ -27,4 +27,12 @@
     <string name="title_failed_reschedule_pickup_dialog">Yah, gagal ubah jadwal pick-up</string>
     <string name="error_message_reason_below_min_char">Min. 15 karakter</string>
     <string name="error_message_reason_over_max_char">Sudah mencapai maks. char</string>
+    <string name="btn_rts_request">Ya, Sudah Terima</string>
+    <string name="btn_rts_help">Bantuan</string>
+    <string name="title_rts_success_dialog">Berhasil konfirmasi pengembalian barang</string>
+    <string name="description_rts_success_dialog">Yay, pengembalian barang berhasil di konfirmasi</string>
+    <string name="btn_rts_understand">Mengerti</string>
+    <string name="title_rts_failed_dialog">Yaah, gagal pengembalian barang</string>
+    <string name="description_rts_failed_dialog">Konfirmasi pengembalian barang kamu gagal, silahkan coba lagi ya</string>
+    <string name="description_failed_load_image_rts">Oops, foto gagal dimuat. Pastikan koneksimu lancar dan coba beberapa saat lagi, ya.\n%s</string>
 </resources>

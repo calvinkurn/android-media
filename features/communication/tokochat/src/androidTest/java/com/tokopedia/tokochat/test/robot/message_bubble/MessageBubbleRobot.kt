@@ -12,4 +12,10 @@ object MessageBubbleRobot {
             ViewMatchers.withId(R.id.tokochat_tv_msg_read_more)
         ).perform(ViewActions.click())
     }
+
+    fun clickCheckGuide() {
+        Espresso.onView(
+            ViewMatchers.withId(R.id.tokochat_tv_msg_censor_guide)
+        ).perform(ViewActions.click())
+    }
 }

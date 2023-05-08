@@ -5,6 +5,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailPayments
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.PofDataUiModel
 
 object SomDynamicPaymentResponseMapper {
     fun mapResponseToPaymentsUiModel(
@@ -51,6 +52,19 @@ object SomDynamicPaymentResponseMapper {
                 val mvcData = MVCUsageUiModel(description, value, valueDetail)
                 SomDetailData(mvcData, SomConsts.DETAIL_MVC_USAGE_TYPE)
             } else null
+        }
+    }
+
+    fun mapResponseToPofDataUiModel(
+        response: SomDynamicPriceResponse.GetSomDynamicPrice.PofData?
+    ): SomDetailData? {
+        return response?.let {
+            val header = it.header
+            val footer = it.footer
+            val label = it.label
+            val value = it.value
+            val pofDataUiModel = PofDataUiModel(header, footer, label, value)
+            SomDetailData(pofDataUiModel, SomConsts.DETAIL_POF_DATA_TYPE)
         }
     }
 }

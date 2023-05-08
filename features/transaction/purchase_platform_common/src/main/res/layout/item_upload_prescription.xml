@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/upload_prescription_layout"
-    android:orientation="vertical"
-    android:background="@color/Unify_Background">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
 
     <View
         android:id="@+id/occ_divider"
@@ -18,76 +18,70 @@
         android:id="@+id/container_upload_prescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_pp_rounded_grey"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        >
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_pp_rounded_grey">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/upload_icon"
-            android:layout_width="@dimen/spacing_lvl5"
-            android:layout_height="@dimen/spacing_lvl5"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/pp_cd_image_upload_prescription"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/upload_icon"
-            app:layout_constraintTop_toTopOf="@id/upload_icon"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="@id/upload_icon"
             app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
-            android:paddingTop="@dimen/spacing_lvl3"
-            android:paddingBottom="@dimen/spacing_lvl3"
-            android:orientation="vertical">
+            app:layout_constraintStart_toEndOf="@id/upload_icon"
+            app:layout_constraintTop_toTopOf="@id/upload_icon">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/upload_prescription_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
-                app:typographyType="heading_5"
-                android:textColor="@color/Unify_N700_96"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                tools:text="Upload Foto Resep"
-                />
+                tools:text="Upload Foto Resep" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/upload_description_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_NN950"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                app:typographyType="small"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler"
-                tools:text="2 foto resep di-upload"
-                android:visibility="gone"
-                />
+                tools:text="2 foto resep di-upload" />
 
         </LinearLayout>
 
-
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_prescription_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pp_chevron_right"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

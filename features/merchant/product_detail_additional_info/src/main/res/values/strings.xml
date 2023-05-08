@@ -3,4 +3,7 @@
     <string name="pdp_educational_error_title">Oops, info gagal ditampilkan</string>
     <string name="pdp_educational_error_desc">Coba muat ulang untuk lihat infonya, yuk. Pastikan juga internetmu lancar, ya.</string>
     <string name="pdp_educational_error_btn">Coba Lagi</string>
+
+    <string name="pdp_post_atc_fallback_title">Produk berhasil ditambahkan</string>
+    <string name="pdp_post_atc_fallback_button">Lihat Keranjang</string>
 </resources>

@@ -13,17 +13,21 @@ import rx.Observable
 import javax.inject.Inject
 
 class GetRatesUseCase @Inject constructor(
-        private val converter: ShippingDurationConverter,
-        private val scheduler: SchedulerProvider) {
+    private val converter: ShippingDurationConverter,
+    private val scheduler: SchedulerProvider
+) {
 
     private var gql: GraphqlUseCase? = null
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
         val query = ratesQuery()
-        val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, mapOf(
+        val gqlRequest = GraphqlRequest(
+            query,
+            RatesGqlResponse::class.java,
+            mapOf(
                 "param" to param.toMap(),
                 "metadata" to param.toMetadata()
-        )
+            )
         )
         // Need to init usecase here to prevent request cleared since this usecase will be called multiple time in a very tight interval of each call.
         // Will consider this as tech debt until find a proper solution
@@ -32,18 +36,17 @@ class GetRatesUseCase @Inject constructor(
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
-                .map { graphqlResponse: GraphqlResponse ->
-                    val response: RatesGqlResponse =
-                            graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
-                                    ?: throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
-                    converter.convertModel(response.ratesData)
-                }
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
+            .map { graphqlResponse: GraphqlResponse ->
+                val response: RatesGqlResponse =
+                    graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
+                        ?: throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
+                converter.convertModel(response.ratesData)
+            }
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
     }
 
     fun unsubscribe() {
         gql?.unsubscribe()
     }
-
 }

@@ -8,7 +8,6 @@ import com.tokopedia.cart.databinding.LayoutBottomsheetGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Context, actionCallback: () -> Unit) {
-
     val bottomSheet = BottomSheetUnify().apply {
         showCloseIcon = true
         showHeader = true
@@ -25,5 +24,4 @@ fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Contex
 
     bottomSheet.setChild(binding.root)
     bottomSheet.show(fragmentManager, "Cart Global Error")
-
 }

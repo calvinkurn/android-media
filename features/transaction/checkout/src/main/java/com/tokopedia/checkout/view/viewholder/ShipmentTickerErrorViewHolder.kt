@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapterActionListener): RecyclerView.ViewHolder(itemView) {
+class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
 
     internal var data: ShipmentTickerErrorModel = ShipmentTickerErrorModel()
     private val ticker: Ticker? = itemView.findViewById(R.id.shipment_ticker_error)
@@ -22,8 +22,10 @@ class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapte
             ticker?.setTextDescription(shipmentTickerErrorModel.errorMessage)
             ticker?.visible()
             ticker?.post {
-                ticker?.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                ticker?.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
                 ticker?.requestLayout()
             }
         }

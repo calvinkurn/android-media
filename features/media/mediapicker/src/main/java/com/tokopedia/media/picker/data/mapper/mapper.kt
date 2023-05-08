@@ -12,6 +12,7 @@ fun mediaToUiModel(mediaList: List<Media>): List<MediaUiModel> {
             id = it.id,
             uri = it.uri,
             file = it.path.asPickerFile(),
+            duration = it.duration
         )
     }
 }
@@ -24,7 +25,7 @@ fun MediaUiModel.toModel() = Media(
 fun Album.toUiModel() = AlbumUiModel(
     id = id,
     name = name,
-    preview = preview,
+    uri = uri,
     count = count,
 )
 

@@ -7,10 +7,10 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
-import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -18,7 +18,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?, fragmentManager: FragmentManager, context: Context) {
-
     val bottomSheet = BottomSheetUnify().apply {
         showKnob = true
         showCloseIcon = false
@@ -55,8 +54,8 @@ private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBin
     if (summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.textTotalCashbackValue.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.sellerCashbackValue, false)
-                    .replace("Rp", "")
-                    .removeDecimalSuffix()
+                .replace("Rp", "")
+                .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         binding.textTotalCashbackTitle.apply {

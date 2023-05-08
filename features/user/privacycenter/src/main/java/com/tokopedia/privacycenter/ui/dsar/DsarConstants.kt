@@ -14,9 +14,7 @@ object DsarConstants {
 
     const val ONE_TRUST_FORMAT_1 = "yyyyMMdd"
 
-    const val STATUS_REJECTED = "REJECTED"
-    const val STATUS_COMPLETED = "COMPLETED"
-    const val STATUS_CLOSED = "CLOSED"
+    val DSAR_STATUS = listOf("rejected", "complete", "closed")
 
     const val PERSONAL_LABEL = "<b>Informasi Pribadi:</b><br>User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman"
     const val PAYMENT_LABEL = "<b>Informasi Pembayaran:</b><br>Daftar rekening bank, daftar kartu kredit, daftar kartu debit"

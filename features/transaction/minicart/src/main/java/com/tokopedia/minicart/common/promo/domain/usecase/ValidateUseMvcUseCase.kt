@@ -14,9 +14,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ValidateUseMvcUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                private val validateUseMvcMapper: ValidateUseMvcMapper,
-                                                private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<ValidateUseMvcData>() {
+class ValidateUseMvcUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val validateUseMvcMapper: ValidateUseMvcMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<ValidateUseMvcData>() {
 
     private var param: ValidateUseMvcParam? = null
 

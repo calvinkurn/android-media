@@ -54,7 +54,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAtta
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
@@ -67,6 +67,7 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
@@ -120,7 +121,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatListStickerUseCase: ChatListStickerUseCaseStub
 
     @Inject
-    protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
+    protected lateinit var getTemplateChatRoomUseCase: GetTemplateUseCaseStub
 
     @Inject
     protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
@@ -207,6 +208,7 @@ abstract class TopchatRoomTest {
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
+    protected var successGetTemplateResponse = GetChatTemplateResponse()
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
@@ -294,6 +296,10 @@ abstract class TopchatRoomTest {
             "success_get_chat_setting_fraud_alert.json",
             RoomSettingResponse::class.java
         )
+        successGetTemplateResponse = AndroidFileUtil.parse(
+            "template/success_get_template.json",
+            GetChatTemplateResponse::class.java
+        )
     }
 
     private fun setupDaggerComponent() {
@@ -317,7 +323,7 @@ abstract class TopchatRoomTest {
         chatListStickerUseCase.response = stickerListAsBuyer
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
+        getTemplateChatRoomUseCase.response = successGetTemplateResponse
         toggleFavouriteShopUseCaseStub.response = true
     }
 
@@ -683,7 +689,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertComposedTextValue(msg: String) {
         onView(withIndex(withId(R.id.new_comment), 0)).check(
-            matches(withText(msg))
+            matches(withSubstring(msg))
         )
     }
 
@@ -847,18 +853,6 @@ abstract class TopchatRoomTest {
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
-    }
-
-    protected fun generateTemplateResponse(
-        enable: Boolean = true,
-        success: Boolean = true,
-        templates: List<String> = listOf("Template Chat 1", "Template Chat 2")
-    ): TemplateData {
-        return TemplateData().apply {
-            this.isIsEnable = enable
-            this.isSuccess = success
-            this.templates = templates
-        }
     }
 
     protected fun clickCloseAttachmentPreview(position: Int) {

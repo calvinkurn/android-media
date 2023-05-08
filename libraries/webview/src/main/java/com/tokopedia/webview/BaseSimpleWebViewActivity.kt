@@ -79,7 +79,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         logWebViewApplink()
     }
 
-    //track campaign in case there is utm/gclid in url
+    // track campaign in case there is utm/gclid in url
     fun trackCampaign(uri: Uri) {
         TrackApp.getInstance().gtm.sendCampaign(this, uri.toString(), screenName, false)
     }
@@ -140,12 +140,14 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         val f = fragment
-        //special behavior to handle finish if the url is paylater AN-34892
+        // special behavior to handle finish if the url is paylater AN-34892
         if (f is BaseSessionWebViewFragment) {
             val currentUrl = f.webView?.url
             if (currentUrl != null &&
-                (currentUrl.contains("/paylater/acquisition/status") ||
-                        currentUrl.contains("/paylater/thank-you"))
+                (
+                    currentUrl.contains("/paylater/acquisition/status") ||
+                        currentUrl.contains("/paylater/thank-you")
+                    )
             ) {
                 this.finish()
                 return
@@ -194,7 +196,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 } catch (e: Exception) {
                     return null
                 }
-
             }
             return null
         } ?: kotlin.run { return null }
@@ -236,7 +237,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         finish()
     }
 
-
     private fun checkForSameUrlInPreviousIndex(webView: WebView): Boolean {
         val webBackList = webView.copyBackForwardList()
         val uidKey = "uid"
@@ -254,13 +254,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
                 currentUri.queryParameterNames.forEach {
                     val value = currentUri.getQueryParameter(it)
-                    if (it != uidKey)
+                    if (it != uidKey) {
                         currentQueryParamMap[it] = value
+                    }
                 }
                 previousUri.queryParameterNames.forEach {
                     val value = currentUri.getQueryParameter(it)
-                    if (it != uidKey)
+                    if (it != uidKey) {
                         previousQueryParamMap[it] = value
+                    }
                 }
                 return currentQueryParamMap == previousQueryParamMap
             }
@@ -310,7 +312,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun isDomainWhitelisted(domain: String): Boolean {
+    fun isDomainWhitelisted(domain: String): Boolean {
         if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
                 if (it.contains(domain)) {
@@ -339,12 +341,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun getBaseDomain(host: String): String {
+    fun getBaseDomain(host: String): String {
         val split = host.split('.')
         return if (split.size > 2) split[1] else split[0]
     }
 
-    private fun getDomainName(url: String): String {
+    fun getDomainName(url: String): String {
         return Uri.parse(url).host ?: ""
     }
 
@@ -371,5 +373,4 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
         }
     }
-
 }

@@ -78,9 +78,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
     private fun setupDefaultResponse() {
         chatSrwUseCase.response = chatSrwResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(
-            templates = templateChats
-        )
+        getTemplateChatRoomUseCase.response = successGetTemplateResponse
     }
 
     protected fun assertSrwPreviewExpanded() {

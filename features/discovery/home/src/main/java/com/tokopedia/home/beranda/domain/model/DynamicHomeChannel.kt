@@ -435,7 +435,10 @@ data class DynamicHomeChannel(
         val badges: Array<HomeBadges> = arrayOf(),
         @Expose
         @SerializedName("expiredTime")
-        val expiredTime: String = ""
+        val expiredTime: String = "",
+        @Expose
+        @SerializedName("categoryBreadcrumbs")
+        val categoryBreadcrumbs: String = ""
     )
 
     data class HomeBadges(

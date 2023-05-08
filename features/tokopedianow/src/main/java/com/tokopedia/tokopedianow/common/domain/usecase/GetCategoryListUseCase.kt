@@ -30,6 +30,7 @@ class GetCategoryListUseCase @Inject constructor(
                       isAdult
                       applinks
                       imageUrl
+                      color
                       child {
                         id
                         name

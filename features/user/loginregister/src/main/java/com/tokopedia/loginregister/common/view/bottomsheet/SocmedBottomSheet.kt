@@ -21,8 +21,9 @@ interface SocmedBottomSheetListener {
 }
 
 class SocmedBottomSheet(
-    private val listener: SocmedBottomSheetListener
 ): BottomSheetUnify() {
+
+    var listener: SocmedBottomSheetListener? = null
 
     private var viewBinding by autoClearedNullable<LayoutSocmedBottomsheetBinding>()
     private var socmedAdapter: SocmedBottomSheetAdapter? = null

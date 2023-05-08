@@ -46,7 +46,9 @@ object ProductCardMapper {
                     labelGroupList = mapLabelGroup(product),
                     usePreDraw = true,
                     needToChangeMaxLinesName = needToChangeMaxLinesName
-                )
+                ),
+                pageName = product.pageName,
+                recommendationType = product.recommendationType
             )
         }
     }

@@ -20,6 +20,7 @@
       "eventCategory": "order list",
       "currentSite": "tokopediamarketplace",
       "item_list": "/order list - marketplace",
+      "item_list_name": "/order list - marketplace",
       "event": "view_item_list",
       "userId": ".*",
       "eventAction": "view order card marketplace",

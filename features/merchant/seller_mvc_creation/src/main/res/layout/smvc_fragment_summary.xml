@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/layoutPreview"
+        layout="@layout/smvc_fragment_summary_preview"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/layoutType"
+                layout="@layout/smvc_voucher_detail_voucher_type_section"/>
+
+            <include
+                android:id="@+id/layoutInfo"
+                layout="@layout/smvc_voucher_detail_voucher_info_section"/>
+
+            <include
+                android:id="@+id/layoutSetting"
+                layout="@layout/smvc_voucher_detail_voucher_setting_section"/>
+
+            <include
+                android:id="@+id/layoutProducts"
+                layout="@layout/smvc_voucher_detail_product_section"/>
+
+            <include
+                android:id="@+id/layoutSubmission"
+                layout="@layout/smvc_fragment_summary_submission"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -12,6 +12,8 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
+    const val HOME_COMPONENT_ATF = "revamp_atf"
+    const val HOME_COMPONENT_ATF_2 = "home_atf2"
 
     // home component rollence section
     const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
@@ -45,8 +47,6 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
-    const val WISHLIST_COLLECTION = "WL_collection_andro"
-    const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
     // SRP Video Sneak Peek Autoplay
@@ -72,9 +72,12 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    // Bubbles
-    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
-
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+
+    // Fulfillment
+    const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
+
+    //DG SBM Transition
+    const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }

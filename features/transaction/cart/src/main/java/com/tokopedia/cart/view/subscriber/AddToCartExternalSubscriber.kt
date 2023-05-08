@@ -8,7 +8,6 @@ import timber.log.Timber
 class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCartExternalModel>() {
 
     override fun onCompleted() {
-
     }
 
     override fun onError(e: Throwable) {
@@ -29,5 +28,4 @@ class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCa
             view.refreshCartWithSwipeToRefresh()
         }
     }
-
 }

@@ -21,7 +21,8 @@ object CategoryListMapper {
             id = it.id,
             name = it.name,
             appLink = it.appLinks,
-            imageUrl = it.imageUrl
+            imageUrl = it.imageUrl,
+            color = it.color
         )
     }
 

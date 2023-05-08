@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.common.extension
 
 import androidx.core.widget.NestedScrollView
-import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 fun NestedScrollView.enablePaging(loadNextPage: () -> Unit) {

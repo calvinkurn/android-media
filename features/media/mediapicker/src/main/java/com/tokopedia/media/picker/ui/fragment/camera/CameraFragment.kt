@@ -27,16 +27,16 @@ import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.component.CameraViewComponent
-import com.tokopedia.media.picker.ui.observer.observe
-import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
+import com.tokopedia.media.picker.ui.component.CameraViewUiComponent
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
-import com.tokopedia.media.picker.utils.generateKey
+import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
@@ -47,9 +47,10 @@ open class CameraFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
     private var param: PickerCacheManager,
     private var cameraAnalytics: CameraAnalytics,
+    private val eventBus: PickerEventBus
 ) : BaseDaggerFragment()
     , CameraControllerComponent.Listener
-    , CameraViewComponent.Listener {
+    , CameraViewUiComponent.Listener {
 
     private val pickerViewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
@@ -66,7 +67,7 @@ open class CameraFragment @Inject constructor(
     private var loaderDialog: LoaderDialogWidget? = null
 
     private val cameraView by uiComponent {
-        CameraViewComponent(
+        CameraViewUiComponent(
             param = param.get(),
             listener = this,
             parent = it
@@ -163,6 +164,10 @@ open class CameraFragment @Inject constructor(
         return cameraView.isFacingCameraIsFront()
     }
 
+    override fun isCameraOnRecording(): Boolean {
+        return controller.isVideoMode() && cameraView.isTakingVideo()
+    }
+
     override fun onFlashClicked() {
         cameraView.setCameraFlashIndex()
         setCameraFlashState()
@@ -190,6 +195,7 @@ open class CameraFragment @Inject constructor(
 
     override fun onTakeMediaClicked() {
         if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            pickerViewModel.isOnVideoRecording(false)
             cameraView.stopVideo()
             return
         }
@@ -203,6 +209,7 @@ open class CameraFragment @Inject constructor(
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
                 cameraViewModel.onVideoTaken()
+                pickerViewModel.isOnVideoRecording(true)
             }
         }
     }
@@ -229,7 +236,11 @@ open class CameraFragment @Inject constructor(
     override fun onVideoTaken(result: VideoResult) {
         val videoFile = result.file
             .asPickerFile()
-            .cameraToUiModel()
+            .toRemovableUiModel()
+            .apply {
+                duration = requireContext()
+                    .getVideoDuration(file)
+            }
 
         if (contract?.isMinVideoDuration(videoFile) == true) {
             contract?.onShowVideoMinDurationToast()
@@ -259,13 +270,17 @@ open class CameraFragment @Inject constructor(
             }
         }
 
+        pickerViewModel.isOnVideoRecording.observe(viewLifecycleOwner) {
+            controller.setThumbnailVisibility(!it)
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             cameraViewModel.pictureTaken.collect {
                 if (it == null) return@collect
 
                 val file = it
                     .asPickerFile()
-                    .cameraToUiModel()
+                    .toRemovableUiModel()
 
                 onShowMediaThumbnail(file)
             }
@@ -320,7 +335,7 @@ open class CameraFragment @Inject constructor(
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
-        stateOnCameraCapturePublished(element, param.get().generateKey())
+        eventBus.cameraCaptureEvent(element)
     }
 
     private fun setCameraFlashState() {

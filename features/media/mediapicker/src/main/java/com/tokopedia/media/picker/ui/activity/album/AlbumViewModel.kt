@@ -6,34 +6,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.picker.data.mapper.toUiModel
-import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.media.picker.data.repository.BucketAlbumRepository
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AlbumViewModel @Inject constructor(
-    private val album: AlbumRepository,
+    private val albumRepository: BucketAlbumRepository,
     private val dispatcher: CoroutineDispatchers
 ) : ViewModel() {
-
-    private var _albums = MutableLiveData<List<AlbumUiModel>>()
-    val albums: LiveData<List<AlbumUiModel>> get() = _albums
 
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun fetch() {
-        _isLoading.value = true
-        viewModelScope.launch {
-            val albums = album(Unit)
-
-            withContext(dispatcher.main) {
-                _isLoading.value = false
-                _albums.value = albums.toUiModel()
-            }
-        }
-    }
-
+    fun getAlbums() = albumRepository()
+        .flowOn(dispatcher.io)
+        .onStart { _isLoading.value = true }
+        .onCompletion { _isLoading.value = false }
 }

@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.CtaCatalog
 import com.tokopedia.mvcwidget.FollowWidgetType
@@ -275,8 +276,9 @@ class MvcDetailView @JvmOverloads constructor(
         }
 
         val shopName = response.data?.shopName
-        if (!tempCouponList.isNullOrEmpty() && !shopName.isNullOrEmpty()) {
-            tempList.add(TickerText(shopName, removeTickerTopMargin))
+        val formattedShopName = MethodChecker.fromHtml(shopName)
+        if (!tempCouponList.isNullOrEmpty() && !formattedShopName.isNullOrEmpty()) {
+            tempList.add(TickerText(formattedShopName, removeTickerTopMargin))
         }
 
         if(!tempCouponList.isNullOrEmpty()){

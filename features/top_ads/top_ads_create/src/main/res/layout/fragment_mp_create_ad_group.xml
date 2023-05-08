@@ -1,0 +1,69 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.tokopedia.topads.view.fragment.MpCreateAdGroupFragment">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/buat_group_iklan"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/header_toolbar"
+        android:padding="16dp">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/group_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unify_text_field_label="@string/nama_grup"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/daily_budget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unify_text_field_label="@string/anggaran_harian"
+            app:layout_constraintTop_toBottomOf="@id/group_name"
+            android:layout_marginTop="24dp"
+            app:unify_text_field_append_drawable_icon_1="@drawable/ic_help"
+            app:unify_text_field_prepend_text="Rp"
+            app:unify_text_field_input_type="number"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/daily_budget"
+            android:layout_marginTop="24dp"
+            android:text="@string/to_maximize_your_sales_advertising_costs_will_be_set_automatically_first_you_can_set_it_again_later"
+            app:typographyType="paragraph_2"
+            android:textColor="@color/Unify_NN600"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/buat_grup"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:enabled="false"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

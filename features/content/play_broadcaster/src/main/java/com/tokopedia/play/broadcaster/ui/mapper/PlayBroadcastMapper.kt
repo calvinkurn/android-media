@@ -38,7 +38,7 @@ interface PlayBroadcastMapper {
         media: CreateLiveStreamChannelResponse.GetMedia
     ): LiveStreamInfoUiModel
 
-    fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel>
+    fun mapToLiveTrafficUiMetrics(authorType: String, metrics: GetLiveStatisticsResponse.ReportChannelSummary): List<TrafficMetricUiModel>
 
     fun mapTotalView(totalView: TotalView): TotalViewUiModel
 

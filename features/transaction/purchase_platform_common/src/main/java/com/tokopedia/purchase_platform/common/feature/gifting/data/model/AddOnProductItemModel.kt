@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnProductItemModel(
-        var productImageUrl: String = "",
-        var productName: String = ""
-): Parcelable
+    var productImageUrl: String = "",
+    var productName: String = ""
+) : Parcelable

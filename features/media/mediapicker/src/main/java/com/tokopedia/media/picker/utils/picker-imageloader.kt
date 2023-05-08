@@ -21,9 +21,9 @@ fun ImageView.loadPickerImage(path: String, onLoaded: () -> Unit = {}) {
 
     loadImage(path) {
         overrideSize(Resize(thumbnailSize, thumbnailSize))
+        setPlaceHolder(R.drawable.bg_picker_placeholder)
         setRoundedRadius(roundedSize)
         isAnimate(true)
-        setPlaceHolder(-1)
 
         if (isFitCenter) {
             fitCenter()

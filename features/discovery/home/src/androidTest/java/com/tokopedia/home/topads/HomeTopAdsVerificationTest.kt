@@ -68,7 +68,7 @@ class HomeTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object : IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark(context)
@@ -100,7 +100,7 @@ class HomeTopAdsVerificationTest {
     fun testTopAdsHome() {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-        val itemCount = homeRecyclerView.adapter?.itemCount?:0
+        val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
 
         val itemList = homeRecyclerView.getItemList()
         topAdsCount = calculateTopAdsCount(itemList)
@@ -112,7 +112,7 @@ class HomeTopAdsVerificationTest {
         topAdsAssertion.assert()
     }
 
-    private fun calculateTopAdsCount(itemList: List<Visitable<*>>) : Int {
+    private fun calculateTopAdsCount(itemList: List<Visitable<*>>): Int {
         var count = 0
         for (item in itemList) {
             count += countTopAdsInItem(item)
@@ -120,7 +120,7 @@ class HomeTopAdsVerificationTest {
         return count
     }
 
-    private fun countTopAdsInItem(item: Visitable<*>) : Int {
+    private fun countTopAdsInItem(item: Visitable<*>): Int {
         var count = 0
 
         when (item) {
@@ -143,13 +143,13 @@ class HomeTopAdsVerificationTest {
                     if (grid.isTopads) count++
             }
             is BestSellerDataModel -> {
-                for (recom in item.recommendationItemList){
-                    if(recom.isTopAds) count++
+                for (recom in item.recommendationItemList) {
+                    if (recom.isTopAds) count++
                 }
             }
             is Lego4ProductDataModel -> {
-                for (grid in item.channelModel.channelGrids){
-                    if(grid.isTopads) count++
+                for (grid in item.channelModel.channelGrids) {
+                    if (grid.isTopads) count++
                 }
             }
         }
@@ -164,7 +164,7 @@ class HomeTopAdsVerificationTest {
             }
             is MixLeftComponentViewHolder -> {
                 val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
-                val childItemCount = childRecyclerView.adapter?.itemCount?:0
+                val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
                 if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
                     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
                 }
@@ -185,7 +185,7 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
             }
             is Lego4ProductViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
         }
     }

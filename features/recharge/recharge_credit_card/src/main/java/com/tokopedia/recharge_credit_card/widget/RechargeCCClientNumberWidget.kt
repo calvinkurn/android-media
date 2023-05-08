@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl.CC_IMG_VERIFIED
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -88,6 +89,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         initSortFilterChip()
         initPrimaryButton()
         initTickerView()
+        initCCLogoVerified()
     }
 
     private fun initInputField() {
@@ -107,6 +109,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
                 mCreditCardActionListener?.onClickNextButton(getInputNumber())
             }
         }
+    }
+
+    private fun initCCLogoVerified() {
+        binding.clientNumberWidgetMainLayout.clientNumberCcLogoVerified.loadImage(CC_IMG_VERIFIED)
     }
 
     private fun initSortFilterChip() {

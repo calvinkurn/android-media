@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -65,6 +66,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -187,6 +189,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             binding?.tilBirthDate?.textFieldInput?.isFocusable = false
             binding?.tilBirthDate?.textFieldInput?.isClickable = true
+            binding?.tilBirthDate?.textFieldInput?.disableLongClick()
+
             binding?.tilBirthDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(
                 null, null,
                 MethodChecker.getDrawable(
@@ -198,6 +202,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             binding?.tilPassportExpirationDate?.textFieldInput?.isFocusable = false
             binding?.tilPassportExpirationDate?.textFieldInput?.isClickable = true
+            binding?.tilPassportExpirationDate?.textFieldInput?.disableLongClick()
             binding?.tilPassportExpirationDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(
                 null, null,
                 MethodChecker.getDrawable(
@@ -256,6 +261,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             binding?.rvPassengerTitle?.selectOnlyOneChip(true)
             binding?.rvPassengerTitle?.canDiselectAfterSelect(false)
         }
+    }
+
+    private fun AutoCompleteTextView.disableLongClick() {
+        isLongClickable = false
+        setTextIsSelectable(false)
     }
 
     private fun initFirstNameAutoCompleteTv(context: Context) {
@@ -418,7 +428,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         selectedDate = minDate
 
         if (getPassportExpiryDate().isNotBlank()) {
-            selectedDate = getPassportExpiryDate().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            try {
+                selectedDate = getPassportExpiryDate().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            } catch (parseException: ParseException) {
+                FirebaseCrashlytics.getInstance().recordException(parseException)
+            }
         }
 
         showCalendarPickerDialog(
@@ -697,9 +711,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         }
 
-        if (binding?.tilBirthDate?.textFieldInput?.text.toString().isNotEmpty()) selectedDate =
-            binding?.tilBirthDate?.textFieldInput?.text.toString()
-                .toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+        if (binding?.tilBirthDate?.textFieldInput?.text.toString().isNotEmpty()) {
+            try {
+                selectedDate = binding?.tilBirthDate?.textFieldInput?.text.toString()
+                    .toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            } catch (parseException: ParseException) {
+                FirebaseCrashlytics.getInstance().recordException(parseException)
+            }
+        }
 
         val currentTime = DateUtil.getCurrentCalendar()
         currentTime.time = maxDate

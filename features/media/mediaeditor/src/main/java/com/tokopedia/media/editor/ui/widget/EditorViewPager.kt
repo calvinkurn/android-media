@@ -9,15 +9,18 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
 import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.data.MediaException
 
-class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet) {
+class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
+    EditorViewPagerAdapter.Listener {
     private var editorAdapter: EditorViewPagerAdapter? = null
     private var previousVideoIndex = INITIAL_VIEW_PAGER_INDEX
     private var callback: (position: Int, isVideo: Boolean) -> Unit = { _, _ -> }
 
     fun setAdapter(listData: List<EditorUiModel>) {
-        editorAdapter = EditorViewPagerAdapter(context, listData)
+        editorAdapter = EditorViewPagerAdapter(context, listData, this)
         adapter = editorAdapter
 
         addOnPageChangeListener(object : OnPageChangeListener {
@@ -72,6 +75,9 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                     view.post {
                         onImageUpdated()
                     }
+                },
+                onError = {
+                    errorHandler(it)
                 }
             )
         }
@@ -87,6 +93,14 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
 
     fun setOnPageChanged(callback: (position: Int, isVideo: Boolean) -> Unit) {
         this.callback = callback
+    }
+
+    override fun onErrorImageLoad(exception: MediaException?) {
+        errorHandler(exception)
+    }
+
+    private fun errorHandler(exception: MediaException?) {
+        showErrorLoadToaster(this, exception?.message ?: "")
     }
 
     companion object {

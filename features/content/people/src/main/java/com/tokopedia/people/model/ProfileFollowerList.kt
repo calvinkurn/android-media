@@ -6,6 +6,9 @@ import com.tokopedia.library.baseadapter.BaseItem
 data class ProfileFollowerListBase(
     @SerializedName("feedXProfileFollowerList")
     val profileFollowers: ProfileFollowerList,
+
+    @SerializedName("feedXProfileHeader")
+    val profileHeader: FeedXProfileHeader,
 )
 
 data class ProfileFollowerList(
@@ -19,6 +22,9 @@ data class ProfileFollowerList(
 data class ProfileFollowingListBase(
     @SerializedName("feedXProfileFollowingList")
     val profileFollowings: ProfileFollowingList,
+
+    @SerializedName("feedXProfileHeader")
+    val profileHeader: FeedXProfileHeader,
 )
 
 data class ProfileFollowingList(

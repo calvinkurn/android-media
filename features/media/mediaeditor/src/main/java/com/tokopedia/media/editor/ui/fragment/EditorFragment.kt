@@ -27,7 +27,11 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
+import com.tokopedia.media.editor.utils.showMemoryLimitToast
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -121,23 +125,45 @@ class EditorFragment @Inject constructor(
         val data = listData[currentProcess]
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
-            loadImageWithEmptyTarget(requireContext(),
-                data.getImageUrl(),
-                properties = {},
-                mediaTarget = MediaBitmapEmptyTarget(
-                    onReady = { bitmap ->
-                        imageCrop(bitmap, data.getOriginalUrl())
-                        thumbnailDrawerComponent.refreshItem(
-                            currentProcess,
-                            viewModel.editStateList.values.toList()
+            val filePath = data.getOriginalUrl()
+            var memoryOverflow: Boolean
+
+            val imageSize = getImageSize(filePath).apply {
+                val usageEstimation = first * second * PIXEL_BYTE_SIZE
+                memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
+            }
+
+            if (memoryOverflow) {
+                activity?.showMemoryLimitToast(imageSize)
+                return
+            } else {
+                loadImageWithEmptyTarget(requireContext(),
+                    filePath,
+                    properties = {
+                        listener(
+                            onError = {
+                                it?.let { exception ->
+                                    loader?.dismiss()
+                                    viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                        showErrorLoadToaster(view, exception.message ?: "")
+                                    }
+
+                                }
+                            }
                         )
-                        iterateCrop(listData, currentProcess + 1)
                     },
-                    onCleared = {},
-                    onFailed = {
-                        iterateCrop(listData, currentProcess + 1)
-                    }
-                ))
+                    mediaTarget = MediaBitmapEmptyTarget(
+                        onReady = { bitmap ->
+                            imageCrop(bitmap, data.getOriginalUrl())
+                            thumbnailDrawerComponent.refreshItem(
+                                currentProcess,
+                                viewModel.editStateList.values.toList()
+                            )
+                            iterateCrop(listData, currentProcess + 1)
+                        },
+                        onCleared = {}
+                    ))
+            }
         } else {
             iterateCrop(listData, currentProcess + 1)
         }
@@ -420,6 +446,7 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
+        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }

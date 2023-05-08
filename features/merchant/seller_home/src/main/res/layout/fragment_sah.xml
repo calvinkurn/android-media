@@ -10,12 +10,16 @@
         android:id="@+id/viewBgShopStatus"
         android:layout_width="0dp"
         android:layout_height="@dimen/sah_dimen_280dp"
+        android:adjustViewBounds="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker"
-        app:unify_image_corner_radius="0" />
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSahNewSellerLeft"
@@ -72,6 +76,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/sahNotifAnchorView"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/sahNestedScrollView"

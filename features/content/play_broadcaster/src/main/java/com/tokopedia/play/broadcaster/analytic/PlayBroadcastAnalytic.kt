@@ -146,16 +146,6 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * Impress Product Tag Carousel
-     */
-    fun impressProductTag(channelId: String) {
-        impressionGeneralEvent(
-            "- product tag carousel",
-            "- $channelId"
-        )
-    }
-
-    /**
      * Scroll Product Tag Carousel
      */
     fun scrollProductTag(channelId: String, product: ProductUiModel, position: Int) {

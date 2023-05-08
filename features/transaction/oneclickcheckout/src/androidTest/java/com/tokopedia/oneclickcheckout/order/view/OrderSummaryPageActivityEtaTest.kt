@@ -9,7 +9,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_BOE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_ETA_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_ETA_WITH_BOE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BOE_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
@@ -59,35 +65,39 @@ class OrderSummaryPageActivityEtaTest {
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler",
-                    shippingCourier = "AnterAja (Rp10.000)",
-                    shippingPrice = null,
-                    shippingEta = "Estimasi tiba besok - 3 Feb")
+                shippingDuration = "Pengiriman Reguler",
+                shippingCourier = "AnterAja (Rp10.000)",
+                shippingPrice = null,
+                shippingEta = "Estimasi tiba besok - 3 Feb"
+            )
 
             assertShipmentPromoRevamp(
-                    hasPromo = true,
-                    promoTitle = "Tersedia Bebas Ongkir",
-                    promoSubtitle = "Estimasi tiba besok - 3 Feb")
+                hasPromo = true,
+                promoTitle = "Tersedia Bebas Ongkir",
+                promoSubtitle = "Estimasi tiba besok - 3 Feb"
+            )
 
             clickChangeCourierRevamp {
                 chooseCourierWithText("JNE Reg (Rp9.000)")
             }
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler",
-                    shippingCourier = "JNE Reg (Rp9.000)",
-                    shippingPrice = null,
-                    shippingEta = "Estimasi tiba besok - 4 Feb")
+                shippingDuration = "Pengiriman Reguler",
+                shippingCourier = "JNE Reg (Rp9.000)",
+                shippingPrice = null,
+                shippingEta = "Estimasi tiba besok - 4 Feb"
+            )
 
             clickChangeDurationRevamp {
                 chooseDurationWithText("Same Day (Rp14.000)")
             }
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Same Day",
-                    shippingCourier = "Gojek (Rp14.000)",
-                    shippingPrice = null,
-                    shippingEta = "Estimasi tiba hari ini - besok")
+                shippingDuration = "Pengiriman Same Day",
+                shippingCourier = "Gojek (Rp14.000)",
+                shippingPrice = null,
+                shippingEta = "Estimasi tiba hari ini - besok"
+            )
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickApplyShipmentPromoRevamp()
@@ -95,10 +105,11 @@ class OrderSummaryPageActivityEtaTest {
             assertShipmentPromoRevamp(hasPromo = false)
 
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Pengiriman Bebas Ongkir",
-                    shippingPrice = null,
-                    shippingEta = "Estimasi tiba besok - 3 Feb")
+                shippingDuration = null,
+                shippingCourier = "Pengiriman Bebas Ongkir",
+                shippingPrice = null,
+                shippingEta = "Estimasi tiba besok - 3 Feb"
+            )
         }
     }
 
@@ -112,37 +123,38 @@ class OrderSummaryPageActivityEtaTest {
 
         orderSummaryPage {
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "TokoCabang",
-                    hasShopLocationImg = true,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "TokoCabang",
+                hasShopLocationImg = true,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = null,
+                productSlashPriceLabel = null,
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler",
-                    shippingCourier = "AnterAja (Rp10.000)",
-                    shippingPrice = null,
-                    shippingEta = "Estimasi tiba besok - 3 Feb"
+                shippingDuration = "Pengiriman Reguler",
+                shippingCourier = "AnterAja (Rp10.000)",
+                shippingPrice = null,
+                shippingEta = "Estimasi tiba besok - 3 Feb"
             )
 
             assertShipmentPromoRevamp(
-                    hasPromo = true,
-                    promoDescription = "Tersedia Bebas Ongkir Extra")
+                hasPromo = true,
+                promoDescription = "Tersedia Bebas Ongkir Extra"
+            )
 
             assertPayment("Rp111.300", "Bayar")
 
@@ -152,36 +164,36 @@ class OrderSummaryPageActivityEtaTest {
             assertShipmentPromoRevamp(hasPromo = false)
 
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Pengiriman Bebas Ongkir Extra",
-                    shippingPrice = null,
-                    shippingEta = null
+                shippingDuration = null,
+                shippingCourier = "Pengiriman Bebas Ongkir Extra",
+                shippingPrice = null,
+                shippingEta = null
             )
 
             assertPayment("Rp101.300", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        isBbo = true,
-                        insurancePrice = "Rp300",
-                        totalPrice = "Rp101.300",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    isBbo = true,
+                    insurancePrice = "Rp300",
+                    totalPrice = "Rp101.300",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }

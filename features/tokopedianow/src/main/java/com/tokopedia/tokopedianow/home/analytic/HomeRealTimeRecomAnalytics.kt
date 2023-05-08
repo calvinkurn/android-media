@@ -6,10 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKONOW_HOMEPAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_NAME_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
@@ -55,7 +52,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Home Real Time Recom Tracker
- * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3552
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3552
  */
 class HomeRealTimeRecomAnalytics(
     private val userSession: UserSessionInterface
@@ -143,7 +140,8 @@ class HomeRealTimeRecomAnalytics(
             )
         )
 
-        val itemList = "/ - p$position - rtr widget - carousel - $headerName"
+        val itemList =
+            "/tokonow - recomproduct - carousel - ${item.recommendationType} - ${item.pageName} - $headerName"
 
         val dataLayer = getDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
@@ -156,7 +154,7 @@ class HomeRealTimeRecomAnalytics(
             putString(KEY_USER_ID, userSession.userId)
         }
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
     override fun trackProductClick(
@@ -175,7 +173,8 @@ class HomeRealTimeRecomAnalytics(
             )
         )
 
-        val itemList = "/ - p$position - rtr widget - carousel - $headerName"
+        val itemList =
+            "/tokonow - recomproduct - carousel - ${item.recommendationType} - ${item.pageName} - $headerName"
 
         val dataLayer = getDataLayer(
             event = EVENT_SELECT_CONTENT,
@@ -188,7 +187,7 @@ class HomeRealTimeRecomAnalytics(
             putString(KEY_USER_ID, userSession.userId)
         }
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     override fun trackAddToCart(
@@ -213,7 +212,7 @@ class HomeRealTimeRecomAnalytics(
             putString(KEY_USER_ID, userSession.userId)
         }
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_NAME_ADD_TO_CART, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
     private fun productItemDataLayer(

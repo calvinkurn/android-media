@@ -20,6 +20,7 @@ object PromoCreationMapper {
         val promotionItem =
             merchantPromotionGetPromoList.data.pages.map {
                 PromoCreationUiModel(
+                    pageId = it.pageId,
                     icon = it.iconImage,
                     title = it.pageName,
                     description = it.headerText,

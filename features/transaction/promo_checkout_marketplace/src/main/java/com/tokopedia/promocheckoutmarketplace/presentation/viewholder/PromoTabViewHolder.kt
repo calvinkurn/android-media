@@ -7,8 +7,9 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 
-class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoTabBinding,
-                         private val listener: PromoCheckoutActionListener
+class PromoTabViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoTabBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoTabUiModel>(viewBinding.root) {
 
     companion object {
@@ -54,5 +55,4 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
             tabsPromo.getUnifyTabLayout().addOnTabSelectedListener(tabSelectedListener!!)
         }
     }
-
 }

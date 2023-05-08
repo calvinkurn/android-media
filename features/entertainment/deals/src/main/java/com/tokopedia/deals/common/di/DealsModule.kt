@@ -1,7 +1,6 @@
 package com.tokopedia.deals.common.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.config.GlobalConfig
@@ -13,8 +12,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,16 +99,10 @@ class DealsModule(val context: Context) {
 
     @DealsScope
     @Provides
-    fun provideTkpdAuthInterceptor(@DealsQualifier context: Context,
+    fun provideTkpdOldAuthInterceptor(@DealsQualifier context: Context,
                                    networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @DealsScope
-    @Provides
-    fun provideChuckerInterceptor(@DealsQualifier context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+                                   userSessionInterface: UserSessionInterface): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @DealsScope

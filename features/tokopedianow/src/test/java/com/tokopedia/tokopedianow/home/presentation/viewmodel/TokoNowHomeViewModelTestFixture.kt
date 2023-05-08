@@ -18,6 +18,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -29,20 +30,25 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
+import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
 import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
+import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -50,9 +56,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,6 +69,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -70,6 +78,7 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 
+@ExperimentalCoroutinesApi
 abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
@@ -103,12 +112,21 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase
     @RelaxedMockK
+    lateinit var getCatalogCouponListUseCase: GetCatalogCouponListUseCase
+    @RelaxedMockK
+    lateinit var redeemCouponUseCase: RedeemCouponUseCase
+    @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
+    @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     protected lateinit var viewModel : TokoNowHomeViewModel
 
@@ -120,24 +138,26 @@ abstract class TokoNowHomeViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = TokoNowHomeViewModel(
-                getHomeLayoutDataUseCase,
-                getCategoryListUseCase,
-                getKeywordSearchUseCase,
-                getTickerUseCase,
-                getMiniCartUseCase,
-                addToCartUseCase,
-                updateCartUseCase,
-                deleteCartUseCase,
-                getRecommendationUseCase,
-                getChooseAddressWarehouseLocUseCase,
-                getRepurchaseWidgetUseCase,
-                getQuestWidgetListUseCase,
-                setUserPreferenceUseCase,
-                getHomeReferralUseCase,
-                referralEvaluateJoinUseCase,
-                playWidgetTools,
-                userSession,
-                CoroutineTestDispatchersProvider
+            getHomeLayoutDataUseCase,
+            getCategoryListUseCase,
+            getKeywordSearchUseCase,
+            getTickerUseCase,
+            getMiniCartUseCase,
+            getRecommendationUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            getRepurchaseWidgetUseCase,
+            getQuestWidgetListUseCase,
+            setUserPreferenceUseCase,
+            getHomeReferralUseCase,
+            referralEvaluateJoinUseCase,
+            getCatalogCouponListUseCase,
+            redeemCouponUseCase,playWidgetTools,
+            userSession,
+            coroutineTestRule.dispatchers,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            addressData,
         )
     }
 
@@ -187,6 +207,12 @@ abstract class TokoNowHomeViewModelTestFixture {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetCatalogCouponListResponseSuccess(expectedResponse: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualResponse = (homeLayoutList as Success).data.items.find { it is HomeClaimCouponWidgetUiModel }
+        Assert.assertEquals((expectedResponse as HomeClaimCouponWidgetUiModel), (actualResponse as HomeClaimCouponWidgetUiModel))
     }
 
     protected fun verifyGetHomeLayoutResponseFail() {
@@ -261,7 +287,16 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = 0) { getCategoryListUseCase.execute(anyString(), anyInt()) }
     }
 
+    protected fun verifyGetCatalogCouponListUseCaseCalled() {
+        coVerify { getCatalogCouponListUseCase.execute(categorySlug = any(), catalogSlugs = any()) }
+    }
+
+    protected fun verifyRedeemCouponUseCaseCalled() {
+        coVerify { redeemCouponUseCase.execute(any(), any(), any(), any(), any()) }
+    }
+
     protected fun verifyGetMiniCartUseCaseCalled() {
+        verify { getMiniCartUseCase.setParams(any(), MiniCartSource.TokonowHome) }
         verify { getMiniCartUseCase.execute(any(), any()) }
     }
 
@@ -358,6 +393,22 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
         coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
+    }
+
+    protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {
+        coEvery { getCatalogCouponListUseCase.execute(categorySlug = any(), catalogSlugs = any()) } returns catalogCouponList
+    }
+
+    protected fun onGetCatalogCouponList_thenReturn(errorThrowable: Throwable) {
+        coEvery { getCatalogCouponListUseCase.execute(categorySlug = any(), catalogSlugs = any()) } throws errorThrowable
+    }
+
+    protected fun onRedeemCoupon_thenReturn(redeemCouponResponse: RedeemCouponResponse) {
+        coEvery { redeemCouponUseCase.execute(any(), any(), any(), any(), any()) } returns redeemCouponResponse
+    }
+
+    protected fun onRedeemCoupon_thenReturn(errorThrowable: Throwable) {
+        coEvery { redeemCouponUseCase.execute(any(), any(), any(), any(), any()) } throws errorThrowable
     }
 
     protected fun onGetQuestWidgetList_thenReturn(questListResponse: GetQuestListResponse) {

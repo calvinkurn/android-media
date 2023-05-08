@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
+import com.tokopedia.affiliate.AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
@@ -152,6 +153,12 @@ class AffiliateEducationLandingPage :
     override fun onBantuanClick() {
         context?.let {
             RouteManager.route(it, AFFILIATE_HELP_URL_WEBVIEW)
+        }
+    }
+
+    override fun onKebijakanPrivasiClick() {
+        context?.let {
+            RouteManager.route(it, AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW)
         }
     }
 

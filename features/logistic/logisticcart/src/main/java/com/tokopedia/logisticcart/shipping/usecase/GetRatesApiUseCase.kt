@@ -13,32 +13,36 @@ import rx.Observable
 import javax.inject.Inject
 
 class GetRatesApiUseCase @Inject constructor(
-        private val converter: ShippingDurationConverter,
-        private val gql: GraphqlUseCase,
-        private val scheduler: SchedulerProvider) {
+    private val converter: ShippingDurationConverter,
+    private val gql: GraphqlUseCase,
+    private val scheduler: SchedulerProvider
+) {
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
         val query = ratesQuery(QUERY_RATESV3_API)
-        val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, mapOf(
-                "param" to param.toMap())
+        val gqlRequest = GraphqlRequest(
+            query,
+            RatesApiGqlResponse::class.java,
+            mapOf(
+                "param" to param.toMap()
+            )
         )
 
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
-                .map { graphqlResponse: GraphqlResponse ->
-                    val response: RatesApiGqlResponse? =
-                            graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
-                    response?.let {
-                        converter.convertModel(it.ratesData)
-                    } ?: throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
-                }
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
+            .map { graphqlResponse: GraphqlResponse ->
+                val response: RatesApiGqlResponse? =
+                    graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
+                response?.let {
+                    converter.convertModel(it.ratesData)
+                } ?: throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
+            }
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
     }
 
     fun unsubscribe() {
         gql.unsubscribe()
     }
-
 }

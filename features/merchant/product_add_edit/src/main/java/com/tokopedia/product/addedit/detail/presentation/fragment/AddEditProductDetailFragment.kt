@@ -202,7 +202,7 @@ class AddEditProductDetailFragment :
     private var categoryAlertDialog: DialogUnify? = null
     private var additionalInfoView: Typography? = null
     private var commissionInfoTipsView: TipsUnify? = null
-    private var disabledCategoryInfoView: ImageUnify? = null
+    private var disabledCategoryInfoView: IconUnify? = null
     private var categoryChangeBottomSheet: CategoryChangeBottomSheet? = null
 
     // product specification
@@ -1469,7 +1469,7 @@ class AddEditProductDetailFragment :
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(ctx)) {
             val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(

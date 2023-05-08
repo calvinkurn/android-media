@@ -6,8 +6,8 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartChatSeparatorBinding
 
-class MiniCartChatSeparatorViewHolder(private val viewBinding: ItemMiniCartChatSeparatorBinding)
-    : AbstractViewHolder<MiniCartChatSeparatorUiModel>(viewBinding.root) {
+class MiniCartChatSeparatorViewHolder(private val viewBinding: ItemMiniCartChatSeparatorBinding) :
+    AbstractViewHolder<MiniCartChatSeparatorUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_chat_separator
@@ -19,5 +19,4 @@ class MiniCartChatSeparatorViewHolder(private val viewBinding: ItemMiniCartChatS
             viewBinding.miniCartSeparator.requestLayout()
         }
     }
-
 }

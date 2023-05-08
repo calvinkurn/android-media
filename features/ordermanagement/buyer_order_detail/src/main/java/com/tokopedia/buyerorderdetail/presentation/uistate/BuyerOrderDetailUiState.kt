@@ -13,6 +13,7 @@ sealed interface BuyerOrderDetailUiState {
         val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData
         val orderResolutionUiState: OrderResolutionTicketStatusUiState
         val orderInsuranceUiState: OrderInsuranceUiState
+        val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
 
         data class PullRefreshLoading(
             override val actionButtonsUiState: ActionButtonsUiState.HasData,
@@ -22,7 +23,8 @@ sealed interface BuyerOrderDetailUiState {
             override val shipmentInfoUiState: ShipmentInfoUiState.HasData,
             override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
             override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
-            override val orderInsuranceUiState: OrderInsuranceUiState
+            override val orderInsuranceUiState: OrderInsuranceUiState,
+            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
         ) : HasData
 
         data class Showing(
@@ -33,7 +35,8 @@ sealed interface BuyerOrderDetailUiState {
             override val shipmentInfoUiState: ShipmentInfoUiState.HasData,
             override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
             override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
-            override val orderInsuranceUiState: OrderInsuranceUiState
+            override val orderInsuranceUiState: OrderInsuranceUiState,
+            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
         ) : HasData
     }
 

@@ -11,8 +11,9 @@ object ChatbotNewRelicLogger {
         messageId: String,
         gqlKey: String,
         exception: Throwable? = null,
-        key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR
-    ) {
+        key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR,
+        pageSource: String = ""
+        ) {
         val map: MutableMap<String, String> = HashMap()
         val message = exception?.message
         val messageContent = (
@@ -27,6 +28,7 @@ object ChatbotNewRelicLogger {
         map["messageId"] = messageId
         map["gql_name"] = gqlKey
         map["exception"] = messageContent
+        map["page_source"] = pageSource
         ServerLogger.log(Priority.P2, key, map)
     }
 
@@ -37,7 +39,8 @@ object ChatbotNewRelicLogger {
         exception: Throwable? = null,
         beforeReplyTime: String,
         afterReplyTime: String,
-        key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR
+        key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR,
+        pageSource: String
     ) {
         val map: MutableMap<String, String> = HashMap()
         val message = exception?.message
@@ -53,14 +56,16 @@ object ChatbotNewRelicLogger {
         map["messageId"] = messageId
         map["gql_name"] = gqlKey
         map["exception"] = messageContent
+        map["page_source"] = pageSource
         map["beforeReplyTime"] = beforeReplyTime
         map["afterReplyTime"] = afterReplyTime
         ServerLogger.log(Priority.P2, key, map)
     }
 
     fun logNewRelicForSocket(
-        exception: Throwable? = null
-    ) {
+        exception: Throwable? = null,
+        pageSource: String= "",
+        ) {
         val map: MutableMap<String, String> = HashMap()
 
         val message = exception?.message ?: ""
@@ -74,6 +79,7 @@ object ChatbotNewRelicLogger {
         map["type"] = "request"
         map["success"] = "false"
         map["exception"] = messageContent
+        map["page_source"] = pageSource
         map["socket_error"] = "true"
         ServerLogger.log(Priority.P2, ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR, map)
     }

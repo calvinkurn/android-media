@@ -103,5 +103,4 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(
 
         private const val QUERY_SHIPMENT_ADDRESS_FORM = "ShipmentAddressFormQuery"
     }
-
 }

@@ -60,7 +60,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.favorite)
     implementation projectOrAar(rootProject.ext.features.orderhistory)
     implementation projectOrAar(rootProject.ext.features.report)
-    implementation projectOrAar(rootProject.ext.features.recentview)
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)

@@ -2,6 +2,8 @@ package com.tokopedia.sellerapp.presentation
 
 import SetupNavigation
 import WearAppTheme
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -16,10 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerapp.data.datasource.remote.ActivityMessageListener
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.presentation.screen.ConnectionFailureScreen
@@ -30,6 +35,7 @@ import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MessageConstant
 import com.tokopedia.sellerapp.R
+import com.tokopedia.sellerapp.util.MarketURIConstant
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,12 +51,17 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         private const val timeoutMaxProgress = 1f
         private const val timeoutStartProgress = 0f
         private const val transitionDelay = 800L
+        private const val TAG_WEAROS_OPEN_SCREEN = "WEAROS_OPEN_SCREEN"
+        private const val DEVICE_MODEL = "deviceModel"
     }
 
     private lateinit var navController: NavHostController
 
     @Inject
     lateinit var clientMessageDatasource: ClientMessageDatasource
+
+    @Inject
+    lateinit var remoteActivityHelper: RemoteActivityHelper
 
     private val sharedViewModel: SharedViewModel by viewModels()
 
@@ -59,9 +70,10 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     private val phoneConnectionFailed = mutableStateOf(false)
     private var timer: CountDownTimer? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ServerLogger.log(Priority.P2, TAG_WEAROS_OPEN_SCREEN, mapOf(DEVICE_MODEL to Build.MODEL))
+
         lifecycleScope.launch {
             sharedViewModel.ifPhoneHasApp.collect {
                 it?.let {
@@ -84,6 +96,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                     SetupNavigation(
                         navController = navController,
                         sharedViewModel = sharedViewModel,
+                        remoteActivityHelper = remoteActivityHelper
                     )
                     if (phoneStateStatus == STATE.CONNECTED) {
                         LaunchedEffect(Unit) {
@@ -111,7 +124,11 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                             sharedViewModel.openLoginPageInApp()
                             finish()
                         }) } else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) { mutableStateOf({
-                            sharedViewModel.openAppInStoreOnPhone()
+                            val intent = Intent(Intent.ACTION_VIEW)
+                                .addCategory(Intent.CATEGORY_BROWSABLE)
+                                .setData(Uri.parse(MarketURIConstant.MARKET_TOKOPEDIA))
+
+                            remoteActivityHelper.startRemoteActivity(intent)
                             finish()
                         }) } else { mutableStateOf({
                             phoneConnectionFailed.value = false
@@ -160,7 +177,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         phoneStateProgressFlow.value = timeoutStartProgress
         phoneStateFlow.value = STATE.SYNC
         startStateTimeoutTimer()
-        sharedViewModel.checkPhoneState()
+        sharedViewModel.checkIfPhoneHasApp()
     }
 
     private fun startStateTimeoutTimer() {

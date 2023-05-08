@@ -7,8 +7,8 @@ import java.util.*
 
 @Parcelize
 data class DataCheckoutRequest(
-        @SerializedName("address_id")
-        var addressId: String? = null,
-        @SerializedName("shop_products")
-        var shopProducts: List<ShopProductCheckoutRequest>? = ArrayList()
+    @SerializedName("address_id")
+    var addressId: String? = null,
+    @SerializedName("shop_products")
+    var shopProducts: List<ShopProductCheckoutRequest>? = ArrayList()
 ) : Parcelable

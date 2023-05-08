@@ -402,6 +402,9 @@ class SearchProductFirstPageGqlUseCase(
                 searchInspirationWidget(params:${'$'}params){
                     data {
                         title
+                        header_title
+                        header_subtitle
+                        layout
                         type
                         position
                         options {
@@ -411,11 +414,13 @@ class SearchProductFirstPageGqlUseCase(
                             color
                             applink
                             component_id
-                            filters {
+                            multi_filters {
                               title
                               key
                               name
                               value
+                              val_min
+                              val_max
                             }
                         }
                         tracking_option

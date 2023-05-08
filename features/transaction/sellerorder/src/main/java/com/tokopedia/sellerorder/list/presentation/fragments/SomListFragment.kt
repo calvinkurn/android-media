@@ -66,6 +66,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourier
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReturnToShipper
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
@@ -352,6 +353,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             SomNavigator.REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(
                 resultCode,
                 data
+            )
+            SomNavigator.REQUEST_RETURN_TO_SHIPPER -> handleSomReturnToShipperActivityResult(
+                resultCode
             )
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -716,6 +720,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (somListBinding?.rvSomList?.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
             coachMarkManager?.showCoachMark()
         }
+    }
+
+    override fun onReturnToShipper(orderId: String) {
+        selectedOrderId = orderId
+        goToReturnToShipper(this, orderId)
     }
 
     override fun onBulkProcessOrderButtonClicked() {
@@ -1929,6 +1938,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 onActionCompleted(true, selectedOrderId)
                 showCommonToaster(view, it)
             }
+        }
+    }
+
+    private fun handleSomReturnToShipperActivityResult(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_FIRST_USER) {
+            onActionCompleted(true, selectedOrderId)
         }
     }
 

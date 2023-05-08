@@ -614,4 +614,14 @@ abstract class BulkReviewViewModelTestFixture {
         block(toasterQueue)
         uiStateCollectorJob.cancel()
     }
+
+    protected fun runCollectingBadRatingCategoryBottomSheetToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+        val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
+        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
+        val uiStateCollectorJob = scope.launch {
+            viewModel.badRatingCategoryBottomSheetToasterQueue.toList(toasterQueue)
+        }
+        block(toasterQueue)
+        uiStateCollectorJob.cancel()
+    }
 }

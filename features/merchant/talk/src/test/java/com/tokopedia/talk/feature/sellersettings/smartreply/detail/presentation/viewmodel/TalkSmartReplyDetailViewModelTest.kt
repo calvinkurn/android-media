@@ -1,6 +1,9 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
+import com.tokopedia.talk.feature.inbox.data.TickerConfig
+import com.tokopedia.talk.feature.inbox.data.ToasterConfig
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.DiscussionSmartReplyMutationResult
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplySettingResponseWrapper
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplyTemplateResponseWrapper
@@ -58,7 +61,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
     @Test
     fun `when setSmartReplyTemplate success should execute expected usecase and update livedata with expected value`() {
-        val expectedResponse = DiscussionSetSmartReplyTemplateResponseWrapper(discussionSetSmartReplyTemplate =  DiscussionSmartReplyMutationResult(isSuccess = true))
+        val expectedResponse = DiscussionSetSmartReplyTemplateResponseWrapper(discussionSetSmartReplyTemplate = DiscussionSmartReplyMutationResult(isSuccess = true))
 
         onSetSmartReplyTemplate_thenReturn(expectedResponse)
 
@@ -70,7 +73,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
     @Test
     fun `when setSmartReplyTemplate fail due to BE reason should execute expected usecase and update livedata with expected value`() {
-        val expectedResponse = DiscussionSetSmartReplyTemplateResponseWrapper(discussionSetSmartReplyTemplate =  DiscussionSmartReplyMutationResult(isSuccess = false, reason = "Upstream down"))
+        val expectedResponse = DiscussionSetSmartReplyTemplateResponseWrapper(discussionSetSmartReplyTemplate = DiscussionSmartReplyMutationResult(isSuccess = false, reason = "Upstream down"))
 
         onSetSmartReplyTemplate_thenReturn(expectedResponse)
 
@@ -185,6 +188,51 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         viewModel.isSmartReplyOn = expectedIsSmartReplyOn
 
         Assert.assertEquals(expectedIsSmartReplyOn, viewModel.isSmartReplyOn)
+    }
+
+    @Test
+    fun `getSmartReplyDecommissionConfig should success map config from remote config`() {
+        val expected = SmartReplyTalkDecommissionConfig.SmartReplyStockPage(
+            isSmartReviewDisabled = true,
+            tickerConfig = TickerConfig(title = "Dummy Title", text = "Dummy Text"),
+            toasterConfig = ToasterConfig(text = "Dummy Text")
+        )
+        val partialRemoteConfigJson = """
+            {
+                "smart_reply_stock_page": {
+                    "is_smart_review_disabled": true,
+                    "ticker_config": {
+                        "title": "Dummy Title",
+                        "text": "Dummy Text"
+                    },
+                    "toaster_config": {
+                        "text": "Dummy Text"
+                    }
+                }
+            }
+        """.trimIndent()
+
+        every {
+            firebaseRemoteConfig.getString("android_seller_app_smart_reply_talk_decommission_config")
+        } returns partialRemoteConfigJson
+
+        Assert.assertEquals(expected, viewModel.smartReplyDecommissionConfig.value)
+    }
+
+    @Test
+    fun `getSmartReplyDecommissionConfig should set smartReplyDecommissionConfig default config when JSON mapping is error`() {
+        val expected = SmartReplyTalkDecommissionConfig.SmartReplyStockPage(
+            isSmartReviewDisabled = false,
+            tickerConfig = TickerConfig(title = "", text = ""),
+            toasterConfig = ToasterConfig(text = "")
+        )
+        val partialRemoteConfigJson = "this is invalid json"
+
+        every {
+            firebaseRemoteConfig.getString("android_seller_app_smart_reply_talk_decommission_config")
+        } returns partialRemoteConfigJson
+
+        Assert.assertEquals(expected, viewModel.smartReplyDecommissionConfig.value)
     }
 
     private fun onSetSmartReply_thenReturn(expectedResponse: DiscussionSetSmartReplySettingResponseWrapper) {

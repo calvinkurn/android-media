@@ -3,10 +3,35 @@ package com.tokopedia.tokopedianow.recipedetail.analytics
 import android.os.Bundle
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
 import com.tokopedia.tokopedianow.recipecommon.analytics.RecipeCommonAnalyticsConstant.EVENT_CATEGORY_TOKONOW_RECIPE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_ATC_TOASTER
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_BOOKMARK
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_BUY_INGREDIENTS_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_CHANGE_ADDRESS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_HOW_TO_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_LEARN_MORE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_OTHER_TAGS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_IMPRESSION_BUY_INGREDIENTS_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_IMPRESSION_OTHER_TAGS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_IMPRESSION_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.ACTION.EVENT_ACTION_VIEW_HOW_TO_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_ATC_TOASTER
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_BOOKMARK
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_BUY_INGREDIENTS_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_CHANGE_ADDRESS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_HOW_TO_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_LEARN_MORE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_OTHER_TAGS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_CLICK_SHARE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_BUY_INGREDIENTS_TAB
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_OTHER_TAGS
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics.TRACKER_ID.TRACKER_ID_VIEW_HOW_TO_TAB
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
@@ -23,25 +48,41 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
 
-    companion object {
-        private const val EVENT_ACTION_CLICK_BOOKMARK = "click bookmark"
-        private const val EVENT_ACTION_CLICK_SHARE = "click share"
-        private const val EVENT_ACTION_IMPRESSION_OTHER_TAGS = "impression other tags"
-        private const val EVENT_ACTION_CLICK_OTHER_TAGS = "click other tags"
-        private const val EVENT_ACTION_IMPRESSION_BUY_INGREDIENTS_TAB = "impression belanja bahan tab"
-        private const val EVENT_ACTION_CLICK_BUY_INGREDIENTS_TAB = "click belanja bahan tab"
-        private const val EVENT_ACTION_VIEW_HOW_TO_TAB = "view cara masak tab"
-        private const val EVENT_ACTION_CLICK_HOW_TO_TAB = "click cara masak tab"
-        private const val EVENT_ACTION_IMPRESSION_OUT_OF_COVERAGE = "impression ooc"
-        private const val EVENT_ACTION_CLICK_CHANGE_ADDRESS = "click ganti alamat"
-        private const val EVENT_ACTION_CLICK_LEARN_MORE = "click pelajari"
-        private const val EVENT_ACTION_CLICK_ATC_TOASTER = "click lihat atc toaster"
+    private object ACTION {
+        const val EVENT_ACTION_CLICK_BOOKMARK = "click bookmark"
+        const val EVENT_ACTION_CLICK_SHARE = "click share"
+        const val EVENT_ACTION_IMPRESSION_OTHER_TAGS = "impression other tags"
+        const val EVENT_ACTION_CLICK_OTHER_TAGS = "click other tags"
+        const val EVENT_ACTION_IMPRESSION_BUY_INGREDIENTS_TAB = "impression belanja bahan tab"
+        const val EVENT_ACTION_CLICK_BUY_INGREDIENTS_TAB = "click belanja bahan tab"
+        const val EVENT_ACTION_VIEW_HOW_TO_TAB = "view cara masak tab"
+        const val EVENT_ACTION_CLICK_HOW_TO_TAB = "click cara masak tab"
+        const val EVENT_ACTION_IMPRESSION_OUT_OF_COVERAGE = "impression ooc"
+        const val EVENT_ACTION_CLICK_CHANGE_ADDRESS = "click ganti alamat"
+        const val EVENT_ACTION_CLICK_LEARN_MORE = "click pelajari"
+        const val EVENT_ACTION_CLICK_ATC_TOASTER = "click lihat atc toaster"
+    }
+
+    private object TRACKER_ID {
+        const val TRACKER_ID_CLICK_BOOKMARK = "32997"
+        const val TRACKER_ID_CLICK_SHARE = "32998"
+        const val TRACKER_ID_IMPRESSION_OTHER_TAGS = "32999"
+        const val TRACKER_ID_CLICK_OTHER_TAGS = "33000"
+        const val TRACKER_ID_IMPRESSION_BUY_INGREDIENTS_TAB = "33001"
+        const val TRACKER_ID_CLICK_BUY_INGREDIENTS_TAB = "33035"
+        const val TRACKER_ID_VIEW_HOW_TO_TAB = "33036"
+        const val TRACKER_ID_CLICK_HOW_TO_TAB = "33037"
+        const val TRACKER_ID_IMPRESSION_OUT_OF_COVERAGE = "33058"
+        const val TRACKER_ID_CLICK_CHANGE_ADDRESS = "33059"
+        const val TRACKER_ID_CLICK_LEARN_MORE = "33060"
+        const val TRACKER_ID_CLICK_ATC_TOASTER = "33053"
     }
 
     fun trackClickBookmark() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_BOOKMARK
+            action = EVENT_ACTION_CLICK_BOOKMARK,
+            trackerId = TRACKER_ID_CLICK_BOOKMARK
         )
 
         sendEnhanceEcommerceEvent(
@@ -53,7 +94,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickShare() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_SHARE
+            action = EVENT_ACTION_CLICK_SHARE,
+            trackerId = TRACKER_ID_CLICK_SHARE
         )
 
         sendEnhanceEcommerceEvent(
@@ -65,7 +107,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackImpressionOtherTags() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_PG_IRIS,
-            action = EVENT_ACTION_IMPRESSION_OTHER_TAGS
+            action = EVENT_ACTION_IMPRESSION_OTHER_TAGS,
+            trackerId = TRACKER_ID_IMPRESSION_OTHER_TAGS
         )
 
         sendEnhanceEcommerceEvent(
@@ -77,7 +120,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickOtherTags() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_OTHER_TAGS
+            action = EVENT_ACTION_CLICK_OTHER_TAGS,
+            trackerId = TRACKER_ID_CLICK_OTHER_TAGS
         )
 
         sendEnhanceEcommerceEvent(
@@ -89,7 +133,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackImpressionBuyIngredientsTab() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_PG_IRIS,
-            action = EVENT_ACTION_IMPRESSION_BUY_INGREDIENTS_TAB
+            action = EVENT_ACTION_IMPRESSION_BUY_INGREDIENTS_TAB,
+            trackerId = TRACKER_ID_IMPRESSION_BUY_INGREDIENTS_TAB
         )
 
         sendEnhanceEcommerceEvent(
@@ -101,7 +146,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickBuyIngredientsTab() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_BUY_INGREDIENTS_TAB
+            action = EVENT_ACTION_CLICK_BUY_INGREDIENTS_TAB,
+            trackerId = TRACKER_ID_CLICK_BUY_INGREDIENTS_TAB
         )
 
         sendEnhanceEcommerceEvent(
@@ -113,7 +159,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackImpressionHowToTab() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_PG_IRIS,
-            action = EVENT_ACTION_VIEW_HOW_TO_TAB
+            action = EVENT_ACTION_VIEW_HOW_TO_TAB,
+            trackerId = TRACKER_ID_VIEW_HOW_TO_TAB
         )
 
         sendEnhanceEcommerceEvent(
@@ -125,7 +172,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickHowToTab() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_HOW_TO_TAB
+            action = EVENT_ACTION_CLICK_HOW_TO_TAB,
+            trackerId = TRACKER_ID_CLICK_HOW_TO_TAB
         )
 
         sendEnhanceEcommerceEvent(
@@ -137,7 +185,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackImpressionOutOfCoverage() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_PG_IRIS,
-            action = EVENT_ACTION_IMPRESSION_OUT_OF_COVERAGE
+            action = EVENT_ACTION_IMPRESSION_OUT_OF_COVERAGE,
+            trackerId = TRACKER_ID_IMPRESSION_OUT_OF_COVERAGE
         )
 
         sendEnhanceEcommerceEvent(
@@ -149,7 +198,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickChangeAddress() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_CHANGE_ADDRESS
+            action = EVENT_ACTION_CLICK_CHANGE_ADDRESS,
+            trackerId = TRACKER_ID_CLICK_CHANGE_ADDRESS
         )
 
         sendEnhanceEcommerceEvent(
@@ -161,7 +211,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickLearnMore() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_LEARN_MORE
+            action = EVENT_ACTION_CLICK_LEARN_MORE,
+            trackerId = TRACKER_ID_CLICK_LEARN_MORE
         )
 
         sendEnhanceEcommerceEvent(
@@ -173,7 +224,8 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
     fun trackClickSeeAddToCartToaster() {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_PG,
-            action = EVENT_ACTION_CLICK_ATC_TOASTER
+            action = EVENT_ACTION_CLICK_ATC_TOASTER,
+            trackerId = TRACKER_ID_CLICK_ATC_TOASTER
         )
 
         sendEnhanceEcommerceEvent(
@@ -182,12 +234,13 @@ class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
         )
     }
 
-    private fun createGeneralDataLayer(event: String, action: String): Bundle {
+    private fun createGeneralDataLayer(event: String, action: String, trackerId: String): Bundle {
         return Bundle().apply {
             putString(EVENT, event)
             putString(EVENT_ACTION, action)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_RECIPE)
             putString(EVENT_LABEL, DEFAULT_EMPTY_VALUE)
+            putString(KEY_TRACKER_ID, trackerId)
             putString(BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             putString(USERID, userSession.userId)

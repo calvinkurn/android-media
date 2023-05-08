@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,7 +77,11 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 recipeItemListener = RecipeListListener(
                     view = this,
                     analytics = analytics,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    userSession = userSession,
+                    directToLoginPage = {
+                        openLoginPage()
+                    }
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
@@ -93,6 +98,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeListBinding>()
 
     private val loadMoreListener by lazy { createLoadMoreListener() }
+
+    private val startLoginPageForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            onRefreshPage()
+        }
+    }
 
     private var navToolbar: TokoNowNavToolbar? = null
 
@@ -295,7 +308,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         data?.model?.apply {
             if (data.isRemoving) {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                     clickListener = {
@@ -306,7 +319,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 analytics.impressUnBookmarkToaster()
             } else {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_adding_bookmark, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
                     clickListener = {
@@ -323,7 +336,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         data?.model?.apply {
             if (data.isRemoving) {
                 showToaster(
-                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_remove_bookmark) },
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_toaster_description_failed_removing_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                     clickListener = {
@@ -338,7 +351,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 analytics.impressFailedUnBookmarkToaster()
             } else {
                 showToaster(
-                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_add_bookmark) },
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_toaster_description_failed_adding_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                     clickListener = {
@@ -399,8 +412,17 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     }
 
     private fun goToBookmarkPage() {
-        analytics.clickBookmarkList()
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+        if (userSession.isLoggedIn) {
+            analytics.clickBookmarkList()
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+        } else {
+            openLoginPage()
+        }
+    }
+
+    private fun openLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startLoginPageForResult.launch(intent)
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
@@ -439,4 +461,5 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         setupLoadMoreListener()
         viewModel.refreshPage()
     }
+
 }

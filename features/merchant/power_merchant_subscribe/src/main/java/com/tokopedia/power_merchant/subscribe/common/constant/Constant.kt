@@ -9,13 +9,13 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val PM_TOP_ADS_CREDIT = "5%"
+    const val PM_TOP_ADS_CREDIT = "1,5%"
     const val PM_BROAD_CAST_CHAT = "200"
-    const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "2%"
     const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
-    const val PM_PRO_EXP_TOP_ADS_CREDIT = "6%"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "2,5%"
     const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
-    const val PM_PRO_ULT_TOP_ADS_CREDIT = "6,5%"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "3%"
     const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
     const val PM_SPECIAL_RELEASE = 5
     const val PM_PRO_ADV_SPECIAL_RELEASE = 10

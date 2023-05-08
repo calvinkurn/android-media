@@ -1,7 +1,6 @@
 package com.tokopedia.dynamicfeatures.config
 
 import android.content.Context
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
@@ -9,7 +8,6 @@ class DFRemoteConfig {
 
     companion object {
         private const val ANDROID_MAIN_APP_DF_CONFIG = "android_main_app_df_config"
-        private const val ANDROID_SPLIT_COMPAT_AFTER_INSTALL = "android_split_compat_after_install"
         private var dfConfig: DFConfig? = null
 
         fun getConfig(context: Context): DFConfig {
@@ -23,21 +21,6 @@ class DFRemoteConfig {
                 }
             }
             return dfConfig ?: DFConfig()
-        }
-
-        /**
-         * function to run SplitCompat.install(context)
-         */
-        fun runSplitCompat(context: Context) {
-            try {
-                val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-                val splitCompatAfterInstall =
-                    remoteConfig.getBoolean(ANDROID_SPLIT_COMPAT_AFTER_INSTALL, true)
-                if (splitCompatAfterInstall) {
-                    SplitCompat.install(context)
-                }
-            } catch (ignored: Exception) {
-            }
         }
     }
 }

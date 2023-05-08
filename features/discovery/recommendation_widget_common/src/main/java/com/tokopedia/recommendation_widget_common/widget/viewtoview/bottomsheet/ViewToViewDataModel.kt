@@ -11,5 +11,6 @@ data class ViewToViewDataModel(
     val price: String,
     val productModel: ProductCardModel,
     val recommendationItem: RecommendationItem,
+    val componentName: String = "",
 )
 

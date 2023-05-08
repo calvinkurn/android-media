@@ -102,7 +102,8 @@
                 android:textColor="@color/Unify_GN500"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
-                android:layout_margin="@dimen/unify_space_16"
+                android:layout_margin="16dp"
+                android:paddingBottom="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider_close_account" />

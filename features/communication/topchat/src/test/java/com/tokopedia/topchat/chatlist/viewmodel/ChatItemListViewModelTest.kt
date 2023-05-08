@@ -10,10 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.inboxcommon.RoleType.Companion.BUYER
 import com.tokopedia.inboxcommon.RoleType.Companion.SELLER
 import com.tokopedia.inboxcommon.util.FileUtil
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
@@ -77,7 +75,6 @@ class ChatItemListViewModelTest {
     private val operationalInsightUseCase: GetOperationalInsightUseCase = mockk(relaxed = true)
     private val getChatListTickerUseCase: GetChatListTickerUseCase = mockk(relaxed = true)
     private val sharedPref: SharedPreferences = mockk(relaxed = true)
-    private val abTestPlatform: AbTestPlatform = mockk(relaxed = true)
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -103,7 +100,6 @@ class ChatItemListViewModelTest {
             getChatListTickerUseCase,
             sharedPref,
             userSession,
-            abTestPlatform,
             CoroutineTestDispatchersProvider
         )
         viewModel.mutateChatList.observeForever(mutateChatListObserver)
@@ -1138,15 +1134,12 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun should_show_bubble_ticker_on_android_11_true_on_shared_pref_and_also_enabled_by_rollence() {
+    fun should_show_bubble_ticker_on_android_11_and_true_on_shared_pref() {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
             sharedPref.getBoolean(any(), any())
         } returns true
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
         val result = viewModel.shouldShowBubbleTicker()
@@ -1162,9 +1155,6 @@ class ChatItemListViewModelTest {
         every {
             sharedPref.getBoolean(any(), any())
         } returns true
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
         val result = viewModel.shouldShowBubbleTicker()
@@ -1180,9 +1170,6 @@ class ChatItemListViewModelTest {
         every {
             sharedPref.getBoolean(any(), any())
         } returns false
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
         val result = viewModel.shouldShowBubbleTicker()
@@ -1198,51 +1185,12 @@ class ChatItemListViewModelTest {
         every {
             sharedPref.getBoolean(any(), any())
         } returns false
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
         val result = viewModel.shouldShowBubbleTicker()
 
         // Then
         assertEquals(result, false)
-    }
-
-    @Test
-    fun should_not_show_bubble_ticker_if_rollence_disabled() {
-        // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
-        every {
-            sharedPref.getBoolean(any(), any())
-        } returns true
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } returns ""
-
-        // When
-        val result = viewModel.shouldShowBubbleTicker()
-
-        // Then
-        assertEquals(result, false)
-    }
-
-    @Test
-    fun should_show_bubble_ticker_if_get_rollence_failed() {
-        // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
-        every {
-            sharedPref.getBoolean(any(), any())
-        } returns true
-        every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
-        } throws MessageErrorException()
-
-        // When
-        val result = viewModel.shouldShowBubbleTicker()
-
-        // Then
-        assertEquals(result, true)
     }
 
     @Test

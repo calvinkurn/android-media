@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.affiliate.AFFILIATE_SHOP_ADP
 import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
@@ -42,7 +41,6 @@ import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -92,12 +90,6 @@ class AffiliateHomeViewModel @Inject constructor(
         private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
         private const val CONVERSION_METRIC = "conversion"
     }
-
-    private fun isAffiliateShopAdpEnabled() =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_SHOP_ADP,
-            ""
-        ) == AFFILIATE_SHOP_ADP
 
     fun getAffiliateValidateUser() {
         launchCatchError(
@@ -158,7 +150,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     }
                 }
                 if (!isFullLoad) shimmerVisibility.value = true
-                if (isAffiliateShopAdpEnabled() && (firstTime || isFullLoad)) {
+                if (firstTime || isFullLoad) {
                     itemTypes =
                         affiliatePerformanceItemTypeUseCase
                             .affiliatePerformanceItemTypeList()
@@ -230,8 +222,7 @@ class AffiliateHomeViewModel @Inject constructor(
                 AffiliateUserPerformanceModel(
                     getListFromData(
                         performanceList
-                    ),
-                    isAffiliateShopAdpEnabled()
+                    )
                 )
             )
             getItemChips(tempList, itemTypesList)

@@ -363,6 +363,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                 )
             )
         }
+
+        if (!getShouldPopBackStackImmediate()) {
+            context?.let {
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            }?.let { backgroundColor ->
+                view?.setBackgroundColor(backgroundColor)
+            }
+        }
     }
 
     private fun setHeaderBackground() {

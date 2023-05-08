@@ -1693,12 +1693,7 @@
           "destination_activity": "com.tokopedia.homenav.view.activity.HomeNavActivity", 
           "deeplink": "tokopedia-android-internal://navigation/main", 
           "deeplink_variable": "ApplinkConsInternalNavigation.MAIN_NAVIGATION"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.recentview.view.activity.RecentViewActivity", 
-          "deeplink": "tokopedia-android-internal://home/recentlyviewed", 
-          "deeplink_variable": "ApplinkConsInternalHome.HOME_RECENT_VIEW"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.home_recom.HomeRecommendationActivity", 
           "deeplink": "tokopedia-android-internal://home/rekomendasi", 

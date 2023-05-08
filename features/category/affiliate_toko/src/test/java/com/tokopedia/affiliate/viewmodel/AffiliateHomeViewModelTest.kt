@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.viewmodel
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.affiliate.AFFILIATE_SHOP_ADP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
@@ -22,14 +21,10 @@ import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
 import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.clearStaticMockk
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -83,14 +78,12 @@ class AffiliateHomeViewModelTest {
 
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-        mockkStatic(RemoteConfigInstance::class)
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
-        clearStaticMockk(RemoteConfigInstance::class)
     }
 
     /**************************** getAnnouncementInformation() *******************************************/
@@ -148,13 +141,6 @@ class AffiliateHomeViewModelTest {
     /**************************** getAffiliatePerformance() *******************************************/
     @Test
     fun getAffiliatePerformance() {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AFFILIATE_SHOP_ADP,
-                ""
-            )
-        } returns AFFILIATE_SHOP_ADP
-
         val affiliateUserPerformaListData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
         val defaultMetricData =
             AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics(

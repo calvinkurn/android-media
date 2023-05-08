@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/searchTopBar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="36dp"
     android:background="@color/Unify_Background"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:gravity="center_vertical">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/autocompleteActionUpButton"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="12dp"
-        android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N500"
         app:icon_enable_state="true"
         app:icon_name="ARROW_BACK"
@@ -27,36 +23,34 @@
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/searchTextView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/autocomplete_bg_input"
         android:gravity="center_vertical"
         android:hint="@string/search_autocomplete_hint"
         android:imeOptions="actionSearch"
         android:inputType="textNoSuggestions"
         android:lines="1"
-        android:paddingStart="@dimen/dp_28"
-        android:paddingTop="8dp"
-        android:paddingEnd="@dimen/dp_32"
-        android:paddingBottom="8dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="32dp"
         android:textColor="@color/Unify_N700_96"
         android:textColorHint="@color/Unify_N700_44"
         android:textCursorDrawable="@drawable/autocomplete_cursor_color"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/autocompleteActionUpButton"
-        app:layout_constraintRight_toLeftOf="@+id/actionCancelButton"
+        app:layout_constraintStart_toEndOf="@id/autocompleteActionUpButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginEnd="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/autocompleteSearchIcon"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
         android:layout_marginStart="8dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_N700_68"
+        app:icon_color_night_enable="@color/Unify_N700_68"
         app:icon_enable_state="true"
         app:icon_name="SEARCH"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
@@ -65,8 +59,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/autocompleteClearButton"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="2dp"
         android:padding="8dp"
@@ -80,8 +74,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/autocompleteVoiceButton"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginEnd="10dp"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N500"
@@ -112,7 +106,7 @@
         android:layout_width="1dp"
         android:layout_height="20dp"
         android:background="@color/Unify_NN300"
-        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toLeftOf="@id/autocompleteAddButton"
@@ -131,19 +125,4 @@
         app:layout_constraintRight_toRightOf="@id/searchTextView"
         app:layout_constraintTop_toTopOf="@id/searchTextView"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/actionCancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/search_cancel_text"
-        android:textColor="@color/Unify_G500"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
-        app:typographyWeight="reguler" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

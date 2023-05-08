@@ -655,7 +655,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun initHeaderUnify() {
         headerUnify?.apply {
             setNavigationOnClickListener {
-                tracking?.clickBackButton(shopId, shopType)
+                if(!isMyShop) {
+                    tracking?.clickBackButton(shopId, userSession.userId)
+                }
                 activity?.finish()
             }
         }

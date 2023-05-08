@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.manage.databinding.ItemVariantEditStockReminderSelectBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
@@ -44,13 +45,13 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
     fun setItems(data: List<GroupVariantProductStockReminderUiModel>) {
         this.groupVariant = data
         productSelection.clear()
-        notifyDataSetChanged()
+        notifyItemRangeChanged(Int.ZERO, data.size)
     }
 
     fun setCheckAll(isCheckAll: Boolean) {
         this.isCheckAll = isCheckAll
         productSelection.clear()
-        notifyDataSetChanged()
+        notifyItemRangeChanged(Int.ZERO, groupVariant.size)
     }
 
     inner class GroupVariantEditSelectViewHolder(private val binding: ItemVariantEditStockReminderSelectBinding) :

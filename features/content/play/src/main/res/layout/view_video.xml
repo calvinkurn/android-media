@@ -12,20 +12,21 @@
 
     <FrameLayout
         android:id="@+id/fl_video_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:transitionName="@string/play_transition_video"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_width="match_parent"
-        tools:layout_height="match_parent">
+        tools:layout_height="match_parent"
+        >
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/pv_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:shutter_background_color="@android:color/transparent"
             app:surface_type="texture_view"
             app:use_controller="false"

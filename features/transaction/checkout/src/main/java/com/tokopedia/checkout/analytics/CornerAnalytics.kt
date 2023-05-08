@@ -7,17 +7,17 @@ import javax.inject.Inject
 class CornerAnalytics @Inject constructor() : TransactionAnalytics() {
     fun sendViewCornerError() {
         sendGeneralEvent(
-                ConstantTransactionAnalytics.EventName.VIEW_REGISTER,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.VIEW_CORNER_ERROR
+            ConstantTransactionAnalytics.EventName.VIEW_REGISTER,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_CORNER_ERROR
         )
     }
 
     fun sendViewCornerPoError() {
         sendGeneralEvent(
-                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.VIEW_CORNER_PO_ERROR
+            ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_CORNER_PO_ERROR
         )
     }
 }

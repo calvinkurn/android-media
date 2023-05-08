@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/dt_shimmering_line_width"
+        android:layout_height="10dp"
+        android:layout_marginStart="16dp"
+        app:loader_corner_radius="@dimen/dt_shimmering_radius_line"
+        app:loader_type="line" />
+
+    <include
+        layout="@layout/partial_dt_home_shimmering_anchortab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dt_shimmering_banner_rect_height"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        app:loader_corner_radius="@dimen/layout_lvl1"
+        app:loader_type="rect" />
+
+    <include layout="@layout/partial_dt_home_shimmering_label" />
+
+    <include layout="@layout/partial_dt_home_shimmering_category_multiple_linearlayout" />
+
+    <include layout="@layout/partial_dt_home_shimmering_label" />
+
+    <include layout="@layout/partial_dt_home_shimmering_category_multiple_linearlayout" />
+
+</LinearLayout>

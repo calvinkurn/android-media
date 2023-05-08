@@ -88,7 +88,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 2000,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         )
                     )
                 )
@@ -153,7 +153,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 2000,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         ),
                         OrderPaymentFee(
                             fee = 2000.0,
@@ -161,7 +161,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 0,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         )
                     )
                 )
@@ -210,7 +210,6 @@ class OrderSummaryPageActivityPaymentFeeTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             assertPayment("Rp517.000", "Bayar")
@@ -235,7 +234,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 2000,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         )
                     )
                 )
@@ -276,7 +275,6 @@ class OrderSummaryPageActivityPaymentFeeTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             assertPayment("Rp519.000", "Bayar")
@@ -301,7 +299,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 2000,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         ),
                         OrderPaymentFee(
                             fee = 2000.0,
@@ -309,7 +307,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 0,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         )
                     )
                 )
@@ -425,7 +423,7 @@ class OrderSummaryPageActivityPaymentFeeTest {
                             showTooltip = true,
                             slashedFee = 0,
                             title = "Biaya Jasa Aplikasi",
-                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
                         )
                     )
                 )

@@ -1,7 +1,6 @@
 package com.tokopedia.user.session;
 
 import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
-import static com.tokopedia.user.session.Constants.ADVERTISINGID;
 import static com.tokopedia.user.session.Constants.ANDROID_ID;
 import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;
@@ -26,7 +25,6 @@ import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
 import static com.tokopedia.user.session.Constants.IS_SHOP_ADMIN;
 import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
 import static com.tokopedia.user.session.Constants.IS_SHOP_OWNER;
-import static com.tokopedia.user.session.Constants.KEY_ADVERTISINGID;
 import static com.tokopedia.user.session.Constants.KEY_ANDROID_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_METHOD;
@@ -56,8 +54,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.google.crypto.tink.Aead;
-import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.encryption.security.AeadEncryptor;
 import com.tokopedia.user.session.datastore.DataStorePreference;
 
 import org.jetbrains.annotations.NotNull;
@@ -106,18 +102,6 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     public void setUserId(String userId) {
         setString(LOGIN_SESSION, LOGIN_ID, userId);
         setString(LOGIN_SESSION, GTM_LOGIN_ID, userId);
-    }
-
-    public String getAdsId() {
-        String adsId = getAndTrimOldString(ADVERTISINGID, KEY_ADVERTISINGID, "");
-        if (adsId == null || adsId.isEmpty()) {
-            DeviceInfo.logIdentifier(context, "UserSession");
-        }
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            return adsId;
-        } else {
-            return null;
-        }
     }
 
     public String getAndroidId() {

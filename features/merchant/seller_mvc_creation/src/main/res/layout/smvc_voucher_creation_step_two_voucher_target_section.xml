@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_voucher_target_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/smvc_choose_voucher_target_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.mvc.common.customview.VoucherTargetSelectionView
+        android:id="@+id/view_voucher_target_public"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:voucher_target_description_text="@string/smvc_description_public_voucher_target"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_target_title"
+        app:layout_constraintWidth_percent="0.45"
+        app:voucher_target_title_text="@string/smvc_voucher_public_label" />
+
+    <com.tokopedia.mvc.common.customview.VoucherTargetSelectionView
+        android:id="@+id/view_voucher_target_private"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:voucher_target_description_text="@string/smvc_description_private_voucher_target"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view_voucher_target_public"
+        app:layout_constraintTop_toTopOf="@+id/view_voucher_target_public"
+        app:layout_constraintWidth_percent="0.45"
+        app:voucher_target_title_text="@string/smvc_voucher_private_label" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_voucher_target_public" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

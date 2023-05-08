@@ -50,6 +50,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_AR = "$INTERNAL_MARKETPLACE/productar/{product_id}/"
 
     const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
+    const val POST_ATC = "$INTERNAL_MARKETPLACE/post-atc/{productId}/"
 
     // AtcVariantActivity
     @JvmField

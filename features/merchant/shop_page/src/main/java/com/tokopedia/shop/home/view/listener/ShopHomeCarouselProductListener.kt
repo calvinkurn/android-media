@@ -108,8 +108,6 @@ interface ShopHomeCarouselProductListener {
         shopHomeProductUiModel: ShopHomeProductUiModel?
     )
 
-    fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
-
     fun onCarouselProductWidgetImpression(adapterPosition: Int, model: ShopHomeCarousellProductUiModel)
 
     fun onCarouselProductPersonalizationTrendingWidgetImpression()

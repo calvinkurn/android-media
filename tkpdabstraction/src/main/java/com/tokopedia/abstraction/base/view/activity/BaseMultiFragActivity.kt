@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 
@@ -67,6 +66,10 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
 
     protected fun getFragmentCount(): Int {
         return supportFragmentManager.fragments.count()
+    }
+
+    fun getShouldPopBackStackImmediately(): Boolean {
+        return true
     }
 
     override fun getLayoutRes(): Int {
@@ -142,7 +145,11 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
             }
         }
         if (isFinishCurrent) {
-            supportFragmentManager.popBackStack()
+            if (getShouldPopBackStackImmediately()) {
+                supportFragmentManager.popBackStackImmediate()
+            } else {
+                supportFragmentManager.popBackStack()
+            }
         }
         ft.add(
             R.id.frame_content,
@@ -159,15 +166,21 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
                 while (i >= 0) {
                     prevFragment = supportFragmentManager.fragments.getOrNull(i)
                     if (prevFragment?.isHidden == false && prevFragment.isAdded) {
+                        val shouldPopBackStackImmediately = getShouldPopBackStackImmediately()
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {
-                            ft.hide(prevFragment)
+                            if (!shouldPopBackStackImmediately) {
+                                ft.hide(prevFragment)
+                            }
                             try {
                                 ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
                             } catch (ex: Exception) {
                                 ex.printStackTrace()
                             }
+                        }
+                        if (shouldPopBackStackImmediately) {
+                            ft.hide(prevFragment)
                         }
                     }
                     i--

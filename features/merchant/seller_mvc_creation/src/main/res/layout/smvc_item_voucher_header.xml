@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardIndicator"
+        android:layout_width="15dp"
+        android:layout_height="20dp"
+        app:cardCornerRadius="5dp"
+        android:layout_marginStart="-10dp"
+        app:cardBackgroundColor="@color/Unify_GN500" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfStatusTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="11dp"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tool:text="Dihentikan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/smvc_voucherlist_vps_text" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSubsidy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/smvc_voucherlist_subsidi_text" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconMenu"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

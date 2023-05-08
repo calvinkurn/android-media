@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -59,8 +60,12 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     var warehouseId: String = ""
         private set
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowHome
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
     }
 
@@ -99,7 +104,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         layoutItemList.addAll(productList)
 
         miniCartData?.let {
-            setMiniCartData(it)
+            updateProductQuantity(it)
         }
 
         _visitableItems.postValue(layoutItemList)

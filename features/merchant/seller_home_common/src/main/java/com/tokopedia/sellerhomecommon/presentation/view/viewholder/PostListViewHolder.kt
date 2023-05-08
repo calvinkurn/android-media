@@ -205,7 +205,14 @@ class PostListViewHolder(
         postList: List<PostItemUiModel>, maxDisplay: Int
     ): List<PostListPagerUiModel> {
         return postList.chunked(maxDisplay).map {
-            return@map PostListPagerUiModel(it)
+            val items = it.mapIndexed { index, postItemUiModel ->
+                if (postItemUiModel is PostItemUiModel.PostTextEmphasizedUiModel) {
+                    val isLastItem = index != it.size.minus(Int.ONE)
+                    postItemUiModel.shouldShowUnderLine = isLastItem
+                }
+                return@mapIndexed postItemUiModel
+            }
+            return@map PostListPagerUiModel(items)
         }
     }
 
@@ -498,9 +505,6 @@ class PostListViewHolder(
 
     private fun setupPostPager(pagers: List<PostListPagerUiModel>) {
         with(binding.shcPostListSuccessView) {
-            pageControlShcPostPager.setIndicator(pagers.size)
-            pageControlShcPostPager.isVisible = pagers.size > Int.ONE
-
             rvPostList.run {
                 layoutManager = mLayoutManager
                 adapter = pagerAdapter
@@ -530,8 +534,16 @@ class PostListViewHolder(
         setPagers(pagers)
     }
 
+    private fun updatePageIndicator(pagers: List<PostListPagerUiModel>) {
+        with(binding.shcPostListSuccessView) {
+            pageControlShcPostPager.setIndicator(pagers.size)
+            pageControlShcPostPager.isVisible = pagers.size > Int.ONE
+        }
+    }
+
     private fun setPagers(pagers: List<PostListPagerUiModel>) {
         pagerAdapter?.setPagers(pagers)
+        updatePageIndicator(pagers)
     }
 
     interface Listener : BaseViewHolderListener, WidgetDismissalListener {

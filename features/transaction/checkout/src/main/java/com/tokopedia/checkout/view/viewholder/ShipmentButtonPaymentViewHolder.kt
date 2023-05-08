@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.purchase_platform.common.utils.rxViewClickThrottle
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -32,19 +32,20 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
         btnSelectPaymentMethod.isEnabled = model.enable
         btnSelectPaymentMethod.let {
             compositeSubscription.add(
-                    rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(t: Boolean?) {
-                            actionListener.onProcessToPayment()
-                        }
+                rxViewClickThrottle(it).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        actionListener.onProcessToPayment()
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                        /* no-op */
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                        /* no-op */
+                    }
+                })
             )
         }
-
     }
 }

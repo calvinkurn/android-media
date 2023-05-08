@@ -49,7 +49,7 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener) :
         // because we have empty value at beginning of list, we need to reduce pos by 1
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition)
+            MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition, homeCategoryListener.userId)
         }
     }
 

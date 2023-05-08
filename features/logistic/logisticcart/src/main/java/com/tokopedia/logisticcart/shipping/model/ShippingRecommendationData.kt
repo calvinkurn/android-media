@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -8,10 +9,11 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShippingRecommendationData(
-        var shippingDurationUiModels: List<ShippingDurationUiModel> = emptyList(),
-        var logisticPromo: LogisticPromoUiModel? = null,
-        var listLogisticPromo: List<LogisticPromoUiModel> = emptyList(),
-        var preOrderModel: PreOrderModel? = null,
-        var errorMessage: String? = null,
-        var errorId: String? = null,
+    var shippingDurationUiModels: List<ShippingDurationUiModel> = emptyList(),
+    var logisticPromo: LogisticPromoUiModel? = null,
+    var listLogisticPromo: List<LogisticPromoUiModel> = emptyList(),
+    var preOrderModel: PreOrderModel? = null,
+    var errorMessage: String? = null,
+    var errorId: String? = null,
+    var scheduleDeliveryData: ScheduleDeliveryData? = null
 ) : Parcelable

@@ -56,7 +56,9 @@ interface ICartListView : CustomerView {
     fun updateCashback(cashback: Double)
 
     fun showToastMessageRed(
-        message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null
+        message: String,
+        actionText: String = "",
+        ctaClickListener: View.OnClickListener? = null
     )
 
     fun showToastMessageRed(throwable: Throwable)
@@ -64,7 +66,9 @@ interface ICartListView : CustomerView {
     fun showToastMessageRed()
 
     fun showToastMessageGreen(
-        message: String, actionText: String = "", onClickListener: View.OnClickListener? = null
+        message: String,
+        actionText: String = "",
+        onClickListener: View.OnClickListener? = null
     )
 
     fun renderLoadGetCartData()
@@ -107,7 +111,8 @@ interface ICartListView : CustomerView {
     fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
     fun renderWishlistV2(
-        wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>?, forceReload: Boolean
+        wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>?,
+        forceReload: Boolean
     )
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
@@ -125,7 +130,8 @@ interface ICartListView : CustomerView {
     fun setHasTriedToLoadRecommendation()
 
     fun triggerSendEnhancedEcommerceAddToCartSuccess(
-        addToCartDataResponseModel: AddToCartDataModel, productModel: Any
+        addToCartDataResponseModel: AddToCartDataModel,
+        productModel: Any
     )
 
     fun getAdsId(): String?
@@ -162,5 +168,5 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
-    fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 }

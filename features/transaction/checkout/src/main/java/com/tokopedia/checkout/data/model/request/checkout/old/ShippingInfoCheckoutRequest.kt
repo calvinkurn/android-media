@@ -8,19 +8,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShippingInfoCheckoutRequest(
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("shipping_id")
-        var shippingId: Int = 0,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("sp_id")
-        var spId: Int = 0,
-        @SerializedName("rates_id")
-        var ratesId: String? = null,
-        @SerializedName("checksum")
-        var checksum: String? = null,
-        @SerializedName("ut")
-        var ut: String? = null,
-        @SerializedName("rates_feature")
-        var ratesFeature: RatesFeature? = null,
-        var analyticsDataShippingCourierPrice: String? = null,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("shipping_id")
+    var shippingId: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("sp_id")
+    var spId: Int = 0,
+    @SerializedName("rates_id")
+    var ratesId: String? = null,
+    @SerializedName("checksum")
+    var checksum: String? = null,
+    @SerializedName("ut")
+    var ut: String? = null,
+    @SerializedName("rates_feature")
+    var ratesFeature: RatesFeature? = null,
+    var analyticsDataShippingCourierPrice: String? = null
 ) : Parcelable

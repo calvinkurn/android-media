@@ -59,7 +59,8 @@ object ChatbotConstant {
         const val DYNAMIC_ATTACHMENT = "34"
         const val TYPE_BIG_REPLY_BOX = 100
         const val REPLY_BOX_TOGGLE_VALUE = 101
-        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, REPLY_BOX_TOGGLE_VALUE)
+        const val MEDIA_BUTTON_TOGGLE = 104
+        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, REPLY_BOX_TOGGLE_VALUE, MEDIA_BUTTON_TOGGLE)
     }
 
     object ChatbotUnification {
@@ -103,6 +104,7 @@ object ChatbotConstant {
         const val KEY_CHATBOT_NEW_SESSION = "CHATBOT_NEW_SESSION"
         const val KEY_CHATBOT_SEND_RATING = "CHATBOT_SEND_RATING"
         const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
+        const val KEY_CHATBOT_INVALID_ID_MESSAGE = "CHATBOT_INVALID_ID_MESSAGE"
     }
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"

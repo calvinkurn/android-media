@@ -143,8 +143,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableVideoProperty
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
-    val observableOnboarding: LiveData<Event<Unit>>
-        get() = _observableOnboarding
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
     val observableKebabMenuSheet: LiveData<Map<KebabMenuType, BottomInsetsState>>
@@ -182,8 +180,8 @@ class PlayViewModel @AssistedInject constructor(
     private val _userReportItems = MutableStateFlow(PlayUserReportUiModel.Empty)
     val userReportItems: StateFlow<PlayUserReportUiModel.Loaded> = _userReportItems
 
-    private val _userReportSubmission = MutableStateFlow<ResultState>(ResultState.Loading)
-    val userReportSubmission: StateFlow<ResultState> = _userReportSubmission
+    private val _userReportSubmission = MutableStateFlow(PlayUserSubmissionUiModel.Empty)
+    val userReportSubmission: StateFlow<PlayUserSubmissionUiModel> = _userReportSubmission
 
     /**
      * Data State
@@ -479,6 +477,9 @@ class PlayViewModel @AssistedInject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val performanceSummaryPageLink: String
+        get() = _channelReport.value.performanceSummaryPageLink
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData
@@ -564,7 +565,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
-    private val _observableOnboarding = MutableLiveData<Event<Unit>>()
 
     /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
@@ -1094,6 +1094,7 @@ class PlayViewModel @AssistedInject constructor(
                 _isBottomSheetsShown.update { false }
             }
             EmptyPageWidget -> handleEmptyExplore()
+            is SelectReason -> handleSelectedReason(action.reasonId)
         }
     }
 
@@ -1130,7 +1131,6 @@ class PlayViewModel @AssistedInject constructor(
         mChannelData = channelData
         handleChannelDetail(channelData.channelDetail)
         handleChannelInfo(channelData.channelDetail.channelInfo)
-        handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
         handleChannelReportInfo(channelData.channelReportInfo)
@@ -1275,9 +1275,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData)
-        if (!channelData.status.channelStatus.statusType.isFreeze) {
-            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
-        }
+        updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
     }
 
     /**
@@ -1457,19 +1455,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handlePartnerInfo(partnerInfo: PlayPartnerInfo) {
         this._partnerInfo.value = partnerInfo
-    }
-
-    private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if (videoMetaInfo.videoPlayer.isYouTube) return
-        cancelJob(ONBOARDING_COACHMARK_ID)
-
-        jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
-            delay(ONBOARDING_DELAY)
-
-            withContext(dispatchers.main) {
-                _observableOnboarding.value = Event(Unit)
-            }
-        }
     }
 
     private fun handleChannelReportInfo(channelReport: PlayChannelReportUiModel) {
@@ -2722,7 +2707,7 @@ class PlayViewModel @AssistedInject constructor(
         reportDesc: String
     ) {
         viewModelScope.launchCatchError(block = {
-            _userReportSubmission.value = ResultState.Loading
+            _userReportSubmission.update { it.copy(state = ResultState.Loading) }
             val isSuccess = repo.submitReport(
                 channelId = channelId.toLongOrZero(),
                 partnerId = partnerId.orZero(),
@@ -2733,12 +2718,12 @@ class PlayViewModel @AssistedInject constructor(
                 mediaUrl = mediaUrl
             )
             if (isSuccess) {
-                _userReportSubmission.value = ResultState.Success
+                _userReportSubmission.update { it.copy(state = ResultState.Success) }
             } else {
                 throw Exception()
             }
         }) { err ->
-            _userReportSubmission.value = ResultState.Fail(err)
+            _userReportSubmission.update { it.copy(state = ResultState.Fail(err)) }
         }
     }
 
@@ -2966,6 +2951,13 @@ class PlayViewModel @AssistedInject constructor(
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
         val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
         handleClickChip(_exploreWidget.value.chips.items[finalPosition])
+    }
+
+    private fun handleSelectedReason(id: Int) {
+        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find {  it.reasoningId == id }
+        _userReportSubmission.update {
+            it.copy(selectedReasoning = selected)
+        }
     }
 
     private fun cancelJob(identifier: String) {

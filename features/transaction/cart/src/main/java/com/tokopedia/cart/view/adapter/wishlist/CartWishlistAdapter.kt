@@ -45,5 +45,4 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
 
         diffResult.dispatchUpdatesTo(this)
     }
-
 }

@@ -53,5 +53,4 @@ class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapter
 
         const val INDEX_DIFFERENCE = 3
     }
-
 }

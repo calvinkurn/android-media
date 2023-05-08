@@ -1,5 +1,6 @@
 package com.tokopedia.applink.merchant
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -9,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -119,6 +122,17 @@ object DeeplinkMapperMerchant {
         ).buildUpon().build().toString()
     }
 
+    fun getRegisteredNavigationProductDetailReviewGallery(uri: Uri): String {
+        val segment = uri.pathSegments
+        val productId = segment.first()
+        return Uri.parse(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                productId
+            )
+        ).buildUpon().build().toString()
+    }
+
     fun getRegisteredProductEducational(uri: Uri): String {
         val segments = uri.pathSegments
         val type = segments.last()
@@ -147,9 +161,11 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathHome = "home"
-            return if (pathSegment.size == 2)
+            return if (pathSegment.size == 2) {
                 it.toString().startsWith(prefixShopPageHomeAppLink).and(pathSegment[1] == pathHome)
-            else false
+            } else {
+                false
+            }
         } ?: false
     }
 
@@ -159,7 +175,9 @@ object DeeplinkMapperMerchant {
             return if (pathSegment.size == 2) {
                 val shopId = pathSegment[0]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, shopId)
-            } else it.toString()
+            } else {
+                it.toString()
+            }
         } ?: ""
     }
 
@@ -168,11 +186,12 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathInfo = "info"
-            return if (pathSegment.size == 2)
+            return if (pathSegment.size == 2) {
                 it.toString().startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathInfo)
-            else false
+            } else {
+                false
+            }
         } ?: false
-
     }
 
     fun getShopPageInfoInternalApplink(uri: Uri?): String {
@@ -181,7 +200,9 @@ object DeeplinkMapperMerchant {
             return if (pathSegment.size == 2) {
                 val shopId = pathSegment[0]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_INFO, shopId)
-            } else it.toString()
+            } else {
+                it.toString()
+            }
         } ?: ""
     }
 
@@ -190,10 +211,12 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathEtalase = "etalase"
-            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE)
+            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE) {
                 it.toString()
                     .startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathEtalase)
-            else false
+            } else {
+                false
+            }
         } ?: false
     }
 
@@ -202,9 +225,11 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathNote = "note"
-            return if (pathSegment.size == 2)
+            return if (pathSegment.size == 2) {
                 it.toString().startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathNote)
-            else false
+            } else {
+                false
+            }
         } ?: false
     }
 
@@ -214,7 +239,9 @@ object DeeplinkMapperMerchant {
             return if (pathSegment.size == 2) {
                 val shopId = pathSegment[0]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, shopId)
-            } else it.toString()
+            } else {
+                it.toString()
+            }
         } ?: ""
     }
 
@@ -229,7 +256,9 @@ object DeeplinkMapperMerchant {
                     shopId,
                     etalaseId
                 )
-            } else it.toString()
+            } else {
+                it.toString()
+            }
         } ?: ""
     }
 
@@ -259,9 +288,11 @@ object DeeplinkMapperMerchant {
 
     fun isShopPageFeedDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
-        return (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) ||
-                deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)) &&
-                uri.lastPathSegment == FEED_SEGMENT
+        return (
+            deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) ||
+                deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)
+            ) &&
+            uri.lastPathSegment == FEED_SEGMENT
     }
 
     fun getRegisteredNavigationShopFeed(deeplink: String): String {
@@ -386,6 +417,20 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL, appLink) != null
     }
 
+    fun isSellerMvcIntroAppLink(deeplink: String): Boolean {
+        return ApplinkConst.SellerApp.SELLER_MVC_INTRO == deeplink
+    }
+
+    fun isSellerMvcCreate(deeplink: String): Boolean {
+        val uriAppLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_CREATE, uriAppLink) != null
+    }
+
+    fun isSellerMvcDetailAppLink(deeplink: String): Boolean {
+        val appLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_DETAIL, appLink) != null
+    }
+
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
@@ -418,6 +463,28 @@ object DeeplinkMapperMerchant {
         )
     }
 
+    fun getRegisteredNavigationForSellerMvcIntro(): String {
+        return ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+    }
+
+    fun getRegisteredNavigationForSellerMvcCreate(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_CREATE,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcDetail(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL,
+            lastSegment
+        )
+    }
+
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
@@ -426,5 +493,31 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerCreate(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        } else {
+            ApplinkConstInternalSellerapp.CREATE_VOUCHER
+        }
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerList(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+        } else {
+            ApplinkConstInternalSellerapp.VOUCHER_LIST
+        }
     }
 }

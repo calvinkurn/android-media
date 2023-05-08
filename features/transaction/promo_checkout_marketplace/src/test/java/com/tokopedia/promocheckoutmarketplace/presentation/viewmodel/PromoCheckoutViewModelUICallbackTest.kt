@@ -58,9 +58,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     fun `WHEN call reset promo THEN promo recommendation should be enabled`() {
         // GIVEN
         viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData())
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickResetPromo(any()) } just Runs
@@ -134,7 +136,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
-    
+
     @Test
     fun `WHEN click selected BO clashing promo item but already selected other bo clashing promo THEN should show ticker BO clashing`() {
         // GIVEN
@@ -226,9 +228,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         val promoListItemUiModel = data[1] as PromoListItemUiModel
         promoListItemUiModel.uiState.isRecommended = true
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
@@ -246,9 +250,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // GIVEN
         val data = GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoDataWithHeader()
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
@@ -268,13 +274,15 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         val preSelectedPromo = data[1] as PromoListItemUiModel
         preSelectedPromo.uiState.isSelected = true
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
-            uiData = PromoRecommendationUiModel.UiData().apply {
-                promoCodes = listOf(
-                    "PROMO1"
-                )
-            },
-                uiState = PromoRecommendationUiModel.UiState())
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply {
+                    promoCodes = listOf(
+                        "PROMO1"
+                    )
+                },
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
@@ -472,5 +480,4 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(lastModifiedData?.data is PromoListItemUiModel)
         assert((lastModifiedData?.data as PromoListItemUiModel).uiData.errorMessage.isBlank())
     }
-
 }

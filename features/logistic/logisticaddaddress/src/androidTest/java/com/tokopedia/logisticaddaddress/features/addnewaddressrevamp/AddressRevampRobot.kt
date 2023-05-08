@@ -53,7 +53,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
             .perform(replaceText(address), closeSoftKeyboard())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillReceiver(receiver: String) {
@@ -62,7 +62,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
             .perform(replaceText(receiver), closeSoftKeyboard())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillPhoneNumber(phone: String) {
@@ -71,7 +71,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(replaceText(phone), closeSoftKeyboard())
-        waitForData()
+        waitForData(3000)
     }
 
     fun clickManualForm() {

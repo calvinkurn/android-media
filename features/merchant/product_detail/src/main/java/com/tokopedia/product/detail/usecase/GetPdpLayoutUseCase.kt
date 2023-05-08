@@ -98,6 +98,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     countTalk
                     rating
                   }
+                  postATCLayout {
+                    layoutID
+                  }
                 }
                 components {
                   name

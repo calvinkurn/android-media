@@ -28,4 +28,5 @@
     <string name="toaster_bulk_review_success_submit_reviews_partially">Beberapa ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya</string>
     <string name="bulk_review_coach_mark_description">Biar gampang dan cepat, rating sudah diisiin buat kamu. Tapi kamu masih bisa ubah, kok. 👍</string>
     <string name="bulk_review_submission_success_message">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
+    <string name="toaster_bulk_review_at_least_one_bad_rating_category_must_be_selected">Pilih alasanmu dulu, yuk.</string>
 </resources>

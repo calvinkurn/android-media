@@ -4,7 +4,6 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
-import java.util.Date
 
 data class FlashSaleListUiState(
     val isLoading: Boolean = true,

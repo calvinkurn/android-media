@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:fillViewport="true"
+    tools:viewBindingIgnore="true">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/topCreditSheetScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/dividerSaveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sheetTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_pilih_cara_tambah_kredit"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
+            <RadioGroup
+                android:id="@+id/topUpSwitchRadioButtonGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sheetTitle">
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/manualRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:checked="true"
+                    app:bold="true" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/autoRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    app:bold="true" />
+
+            </RadioGroup>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_tambah_kredit_manual"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toEndOf="@id/topUpSwitchRadioButtonGroup"
+                app:layout_constraintTop_toTopOf="@id/topUpSwitchRadioButtonGroup"
+                app:typographyType="paragraph_1" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/autoRadioButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_tambah_kredit_otomatis"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toBottomOf="@+id/topUpSwitchRadioButtonGroup"
+                app:layout_constraintStart_toEndOf="@id/topUpSwitchRadioButtonGroup"
+                app:typographyType="paragraph_1" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipAuto"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@+id/autoRadioButtonText"
+                app:layout_constraintStart_toEndOf="@id/autoRadioButtonText"
+                app:layout_constraintTop_toTopOf="@id/autoRadioButtonText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/autoRadioButtonTextDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_dapatkan_bonus_lebih_besar"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/autoRadioButtonText"
+                app:layout_constraintTop_toBottomOf="@+id/autoRadioButtonText"
+                app:typographyType="paragraph_3"
+                tools:visibility="gone" />
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/autoTopUpActiveLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:labelTitle="@string/top_ads_sedang_aktif"
+                app:labelType="general_light_green"
+                app:layout_constraintStart_toStartOf="@+id/autoRadioButtonText"
+                app:layout_constraintTop_toBottomOf="@+id/autoRadioButtonText"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintTop_toBottomOf="@id/autoRadioButtonTextDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textPilihNominal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/top_ads_pilih_nominal"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/creditItemRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textPilihNominal"
+                tools:itemCount="1"
+                tools:listitem="@layout/topads_top_up_credit_item" />
+
+
+            <View
+                android:id="@+id/dividerAutoTopContent"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintTop_toBottomOf="@id/creditItemRecyclerView" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/frequncyCreditTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/top_ads_frekuensi_tambah_kredit"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dividerAutoTopContent"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipFrequency"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@+id/frequncyCreditTitle"
+                app:layout_constraintStart_toEndOf="@id/frequncyCreditTitle"
+                app:layout_constraintTop_toTopOf="@id/frequncyCreditTitle" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupAutoTopUpFrequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frequncyCreditTitle"
+                app:layout_constraintVertical_bias="0.0">
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/jarangRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:bold="true" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/normalRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    app:bold="true" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/seringRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    app:bold="true" />
+
+            </RadioGroup>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/jarangText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/topads_frequency_four_text"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
+                app:layout_constraintTop_toTopOf="@id/radioGroupAutoTopUpFrequency"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/jarangFrequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/top_ads_four_times_per_day"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="@id/jarangText"
+                app:layout_constraintStart_toEndOf="@id/jarangText"
+                app:layout_constraintTop_toTopOf="@id/jarangText"
+                app:typographyType="display_3"/>
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/topads_frequency_six_text"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
+                app:layout_constraintTop_toBottomOf="@id/jarangText"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/normalFrequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/top_ads_six_times_per_day"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="@+id/normalText"
+                app:layout_constraintStart_toEndOf="@+id/normalText"
+                app:layout_constraintTop_toTopOf="@id/normalText"
+                app:typographyType="display_3" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/seringText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/topads_frequency_eight_text"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
+                app:layout_constraintTop_toBottomOf="@id/normalText"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/seringFrequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/top_ads_eight_times_per_day"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="@+id/seringText"
+                app:layout_constraintStart_toEndOf="@+id/seringText"
+                app:layout_constraintTop_toTopOf="@id/seringText"
+                app:typographyType="display_3"/>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/creditHistoryShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintVertical_bias="1.0"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/automaticallyAddsCreditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/top_ads_otomatis_tambah_kredit_sebesar"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupAutoTopUpFrequency" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/selectedPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/Unify_NN950"
+                tools:text="Rp500.000"
+                app:typographyType="display_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/automaticallyAddsCreditText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/selectedBonus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
+                app:layout_constraintBottom_toBottomOf="@id/selectedPrice"
+                app:layout_constraintStart_toEndOf="@id/selectedPrice"
+                app:layout_constraintTop_toTopOf="@id/selectedPrice"
+                tools:text = "(Bonus Rp47.500)" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/maxCreditLimitText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/top_ads_saat_kredit_kurang_dari"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="@id/selectedPrice"
+                app:layout_constraintTop_toBottomOf="@id/selectedBonus" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipMaxCreditLimit"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/maxCreditLimitText"
+                app:layout_constraintStart_toEndOf="@id/maxCreditLimitText"
+                app:layout_constraintTop_toTopOf="@id/maxCreditLimitText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/maxCreditLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/Unify_NN950"
+                tools:text="Rp500.000"
+                app:typographyType="display_2"
+                app:layout_constraintStart_toStartOf="@id/maxCreditLimitText"
+                app:layout_constraintTop_toBottomOf="@id/maxCreditLimitText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/frequncyTambahCreditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/top_ads_frekuensi_tambah_kredit"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="@id/maxCreditLimit"
+                app:layout_constraintTop_toBottomOf="@id/maxCreditLimit" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipFrequencyHistory"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/frequncyTambahCreditText"
+                app:layout_constraintStart_toEndOf="@id/frequncyTambahCreditText"
+                app:layout_constraintTop_toTopOf="@id/frequncyTambahCreditText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/selectedFrequncyTambahCredit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
+                app:layout_constraintStart_toStartOf="@id/frequncyTambahCreditText"
+                app:layout_constraintTop_toBottomOf="@id/frequncyTambahCreditText"
+                tools:text = "Normal (maks. 6 kali/hari)"/>
+
+            <com.tokopedia.unifycomponents.TipsUnify
+                android:id="@+id/autoTopUpCreditTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/radioGroupAutoTopUpFrequency"
+                tools:visibility="gone" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/autoTopUpCreditHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="automaticallyAddsCreditText,selectedPrice,selectedBonus,maxCreditLimitText,maxCreditLimit,frequncyTambahCreditText,selectedFrequncyTambahCredit, toolTipFrequencyHistory, toolTipMaxCreditLimit"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupFrequencyAutoTopUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="dividerAutoTopContent, radioGroupAutoTopUpFrequency,frequncyCreditTitle, toolTipFrequency, jarangFrequency, jarangText, normalText, normalFrequency, seringFrequency, seringText"
+                tools:visibility="visible" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <View
+        android:id="@+id/dividerSaveButton"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toTopOf="@+id/tncAutoCreditCheckBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/tncAutoCreditCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/Unify_NN950"
+        tools:text="Otomatis tambah kredit dari Saldo Penghasilan, saat kredit kurang dari Rp15.000 agar iklanmu terus aktif."
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:text="@string/label_add_credit"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cancelButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="true"
+        android:text="@string/top_ads_batal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/applyButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/applyButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:text="@string/top_ads_terapkan"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cancelButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

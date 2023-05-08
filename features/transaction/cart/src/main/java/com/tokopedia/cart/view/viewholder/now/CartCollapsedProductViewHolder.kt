@@ -15,7 +15,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-
 class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
@@ -88,5 +87,4 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
         }
         constraintSet.applyTo(viewBinding.containerCollapsedProduct)
     }
-
 }

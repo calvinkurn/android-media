@@ -953,7 +953,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.clickProductSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -970,10 +969,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -1006,7 +1007,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.impressionProductListSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -1023,10 +1023,12 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                ""
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(

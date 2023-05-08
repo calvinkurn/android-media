@@ -122,8 +122,6 @@ class BulkReviewViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        const val BAD_RATING_CATEGORY_THRESHOLD = 2
-
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val DELAY_WAIT_FOR_UI_STATE_RESTORATION = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
@@ -292,6 +290,9 @@ class BulkReviewViewModel @Inject constructor(
     private val _expandedTextAreaToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     val expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _expandedTextAreaToasterQueue
+    private val _badRatingCategoryBottomSheetToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
+    val badRatingCategoryBottomSheetToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
+        get() = _badRatingCategoryBottomSheetToasterQueue
     val bulkReviewPageUiState = combine(
         shouldCancelBulkReview,
         shouldSubmitReview,
@@ -760,6 +761,15 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onToasterCtaClicked(data: CreateReviewToasterUiModel<Any>) {
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
+    }
+
+    fun onCancelBadRatingCategoryBottomSheet() {
+        val uiState = _badRatingCategoryBottomSheetUiState.value
+        if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
+            if (uiState.badRatingCategories.none { it.selected }) {
+                enqueueToasterErrorNoBadRatingCategoryReasonSelected()
+            }
+        }
     }
 
     private fun mapMediaItems(
@@ -1256,6 +1266,18 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
+    private fun enqueueToasterErrorNoBadRatingCategoryReasonSelected() {
+        _badRatingCategoryBottomSheetToasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = ResourceProvider.getMessageBadRatingReasonReasonMustBeSelected(),
+                actionText = ResourceProvider.getCtaOke(),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
+            )
+        )
+    }
+
     private fun showBadRatingCategoryBottomSheet(inboxID: String) {
         _badRatingCategoryBottomSheetUiState.update {
             val initialBadRatingCategories = bulkReviewBadRatingCategoryMapper.map(
@@ -1345,8 +1367,8 @@ class BulkReviewViewModel @Inject constructor(
         currentRating: Int,
         priorRating: Int
     ) {
-        if (currentRating <= BAD_RATING_CATEGORY_THRESHOLD) {
-            if (priorRating > BAD_RATING_CATEGORY_THRESHOLD) {
+        if (currentRating <= ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
+            if (priorRating > ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
                 showBadRatingCategoryBottomSheet(inboxID = inboxID)
             } else {
                 // ignore, user need to click `Ubah` to show the bad rating categories bottomsheet

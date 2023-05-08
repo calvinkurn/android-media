@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -69,6 +70,7 @@ class HomeAccountUserViewModelTest {
     private val saveAttributeOnLocal = mockk<SaveAttributeOnLocalUseCase>(relaxed = true)
     private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
     private val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
+    private val refreshProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -117,6 +119,7 @@ class HomeAccountUserViewModelTest {
             tokopediaPlusUseCase,
             saveAttributeOnLocal,
             offerInterruptUseCase,
+            refreshProfileUseCase,
             dispatcher
         )
 
@@ -812,6 +815,31 @@ class HomeAccountUserViewModelTest {
         coVerify {
             tokopediaPlusObserver.onChanged(Fail(throwableResponse))
         }
+    }
+
+    @Test
+    fun `Refresh session success`() {
+        val profileInfo = ProfileInfo(fullName = "Yoris")
+        val profilePojo = ProfilePojo(profileInfo = profileInfo)
+
+        coEvery {
+            refreshProfileUseCase(Unit)
+        } returns Success(profilePojo)
+
+        viewModel.refreshUserProfile()
+
+        coVerify(exactly = 1) {
+            refreshProfileUseCase(Unit)
+        }
+    }
+
+    @Test
+    fun `Refresh session - throw error`() {
+        coEvery {
+            refreshProfileUseCase(Unit)
+        } throws Exception()
+
+        viewModel.refreshUserProfile()
     }
 
     companion object {

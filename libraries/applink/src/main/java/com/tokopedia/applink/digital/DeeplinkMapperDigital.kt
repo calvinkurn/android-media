@@ -37,6 +37,7 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
+    const val KODE_BAYAR = "kb"
     const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
@@ -44,6 +45,10 @@ object DeeplinkMapperDigital {
     const val IS_ADD_SBM = "is_add_sbm"
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
+
+    const val OMNI_CATEGORY_ID = "54"
+    const val OMNI_PRODUCT_ID = "20159"
+    const val OMNI_OPERATOR_ID = "7654"
 
     const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
 
@@ -84,6 +89,10 @@ object DeeplinkMapperDigital {
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
+            }
+            deeplink.startsWith(ApplinkConst.TELKOMSEL_OMNI) -> {
+                val paymentCode = uri.getQueryParameter(KODE_BAYAR) ?: ""
+                ApplinkConsInternalDigital.CHECKOUT_DIGITAL+"?category_id=$OMNI_CATEGORY_ID&operator_id=$OMNI_OPERATOR_ID&client_number=$paymentCode&product_id=$OMNI_PRODUCT_ID&is_from_widget=true"
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
                 getDigitalSmartcardNavigation(deeplink)

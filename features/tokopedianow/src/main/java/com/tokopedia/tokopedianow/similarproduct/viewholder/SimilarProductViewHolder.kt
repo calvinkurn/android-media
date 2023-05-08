@@ -97,7 +97,7 @@ class SimilarProductViewHolder(
                 isEnabled = true
 
                 setOnClickListener {
-                    listener?.addItemToCart(
+                    listener?.onCartQuantityChanged(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = product.minOrder
@@ -142,7 +142,7 @@ class SimilarProductViewHolder(
 
     private fun renderDeleteBtn(product: SimilarProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            listener?.deleteCartItem(product.id)
+            listener?.onCartQuantityChanged(product.id, product.shopId, QUANTITY_ZERO)
         }
     }
 
@@ -154,7 +154,7 @@ class SimilarProductViewHolder(
 
     private fun onQuantityChanged(product: SimilarProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
-        listener?.onQuantityChanged(product.id, product.shopId, input)
+        listener?.onCartQuantityChanged(product.id, product.shopId, input)
     }
 
     private fun onEditorAction(product: SimilarProductUiModel) {
@@ -178,9 +178,7 @@ class SimilarProductViewHolder(
     }
 
     interface SimilarProductListener {
-        fun deleteCartItem(productId: String)
-        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
-        fun addItemToCart(productId: String, shopId: String, quantity: Int)
+        fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int)
         fun onProductClicked(product: SimilarProductUiModel)
         fun onProductImpressed(product: SimilarProductUiModel)
     }

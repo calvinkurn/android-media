@@ -8,7 +8,7 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifyprinciples.Typography
 
-class FeatureInfoAdapter: RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoViewHolder>() {
+class FeatureInfoAdapter : RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoViewHolder>() {
 
     private val featureData = mutableListOf<FeatureInfoModel>()
 
@@ -30,7 +30,7 @@ class FeatureInfoAdapter: RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoVie
         notifyDataSetChanged()
     }
 
-    inner class FeatureInfoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class FeatureInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvFeatureName = itemView.findViewById<Typography>(R.id.tv_feature_name)
         private val tvFeatureDesc = itemView.findViewById<Typography>(R.id.tv_feature_desc)
 

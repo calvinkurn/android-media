@@ -89,6 +89,9 @@ class GyroEngineRequestUseCase @Inject constructor(
                     if (item.whitelisted == true)
                         parameterObj.put(item.walletCode, item.isActive.toString())
                 }
+                if (walletBalance.balanceList.isEmpty()) {
+                    parameterObj.put(GATEWAY_CODE_PEMUDA, VALUE_FALSE)
+                }
                 jsonObj.toString()
             } catch (e: Exception) { jsonStr }
         } ?: run { jsonStr }
@@ -141,6 +144,8 @@ class GyroEngineRequestUseCase @Inject constructor(
         const val IS_0S = "is_OS"
         const val IS_ENJOY_PLUS_BENEFIT = "is_enjoy_plus_benefit"
         const val IS_PLUS_TRANSACTION = "is_plus_transaction"
+        const val GATEWAY_CODE_PEMUDA = "PEMUDA"
+        const val VALUE_FALSE = "false"
 
     }
 }

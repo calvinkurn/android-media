@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class GlideErrorLogHelper : CoroutineScope {
@@ -42,14 +41,20 @@ class GlideErrorLogHelper : CoroutineScope {
         }
         val host = Uri.parse(url).host
         if (!TextUtils.isEmpty(host)) {
-            val traceResult = TraceRoute.traceRoute(host!!)
-            ServerLogger.log(Priority.P2, "IMAGE_TRACEROUTE",
+            try {
+                val traceResult = TraceRoute.traceRoute(host ?: "")
+                ServerLogger.log(
+                    Priority.P2,
+                    "IMAGE_TRACEROUTE",
                     mapOf(
-                            "type" to traceResult?.code?.toString().orEmpty(),
-                            "url" to url,
-                            "traceroute" to traceResult?.message.orEmpty(),
-                            "message" to e?.message.orEmpty()
-                    ))
+                        "type" to traceResult?.code?.toString().orEmpty(),
+                        "url" to url,
+                        "traceroute" to traceResult?.message.orEmpty(),
+                        "message" to e?.message.orEmpty()
+                    )
+                )
+            } catch (_: Exception) {
+            }
         }
     }
 

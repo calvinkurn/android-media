@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) :
+    RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
     interface ShipperProductItemListener
 
@@ -27,7 +28,10 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperProductOnDemandViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShipperProductOnDemandViewHolder {
         return ShipperProductOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipper_product_name))
     }
 
@@ -57,8 +61,10 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
+    inner class ShipperProductOnDemandViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
+        private val shipperProductName =
+            itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
 
@@ -104,9 +110,11 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         private fun setShipperProductEnableState(data: ShipperProductModel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (data.isAvailable) {
-                    itemView.rootView.foreground = MethodChecker.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                    itemView.rootView.foreground =
+                        MethodChecker.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
                 } else {
-                    itemView.rootView.foreground = MethodChecker.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                    itemView.rootView.foreground =
+                        MethodChecker.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 }
             }
         }

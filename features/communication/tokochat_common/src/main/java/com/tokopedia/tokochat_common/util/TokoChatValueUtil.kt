@@ -35,8 +35,15 @@ object TokoChatValueUtil {
     const val MAX_DISPLAYED_STRING = "10.000+"
     const val MAX_MESSAGE_IN_BUBBLE = 400
 
-    /*
-    * TokoChatPrefManager
+    /**
+     * TokoChatPrefManager
      */
     const val TOKOCHAT_CACHE = "tokoChatCache"
+
+    /**
+     * Tokochat Censor
+     */
+    const val MAX_PERCENTAGE = 100
+    const val DEFAULT_CENSOR_PERCENTAGE = 40
+    const val CENSOR_TEXT = "*"
 }

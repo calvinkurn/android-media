@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankModule
@@ -61,6 +62,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
         fragment?.let {
             if (fragment is SettingBankFragment) {
                 fragment.loadUserBankAccountList()
+                fragment.showToasterOnUI(getString(R.string.sbank_add_back_account_success_message))
             }
         }
     }

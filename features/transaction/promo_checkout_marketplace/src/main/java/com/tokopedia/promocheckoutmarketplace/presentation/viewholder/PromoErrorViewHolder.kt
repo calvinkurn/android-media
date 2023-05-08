@@ -6,9 +6,11 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoErrorStateUiModel
 
-class PromoErrorViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemErrorPromoPageBinding,
-                           private val listener: PromoCheckoutActionListener)
-    : AbstractViewHolder<PromoErrorStateUiModel>(viewBinding.root) {
+class PromoErrorViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemErrorPromoPageBinding,
+    private val listener: PromoCheckoutActionListener
+) :
+    AbstractViewHolder<PromoErrorStateUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_error_promo_page

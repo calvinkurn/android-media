@@ -90,5 +90,4 @@ class EnhancedECommerceRecomProductCartMapData {
     fun setDimension53(isDiscountPrice: Boolean) {
         Product[KEY_DIMENSION_53] = isDiscountPrice.toString()
     }
-
 }

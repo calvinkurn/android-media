@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
+        android:textColor="@color/Unify_NN0"
         android:text="@string/sob_slider_title_statistics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

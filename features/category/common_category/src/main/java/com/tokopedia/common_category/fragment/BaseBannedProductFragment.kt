@@ -9,20 +9,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_category.R
 import com.tokopedia.common_category.di.BaseCategoryNavComponent
 import com.tokopedia.common_category.di.DaggerBaseCategoryNavComponent
 import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.viewmodel.BannedProdNavViewModel
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_banned_product.*
 import javax.inject.Inject
 
-private const val KEY_ADVERTISING_ID = "KEY_ADVERTISINGID"
-private const val ADVERTISING_ID = "ADVERTISINGID"
 private const val QUERY_APP_CLIENT_ID = "?appClientId="
 private const val IS_BANNED = 1
 
@@ -84,10 +82,9 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
                 category_btn_banned_navigation.show()
                 category_btn_banned_navigation.setOnClickListener {
                     onButtonPressed(bannedProductData)
-                    val localCacheHandler = LocalCacheHandler(activity, ADVERTISING_ID)
-                    val adsId = localCacheHandler.getString(KEY_ADVERTISING_ID)
+                    val adsId = DeviceInfo.getAdsId(requireContext())
                     var url = Uri.parse(bannedProductData.appRedirection).toString()
-                    if (adsId != null && adsId.trim().isNotEmpty()) {
+                    if (adsId.trim().isNotEmpty()) {
                         url = url.plus(QUERY_APP_CLIENT_ID + adsId)
                         bannedProdNavViewModel.openBrowserSeamlessly(url)
                     }

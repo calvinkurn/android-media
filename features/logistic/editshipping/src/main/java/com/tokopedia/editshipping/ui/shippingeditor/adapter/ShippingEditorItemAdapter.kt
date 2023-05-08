@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -24,7 +25,10 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.Adapter<ShippingEditorItemAdapter.ShippingEditorOnDemandViewHolder>() {
+class ShippingEditorItemAdapter(
+    private val listener: ShippingEditorItemAdapterListener,
+    private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener
+) : RecyclerView.Adapter<ShippingEditorItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
     var shipperModels = mutableListOf<ShipperModel>()
 
@@ -33,8 +37,15 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         fun onShipperTickerClicked(data: ShipperModel)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorOnDemandViewHolder {
-        return ShippingEditorOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), listener, productItemListener)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShippingEditorOnDemandViewHolder {
+        return ShippingEditorOnDemandViewHolder(
+            parent.inflateLayout(R.layout.item_shipping_editor_card),
+            listener,
+            productItemListener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -45,6 +56,7 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         holder.bindData(shipperModels[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(data: List<ShipperModel>) {
         shipperModels.clear()
         shipperModels.addAll(data)
@@ -81,7 +93,11 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         return RecyclerView.NO_POSITION
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorOnDemandViewHolder(
+        itemView: View,
+        private val listener: ShippingEditorItemAdapterListener,
+        private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener
+    ) : RecyclerView.ViewHolder(itemView) {
         private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
@@ -121,10 +137,12 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
 
         private fun setCheckboxEnableState(data: ShipperModel) {
             if (!data.isAvailable) {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                flDisableContainer.foreground =
+                    ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 shipmentItemCb.isEnabled = false
             } else {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                flDisableContainer.foreground =
+                    ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
                 shipmentItemCb.isEnabled = true
             }
         }
@@ -161,7 +179,12 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
                 EditShippingConstant.TICKER_STATE_WARNING -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
-                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseModel?.size))
+                    tickerShipper.setHtmlDescription(
+                        itemView.context.getString(
+                            R.string.shipper_ticker_yellow,
+                            data.warehouseModel?.size
+                        )
+                    )
                     tickerShipper.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             listener.onShipperTickerClicked(data)
@@ -232,7 +255,8 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         }
 
         private fun initUncheckedListener() {
-            productItemAdapter.setupUncheckedListener(object : ShipperProductItemAdapter.ShipperProductUncheckedListener {
+            productItemAdapter.setupUncheckedListener(object :
+                ShipperProductItemAdapter.ShipperProductUncheckedListener {
                 override fun uncheckedProduct() {
                     shipmentItemCb.isChecked = false
                 }

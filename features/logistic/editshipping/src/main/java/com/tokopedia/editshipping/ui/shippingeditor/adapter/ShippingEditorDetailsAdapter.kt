@@ -5,12 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.DividerModelFeature
+import com.tokopedia.editshipping.domain.model.shippingEditor.DividerServiceFeature
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureDetailsModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ServiceDetailsModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailVisitable
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailsModel
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.viewholder.FeatureDetailsViewHolder
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.viewholder.ServiceDetailsViewHolder
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.viewholder.ShipperDetailsViewHolder
 
-class ShippingEditorDetailsAdapter : RecyclerView.Adapter<ShippingEditorDetailsAdapter.BaseViewHolder<*>>() {
+class ShippingEditorDetailsAdapter :
+    RecyclerView.Adapter<ShippingEditorDetailsAdapter.BaseViewHolder<*>>() {
 
     val data = mutableListOf<ShipperDetailVisitable>()
 
@@ -28,7 +35,7 @@ class ShippingEditorDetailsAdapter : RecyclerView.Adapter<ShippingEditorDetailsA
         return data.size
     }
 
-    override fun getItemViewType(position: Int): Int = when(data[position]) {
+    override fun getItemViewType(position: Int): Int = when (data[position]) {
         is ShipperDetailsModel -> R.layout.item_shipper_detail
         is ServiceDetailsModel -> R.layout.item_service_detail
         is FeatureDetailsModel -> R.layout.item_feature_detail
@@ -50,7 +57,8 @@ class ShippingEditorDetailsAdapter : RecyclerView.Adapter<ShippingEditorDetailsA
         notifyDataSetChanged()
     }
 
-    private inner class NoResultViewHolder(itemView: View) : ShippingEditorDetailsAdapter.BaseViewHolder<ShipperDetailVisitable>(itemView) {
+    private inner class NoResultViewHolder(itemView: View) :
+        ShippingEditorDetailsAdapter.BaseViewHolder<ShipperDetailVisitable>(itemView) {
         override fun bind(item: ShipperDetailVisitable, position: Int) {
             //no-op
         }

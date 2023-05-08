@@ -60,5 +60,4 @@ class CartWishlistViewHolder(private val binding: ItemCartWishlistBinding, val l
             }
         }
     }
-
 }

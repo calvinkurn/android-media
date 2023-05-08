@@ -18,7 +18,8 @@ class ShipperDetailBottomSheet {
             bottomSheet = BottomSheetUnify().apply {
                 setTitle(BOTTOMSHEET_SHIPPER_DETAIL_TITLE)
 
-                val child = View.inflate(fragment.context, R.layout.bottomsheet_shipper_detail, null)
+                val child =
+                    View.inflate(fragment.context, R.layout.bottomsheet_shipper_detail, null)
                 setupChild(child, adapter)
                 setChild(child)
                 setOnDismissListener { dismiss() }

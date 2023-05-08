@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.common.feature.getstatusshop.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 data class StatusInfo(

@@ -81,6 +81,7 @@
         <package android:name="com.asistenhidup.terran" />
         <package android:name="com.awantunai.app" />
         <package android:name="com.baga.cabjahbcaefiag" />
+        <package android:name="com.bajingan.bangsat" />
         <package android:name="com.bbxfintech" />
         <package android:name="com.berkem.bang" />
         <package android:name="com.beruangcerdas.finansialapp" />
@@ -162,6 +163,7 @@
         <package android:name="com.electrodialitic.haltere" />
         <package android:name="com.enough.rupiah" />
         <package android:name="com.estakapital.investor" />
+        <package android:name="com.example.myapplication" />
         <package android:name="com.excellence.PinjamanRupiah" />
         <package android:name="com.excelliance.multiaccount" />
         <package android:name="com.excelliance.multiaccounts" />
@@ -645,8 +647,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher_sellerapp"
-        android:roundIcon="@mipmap/ic_launcher_sellerapp_round"
+        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
+        android:roundIcon="@mipmap/ic_launcher_sellerapp_ramadhan_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -666,6 +668,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"
@@ -709,6 +715,10 @@
             tools:replace="android:value"
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/branch_sdk_key_sa" />
+
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
 
         <uses-library
             android:name="org.apache.http.legacy"

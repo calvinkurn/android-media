@@ -141,7 +141,6 @@ internal open class ProductWidget(
 
         // tracker
         ProductAnalytics.impression(userSession.userId, model, product)
-        ProductAnalytics.impressionExpanded(userSession.userId, model, product)
 
         // override carousel visibility button
         if (model.productInfoList.onlyOne()) {

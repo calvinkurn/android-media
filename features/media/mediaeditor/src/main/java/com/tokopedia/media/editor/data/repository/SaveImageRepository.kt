@@ -28,10 +28,9 @@ interface SaveImageRepository {
         sourcePath: String
     ): File?
 
-    fun clearEditorCache()
     fun saveToGallery(
         imageList: List<String>,
-        onFinish: (result: List<String>) -> Unit
+        onFinish: (result: List<String>?, error: Exception?) -> Unit
     )
 }
 
@@ -51,15 +50,9 @@ class SaveImageRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun clearEditorCache() {
-        FileUtil.deleteFolder(
-            FileUtil.getTokopediaInternalDirectory(getEditorSaveFolderPath()).absolutePath
-        )
-    }
-
     override fun saveToGallery(
         imageList: List<String>,
-        onFinish: (result: List<String>) -> Unit
+        onFinish: (result: List<String>?, error: Exception?) -> Unit
     ) {
         val listResult = mutableListOf<String>()
         imageList.forEach {
@@ -86,7 +79,12 @@ class SaveImageRepositoryImpl @Inject constructor(
                 resultFile.createNewFile()
 
                 // copy image to pictures dir
-                copyFile(file, resultFile)
+                try {
+                    copyFile(file, resultFile)
+                } catch (e: Exception) {
+                    onFinish(null, e)
+                    return
+                }
 
                 contentValues.put(MediaStore.MediaColumns.DATA, resultFile.path)
 
@@ -103,6 +101,9 @@ class SaveImageRepositoryImpl @Inject constructor(
                         try {
                             inputStream = FileInputStream(file)
                             copy(inputStream, outputStream)
+                        } catch (e: Exception) {
+                            onFinish(null, e)
+                            return
                         } finally {
                             inputStream?.close()
                             outputStream.close()
@@ -123,7 +124,8 @@ class SaveImageRepositoryImpl @Inject constructor(
             listResult.add(resultFile?.path ?: "")
         }
 
-        onFinish(listResult)
+
+        onFinish(listResult, null)
     }
 
     private fun fileName(name: String): String {
@@ -132,12 +134,14 @@ class SaveImageRepositoryImpl @Inject constructor(
 
     @Throws(IOException::class)
     private fun copyFile(src: File?, dst: File?) {
-        val inChannel: FileChannel = FileInputStream(src).channel
-        val outChannel: FileChannel? = FileOutputStream(dst).channel
+        var inChannel: FileChannel? = null
+        var outChannel: FileChannel? = null
         try {
+            inChannel = FileInputStream(src).channel
+            outChannel = FileOutputStream(dst).channel
             inChannel.transferTo(0, inChannel.size(), outChannel)
         } finally {
-            inChannel.close()
+            inChannel?.close()
             outChannel?.close()
         }
     }

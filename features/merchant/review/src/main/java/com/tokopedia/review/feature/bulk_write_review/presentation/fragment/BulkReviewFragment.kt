@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -305,8 +306,22 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 viewModel.findFocusedReviewItemVisitable()?.let { (index, _) ->
                     binding?.rvBulkReviewItems?.smoothSnapToPosition(index, SNAP_TO_START)
                 }
-                if (imeInsets.bottom.isZero()) clearViewFocus()
+                clearFocusOnHideKeyboard(imeInsets.bottom)
                 insets
+            }
+        }
+    }
+
+    private fun clearFocusOnHideKeyboard(bottom: Int) {
+        // Only clear focus when not in multi window mode because in multi window mode
+        // imeInsets.bottom always return zero when keyboard is lower than the app window
+        // which cause an issue where the TextArea will always lose it's focus and user can't
+        // type the testimony
+        activity?.let { activity ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (bottom.isZero() && !activity.isInMultiWindowMode) clearViewFocus()
+            } else {
+                if (bottom.isZero()) clearViewFocus()
             }
         }
     }
@@ -760,6 +775,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 it.show(childFragmentManager, BulkReviewBadRatingCategoryBottomSheet.TAG) {
                     it.setData(badRatingCategories)
                     it.setListener(badRatingCategoryBottomSheetListener)
+                    it.setToasterQueue(viewModel.badRatingCategoryBottomSheetToasterQueue)
                 }
             }
         }
@@ -888,6 +904,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
         override fun onBadRatingCategoryImpressed(position: Int, reason: String) {
             viewModel.onBadRatingCategoryImpressed(position, reason)
+        }
+
+        override fun onClickOutsideBottomSheet() {
+            viewModel.onCancelBadRatingCategoryBottomSheet()
         }
     }
 

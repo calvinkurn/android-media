@@ -156,8 +156,7 @@ open class HomeRevampViewModel @Inject constructor(
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
-    @FlowPreview
-    private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> { return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io) }
 
     var getHomeDataJob: Job? = null
 
@@ -281,7 +280,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun initFlow() {
         homeFlowStarted = true
         launchCatchError(coroutineContext, block = {
-            homeFlowDynamicChannel.collect { homeNewDataModel ->
+            homeFlowDynamicChannel().collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage

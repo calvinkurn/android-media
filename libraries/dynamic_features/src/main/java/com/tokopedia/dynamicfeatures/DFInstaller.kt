@@ -8,7 +8,6 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.dynamicfeatures.DFInstallerActivity.Companion.DOWNLOAD_MODE_PAGE
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
-import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.service.DFErrorCache
 import com.tokopedia.dynamicfeatures.service.DFQueue
@@ -21,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.coroutines.resume
 
 /**
@@ -81,10 +79,12 @@ object DFInstaller {
         return manager
     }
 
-    suspend fun startInstallInBackground(context: Context,
-                                         moduleName: String,
-                                         onSuccessInstall: (() -> Unit)? = null,
-                                         onFailedInstall: (() -> Unit)? = null): Pair<Boolean, Boolean> {
+    suspend fun startInstallInBackground(
+        context: Context,
+        moduleName: String,
+        onSuccessInstall: (() -> Unit)? = null,
+        onFailedInstall: (() -> Unit)? = null
+    ): Pair<Boolean, Boolean> {
         return withContext(Dispatchers.IO) {
             if (getView() == null) { // no foreground activity
                 // check max retry
@@ -112,7 +112,7 @@ object DFInstaller {
             withContext(Dispatchers.Main) {
                 suspendCancellableCoroutine<Pair<Boolean, Boolean>> { continuation ->
                     registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
-                    //if has view will continue from the last state download
+                    // if has view will continue from the last state download
                     getView()?.let { view ->
                         if (view.getModuleNameView() != SplitInstallListener.moduleNameToDownload.first()) {
                             return@let
@@ -146,14 +146,16 @@ object DFInstaller {
         }
     }
 
-    fun onSuccessInstall(context: Context, moduleName: String,
-                         onSuccessInstall: (() -> Unit)? = null,
-                         continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
+    fun onSuccessInstall(
+        context: Context,
+        moduleName: String,
+        onSuccessInstall: (() -> Unit)? = null,
+        continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null
+    ) {
         val viewRef = viewRef
         val view = viewRef?.get()
         var tag: String
         if (view != null && view.getModuleNameView() == moduleName) {
-            DFRemoteConfig.runSplitCompat(context)
             view.onInstalled()
             tag = DOWNLOAD_MODE_PAGE
             deeplink = view.getDeeplink()
@@ -166,9 +168,13 @@ object DFInstaller {
         handleContinuationOnSuccess(continuation)
     }
 
-    fun onErrorInstall(context: Context, errorString: String, moduleName: String,
-                       onFailedInstall: (() -> Unit)? = null,
-                       continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
+    fun onErrorInstall(
+        context: Context,
+        errorString: String,
+        moduleName: String,
+        onFailedInstall: (() -> Unit)? = null,
+        continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null
+    ) {
         sessionId = null
         val viewRef = viewRef
         val view = viewRef?.get()
@@ -188,9 +194,11 @@ object DFInstaller {
         handleContinuationOnError(view, moduleName, continuation)
     }
 
-    fun handleContinuationOnError(view: DFInstallerView?,
-                                  moduleName: String,
-                                  continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
+    fun handleContinuationOnError(
+        view: DFInstallerView?,
+        moduleName: String,
+        continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null
+    ) {
         try {
             if (continuation?.isActive == true) {
                 if (view != null && view.getModuleNameView() != moduleName) {
@@ -200,7 +208,7 @@ object DFInstaller {
                 }
             }
         } catch (e: Exception) {
-            //no-op
+            // no-op
         }
     }
 
@@ -210,7 +218,7 @@ object DFInstaller {
                 continuation.resume(true to true)
             }
         } catch (e: Exception) {
-            //no-op
+            // no-op
         }
     }
 
@@ -275,15 +283,22 @@ object DFInstaller {
             logDeferredStatus(context.applicationContext, messageLog, filteredModuleNameToDownload)
         }?.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
-            logDeferredStatus(context.applicationContext, messageLog, filteredModuleNameToDownload, listOf(errorCode?.toString()
-                    ?: it.toString()))
+            logDeferredStatus(
+                context.applicationContext, messageLog, filteredModuleNameToDownload,
+                listOf(
+                    errorCode?.toString()
+                        ?: it.toString()
+                )
+            )
         }
     }
 
     private fun logDeferredStatus(context: Context, message: String, moduleNames: List<String>, errorCode: List<String> = emptyList()) {
         val errorCodeTemp = errorCode.map { ErrorUtils.getValidatedErrorCode(context, it, freeInternalSpaceBeforeDownload) }
-        DFInstallerLogUtil.logStatus(context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
-                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false)
+        DFInstallerLogUtil.logStatus(
+            context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false
+        )
     }
 
     /**
@@ -315,33 +330,48 @@ object DFInstaller {
             logDeferredStatus(applicationContext, TAG_LOG_DFM_DEFERRED_UNINSTALL, moduleNameToUninstall)
         }.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
-            logDeferredStatus(applicationContext, TAG_LOG_DFM_DEFERRED_UNINSTALL, moduleNameToUninstall,
-                    listOf(errorCode?.toString() ?: it.toString()))
+            logDeferredStatus(
+                applicationContext,
+                TAG_LOG_DFM_DEFERRED_UNINSTALL,
+                moduleNameToUninstall,
+                listOf(errorCode?.toString() ?: it.toString())
+            )
         }
     }
 
     private fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == DOWNLOAD_MODE_BACKGROUND)
-        DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
-                freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true,
-                startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
-                true, deeplink, fallbackUrl)
+        DFInstallerLogUtil.logStatus(
+            context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
+            freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true,
+            startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
+            true, deeplink, fallbackUrl
+        )
     }
 
-    private fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
-                                errorCode: List<String> = emptyList()) {
+    private fun logFailedStatus(
+        tag: String,
+        context: Context,
+        moduleNameToDownload: List<String>,
+        errorCode: List<String> = emptyList()
+    ) {
         val errorCodeTemp = errorCode.map { ErrorUtils.getValidatedErrorCode(context, it, freeInternalSpaceBeforeDownload) }
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == DOWNLOAD_MODE_BACKGROUND)
-        DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
-                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false,
-                startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
-                true, deeplink, fallbackUrl)
+        DFInstallerLogUtil.logStatus(
+            context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false,
+            startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
+            true, deeplink, fallbackUrl
+        )
     }
 
-    private fun registerListener(context: Context, moduleNameToDownload: List<String>,
-                                 onSuccessInstall: (() -> Unit)? = null,
-                                 onFailedInstall: (() -> Unit)? = null,
-                                 continuation: CancellableContinuation<Pair<Boolean, Boolean>>) {
+    private fun registerListener(
+        context: Context,
+        moduleNameToDownload: List<String>,
+        onSuccessInstall: (() -> Unit)? = null,
+        onFailedInstall: (() -> Unit)? = null,
+        continuation: CancellableContinuation<Pair<Boolean, Boolean>>
+    ) {
         SplitInstallListener.instance.context = context
         SplitInstallListener.instance.moduleNameToDownload = moduleNameToDownload
         SplitInstallListener.instance.onSuccessInstall = onSuccessInstall
@@ -386,16 +416,24 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
             SplitInstallSessionStatus.INSTALLED -> {
                 DFInstaller.previousState = null
                 context?.let { context ->
-                    DFInstaller.onSuccessInstall(context, moduleNameToDownload.first(),
-                            onSuccessInstall, continuation)
+                    DFInstaller.onSuccessInstall(
+                        context,
+                        moduleNameToDownload.first(),
+                        onSuccessInstall,
+                        continuation
+                    )
                 }
             }
             SplitInstallSessionStatus.FAILED -> {
                 DFInstaller.previousState = null
                 context?.let { context ->
-                    DFInstaller.onErrorInstall(context,
-                            state.errorCode().toString(),
-                            moduleNameToDownload.first(), onFailedInstall, continuation)
+                    DFInstaller.onErrorInstall(
+                        context,
+                        state.errorCode().toString(),
+                        moduleNameToDownload.first(),
+                        onFailedInstall,
+                        continuation
+                    )
                 }
             }
             SplitInstallSessionStatus.INSTALLING -> {

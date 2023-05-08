@@ -35,6 +35,7 @@
             android:maxHeight="@dimen/layout_lvl9"
             android:visibility="gone"
             app:tickerType="warning"
+            app:tickerShapeType="loose"
             app:closeButtonVisibility="gone"
             app:layout_constraintTop_toBottomOf="@id/recycler_view"
             app:layout_constraintStart_toStartOf="parent"/>

@@ -40,6 +40,9 @@ data class PageInfo(
         @SerializedName("thematic_header")
         val thematicHeader: ThematicHeader? = null,
 
+        @SerializedName("is_affiliate")
+        val isAffiliate: Boolean = false,
+
         var additionalInfo: AdditionalInfo? = null,
 
         var redirectionUrl: String? = null,

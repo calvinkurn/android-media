@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -140,6 +141,11 @@ interface DynamicProductDetailListener {
         userStatistics: String,
         userLabel: String,
         componentTrackData: ComponentTrackDataModel
+    )
+    fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
     )
 
     /**
@@ -356,6 +362,12 @@ interface DynamicProductDetailListener {
      */
     fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 
+    fun onSocialProofItemClickTracking(
+        identifier: SocialProofUiModel.Identifier,
+        trackData: ComponentTrackDataModel?
+    )
+    fun onSocialProofItemImpression(socialProof: SocialProofUiModel)
+
     /**
      * ProductShippingViewHolder
      */
@@ -363,13 +375,19 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
         errorCode: Int,
         title: String,
         componentTrackDataModel: ComponentTrackDataModel?
+    )
+
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     /**
@@ -397,6 +415,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductBundlingViewHolder
      */
+    fun removeComponent(componentName: String)
+
     fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,

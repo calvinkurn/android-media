@@ -9,6 +9,7 @@ data class SeeAllCategoryItemUiModel(
     val name: String,
     val imageUrl: String? = null,
     val appLink: String? = null,
+    val color: String
 ): Visitable<SeeAllCategoryTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: SeeAllCategoryTypeFactory): Int = typeFactory.type(this)
 }

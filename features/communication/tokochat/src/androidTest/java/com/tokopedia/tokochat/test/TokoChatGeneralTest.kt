@@ -15,14 +15,14 @@ import org.junit.Test
 class TokoChatGeneralTest : BaseTokoChatTest() {
 
     @Test
-    fun should_show_chat_room_header() {
+    fun should_show_chat_room_header_with_censored_plat_number() {
         // When
         launchChatRoomActivity()
 
         // Then
         HeaderResult.assertHeaderDisplayed(
             interlocutorName = "Tokofood Driver 13",
-            licensePlate = "X001OAH"
+            licensePlate = "***1OAH"
         )
     }
 

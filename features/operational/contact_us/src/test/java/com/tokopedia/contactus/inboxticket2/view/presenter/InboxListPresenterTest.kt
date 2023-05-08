@@ -3,9 +3,9 @@ package com.tokopedia.contactus.inboxticket2.view.presenter
 import android.app.Activity
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
-import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
 import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
@@ -23,7 +23,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class InboxListPresenterTest {
@@ -520,16 +519,16 @@ class InboxListPresenterTest {
         verify { view.clearSearch() }
     }
 
-     @Test
-     fun `check when view is Null on clickCloseSearch and method view clearSearch not running`() {
+    @Test
+    fun `check when view is Null on clickCloseSearch and method view clearSearch not running`() {
 
-         every { viewNullable?.isSearchMode() } returns null
+        every { viewNullable?.isSearchMode() } returns null
 
-         presenter.clickCloseSearch()
+        presenter.clickCloseSearch()
 
-         verify(exactly = 0) { viewNullable?.toggleSearch(any()) }
-         verify(exactly = 0) { viewNullable?.clearSearch() }
-     }
+        verify(exactly = 0) { viewNullable?.toggleSearch(any()) }
+        verify(exactly = 0) { viewNullable?.clearSearch() }
+    }
 
     /***********************************clickCloseSearch()*****************************************/
 

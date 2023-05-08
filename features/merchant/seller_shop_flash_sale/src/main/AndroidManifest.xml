@@ -40,7 +40,6 @@
             android:name="com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity"
             android:configChanges="orientation"
             android:exported="false"
-            android:label="@string/sfs_your_shop_flash_sale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
@@ -59,7 +58,6 @@
             android:name="com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity"
             android:configChanges="orientation"
             android:exported="false"
-            android:label="@string/sfs_your_shop_flash_sale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

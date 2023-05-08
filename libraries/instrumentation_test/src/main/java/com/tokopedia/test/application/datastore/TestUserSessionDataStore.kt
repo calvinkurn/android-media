@@ -35,6 +35,10 @@ class TestUserSessionDataStore: UserSessionDataStore {
         //no-op
     }
 
+    override suspend fun clearAllData() {
+        //no-op
+    }
+
     override suspend fun setShopName(shopName: String) {
         //no-op
     }
@@ -43,23 +47,11 @@ class TestUserSessionDataStore: UserSessionDataStore {
         //no-op
     }
 
-    override suspend fun setTempLoginName(fullName: String) {
-        //no-op
-    }
-
     override suspend fun setTempUserId(userId: String) {
         //no-op
     }
 
     override suspend fun setIsAffiliateStatus(isAffiliate: Boolean) {
-        //no-op
-    }
-
-    override suspend fun setTempPhoneNumber(userPhone: String) {
-        //no-op
-    }
-
-    override suspend fun setTempLoginEmail(email: String) {
         //no-op
     }
 
@@ -91,14 +83,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
         //no-op
     }
 
-    override suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean) {
-        //no-op
-    }
-
-    override suspend fun setFirstTimeUser(isFirstTime: Boolean) {
-        //no-op
-    }
-
     override suspend fun setRefreshToken(refreshToken: String) {
         //no-op
     }
@@ -119,14 +103,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
         //no-op
     }
 
-    override suspend fun setSaldoWithdrawalWaring(value: Boolean) {
-        //no-op
-    }
-
-    override suspend fun setSaldoIntroPageStatus(value: Boolean) {
-        //no-op
-    }
-
     override suspend fun setGCToken(gcToken: String) {
         //no-op
     }
@@ -139,22 +115,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
         //no-op
     }
 
-    override suspend fun setTwitterAccessTokenAndSecret(accessToken: String, accessTokenSecret: String) {
-        //no-op
-    }
-
-    override suspend fun setTwitterAccessToken(accessToken: String) {
-        //no-op
-    }
-
-    override suspend fun setTwitterSecret(secret: String) {
-        //no-op
-    }
-
-    override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
-        //no-op
-    }
-
     override suspend fun setAutofillUserData(autofillUserData: String) {
         //no-op
     }
@@ -164,14 +124,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
     }
 
     override suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean) {
-        //no-op
-    }
-
-    override suspend fun setDeviceId(deviceId: String) {
-        //no-op
-    }
-
-    override suspend fun setFcmTimestamp(timestamp: String) {
         //no-op
     }
 
@@ -215,18 +167,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
         return flow {  }
     }
 
-    override fun getDeviceId(): Flow<String> {
-        return flow {  }
-    }
-
-    override fun getTempEmail(): Flow<String> {
-        return flow {  }
-    }
-
-    override fun getTempPhoneNumber(): Flow<String> {
-        return flow {  }
-    }
-
     override fun isMsisdnVerified(): Flow<Boolean> {
         return flow {  }
     }
@@ -236,10 +176,6 @@ class TestUserSessionDataStore: UserSessionDataStore {
     }
 
     override fun getEmail(): Flow<String> {
-        return flow {  }
-    }
-
-    override fun isFirstTimeUser(): Flow<Boolean> {
         return flow {  }
     }
 
@@ -295,23 +231,11 @@ class TestUserSessionDataStore: UserSessionDataStore {
         return flow {  }
     }
 
-    override fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
-        return flow {  }
-    }
-
-    override fun getFcmTimestamp(): Flow<Long> {
-        return flow {  }
-    }
-
     override fun getGTMLoginID(): Flow<String> {
         return flow {  }
     }
 
     override fun isAffiliate(): Flow<Boolean> {
-        return flow {  }
-    }
-
-    override fun hasShownSaldoIntroScreen(): Flow<Boolean> {
         return flow {  }
     }
 

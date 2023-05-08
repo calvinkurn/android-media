@@ -4,6 +4,8 @@ object ScreenConstant {
     const val SPLASH_SCREEN = "splash"
     const val HOME_SCREEN = "home"
     const val DATAKEY_ARGS = "dataKey"
+    const val NOTIFICATION_LIST_SCREEN = "notification_list_screen"
+    const val NOTIFICATION_DETAIL_SCREEN = "notification_detail_screen"
     const val LIST_ORDER_ID_ARGS = "listOrderId"
     const val ORDER_SUMMARY_SCREEN = "order_summary_screen"
     const val ORDER_LIST_SCREEN = "order_list_screen"

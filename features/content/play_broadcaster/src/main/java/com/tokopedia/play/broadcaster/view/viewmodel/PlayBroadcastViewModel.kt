@@ -515,20 +515,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             isFirstOpen = false
 
-            // create channel when there are no channel exist
-            if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
-
             // get channel when channel status is paused
             if (configUiModel.channelStatus == ChannelStatus.Pause ||
                 // also when complete draft is true
                 configUiModel.channelStatus == ChannelStatus.CompleteDraft ||
-                configUiModel.channelStatus == ChannelStatus.Draft
+                configUiModel.channelStatus == ChannelStatus.Draft ||
+                configUiModel.channelStatus == ChannelStatus.Unknown
             ) {
+                // create channel when there are no channel exist
+                if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
+
                 val deferredChannel = asyncCatchError(block = {
-                    getChannelById(configUiModel.channelId)
+                    getChannelById(channelId)
                 }) { it }
                 val deferredProductMap = asyncCatchError(block = {
-                    repo.getProductTagSummarySection(channelID = configUiModel.channelId)
+                    repo.getProductTagSummarySection(channelID = channelId)
                 }) { emptyList() }
 
                 val error = deferredChannel.await()

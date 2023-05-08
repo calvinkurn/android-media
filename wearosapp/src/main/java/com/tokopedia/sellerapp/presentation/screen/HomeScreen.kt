@@ -28,6 +28,7 @@ import androidx.wear.compose.material.VignettePosition
 import androidx.wear.compose.material.rememberScalingLazyListState
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
 import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
+import com.tokopedia.sellerapp.presentation.model.TITLE_NOTIF
 import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_SHIP
 import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
@@ -119,6 +120,7 @@ private fun menuClickNavigation(
     navigation: ScreenNavigation
 ) {
     when(menuItem.title){
+        TITLE_NOTIF -> navigation.toNotificationListScreen(menuItem.dataKey)
         TITLE_NEW_ORDER,
         TITLE_READY_TO_SHIP -> navigation.toOrderSummaryScreen(menuItem.dataKey)
         else -> { }

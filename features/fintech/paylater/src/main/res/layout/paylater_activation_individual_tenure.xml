@@ -8,14 +8,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tenureRecommendation"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/paylater_occ_lable_25dp"
+        android:layout_height="25dp"
         android:background="@drawable/bg_occ_tenure_recommended"
-        android:elevation="@dimen/pay_later_divider_height_dp_1"
+        android:elevation="1dp"
         android:gravity="center"
-        android:paddingLeft="@dimen/unify_space_2"
-        android:paddingTop="@dimen/unify_space_4"
-        android:paddingRight="@dimen/unify_space_2"
-        android:paddingBottom="@dimen/unify_space_8"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="8dp"
         android:textColor="@color/Unify_N0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,15 +38,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerInCard"
             android:layout_width="match_parent"
-            android:background="@color/Unify_NN0"
             android:layout_height="match_parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/paymentDetailHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:textColor="@color/paylater_header_enable_disable"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -66,15 +65,14 @@
                 app:typographyType="body_3"
                 tools:text="Biaya cicilan 0%" />
 
-
-            <RadioButton
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                 android:id="@+id/radioSelector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="@id/paymentDetailSubHeader"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/paymentDetailHeader" />
+                app:layout_constraintTop_toTopOf="@id/paymentDetailHeader"  />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
