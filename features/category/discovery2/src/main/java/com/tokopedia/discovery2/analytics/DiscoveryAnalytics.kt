@@ -2681,7 +2681,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val list = ArrayList<Map<String, Any>>()
             val listMap = HashMap<String, Any>()
             var productItemList = ""
-            productCardImpressionLabel = "$login - ${ComponentNames.ProductBundling.componentName}"
             productHighlightData.let {
                 productItemList = it.gtmItemName?.replace("#POSITION",(components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
                 productCardImpressionLabel = EMPTY_STRING
@@ -2714,7 +2713,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val map = createGeneralEvent(
                 eventName = EVENT_PRODUCT_CLICK,
                 eventAction = CLICK_PRODUCT_LIST,
-                eventLabel = productCardImpressionLabel,
+                eventLabel = "$login - ${ComponentNames.ProductBundling.componentName}",
                 shouldSendSourceAsDestination = true
             )
             map[TRACKER_ID] = "2722"

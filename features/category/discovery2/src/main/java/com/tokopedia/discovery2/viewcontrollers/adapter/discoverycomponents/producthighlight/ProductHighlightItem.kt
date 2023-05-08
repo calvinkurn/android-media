@@ -119,7 +119,6 @@ class ProductHighlightItem(
                     (productHighlightView as ImageUnify).loadImage(productHighlightData.imageUrlDynamicMobile)
                 }
             } catch (e: Throwable) {
-                e.printStackTrace()
             }
         }
         constraintSet.applyTo(constraintLayout)
@@ -159,7 +158,11 @@ class ProductHighlightItem(
 
                     if (!productHighlightData.discountPercentage.isNullOrEmpty()) {
                         phProductDiscount.visible()
-                        phProductDiscount.text = productHighlightData.discountPercentage
+                        try {
+                            phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
+                        } catch (e: Exception) {
+                            phProductDiscount.hide()
+                        }
                     } else {
                         phProductDiscount.hide()
                     }
@@ -261,7 +264,11 @@ class ProductHighlightItem(
 
                     if (!productHighlightData.discountPercentage.isNullOrEmpty()) {
                         phProductDiscount.visible()
-                        phProductDiscount.text = productHighlightData.discountPercentage
+                        try {
+                            phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
+                        } catch (e: Exception) {
+                            phProductDiscount.hide()
+                        }
                     } else {
                         phProductDiscount.invisible()
                     }
