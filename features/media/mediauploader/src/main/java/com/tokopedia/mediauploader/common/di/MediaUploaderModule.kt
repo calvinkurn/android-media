@@ -63,6 +63,13 @@ class MediaUploaderModule {
     }
 
     @Provides
+    fun provideVideoCompressionCacheManager(
+        @ApplicationContext context: Context,
+    ): VideoCompressionCacheManager {
+        return VideoCompressionCacheManager(context)
+    }
+
+    @Provides
     @MediaUploaderQualifier
     fun provideVideoUploaderManager(
         policyManager: SourcePolicyManager,
