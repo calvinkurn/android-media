@@ -12,11 +12,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
@@ -31,9 +33,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
-            GotoKycTransparentViewModel::class.java
-        )
+        ViewModelProvider(this, viewModelFactory)[GotoKycTransparentViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -75,7 +75,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 sourcePage = viewModel.source,
                 status = it.status,
-                dataSource = it.dataSource,
                 listReason = it.listReason
             )
 
@@ -87,7 +86,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    // TODO: hit API eligibility
+                    viewModel.checkEligibility()
                 }
                 is ProjectInfoResult.Failed -> {
                     val message = it.throwable?.getMessage(requireContext())
@@ -95,6 +94,57 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
             }
+        }
+
+        viewModel.checkEligibility.observe(viewLifecycleOwner) {
+            when (it) {
+                is CheckEligibilityResult.Progressive -> {
+                    handleProgressiveFlow(it.encryptedName)
+                }
+                is CheckEligibilityResult.NonProgressive -> {
+                    handleNonProgressiveFlow()
+                }
+                is CheckEligibilityResult.Failed -> {
+                    val message = it.throwable?.getMessage(requireContext())
+                    showToaster(message.orEmpty())
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun handleProgressiveFlow(encryptedName: String) {
+        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+            val parameter = GotoKycMainParam(
+                gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
+                encryptedName = encryptedName,
+                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                sourcePage = viewModel.source
+            )
+            gotoOnboardBenefit(parameter)
+        } else {
+            showProgressiveBottomSheet(
+                source = viewModel.source,
+                encryptedName = encryptedName
+            )
+        }
+    }
+
+    private fun handleNonProgressiveFlow() {
+        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+            val parameter = GotoKycMainParam(
+                gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
+                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                isKtpTaken = true,
+                sourcePage = viewModel.source
+            )
+            gotoOnboardBenefit(parameter)
+        } else {
+            showNonProgressiveBottomSheet(
+                source = viewModel.source,
+                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                isKtpTaken = true
+            )
         }
     }
 
@@ -104,6 +154,14 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             ApplinkConstInternalUserPlatform.KYC_INFO,
             projectId
         )
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun gotoOnboardBenefit(parameter: GotoKycMainParam) {
+        val intent = Intent(activity, GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_ONBOARD_BENEFIT)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
         startActivity(intent)
         activity?.finish()
     }
@@ -151,20 +209,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
     private fun showToaster(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun directTocKyc() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.KYC_INFO_BASE)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
-        startActivity(intent)
-        activity?.finish()
-    }
-
-    private fun directToGotoKyc() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.GOTO_KYC)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
-        startActivity(intent)
-        activity?.finish()
     }
 
     override fun getScreenName(): String = SCREEN_NAME

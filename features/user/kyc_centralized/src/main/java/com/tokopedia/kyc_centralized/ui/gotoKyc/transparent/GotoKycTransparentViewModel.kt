@@ -5,12 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoUseCase
 import javax.inject.Inject
 
 class GotoKycTransparentViewModel @Inject constructor(
     private val projectInfoUseCase: ProjectInfoUseCase,
+    private val checkEligibilityUseCase: CheckEligibilityUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main)  {
 
@@ -22,6 +25,9 @@ class GotoKycTransparentViewModel @Inject constructor(
 
     private val _projectInfo = MutableLiveData<ProjectInfoResult>()
     val projectInfo: LiveData<ProjectInfoResult> get() = _projectInfo
+
+    private val _checkEligibility = MutableLiveData<CheckEligibilityResult>()
+    val checkEligibility: LiveData<CheckEligibilityResult> get() = _checkEligibility
 
     fun setProjectId(projectId: String) {
         this.projectId = projectId
@@ -37,6 +43,16 @@ class GotoKycTransparentViewModel @Inject constructor(
                 _projectInfo.value = projectInfoUseCase(projectId)
             }, onError = {
                 _projectInfo.value = ProjectInfoResult.Failed(it)
+            }
+        )
+    }
+
+    fun checkEligibility() {
+        launchCatchError(
+            block = {
+                _checkEligibility.value = checkEligibilityUseCase(Unit)
+            }, onError = {
+                _checkEligibility.value = CheckEligibilityResult.Failed(it)
             }
         )
     }

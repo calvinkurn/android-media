@@ -50,7 +50,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
         listReason = args.parameter.listReason
-        isAccountPage = args.parameter.isCameFromAccountPage
+        isAccountPage = args.parameter.isFromAccountPage
 
         return binding?.root
     }
@@ -75,7 +75,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 onPending24Hours()
             }
             KycStatus.VERIFIED.code.toString() -> {
-                if (dataSource == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
+                if (dataSource == KYCConstant.GotoKycFlow.PROGRESSIVE) {
                     onVerifiedProgressive()
                 } else {
                     onVerifiedNonProgressive()

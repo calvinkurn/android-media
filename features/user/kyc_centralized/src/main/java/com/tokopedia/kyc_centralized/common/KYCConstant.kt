@@ -67,4 +67,11 @@ object KYCConstant {
         const val GOTO_NON_PROGRESSIVE = "1"
         const val GOTO_PROGRESSIVE = "2"
     }
+
+    object GotoKycFlow {
+        const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
+        const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
+    }
+
+    const val GotoKycSourceAccountPage = "account"
 }

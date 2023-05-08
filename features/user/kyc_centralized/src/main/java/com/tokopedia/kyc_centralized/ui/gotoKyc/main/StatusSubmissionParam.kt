@@ -12,7 +12,7 @@ data class StatusSubmissionParam(
     * The purpose of this field is to set the type of layout that appears,
     * because there are different layouts if the user comes from the account page
     * */
-    val isCameFromAccountPage: Boolean = false,
+    val isFromAccountPage: Boolean = false,
 
     /*
     * dataSource is a number

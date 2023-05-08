@@ -9,5 +9,5 @@ data class OnboardBenefitParam(
     val encryptedName: String = "",
     val isAccountLinked: Boolean = false,
     val isKtpTaken: Boolean = false,
-    val source: String = ""
+    val sourcePage: String = ""
 ): Parcelable
