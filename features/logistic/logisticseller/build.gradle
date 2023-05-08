@@ -25,10 +25,26 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
@@ -40,6 +56,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -77,6 +94,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     //-------------------------------------------------------------------//
+
+    // Compose
+    implementation rootProject.ext.composeDependencies.composeActivity
 }
 
 project.ext {

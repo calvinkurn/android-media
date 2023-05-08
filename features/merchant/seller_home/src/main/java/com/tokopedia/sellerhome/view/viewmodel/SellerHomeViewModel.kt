@@ -17,7 +17,8 @@ import com.tokopedia.sellerhome.view.helper.handleSseMessage
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
@@ -124,7 +125,7 @@ class SellerHomeViewModel @Inject constructor(
     private val dynamicParameter by lazy {
         val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
         val endDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
-        return@lazy DynamicParameterModel(
+        return@lazy ParamCommonWidgetModel(
             startDate = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MM_YYYY),
             endDate = DateTimeUtil.format(endDateMillis, DateTimeUtil.FORMAT_DD_MM_YYYY),
             pageSource = SELLER_HOME_PAGE_NAME,
@@ -293,7 +294,10 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            val params = GetLineGraphDataUseCase.getRequestParams(
+                dataKey = dataKeys,
+                dynamicParam = dynamicParameter
+            )
             val useCase = getLineGraphDataUseCase.get()
             useCase.params = params
             getLayoutWithLazyLoad(useCase, _lineGraphWidgetData)
@@ -316,7 +320,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
-            val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            val params = GetPostDataUseCase.getRequestParams(
+                dataKey = dataKeys,
+                startDate = dynamicParameter.startDate,
+                endDate = dynamicParameter.endDate
+            )
             val useCase = getPostDataUseCase.get()
             useCase.params = params
             getLayoutWithLazyLoad(useCase, _postListWidgetData)
@@ -338,7 +346,12 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
-            val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            val dynamicParam = ParamTableWidgetModel(
+                startDate = dynamicParameter.startDate,
+                endDate = dynamicParameter.endDate,
+                pageSource = dynamicParameter.pageSource
+            )
+            val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
             val useCase = getTableDataUseCase.get()
             useCase.params = params
             getLayoutWithLazyLoad(useCase, _tableWidgetData)
@@ -371,7 +384,10 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+            val params = GetMultiLineGraphUseCase.getRequestParams(
+                dataKey = dataKeys,
+                dynamicParam = dynamicParameter
+            )
             val useCase = getMultiLineGraphUseCase.get()
             useCase.params = params
             getLayoutWithLazyLoad(useCase, _multiLineGraphWidgetData)

@@ -37,6 +37,45 @@ fun NestTypography(
     )
 }
 
+@Preview(name = "Typography (Heading 1)")
+@Composable
+fun NestTypographyHeading1Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading1
+        )
+    }
+
+}
+
+@Preview(name = "Typography (Heading 2)")
+@Composable
+fun NestTypographyHeading2Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading2
+        )
+    }
+
+}
+
+@Preview(name = "Typography (Heading 3)")
+@Composable
+fun NestTypographyHeading3Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading3
+        )
+    }
+
+}
+
 @Composable
 fun NestTypography(
     text: AnnotatedString,
@@ -86,23 +125,43 @@ fun NestTypography(
     }
 }
 
-@Preview(name = "Typography")
+@Preview(name = "Typography (Display 1)")
 @Composable
-fun NestTypographyPreview() {
-    NestTypography(
-        text = "Flash Sale",
-        Modifier
-    )
+fun NestTypographyDisplay1Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display1
+        )
+    }
+
 }
 
-@Preview(name = "Typography (Bold)")
+@Preview(name = "Typography (Display 2)")
 @Composable
-fun NestTypographyBoldPreview() {
-    NestTypography(
-        text = "Flash Sale",
-        Modifier,
-        textStyle = NestTheme.typography.display3.copy(fontWeight = FontWeight.Bold)
-    )
+fun NestTypographyDisplay2Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display2
+        )
+    }
+}
+
+
+
+@Preview(name = "Typography (Display 3)")
+@Composable
+fun NestTypographyDisplay3Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display3
+        )
+    }
 }
 
 @Preview(name = "Typography with Annotation String")

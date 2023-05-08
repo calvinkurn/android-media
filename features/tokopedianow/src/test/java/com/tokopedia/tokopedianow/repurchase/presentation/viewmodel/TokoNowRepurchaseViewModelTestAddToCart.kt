@@ -55,7 +55,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -96,7 +96,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartError)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -139,7 +139,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId2, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId2, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -201,7 +201,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId3, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId3, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -246,7 +246,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -295,7 +295,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -341,7 +341,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -390,7 +390,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -436,7 +436,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
