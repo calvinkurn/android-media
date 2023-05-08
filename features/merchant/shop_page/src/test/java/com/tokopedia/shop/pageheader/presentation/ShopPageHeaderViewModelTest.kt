@@ -240,7 +240,12 @@ class ShopPageHeaderViewModelTest {
         )
         mockkObject(ShopPageHeaderMapper)
         every {
-            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(), any(), any(), any(), any())
+            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
+                shopInfoCoreData = any(),
+                shopPageGetDynamicTabResponse = any(),
+                feedWhitelistData = any(),
+                shopPageHeaderLayoutData = any()
+            )
         } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
