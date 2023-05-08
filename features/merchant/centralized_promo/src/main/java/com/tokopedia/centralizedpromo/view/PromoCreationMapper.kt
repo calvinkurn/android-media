@@ -20,7 +20,7 @@ object PromoCreationMapper {
         }
 
         val list = merchantPromotionGetPromoList.data.pages.toMutableList()
-        list.removeFirst { it.pageName == PAGE_NAME_TOPADS } // TopAds button has been migrated to seller home page
+        list.removeFirst { it.pageName == PAGE_NAME_TOPADS } // TopAds button has been migrated to sidebar menu
 
         val promotionItem =
             list.map {

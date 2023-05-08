@@ -49,12 +49,12 @@ class OtherMenuAdapter(
             clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
             iconUnify = IconUnify.GRAPH,
             tag = getStatisticNewTag()
-        ),MenuItemUiModel(
+        ),
+        MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_iklan_topads).orEmpty(),
             clickApplink = if(isTopAdsShopUsed) ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL else ApplinkConstInternalTopAds.TOPADS_ONBOARDING,
-            eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
+            eventActionSuffix = SettingTrackingConstant.IKLAN_TOPADS,
             iconUnify = IconUnify.SPEAKER,
-            tag = getCentralizedPromoTag()
         ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),

@@ -51,7 +51,9 @@ open class MenuItemUiModel(
     override val clickEventName: String =
             if(isNoIcon) {
                 SettingTrackingConstant.CLICK_SHOP_SETTING
-            } else {
+            } else if(eventActionSuffix == SettingTrackingConstant.IKLAN_TOPADS){
+                SettingTrackingConstant.CLICK_TOPADS
+            }else {
                 super.clickEventName
             }
 
