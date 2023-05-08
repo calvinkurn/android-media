@@ -171,6 +171,8 @@ public interface SearchConstant {
 
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_MPS = "none.none.global_search_mps.none";
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP = "none.none.global_search_shop.none";
     }
 
     interface SaveLastFilter {
