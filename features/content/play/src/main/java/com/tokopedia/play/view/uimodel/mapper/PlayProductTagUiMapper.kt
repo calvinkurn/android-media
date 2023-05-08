@@ -88,6 +88,8 @@ class PlayProductTagUiMapper @Inject constructor() {
             buttons = mapButtons(input.buttons),
             number = input.number.toString(),
             isNumerationShown = channelType.isLive,
+            rating = input.rating,
+            soldQuantity = input.soldQuantity,
         )
     }
 

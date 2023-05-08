@@ -71,6 +71,8 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                         button_type: buttonType
                     }
                     product_number: ProductNumber
+                    rating: Rating
+                    sold_quantity: SoldQuantity 
                   }
                 }
                 vouchers{

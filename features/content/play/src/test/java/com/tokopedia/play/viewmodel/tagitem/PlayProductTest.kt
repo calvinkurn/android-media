@@ -252,6 +252,9 @@ class PlayProductTest {
                 .size
                 .assertEqualTo(sectionSize)
 
+            println( state.tagItems.product.productSectionList
+                .size)
+
             state.tagItems.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 .forEachIndexed { index, section ->
                     section.config.title.assertEqualTo("$sectionTitle ${index + 1}")

@@ -49,7 +49,6 @@ class PlayUiModelMapper @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
         val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
         val eligibleForShown = vouchers.find { !it.isPrivate }
@@ -151,6 +150,8 @@ class PlayUiModelMapper @Inject constructor(
             buttons = prevDetail.buttons,
             number = prevDetail.number,
             isNumerationShown = prevDetail.isNumerationShown,
+            rating = prevDetail.rating,
+            soldQuantity = prevDetail.soldQuantity,
         )
     }
 }

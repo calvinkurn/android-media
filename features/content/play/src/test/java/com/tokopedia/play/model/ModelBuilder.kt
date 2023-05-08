@@ -518,337 +518,191 @@ class ModelBuilder {
     """.trimIndent()
 
     private val channelTagItemsJson = """
-        {
-        "playGetTagsItemSection": {
-        "sections": [
-          {
-            "type": "other",
-            "title": "",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "1970-01-01T07:00:00+07:00",
-            "end_time": "1970-01-01T07:00:00+07:00",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "0",
-            "products": [
-              {
-                "id": "205240239",
-                "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
-                "shop_id": "1961630",
-                "original_price": 131313,
-                "original_price_formatted": "Rp 131.313",
-                "discount": 20,
-                "price": 105050,
-                "price_formatted": "Rp 105.050",
-                "quantity": 11,
-                "is_variant": false,
-                "is_available": true,
-                "order": 0,
-                "app_link": "tokopedia://product/205240239",
-                "web_link": "https://www.tokopedia.com/voc123/si-tangan-besi-panas-bisa-melelehkan-baja",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "233501860",
-                "name": "KOL belum digoreng",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
-                "shop_id": "1961630",
-                "original_price": 80000,
-                "original_price_formatted": "Rp 80.000",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "",
-                "quantity": 20,
-                "is_variant": true,
-                "is_available": true,
-                "order": 1,
-                "app_link": "tokopedia://product/1810972910",
-                "web_link": "https://www.tokopedia.com/voc123/kol-belum-digoreng-hitam-0",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "other",
-            "title": "Produk Habis",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "0001-01-01T00:00:00Z",
-            "end_time": "0001-01-01T00:00:00Z",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "",
-            "products": [
-              {
-                "id": "227295441",
-                "name": "Tengkurak",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
-                "shop_id": "1961630",
-                "original_price": 700,
-                "original_price_formatted": "Rp 700",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 2,
-                "app_link": "tokopedia://product/227295441",
-                "web_link": "https://www.tokopedia.com/voc123/tengkurak",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "193124774",
-                "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
-                "shop_id": "1961630",
-                "original_price": 3123123,
-                "original_price_formatted": "Rp 3.123.123",
-                "discount": 5,
-                "price": 2966967,
-                "price_formatted": "Rp 2.966.967",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 3,
-                "app_link": "tokopedia://product/193124774",
-                "web_link": "https://www.tokopedia.com/voc123/aku-ingin-begini-aku-ingin-begitu-ingin-ini-ingin-itu-banyak-sekaliiii",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "489530510",
-                "name": "sudahbreloom",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
-                "shop_id": "1961630",
-                "original_price": 200,
-                "original_price_formatted": "Rp 200",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 4,
-                "app_link": "tokopedia://product/489530510",
-                "web_link": "https://www.tokopedia.com/voc123/sudahbreloom",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "vouchers": [
-          {
-            "voucher_id": "6137135",
-            "voucher_name": "",
-            "shop_id": "0",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "",
-            "voucher_image_square": "",
-            "voucher_finish_time": "2022-09-13T23:59:59Z",
-            "voucher_code": "KONGT074OKE",
-            "is_quota_available": 1,
-            "is_highlighted": true,
-            "is_copyable": true,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968111",
-            "voucher_name": "free ongkir",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONGON40HU",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968048",
-            "voucher_name": "voucher testing",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONGGWPFRO",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968115",
-            "voucher_name": "cashback",
-            "shop_id": "1961630",
-            "title": "Cashback Rp20.000",
-            "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG0NBOUE",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "4946142",
-            "voucher_name": "ONGKIRFREE",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp50.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_quota": 25,
-            "voucher_finish_time": "2050-12-31T23:59:00Z",
-            "voucher_code": "KONGP0FL5B",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968045",
-            "voucher_name": "voucher untuk trackeran",
-            "shop_id": "1961630",
-            "title": "Cashback Rp20.000",
-            "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/2b25f48d-b8c1-4c89-ab25-82fc5c8146b1.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/140e27e4-6f0d-4f70-a458-a386a91066f3.jpg",
-            "voucher_quota": 15,
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG3LPOBC",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968042",
-            "voucher_name": "monthly voucher",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/e4a7b074-3d7d-43ee-afd3-890e3cbc9d26.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/be163b96-589f-4a41-8394-788d15d2ce26.jpg",
-            "voucher_quota": 25,
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG92U02Z",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": false
-          }
-        ],
-        "config": {
-          "peek_product_count": 15,
-          "title_bottomsheet": "Promo dan produk pilihan"
-        }
-      }
-    }
+       {
+             "playGetTagsItemSection": {
+               "sections": [
+                 {
+                   "type": "other",
+                   "title": "",
+                   "countdown": {
+                     "copy": ""
+                   },
+                   "background": {
+                     "gradient": [],
+                     "image_url": ""
+                   },
+                   "start_time": "1970-01-01T07:00:00+07:00",
+                   "end_time": "1970-01-01T07:00:00+07:00",
+                   "server_time": "2023-05-08T10:24:04+07:00",
+                   "source_id": "0",
+                   "products": [
+                     {
+                       "id": "2148348755",
+                       "name": "ku3 smil3y",
+                       "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/3/16/64f663b5-48bd-4808-8b33-51e45c63e1e7.jpg",
+                       "shop_id": "479541",
+                       "original_price": 680952,
+                       "original_price_formatted": "Rp 680.952",
+                       "discount": 0,
+                       "price": 0,
+                       "price_formatted": "Rp 0",
+                       "quantity": 1234,
+                       "is_variant": false,
+                       "is_available": false,
+                       "order": 0,
+                       "app_link": "tokopedia://product/2148348755",
+                       "web_link": "https://staging.tokopedia.com/ituajakak/ku3-smil3y",
+                       "min_quantity": 1,
+                       "is_free_shipping": false,
+                       "is_toko_now": false,
+                       "is_pinned": false,
+                       "available_buttons": [
+                         {
+                           "text": "+ Keranjang",
+                           "color": "SECONDARY_DISABLED",
+                           "button_type": "ATC"
+                         },
+                         {
+                           "text": "Beli",
+                           "color": "PRIMARY_DISABLED",
+                           "button_type": "GCR"
+                         }
+                       ],
+                       "rating": "",
+                       "sold_quantity": ""
+                     }
+                   ]
+                 }
+               ],
+               "vouchers": [
+                {
+                   "voucher_id": "6137135",
+                   "voucher_name": "",
+                   "shop_id": "0",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "",
+                   "voucher_image_square": "",
+                   "voucher_finish_time": "2022-09-13T23:59:59Z",
+                   "voucher_code": "KONGT074OKE",
+                   "is_quota_available": 1,
+                   "is_highlighted": true,
+                   "is_copyable": true,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968111",
+                   "voucher_name": "free ongkir",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONGON40HU",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968048",
+                   "voucher_name": "voucher testing",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONGGWPFRO",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968115",
+                   "voucher_name": "cashback",
+                   "shop_id": "1961630",
+                   "title": "Cashback Rp20.000",
+                   "subtitle": "Transaksi min. Rp287.500",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG0NBOUE",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "4946142",
+                   "voucher_name": "ONGKIRFREE",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp50.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+                   "voucher_quota": 25,
+                   "voucher_finish_time": "2050-12-31T23:59:00Z",
+                   "voucher_code": "KONGP0FL5B",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968045",
+                   "voucher_name": "voucher untuk trackeran",
+                   "shop_id": "1961630",
+                   "title": "Cashback Rp20.000",
+                   "subtitle": "Transaksi min. Rp287.500",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/2b25f48d-b8c1-4c89-ab25-82fc5c8146b1.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/140e27e4-6f0d-4f70-a458-a386a91066f3.jpg",
+                   "voucher_quota": 15,
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG3LPOBC",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968042",
+                   "voucher_name": "monthly voucher",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/e4a7b074-3d7d-43ee-afd3-890e3cbc9d26.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/be163b96-589f-4a41-8394-788d15d2ce26.jpg",
+                   "voucher_quota": 25,
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG92U02Z",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": false
+                 }
+
+               ],
+               "config": {
+                 "peek_product_count": 15,
+                 "title_bottomsheet": "Promo dan Barang Pilihan"
+               }
+             }
+           }
     """.trimIndent()
 
     private val channelNoPublicVoucher = """
         {
-        "playGetTagsItemSection": {
+      "playGetTagsItemSection": {
         "sections": [
           {
             "type": "other",
@@ -862,25 +716,25 @@ class ModelBuilder {
             },
             "start_time": "1970-01-01T07:00:00+07:00",
             "end_time": "1970-01-01T07:00:00+07:00",
-            "server_time": "2022-09-13T13:31:38+07:00",
+            "server_time": "2023-05-08T10:24:04+07:00",
             "source_id": "0",
             "products": [
               {
-                "id": "205240239",
-                "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
-                "shop_id": "1961630",
-                "original_price": 131313,
-                "original_price_formatted": "Rp 131.313",
-                "discount": 20,
-                "price": 105050,
-                "price_formatted": "Rp 105.050",
-                "quantity": 11,
+                "id": "2148348755",
+                "name": "ku3 smil3y",
+                "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/3/16/64f663b5-48bd-4808-8b33-51e45c63e1e7.jpg",
+                "shop_id": "479541",
+                "original_price": 680952,
+                "original_price_formatted": "Rp 680.952",
+                "discount": 0,
+                "price": 0,
+                "price_formatted": "Rp 0",
+                "quantity": 1234,
                 "is_variant": false,
-                "is_available": true,
+                "is_available": false,
                 "order": 0,
-                "app_link": "tokopedia://product/205240239",
-                "web_link": "https://www.tokopedia.com/voc123/si-tangan-besi-panas-bisa-melelehkan-baja",
+                "app_link": "tokopedia://product/2148348755",
+                "web_link": "https://staging.tokopedia.com/ituajakak/ku3-smil3y",
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
@@ -896,162 +750,15 @@ class ModelBuilder {
                     "color": "PRIMARY_DISABLED",
                     "button_type": "GCR"
                   }
-                ]
-              },
-              {
-                "id": "233501860",
-                "name": "KOL belum digoreng",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
-                "shop_id": "1961630",
-                "original_price": 80000,
-                "original_price_formatted": "Rp 80.000",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "",
-                "quantity": 20,
-                "is_variant": true,
-                "is_available": true,
-                "order": 1,
-                "app_link": "tokopedia://product/1810972910",
-                "web_link": "https://www.tokopedia.com/voc123/kol-belum-digoreng-hitam-0",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "other",
-            "title": "Produk Habis",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "0001-01-01T00:00:00Z",
-            "end_time": "0001-01-01T00:00:00Z",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "",
-            "products": [
-              {
-                "id": "227295441",
-                "name": "Tengkurak",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
-                "shop_id": "1961630",
-                "original_price": 700,
-                "original_price_formatted": "Rp 700",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 2,
-                "app_link": "tokopedia://product/227295441",
-                "web_link": "https://www.tokopedia.com/voc123/tengkurak",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "193124774",
-                "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
-                "shop_id": "1961630",
-                "original_price": 3123123,
-                "original_price_formatted": "Rp 3.123.123",
-                "discount": 5,
-                "price": 2966967,
-                "price_formatted": "Rp 2.966.967",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 3,
-                "app_link": "tokopedia://product/193124774",
-                "web_link": "https://www.tokopedia.com/voc123/aku-ingin-begini-aku-ingin-begitu-ingin-ini-ingin-itu-banyak-sekaliiii",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "489530510",
-                "name": "sudahbreloom",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
-                "shop_id": "1961630",
-                "original_price": 200,
-                "original_price_formatted": "Rp 200",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 4,
-                "app_link": "tokopedia://product/489530510",
-                "web_link": "https://www.tokopedia.com/voc123/sudahbreloom",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
+                ],
+                "rating": "",
+                "sold_quantity": ""
               }
             ]
           }
         ],
         "vouchers": [
-          {
+         {
             "voucher_id": "6137135",
             "voucher_name": "",
             "shop_id": "0",
@@ -1166,10 +873,11 @@ class ModelBuilder {
             "is_copyable": false,
             "is_private": true
           }
+
         ],
         "config": {
           "peek_product_count": 15,
-          "title_bottomsheet": "Promo dan produk pilihan"
+          "title_bottomsheet": "Promo dan Barang Pilihan"
         }
       }
     }
@@ -1656,7 +1364,9 @@ class ModelBuilder {
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
         isProductNumerationShown: Boolean = false,
-        number: String = "0"
+        number: String = "0",
+        rating: String = "",
+        soldQuantity : String = "",
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1673,7 +1383,9 @@ class ModelBuilder {
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
         isNumerationShown = isProductNumerationShown,
-        number = number
+        number = number,
+        rating = rating,
+        soldQuantity = soldQuantity,
     )
 
     fun buildProductStockAvailable(
@@ -1860,7 +1572,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 1
+                            "product_number": 1,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "8175013631",
@@ -1894,7 +1608,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 2
+                            "product_number": 2,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "3325111748",
@@ -1928,7 +1644,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 3
+                            "product_number": 3,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "7506341076",
@@ -1962,7 +1680,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 4
+                            "product_number": 4,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953633275",
@@ -1996,7 +1716,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 5
+                            "product_number": 5,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "8584759533",
@@ -2030,7 +1752,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 6
+                            "product_number": 6,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2851476971",
@@ -2064,7 +1788,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 7
+                            "product_number": 7,
+                            "rating": "",
+                             "sold_quantity": ""
                           },
                           {
                             "id": "1953652961",
@@ -2098,7 +1824,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 8
+                            "product_number": 8,
+                            "rating": "",
+                             "sold_quantity": ""
                           },
                           {
                             "id": "1953621470",
@@ -2132,7 +1860,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 9
+                            "product_number": 9,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "6924972249",
@@ -2166,7 +1896,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 10
+                            "product_number": 10,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953600735",
@@ -2200,7 +1932,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 11
+                            "product_number": 11,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2671545794",
@@ -2234,7 +1968,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 12
+                            "product_number": 12,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953609394",
@@ -2268,7 +2004,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 13
+                            "product_number": 13,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953658710",
@@ -2302,7 +2040,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 14
+                            "product_number": 14,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2373468360",
@@ -2336,7 +2076,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 15
+                            "product_number": 15,
+                            "rating": "",
+                            "sold_quantity": ""
                           }
                         ]
                       }
@@ -2405,7 +2147,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 1
+                            "product_number": 1,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "8175013631",
@@ -2439,7 +2183,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 2
+                            "product_number": 2,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "3325111748",
@@ -2473,7 +2219,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 3
+                            "product_number": 3,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "7506341076",
@@ -2507,7 +2255,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 4
+                            "product_number": 4,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953633275",
@@ -2541,7 +2291,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 5
+                            "product_number": 5,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "8584759533",
@@ -2575,7 +2327,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 6
+                            "product_number": 6,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2851476971",
@@ -2609,7 +2363,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 7
+                            "product_number": 7,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953652961",
@@ -2643,7 +2399,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 8
+                            "product_number": 8,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953621470",
@@ -2677,7 +2435,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 9
+                            "product_number": 9,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "6924972249",
@@ -2711,7 +2471,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 10
+                            "product_number": 10,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953600735",
@@ -2745,7 +2507,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 11
+                            "product_number": 11,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2671545794",
@@ -2779,7 +2543,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 12
+                            "product_number": 12,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953609394",
@@ -2813,7 +2579,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 13
+                            "product_number": 13,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "1953658710",
@@ -2847,7 +2615,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 14
+                            "product_number": 14,
+                            "rating": "",
+                            "sold_quantity": ""
                           },
                           {
                             "id": "2373468360",
@@ -2881,7 +2651,9 @@ class ModelBuilder {
                                 "button_type": "ATC"
                               }
                             ],
-                            "product_number": 15
+                            "product_number": 15,
+                            "rating": "",
+                            "sold_quantity": ""
                           }
                         ]
                       }
