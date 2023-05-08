@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.data.repository
 
 import android.database.Cursor
 import android.net.Uri
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl.Companion.BUCKET_ALL_MEDIA_ID
 import com.tokopedia.media.picker.data.entity.Album
@@ -35,7 +36,6 @@ class BucketAlbumRepositoryImpl @Inject constructor(
 
                     if (album == null) {
                         if (media.file.exists().not()) continue
-                        if (isFileValidFromParam(media).not()) continue
 
                         albumMap[bucketId] = Album(
                             bucketId,
@@ -59,7 +59,7 @@ class BucketAlbumRepositoryImpl @Inject constructor(
             val result = albumMap.values
                 .toMutableList()
                 .also {
-                    it.add(0, recentAlbumItem(it.first().uri, mediaTotal))
+                    it.add(Int.ZERO, recentAlbumItem(it.firstOrNull()?.uri, mediaTotal))
                 }
 
             emit(result)
