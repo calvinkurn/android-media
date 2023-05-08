@@ -1,6 +1,12 @@
 package com.tokopedia.tokochat.domain.cache
 
-data class TokoChatBubblesCache (
-    val hasShown: Boolean = false,
-    val channelId: String = ""
+import com.google.gson.annotations.SerializedName
+
+data class TokoChatBubblesCache(
+    @SerializedName("channelId")
+    val channelId: String = "",
+    @SerializedName("hasShownBottomSheet")
+    val hasShownBottomSheet: Boolean = false,
+    @SerializedName("hasShownTicker")
+    val hasShownTicker: Boolean? = null
 )

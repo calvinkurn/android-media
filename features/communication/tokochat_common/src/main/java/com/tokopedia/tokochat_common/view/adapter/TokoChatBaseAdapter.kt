@@ -47,17 +47,4 @@ open class TokoChatBaseAdapter(
         }
         return null
     }
-
-    fun getLastPositionOfFirstTickersGroup(): Int? {
-        var position: Int? = null
-        itemList.forEachIndexed { index, item ->
-            // If item is not ticker & last index was a ticker
-            if (item !is TokoChatReminderTickerUiModel && position != null) {
-                return index
-            } else if (item is TokoChatReminderTickerUiModel) {
-                position = index // Save pointer to ticker
-            }
-        }
-        return null
-    }
 }

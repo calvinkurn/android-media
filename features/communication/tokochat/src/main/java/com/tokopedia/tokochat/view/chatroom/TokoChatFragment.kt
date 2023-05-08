@@ -46,6 +46,7 @@ import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
+import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_NOTIF
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
@@ -561,7 +562,7 @@ open class TokoChatFragment :
     }
 
     private fun addBubbleTicker() {
-        if (viewModel.shouldShowTickerBubblesRollence() &&
+        if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
             viewModel.shouldShowTickerBubblesCache()
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
@@ -575,14 +576,9 @@ open class TokoChatFragment :
             // If the ticker is not in list, manually add ticker
             val tickerBubblePair = adapter.getTickerPairWithTag(BUBBLES_NOTIF)
             if (tickerBubblePair == null) {
-                val position = adapter.getLastPositionOfFirstTickersGroup()
-                if (position != null && position != adapter.lastIndex) {
-                    adapter.addItem(position, tickerBubble)
-                    adapter.notifyItemInserted(position)
-                } else { //No ticker at all
-                    adapter.addItem(Int.ZERO, tickerBubble)
-                    adapter.notifyItemInserted(Int.ZERO)
-                }
+                adapter.addItem(Int.ZERO, tickerBubble)
+                adapter.notifyItemInserted(Int.ZERO)
+                scrollToBottom()
             }
         }
     }
@@ -1046,14 +1042,15 @@ open class TokoChatFragment :
     }
 
     override fun onCloseReminderTicker(element: TokoChatReminderTickerUiModel, position: Int) {
-        adapter.removeItem(element)
         if (position == adapter.itemCount) {
             mapper.setFirstTicker(null)
         }
         if (position == Int.ZERO && element.tag == BUBBLES_NOTIF) {
             mapper.setBubbleTicker(null)
-            viewModel.setBubblesClose()
+//            viewModel.setBubblesClose()
         }
+        adapter.removeItem(element)
+        adapter.notifyItemRemoved(position)
     }
 
     override fun loadImage(
