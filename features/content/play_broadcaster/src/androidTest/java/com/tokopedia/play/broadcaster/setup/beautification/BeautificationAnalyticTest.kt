@@ -120,6 +120,7 @@ class BeautificationAnalyticTest {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
             .clickCustomFace(1)
+            .performDelay()
             .clickToasterCTA()
             .verifyEventAction("view - failed apply beauty filter")
             .verifyEventAction("click - failed apply beauty filter")
@@ -184,11 +185,10 @@ class BeautificationAnalyticTest {
                 coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns false
             }
             .clickPreset(1)
-            .performDelay()
             .clickToasterCTA()
             .verifyEventAction("click - download asset preset makeup")
-            .verifyEventAction("view - failed download preset makeup")
             .verifyEventAction("click - retry download preset makeup")
+            .verifyEventAction("view - failed download preset makeup")
 
             .clickBeautificationCustomFaceTab()
             .clickCustomFace(0)
@@ -196,6 +196,8 @@ class BeautificationAnalyticTest {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
             .clickCustomFace(1)
+            .performDelay()
+            .clickToasterCTA()
             .verifyEventAction("view - failed apply beauty filter")
             .verifyEventAction("click - failed apply beauty filter")
     }
