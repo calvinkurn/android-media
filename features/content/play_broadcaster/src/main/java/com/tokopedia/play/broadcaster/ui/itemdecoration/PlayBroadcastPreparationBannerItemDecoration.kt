@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.unifyprinciples.R
 
 class PlayBroadcastPreparationBannerItemDecoration(
     context: Context
@@ -13,8 +12,8 @@ class PlayBroadcastPreparationBannerItemDecoration(
         private const val FIRST_ITEM = 0
     }
 
-    private val spaceItemEdge = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
-    private val spaceItem = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl2)
+    private val spaceItemEdge = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val spaceItem = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
 
     override fun getItemOffsets(
         outRect: Rect,
