@@ -81,7 +81,7 @@ class ShopPageHeaderViewModelTest {
     lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
 
     @RelaxedMockK
-    lateinit var newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>
+    lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
 
     @RelaxedMockK
     lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
@@ -136,7 +136,7 @@ class ShopPageHeaderViewModelTest {
             getBroadcasterAuthorConfig,
             gqlGetShopInfobUseCaseCoreAndAssets,
             shopQuestGeneralTrackerUseCase,
-            newGetShopPageP1DataUseCase,
+            getShopPageP1DataUseCase,
             getShopProductListUseCase,
             shopModerateRequestStatusUseCase,
             shopRequestUnmoderateUseCase,
@@ -172,7 +172,7 @@ class ShopPageHeaderViewModelTest {
     @Test
     fun `check whether new shopPageP1Data value is Success`() {
         coEvery {
-            newGetShopPageP1DataUseCase.get().executeOnBackground()
+            getShopPageP1DataUseCase.get().executeOnBackground()
         } returns NewShopPageHeaderP1(
             shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
                 ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
@@ -198,7 +198,7 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam
         )
-        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
         assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
@@ -207,7 +207,7 @@ class ShopPageHeaderViewModelTest {
     fun `check whether new shopPageP1Data value is success when shopId same as user session shopId`() {
         coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
         coEvery {
-            newGetShopPageP1DataUseCase.get().executeOnBackground()
+            getShopPageP1DataUseCase.get().executeOnBackground()
         } returns NewShopPageHeaderP1(
             shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
                 ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
@@ -233,7 +233,7 @@ class ShopPageHeaderViewModelTest {
             widgetUserAddressLocalData = addressWidgetData,
             extParam = mockExtParam
         )
-        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
         assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
@@ -241,7 +241,7 @@ class ShopPageHeaderViewModelTest {
     @Test
     fun `check whether new shopPageP1Data value is Fail is mapper throw exception`() {
         coEvery {
-            newGetShopPageP1DataUseCase.get().executeOnBackground()
+            getShopPageP1DataUseCase.get().executeOnBackground()
         } returns NewShopPageHeaderP1(
             shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
                 ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
@@ -257,7 +257,12 @@ class ShopPageHeaderViewModelTest {
         )
         mockkObject(ShopPageHeaderMapper)
         every {
-            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(), any(), any(), any(), any())
+            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
+                shopInfoCoreData = any(),
+                shopPageGetDynamicTabResponse = any(),
+                feedWhitelistData = any(),
+                shopPageHeaderLayoutData = any()
+            )
         } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
@@ -271,13 +276,13 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam
         )
-        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
     }
 
     @Test
     fun `check whether new shopPageP1Data value is Fail`() {
-        coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
@@ -290,13 +295,13 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam
         )
-        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
     }
 
     @Test
     fun `check whether new shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
-        coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } returns NewShopPageHeaderP1()
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns NewShopPageHeaderP1()
         shopPageHeaderViewModel.getNewShopPageTabData(
             "0",
             "domain",
