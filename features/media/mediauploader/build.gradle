@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -25,7 +26,9 @@ android {
 }
 
 dependencies {
-	implementation rootProject.ext.unifyDependencies.principles
+    implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
+
+    implementation rootProject.ext.unifyDependencies.principles
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -41,7 +44,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
-    implementation rootProject.ext.miscDependencies.rxJavaComputation
+    implementation rootProject.ext.miscDependencies.mp4parser
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
