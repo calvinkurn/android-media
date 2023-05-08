@@ -227,10 +227,6 @@ class HotelSearchMapFragment :
                     }
                     is Fail -> {
                         hideLoader()
-                        hideCollapsingHeader()
-                        hideSearchWithMap()
-                        hideQuickFilter()
-                        expandBottomSheet()
                         showGetListError(it.throwable)
                     }
                 }
@@ -374,6 +370,8 @@ class HotelSearchMapFragment :
                 hideSearchWithMap()
                 hideHotelResultList()
                 showErrorNoResult()
+                showQuickFilterShimmering(false)
+                halfExpandBottomSheet()
             }
 
             isEmptyError(error) && adapter.data.isNotEmpty() -> {
@@ -381,7 +379,11 @@ class HotelSearchMapFragment :
                 hideLoading()
             }
 
-            adapter.data.isEmpty() -> {
+            !isEmptyError(error) && adapter.data.isEmpty() -> {
+                hideCollapsingHeader()
+                hideSearchWithMap()
+                hideQuickFilter()
+                expandBottomSheet()
                 binding?.containerError?.root?.visible()
                 context?.run {
                     binding?.containerError?.globalError?.let {
