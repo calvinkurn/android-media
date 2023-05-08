@@ -104,6 +104,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         binding.btnContinue.setOnClickListener {
             if (it.isEnabled) {
                 mListener?.onSubmitTnc()
+                it.isEnabled = false
             }
         }
     }
