@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
+import com.tokopedia.graphql.interceptor.BannerDebugInterceptor;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -96,13 +96,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
 
         new DebugBanner().initView(this, getLiveStatus());
-        
     }
 
     private String getLiveStatus() {
         if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
             return "STAGING";
-        } else if (BetaInterceptor.isBeta(this)) {
+        } else if (BannerDebugInterceptor.isBeta(this)) {
             return "BETA";
         } else {
             return "";

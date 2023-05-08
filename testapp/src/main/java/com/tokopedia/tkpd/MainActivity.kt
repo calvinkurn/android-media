@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://logistic/manageaddress/"
     }
 
     data class Model(

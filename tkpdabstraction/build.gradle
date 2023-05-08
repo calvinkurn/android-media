@@ -58,7 +58,6 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dataStore
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
 
 
 }

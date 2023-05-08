@@ -2,8 +2,8 @@ package com.tokopedia.graphql.data;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
-import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
 import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.RESPONSE_HEADER_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,11 +19,11 @@ import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.MacroInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.interceptor.BannerDebugInterceptor;
 import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
@@ -148,6 +148,8 @@ public class GraphqlClient {
 
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context));
+
 
         sRetrofit = CommonNetwork.createRetrofit(
                 GraphqlUrl.BASE_URL,
@@ -172,6 +174,7 @@ public class GraphqlClient {
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -207,8 +210,8 @@ public class GraphqlClient {
             );
         }
 
-        public String getTopAdsHeader(){
-            SharedPreferences sp =  context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        public String getTopAdsHeader() {
+            SharedPreferences sp = context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
             return sp.getString(RESPONSE_HEADER_KEY, "");
         }
     }
@@ -245,4 +248,6 @@ public class GraphqlClient {
         }
         return sFingerprintManager;
     }
+
+
 }
