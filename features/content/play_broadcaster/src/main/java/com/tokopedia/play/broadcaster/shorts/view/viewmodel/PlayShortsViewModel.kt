@@ -272,7 +272,7 @@ class PlayShortsViewModel @Inject constructor(
                 )
             )
 
-            isSuccessSubmitAffiliateTnc(isSuccess)
+            checkIsSuccessSubmitAffiliate(isSuccess)
         }) {
             _uiEvent.emit(
                 PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(
@@ -440,7 +440,7 @@ class PlayShortsViewModel @Inject constructor(
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
     }
 
-    private suspend fun isSuccessSubmitAffiliateTnc(isSuccess: Boolean) {
+    private suspend fun checkIsSuccessSubmitAffiliate(isSuccess: Boolean) {
         if (!isSuccess) return
         checkIsUserAffiliate()
         _uiEvent.emit(PlayShortsUiEvent.SuccessSubmitAffiliateTncUiEvent)
