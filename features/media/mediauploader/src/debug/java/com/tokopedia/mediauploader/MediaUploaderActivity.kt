@@ -279,12 +279,16 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
                 filePath = File(mediaFilePath),
                 withTranscode = isVideoTranscodeSupported,
                 isSecure = this.isSecure,
+                shouldCompress = true,
                 extraBody = extraBody as HashMap<String, String>,
                 extraHeader = extraHeader as HashMap<String, String>
             )
 
-            uploaderUseCase.trackProgress { progress ->
-                progressBar?.setValue(progress, true)
+            uploaderUseCase.trackProgress { progress, type ->
+                runOnUiThread {
+                    progressBar?.setValue(progress, true)
+                    checkboxSecure?.text = type.toString()
+                }
             }
 
             launch {

@@ -4,7 +4,10 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import java.io.File
 import javax.inject.Inject
+
+typealias CacheCompressionModel = VideoCompressionCacheManager.Data
 
 class VideoCompressionCacheManager @Inject constructor(
     @ApplicationContext context: Context
@@ -35,10 +38,15 @@ class VideoCompressionCacheManager @Inject constructor(
     data class Data(
         val originalVideoPath: String,
         val compressedVideoPath: String,
-        val compressedTime: String,
+        val compressedTime: Long,
         val videoOriginalSize: String,
         val videoCompressedSize: String
-    )
+    ) {
+
+        fun isCompressedFileExist(): Boolean {
+            return File(compressedVideoPath).exists()
+        }
+    }
 
     companion object {
         private const val NAME_PREFERENCE_VID_COMPRESS = "vid_compress_cache"

@@ -70,14 +70,16 @@ class MediaUploaderModule {
         policyUseCase: GetVideoPolicyUseCase,
         videoCompression: SetVideoCompressionUseCase,
         simpleUploader: SimpleUploaderManager,
-        largeUploader: LargeUploaderManager
+        largeUploader: LargeUploaderManager,
+        cacheManager: VideoCompressionCacheManager
     ): VideoUploaderManager {
         return VideoUploaderManager(
             policyManager,
             policyUseCase,
             videoCompression,
             simpleUploader,
-            largeUploader
+            largeUploader,
+            cacheManager
         )
     }
 
