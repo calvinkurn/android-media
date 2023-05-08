@@ -37,6 +37,7 @@ import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
+import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
@@ -389,13 +390,15 @@ private fun InputCustomReason(
 @Composable
 private fun ReschedulePickupSummary(summary: String) {
     NestTicker(
-        text = HtmlLinkHelper(
+        title = "",
+        description = HtmlLinkHelper(
             LocalContext.current,
             summary
         ).spannedString?.toAnnotatedString() ?: "",
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        closeButtonVisibility = false
+        closeButtonVisibility = false,
+        type = TickerType.ANNOUNCEMENT
     )
 }
 
