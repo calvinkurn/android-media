@@ -35,6 +35,8 @@ class PlayProductTagsModelBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        isProductNumerationShown: Boolean = false,
+        number: String = "0",
         rating: String = "",
         soldQuantity: String = "",
     ) = PlayProductUiModel.Product(
@@ -52,6 +54,8 @@ class PlayProductTagsModelBuilder {
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
+        number = number,
+        isNumerationShown = isProductNumerationShown,
         rating = rating,
         soldQuantity = soldQuantity,
     )

@@ -45,6 +45,8 @@ interface TagItemBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        number: String = "0",
+        isNumerationShown: Boolean = false,
         rating: String = "",
         soldQuantity: String = "",
     ): PlayProductUiModel.Product

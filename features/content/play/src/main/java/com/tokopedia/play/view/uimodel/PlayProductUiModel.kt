@@ -23,6 +23,8 @@ sealed class PlayProductUiModel {
         val isPinned: Boolean,
         val isRilisanSpesial: Boolean,
         val buttons: List<ProductButtonUiModel>,
+        val number: String,
+        val isNumerationShown: Boolean,
         val rating: String,
         val soldQuantity: String,
     ) : PlayProductUiModel() {
@@ -46,6 +48,8 @@ sealed class PlayProductUiModel {
                     isPinned = false,
                     isRilisanSpesial = false,
                     buttons = emptyList(),
+                    number = "",
+                    isNumerationShown = false,
                     rating = "",
                     soldQuantity = "",
                 )
