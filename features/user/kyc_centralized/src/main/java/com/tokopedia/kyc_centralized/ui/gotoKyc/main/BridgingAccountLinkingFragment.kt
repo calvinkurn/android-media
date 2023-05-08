@@ -67,7 +67,7 @@ class BridgingAccountLinkingFragment : TkpdBaseV4Fragment() {
             layoutNotDoneGopay.root.showWithCondition(!isDoneGopay)
 
             btnConfirm.text = if (isDoneGopay) {
-                getString(R.string.goto_kyc_bridging_done_gopay_button)
+                getString(R.string.goto_kyc_confirm_KTP_name)
             } else {
                 getString(R.string.goto_kyc_bridging_not_done_gopay_button)
             }

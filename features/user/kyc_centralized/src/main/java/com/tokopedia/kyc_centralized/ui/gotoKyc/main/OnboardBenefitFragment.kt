@@ -62,6 +62,7 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
 
     private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
+            projectId = args.parameter.projectId,
             source = source,
             encryptedName = encryptedName
         )

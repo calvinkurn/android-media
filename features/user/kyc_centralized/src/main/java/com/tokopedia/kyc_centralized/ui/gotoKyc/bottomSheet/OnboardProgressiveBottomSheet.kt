@@ -1,5 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
@@ -10,19 +12,50 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardProgressiveBinding
+import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
-class OnboardProgressiveBottomSheet(private val source: String, val encryptedName: String): BottomSheetUnify() {
+class OnboardProgressiveBottomSheet(private val projectId: String, private val source: String, val encryptedName: String): BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
+
+    private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
+        }
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[OnboardProgressiveViewModel::class.java]
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +70,8 @@ class OnboardProgressiveBottomSheet(private val source: String, val encryptedNam
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initListener()
+        initObserver()
     }
 
     private fun initView() {
@@ -53,6 +88,68 @@ class OnboardProgressiveBottomSheet(private val source: String, val encryptedNam
                 getString(R.string.goto_kyc_onboard_progressive_title_not_account_page, source)
             }
         }
+    }
+
+    private fun initListener() {
+        binding?.btnSubmit?.setOnClickListener {
+            viewModel.registerProgressiveUseCase(projectId)
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.registerProgressive.observe(viewLifecycleOwner) {
+            when (it) {
+                is RegisterProgressiveResult.Loading -> {
+                    setButtonLoading(true)
+                }
+                is RegisterProgressiveResult.RiskyUser -> {
+                    setButtonLoading(false)
+                    val parameter = GotoKycMainParam(
+                        projectId = projectId,
+                        challengeId = it.challengeId
+                    )
+                    gotoDobChallenge(parameter)
+                }
+                is RegisterProgressiveResult.NotRiskyUser -> {
+                    setButtonLoading(false)
+                    val parameter = GotoKycMainParam(
+                        sourcePage = source,
+                        gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
+                        status = "0"
+                    )
+                    gotoStatusSubmissionPending(parameter)
+                }
+                is RegisterProgressiveResult.Failed -> {
+                    setButtonLoading(false)
+                    it.throwable?.let { throwable ->
+                        showToasterError(throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setButtonLoading(isLoading: Boolean) {
+        binding?.btnSubmit?.isLoading = isLoading
+    }
+
+    private fun gotoDobChallenge(parameter: GotoKycMainParam) {
+        val intent = Intent(requireActivity(), GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_DOB_CHALLENGE)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
+        startKycForResult.launch(intent)
+    }
+
+    private fun gotoStatusSubmissionPending(parameter: GotoKycMainParam) {
+        val intent = Intent(requireActivity(), GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_STATUS_SUBMISSION)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
+        startKycForResult.launch(intent)
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        val message = throwable.getMessage(requireActivity())
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun setTokopediaCareView() {
@@ -89,6 +186,12 @@ class OnboardProgressiveBottomSheet(private val source: String, val encryptedNam
             ApplinkConstInternalGlobal.WEBVIEW,
             TokopediaUrl.getInstance().WEB.plus(PATH_TOKOPEDIA_CARE)
         )
+    }
+
+    private fun initInjector() {
+        DaggerGoToKycComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     companion object {

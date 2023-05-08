@@ -52,6 +52,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
             }
             PAGE_ONBOARD_BENEFIT -> {
                 val parameter = OnboardBenefitParam(
+                    projectId = data?.projectId.orEmpty(),
                     gotoKycType = data?.gotoKycType.orEmpty(),
                     encryptedName = data?.encryptedName.orEmpty(),
                     isAccountLinked = data?.isAccountLinked.orFalse(),
@@ -59,6 +60,13 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     sourcePage = data?.sourcePage.orEmpty()
                 )
                 gotoOnboardBenefitGotoKyc(parameter)
+            }
+            PAGE_DOB_CHALLENGE -> {
+                val parameter = DobChallengeParam(
+                    projectId = data?.projectId.orEmpty(),
+                    challengeId = data?.challengeId.orEmpty()
+                )
+                gotoDobChallenge(parameter)
             }
         }
     }
@@ -73,8 +81,8 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toSubmissionStatusPage)
     }
 
-    private fun gotoDobChallenge() {
-        val toDobChallengePage = GotoKycRouterFragmentDirections.actionRouterFragmentToDobChallengeFragment()
+    private fun gotoDobChallenge(parameter: DobChallengeParam) {
+        val toDobChallengePage = GotoKycRouterFragmentDirections.actionRouterFragmentToDobChallengeFragment(parameter)
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
@@ -88,6 +96,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         const val PARAM_REQUEST_PAGE = "request_page"
         const val PAGE_ONBOARD_BENEFIT = "page_onboard_benefit"
         const val PAGE_STATUS_SUBMISSION = "page_status_submission"
+        const val PAGE_DOB_CHALLENGE = "page_challenge"
         const val PARAM_DATA = "parameter"
         private val SCREEN_NAME = GotoKycRouterFragment::class.java.simpleName
     }

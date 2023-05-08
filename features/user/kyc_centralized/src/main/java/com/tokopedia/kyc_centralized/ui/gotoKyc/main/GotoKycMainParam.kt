@@ -1,10 +1,8 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@SuppressLint("ParamFieldAnnotation")
 @Parcelize
 data class GotoKycMainParam (
     val projectId: String = "",
@@ -14,5 +12,6 @@ data class GotoKycMainParam (
     val isKtpTaken: Boolean = false,
     val status: String = "",
     val sourcePage: String = "",
-    val listReason: List<String> = emptyList()
+    val listReason: List<String> = emptyList(),
+    val challengeId: String = ""
 ): Parcelable
