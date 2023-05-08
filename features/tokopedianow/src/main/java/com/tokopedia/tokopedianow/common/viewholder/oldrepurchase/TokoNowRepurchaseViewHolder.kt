@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.viewholder
+package com.tokopedia.tokopedianow.common.viewholder.oldrepurchase
 
 import android.graphics.Rect
 import android.view.View
@@ -15,11 +15,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter
-import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter
+import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter.*
+import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.*
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductListCarouselBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifyprinciples.Typography

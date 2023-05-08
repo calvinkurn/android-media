@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.adapter
+package com.tokopedia.tokopedianow.common.adapter.oldrepurchase
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
-import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
+import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.*
 
 class TokoNowProductCardAdapter(
     typeFactory: TokoNowProductCardAdapterTypeFactory,
