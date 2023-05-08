@@ -250,7 +250,7 @@ private fun getLeadingIcon(
 ): @Composable (() -> Unit)? {
     if (icon1 != null || icon2 != null || !suffix.isNullOrEmpty() || onClear != null) {
         return {
-            Row(modifier = Modifier.padding(end = 12.dp)) {
+            Row {
                 onClear?.let {
                     Icon(
                         painter = painterResource(id = R.drawable.iconunify_clear_small),
