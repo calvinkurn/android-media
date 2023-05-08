@@ -1,37 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.iconunify.IconUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:background="@color/Neutral_N700_96">
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/view_comment"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="CHAT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/view_comment_count"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:text="@string/play_zero"
-        android:textAlignment="center"
-        android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/view_comment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_comment"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="123,5 rb" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:id="@+id/view_comment"
+    android:layout_width="@dimen/layout_lvl5"
+    android:layout_height="@dimen/layout_lvl5"
+    app:icon_color_light_enable="@color/Unify_Static_White"
+    app:icon_color_night_enable="@color/Unify_Static_White"
+    app:icon_name="CHAT"
+    tools:background="@color/Neutral_N700_96"/>

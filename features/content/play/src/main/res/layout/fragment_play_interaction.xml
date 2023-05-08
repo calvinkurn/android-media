@@ -387,13 +387,30 @@
         layout="@layout/view_vod_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/content_common_space_16"
-        android:visibility="gone"
+        android:layout_marginBottom="@dimen/unify_space_2"
         tools:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/view_share_experience"
+        app:layout_constraintBottom_toTopOf="@id/view_vod_comment_counter"
         app:layout_constraintEnd_toEndOf="@id/view_share_experience"
         app:layout_constraintStart_toStartOf="@+id/view_share_experience"
         app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
+
+    <include
+        android:id="@+id/view_vod_comment_counter"
+        layout="@layout/view_vod_comment_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/content_common_space_16"
+        app:layout_constraintStart_toStartOf="@id/view_vod_comment"
+        app:layout_constraintEnd_toEndOf="@id/view_vod_comment"
+        app:layout_constraintBottom_toTopOf="@id/view_share_experience"
+        tools:visibility="visible"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gr_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="view_vod_comment,view_vod_comment_counter"/>
 
     <View
         android:id="@+id/gl_quick_reply"

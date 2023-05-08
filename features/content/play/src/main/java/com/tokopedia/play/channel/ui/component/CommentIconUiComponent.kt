@@ -1,6 +1,6 @@
 package com.tokopedia.play.channel.ui.component
 
-import com.tokopedia.play.databinding.ViewVodCommentBinding
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.view.comment.CommentIconUiView
@@ -14,11 +14,11 @@ import com.tokopedia.play_common.eventbus.EventBus
  */
 class CommentIconUiComponent(
     bus: EventBus<in Event>,
-    binding: ViewVodCommentBinding
+    group: Group
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val view = CommentIconUiView(
-        binding,
+        group,
         object : CommentIconUiView.Listener {
             override fun onCommentClicked(view: CommentIconUiView) {
                 bus.emit(Event.OnCommentClicked)
