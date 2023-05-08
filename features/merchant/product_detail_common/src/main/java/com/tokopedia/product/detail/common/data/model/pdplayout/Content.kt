@@ -42,11 +42,12 @@ data class Content(
         const val KEY_CATALOG = "katalog"
         const val KEY_PANDUAN_UKURAN = "panduan_ukuran"
 
-        const val TYPE_ACTION = "action"
         const val TYPE_DEFAULT = ""
+        const val TYPE_ACTION = "action"
+        const val TYPE_APPLINK = "applink"
+        const val TYPE_WEBLINK = "weblink"
 
-        const val ACTION_DEFAULT = ""
-        const val ACTION_APPLINK = "applink"
+        const val ACTION_EMPTY = ""
         const val ACTION_OPEN_DETAIL_PRODUCT = "open_detail_product"
     }
 }

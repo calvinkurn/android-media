@@ -3,8 +3,10 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -12,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import timber.log.Timber
 
 class ItemProductDetailInfoViewHolder(
     private val binding: ItemInfoProductDetailBinding,
@@ -24,9 +27,10 @@ class ItemProductDetailInfoViewHolder(
         trackData: ComponentTrackDataModel?,
         itemCount: Int
     ) {
-        renderLineText(data = data, trackData)
+        renderLineText(data = data, trackData = trackData)
         renderIcon(data = data)
         renderDivider(itemCount = itemCount)
+        setImpression(data = data, trackData = trackData)
     }
 
     private fun renderLineText(
@@ -94,6 +98,10 @@ class ItemProductDetailInfoViewHolder(
                 listener.goToApplink(url = appLink)
             }
 
+            override fun toWebView(infoLink: String) {
+                listener.goToWebView(url = infoLink)
+            }
+
             override fun toProductDetailInfo(key: String, extParam: String) {
                 listener.onAnnotationOpenProductInfoSheet(
                     key = key,
@@ -102,6 +110,14 @@ class ItemProductDetailInfoViewHolder(
                 )
             }
         })
+    }
+
+    private fun setImpression(data: ProductDetailInfoContent, trackData: ComponentTrackDataModel?) {
+        if (data.key == Content.KEY_PANDUAN_UKURAN) {
+            binding.root.addOnImpressionListener(data.impressionHolder) {
+                Timber.tag("pdp_info_bs").d("impression")
+            }
+        }
     }
 
     companion object {

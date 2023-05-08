@@ -103,6 +103,10 @@ class ProductDetailInfoAnnotationViewHolder(
                     listener.goToApplink(data.applink)
                 }
 
+                override fun toWebView(infoLink: String) {
+                    listener.goToWebView(url = infoLink)
+                }
+
                 override fun toProductDetailInfo(key: String, extParam: String) {
                     // no-ops, on pdp only
                 }

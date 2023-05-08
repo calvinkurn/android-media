@@ -14,5 +14,7 @@ interface ProductDetailInfoNavigator {
 
     fun toAppLink(appLink: String)
 
+    fun toWebView(infoLink: String)
+
     fun toProductDetailInfo(key: String, extParam: String)
 }

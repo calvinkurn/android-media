@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model.datamodel.product_detail_info
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content.Companion.KEY_CATALOG
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content.Companion.KEY_CATEGORY
@@ -25,7 +26,8 @@ data class ProductDetailInfoContent(
     val key: String = "",
     val type: String = "",
     val action: String = "",
-    val extParam: String = ""
+    val extParam: String = "",
+    val impressionHolder: ImpressHolder = ImpressHolder()
 ) : Parcelable {
 
     val isClickable: Boolean
@@ -40,6 +42,8 @@ data class ProductDetailInfoContent(
             KEY_CATEGORY -> navigator.toCategory(appLink = applink)
             else -> when (type) { // new code for generalize
                 Content.TYPE_ACTION -> actionRouting(navigator = navigator)
+                Content.TYPE_APPLINK -> navigator.toAppLink(applink)
+                Content.TYPE_WEBLINK -> navigator.toWebView(infoLink)
                 else -> {
                     // no ops
                 }
@@ -49,14 +53,11 @@ data class ProductDetailInfoContent(
 
     private fun actionRouting(navigator: ProductDetailInfoNavigator) {
         when (action) {
-            Content.ACTION_APPLINK -> {
-                navigator.toAppLink(appLink = applink)
-            }
             Content.ACTION_OPEN_DETAIL_PRODUCT -> {
                 navigator.toProductDetailInfo(key = key, extParam = extParam)
             }
-            else -> {
-                navigator.toAppLink(appLink = applink)
+            Content.ACTION_EMPTY -> {
+                // no ops
             }
         }
     }

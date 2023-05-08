@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -50,8 +51,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -274,6 +277,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToApplink(url: String) {
         RouteManager.route(context, url)
+    }
+
+    override fun goToWebView(url: String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+        )
     }
 
     override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
