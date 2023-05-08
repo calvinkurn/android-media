@@ -43,7 +43,7 @@ class AnimatedTextLabel : FrameLayout {
 
     private var previousText: String = ""
 
-    private val activityLifeCycle = object: ActivityLifecycleCallbacksAdapter() {
+    private val activityLifeCycle = object : ActivityLifecycleCallbacksAdapter() {
         override fun onActivityDestroyed(activity: Activity) {
             if (context == activity) {
                 animationHelper?.clear()

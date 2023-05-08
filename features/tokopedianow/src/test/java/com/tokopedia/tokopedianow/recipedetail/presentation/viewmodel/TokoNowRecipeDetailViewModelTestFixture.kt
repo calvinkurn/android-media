@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,7 +40,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     val instantTaskExecutor = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     private lateinit var getRecipeUseCase: GetRecipeUseCase
     private lateinit var getAddressUseCase: GetChosenAddressWarehouseLocUseCase

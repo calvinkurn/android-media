@@ -30,6 +30,9 @@ class FindingNewDriverViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
+
     private val newDriverAvailabilityUseCase = mockk<NewDriverAvailabilityUseCase>(relaxed = true)
     private val newDriverBookingUseCase = mockk<NewDriverBookingUseCase>(relaxed = true)
     private val findingNewDriverMapper = mockk<FindingNewDriverMapper>(relaxed = true)
@@ -43,7 +46,6 @@ class FindingNewDriverViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(CoroutineTestDispatchersProvider.main)
         viewModel = FindingNewDriverViewModel(
             CoroutineTestDispatchersProvider,
             newDriverAvailabilityUseCase,
@@ -52,11 +54,6 @@ class FindingNewDriverViewModelTest {
         )
         viewModel.newDriverAvailability.observeForever(newDriverAvailabilityObserver)
         viewModel.newDriverBooking.observeForever(newDriverBookingObserver)
-    }
-
-    @After
-    fun release() {
-        Dispatchers.resetMain()
     }
 
     @Test

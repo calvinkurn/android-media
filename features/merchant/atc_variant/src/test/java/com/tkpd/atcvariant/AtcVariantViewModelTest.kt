@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGal
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,12 +37,16 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
 /**
  * Created by Yehezkiel on 28/05/21
  */
 class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
+
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
 
     //region helper function
     @Test

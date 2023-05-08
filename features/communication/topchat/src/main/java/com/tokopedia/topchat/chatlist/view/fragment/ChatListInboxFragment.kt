@@ -334,6 +334,9 @@ open class ChatListInboxFragment :
             Observer {
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -570,7 +573,13 @@ open class ChatListInboxFragment :
                             is IncomingTypingWebSocketModel -> processIncomingMessage(
                                 result.data as IncomingTypingWebSocketModel
                             )
+                            else -> {
+                                //no-op
+                            }
                         }
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

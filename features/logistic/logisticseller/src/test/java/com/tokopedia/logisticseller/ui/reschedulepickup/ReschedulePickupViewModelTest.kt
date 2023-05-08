@@ -50,7 +50,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail then returns success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val response = ReschedulePickupTestDataProvider.getRescheduleInfo()
             coEvery { getReschedulePickupUseCase(any()) } returns ReschedulePickupTestDataProvider.getRescheduleInfo()
@@ -69,7 +69,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail Response data is empty then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val response = GetReschedulePickupResponse.Data()
             coEvery { getReschedulePickupUseCase(any()) } returns response
@@ -114,7 +114,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { getReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
@@ -135,7 +135,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when save reschedule pickup then returns success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
             // when
@@ -146,7 +146,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when save reschedule pickup then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
