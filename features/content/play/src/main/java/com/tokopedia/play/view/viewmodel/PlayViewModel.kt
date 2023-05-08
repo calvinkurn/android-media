@@ -965,6 +965,7 @@ class PlayViewModel @AssistedInject constructor(
             is PiPState.Requesting -> {
                 _observableEventPiPState.value = Event(PiPState.InPiP(state.pipMode))
             }
+            else -> {}
         }
     }
 
@@ -1274,7 +1275,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
-            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name)
+            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name, channelType)
 
             _tagItems.update {
                 tagItem
@@ -1368,6 +1369,7 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
+            else -> {}
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -1798,7 +1800,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is ProductSection -> {
-                val mappedData = playSocketToModelMapper.mapProductSection(result)
+                val mappedData = playSocketToModelMapper.mapProductSection(result, channelType)
                 val updatedSections = repo.updateCampaignReminderStatus(
                     mappedData.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 )

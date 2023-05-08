@@ -16,11 +16,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dropoff.R
 import com.tokopedia.dropoff.di.DaggerDropoffPickerComponent
+import com.tokopedia.dropoff.ui.dropoff_picker.DropOffAnalytics
+import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.logisticCommon.domain.model.AutoCompleteVisitable
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
-import com.tokopedia.dropoff.ui.dropoff_picker.DropOffAnalytics
-import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -28,8 +28,10 @@ import javax.inject.Inject
 
 const val DEBOUNCE_DELAY = 400L
 
-class AutoCompleteFragment : Fragment(),
-        SearchInputView.Listener, AutoCompleteAdapter.ActionListener {
+class AutoCompleteFragment :
+    Fragment(),
+    SearchInputView.Listener,
+    AutoCompleteAdapter.ActionListener {
 
     @Inject
     lateinit var tracker: DropOffAnalytics
@@ -40,7 +42,7 @@ class AutoCompleteFragment : Fragment(),
         ViewModelProvider(this, factory).get(AutoCompleteViewModel::class.java)
     }
 
-    private lateinit var searchTextView: SearchInputView
+    private var searchTextView: SearchInputView? = null
     private val adapter: AutoCompleteAdapter = AutoCompleteAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +90,10 @@ class AutoCompleteFragment : Fragment(),
     override fun onResultClicked(data: AutoCompleteVisitable) {
         if (data is SuggestedPlace) {
             tracker.trackSelectLandmarkFromKeyword(
-                    searchTextView.searchText, data.mainText, data.secondaryText)
+                searchTextView?.searchText.orEmpty(),
+                data.mainText,
+                data.secondaryText
+            )
             viewModel.getLatLng(data.placeId)
         } else if (data is SavedAddress) {
             sendResult(data.latitude, data.longitude)
@@ -99,8 +104,8 @@ class AutoCompleteFragment : Fragment(),
         activity?.application?.let {
             if (it is BaseMainApplication) {
                 DaggerDropoffPickerComponent.builder()
-                        .baseAppComponent(it.baseAppComponent)
-                        .build().inject(this)
+                    .baseAppComponent(it.baseAppComponent)
+                    .build().inject(this)
             }
         }
     }
@@ -128,30 +133,38 @@ class AutoCompleteFragment : Fragment(),
     }
 
     private fun setObservers() {
-        viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> adapter.setData(it.data)
-                is Fail -> when (it.throwable) {
-                    is MessageErrorException -> adapter.setNoResult()
+        viewModel.autoCompleteList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> adapter.setData(it.data)
+                    is Fail -> when (it.throwable) {
+                        is MessageErrorException -> adapter.setNoResult()
+                    }
                 }
             }
-        })
-        viewModel.validatedDistrict.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> sendResult(it.data.latitude, it.data.longitude)
-                is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
-            }
-        })
-        viewModel.savedAddress.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> adapter.setEmptyData(it.data)
-                is Fail -> when (it.throwable) {
-                    is MessageErrorException -> adapter.setNoResult()
+        )
+        viewModel.validatedDistrict.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> sendResult(it.data.latitude, it.data.longitude)
+                    is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }
-        })
+        )
+        viewModel.savedAddress.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> adapter.setEmptyData(it.data)
+                    is Fail -> when (it.throwable) {
+                        is MessageErrorException -> adapter.setNoResult()
+                    }
+                }
+            }
+        )
     }
-
 
     companion object {
         fun newInstance(): Fragment = AutoCompleteFragment().apply {

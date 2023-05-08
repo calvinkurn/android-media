@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.TokoFoodPromoUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
@@ -37,42 +35,37 @@ class TokoFoodPromoViewModel @Inject constructor(
     private val _changeRestrictionMessage = MutableLiveData<String>()
 
     fun loadData(source: String,
-                 merchantId: String) {
+                 merchantId: String,
+                 cartList: List<String>) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                promoListTokoFoodUseCase.get().execute(source, merchantId)
+                promoListTokoFoodUseCase.get().execute(source, merchantId, cartList)
             }.let {
-                if (it.isSuccess()) {
-                    when {
-                        it.data.errorPage.isShowErrorPage -> {
-                            _uiEvent.value = UiEvent(
-                                state = UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE,
-                                data = it.data.errorPage
-                            )
-                        }
-                        it.data.availableSection.subSection.coupons.isNotEmpty() || it.data.unavailableSection.subSection.coupons.isNotEmpty() -> {
-                            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
-                            _fragmentUiModel.value =
-                                TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)
-                            _visitables.value =
-                                TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
-                            it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
-                                ?.let { message ->
-                                    _changeRestrictionMessage.value = message
-                                }
-                        }
-                        else -> {
-                            _uiEvent.value = UiEvent(
-                                state = UiEvent.EVENT_NO_COUPON,
-                                data = it.data.emptyState
-                            )
-                        }
+                val customResponse = it.getTokofoodBusinessData().customResponse
+                when {
+                    customResponse.errorPage.isShowErrorPage -> {
+                        _uiEvent.value = UiEvent(
+                            state = UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE,
+                            data = customResponse.errorPage
+                        )
                     }
-                } else {
-                    _uiEvent.value = UiEvent(
-                        state = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE,
-                        throwable = MessageErrorException(it.message)
-                    )
+                    customResponse.availableSection.subSection.coupons.isNotEmpty() || customResponse.unavailableSection.subSection.coupons.isNotEmpty() -> {
+                        _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
+                        _fragmentUiModel.value =
+                            TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(customResponse)
+                        _visitables.value =
+                            TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(customResponse)
+                        customResponse.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
+                            ?.let { message ->
+                                _changeRestrictionMessage.value = message
+                            }
+                    }
+                    else -> {
+                        _uiEvent.value = UiEvent(
+                            state = UiEvent.EVENT_NO_COUPON,
+                            data = customResponse.emptyState
+                        )
+                    }
                 }
             }
         }, onError = {

@@ -15,7 +15,8 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
@@ -206,7 +207,7 @@ class SellerHomeViewModelTest {
 
     private lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
     private lateinit var viewModel: SellerHomeViewModel
-    private lateinit var dynamicParameter: DynamicParameterModel
+    private lateinit var dynamicParameter: ParamCommonWidgetModel
 
     @Before
     fun setup() {
@@ -264,8 +265,8 @@ class SellerHomeViewModelTest {
         dynamicParameter = getDynamicParameter()
     }
 
-    private fun getDynamicParameter(): DynamicParameterModel {
-        return DynamicParameterModel(
+    private fun getDynamicParameter(): ParamCommonWidgetModel {
+        return ParamCommonWidgetModel(
             startDate = "15-07-20202",
             endDate = "21-07-20202",
             pageSource = "seller-home"
@@ -1021,8 +1022,10 @@ class SellerHomeViewModelTest {
 
         val lineGraphDataResult =
             listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -1046,8 +1049,10 @@ class SellerHomeViewModelTest {
         val dataKeys = listOf("x", "y", "z")
 
         val throwable = MessageErrorException("error message")
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -1066,8 +1071,10 @@ class SellerHomeViewModelTest {
     fun `when get line graph from network and cache are failed, will return throwable from network`() {
         val dataKeys = listOf("x", "y", "z")
 
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
@@ -1390,8 +1397,11 @@ class SellerHomeViewModelTest {
             )
             val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-            getPostDataUseCase.params =
-                GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+                dataKey = dataKeys,
+                startDate = dynamicParameter.startDate,
+                endDate = dynamicParameter.endDate
+            )
 
             coEvery {
                 getPostDataUseCase.executeOnBackground()
@@ -1416,7 +1426,11 @@ class SellerHomeViewModelTest {
         )
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -1440,7 +1454,11 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
@@ -1696,8 +1714,12 @@ class SellerHomeViewModelTest {
         )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -1721,8 +1743,12 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -1746,8 +1772,13 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
+
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
@@ -1970,8 +2001,10 @@ class SellerHomeViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -1994,8 +2027,10 @@ class SellerHomeViewModelTest {
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -2016,8 +2051,10 @@ class SellerHomeViewModelTest {
     fun `when get multi line graph data from network and cache are failed, will return throwable from network`() {
         val dataKeys = listOf(anyString())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
