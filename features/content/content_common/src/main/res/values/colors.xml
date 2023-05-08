@@ -3,4 +3,5 @@
     <color name="content_dms_white_disable" tools:ignore="UnusedResources">#BFC9D9</color>
     <color name="content_dms_soft_gray">#AAB4C8</color>
     <color name="content_dms_soft_dark">#212121</color>
+    <color name="content_dms_bg_label">#B32E3137</color>
 </resources>

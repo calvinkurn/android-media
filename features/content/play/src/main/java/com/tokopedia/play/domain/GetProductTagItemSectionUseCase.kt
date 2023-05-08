@@ -70,6 +70,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                         color
                         button_type: buttonType
                     }
+                    product_number: ProductNumber
                   }
                 }
                 vouchers{
