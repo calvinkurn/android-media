@@ -201,6 +201,7 @@ class TokoNowRepurchaseFragment:
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
+        initAffiliateCookie()
 
         viewModel.showLoading()
     }
@@ -862,6 +863,10 @@ class TokoNowRepurchaseFragment:
                 }
             }
         }
+    }
+
+    private fun initAffiliateCookie() {
+        viewModel.initAffiliateCookie()
     }
 
     private fun submitList(data: RepurchaseLayoutUiModel) {

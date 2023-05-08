@@ -28,7 +28,9 @@ class HomeProductCarouselChipListener(
             productId = product.getProductId(),
             shopId = product.shopId,
             quantity = quantity,
-            type = TokoNowLayoutType.CHIP_CAROUSEL
+            type = TokoNowLayoutType.CHIP_CAROUSEL,
+            stock = product.productCardModel.availableStock,
+            isVariant = product.productCardModel.isVariant
         )
     }
 

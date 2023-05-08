@@ -5,5 +5,6 @@ data class SaveRescheduleModel(
     val message: String = "",
     val status: String = "",
     val etaPickup: String = "",
-    val errors: List<String> = emptyList()
+    val errors: List<String> = emptyList(),
+    val openDialog: Boolean = false
 )

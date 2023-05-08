@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,7 +21,7 @@ import dagger.multibindings.IntoMap
 abstract class ChatListViewsModelModule {
 
     @Binds
-    @ChatListScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
@@ -39,4 +41,8 @@ abstract class ChatListViewsModelModule {
         viewModel: ChatListWebSocketViewModel
     ): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChatTabCounterViewModel::class)
+    internal abstract fun provideChatTabCounterViewModel(viewModel: ChatTabCounterViewModel): ViewModel
 }
