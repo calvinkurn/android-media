@@ -39,7 +39,6 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     companion object {
         val TAG = ShopNoteBottomSheet::class.java.simpleName
         private const val SHOP_ID = "EXTRA_SHOP_ID"
-        private val LAYOUT = R.layout.fragment_shop_note_bottom_sheet
 
         @JvmStatic
         fun createInstance(shopId: String?) = ShopNoteBottomSheet().apply {

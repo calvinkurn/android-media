@@ -216,15 +216,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         RouteManager.route(context, appLink)
     }
 
-    override fun goToProduct(productId: String) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        dismiss()
-    }
-
     override fun refreshPage() {
         initData()
     }
@@ -259,7 +250,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         commonTracker?.let {
             RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
         }
-        goToProduct(productId)
+        onClickProduct(productId)
     }
 
     override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
@@ -271,4 +262,13 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     /**
      * Listener Area - End
      */
+
+    var onClickProduct: (String) -> Unit = { productId ->
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        dismiss()
+    }
 }
