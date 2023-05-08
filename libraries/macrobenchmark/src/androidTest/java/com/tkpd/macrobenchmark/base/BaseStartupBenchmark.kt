@@ -43,11 +43,11 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
     @Test
     fun macrobenchmarkLaunchTime() {
         benchmarkRule.measureTokopediaApps(
-                startupMode = startupMode,
-                metrics = listOf(
-                    StartupTimingMetric()
-                ).plus(MacroMetrics.getPltMetrics(traceName()))
-            ) {
+            startupMode = startupMode,
+            metrics = listOf(
+                StartupTimingMetric()
+            ).plus(MacroMetrics.getPltMetrics(traceName()))
+        ) {
             it.startActivityAndWait(getIntent())
             waitUntil()
         }

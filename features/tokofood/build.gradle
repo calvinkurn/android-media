@@ -123,6 +123,10 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 

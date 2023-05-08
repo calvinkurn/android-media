@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -261,7 +262,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateInitialMedia(media: List<Media>, containerType: String) {
+    fun updateInitialMedia(
+        media: List<Media>,
+        containerType: String,
+        productMediaRecomBasicInfo: ProductMediaRecomBasicInfo
+    ) {
         updateData(ProductDetailConstant.MEDIA, true) {
             mediaMap?.let {
                 it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
@@ -273,6 +278,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     containerType.asMediaContainerType()
                 }
+                it.recommendation = DynamicProductDetailMapper.convertRecomToDataModel(
+                    productMediaRecomBasicInfo
+                )
             }
         }
     }
