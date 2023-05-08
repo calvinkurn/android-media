@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.ui.debugbanner
+package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.content.Context
 import android.graphics.*
@@ -9,9 +9,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import com.tokopedia.abstraction.base.view.debugbanner.BannerGravity
-import io.armcha.debugBanner.dip
-import io.armcha.debugBanner.getScreenWidth
 
 internal class DebugBannerView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 

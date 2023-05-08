@@ -1,4 +1,4 @@
-package io.armcha.debugBanner
+package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.content.Context
 import android.graphics.Point
@@ -9,9 +9,6 @@ import android.view.WindowManager
 
 internal fun View.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
-internal val isAtLeastLollipop: Boolean
-    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-
 internal fun Context.getScreenWidth(): Float {
     val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val display = wm.defaultDisplay
@@ -20,11 +17,4 @@ internal fun Context.getScreenWidth(): Float {
     return size.x.toFloat()
 }
 
-internal fun Context.getStatusBarHeight(): Float {
-    var result = 0
-    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-    if (resourceId > 0) {
-        result = resources.getDimensionPixelSize(resourceId)
-    }
-    return result.toFloat()
-}
+

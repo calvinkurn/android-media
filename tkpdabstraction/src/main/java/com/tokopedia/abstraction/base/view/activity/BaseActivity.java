@@ -22,7 +22,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.debugbanner.DebugApp;
+import com.tokopedia.abstraction.base.view.debugbanner.DebugBanner;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -93,14 +94,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        new DebugApp().initDebug(this, getLiveStatus());
 
+        new DebugBanner().initView(this, getLiveStatus());
+        
     }
 
     private String getLiveStatus() {
         if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
             return "STAGING";
-        } else if (TokopediaUrl.Companion.getInstance().getGQL().contains("beta")) {
+        } else if (BetaInterceptor.isBeta(this)) {
             return "BETA";
         } else {
             return "";
