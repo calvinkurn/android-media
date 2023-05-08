@@ -2,7 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhomecommon.domain.model.TopAdsShopInfoResponse
 import com.tokopedia.sellerhomecommon.domain.model.TopadsGetShopInfoV2_1
 import com.tokopedia.usecase.RequestParams
@@ -29,7 +29,7 @@ class GetTopAdsShopInfoUseCase @Inject constructor(
         if (errors.isNullOrEmpty()) {
             return response
         } else {
-            throw MessageErrorException(errors.get(0).toString())
+            throw ResponseErrorException()
         }
     }
 
