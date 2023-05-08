@@ -220,9 +220,7 @@ class TmDashCreateViewModel @Inject constructor(
         _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.loading())
 
         tokomemberDashEditCardUsecase.modifyShopCard({
-            Timer().schedule(3000) {
-                _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.success(it))
-            }
+            _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.error(it))
         }, tmCardModifyInput)

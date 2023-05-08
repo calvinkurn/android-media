@@ -229,7 +229,6 @@ class TokomemberCreateViewModelTest {
         coEvery {
             tokomemberDashEditCardUsecase.modifyShopCard(any(), any(), any())
         } coAnswers {
-            delay(3000)
             firstArg<(MembershipCreateEditCardResponse) -> Unit>().invoke(data)
         }
         viewModel.modifyShopCard(TmCardModifyInput())

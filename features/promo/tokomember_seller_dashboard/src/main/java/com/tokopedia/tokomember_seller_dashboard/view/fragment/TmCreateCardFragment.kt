@@ -66,7 +66,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_create_card_container.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 const val DP_COLOR_ITEM_DECORATOR = 12
 const val COLOR_DEFAULT_POSITION = 0
@@ -194,22 +197,23 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     openLoadingDialog()
                 }
                  TokoLiveDataResult.STATUS.SUCCESS -> {
-                     if(it.data?.membershipCreateEditCard?.resultStatus?.code == "200") {
-                         inToolsCardId = it.data.membershipCreateEditCard.intoolsCard?.id ?: 0
-                         closeLoadingDialog()
-                         if(actionType == ProgramActionType.EDIT) {
+                     Timer().schedule(3000) {
+                         if (it.data?.membershipCreateEditCard?.resultStatus?.code == "200") {
+                             inToolsCardId = it.data.membershipCreateEditCard.intoolsCard?.id ?: 0
+                             closeLoadingDialog()
+                             if (actionType == ProgramActionType.EDIT) {
 //                             editCardCallback?.cardEdit()
-                             val intent = Intent()
-                             intent.putExtra("REFRESH_STATE", REFRESH)
-                             activity?.setResult(Activity.RESULT_OK, intent)
-                             activity?.finish()
+                                 val intent = Intent()
+                                 intent.putExtra("REFRESH_STATE", REFRESH)
+                                 activity?.setResult(Activity.RESULT_OK, intent)
+                                 activity?.finish()
+                             } else {
+                                 openProgramCreationPage()
+                             }
+                         } else {
+                             closeLoadingDialog()
+                             handleErrorUiOnUpdate()
                          }
-                         else {
-                             openProgramCreationPage()
-                         }
-                     } else{
-                         closeLoadingDialog()
-                         handleErrorUiOnUpdate()
                      }
                 }
                  TokoLiveDataResult.STATUS.ERROR -> {
