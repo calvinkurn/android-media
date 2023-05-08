@@ -21,7 +21,7 @@ class GetRichListDataUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers,
     richListMapper: RichListMapper
 ) : CloudAndCacheGraphqlUseCase<GetRichListDataResponse, List<RichListDataUiModel>>(
-    gqlRepository, richListMapper, dispatchers, GetUnificationDataGqlQuery()
+    gqlRepository, richListMapper, dispatchers, GetRichListDataGqlQuery()
 ) {
 
     override val classType: Class<GetRichListDataResponse>

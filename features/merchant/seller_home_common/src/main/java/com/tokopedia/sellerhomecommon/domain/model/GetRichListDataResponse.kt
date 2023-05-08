@@ -63,4 +63,15 @@ data class RichListSectionItemsModel(
     val rankValue: String = "0",
     @SerializedName("rankNote")
     val rankNote: String = "",
+    @SerializedName("stateTooltip")
+    val stateTooltip: StateTooltipModel = StateTooltipModel(),
+)
+
+data class StateTooltipModel(
+    @SerializedName("show")
+    val shouldShow: Boolean = false,
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("description")
+    val description: String = ""
 )

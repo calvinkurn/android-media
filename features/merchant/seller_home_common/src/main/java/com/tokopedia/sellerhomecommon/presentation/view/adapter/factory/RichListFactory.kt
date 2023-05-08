@@ -7,5 +7,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItemUiModel
  */
 
 interface RichListFactory {
-    fun type(model: BaseRichListItemUiModel): Int
+    fun type(model: BaseRichListItemUiModel.RankItemUiModel): Int
+    fun type(model: BaseRichListItemUiModel.TickerItemUiModel): Int
+    fun type(model: BaseRichListItemUiModel.CaptionItemUiModel): Int
 }

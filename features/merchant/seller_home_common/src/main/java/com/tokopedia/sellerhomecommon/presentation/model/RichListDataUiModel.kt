@@ -9,10 +9,11 @@ data class RichListDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
-    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel()
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    val richListData: List<BaseRichListItemUiModel> = emptyList()
 ) : BaseDataUiModel, LastUpdatedDataInterface  {
 
     override fun isWidgetEmpty(): Boolean {
-        return false
+        return richListData.isEmpty()
     }
 }
