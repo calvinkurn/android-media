@@ -258,7 +258,7 @@ class PlayShortsViewModel @Inject constructor(
             _uiEvent.emit(PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(isLoading = true))
 
             val request = OnboardAffiliateRequestModel(
-                channelID = _config.value.shortsId.toInt(),
+                channelID = _config.value.shortsId.toLong(),
                 profileID = _selectedAccount.value.id,
             )
 
