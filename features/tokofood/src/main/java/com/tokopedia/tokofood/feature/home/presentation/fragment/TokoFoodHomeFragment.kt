@@ -54,7 +54,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.Merchant
@@ -262,12 +261,7 @@ class TokoFoodHomeFragment :
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
-        dummyshow()
         loadLayout()
-    }
-
-    private fun dummyshow() {
-        TokoChatBubblesAwarenessBottomSheet.createInstance().show(childFragmentManager)
     }
 
     override fun onStart() {
