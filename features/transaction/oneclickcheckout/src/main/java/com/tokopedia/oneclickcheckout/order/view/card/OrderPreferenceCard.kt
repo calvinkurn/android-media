@@ -93,7 +93,9 @@ class OrderPreferenceCard(
                 shippingOccWidget.hideLoaderShipping()
                 if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                     renderShippingDuration(shipping)
-                    renderBboTicker(shipping)
+                    if (shipping.isShowLogisticPromoTickerMessage) {
+                        renderBboTicker(shipping)
+                    }
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         renderBboShipping(shipping, shipping.logisticPromoViewModel)
                     } else if (shipping.isHideChangeCourierCard) {

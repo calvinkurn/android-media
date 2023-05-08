@@ -571,13 +571,18 @@ class OrderSummaryPageViewModel @Inject constructor(
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
-            val isBoExist = clearBboIfExist()
-            orderShipment.value = it
-            sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
-            if (it.serviceErrorMessage.isNullOrEmpty()) {
-                validateUsePromo(isBoExist)
-            } else {
-                calculateTotal()
+            clearBboIfExist().also { isBoExist ->
+                if (it.isShowLogisticPromoTickerMessage) {
+                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
+                } else {
+                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                }
+                sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
+                if (it.serviceErrorMessage.isNullOrEmpty()) {
+                    validateUsePromo(isBoExist)
+                } else {
+                    calculateTotal()
+                }
             }
         }
     }
@@ -608,9 +613,14 @@ class OrderSummaryPageViewModel @Inject constructor(
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
         val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
-            val isBoExist = clearBboIfExist()
-            orderShipment.value = it
-            validateUsePromo(isBoExist)
+            clearBboIfExist().also { isBoExist ->
+                if (it.isShowLogisticPromoTickerMessage) {
+                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
+                } else {
+                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                }
+                validateUsePromo(isBoExist)
+            }
         }
     }
 
@@ -686,7 +696,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
-                clearBboIfExist()
+                clearBboIfExist().also {
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = it)
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -799,7 +812,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                clearBboIfExist()
+                clearBboIfExist().also {
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = it)
+                }
             }
             globalEvent.value = newGlobalEvent
         }
