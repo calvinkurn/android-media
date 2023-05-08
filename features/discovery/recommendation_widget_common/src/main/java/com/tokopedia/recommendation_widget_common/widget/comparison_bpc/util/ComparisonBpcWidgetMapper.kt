@@ -39,6 +39,7 @@ object ComparisonBpcWidgetMapper {
             ComparisonBpcItemModel(
                 specsModel = BpcSpecsMapper.mapToSpecsListModel(
                     it.value.specs,
+                    it.index == 0,
                     specsConfig,
                     it.index,
                     recommendationItems.size
@@ -79,9 +80,9 @@ object ComparisonBpcWidgetMapper {
             // add room for margin top (first item will be calculate translation Y as well)
             val firstSpecTranslationY = abs(context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_margin_start))
             val firstSpecExtraMarginTop = abs(context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_first_specs_extra_margin_top))
-            val defaultTopPadding = context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_margin_top)
-            val topPadding = if (i == 0) abs(firstSpecTranslationY) + firstSpecExtraMarginTop + defaultTopPadding else defaultTopPadding
-            specsHeight += topPadding
+            val defaultVerticalPadding = context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_margin_top) + context.resources.getDimensionPixelSize(R.dimen.comparison_bpc_specs_margin_bottom)
+            val verticalPadding = if (i == 0) abs(firstSpecTranslationY) + firstSpecExtraMarginTop + defaultVerticalPadding else defaultVerticalPadding
+            specsHeight += verticalPadding
             // add room for margin bottom
             specsHeight += context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_top)
             // add measured title height

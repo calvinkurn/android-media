@@ -19,6 +19,7 @@ object BpcSpecsMapper {
 
     fun mapToSpecsListModel(
         recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
+        parentInEdgeStart: Boolean = false,
         specsConfig: BpcSpecsConfig,
         position: Int,
         totalItems: Int
@@ -38,7 +39,7 @@ object BpcSpecsMapper {
                     recommendationSpecificationLabels.size
                 ),
                 bgDrawableColorRef = getColorCompareItem(
-                    it.index == 0
+                    parentInEdgeStart
                 )
             )
         }
