@@ -62,6 +62,7 @@ class EditorToolAdapter constructor(
                         else
                             editorDetailUiModel.cropRotateValue.isCrop
                     }
+                    EditorToolType.ADD_TEXT -> editorDetailUiModel.addTextValue?.textImagePath?.isNotEmpty() == true
                     else -> false
                 }
 
