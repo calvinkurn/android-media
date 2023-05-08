@@ -10,7 +10,7 @@ import kotlinx.coroutines.plus
  */
 open class ParentSubViewModel(
     private val baseDispatcher: CoroutineDispatcher,
-    private vararg val subViewModels: SubViewModelProvider
+    private vararg val subViewModels: ISubViewModel
 ) : BaseViewModel(baseDispatcher), SubViewModelMediator {
 
     init {
@@ -22,7 +22,7 @@ open class ParentSubViewModel(
      * @param subViewModels
      */
     private fun registerSubViewModelProvider(
-        vararg subViewModels: SubViewModelProvider
+        vararg subViewModels: ISubViewModel
     ) {
         subViewModels.forEach {
             it.registerScope { viewModelScope + baseDispatcher }

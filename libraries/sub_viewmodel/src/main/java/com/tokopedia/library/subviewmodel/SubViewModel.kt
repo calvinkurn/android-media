@@ -12,7 +12,7 @@ import timber.log.Timber
  * [SubViewModel] is separating the UI logic in the main viewmodel into a smaller viewmodel by delegating the sub-viewmodel.
  * Separate event and state according to their respective contexts.
  */
-abstract class SubViewModel : SubViewModelProvider {
+abstract class SubViewModel : ISubViewModel {
     // store delegate to get viewModelScopeProvider
     private var viewModelScopeProvider: (() -> CoroutineScope)? = null
 
