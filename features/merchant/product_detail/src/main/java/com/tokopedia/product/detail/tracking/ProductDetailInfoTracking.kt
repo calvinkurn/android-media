@@ -54,8 +54,6 @@ object ProductDetailInfoTracking {
     ) {
         val productId = productInfo?.basic?.productID.orEmpty()
         val label = "Product_ID : $productId"
-        val category = "product detail category"
-        val user = "$userId User ID: $userId"
 
         TrackingUtil.addClickEvent(
             productInfo = productInfo,
@@ -65,8 +63,7 @@ object ProductDetailInfoTracking {
             eventLabel = label,
             modifier = {
                 it[TrackerConstant.EVENT] = event
-                it[TrackerConstant.EVENT_CATEGORY] = category
-                it[TrackerConstant.USERID] = user
+                it[TrackerConstant.USERID] = userId
             }
         )
     }
