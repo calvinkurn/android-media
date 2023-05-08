@@ -86,7 +86,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         }
 
         layout?.let {
-            findViewById<ImageView>(R.id.img_main_overlay)?.apply {
+            it.findViewById<ImageView>(R.id.img_main_overlay)?.apply {
                 if (overlayImageUrl.isNotEmpty()) {
                     loadImage(overlayImageUrl)
                 } else {
@@ -96,7 +96,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                 errorHandler()
             }
 
-            findViewById<ImageView>(R.id.img_secondary_overlay)?.apply {
+            it.findViewById<ImageView>(R.id.img_secondary_overlay)?.apply {
                 if (overlaySecondaryImageUrl.isNotEmpty()) {
                     loadImage(overlaySecondaryImageUrl)
                 } else {
