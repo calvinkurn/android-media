@@ -17,7 +17,6 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -244,7 +243,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
-    val isAllowToSeePerformanceDashboard: Boolean
+    private val isAllowToSeePerformanceDashboard: Boolean
         get() = selectedAccount.isShop
 
     val selectedAccount: ContentAccountUiModel
@@ -258,9 +257,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val authorType: String
         get() = _selectedAccount.value.type
-
-    val isShortVideoAllowed: Boolean
-        get() = _configInfo.value?.shortVideoAllowed.orFalse()
 
     val broadcastingConfig: BroadcastingConfigUiModel
         get() = hydraConfigStore.getBroadcastingConfig()
