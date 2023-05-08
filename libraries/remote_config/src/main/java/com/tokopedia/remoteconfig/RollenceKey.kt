@@ -39,9 +39,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     // Auto Complete
-    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
-    const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
-
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
@@ -68,9 +65,6 @@ object RollenceKey {
     const val ME_PAGE_VARIANT_1 = "Mepage_1"
     const val ME_PAGE_VARIANT_2 = "Mepage_2"
 
-    // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
@@ -86,9 +80,12 @@ object RollenceKey {
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
 
-    //DG SBM Transition
+    // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+
+    // TokopediaNOW
+    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
 }

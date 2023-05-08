@@ -2,19 +2,20 @@ package com.tokopedia.attachvoucher.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachvoucher.data.FilterParam
 import com.tokopedia.attachvoucher.data.GetVoucherParam
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AttachVoucherViewModel @Inject constructor(
-        private val getVouchersUseCase: GetVoucherUseCase,
-        dispatcher: CoroutineDispatchers,
+    private val getVouchersUseCase: GetVoucherUseCase,
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     val hasNext: Boolean get() = getVouchersUseCase.hasNext
@@ -49,15 +50,17 @@ class AttachVoucherViewModel @Inject constructor(
         }
         startLoading()
         currentPage = page
-        launchCatchError(block = {
-            val param = generateParams(page, filter.value ?: NO_FILTER)
-            val vouchers = getVouchersUseCase(param)
-            onSuccessGetVouchers(vouchers)
-            stopLoading()
-        }, onError = {
-            onErrorGetVouchers(it)
-            stopLoading()
-        })
+        viewModelScope.launch {
+            try {
+                val param = generateParams(page, filter.value ?: NO_FILTER)
+                val vouchers = getVouchersUseCase(param)
+                onSuccessGetVouchers(vouchers)
+                stopLoading()
+            } catch (throwable: Throwable) {
+                onErrorGetVouchers(throwable)
+                stopLoading()
+            }
+        }
     }
 
     private fun stopLoading() {
@@ -83,7 +86,7 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun hasNoFilter(): Boolean {
-        return when(filter.value) {
+        return when (filter.value) {
             null -> true
             NO_FILTER -> true
             else -> false
@@ -100,7 +103,5 @@ class AttachVoucherViewModel @Inject constructor(
 
     companion object {
         const val NO_FILTER = GetVoucherUseCase.MVFilter.VoucherType.noFilter
-        const val PARAM_FILTER = "Filter"
     }
-
 }

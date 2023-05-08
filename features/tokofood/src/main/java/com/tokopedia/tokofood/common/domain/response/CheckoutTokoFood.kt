@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParamOld
 import com.tokopedia.tokofood.common.domain.param.RemoveItemTokoFoodParam
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 
@@ -107,18 +107,18 @@ data class CheckoutTokoFoodData(
         )
     }
 
-    fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParam {
+    fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParamOld {
         val cartList = unavailableSections.firstOrNull()?.products?.map {
             it.mapToRemoveItemParam(shopId)
         }.orEmpty()
-        return RemoveCartTokoFoodParam(cartList)
+        return RemoveCartTokoFoodParamOld(cartList)
     }
 
-    fun getRemoveAllCartParam(shopId: String): RemoveCartTokoFoodParam {
+    fun getRemoveAllCartParam(shopId: String): RemoveCartTokoFoodParamOld {
         val cartList = getProductListFromCart().map {
             it.mapToRemoveItemParam(shopId)
         }
-        return RemoveCartTokoFoodParam(carts = cartList)
+        return RemoveCartTokoFoodParamOld(carts = cartList)
     }
 
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
@@ -192,7 +192,7 @@ data class CheckoutTokoFoodProduct(
     val description: String = "",
     @SerializedName("image_url")
     val imageUrl: String = "",
-    @SuppressLint("Invalid Data Type") 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     val price: Double = 0.0,
     @SerializedName("price_fmt")

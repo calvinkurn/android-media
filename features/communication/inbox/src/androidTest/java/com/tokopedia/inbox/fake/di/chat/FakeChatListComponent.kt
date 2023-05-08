@@ -1,25 +1,31 @@
 package com.tokopedia.inbox.fake.di.chat
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.inbox.fake.InboxChatFakeDependency
-import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
-import com.tokopedia.inbox.view.activity.base.chat.InboxChatTest
 import com.tokopedia.topchat.chatlist.di.*
+import dagger.BindsInstance
 import dagger.Component
 
-@ChatListScope
+@ActivityScope
 @Component(
-        modules = [CommonTopchatModule::class,
-            FakeChatListNetworkModule::class,
-            ChatListSettingModule::class,
-            ChatListUseCaseModule::class,
-            ChatNotificationsUseCaseModule::class,
-            ChatListViewsModelModule::class,
-            ChatNotificationsViewsModelModule::class,
-            ChatListContextModule::class,
-            FakeChatListUseCase::class
-        ],
-        dependencies = [FakeBaseAppComponent::class]
+    modules = [
+        FakeChatListNetworkModule::class,
+        ChatListViewsModelModule::class,
+        ChatListModule::class,
+        FakeChatListUseCase::class
+    ],
+    dependencies = [BaseAppComponent::class]
 )
 interface FakeChatListComponent : ChatListComponent {
     fun injectMembers(inboxChatFakeDependency: InboxChatFakeDependency)
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun context(context: Context): Builder
+        fun baseComponent(component: BaseAppComponent): Builder
+        fun build(): FakeChatListComponent
+    }
 }

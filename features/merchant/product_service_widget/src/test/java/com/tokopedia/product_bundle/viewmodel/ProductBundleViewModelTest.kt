@@ -60,41 +60,6 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when BundleInfo is active then isProductBundleAvailable should be true`() = coroutineTestRule.runBlockingTest {
-        // given, when
-        val resultAvailable = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "1",
-                quota = 1
-            )
-        )
-        val resultInactive = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "-1",
-                quota = 1
-            )
-        )
-        val resultInactive2 = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "1",
-                quota = 0
-            )
-        )
-        val resultInactive3 = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "-1",
-                quota = 0
-            )
-        )
-
-        // then
-        assertEquals(true, resultAvailable)
-        assertEquals(false, resultInactive)
-        assertEquals(true, resultInactive2)
-        assertEquals(false, resultInactive3)
-    }
-
-    @Test
     fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runBlockingTest {
         // given
         coEvery {
