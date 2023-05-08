@@ -8,6 +8,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.applink.user.DeeplinkMapperUser
@@ -725,10 +726,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check promo appLink then should return empty in customerapp`() {
-        val query = "?menuId=1&categoryId=2"
-        val expected = ApplinkConstInternalPromo.PROMO_LIST + query
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO + query, expected)
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_LIST + query, expected)
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
+        assertEqualsDeepLinkMapper(ApplinkConst.PROMO, expected)
+        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_LIST, expected)
     }
 
     @Test
