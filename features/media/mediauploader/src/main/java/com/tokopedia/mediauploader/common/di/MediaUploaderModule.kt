@@ -17,7 +17,6 @@ import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase

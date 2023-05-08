@@ -28,7 +28,7 @@ interface VideoCompressionRepository {
     ): String
 }
 
-internal class VideoCompressionRepositoryImpl @Inject constructor(
+class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val cacheManager: VideoCompressionCacheManager
 ) : VideoCompressionRepository {
