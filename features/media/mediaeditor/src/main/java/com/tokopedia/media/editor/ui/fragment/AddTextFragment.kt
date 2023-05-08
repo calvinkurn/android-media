@@ -407,11 +407,14 @@ class AddTextFragment @Inject constructor(
 
         positionViewContainer?.post {
             positionViewContainer.let {
-                val size = (Math.min(it.width, it.height) * POSITION_BOX_PERCENTAGE).toInt()
+                val size = (it.width.coerceAtMost(it.height) * POSITION_BOX_PERCENTAGE).toInt()
                 for (i in 0 until it.childCount) {
-                    it.getChildAt(i).layoutParams.apply {
-                        width = size
-                        height = size
+                    it.getChildAt(i).apply {
+                        this.layoutParams.apply {
+                            width = size
+                            height = size
+                        }
+                        requestLayout()
                     }
                 }
             }

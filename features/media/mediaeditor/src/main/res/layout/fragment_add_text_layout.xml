@@ -28,8 +28,8 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
-            android:layout_width="70dp"
-            android:layout_height="70dp">
+            android:layout_width="10dp"
+            android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_gravity="center"
@@ -52,8 +52,8 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
-            android:layout_width="70dp"
-            android:layout_height="70dp">
+            android:layout_width="10dp"
+            android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_gravity="center"
@@ -76,8 +76,8 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
-            android:layout_width="70dp"
-            android:layout_height="70dp">
+            android:layout_width="10dp"
+            android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_gravity="center"
@@ -100,8 +100,8 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
-            android:layout_width="70dp"
-            android:layout_height="70dp">
+            android:layout_width="10dp"
+            android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_gravity="center"
@@ -122,8 +122,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/action_btn_container"
+        app:layout_constrainedHeight="true"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:elevation="1dp"
