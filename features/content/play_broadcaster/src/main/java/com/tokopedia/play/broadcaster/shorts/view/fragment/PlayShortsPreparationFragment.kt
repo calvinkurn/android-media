@@ -330,7 +330,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     is PlayShortsUiEvent.SwitchAccount -> {
                         showSwitchAccountBottomSheet()
                     }
-                    is PlayShortsUiEvent.SetOnboardAffiliateState -> {
+                    is PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent -> {
                         val currentBottomSheet = getShortsAffiliateTncBottomSheet()
                         currentBottomSheet.updateButtonState(event.isLoading)
                         if (event.isLoading) return@collect
@@ -345,7 +345,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                             openShortsAffiliateSuccessBottomSheet()
                         }
                     }
-                    is PlayShortsUiEvent.SuccessSubmitAffiliateTnc -> {
+                    is PlayShortsUiEvent.SuccessSubmitAffiliateTncUiEvent -> {
                         /** TODO show coach-mark product affiliate
                          * implement the coach-mark after mobile analytic merged
                          **/

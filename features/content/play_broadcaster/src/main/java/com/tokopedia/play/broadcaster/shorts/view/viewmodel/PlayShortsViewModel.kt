@@ -255,7 +255,7 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSubmitOnboardAffiliateTnc() {
         viewModelScope.launchCatchErrorWithLoader(block = {
-            _uiEvent.emit(PlayShortsUiEvent.SetOnboardAffiliateState(isLoading = true))
+            _uiEvent.emit(PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(isLoading = true))
 
             val request = OnboardAffiliateRequestModel(
                 channelID = _config.value.shortsId.toInt(),
@@ -266,7 +266,7 @@ class PlayShortsViewModel @Inject constructor(
             val isSuccess = response.errorMessage.isEmpty()
 
             _uiEvent.emit(
-                PlayShortsUiEvent.SetOnboardAffiliateState(
+                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(
                     isLoading = false,
                     throwable = if (isSuccess) null else Throwable(response.errorMessage),
                 )
@@ -275,7 +275,7 @@ class PlayShortsViewModel @Inject constructor(
             isSuccessSubmitAffiliateTnc(isSuccess)
         }) {
             _uiEvent.emit(
-                PlayShortsUiEvent.SetOnboardAffiliateState(
+                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(
                     isLoading = false,
                     throwable = it,
                 )
@@ -443,7 +443,7 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun isSuccessSubmitAffiliateTnc(isSuccess: Boolean) {
         if (!isSuccess) return
         checkIsUserAffiliate()
-        _uiEvent.emit(PlayShortsUiEvent.SuccessSubmitAffiliateTnc)
+        _uiEvent.emit(PlayShortsUiEvent.SuccessSubmitAffiliateTncUiEvent)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {

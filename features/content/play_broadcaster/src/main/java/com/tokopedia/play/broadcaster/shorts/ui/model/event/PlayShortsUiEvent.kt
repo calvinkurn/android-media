@@ -34,11 +34,11 @@ sealed interface PlayShortsUiEvent {
         val throwable: Throwable
     ) : PlayShortsUiEvent
 
-    data class SetOnboardAffiliateState(
+    data class SubmitOnboardAffiliateUiEvent(
         val isLoading: Boolean,
         val throwable: Throwable? = null
     ) : PlayShortsUiEvent
 
-    object SuccessSubmitAffiliateTnc : PlayShortsUiEvent
+    object SuccessSubmitAffiliateTncUiEvent : PlayShortsUiEvent
 
 }
