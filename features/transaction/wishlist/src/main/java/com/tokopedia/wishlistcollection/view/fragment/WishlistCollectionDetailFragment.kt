@@ -3643,10 +3643,14 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun goToEditCollectionPage() {
-        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
-        intent.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
-        intent.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)
-        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+        val intentEditWishlistCollection =
+            RouteManager.getIntent(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT)
+        intentEditWishlistCollection.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
+        intentEditWishlistCollection.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)
+        startActivityForResult(
+            intentEditWishlistCollection,
+            EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+        )
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {

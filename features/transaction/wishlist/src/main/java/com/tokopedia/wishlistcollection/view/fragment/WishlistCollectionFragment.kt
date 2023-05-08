@@ -72,7 +72,6 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -759,10 +758,14 @@ class WishlistCollectionFragment :
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetKebabMenu?.dismiss()
-        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
-        intent.putExtra(COLLECTION_ID, collectionId)
-        intent.putExtra(COLLECTION_NAME, collectionName)
-        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+        val intentEditWishlistCollection =
+            RouteManager.getIntent(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT)
+        intentEditWishlistCollection.putExtra(COLLECTION_ID, collectionId)
+        intentEditWishlistCollection.putExtra(COLLECTION_NAME, collectionName)
+        startActivityForResult(
+            intentEditWishlistCollection,
+            EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+        )
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
