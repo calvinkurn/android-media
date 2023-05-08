@@ -50,7 +50,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
         listReason = args.parameter.listReason
-        isAccountPage = args.parameter.isCameFromAccountPage
+        isAccountPage = args.parameter.isFromAccountPage
 
         return binding?.root
     }
