@@ -22,6 +22,7 @@ data class HomeLeftCarouselAtcProductCardUiModel(
     var campaignCode: String = "",
     val categoryBreadcrumbs: String = "",
     val productCardModel: ProductCardCompactUiModel,
+    val hasBlockedAddToCart: Boolean = false,
     val position: Int = 0
 ): Visitable<HomeLeftCarouselAtcProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: HomeLeftCarouselAtcProductCardTypeFactory): Int {

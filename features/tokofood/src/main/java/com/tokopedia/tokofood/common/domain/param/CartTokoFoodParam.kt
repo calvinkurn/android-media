@@ -12,7 +12,7 @@ data class ATCCartTokoFoodParam(
     val carts: List<ATCCartItemTokoFoodParam> = listOf()
 )
 
-data class RemoveCartTokoFoodParam(
+data class RemoveCartTokoFoodParamOld(
     @SerializedName("carts")
     val carts: List<RemoveItemTokoFoodParam> = listOf()
 ) {
@@ -23,7 +23,7 @@ data class RemoveCartTokoFoodParam(
             productId: String,
             cartId: String,
             shopId: String
-        ): RemoveCartTokoFoodParam {
+        ): RemoveCartTokoFoodParamOld {
             val cartList = listOf(
                 RemoveItemTokoFoodParam(
                     cartId = cartId.toLongOrZero(),
@@ -31,7 +31,7 @@ data class RemoveCartTokoFoodParam(
                     shopId = shopId
                 )
             )
-            return RemoveCartTokoFoodParam(carts = cartList)
+            return RemoveCartTokoFoodParamOld(carts = cartList)
         }
 
     }
@@ -72,7 +72,7 @@ data class RemoveItemTokoFoodParam(
 )
 
 data class CartItemTokoFoodParam(
-    @SuppressLint("Invalid Data Type") 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("business_id")
     val businessId: Long = TokoFoodCartUtil.TOKOFOOD_BUSINESS_ID,
     @SuppressLint("Invalid Data Type")

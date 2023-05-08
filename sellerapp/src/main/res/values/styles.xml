@@ -56,4 +56,18 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <style name="Theme.SellerFeedback" parent="Theme.WhiteUnify">
+        <item name="toolbarTheme">@style/Toolbar.SellerFeedback</item>
+    </style>
+
+    <style name="Toolbar.SellerFeedback" parent="Base.Toolbar.Theme">
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="colorControlNormal">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+        <item name="android:background">@null</item>
+    </style>
 </resources>

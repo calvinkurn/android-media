@@ -39,9 +39,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     // Auto Complete
-    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
-    const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
-
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
@@ -88,4 +85,7 @@ object RollenceKey {
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+
+    // TokopediaNOW
+    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
 }
