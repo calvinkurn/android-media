@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParamOld
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.RemoveCartTokoFoodResponse
 import javax.inject.Inject
@@ -30,16 +30,16 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("RemoveCartTokofood", QUERY)
-class RemoveCartTokoFoodUseCase @Inject constructor(repository: GraphqlRepository) :
+@GqlQuery("RemoveCartTokofoodOld", QUERY)
+class RemoveCartTokoFoodUseCaseOld @Inject constructor(repository: GraphqlRepository) :
     GraphqlUseCase<RemoveCartTokoFoodResponse>(repository) {
 
     init {
         setTypeClass(RemoveCartTokoFoodResponse::class.java)
-        setGraphqlQuery(RemoveCartTokofood())
+        setGraphqlQuery(RemoveCartTokofoodOld())
     }
 
-    suspend fun execute(removeCartParam: RemoveCartTokoFoodParam): CartTokoFoodResponse {
+    suspend fun execute(removeCartParam: RemoveCartTokoFoodParamOld): CartTokoFoodResponse {
         val param = generateParams(removeCartParam)
         setRequestParams(param)
         val response = executeOnBackground()
@@ -53,7 +53,7 @@ class RemoveCartTokoFoodUseCase @Inject constructor(repository: GraphqlRepositor
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(params: RemoveCartTokoFoodParam): Map<String, Any> {
+        private fun generateParams(params: RemoveCartTokoFoodParamOld): Map<String, Any> {
             return mapOf(PARAMS_KEY to params)
         }
     }
