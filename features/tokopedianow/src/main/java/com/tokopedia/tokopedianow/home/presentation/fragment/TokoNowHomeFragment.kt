@@ -93,8 +93,10 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -183,7 +185,6 @@ class TokoNowHomeFragment : Fragment(),
     TokoNowChooseAddressWidgetListener,
     HomeTickerViewHolder.HomeTickerListener,
     MiniCartWidgetListener,
-    TokoNowProductCardListener,
     ShareBottomsheetListener,
     ScreenShotListener,
     HomeSharingListener,
@@ -251,7 +252,7 @@ class TokoNowHomeFragment : Fragment(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowProductCardListener = this,
+                tokoNowProductCardListener = createRepurchaseProductListener(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
@@ -447,43 +448,6 @@ class TokoNowHomeFragment : Fragment(),
 
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
-    }
-
-    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
-        if (userSession.isLoggedIn) {
-            viewModelTokoNow.onCartQuantityChanged(
-                data.channelId,
-                data.productId,
-                quantity,
-                data.shopId,
-                data.type
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
-        when (data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseImpression(position, data)
-        }
-    }
-
-    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
-        when (data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
-        }
-    }
-
-    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
-        AtcVariantHelper.goToAtcVariant(
-            context = requireContext(),
-            productId = data.productId,
-            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-            isTokoNow = true,
-            shopId = data.shopId,
-            startActivitResult = this::startActivityForResult
-        )
     }
 
     override fun onMoreReferralClicked(referral: HomeSharingReferralWidgetUiModel, linkUrl: String) {
@@ -1043,7 +1007,7 @@ class TokoNowHomeFragment : Fragment(),
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when (it.data) {
-                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
+                is TokoNowRepurchaseProductUiModel -> trackRepurchaseAddToCart(
                     it.quantity,
                     it.data
                 )
@@ -1299,15 +1263,7 @@ class TokoNowHomeFragment : Fragment(),
         }
     }
 
-    private fun trackRepurchaseImpression(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onImpressRepurchase(position, data)
-    }
-
-    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRepurchase(position, data)
-    }
-
-    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowRepurchaseProductUiModel) {
         analytics.onRepurchaseAddToCart(quantity, data)
     }
 
@@ -1936,7 +1892,17 @@ class TokoNowHomeFragment : Fragment(),
         return HomeCategoryMenuCallback(
             analytics = analytics,
             warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-            viewModel = viewModelTokoNow
+            viewModel = viewModelTokoNow,
+        )
+    }
+
+    private fun createRepurchaseProductListener(): TokoNowRepurchaseProductListener {
+        return TokoNowRepurchaseProductListener(
+            context = context,
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
         )
     }
 
