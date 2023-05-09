@@ -115,7 +115,6 @@ class HotelSearchMapFragment :
     HotelSearchResultAdapter.OnClickListener,
     OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener,
-    SubmitFilterListener,
     GoogleMap.OnCameraMoveStartedListener,
     GoogleMap.OnCameraMoveListener {
 
@@ -706,7 +705,7 @@ class HotelSearchMapFragment :
         }
     }
 
-    override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+    fun onProcessFilter(selectedFilter: MutableList<ParamFilterV2>, sort: List<Sort>) {
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(
             context,
             SEARCH_SCREEN_NAME,
@@ -721,8 +720,8 @@ class HotelSearchMapFragment :
         }
 
         sortIndex?.let { index ->
-            val sort = findSortValue(selectedFilter[index])
-            sort?.let { hotelSearchMapViewModel.addSort(it) }?: hotelSearchMapViewModel.addSort(Sort())
+            val selectedSort = findSortValue(selectedFilter[index], sort)
+            selectedSort?.let { hotelSearchMapViewModel.addSort(it) }?: hotelSearchMapViewModel.addSort(Sort())
             selectedFilter.removeAt(index)
         }
 
@@ -1668,18 +1667,19 @@ class HotelSearchMapFragment :
         )
 
         filterBottomSheet = HotelFilterBottomSheets()
-            .setSubmitFilterListener(this)
+            .setSubmitFilterListener(object : SubmitFilterListener{
+                override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+                    onProcessFilter(selectedFilter, sort)
+                }
+            })
             .setSelected(selectedFilter)
             .setFilter(filterItems)
         filterBottomSheet.show(childFragmentManager, this.javaClass.simpleName)
     }
 
-    private fun findSortValue(filter: ParamFilterV2): Sort? =
-        if (hotelSearchMapViewModel.liveSearchResult.value != null &&
-            hotelSearchMapViewModel.liveSearchResult.value is Success
-        ) {
-            val sortOption = (hotelSearchMapViewModel.liveSearchResult.value as Success).data.displayInfo.sort
-            sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
+    private fun findSortValue(filter: ParamFilterV2, sort: List<Sort>): Sort? =
+        if (hotelSearchMapViewModel.liveSearchResult.value != null) {
+            sort.firstOrNull { it.displayName == filter.values.firstOrNull() }
         } else {
             null
         }
