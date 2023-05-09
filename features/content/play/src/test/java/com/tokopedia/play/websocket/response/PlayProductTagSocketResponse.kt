@@ -47,7 +47,11 @@ object PlayProductTagSocketResponse {
                         "color": "PRIMARY",
                         "button_type": "GCR"
                       }
-                    ]
+                    ],
+                    "is_pinned" : false,
+                    "product_number" : 0,
+                    "rating" : "",
+                    "sold_quantity" : ""
               }
             """.trimIndent()
             if (i != size) productList += ","

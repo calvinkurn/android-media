@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
@@ -173,7 +172,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             !e.isAboveCounter() && gestureDetector?.onTouchEvent(e) == true
         ) {
             true
-        } else super.dispatchTouchEvent(e)
+        } else {
+            super.dispatchTouchEvent(e)
+        }
     }
 
     override fun onBackPressed() {
@@ -328,7 +329,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
-                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+                sharedReviewMediaGalleryViewModel.currentReviewDetail
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }
@@ -361,7 +362,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun collectOrientationUiStateUpdate() {
         collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
-            requestedOrientation = when(it.orientation) {
+            requestedOrientation = when (it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -540,7 +541,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
         private fun getActionMenuBottomSheet(): ActionMenuBottomSheet {
             return actionMenuBottomSheet ?: getAddedActionMenuBottomSheet()
-            ?: createActionMenuBottomSheet()
+                ?: createActionMenuBottomSheet()
         }
 
         fun showActionMenuBottomSheet() {
@@ -568,7 +569,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
-        private inner class Callback: ConnectivityManager.NetworkCallback() {
+        private inner class Callback : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = true)
             }
@@ -581,7 +582,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private inner class AutoHideOverlayHandler {
         private val timer by lazy(LazyThreadSafetyMode.NONE) {
-            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+            object : CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
                 override fun onTick(millisUntilFinished: Long) {
                     // noop
                 }

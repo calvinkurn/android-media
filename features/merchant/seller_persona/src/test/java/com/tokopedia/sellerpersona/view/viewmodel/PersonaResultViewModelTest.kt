@@ -45,7 +45,7 @@ class PersonaResultViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when get persona data should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val response = PersonaDataUiModel()
             val page = "seller-home"
 
@@ -65,7 +65,7 @@ class PersonaResultViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when get persona data should return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val exception = Throwable()
             val page = "seller-home"
 
@@ -85,7 +85,7 @@ class PersonaResultViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when toggle persona status should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val status = PersonaStatus.ACTIVE
 
             coEvery {
@@ -104,7 +104,7 @@ class PersonaResultViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when toggle persona status should return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val status = PersonaStatus.ACTIVE
             val throwable = Throwable()
 

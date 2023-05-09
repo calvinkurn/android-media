@@ -2164,6 +2164,9 @@ open class HomeRevampFragment :
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
