@@ -4,10 +4,8 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
@@ -44,10 +42,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         coEvery { updateAndReloadCartUseCase(any()) } returns updateAndReloadCartListData
 
         every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         // WHEN
         cartListPresenter.processToUpdateAndReloadCartData("0")

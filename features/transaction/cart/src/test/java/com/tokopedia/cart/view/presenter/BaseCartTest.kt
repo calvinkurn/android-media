@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
-import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
@@ -39,7 +38,6 @@ import rx.subscriptions.CompositeSubscription
 
 abstract class BaseCartTest {
 
-    var getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     var getCartRevampV4UseCase: GetCartRevampV4UseCase = mockk()
     var deleteCartUseCase: DeleteCartUseCase = mockk()
     var undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
@@ -73,7 +71,7 @@ abstract class BaseCartTest {
     @Before
     fun setUp() {
         cartListPresenter = CartListPresenter(
-            getCartRevampV3UseCase, getCartRevampV4UseCase, deleteCartUseCase,
+            getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
             addToWishListV2UseCase, addCartToWishlistUseCase, deleteWishlistV2UseCase,
             updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,

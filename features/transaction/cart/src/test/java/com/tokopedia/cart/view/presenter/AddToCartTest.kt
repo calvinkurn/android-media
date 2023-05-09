@@ -38,10 +38,7 @@ class AddToCartTest : BaseCartTest() {
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -95,10 +92,7 @@ class AddToCartTest : BaseCartTest() {
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -169,10 +163,7 @@ class AddToCartTest : BaseCartTest() {
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { userSessionInterface.userId } returns "123"
 
@@ -245,10 +236,7 @@ class AddToCartTest : BaseCartTest() {
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -318,10 +306,7 @@ class AddToCartTest : BaseCartTest() {
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         cartListPresenter.detachView()

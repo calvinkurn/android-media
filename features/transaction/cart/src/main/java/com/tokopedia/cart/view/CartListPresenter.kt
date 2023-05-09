@@ -21,7 +21,6 @@ import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartParam
-import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
@@ -108,7 +107,6 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class CartListPresenter @Inject constructor(
-    private val getCartRevampV3UseCase: GetCartRevampV3UseCase,
     private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
@@ -237,15 +235,6 @@ class CartListPresenter @Inject constructor(
                 it.showProgressLoading()
             }
 
-//            getCartRevampV3UseCase.setParams(cartId, getCartState)
-//            getCartRevampV3UseCase.execute(
-//                onSuccess = { cartData ->
-//                    onSuccessGetCartList(cartData, initialLoad)
-//                },
-//                onError = { throwable ->
-//                    onErrorGetCartList(throwable, initialLoad)
-//                }
-//            )
             launch {
                 try {
                     val cartData = getCartRevampV4UseCase(GetCartParam(cartId, getCartState))
@@ -1921,9 +1910,10 @@ class CartListPresenter @Inject constructor(
         launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToCheckout()
             } catch (t: Throwable) {
                 Timber.d(t)
-            } finally {
                 view?.hideProgressLoading()
                 view?.onSuccessClearRedPromosThenGoToCheckout()
             }
@@ -1935,9 +1925,10 @@ class CartListPresenter @Inject constructor(
         launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToPromo()
             } catch (t: Throwable) {
                 Timber.d(t)
-            } finally {
                 view?.hideProgressLoading()
                 view?.onSuccessClearRedPromosThenGoToPromo()
             }
