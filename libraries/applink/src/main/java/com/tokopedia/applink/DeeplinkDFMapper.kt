@@ -56,9 +56,6 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
-import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED
-import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED
-import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
 import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
@@ -200,8 +197,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_D
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.TOKOMEMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
@@ -792,13 +787,47 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
             add(DFP({ it.startsWith(SELLER_SHOP_FLASH_SALE) }, DF_BASE_SELLER_APP, R.string.title_shop_flash_sale))
+            add(
+                DFP(
+                    { it.startsWith(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING)
+                        || it.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWith(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED)
+                        || it.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWith(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING)
+                        || it.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWith(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED)
+                        || it.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED)
+                    },
+                    DF_FLASH_SALE_TOKOPEDIA,
+                    R.string.title_tokopedia_flash_sale
+                )
+            )
+
             add(DFP({
-                it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING)
-                    || it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED)
-                    || it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_ONGOING)
-                    || it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_FINISHED)
-            }, DF_FLASH_SALE_TOKOPEDIA, R.string.title_tokopedia_flash_sale))
-            add(DFP({ it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)}, DF_FLASH_SALE_TOKOPEDIA, R.string.title_tokopedia_flash_sale_campaign_detail))
+                it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)
+                    || it.startsWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)
+            }, DF_FLASH_SALE_TOKOPEDIA, R.string.title_tokopedia_flash_sale_campaign_detail))
             add(DFP({ it.startsWith(SELLER_MVC_INTRO)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_intro))
             add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
