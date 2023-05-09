@@ -18,10 +18,10 @@ class FeedCreationTypeViewHolder(
     fun bind(item: ContentCreationTypeItem) {
         binding.apply {
             tvName.text = item.name
-            if (!item.imageSrc.isNullOrEmpty()) {
+            if (item.imageSrc.isNotEmpty()) {
                 ivIcon.setImageUrl(item.imageSrc)
             } else {
-                item.drawableIconId?.let {
+                item.drawableIconId.let {
                     ivIcon.setImageDrawable(
                         getIconUnifyDrawable(
                             itemView.context,
