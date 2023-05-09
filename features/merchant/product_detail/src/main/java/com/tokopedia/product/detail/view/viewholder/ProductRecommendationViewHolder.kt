@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,11 +26,13 @@ import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class ProductRecommendationViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: DynamicProductDetailListener,
+    private val affiliateCookieHelper: AffiliateCookieHelper,
 ) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
@@ -185,8 +187,7 @@ class ProductRecommendationViewHolder(
                     view.context?.run {
                         RouteManager.route(
                             this,
-                            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                            productRecommendation.productId.toString()
+                            productRecommendationApplink(product, productRecommendation)
                         )
                     }
                 }
@@ -268,6 +269,7 @@ class ProductRecommendationViewHolder(
                             ?: return
                     productRecommendation.onCardQuantityChanged(quantity)
                     listener.onRecomAddToCartNonVariantQuantityChangedClick(
+                        recommendationWidget = product,
                         recomItem = productRecommendation,
                         quantity = quantity,
                         adapterPosition = adapterPosition,
@@ -299,6 +301,16 @@ class ProductRecommendationViewHolder(
                 binding.loadingRecom.gone()
             })
     }
+
+    private fun productRecommendationApplink(
+        recommendationWidget: RecommendationWidget,
+        productRecommendation: RecommendationItem,
+    ) = if (recommendationWidget.isTokonow)
+            affiliateCookieHelper.createAffiliateLink(
+                productRecommendation.appUrl,
+                recommendationWidget.affiliateTrackerId,
+            )
+        else productRecommendation.appUrl
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) =
         ComponentTrackDataModel(
