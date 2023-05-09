@@ -16,7 +16,6 @@ object LocationParamMapper {
     private const val PARAM_SERVICE_TYPE_2H = "servicetype_2h"
     private const val PARAM_SERVICE_TYPE_15M = "servicetype_15m"
     private const val PARAM_SERVICE_TYPE = "servicetype"
-    private const val PARAM_WAREHOUSES = "warehouses"
 
     fun mapLocation(localCacheModel: LocalCacheModel?): String {
         val stringBuilder = StringBuilder()
@@ -39,11 +38,10 @@ object LocationParamMapper {
             locationParamsMap[PARAM_USER_DISTRICT_ID] = district_id
             locationParamsMap[PARAM_USER_POSTAL_CODE] = postal_code
             locationParamsMap[PARAM_USER_ADDRESS_ID] = address_id
-            locationParamsMap[PARAM_WAREHOUSE_IDS] = warehouse_id
+            locationParamsMap[PARAM_WAREHOUSE_IDS] = mapToWarehouses(localCacheModel)
             locationParamsMap[PARAM_SERVICE_TYPE] = service_type
             locationParamsMap[PARAM_SERVICE_TYPE_15M] = warehouseId15m
             locationParamsMap[PARAM_SERVICE_TYPE_2H] = warehouseId2h
-//            locationParamsMap[PARAM_WAREHOUSES] = mapToWarehouses(localCacheModel)
 
             for ((key, value) in locationParamsMap) {
                 if (stringBuilder.isNotBlank()) {
