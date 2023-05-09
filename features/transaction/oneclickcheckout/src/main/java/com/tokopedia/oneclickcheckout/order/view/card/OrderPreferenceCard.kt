@@ -93,9 +93,7 @@ class OrderPreferenceCard(
                 shippingOccWidget.hideLoaderShipping()
                 if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                     renderShippingDuration(shipping)
-                    if (shipping.isShowLogisticPromoTickerMessage) {
-                        renderBboTicker(shipping)
-                    }
+                    renderBboTicker(shipping)
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         renderBboShipping(shipping, shipping.logisticPromoViewModel)
                     } else if (shipping.isHideChangeCourierCard) {
@@ -141,9 +139,14 @@ class OrderPreferenceCard(
     }
 
     private fun renderBboTicker(shipping: OrderShipment) {
+        val logisticPromoTickerMessage = if (shipping.isShowLogisticPromoTickerMessage) {
+            shipping.logisticPromoTickerMessage
+        } else {
+            null
+        }
         binding.shippingOccWidget.renderBboTicker(
             logisticPromo = shipping.shippingRecommendationData?.logisticPromo,
-            logisticPromoTickerMessage = shipping.logisticPromoTickerMessage,
+            logisticPromoTickerMessage = logisticPromoTickerMessage,
             onTickerClickListener = {
                 if (profile.enable) {
                     shipping.shippingRecommendationData?.logisticPromo?.apply {
