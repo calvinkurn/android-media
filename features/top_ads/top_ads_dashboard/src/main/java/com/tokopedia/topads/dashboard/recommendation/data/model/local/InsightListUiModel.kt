@@ -13,6 +13,7 @@ data class InsightUiModel(
 
 data class AdGroupUiModel(
     val adGroupID: String = "",
+    val adGroupName: String = "",
     val adGroupType: String = "",
     val count: Int = 0
 ) : InsightListUiModel {
@@ -35,4 +36,17 @@ data class LoadingUiModel(val isLoading: Boolean = true) : InsightListUiModel {
         return this == newItem
     }
 
+}
+
+data class EmptyStateUiListModel(
+    val type: String = "",
+    val statesList: List<EmptyStatesUiModel>
+) : InsightListUiModel {
+    override fun id(): String {
+        return type
+    }
+
+    override fun equalsWith(newItem: InsightListUiModel): Boolean {
+        return this == newItem
+    }
 }

@@ -3,24 +3,113 @@ package com.tokopedia.topads.dashboard.recommendation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
 class InsightListAdapter :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
-    inner class InsightListItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val chipsUnify: ChipsUnify = view.findViewById(R.id.topAdsLayoutChips)
+    inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private val groupCardTitle: Typography = view.findViewById(R.id.groupCardTitle)
+        private val groupCardCountWarning: IconUnify = view.findViewById(R.id.groupCardCountWarning)
+        private val groupCardInsightCount: Typography =
+            view.findViewById(R.id.groupCardInsightCount)
+        private val groupCardProgressBar: ProgressBarUnify =
+            view.findViewById(R.id.groupCardProgressBar)
+
         fun bind(item: AdGroupUiModel) {
-            chipsUnify.chipText = item.adGroupID
+            groupCardTitle.text = item.adGroupName
+            groupCardInsightCount.show()
+            groupCardInsightCount.text = HtmlCompat.fromHtml(
+                String.format(
+                    view.context.getString(R.string.topads_group_card_insight_count_format),
+                    item.count
+                ), HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            groupCardCountWarning.hide()
+            setProgressBar(item.count)
+        }
+
+        private fun setProgressBar(count: Int) {
+            when (count) {
+                5 -> {
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(5))
+                    groupCardCountWarning.show()
+                }
+                4 -> {
+                    groupCardProgressBar.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_YN500
+                        ),
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_YN500
+                        )
+
+                    )
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(4))
+                }
+                3 -> {
+                    groupCardProgressBar.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_YN300
+                        ),
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_YN300
+                        )
+                    )
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(3))
+                }
+                2 -> {
+                    groupCardProgressBar.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                        ),
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                        )
+                    )
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(2))
+                }
+                1 -> {
+                    groupCardProgressBar.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                        ),
+                        ContextCompat.getColor(
+                            view.context,
+                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                        )
+                    )
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(1))
+                }
+            }
         }
     }
 
@@ -32,31 +121,93 @@ class InsightListAdapter :
         }
     }
 
+    inner class EmptyStateListViewHolder(view: View) :
+        RecyclerView.ViewHolder(view) {
+
+        private var emptyStateRecyclerView: RecyclerView = view.findViewById(R.id.emptyStateView)
+        private var pageControlEmptyState: PageControl =
+            view.findViewById(R.id.pageControlEmptyState)
+
+        private val pagerAdapter by lazy {
+            EmptyStatePagerAdapter()
+        }
+
+        private val layoutManager by lazy {
+            return@lazy object : LinearLayoutManager(view.context, HORIZONTAL, false) {
+                override fun canScrollVertically(): Boolean = false
+            }
+        }
+
+        fun bind(item: EmptyStateUiListModel) {
+            pagerAdapter.emptyStatePages = item.statesList
+            emptyStateRecyclerView.layoutManager = layoutManager
+            emptyStateRecyclerView.adapter = pagerAdapter
+            if (item.statesList.size > 1) {
+                pageControlEmptyState.setIndicator(item.statesList.size)
+                pageControlEmptyState.show()
+            } else {
+                pageControlEmptyState.hide()
+            }
+
+            emptyStateRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (currentPosition != RecyclerView.NO_POSITION && item.statesList.size > 1) {
+                        pageControlEmptyState.setCurrentIndicator(currentPosition)
+                    }
+                }
+            })
+            try {
+                PagerSnapHelper().attachToRecyclerView(emptyStateRecyclerView)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == R.layout.topads_layout) {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.topads_layout, parent, false)
-            InsightListItemViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.insight_bottom_loading_layout, parent, false)
-            LoadingItemViewHolder(view)
+        return when (viewType) {
+            R.layout.topads_group_card_item_layout -> {
+                val view =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.topads_group_card_item_layout, parent, false)
+                InsightListItemViewHolder(view)
+            }
+            R.layout.insight_bottom_loading_layout -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.insight_bottom_loading_layout, parent, false)
+                LoadingItemViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.empty_state_layout, parent, false)
+                EmptyStateListViewHolder(view)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        if (item is AdGroupUiModel) {
-            (holder as? InsightListItemViewHolder)?.bind(item)
-        } else if (item is LoadingUiModel) {
-            (holder as? LoadingItemViewHolder)?.bind(item)
+        when (val item = getItem(position)) {
+            is AdGroupUiModel -> {
+                (holder as? InsightListItemViewHolder)?.bind(item)
+            }
+            is LoadingUiModel -> {
+                (holder as? LoadingItemViewHolder)?.bind(item)
+            }
+            is EmptyStateUiListModel -> {
+                (holder as? EmptyStateListViewHolder)?.bind(item)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is AdGroupUiModel -> R.layout.topads_layout
+            is AdGroupUiModel -> R.layout.topads_group_card_item_layout
             is LoadingUiModel -> R.layout.insight_bottom_loading_layout
+            is EmptyStateUiListModel -> R.layout.empty_state_layout
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }
