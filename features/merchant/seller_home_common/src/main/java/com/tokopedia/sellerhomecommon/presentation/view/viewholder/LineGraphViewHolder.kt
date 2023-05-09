@@ -169,8 +169,8 @@ class LineGraphViewHolder(
                 setupEmptyState(element)
             }
 
-            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible
-                    || luvShcLineGraph.isVisible
+            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible ||
+                luvShcLineGraph.isVisible
         }
     }
 

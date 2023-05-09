@@ -13,12 +13,6 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="CentralizedPromoTheme" parent="Theme.WhiteUnify">
-        <item name="toolbarTheme">@style/Toolbar.SellerHome</item>
-        <item name="android:windowBackground">@color/Unify_N0</item>
-        <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
-    </style>
-
     <style name="Toolbar.SellerHome" parent="Base.Toolbar.Theme">
         <item name="android:background">@color/Unify_N0</item>
         <item name="actionModeBackground">@color/Unify_N0</item>

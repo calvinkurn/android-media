@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_YN500"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="Produk Terbaru" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -32,7 +32,7 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_YN500"
         android:visibility="gone"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="" />
 
 </LinearLayout>

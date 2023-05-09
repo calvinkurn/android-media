@@ -2632,7 +2632,7 @@ object DynamicProductDetailTracking {
                 putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "")
                 putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
             }
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.SELECT_CONTENT, itemBundle)
         }
     }
 }
