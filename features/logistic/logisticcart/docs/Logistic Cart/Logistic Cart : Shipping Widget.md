@@ -5,7 +5,7 @@ labels:
 - shipping-widget
 ---
 
-
+<!--left header table-->
 | **Status** | ​<!--start status:YELLOW-->IN TESTING<!--end status--> |
 | --- | --- |
 | Contributors | ​[Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) ​[Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) ​ |

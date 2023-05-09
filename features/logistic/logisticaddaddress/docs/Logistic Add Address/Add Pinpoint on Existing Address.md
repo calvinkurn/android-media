@@ -4,7 +4,7 @@ labels:
 - pinpoint
 ---
 
-
+<!--left header table-->
 | **Status** | ​<!--start status:GREEN-->DONE<!--end status--> |
 | --- | --- |
 | Contributors | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)  |

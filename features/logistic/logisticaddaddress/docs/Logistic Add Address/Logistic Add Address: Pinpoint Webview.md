@@ -4,7 +4,7 @@ labels:
 - pinpoint
 ---
 
-
+<!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | **Tribe** | Logistic |

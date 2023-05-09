@@ -3,7 +3,7 @@ title: Shipping Editor
 labels:
 ---
 
-
+<!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
 | --- |----------------------------------------------------------------------------------------------------------------|
 | **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)          |
