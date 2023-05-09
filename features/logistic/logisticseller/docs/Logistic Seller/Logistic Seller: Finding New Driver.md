@@ -14,7 +14,7 @@ labels:
 | Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
 | Release date | <!--start status:GREY-->NOT YET RELEASED<!--end status-->  |
 | Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [Cari Driver Baru (Finding New Driver) on Seller order management](/wiki/spaces/LG/pages/2057439075/Cari+Driver+Baru+%28Finding+New+Driver%29+on+Seller+Order+Management)  |
+| Product PRD | [Cari Driver Baru (Finding New Driver) on Seller order management](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2057439075/Cari+Driver+Baru+%28Finding+New+Driver%29+on+Seller+Order+Management)  |
 | Module Location | `features/logistic/logisticseller` |
 
 ## Table of Contents

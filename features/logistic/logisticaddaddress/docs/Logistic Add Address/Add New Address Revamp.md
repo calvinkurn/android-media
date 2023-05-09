@@ -36,7 +36,7 @@ labels:
 
 Address is having an important role in user experience of PG transactions in tokopedia. It will be needed in order to complete the checkout process. Address creation flow should be frictionless experience for users.
 
-**ANA** (Add New Address) **Revamp**, is the new ANA, the purpose of **ANA Revamp** is to make address creation flow become more frictionless. It also solve some of user pain-points, where user can’t find their exact address in Pinpoint Page. Currently ana revamp already rolled out to 100% of user (to check user is eligible ana revamp from [[GQL] Is Eligible For Address Feature](/wiki/spaces/LG/pages/1416832716) )
+**ANA** (Add New Address) **Revamp**, is the new ANA, the purpose of **ANA Revamp** is to make address creation flow become more frictionless. It also solve some of user pain-points, where user can’t find their exact address in Pinpoint Page. Currently ana revamp already rolled out to 100% of user (to check user is eligible ana revamp from [[GQL] Is Eligible For Address Feature](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1416832716) )
 
 ### Project Description
 
