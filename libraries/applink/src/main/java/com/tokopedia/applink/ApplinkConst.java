@@ -419,6 +419,7 @@ public interface ApplinkConst {
     String AFFILIATE_TOKO_DISCO_PAGE_LIST = "tokopedia://affiliate/discopage-list";
     String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_TOKO_PROMO_PAGE = "tokopedia://affiliate/promosikan";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
