@@ -2270,7 +2270,6 @@ open class ProductManageFragment :
             context,
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productManageUiModel.id,
-            productManageUiModel.title,
             productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
