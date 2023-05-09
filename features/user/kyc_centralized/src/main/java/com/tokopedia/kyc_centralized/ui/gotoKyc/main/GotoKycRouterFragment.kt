@@ -68,6 +68,13 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                 )
                 gotoDobChallenge(parameter)
             }
+            PAGE_BRIDGING_ACCOUNT_LINKING -> {
+                val parameter = BridgingAccountLinkingParam(
+                    projectId = data?.projectId.orEmpty(),
+                    source = data?.sourcePage.orEmpty()
+                )
+                gotoBridgingAccountLinking(parameter)
+            }
         }
     }
 
@@ -86,6 +93,11 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
+    private fun gotoBridgingAccountLinking(parameter: BridgingAccountLinkingParam) {
+        val toBridgingAccountLinking = GotoKycRouterFragmentDirections.actionRouterFragmentToBridgingAccountLinkingFragment(parameter)
+        view?.findNavController()?.navigate(toBridgingAccountLinking)
+    }
+
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
@@ -96,6 +108,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         const val PARAM_REQUEST_PAGE = "request_page"
         const val PAGE_ONBOARD_BENEFIT = "page_onboard_benefit"
         const val PAGE_STATUS_SUBMISSION = "page_status_submission"
+        const val PAGE_BRIDGING_ACCOUNT_LINKING = "page_bridging_page"
         const val PAGE_DOB_CHALLENGE = "page_challenge"
         const val PARAM_DATA = "parameter"
         private val SCREEN_NAME = GotoKycRouterFragment::class.java.simpleName

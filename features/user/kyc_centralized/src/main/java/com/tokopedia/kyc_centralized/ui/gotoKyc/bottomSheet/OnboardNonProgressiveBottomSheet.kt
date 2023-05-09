@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -34,26 +35,18 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
 
     private fun setUpViewAccountLinking() {
         binding?.layoutAccountLinking?.apply {
-            imgItemOnboard.loadImageWithoutPlaceholder(
-                getString(R.string.img_url_goto_kyc_onboard_account_linking)
-            )
-
-            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
-            if (isAccountLinked) {
-                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_checklist_circle_green,
-                    0
+            if (!isAccountLinked) {
+                imgItemOnboard.loadImageWithoutPlaceholder(
+                    getString(R.string.img_url_goto_kyc_onboard_account_linking)
                 )
-            }
 
-            tvItemSubtitle.text = if (isAccountLinked) {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_linked)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked)
+                tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
+
+                tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked)
             }
+            root.showWithCondition(!isAccountLinked)
         }
+
     }
 
     private fun setUpViewKtp() {

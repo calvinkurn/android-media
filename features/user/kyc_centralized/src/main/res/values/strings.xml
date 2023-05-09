@@ -245,7 +245,6 @@
     <string name="goto_kyc_onboard_non_progressive_title_not_account_page">Verifikasi buat jadi %s, yuk! Gampang banget, lho~</string>
     <string name="goto_kyc_onboard_non_progressive_button">Mulai Verifikasi</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
-    <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_linked">Sip, akun Tokopedia dan Gojek kamu udah kesambung.</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto KTP</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken">Mantap, kamu udah ambil foto KTP.</string>

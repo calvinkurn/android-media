@@ -41,5 +41,7 @@ data class StatusSubmissionParam(
     * listReason is list reason why status rejected
     * This list only show when status was rejected (status = -1)
     * */
-    val listReason: List<String> = emptyList()
+    val listReason: List<String> = emptyList(),
+
+    val gotoKycType: String = ""
 ): Parcelable

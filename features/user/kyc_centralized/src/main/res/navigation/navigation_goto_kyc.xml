@@ -35,13 +35,14 @@
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingFragment"
         android:label="BridgingAccountLinkingFragment" >
         <argument
-            android:name="is_done_gopay"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
-            android:name="hint_name_ktp"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingParam" />
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment" />
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment" />
     </fragment>
     <fragment
         android:id="@+id/dobChallengeFragment"
