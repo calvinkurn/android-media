@@ -3,10 +3,9 @@ package com.tokopedia.cart.domain.usecase
 const val CART_REVAMP_V4_QUERY =
     """
         query cartRevampV4(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
-          status
           cart_revamp_v4(lang: ${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params: ${'$'}additional_params) {
-            error_message
             status
+            error_message
             data {
               coachmark {
                 Plus {
