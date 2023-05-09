@@ -454,6 +454,9 @@ class AddBankFragment : BaseDaggerFragment() {
                                     )
                                 }
                             }
+                            else -> {
+                                //no-op
+                            }
                         }
                     }
                 }

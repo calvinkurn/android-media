@@ -64,7 +64,6 @@ object DeeplinkMapperMarketplace {
             }
         }
     }
-
     fun getShopOperationalHourInternalAppLink(shopId: String):String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
     }
@@ -83,7 +82,7 @@ object DeeplinkMapperMarketplace {
         }
     }
 
-    private fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
+    fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
         val source = uri.getQueryParameter(PARAM_SOURCE).orEmpty()
         return if (source.isNotEmpty() && source == REVIEW_FULL_PAGE_SOURCE) {
             // review page full page

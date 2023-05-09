@@ -106,29 +106,32 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             }?: SortFilter.TYPE_ADVANCED
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
-            it.textView?.text = fragment.getString(R.string.filter)
+            it.textView?.text = fragment.getString(com.tokopedia.filter.R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
         }
         refreshQuickFilter(filters)
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
-        var icon: Drawable? = null
-        if (quickFilterViewModel.components.isFromCategory) {
-            when (option.name) {
-                "Official Store" -> {
-                    icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+        var icon : Drawable? = null
+        val item =
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                when (option.name) {
+                    "Official Store" -> {
+                        icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+                    }
+                    "4 Keatas" -> {
+                        icon = getIconUnifyDrawable(
+                            itemView.context,
+                            IconUnify.STAR_FILLED,
+                            MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star)
+                        )
+                    }
                 }
-                "4 Keatas" -> {
-                    icon = getIconUnifyDrawable(
-                        itemView.context,
-                        IconUnify.STAR_FILLED,
-                        MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star)
-                    )
-                }
+                SortFilterItem(option.name, icon)
+            } else {
+                SortFilterItem(option.name, iconUrl = option.iconUrl)
             }
-        }
-        val item = SortFilterItem(option.name, icon)
         item.listener = {
             quickFilterViewModel.onQuickFilterSelected(option)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName, option.value, quickFilterViewModel.isQuickFilterSelected(option))

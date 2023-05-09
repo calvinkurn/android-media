@@ -106,7 +106,7 @@ class DigitalDenomMapper @Inject constructor() {
     }
     
     private fun rechargeToDenomMapperGrid(rechargeProduct: RechargeProduct): DenomData {
-        return rechargeProduct?.let {
+        return rechargeProduct.let {
             DenomData(
                 id = it.id,
                 status = it.attributes.status,

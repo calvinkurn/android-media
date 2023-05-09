@@ -96,7 +96,7 @@ class PlayViewerVideoStateProcessorTest {
      * - Error
      */
     @Test
-    fun whenPlayerStateReadyAndAutoPlay_thenViewerStateShouldBePlaying() = runBlockingTest {
+    fun whenPlayerStateReadyAndAutoPlay_thenViewerStateShouldBePlaying() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         exoPlayer.setState(true, Player.STATE_READY)
         Assertions.assertThat(theState)
@@ -104,7 +104,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerStateReadyAndNotAutoPlay_thenViewerStateShouldBePaused() = runBlockingTest {
+    fun whenPlayerStateReadyAndNotAutoPlay_thenViewerStateShouldBePaused() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         exoPlayer.setState(false, Player.STATE_READY)
         Assertions.assertThat(theState)
@@ -112,7 +112,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerHasEnded_thenViewerStateShouldBeEnded_regardlessOfAutoPlayState() = runBlockingTest {
+    fun whenPlayerHasEnded_thenViewerStateShouldBeEnded_regardlessOfAutoPlayState() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
 
         exoPlayer.setState(false, Player.STATE_ENDED)
@@ -125,7 +125,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerIsBufferingForFirstTimeForAtLeastPredefinedOrMoreSeconds_thenViewerStateShouldBeWaiting() = runBlockingTest {
+    fun whenPlayerIsBufferingForFirstTimeForAtLeastPredefinedOrMoreSeconds_thenViewerStateShouldBeWaiting() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         exoPlayer.setState(false, Player.STATE_BUFFERING)
         testDispatcher.advanceUntilIdle()
@@ -134,7 +134,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerIsError_thenViewerStateShouldBeError() = runBlockingTest {
+    fun whenPlayerIsError_thenViewerStateShouldBeError() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         val error = ExoPlaybackException.createForUnexpected(RuntimeException())
         exoPlayer.setError(error)
@@ -143,7 +143,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerIsErrorFromBroadcaster_andThenGoesToBufferingState_thenViewerStateShouldBeWaiting() = runBlockingTest {
+    fun whenPlayerIsErrorFromBroadcaster_andThenGoesToBufferingState_thenViewerStateShouldBeWaiting() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         val error = ExoPlaybackException.createForSource(invalidResponseCodeException)
         exoPlayer.setError(error)
@@ -156,7 +156,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerIsErrorFromViewer_andThenGoesToBufferingState_thenViewerStateShouldBeBufferingViewer() = runBlockingTest {
+    fun whenPlayerIsErrorFromViewer_andThenGoesToBufferingState_thenViewerStateShouldBeBufferingViewer() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         val error = ExoPlaybackException.createForUnexpected(RuntimeException())
         exoPlayer.setError(error)
@@ -169,7 +169,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerHasBeenPlaying_thenPlayerIsErrorFromBroadcaster_andThenGoesToBufferingState_thenViewerStateShouldBeBufferingBroadcaster() = runBlockingTest {
+    fun whenPlayerHasBeenPlaying_thenPlayerIsErrorFromBroadcaster_andThenGoesToBufferingState_thenViewerStateShouldBeBufferingBroadcaster() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         exoPlayer.setState(true, Player.STATE_READY)
 
@@ -184,7 +184,7 @@ class PlayViewerVideoStateProcessorTest {
     }
 
     @Test
-    fun whenPlayerIsBufferingForFirstTimeForLessThanPredefinedSeconds_andThenPlayerIsPlaying_thenViewerStateShouldBePlayingWithoutEverWaiting() = runBlockingTest {
+    fun whenPlayerIsBufferingForFirstTimeForLessThanPredefinedSeconds_andThenPlayerIsPlaying_thenViewerStateShouldBePlayingWithoutEverWaiting() = runTest {
         val exoPlayer = playVideoManager.videoPlayer as TestExoPlayer
         exoPlayer.setState(false, Player.STATE_BUFFERING)
 

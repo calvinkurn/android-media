@@ -157,6 +157,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
+    private var descAutoAds: View? = null
+
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
     }
@@ -218,25 +220,25 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
-        val list: MutableList<FragmentTabItem> = mutableListOf()
-        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
-        tabLayout?.addNewTab(PRODUK)
-        if (autoBidStatus.isEmpty()) {
-            tabLayout?.addNewTab(KATA_KUNCI)
-            tabLayout?.addNewTab(NEG_KATA_KUNCI)
-            tabLayout?.customTabMode = TabLayout.MODE_FIXED
-        } else {
-            tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
-        }
         val bundle = Bundle()
         bundle.putString(GROUP_ID, groupId)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         bundle.putInt("placementType", placementType)
         bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+        val list: MutableList<FragmentTabItem> = mutableListOf()
+        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
+        tabLayout?.addNewTab(PRODUK)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
-        list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
-        list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
+        if (autoBidStatus.isEmpty()) {
+            tabLayout?.addNewTab(KATA_KUNCI)
+            tabLayout?.addNewTab(NEG_KATA_KUNCI)
+            list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
+            list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
+            tabLayout?.customTabMode = TabLayout.MODE_FIXED
+        } else {
+            tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
         val detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
@@ -394,7 +396,23 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             priceDaily
         ) {
             loadData()
+            showToaster(isAutomatic)
         }
+    }
+
+    private fun showToaster(automatic: Boolean) {
+        val message = if(automatic) {
+            getString(com.tokopedia.topads.common.R.string.bid_state_changed_automatic_successful)
+        } else {
+            getString(com.tokopedia.topads.common.R.string.bid_state_changed_manual_successful)
+        }
+        Toaster.build(
+            findViewById(R.id.view_pager_frag),
+            message,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_NORMAL
+        ).show()
+
     }
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
@@ -426,6 +444,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         dailyBudgetSpent = findViewById(R.id.daily_budget_spent)
         dailyBudget = findViewById(R.id.daily_budget)
         dailyBudgetProgressBar = findViewById(R.id.daily_budget_progress_bar)
+        descAutoAds = findViewById(R.id.desc_auto_ads_advantage)
     }
 
     private fun saveBidData(bid: String, bidType: String, dailyBudget: Int) {
@@ -521,6 +540,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             editRekomendasiBudget?.visibility = View.GONE
             budgetPerClick?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
             budgetperclickRekomendasi?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+            descAutoAds?.hide()
         } else {
             switchAutoBidLayout?.switchToManual()
             editPancarianBudget?.visibility = View.VISIBLE
@@ -535,6 +555,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     rekommendedBid = it.priceBid
                 }
             }
+            descAutoAds?.show()
+
         }
         txtGroupName?.text = groupName
         btnSwitch?.setOnCheckedChangeListener(null)

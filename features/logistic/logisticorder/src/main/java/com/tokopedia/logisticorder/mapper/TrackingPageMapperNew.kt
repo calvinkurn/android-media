@@ -1,7 +1,25 @@
 package com.tokopedia.logisticorder.mapper
 
-import com.tokopedia.logisticorder.domain.response.*
-import com.tokopedia.logisticorder.uimodel.*
+import com.tokopedia.logisticorder.domain.response.AdditionalInfo
+import com.tokopedia.logisticorder.domain.response.Detail
+import com.tokopedia.logisticorder.domain.response.Eta
+import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
+import com.tokopedia.logisticorder.domain.response.LastDriver
+import com.tokopedia.logisticorder.domain.response.Page
+import com.tokopedia.logisticorder.domain.response.Proof
+import com.tokopedia.logisticorder.domain.response.Tipping
+import com.tokopedia.logisticorder.domain.response.TrackHistory
+import com.tokopedia.logisticorder.domain.response.TrackOrder
+import com.tokopedia.logisticorder.uimodel.AdditionalInfoModel
+import com.tokopedia.logisticorder.uimodel.DetailModel
+import com.tokopedia.logisticorder.uimodel.EtaModel
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
+import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.ProofModel
+import com.tokopedia.logisticorder.uimodel.TippingModel
+import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
+import com.tokopedia.logisticorder.uimodel.TrackOrderModel
+import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import javax.inject.Inject
 
 class TrackingPageMapperNew @Inject constructor() {
@@ -19,7 +37,7 @@ class TrackingPageMapperNew @Inject constructor() {
     private fun mapLastDriverData(lastDriver: LastDriver): LastDriverModel {
         return LastDriverModel().apply {
             photo = lastDriver.photo
-            name =lastDriver.name
+            name = lastDriver.name
             phone = lastDriver.phone
             licenseNumber = lastDriver.licenseNumber
             isChanged = lastDriver.isChanged
@@ -36,7 +54,7 @@ class TrackingPageMapperNew @Inject constructor() {
             noHistory = response.noHistory
             receiverName = response.receiverName
             shippingRefNum = response.shippingRefNum
-            invalid =  switchInteger(response.invalid)
+            invalid = switchInteger(response.invalid)
         }
     }
 
@@ -62,18 +80,18 @@ class TrackingPageMapperNew @Inject constructor() {
     private fun mapTrackingHistory(trackHistory: List<TrackHistory>): List<TrackHistoryModel> {
         return trackHistory.map {
             TrackHistoryModel(
-                    it.dateTime,
-                    it.date,
-                    it.status,
-                    it.city,
-                    it.time,
-                    it.partnerName,
-                    mapProofOrder(it.proof)
+                it.dateTime,
+                it.date,
+                it.status,
+                it.city,
+                it.time,
+                it.partnerName,
+                mapProofOrder(it.proof)
             )
         }
     }
 
-    private fun mapPage (page: Page): PageModel {
+    private fun mapPage(page: Page): PageModel {
         return PageModel().apply {
             additionalInfo = mapAdditionalInfo(page.additionalInfo)
         }
@@ -82,10 +100,10 @@ class TrackingPageMapperNew @Inject constructor() {
     private fun mapAdditionalInfo(additionalInfo: List<AdditionalInfo>): List<AdditionalInfoModel> {
         return additionalInfo.map {
             AdditionalInfoModel(
-                    it.title,
-                    it.notes,
-                    it.urlDetail,
-                    it.urlText
+                it.title,
+                it.notes,
+                it.urlDetail,
+                it.urlText
             )
         }
     }
@@ -102,7 +120,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return value == 1
     }
 
-    private fun mapEta(eta: Eta) : EtaModel {
+    private fun mapEta(eta: Eta): EtaModel {
         return EtaModel().apply {
             userInfo = eta.userInfo
             userUpdatedInfo = eta.userUpdatedInfo
@@ -110,4 +128,3 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 }
-

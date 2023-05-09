@@ -153,6 +153,9 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun hideFilteredEmpty() {
         super.hideFilteredEmpty()
+        if(ratingOnlyContainer?.isVisible == false){
+            nestedScrollViewContainer?.gone()
+        }
         view?.let {
             getRecyclerView(it)?.apply {
                 val newLayoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {

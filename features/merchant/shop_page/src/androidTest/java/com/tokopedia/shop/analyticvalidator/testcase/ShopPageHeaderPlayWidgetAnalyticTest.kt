@@ -14,7 +14,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -35,7 +35,7 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
     }
 
     @get:Rule
-    var intentsTestRule: IntentsTestRule<ShopPageActivity> = IntentsTestRule(ShopPageActivity::class.java, false, false)
+    var intentsTestRule: IntentsTestRule<ShopPageHeaderActivity> = IntentsTestRule(ShopPageHeaderActivity::class.java, false, false)
 
     @get:Rule
     var cassavaRule = CassavaTestRule()

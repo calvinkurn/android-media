@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInvoiceNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_copy"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginHorizontal="4dp"
+        app:icon_name="COPY"
+        app:layout_constraintStart_toEndOf="@id/tvInvoiceNumber"
+        app:layout_constraintTop_toTopOf="@id/tvInvoiceNumber"
+        app:layout_constraintBottom_toBottomOf="@id/tvInvoiceNumber"  />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/tus_countdown"
+        app:layout_constraintStart_toStartOf="@id/tvInvoiceNumber"
+        app:typographyType="paragraph_2" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/tus_countdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btn_cancel"
+        app:layout_constraintStart_toStartOf="@id/tvInvoiceNumber"
+        app:timer_unify_single_textWidth="full_radius"
+        app:timer_unify_single_variant="informative"
+        app:timer_unify_single_type="minute"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/btn_cancel"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_finding"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/label_finding_new_driver"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <View
+        android:id="@+id/view_toaster"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/grup_btn_and_invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="tvInvoiceNumber, btn_cancel, btn_finding" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/loader_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="loader_btn_cancel, loader_btn_finding, loader_invoice, loader_timer" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
+        app:layout_constraintEnd_toEndOf="@id/btn_cancel"
+        app:layout_constraintStart_toStartOf="@id/btn_cancel"
+        app:layout_constraintTop_toTopOf="@id/btn_cancel"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_btn_finding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/btn_finding"
+        app:layout_constraintEnd_toEndOf="@id/btn_finding"
+        app:layout_constraintStart_toStartOf="@id/btn_finding"
+        app:layout_constraintTop_toTopOf="@id/btn_finding"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_timer"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_cancel"
+        app:layout_constraintStart_toStartOf="@id/tvInvoiceNumber"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_invoice"
+        android:layout_width="100dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/loader_timer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

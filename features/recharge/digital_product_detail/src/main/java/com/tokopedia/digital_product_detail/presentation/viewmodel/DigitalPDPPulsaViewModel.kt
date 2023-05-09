@@ -12,7 +12,6 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -135,8 +134,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
             _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
         }) {
-            if (it !is CancellationException)
+            if (it !is CancellationException) {
                 _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
+            }
         }
     }
 
@@ -197,27 +197,23 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
-        digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String,
-        isUseGql: Boolean
+        userId: String
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
-                digitalSubscriptionParams,
-                userId,
-                isUseGql
+                userId
             )
-            if (categoryIdAtc.errorAtc == null){
+            if (categoryIdAtc.errorAtc == null) {
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
-            }else{
+            } else {
                 _errorAtc.value = categoryIdAtc.errorAtc
             }
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
-            } else if (it is DigitalAtcErrorException ){
+            } else if (it is DigitalAtcErrorException) {
                 _errorAtc.value = it.getError()
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
@@ -237,7 +233,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 dgCategoryIds,
                 emptyList(),
                 DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_PULSA,
-                true,
+                true
             )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
@@ -310,9 +306,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
         var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
-            if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()
-            ) selectedProductPositionId = index
+            if (denomData.id.equals(selectedGridProduct.denomData.id, false) &&
+                selectedGridProduct.denomData.id.isNotEmpty()
+            ) {
+                selectedProductPositionId = index
+            }
         }
         return selectedProductPositionId
     }
@@ -322,10 +320,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
-        (selectedGridProduct.denomData.id.isNotEmpty()
-                && selectedGridProduct.position >= 0
-                && selectedGridProduct.denomWidgetEnum == layoutType
-                && isEligibleToBuy)
+        (
+            selectedGridProduct.denomData.id.isNotEmpty() &&
+                selectedGridProduct.position >= 0 &&
+                selectedGridProduct.denomWidgetEnum == layoutType &&
+                isEligibleToBuy
+            )
 
     fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
