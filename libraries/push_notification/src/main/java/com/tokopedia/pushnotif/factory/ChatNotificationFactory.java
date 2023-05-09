@@ -68,7 +68,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId, applinkNotificationModel));
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 

@@ -15,13 +15,13 @@ import android.preference.PreferenceManager;
 import android.webkit.URLUtil;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
@@ -155,10 +155,12 @@ public abstract class BaseNotificationFactory {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId) {
+    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
         Intent intent = new Intent(context, DismissBroadcastReceiver.class);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID, applinkNotificationModel.getTransactionId());
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID, applinkNotificationModel.getToUserId());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
         }else{
