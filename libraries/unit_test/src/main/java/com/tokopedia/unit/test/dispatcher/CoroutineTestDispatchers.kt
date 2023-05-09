@@ -1,11 +1,9 @@
 package com.tokopedia.unit.test.dispatcher
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 
-@ExperimentalCoroutinesApi
-object CoroutineTestDispatchers: CoroutineDispatchers {
+object CoroutineTestDispatchers : CoroutineDispatchers {
 
     val coroutineDispatcher = TestCoroutineDispatcher()
 

@@ -10,10 +10,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.similarproduct.presentation.viewmodel.TokoNowSimilarProductBottomSheetViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -24,13 +26,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class ProductCardCompactSimilarProductViewModelTest {
+class TokoNowSimilarProductBottomSheetViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -39,12 +41,14 @@ class ProductCardCompactSimilarProductViewModelTest {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
-    private lateinit var localAddressHelper: TokoNowLocalAddress
+    private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var chooseAddressData: LocalCacheModel
+    private lateinit var affiliateService: NowAffiliateService
 
-    protected lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
+    private lateinit var viewModel: TokoNowSimilarProductBottomSheetViewModel
 
     @Before
     fun setUp() {
@@ -52,19 +56,23 @@ class ProductCardCompactSimilarProductViewModelTest {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
-        localAddressHelper = mockk(relaxed = true)
+        addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         getSimilarProductUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
+        affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
             userSession,
-            localAddressHelper,
+            addressData,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            affiliateService,
+            getTargetedTickerUseCase,
             CoroutineTestDispatchers
         )
     }
@@ -80,6 +88,7 @@ class ProductCardCompactSimilarProductViewModelTest {
     @Test
     fun `get similar products list success`(){
         val recommendationItem = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem(
+            "",
             "",
             "",
             ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
@@ -107,7 +116,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -124,7 +133,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -139,7 +148,7 @@ class ProductCardCompactSimilarProductViewModelTest {
         } returns response
 
         every {
-            localAddressHelper.getAddressData()
+            addressData.getAddressData()
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
@@ -232,15 +241,15 @@ class ProductCardCompactSimilarProductViewModelTest {
         )
 
         every {
-            localAddressHelper.isOutOfCoverage()
+            addressData.isOutOfCoverage()
         } returns false
 
         every {
-            localAddressHelper.getShopId()
+            addressData.getShopId()
         } returns shopId
 
         every {
-            localAddressHelper.getWarehouseId()
+            addressData.getWarehouseId()
         } returns warehouseId
 
         every {
@@ -274,6 +283,7 @@ class ProductCardCompactSimilarProductViewModelTest {
             name = "kaos testing 112",
             quantity = quantity,
             stock = 7,
+            isVariant = false,
             minOrder = 1,
             maxOrder = 7,
             priceFmt = "Rp150",

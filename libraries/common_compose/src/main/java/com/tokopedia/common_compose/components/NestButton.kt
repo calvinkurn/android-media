@@ -1,14 +1,16 @@
 package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -25,23 +27,25 @@ fun NestButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     val backgroundColor = ButtonDefaults.buttonColors(
         backgroundColor = NestTheme.colors.GN._500,
         disabledBackgroundColor = NestTheme.colors.NN._100
     )
 
     Button(
-        modifier = modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 40.dp),
+        modifier = modifier.height(32.dp),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         colors = backgroundColor,
-        enabled = enabled
+        enabled = enabled,
+        contentPadding = PaddingValues(all = 0.dp),
+        interactionSource = interactionSource
     ) {
         NestTypography(
             text,
-            textStyle = NestTheme.typography.display1.copy(
+            textStyle = NestTheme.typography.display2.copy(
                 color = buttonTextColor(enabled),
                 fontWeight = FontWeight.Bold
             ),
