@@ -14,8 +14,8 @@ class AffiliateGetUnreadNotificationUseCase @Inject constructor(
     companion object {
         const val GQL_GET_UNREAD_NOTIFICATION: String = """
             query getUnreadNotification {
-                notifcenter_total_unread(type_id: 6, type_of_notif: 0) {
-                notif_total_unread_int
+                notifcenter_unread(type_id: 6, type_of_notif: 0) {
+                notif_unread_int
             }
         }"""
     }
