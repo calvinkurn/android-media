@@ -13,12 +13,12 @@ import com.tokopedia.content.common.report_content.model.listOfCommentReport
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
