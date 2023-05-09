@@ -46,6 +46,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -138,6 +139,9 @@ class DetailEditorFragment @Inject constructor(
     // flag to decide watermark implementation sequence before / after CropRotate
     // and used on watermark observer as flag for
     private var isRotatedWatermark = false
+
+    // flag add text for latar / free text
+    private var tempTemplateMode = TEXT_TEMPLATE_FREE
 
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
@@ -416,7 +420,6 @@ class DetailEditorFragment @Inject constructor(
     }
 
     // === Listener add text
-    private var tempTemplateMode = EditorAddTextUiModel.TEXT_TEMPLATE_FREE
     override fun onAddFreeText() {
         EditorAddTextUiModel.TEXT_TEMPLATE_FREE.let { templateIndex ->
             data.addTextValue?.let {
@@ -704,6 +707,10 @@ class DetailEditorFragment @Inject constructor(
                     if (data.addTextValue == null) {
                         showAddTextTips()
                     } else {
+                        // set flag according to prev state
+                        data.addTextValue?.textTemplate?.let {
+                            tempTemplateMode = it
+                        }
                         implementAddTextData()
                     }
                 }
