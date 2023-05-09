@@ -15,8 +15,10 @@ import com.gojek.kyc.sdk.core.extensions.checkSelfPermissionWithTryCatch
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.gojek.onekyc.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
+import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -24,29 +26,21 @@ import javax.inject.Inject
 
 class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
-    private var binding by autoClearedNullable<FragmentGotoKycLoaderBinding>()
+    private var binding by autoClearedNullable<FragmentGotoKycFinalLoaderBinding>()
 
     @Inject
     lateinit var oneKycSdk: OneKycSdk
 
-    @Inject
-    lateinit var projectIdInterceptor: ProjectIdInterceptor
-
     private val args: CaptureKycDocumentsFragmentArgs by navArgs()
 
     private val interactor = KycSdkStatusPublisher.get()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        projectIdInterceptor.setProjectId(args.parameter.projectId)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentGotoKycLoaderBinding.inflate(inflater, container, false)
+        binding = FragmentGotoKycFinalLoaderBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -54,6 +48,19 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         kycStateObserver()
         gotoCaptureKycDocuments()
+        initListener()
+    }
+
+    private fun initListener() {
+        binding?.globalError?.setActionClickListener {
+            onUploadingDocuments()
+            oneKycSdk.submitKycDocuments()
+        }
+
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            activity?.setResult(Activity.RESULT_CANCELED)
+            activity?.finish()
+        }
     }
 
     private fun kycStateObserver() {
@@ -62,12 +69,26 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                 interactor.updateConsumed()
                 when (it) {
                     UnifiedKycFlowResult.DOC_SUBMITTED -> {
-                        gotoFinalLoader()
+                        //show loader screen
+                        onUploadingDocuments()
                     }
                     UnifiedKycFlowResult.FAILURE -> {
                         //show failed page
+                        onFailedUploadDocuments()
                     }
-                    else -> {
+                    UnifiedKycFlowResult.SUCCESS -> {
+                        // go to success page
+                        gotoFinalLoader()
+                    }
+                    UnifiedKycFlowResult.USER_CANCELLED -> {
+                        activity?.setResult(Activity.RESULT_CANCELED)
+                        activity?.finish()
+                    }
+                    UnifiedKycFlowResult.STATE_UPDATED -> {
+                        activity?.setResult(Activity.RESULT_CANCELED)
+                        activity?.finish()
+                    }
+                    UnifiedKycFlowResult.DOC_TYPE_SWITCHED -> {
                         activity?.setResult(Activity.RESULT_CANCELED)
                         activity?.finish()
                     }
@@ -85,6 +106,26 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                 oneKycSdk.init()
                 oneKycSdk.launchKyc(launchSource = KycSdkPartner.TOKOPEDIA_CORE.name, partner = KycSdkPartner.TOKOPEDIA_CORE, activity = requireActivity())
             }
+        }
+    }
+
+    private fun onUploadingDocuments() {
+        binding?.apply {
+            loader.show()
+            tvTitle.show()
+            tvSubtitle.show()
+            unifyToolbar.hide()
+            globalError.hide()
+        }
+    }
+
+    private fun onFailedUploadDocuments() {
+        binding?.apply {
+            loader.hide()
+            tvTitle.hide()
+            tvSubtitle.hide()
+            unifyToolbar.show()
+            globalError.show()
         }
     }
 

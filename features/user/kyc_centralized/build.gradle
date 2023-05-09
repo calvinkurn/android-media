@@ -30,9 +30,12 @@ android {
     }
 }
 dependencies {
-    //TODO: change version to final OneKycSDK and remove aloha
-    implementation("com.gojek.android:asphalt-aloha:0.0.11117")
-    implementation("com.gojek.android:OneKycSdk:0.1.35Pre11@aar")
+    implementation("com.gojek.android:OneKycSdk:0.1.35Pre27@aar")
+    implementation("com.gojek.android:clickstream:2.0.1-alpha"){
+        exclude(group:"com.google.protobuf")
+    }
+    implementation("com.gojek.clickstream:proto-consumer:4.210.1")
+    implementation("com.gojek.clickstream:proto-sdk:1.18.2")
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)

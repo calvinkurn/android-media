@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.gojek.onekyc.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -28,6 +27,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var oneKycSdk: OneKycSdk
+    lateinit var projectIdInterceptor: ProjectIdInterceptor
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         activity?.setResult(result.resultCode)
@@ -62,6 +62,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
+        projectIdInterceptor.setProjectId(projectId.toString())
         validationParameter(projectId = projectId, source = source)
         initObserver()
     }
