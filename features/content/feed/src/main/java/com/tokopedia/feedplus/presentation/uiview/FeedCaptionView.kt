@@ -85,7 +85,7 @@ class FeedCaptionView(
                     textView.movementMethod = ScrollingMovementMethod.getInstance()
                     textView.text = "$newText$ELLIPSIS $spannedActionText"
                 } else if (!isCollapsed) {
-                    textView.text = "$fullText $spannedActionText"
+                    textView.text = "$fullText\n$spannedActionText"
                 }
             }
         })
