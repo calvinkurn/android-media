@@ -262,8 +262,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
                 type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
 
-                if (originScreen == ORIGIN_SSA_SHOP) {
-                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                when (originScreen) {
+                    ORIGIN_SSA_SHOP -> findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
                         RouteManager.route(
                             context,
                             ApplinkConst.SHOP.replace(
@@ -272,14 +272,21 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         )
                     }
-                }
-
-                if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
-                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
-                        RouteManager.route(
-                            context,
-                            ApplinkConst.TokopediaNow.HOME
-                        )
+                    ORIGIN_PROMO_TOKO_NOW -> {
+                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                ApplinkConst.TokopediaNow.HOME
+                            )
+                        }
+                    }
+                    ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
+                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                url
+                            )
+                        }
                     }
                 }
             }
