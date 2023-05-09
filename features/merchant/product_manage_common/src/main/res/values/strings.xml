@@ -64,4 +64,6 @@
     <string name="product_manage_deletion_product_dt_title">Produk Dilayani Tokopedia belum bisa dihapus</string>
     <string name="product_manage_deletion_product_dt_desc">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
 
+    <string name="product_manage_deletion_product_dt_bulkedit_title">%s produk Dilayani Tokopedia belum bisa dihapus</string>
+
 </resources>

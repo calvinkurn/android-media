@@ -201,6 +201,10 @@
     <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="product_manage_refresh_page">Refresh Halaman</string>
     <string name="label_all">Semua</string>
+    <string name="product_manage_confirm_inactive_dt_product_desc">Jika menonaktifkan, kamu berpotensi tetap harus membayar biaya Dilayani Tokopedia meski produk dinonaktifkan. Baca Artikel</string>
+    <string name="product_manage_confirm_inactive_dt_product_title">Produk ini terdaftar dalam gudang Dilayani Tokopedia</string>
+    <string name="product_manage_confirm_inactive_dt_product_positive_button">Tetap Nonaktifkan</string>
+    <string name="product_manage_confirm_dt_product_cancel_button">Batal</string>
 
     <string name="content_coach_mark_more_option_title">Sudah coba pakai Pengingat Stok?</string>
     <string name="content_coach_mark_more_option_desc">Yuk, pakai fitur ini supaya kamu bisa diingatkan oleh Tokopedia saat stok produk tinggal sedikit.</string>

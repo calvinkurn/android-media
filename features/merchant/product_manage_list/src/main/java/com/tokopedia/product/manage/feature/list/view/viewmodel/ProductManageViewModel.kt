@@ -35,6 +35,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopWarehouseUseCase
 import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
@@ -113,6 +114,7 @@ class ProductManageViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
     private val getTickerUseCase: GetTickerUseCase,
+    private val getShopWarehouse: GetShopWarehouseUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -269,20 +271,36 @@ class ProductManageViewModel @Inject constructor(
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
+
+                val warehouseResponse = async {
+                    getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
+                }.await()
+
+                val isShopDilayaniTokopedia =
+                    warehouseResponse.keroWarehouseShop.data?.fulfillment?.isNotEmpty().orFalse()
+
                 val shopParam = ShopParam(userSessionInterface.shopId)
 
                 val params = productIds.map { productId ->
                     ProductParam(productId = productId, shop = shopParam, status = status)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params, isShopDilayaniTokopedia)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
-            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+            val failed =
+                response.results?.filter { !it.isSuccess() && it.result?.header?.reason != "FORBIDDEN_DT_PRODUCT_DELETION" }
+                    .orEmpty()
+            val failedDilayaniTokopediProduct = response.results?.filter {
+                !it.isSuccess()
+                    && it.result?.header?.reason == "FORBIDDEN_DT_PRODUCT_DELETION"
+            }.orEmpty()
 
-            _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            _multiEditProductResult.value =
+                Success(EditByStatus(status, success, failed, failedDilayaniTokopediProduct))
             hideProgressDialog()
         }, onError = {
             _multiEditProductResult.value = Fail(it)
@@ -295,6 +313,7 @@ class ProductManageViewModel @Inject constructor(
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
+
                 val shopParam = ShopParam(userSessionInterface.shopId)
                 val menuParam = MenuParam(menuId, menuName)
 
@@ -302,14 +321,14 @@ class ProductManageViewModel @Inject constructor(
                     ProductParam(productId = productId, shop = shopParam, menu = menuParam)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
             val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
-
-            val result = EditByMenu(menuId, menuName, success, failed)
+            val result = EditByMenu(menuId, menuName, success, failed, listOf())
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
@@ -328,13 +347,15 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
+
             val productResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
                 }
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
-                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
+                    val extraInfo =
+                        listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
                     val requestParams = GQLGetProductListUseCase.createRequestParams(
                         shopId,
                         warehouseId,
