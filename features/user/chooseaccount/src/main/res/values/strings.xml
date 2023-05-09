@@ -101,8 +101,8 @@
     <string name="ocl_register_title">Belum punya akun? Daftar</string>
     <string name="ocl_other_acc_text">Masuk ke akun lain</string>
 
-    <string name="ocl_delete_confirmation_title">Hilangkan dari daftar?</string>
-    <string name="ocl_delete_confirmation_subtitle">Kalau kamu hilangkan akun ini, kamu perlu login lagi.</string>
+    <string name="ocl_delete_confirmation_title">Hapus info buat masuk?</string>
+    <string name="ocl_delete_confirmation_subtitle">Kalau kamu hapus, kamu perlu masukin ulang info akun ini.</string>
 
     <string name="ocl_delete_confirmation_positive_btn_title">Batal</string>
     <string name="ocl_delete_confirmation_negative_btn_title">Ya, Hapus</string>

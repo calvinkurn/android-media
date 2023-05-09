@@ -55,7 +55,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.DEVELOPER_OPTIONS
 import com.tokopedia.home_account.AccountConstants.Analytics.LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
-import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
@@ -1378,30 +1377,31 @@ open class HomeAccountUserFragment :
     }
 
     fun getTncOclSpan(): SpannableString {
-        val sourceString = requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle)
-        val spannable = SpannableString(sourceString)
-        spannable.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    RouteManager.route(
-                        requireContext(),
-                        ApplinkConstInternalUserPlatform.TERM_PRIVACY,
-                        ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
-                    )
-                }
+        val sourceString = SpannableString(requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle))
 
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(
-                        activity,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                    )
-                }
-            },
-            sourceString.indexOf("Syarat & Ketentuan"),
-            sourceString.length,
+        val startIndexTermAndCondition = sourceString.indexOf(TERM_AND_CONDITION)
+        val endIndexTermAndCondition = startIndexTermAndCondition.plus(TERM_AND_CONDITION.length)
+
+        sourceString.setSpan(
+            clickableSpan(ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION),
+            startIndexTermAndCondition,
+            endIndexTermAndCondition,
             0
         )
-        return spannable
+        return sourceString
+    }
+
+    private fun clickableSpan(page: String): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
+                }
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            }
+        }
     }
 
     private fun showOclBtmSheet() {
@@ -1848,6 +1848,10 @@ open class HomeAccountUserFragment :
         private const val POSITION_1 = 1
         private const val POSITION_2 = 2
         private const val POSITION_3 = 3
+
+        private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
+        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
