@@ -1156,6 +1156,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                 shippingRecommendationData = helper.shippingRecommendationData,
                 logisticPromoTickerMessage = "Tersedia bbo",
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)
             ),
@@ -1207,6 +1208,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                 shippingRecommendationData = helper.shippingRecommendationData,
                 logisticPromoTickerMessage = "Tersedia bbo",
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 isServicePickerEnable = true,
                 insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
@@ -1241,6 +1243,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ratesId = helper.firstCourierSecondDuration.ratesId,
                 shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                 shippingRecommendationData = shippingRecommendationData,
+                isShowLogisticPromoTickerMessage = false,
                 isServicePickerEnable = true,
                 insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
             ),
@@ -1280,7 +1283,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingRecommendationData = helper.shippingRecommendationData,
                 serviceErrorMessage = error,
                 isServicePickerEnable = true,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                isShowLogisticPromoTickerMessage = false
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
@@ -1313,7 +1317,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
                 needPinpoint = true,
                 isServicePickerEnable = false,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                isShowLogisticPromoTickerMessage = false
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
