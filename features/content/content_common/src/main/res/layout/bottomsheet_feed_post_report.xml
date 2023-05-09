@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -18,7 +18,6 @@
             android:id="@+id/report_header"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_Header"
             android:textColor="@color/Unify_N700_96"
@@ -65,7 +64,6 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_component_dp_0.5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
@@ -98,7 +96,6 @@
             android:id="@+id/divider1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_component_dp_0.5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
@@ -131,7 +128,6 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_component_dp_0.5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
@@ -165,7 +161,6 @@
             android:id="@+id/divider3"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_component_dp_0.5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
@@ -199,7 +194,6 @@
             android:id="@+id/divider4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_component_dp_0.5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
@@ -214,10 +208,10 @@
             android:text="@string/feed_component_report_option_text4"
             android:textColor="@color/Unify_N700_96"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/report_subtext5_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
             app:layout_constraintTop_toBottomOf="@id/divider4"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="heading_5" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -234,7 +228,6 @@
     <include
         android:id="@+id/report_final_layout"
         layout="@layout/bottomsheet_report_success_view"
-        android:visibility="gone"
-       />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
