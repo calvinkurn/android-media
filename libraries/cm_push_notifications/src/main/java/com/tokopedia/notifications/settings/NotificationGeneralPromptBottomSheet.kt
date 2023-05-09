@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.settings
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +22,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class NotificationGeneralPromptBottomSheet(
     private val isReminderPrompt: Boolean,
     private val pageName: String
-    ) : BottomSheetUnify() {
+) : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
 
@@ -74,7 +75,6 @@ class NotificationGeneralPromptBottomSheet(
                     R.string.cm_notifications_general_prompt_sellerapp_description
                 )
             }
-
         } else {
             if (isReminderPrompt) {
                 getResourcesConfigForReminderPrompt()
@@ -88,7 +88,7 @@ class NotificationGeneralPromptBottomSheet(
         }
 
     private fun getResourcesConfigForReminderPrompt(): Triple<Int, Int, Int> =
-        when(pageName) {
+        when (pageName) {
             KEJAR_DISKON -> {
                 Triple(
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
@@ -144,8 +144,6 @@ class NotificationGeneralPromptBottomSheet(
     }
 
     private fun onCloseClick(ignored: View) {
-        sendEventClose()
-
         dismiss()
     }
 
@@ -163,8 +161,12 @@ class NotificationGeneralPromptBottomSheet(
                     it.applicationContext
                 ).sendGeneralPromptClickCloseEvent(it, activityName)
             }
-
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        sendEventClose()
     }
 
     private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
@@ -257,6 +259,5 @@ class NotificationGeneralPromptBottomSheet(
         const val TAP_TAP_KOTAK = "tapTapKotak"
         const val LIVE_SHOPPING = "liveShopping"
         const val STOCK_REMINDER = "stockReminder"
-
     }
 }
