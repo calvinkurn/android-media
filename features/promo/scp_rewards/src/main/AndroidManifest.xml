@@ -4,7 +4,7 @@
 
     <application
         >
-        <activity android:name=".presentation.TestActivity"
+        <activity android:name=".celebration.presentation.activity.MedalCelebrationActivity"
             android:exported="false"
             android:label="scp"
             android:screenOrientation="portrait"
