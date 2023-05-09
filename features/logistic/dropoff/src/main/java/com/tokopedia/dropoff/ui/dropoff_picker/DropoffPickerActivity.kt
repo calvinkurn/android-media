@@ -141,7 +141,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
 
-        binding?.bottomSheetDroppoff?.apply {
+        binding?.bottomSheetDropoff?.apply {
             rvDropoff.apply {
                 layoutManager = LinearLayoutManager(this@DropoffPickerActivity)
                 setHasFixedSize(true)
