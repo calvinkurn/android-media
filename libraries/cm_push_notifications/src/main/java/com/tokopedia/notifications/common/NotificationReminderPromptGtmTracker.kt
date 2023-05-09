@@ -49,10 +49,11 @@ class NotificationReminderPromptGtmTracker constructor(
     }
 
     fun sendReminderPromptClickCtaEvent(context: Context, pagePath: String) {
-        if (GlobalConfig.isSellerApp()) {
-            trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER_SA
+        trackerId = if (GlobalConfig.isSellerApp()) {
+            CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER_SA
+        } else {
+            CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER
         }
-        trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_REMINDER
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
             CMConstant.GtmTrackerEvents.VALUE_ACTION_CLICK_CTA,
@@ -63,10 +64,11 @@ class NotificationReminderPromptGtmTracker constructor(
     }
 
     fun sendReminderPromptClickCloseEvent(context: Context, pagePath: String) {
-        if (GlobalConfig.isSellerApp()) {
-            trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER_SA
+        trackerId = if (GlobalConfig.isSellerApp()) {
+            CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER_SA
+        } else {
+            CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER
         }
-        trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
             CMConstant.GtmTrackerEvents.VALUE_ACTION_CLICK_CLOSE,
