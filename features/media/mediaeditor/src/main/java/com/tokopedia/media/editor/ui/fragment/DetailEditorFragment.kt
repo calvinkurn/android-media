@@ -691,18 +691,21 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.ADD_TEXT -> {
-                // check if user have saved template or not
-                val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+                // init add text when image is already done (waiting for image size)
+                setImageView(data.resultUrl ?: url, false) {
+                    // check if user have saved template or not
+                    val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+                    addTextComponent.setupView(data.addTextValue, (savedTemplate != null))
 
-                addTextComponent.setupView(data.addTextValue, (savedTemplate != null))
+                    viewBinding?.imgPreviewOverlay?.setOnClickListener {
+                        openAddTextActivity()
+                    }
 
-                setImageView(data.resultUrl ?: url, false)
-                viewBinding?.imgPreviewOverlay?.setOnClickListener {
-                    openAddTextActivity()
-                }
-
-                if (data.addTextValue == null) {
-                    showAddTextTips()
+                    if (data.addTextValue == null) {
+                        showAddTextTips()
+                    } else {
+                        implementAddTextData()
+                    }
                 }
             }
         }

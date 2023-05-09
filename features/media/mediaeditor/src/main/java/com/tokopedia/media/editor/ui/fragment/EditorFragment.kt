@@ -212,6 +212,7 @@ class EditorFragment @Inject constructor(
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
                     paramData.addLogoValue = item.addLogoValue
+                    paramData.addTextValue = item.addTextValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
