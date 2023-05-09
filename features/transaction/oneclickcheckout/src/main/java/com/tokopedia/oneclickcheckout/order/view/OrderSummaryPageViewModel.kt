@@ -692,13 +692,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
                 clearBboIfExist().also { isBoExist ->
-                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
-                        orderShipment.value =
-                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
-                    } else {
-                        orderShipment.value =
-                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
-                    }
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
                 }
             }
             globalEvent.value = newGlobalEvent
