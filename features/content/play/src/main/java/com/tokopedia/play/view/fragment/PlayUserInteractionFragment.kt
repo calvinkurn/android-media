@@ -829,6 +829,9 @@ class PlayUserInteractionFragment @Inject constructor(
                         is BottomInsetsState.Shown -> {
                             pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
 
@@ -1010,6 +1013,9 @@ class PlayUserInteractionFragment @Inject constructor(
                                 playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
                             }
                         )
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -1198,6 +1204,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1907,6 +1916,9 @@ class PlayUserInteractionFragment @Inject constructor(
             KebabIconUiComponent.Event.OnClicked -> {
                 playViewModel.submitAction(OpenKebabAction)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1934,6 +1946,9 @@ class PlayUserInteractionFragment @Inject constructor(
             is GameUiModel.Quiz -> {
                 handleQuiz(game = engagement.game)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1947,6 +1962,9 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is GameUiModel.Giveaway.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1957,6 +1975,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (game.status) {
             is GameUiModel.Quiz.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            else -> {
+                //no-op
+            }
         }
     }
 

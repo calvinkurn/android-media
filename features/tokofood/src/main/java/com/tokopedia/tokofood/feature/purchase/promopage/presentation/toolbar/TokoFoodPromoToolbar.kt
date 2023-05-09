@@ -33,5 +33,4 @@ class TokoFoodPromoToolbar : Toolbar {
             listener?.onBackPressed()
         }
     }
-
 }

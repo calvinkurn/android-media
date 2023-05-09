@@ -935,6 +935,9 @@ open class DynamicProductDetailFragment :
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
             }

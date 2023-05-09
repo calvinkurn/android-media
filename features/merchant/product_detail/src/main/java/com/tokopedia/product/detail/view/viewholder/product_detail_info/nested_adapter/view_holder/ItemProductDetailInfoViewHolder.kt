@@ -56,7 +56,7 @@ class ItemProductDetailInfoViewHolder(
         if (data.infoLink.isNotEmpty()) {
             infoDetailIcon.show()
             infoDetailClickArea.setOnClickListener {
-                listener.goToEducational(data.applink)
+                listener.goToEducational(data.infoLink)
             }
 
             data.icon.toIntOrNull()?.let { icon ->

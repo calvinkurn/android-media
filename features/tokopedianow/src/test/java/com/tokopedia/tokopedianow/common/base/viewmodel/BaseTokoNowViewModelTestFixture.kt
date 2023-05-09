@@ -15,6 +15,8 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,7 +32,7 @@ import org.mockito.ArgumentMatchers.anyString
 open class BaseTokoNowViewModelTestFixture {
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
