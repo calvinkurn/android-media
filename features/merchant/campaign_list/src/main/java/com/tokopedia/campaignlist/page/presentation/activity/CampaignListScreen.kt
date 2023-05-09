@@ -38,12 +38,13 @@ import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewMo
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestLabel
 import com.tokopedia.common_compose.components.NestLabelType
-import com.tokopedia.common_compose.principles.NestSearchBar
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestImage
+import com.tokopedia.common_compose.principles.NestSearchBar
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.sort_filter.NestSortFilter
 import com.tokopedia.common_compose.sort_filter.SortFilter
@@ -60,14 +61,15 @@ fun CampaignListScreen(
     onSearchBarKeywordSubmit: (String) -> Unit,
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
-    onTapShareCampaignButton : (ActiveCampaign) -> Unit,
+    onTapShareCampaignButton: (ActiveCampaign) -> Unit,
     onToolbarBackIconPressed: () -> Unit,
-    onCampaignScrolled : (ActiveCampaign) -> Unit
+    onCampaignScrolled: (ActiveCampaign) -> Unit
 ) {
-
-    Surface(modifier = Modifier
-        .background(NestNN.light._0)
-        .fillMaxSize()) {
+    Surface(
+        modifier = Modifier
+            .background(NestNN.light._0)
+            .fillMaxSize()
+    ) {
         Column {
             Toolbar(
                 title = stringResource(id = R.string.cl_active_campaign_list),
@@ -105,7 +107,6 @@ fun CampaignListScreen(
             )
         }
     }
-
 }
 
 @Composable
@@ -113,7 +114,7 @@ fun List(
     modifier: Modifier = Modifier,
     campaigns: List<ActiveCampaign>,
     onTapShareButton: (ActiveCampaign) -> Unit,
-    onCampaignScrolled : (ActiveCampaign) -> Unit
+    onCampaignScrolled: (ActiveCampaign) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     LazyColumn(modifier = modifier, state = lazyListState) {
@@ -146,8 +147,10 @@ private fun Toolbar(
 ) {
     NestHeader(
         modifier = modifier,
-        title = title,
-        onBackIconPressed = onToolbarBackIconPressed
+        type = NestHeaderType.SingleLine(
+            title = title,
+            onBackClicked = onToolbarBackIconPressed
+        )
     )
 }
 
@@ -161,7 +164,6 @@ private fun Filter(
     onClearFilter: () -> Unit,
     shouldShowClearFilterIcon: Boolean
 ) {
-
     val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
@@ -188,7 +190,7 @@ private fun Filter(
 }
 
 @Composable
-private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
+private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
         modifier = modifier.fillMaxWidth(),
         title = "",
@@ -216,8 +218,8 @@ fun CampaignItem(
             .padding(12.dp)
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-
-            val (ribbon,
+            val (
+                ribbon,
                 statusImage,
                 campaignType,
                 campaignStatus,
@@ -313,7 +315,6 @@ fun CampaignItem(
                 textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
             )
 
-
             NestTypography(
                 text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
                 modifier = Modifier.constrainAs(campaignStartTime) {
@@ -366,10 +367,7 @@ fun CampaignItem(
                 text = stringResource(id = R.string.cl_action_share),
                 onClick = { onTapShareButton(campaign) }
             )
-
-
         }
-
     }
 }
 
@@ -389,6 +387,7 @@ fun ItemImpression(key: Int, lazyListState: LazyListState, onItemViewed: () -> U
         }
     }
 }
+
 @Composable
 fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
     val nestLabelType = when (campaignStatusId) {
@@ -399,7 +398,6 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
     }
     NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
 }
-
 
 @Preview(name = "Campaign Item")
 @Composable
@@ -417,4 +415,3 @@ fun CampaignItemPreview() {
 
     CampaignItem(state = LazyListState(), campaign = campaign, onTapShareButton = {}, onCampaignScrolled = {})
 }
-
