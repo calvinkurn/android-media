@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.databinding.LayoutRepurchaseProductCardBinding
 
 class RepurchaseProductCardView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null,
+    attrs: AttributeSet? = null
 ) : CardView(context, attrs) {
 
     private val view by lazy {
@@ -21,14 +21,12 @@ class RepurchaseProductCardView @JvmOverloads constructor(
 
     fun bind(model: TokoNowRepurchaseProductUiModel) {
         view.apply {
-            val discount = model.discount.isNotEmpty()
+            setupProductImage(model)
+            setupLabelDiscount(model)
+            setupProductPrice(model)
+            setupProductWeight(model)
 
-            imageProduct.loadImage(model.imageUrl)
-            labelDiscount.text = model.discount
-            labelDiscount.showWithCondition(discount)
-            textProductPrice.text = model.formattedPrice
-
-            initQuantityEditor(
+            setupQuantityEditor(
                 isVariant = model.isVariant,
                 minOrder = model.minOrder,
                 maxOrder = model.maxOrder,
@@ -36,8 +34,6 @@ class RepurchaseProductCardView @JvmOverloads constructor(
                 isOos = model.isOos(),
                 needToShowQuantityEditor = model.needToShowQuantityEditor
             )
-
-            initWeight(model)
         }
     }
 
@@ -53,7 +49,27 @@ class RepurchaseProductCardView @JvmOverloads constructor(
         view.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 
-    private fun LayoutRepurchaseProductCardBinding.initQuantityEditor(
+    private fun LayoutRepurchaseProductCardBinding.setupProductImage(
+        model: TokoNowRepurchaseProductUiModel
+    ) {
+        imageProduct.loadImage(model.imageUrl)
+    }
+
+    private fun LayoutRepurchaseProductCardBinding.setupLabelDiscount(
+        model: TokoNowRepurchaseProductUiModel
+    ) {
+        val discount = model.discount.isNotEmpty()
+        labelDiscount.text = model.discount
+        labelDiscount.showWithCondition(discount)
+    }
+
+    private fun LayoutRepurchaseProductCardBinding.setupProductPrice(
+        model: TokoNowRepurchaseProductUiModel
+    ) {
+        textProductPrice.text = model.formattedPrice
+    }
+
+    private fun LayoutRepurchaseProductCardBinding.setupQuantityEditor(
         isVariant: Boolean,
         minOrder: Int,
         maxOrder: Int,
@@ -71,7 +87,7 @@ class RepurchaseProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutRepurchaseProductCardBinding.initWeight(
+    private fun LayoutRepurchaseProductCardBinding.setupProductWeight(
         model: TokoNowRepurchaseProductUiModel?
     ) {
         val labelGroup = model?.getWeightLabelGroup()
