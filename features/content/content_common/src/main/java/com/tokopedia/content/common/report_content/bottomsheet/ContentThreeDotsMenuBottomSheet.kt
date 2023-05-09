@@ -41,7 +41,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
                 } else {
                     showHeader = true
                     bottomSheetHeader.visible()
-                    setTitle(getString(R.string.feed_report_comment))
+                    setTitle(getString(R.string.content_common_report_comment))
                 }
 
                 mListener?.onMenuItemClick(item, contentId)
