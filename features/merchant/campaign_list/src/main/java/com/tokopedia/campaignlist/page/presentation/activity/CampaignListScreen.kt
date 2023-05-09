@@ -436,3 +436,44 @@ private fun CampaignListPreview() {
     }
 }
 
+@Preview(name = "Campaign List - Filter selected")
+@Composable
+private fun CampaignListFilterSelectedPreview() {
+    val campaign = ActiveCampaign(
+        campaignType = "Rilisan Spesial",
+        campaignStatus = "Ditolak",
+        campaignName = "Flash Sale 9.9",
+        productQty = "9000 Product",
+        startDate = "17/01/2020",
+        startTime = "08:30 WIB",
+        endDate = "18/01/2020",
+        endTime = "22:00 WIB"
+    )
+
+
+    val state = CampaignListViewModel.UiState(
+        campaigns = listOf(campaign),
+        campaignStatus = emptyList(),
+        campaignType = emptyList(),
+        selectedCampaignStatus = CampaignStatusSelection(listOf(2), "Berlangsung", true),
+        selectedCampaignType = CampaignTypeSelection("2", "Rilisan", "Rilisan", true),
+        isTickerDismissed = false,
+        showClearFilterIcon = true
+    )
+
+    NestTheme {
+        CampaignListScreen(
+            uiState = state,
+            onTapCampaignStatusFilter = {},
+            onTapCampaignTypeFilter = {},
+            onClearFilter = {},
+            onSearchBarKeywordSubmit = {},
+            onSearchbarCleared = {},
+            onTickerDismissed = {},
+            onTapShareCampaignButton = {},
+            onToolbarBackIconPressed = {},
+            onCampaignScrolled = {}
+        )
+    }
+}
+
