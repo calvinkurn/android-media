@@ -19,13 +19,11 @@ object ProductDetailInfoTracking {
         key: String,
         userId: String
     ) {
-        val annotation = key.replace("_", " ")
-
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-            action = "click - annotation $annotation on pdp",
+            action = "click - annotation $key on pdp",
             trackerId = "43296",
             userId = userId
         )
@@ -37,13 +35,11 @@ object ProductDetailInfoTracking {
         key: String,
         userId: String
     ) {
-        val annotation = key.replace("_", " ")
-
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS,
-            action = "impression - annotation $annotation on pdp",
+            action = "impression - annotation $key on pdp",
             trackerId = "43295",
             userId = userId
         )
