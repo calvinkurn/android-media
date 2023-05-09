@@ -97,8 +97,8 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `mpLogisticNewDriverAvailability` | [[GQL] Retry Availability Search New Driver- mpLogisticNewDriverAvailability](/wiki/spaces/LG/pages/2086543889)  | Used for sellers to get driver availability |
-| `MpLogisticNewDriverBooking` | [[GQL] Retry Booking Search New Driver - mpLogisticNewDriverBooking](/wiki/spaces/LG/pages/2086805947)  | Used for sellers to search new driver |
+| `mpLogisticNewDriverAvailability` | [[GQL] Retry Availability Search New Driver- mpLogisticNewDriverAvailability](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2086543889)  | Used for sellers to get driver availability |
+| `MpLogisticNewDriverBooking` | [[GQL] Retry Booking Search New Driver - mpLogisticNewDriverBooking](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2086805947)  | Used for sellers to search new driver |
 
 
 
@@ -111,4 +111,4 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 ## Useful Links
 
 - [Figma](https://www.figma.com/file/LqDp4TeVYb1jiZ51vQPMUk/SOM---Find-New-Driver-v1.1?node-id=17%3A21010&t=E41zdmWUpvFgbWjA-0)
-- [Tech Plan](/wiki/spaces/PA/pages/2089946340/Find+New+Driver)
+- [Tech Plan](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2089946340/Find+New+Driver)

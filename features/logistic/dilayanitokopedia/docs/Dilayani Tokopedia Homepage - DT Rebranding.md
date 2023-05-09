@@ -108,9 +108,9 @@ Phase 1 Dilayani Tokopedia Homepage development will have entry point from exist
 
 | **GQL Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| getHomeChannelV2 | [HPB/Home - [API:GQL] GraphQL getHomeChannelV2](/wiki/spaces/HP/pages/2043906993)  | Get widgets |
-| getHomeRecommendationProductV2 | [HPB/Home - [API:GQL] GraphQL getHomeRecommendationProductV2](/wiki/spaces/HP/pages/2053933208)  | Get recommendation |
-| getHomeIconV2 | [HPB/Home - [API:GQL] GraphQL getHomeIconV2](/wiki/spaces/HP/pages/2053540091)  | Get Icons for Anchor Tab |
+| getHomeChannelV2 | [HPB/Home - [API:GQL] GraphQL getHomeChannelV2](https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2043906993)  | Get widgets |
+| getHomeRecommendationProductV2 | [HPB/Home - [API:GQL] GraphQL getHomeRecommendationProductV2](https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2053933208)  | Get recommendation |
+| getHomeIconV2 | [HPB/Home - [API:GQL] GraphQL getHomeIconV2](https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2053540091)  | Get Icons for Anchor Tab |
 
 # Flow Diagram
 

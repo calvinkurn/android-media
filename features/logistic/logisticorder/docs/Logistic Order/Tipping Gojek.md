@@ -14,7 +14,7 @@ labels:
 | Product Manager | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)  |
 | Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
 | Module type | <!--start status:YELLOW-->FEATURE<!--end status-->  |
-| Product PRD | [PRD Tipping To Gojek Driver](/wiki/spaces/LG/pages/1606320593/Tipping+to+Gojek+Driver) |
+| Product PRD | [PRD Tipping To Gojek Driver](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1606320593/Tipping+to+Gojek+Driver) |
 | Module Location | `features/logistic/logisticorder` |
 
 ## Table of Content
@@ -41,7 +41,7 @@ Tokopedia wants to provide a seamless flow for buyers to give cashless tips to d
 
 ## Navigation
 
-part of [tracking page](/wiki/spaces/PA/pages/1843134919/Tracking+Page)
+part of [tracking page](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1843134919/Tracking+Page)
 
 Tipping Gojek → show when ordered with Gojek driver
 
@@ -55,7 +55,7 @@ Swift Driver Info → shown when user buy tokopedia now! product and the assigne
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `Get Driver Tips Info` | [Get Driver Tips Info](/wiki/spaces/LG/pages/1753187034/Get+Driver+Tips+Info)  | To get tipping detail info |
+| `Get Driver Tips Info` | [Get Driver Tips Info](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1753187034/Get+Driver+Tips+Info)  | To get tipping detail info |
 
 
 

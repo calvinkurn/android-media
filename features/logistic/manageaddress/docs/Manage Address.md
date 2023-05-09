@@ -23,8 +23,7 @@ This module is used for manage address list. There are several features in this 
 
 for details about the features can be seen this docs : 
 
-- [Logistic Address: Main Address](/wiki/spaces/PA/pages/2123239070/Logistic+Address%3A+Main+Address)
-- [Logistic Address: Share Address](/wiki/spaces/PA/pages/2034631325/Logistic+Address%3A+Share+Address)
-- [Logistic Address: Shop Location](/wiki/spaces/PA/pages/2114355201/Logistic+Address%3A+Shop+Location)
-- [Logistic Address: Address Choice (Trade In)](/wiki/spaces/PA/pages/2125889637) <!--start status:GREY-->DEPRECATED<!--end status-->
-
+- [Logistic Address: Main Address](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2123239070/Logistic+Address%3A+Main+Address)
+- [Logistic Address: Share Address](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2034631325/Logistic+Address%3A+Share+Address)
+- [Logistic Address: Shop Location](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2114355201/Logistic+Address%3A+Shop+Location)
+- [Logistic Address: Address Choice (Trade In)](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2125889637) <!--start status:GREY-->DEPRECATED<!--end status-->

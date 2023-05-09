@@ -86,13 +86,13 @@ RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REV
 
 | **GQL Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `KeroMapsAutoComplete` | [GMaps Autocomplete - /maps/autocomplete](/wiki/spaces/LG/pages/586482573)  | To get all available location using keyword |
-| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](/wiki/spaces/LG/pages/694818899)  | To get district detail from latlong |
-| `KeroPlacesGetDistrict` | [GMaps Autofill District Place Detail - /maps/places/get-district](/wiki/spaces/LG/pages/694750060)  | To get district detail from placeId |
-| `keroGetDistrictBoundaryArray` | [District Boundary - /v2/district-boundary/get](/wiki/spaces/LG/pages/586909442)  | To get boundary coordinate of `district_id` |
-| `kero_addr_get_district_center` | [Get District Center Geolocation & Geocell - /v1/district/geocell](/wiki/spaces/LG/pages/1811317845)  | To get latitude & longitude of district center from `district_id` |
-| `kero_get_address` | [Get Address - /maps/v1/address](/wiki/spaces/LG/pages/567411602)  | To get the detail address of a user. |
-| `kero_edit_address` | [Edit Address - /maps/v1/address/edit](/wiki/spaces/LG/pages/572194984)  | To edit address |
+| `KeroMapsAutoComplete` | [GMaps Autocomplete - /maps/autocomplete](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/586482573)  | To get all available location using keyword |
+| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694818899)  | To get district detail from latlong |
+| `KeroPlacesGetDistrict` | [GMaps Autofill District Place Detail - /maps/places/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694750060)  | To get district detail from placeId |
+| `keroGetDistrictBoundaryArray` | [District Boundary - /v2/district-boundary/get](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/586909442)  | To get boundary coordinate of `district_id` |
+| `kero_addr_get_district_center` | [Get District Center Geolocation & Geocell - /v1/district/geocell](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1811317845)  | To get latitude & longitude of district center from `district_id` |
+| `kero_get_address` | [Get Address - /maps/v1/address](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/567411602)  | To get the detail address of a user. |
+| `kero_edit_address` | [Edit Address - /maps/v1/address/edit](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/572194984)  | To edit address |
 
 ## Action Items
 
@@ -103,6 +103,6 @@ RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REV
 
 - Design : [Edit Address Revamp](https://www.figma.com/file/XHExyriihA9HCEhPEcvoWL/%5BUIUX%5D-Edit-Address-Revamp?node-id=378%3A81052)
 - GTM : [Edit Address Revamp](https://mynakama.tokopedia.com/datatracker/requestdetail/view/2874)
-- [Entry Point : Add & Edit Address (Source Param)](/wiki/spaces/PA/pages/2034631658)
-- [Add Pinpoint on Existing Address](/wiki/spaces/PA/pages/2052849693/Add+Pinpoint+on+Existing+Address)
-- [Hide Pinpoint Page Entry Point](/wiki/spaces/PA/pages/2092339526/Hide+Pinpoint+Page+Entry+Point)
+- [Entry Point : Add & Edit Address (Source Param)](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2034631658)
+- [Add Pinpoint on Existing Address](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2052849693/Add+Pinpoint+on+Existing+Address)
+- [Hide Pinpoint Page Entry Point](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2092339526/Hide+Pinpoint+Page+Entry+Point)

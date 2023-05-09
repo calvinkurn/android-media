@@ -14,7 +14,7 @@ labels:
 | Team | Minion Bob |
 | Release date | 10 Dec 2019 / <!--start status:GREY-->MA-3.55<!--end status--> |
 | Module type |  <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [PRD Category - Trade-in nationwide expansion](/wiki/spaces/CT/pages/507936904/PRD+Category+-+Trade-in+nationwide+expansion) (Trade-In) |
+| Product PRD | [PRD Category - Trade-in nationwide expansion](https://tokopedia.atlassian.net/wiki/spaces/CT/pages/507936904/PRD+Category+-+Trade-in+nationwide+expansion) (Trade-In) |
 | Module Location | `features/logistic/dropoff` |
 
 <!--toc-->
@@ -48,10 +48,10 @@ labels:
 
 | **GQL Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `KeroMapsAutoComplete` | [GMaps Autocomplete - /maps/autocomplete](/wiki/spaces/LG/pages/586482573) | To get all available location using keyword |
-| `KeroPlacesGetDistrict` | [GMaps Autofill District Place Detail - /maps/places/get-district](/wiki/spaces/LG/pages/694750060) | To get district detail from placeId |
-| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
-| `keroAddressStoreLocation` | [Get Store Location - /maps/store-location/address](/wiki/spaces/LG/pages/560238543)  | Getting Indomaret Location |
+| `KeroMapsAutoComplete` | [GMaps Autocomplete - /maps/autocomplete](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/586482573) | To get all available location using keyword |
+| `KeroPlacesGetDistrict` | [GMaps Autofill District Place Detail - /maps/places/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694750060) | To get district detail from placeId |
+| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
+| `keroAddressStoreLocation` | [Get Store Location - /maps/store-location/address](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/560238543)  | Getting Indomaret Location |
 
 ## Navigation
 

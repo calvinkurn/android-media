@@ -14,7 +14,7 @@ labels:
 | Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
 | Release date | 06 Jul 2022 / <!--start status:GREY-->MA-3.181<!--end status--> <!--start status:GREY-->SA-2.111<!--end status--> |
 | Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [Reschedule Pickup by Seller](/wiki/spaces/LG/pages/1746064426/Reschedule+Pickup+by+Seller)  |
+| Product PRD | [Reschedule Pickup by Seller](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1746064426/Reschedule+Pickup+by+Seller)  |
 | Module Location | `features/logistic/logisticseller` |
 
 ## Table of Contents
@@ -94,8 +94,8 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `mpLogisticGetReschedulePickup` | [Get Reschedule Information](/wiki/spaces/LG/pages/1848738815/Get+Reschedule+Information)  | Used for sellers get general Information about shipper to be reschedule |
-| `mpLogisticInsertReschedulePickup` | [Insert Reschedule Pickup](/wiki/spaces/LG/pages/1854605213/Insert+Reschedule+Pickup)  | Used for sellers to insert Reschedule Pickup Action |
+| `mpLogisticGetReschedulePickup` | [Get Reschedule Information](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1848738815/Get+Reschedule+Information)  | Used for sellers get general Information about shipper to be reschedule |
+| `mpLogisticInsertReschedulePickup` | [Insert Reschedule Pickup](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1854605213/Insert+Reschedule+Pickup)  | Used for sellers to insert Reschedule Pickup Action |
 
 
 

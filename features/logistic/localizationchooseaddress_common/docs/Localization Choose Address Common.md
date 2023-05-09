@@ -30,7 +30,7 @@ Sample usage can be seen in `GetMiniCartListUseCase.kt`
 
 Add this module as dependency if your module **only need address data as parameter to GQL call** (not the whole widget UI). 
 
-Refer to this [documentation](/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience) if your module also need the Choose Address Widget.
+Refer to this [documentation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience) if your module also need the Choose Address Widget.
 
 ## How to
 
@@ -68,4 +68,4 @@ implementation project(rootProject.ext.features.localizationchooseaddress_common
 
 ## Useful Link
 
-- [Choose Address Widget - Localized Experience](/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience)
+- [Choose Address Widget - Localized Experience](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1157243000/Choose+Address+Widget+-+Localized+Experience)

@@ -79,7 +79,7 @@ this use case can be use to edit used address. including update when there is no
 | `EditAddressParam.RECEIVER_PHONE]` | `String` | if just update pinpoint only, mandatory to add this param as well |
 <!--end expand-->
 
-###### related doc : [Add Pinpoint on Existing Address](/wiki/spaces/PA/pages/2052849693/Add+Pinpoint+on+Existing+Address)
+###### related doc : [Add Pinpoint on Existing Address](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2052849693/Add+Pinpoint+on+Existing+Address)
 
 #### EligibleForAddressUseCase <!--start status:RED-->REMOVE LATER<!--end status-->
 
@@ -103,7 +103,7 @@ This use case
 | `excludeSharedAddress` | `Boolean`  | default is false |
 <!--end expand-->
 
-###### related doc : [Manage Address](/wiki/spaces/PA/pages/1833893904/Manage+Address) , [Get Address Corner - /maps/v1/address/corner](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694794650/Get+Address+Corner+-+maps+v1+address+corner)
+###### related doc : [Manage Address](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1833893904/Manage+Address) , [Get Address Corner - /maps/v1/address/corner](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694794650/Get+Address+Corner+-+maps+v1+address+corner)
 
 #### CustomProductLogisticUseCase
 
@@ -131,7 +131,7 @@ to get list of courier by send `CPLParam` was just get from `getParam()`
 | `params` | `CPLParam` |   |
 <!--end expand-->
 
-###### related doc : [Custom Product Logistic](/wiki/spaces/PA/pages/2103097544/Custom+Product+Logistic)
+###### related doc : [Custom Product Logistic](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2103097544/Custom+Product+Logistic)
 
 #### RevGeocodeUseCase
 
@@ -141,7 +141,7 @@ Reverse Geocode Use Case use to get data address detail from lat long.
 
 #### ShopMultilocWhitelistUseCase
 
-how to use : [Eligible Multilocation](/wiki/spaces/PA/pages/1995178121/Eligible+Multilocation) 
+how to use : [Eligible Multilocation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1995178121/Eligible+Multilocation) 
 
 ### Utils
 
@@ -185,7 +185,7 @@ Param
 
 helper to get proof of delivery image. current use by tracking page and return to shipper
 
-how to use : [Proof of Delivery (POD)](/wiki/spaces/PA/pages/1967065652) 
+how to use : [Proof of Delivery (POD)](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1967065652) 
 
 ###### related doc : [Return to Shipper](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2107638120/Logistic+Seller+Return+To+Shipper)
 

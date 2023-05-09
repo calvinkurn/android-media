@@ -78,9 +78,9 @@ startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalLogistic
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `kero_maps_autocomplete` | [Get CPL Editor](/wiki/spaces/LG/pages/2061927259/Get+CPL+Editor)  | Get related location from a `keyword`, will return list of `place_id`s |
-| `kero_places_get_district` | [GMaps Autofill District Place Detail - /maps/places/get-district](/wiki/spaces/LG/pages/694750060)  | Get location detail based on `place_id`  |
-| `keroGetDistrictDetails` | [[Kero] Get District Details Docs](/wiki/spaces/LG/pages/588841721)  | Get available zip codes based on `district_id` |
-| `kero_maps_autofill` | [Get All City - maps/v1/address/get-all-city](/wiki/spaces/LG/pages/626229824)  | Get location formatted address based on latitude & longitude |
-| `ShopLocUpdateWarehouse` | [HTTP - Update warehouse Shop location](/wiki/spaces/LG/pages/963454179/HTTP+-+Update+warehouse+Shop+location)  | Save edit address |
-| `ShopLocCheckCouriersNewLoc` | [HTTP - Check Courier New Location](/wiki/spaces/LG/pages/987894946/HTTP+-+Check+Courier+New+Location)  | Check courier availability before saving edit address, if courier not available then user will be notified before saving edit address |
+| `kero_maps_autocomplete` | [Get CPL Editor](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2061927259/Get+CPL+Editor)  | Get related location from a `keyword`, will return list of `place_id`s |
+| `kero_places_get_district` | [GMaps Autofill District Place Detail - /maps/places/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694750060)  | Get location detail based on `place_id`  |
+| `keroGetDistrictDetails` | [[Kero] Get District Details Docs](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/588841721)  | Get available zip codes based on `district_id` |
+| `kero_maps_autofill` | [Get All City - maps/v1/address/get-all-city](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/626229824)  | Get location formatted address based on latitude & longitude |
+| `ShopLocUpdateWarehouse` | [HTTP - Update warehouse Shop location](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/963454179/HTTP+-+Update+warehouse+Shop+location)  | Save edit address |
+| `ShopLocCheckCouriersNewLoc` | [HTTP - Check Courier New Location](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/987894946/HTTP+-+Check+Courier+New+Location)  | Check courier availability before saving edit address, if courier not available then user will be notified before saving edit address |

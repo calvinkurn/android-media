@@ -14,7 +14,7 @@ labels:
 | **Module Type** | <!--start status:YELLOW-->FEATURE<!--end status--> |
 | **Module Location** | `features/logistic/logisticaddaddress` |
 | **Product PRD** | <https://docs.google.com/document/d/156V7TudzmolCvwQ8MQGoWOTDaHuHGSHxRVu-HqNQ7_E/edit?pli=1#heading=h.yhckt7m3bwde>  |
-| **Tech Plan** | [Use Designated Page When Pinpoint](/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)  |
+| **Tech Plan** | [Use Designated Page When Pinpoint](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)  |
 
 <!--toc-->
 
@@ -70,4 +70,4 @@ We will send back latitude, longitude, LocationPass, and SaveAddressDataModel vi
 
 ## Useful Links
 
-- [Tech plan](/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)
+- [Tech plan](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)

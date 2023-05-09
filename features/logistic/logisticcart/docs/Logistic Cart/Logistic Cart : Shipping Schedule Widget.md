@@ -16,7 +16,7 @@ labels:
 | Product PRD | [[PRD] NOW! Scheduled Delivery - Logistic Part](https://docs.google.com/document/d/1koEoZPc9OXWy3vPVQUsKjoYZV-JW8pYx6zrYk_TPDOg/edit#heading=h.pyqe7434atfh) |
 | Module Location | `features/logistic/logisticcart` |
 | Design | [Figma](https://www.figma.com/file/NYI8RQjjIJWrceE6ojxPCc/Scheduled-Delivery?node-id=1394%3A69713&t=VcFexNbE3N3i3at8-0) |
-| Tech Plan | [Now Schedule Delivery](/wiki/spaces/PA/pages/2060816481/Now+Schedule+Delivery) |
+| Tech Plan | [Now Schedule Delivery](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2060816481/Now+Schedule+Delivery) |
 
 ## Table of Contents
 
@@ -165,7 +165,7 @@ This is model to render data on radio button section
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `ongkirGetScheduledDeliveryRates` | ​[Scheduled Delivery Rates](/wiki/spaces/LG/pages/2076674436/Scheduled+Delivery+Rates)  | To get all data for schedule delivery rates |
+| `ongkirGetScheduledDeliveryRates` | ​[Scheduled Delivery Rates](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2076674436/Scheduled+Delivery+Rates)  | To get all data for schedule delivery rates |
 
 
 
@@ -174,4 +174,4 @@ This is model to render data on radio button section
 ## Useful Links
 
 - Design : [Figma](https://www.figma.com/file/8JT5Va3Bxgk2fAiX0pAn3y/Address-v3.3---Share-Address?node-id=732%3A85129&t=BsNPGPAHJMDhxXyo-0)
-- Tech plan : [Now Schedule Delivery](/wiki/spaces/PA/pages/2060816481/Now+Schedule+Delivery)
+- Tech plan : [Now Schedule Delivery](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2060816481/Now+Schedule+Delivery)

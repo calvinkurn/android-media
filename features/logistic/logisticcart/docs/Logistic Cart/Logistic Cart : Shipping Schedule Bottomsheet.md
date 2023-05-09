@@ -36,7 +36,7 @@ Related doc: [NOW! Scheduled Delivery - Main PRD](https://docs.google.com/docume
 
 ### Project Description
 
-Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied from Schelly [Scheduled Delivery Rates](/wiki/spaces/LG/pages/2076674436/Scheduled+Delivery+Rates) 
+Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied from Schelly [Scheduled Delivery Rates](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2076674436/Scheduled+Delivery+Rates) 
 
 - Normal Flow
 

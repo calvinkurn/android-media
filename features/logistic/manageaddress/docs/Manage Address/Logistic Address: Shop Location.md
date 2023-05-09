@@ -88,9 +88,9 @@ or also with this internal applink
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `ShopLocWhitelist` | [Is Eligible Multilocation](/wiki/spaces/LG/pages/1098123039/Is+Eligible+Multilocation)  | Differentiate seller with single / multi location |
-| `ShopLocGetAllLocations` | [HTTP - Get All Locations Info](/wiki/spaces/LG/pages/987562519/HTTP+-+Get+All+Locations+Info)  | Get All Seller Location (Multi-Loc) |
-| `ShopLocSetStatus` | [GRPC - Bulk Set Shop Location Status](/wiki/spaces/LG/pages/963754852/GRPC+-+Bulk+Set+Shop+Location+Status)  | Set Warehouse Status to active or inactive (Multi-Loc) |
+| `ShopLocWhitelist` | [Is Eligible Multilocation](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1098123039/Is+Eligible+Multilocation)  | Differentiate seller with single / multi location |
+| `ShopLocGetAllLocations` | [HTTP - Get All Locations Info](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/987562519/HTTP+-+Get+All+Locations+Info)  | Get All Seller Location (Multi-Loc) |
+| `ShopLocSetStatus` | [GRPC - Bulk Set Shop Location Status](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/963754852/GRPC+-+Bulk+Set+Shop+Location+Status)  | Set Warehouse Status to active or inactive (Multi-Loc) |
 
 
 

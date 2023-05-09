@@ -75,8 +75,4 @@ intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, sourceValue)
 
 | **GQL Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `kero_get_address` | [Get Address - /maps/v1/address](/wiki/spaces/LG/pages/567411602) | To Get Address List |
-
-  
-
-
+| `kero_get_address` | [Get Address - /maps/v1/address](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/567411602) | To Get Address List |

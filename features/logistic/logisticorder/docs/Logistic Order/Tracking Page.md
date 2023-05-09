@@ -29,7 +29,7 @@ Add copy paste button and Empty Field state.
 <!--end expand-->
 
 <!--start expand:24 June (Ma-3.180)-->
-[Proof of Delivery (POD)](/wiki/spaces/PA/pages/1967065652)
+[Proof of Delivery (POD)](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1967065652)
 <!--end expand-->
 
 ## **Overview**
@@ -79,10 +79,10 @@ one example of entry point of tracking page is Detail Pesanan with click in Laca
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `logistic_tracking` | [[Internal/GQL] Get Tracking](/wiki/spaces/LG/pages/570294330)  | To get all tracking info |
-| `retryAvailability` | [[MP Log] Retry Availability - /api/logistic/i/v1/retry\_availability](/wiki/spaces/LG/pages/2086542990)  | To check if courier is avail to retry pickup |
-| `retryBooking` | [[MP Log] Retry Booking - /api/logistic/i/v1/retry\_booking](/wiki/spaces/LG/pages/840115009)  | Doing retry pickup |
-| get-delivery-image | [Get Delivery Image](/wiki/spaces/LG/pages/1412012172/Get+Delivery+Image)  | to show image from courier |
+| `logistic_tracking` | [[Internal/GQL] Get Tracking](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/570294330)  | To get all tracking info |
+| `retryAvailability` | [[MP Log] Retry Availability - /api/logistic/i/v1/retry\_availability](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2086542990)  | To check if courier is avail to retry pickup |
+| `retryBooking` | [[MP Log] Retry Booking - /api/logistic/i/v1/retry\_booking](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/840115009)  | Doing retry pickup |
+| get-delivery-image | [Get Delivery Image](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1412012172/Get+Delivery+Image)  | to show image from courier |
 | `get_edit_shipping_form.pl` | - | get courier list on confirm shipping |
 | `proceed_shipping.pl` | - | proceed shipping from seller side |
 | `/v4/order/change_courier` | - | change courier before shipping |

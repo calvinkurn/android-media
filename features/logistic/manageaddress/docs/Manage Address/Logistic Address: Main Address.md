@@ -62,9 +62,9 @@ or also from the notification with this applink
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
-| `kero_set_default_address` | [Set Default Address - /maps/v1/address/primary](/wiki/spaces/LG/pages/572195326) | Set User Default Address |
-| `kero_remove_aadress` | [Remove Address - /maps/v1/address/remove](/wiki/spaces/LG/pages/572162326) | Remove User Address |
+| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
+| `kero_set_default_address` | [Set Default Address - /maps/v1/address/primary](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/572195326) | Set User Default Address |
+| `kero_remove_aadress` | [Remove Address - /maps/v1/address/remove](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/572162326) | Remove User Address |
 
 
 

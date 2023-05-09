@@ -96,7 +96,7 @@ startActivityForResult(
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `ongkirGetCPLEditor` | [Get CPL Editor](/wiki/spaces/LG/pages/2061927259/Get+CPL+Editor)  | Get available and chosen courier for selected product |
+| `ongkirGetCPLEditor` | [Get CPL Editor](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2061927259/Get+CPL+Editor)  | Get available and chosen courier for selected product |
 
 # Useful Links
 

@@ -54,5 +54,5 @@ To go to COD activation page, you can call  internal applink `tokopedia-android-
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `shopFeatureData` | [Shop Feature Query](/wiki/spaces/MC/pages/622891217/Shop+Feature+Query)  | Get Shop Feature Data |
-| `updateShopFeature` | [Update Shop Feature](/wiki/spaces/MC/pages/617913598/Update+Shop+Feature)  | Update Shop FeatureSend param with- `type`: 1 (cod activation)<br/> |
+| `shopFeatureData` | [Shop Feature Query](https://tokopedia.atlassian.net/wiki/spaces/MC/pages/622891217/Shop+Feature+Query)  | Get Shop Feature Data |
+| `updateShopFeature` | [Update Shop Feature](https://tokopedia.atlassian.net/wiki/spaces/MC/pages/617913598/Update+Shop+Feature)  | Update Shop FeatureSend param with- `type`: 1 (cod activation)<br/> |

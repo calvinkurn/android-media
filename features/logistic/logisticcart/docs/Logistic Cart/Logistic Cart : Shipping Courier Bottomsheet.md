@@ -29,7 +29,7 @@ Unify shipping courier bottomsheet checkout & occ
 
 ### Background
 
-Previously the shipping courier bottomsheet was separated between [checkout page](/wiki/spaces/PA/pages/1426720585/Checkout) & [occ page](/wiki/spaces/PA/pages/1412564357/One+Click+Checkout). On checkout page bottomsheet will be displayed when call function `onChangeShippingCourier` in [ShipmentFragment](https://github.com/tokopedia/android-tokopedia-core/blob/release/features/transaction/checkout/src/main/java/com/tokopedia/checkout/view/ShipmentFragment.java) and on OCC page bottomsheet will be displayed when call function `chooseCourier` in [OrderSummaryPageFragment](https://github.com/tokopedia/android-tokopedia-core/blob/release/features/transaction/oneclickcheckout/src/main/java/com/tokopedia/oneclickcheckout/order/view/OrderSummaryPageFragment.kt).  
+Previously the shipping courier bottomsheet was separated between [checkout page](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1426720585/Checkout) & [occ page](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1412564357/One+Click+Checkout). On checkout page bottomsheet will be displayed when call function `onChangeShippingCourier` in [ShipmentFragment](https://github.com/tokopedia/android-tokopedia-core/blob/release/features/transaction/checkout/src/main/java/com/tokopedia/checkout/view/ShipmentFragment.java) and on OCC page bottomsheet will be displayed when call function `chooseCourier` in [OrderSummaryPageFragment](https://github.com/tokopedia/android-tokopedia-core/blob/release/features/transaction/oneclickcheckout/src/main/java/com/tokopedia/oneclickcheckout/order/view/OrderSummaryPageFragment.kt).  
 So we need to maintain two different bottomsheets when there are changes. therefore we took the initiative to unify this widget to make it easier in the future when there are changes we only need to make changes in one bottomsheet.  
 
 
@@ -94,4 +94,4 @@ ShippingCourierBottomsheet.show(
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `ratesV3` | ​[Rates V3](/wiki/spaces/LG/pages/567279712/Rates+V3)  | To get all data for shipping widget |
+| `ratesV3` | ​[Rates V3](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/567279712/Rates+V3)  | To get all data for shipping widget |

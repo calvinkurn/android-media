@@ -61,7 +61,7 @@ or also from the notification with this applink
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
+| `keroAddressCorner` | [Get Address Corner - /maps/v1/address/corner](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694794650) | Get All User Addresses |
 
 
 

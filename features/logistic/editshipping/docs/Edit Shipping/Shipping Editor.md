@@ -19,7 +19,7 @@ labels:
 ## Release Notes
 
 <!--start expand:20 Jan 2023 (MA-3.204/SA-2.134)-->
-[Whitelabel Instan](/wiki/spaces/PA/pages/2104460915/Whitelabel+Instan)
+[Whitelabel Instan](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2104460915/Whitelabel+Instan)
 <!--end expand-->
 
 <!--start expand:20 May 2022 (MA-3.175/SA-2.105)-->
@@ -67,9 +67,9 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
 
 | **GQL & API Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](/wiki/spaces/LG/pages/694818899) | To get district detail from latlong |
+| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694818899) | To get district detail from latlong |
 | `get_shipping_info.pl` | - | To get shipping editor info |
-| `shippingEditorMobilePopup` | [BO Deactivation Confirmation Popup](/wiki/spaces/LG/pages/862292063/BO+Deactivation+Confirmation+Popup)  | To validate new shipper selection (deactivate Bebas Ongkir) |
+| `shippingEditorMobilePopup` | [BO Deactivation Confirmation Popup](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/862292063/BO+Deactivation+Confirmation+Popup)  | To validate new shipper selection (deactivate Bebas Ongkir) |
 
 - Multi Loc
 
@@ -77,12 +77,12 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
 
 | **GQL Name** | **Documentation Link** | **Description** |
 | --- | --- | --- |
-| `ShopLocWhitelist` | [Eligible Multilocation](/wiki/spaces/PA/pages/1995178121/Eligible+Multilocation)  | To define whether seller is single loc seller or multi loc seller |
-| `ongkirShippingEditorGetShipperDetail` | [Get Shipper Details](/wiki/spaces/LG/pages/1020857519/Get+Shipper+Details)  | To get shipping editor details |
-| `ongkirShippingEditor` | [Get Shipper List Page](/wiki/spaces/LG/pages/984973950/Get+Shipper+List+Page)  | To get shipping editor shipper list |
-| `ongkirShippingEditorGetShipperTicker` | [Get Shipper Ticker](/wiki/spaces/LG/pages/980768555/Get+Shipper+Ticker)  | To get shipping editor shipper ticker |
-| `ongkirShippingEditorSave` | [Save Shipping Editor](/wiki/spaces/LG/pages/984974003/Save+Shipping+Editor)  | To save shipping editor based on user’s courier input |
-| `ongkirShippingEditorPopup` | [Validate Popup Shipping Editor](/wiki/spaces/LG/pages/980768600/Validate+Popup+Shipping+Editor)  | To validate shippping editor popup based on user’s courier input |
+| `ShopLocWhitelist` | [Eligible Multilocation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1995178121/Eligible+Multilocation)  | To define whether seller is single loc seller or multi loc seller |
+| `ongkirShippingEditorGetShipperDetail` | [Get Shipper Details](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1020857519/Get+Shipper+Details)  | To get shipping editor details |
+| `ongkirShippingEditor` | [Get Shipper List Page](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/984973950/Get+Shipper+List+Page)  | To get shipping editor shipper list |
+| `ongkirShippingEditorGetShipperTicker` | [Get Shipper Ticker](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/980768555/Get+Shipper+Ticker)  | To get shipping editor shipper ticker |
+| `ongkirShippingEditorSave` | [Save Shipping Editor](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/984974003/Save+Shipping+Editor)  | To save shipping editor based on user’s courier input |
+| `ongkirShippingEditorPopup` | [Validate Popup Shipping Editor](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/980768600/Validate+Popup+Shipping+Editor)  | To validate shippping editor popup based on user’s courier input |
 
 ## Useful Links
 

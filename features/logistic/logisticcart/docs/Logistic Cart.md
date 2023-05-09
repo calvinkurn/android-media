@@ -24,19 +24,19 @@ Logistic cart is a module that contains widgets and bottomsheets part of logisti
 
 In this module there are several widget views and bottomsheets : 
 
-- [Logistic Cart : Shipping Courier Bottomsheet](/wiki/spaces/PA/pages/2154529498/Logistic+Cart+%3A+Shipping+Courier+Bottomsheet)
-- [Logistic Cart : Shipping Duration Bottomsheet](/wiki/spaces/PA/pages/2152824899/Logistic+Cart+%3A+Shipping+Duration+Bottomsheet)
-- [Logistic Cart : Shipping Widget](/wiki/spaces/PA/pages/2049454803/Logistic+Cart+%3A+Shipping+Widget)
-- [Logistic Cart : Shipping OCC Widget](/wiki/spaces/PA/pages/2052555030/Logistic+Cart+%3A+Shipping+OCC+Widget)
-- [Logistic Cart : Shipping Schedule Widget](/wiki/spaces/PA/pages/2084702465/Logistic+Cart+%3A+Shipping+Schedule+Widget)
-- [Logistic Cart : Shipping Schedule Bottomsheet](/wiki/spaces/PA/pages/2086731957/Logistic+Cart+%3A+Shipping+Schedule+Bottomsheet)
+- [Logistic Cart : Shipping Courier Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2154529498/Logistic+Cart+%3A+Shipping+Courier+Bottomsheet)
+- [Logistic Cart : Shipping Duration Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2152824899/Logistic+Cart+%3A+Shipping+Duration+Bottomsheet)
+- [Logistic Cart : Shipping Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2049454803/Logistic+Cart+%3A+Shipping+Widget)
+- [Logistic Cart : Shipping OCC Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2052555030/Logistic+Cart+%3A+Shipping+OCC+Widget)
+- [Logistic Cart : Shipping Schedule Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2084702465/Logistic+Cart+%3A+Shipping+Schedule+Widget)
+- [Logistic Cart : Shipping Schedule Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2086731957/Logistic+Cart+%3A+Shipping+Schedule+Bottomsheet)
 
 ### Entry Point
 
 All entry points for widgets & bottomsheets in the logistics cart from the checkout page & occ page. For details about checkout and occ can be see here
 
-- [Checkout](/wiki/spaces/PA/pages/1426720585/Checkout)
-- [OCC (One Click Checkout)](/wiki/spaces/PA/pages/1412564357/One+Click+Checkout)
+- [Checkout](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1426720585/Checkout)
+- [OCC (One Click Checkout)](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1412564357/One+Click+Checkout)
 
 ### Usage
 
@@ -44,9 +44,9 @@ All entry points for widgets & bottomsheets in the logistics cart from the check
 
 | **Name** | **Description** | **Checkout Page** | **One Click Checkout Page** |
 | --- | --- | --- | --- |
-| [Logistic Cart : Shipping Courier Bottomsheet](/wiki/spaces/PA/pages/2154529498/Logistic+Cart+%3A+Shipping+Courier+Bottomsheet) | This is bottomsheet to select courier used on checkout page and occ page | ✅  |  ✅ |
-| [Logistic Cart : Shipping Duration Bottomsheet](/wiki/spaces/PA/pages/2152824899/Logistic+Cart+%3A+Shipping+Duration+Bottomsheet) | This is bottomsheet to select shipping duration used on checkout page and occ page | ✅ | ✅ |
-| [Logistic Cart : Shipping Widget](/wiki/spaces/PA/pages/2049454803/Logistic+Cart+%3A+Shipping+Widget) | This is widget to show selected shipping duration and courier only used on checkout page | ✅ | - |
-| [Logistic Cart : Shipping OCC Widget](/wiki/spaces/PA/pages/2052555030/Logistic+Cart+%3A+Shipping+OCC+Widget) | This is widget to show selected shipping duration and courier only used on occ page | - | ✅ |
-| [Logistic Cart : Shipping Schedule Widget](/wiki/spaces/PA/pages/2084702465/Logistic+Cart+%3A+Shipping+Schedule+Widget) | This is widget to show schedule delivery widget only used on checkout page | ✅ | - |
-| [Logistic Cart : Shipping Schedule Bottomsheet](/wiki/spaces/PA/pages/2086731957/Logistic+Cart+%3A+Shipping+Schedule+Bottomsheet) | This is bottomsheet to select schedule delivery | ✅ | - |
+| [Logistic Cart : Shipping Courier Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2154529498/Logistic+Cart+%3A+Shipping+Courier+Bottomsheet) | This is bottomsheet to select courier used on checkout page and occ page | ✅  |  ✅ |
+| [Logistic Cart : Shipping Duration Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2152824899/Logistic+Cart+%3A+Shipping+Duration+Bottomsheet) | This is bottomsheet to select shipping duration used on checkout page and occ page | ✅ | ✅ |
+| [Logistic Cart : Shipping Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2049454803/Logistic+Cart+%3A+Shipping+Widget) | This is widget to show selected shipping duration and courier only used on checkout page | ✅ | - |
+| [Logistic Cart : Shipping OCC Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2052555030/Logistic+Cart+%3A+Shipping+OCC+Widget) | This is widget to show selected shipping duration and courier only used on occ page | - | ✅ |
+| [Logistic Cart : Shipping Schedule Widget](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2084702465/Logistic+Cart+%3A+Shipping+Schedule+Widget) | This is widget to show schedule delivery widget only used on checkout page | ✅ | - |
+| [Logistic Cart : Shipping Schedule Bottomsheet](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2086731957/Logistic+Cart+%3A+Shipping+Schedule+Bottomsheet) | This is bottomsheet to select schedule delivery | ✅ | - |

@@ -90,14 +90,14 @@ or also from the notification with this applink
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `KeroAddrValidateShareAddressRequestAsSender` | [[GQL / gRPC] Validate Share Address Request As Sender](/wiki/spaces/LG/pages/2004192040)  | To validate share address request as sender when entry point from notification center (has param `ruid`) |
-| `KeroAddrValidateShareAddressRequestAsReceiver` | [[GQL / gRPC] Validate Share Address Request As Receiver](/wiki/spaces/LG/pages/2004485920)  | To validate share address request as receiver when entry point from notification center (has param `suid`) |
-| `KeroAddrGetSharedAddressList` | [[GQL / gRPC] Get Shared Address List](/wiki/spaces/LG/pages/1989414063)  | To get shared address list |
-| `KeroAddrSaveSharedAddress` | [[GQL] Save Shared Address](/wiki/spaces/LG/pages/1991345373)  | To save shared address (support to save multiple address) |
-| `KeroAddrDeleteSharedAddress` | [[GQL] Delete Shared Address](/wiki/spaces/LG/pages/1991345365)  | To delete shared address (support to delete multiple address) |
-| `KeroAddrSelectAddressForShareAddressRequest` | [[GQL] Select Address For Share Address Request](/wiki/spaces/LG/pages/1991345381)  | To share address from notification center when there is an address request  |
-| `KeroAddrSendShareAddressRequest` | [[GQL] Send Share Address Request](/wiki/spaces/LG/pages/1991345389)  | To request address to other user |
-| `KeroAddrShareAddressToUser` | [[GQL] Share Address To User](/wiki/spaces/LG/pages/1991836660)  | To share address from address list |
+| `KeroAddrValidateShareAddressRequestAsSender` | [[GQL / gRPC] Validate Share Address Request As Sender](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2004192040)  | To validate share address request as sender when entry point from notification center (has param `ruid`) |
+| `KeroAddrValidateShareAddressRequestAsReceiver` | [[GQL / gRPC] Validate Share Address Request As Receiver](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2004485920)  | To validate share address request as receiver when entry point from notification center (has param `suid`) |
+| `KeroAddrGetSharedAddressList` | [[GQL / gRPC] Get Shared Address List](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1989414063)  | To get shared address list |
+| `KeroAddrSaveSharedAddress` | [[GQL] Save Shared Address](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1991345373)  | To save shared address (support to save multiple address) |
+| `KeroAddrDeleteSharedAddress` | [[GQL] Delete Shared Address](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1991345365)  | To delete shared address (support to delete multiple address) |
+| `KeroAddrSelectAddressForShareAddressRequest` | [[GQL] Select Address For Share Address Request](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1991345381)  | To share address from notification center when there is an address request  |
+| `KeroAddrSendShareAddressRequest` | [[GQL] Send Share Address Request](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1991345389)  | To request address to other user |
+| `KeroAddrShareAddressToUser` | [[GQL] Share Address To User](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1991836660)  | To share address from address list |
 
 
 

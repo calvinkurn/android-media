@@ -149,4 +149,4 @@ ShippingDurationBottomsheet.show(
 
 | **GQL Name** | **Documentation** | **Description** |
 | --- | --- | --- |
-| `ratesV3` | ​[Rates V3](/wiki/spaces/LG/pages/567279712/Rates+V3)  | To get all data for shipping widget |
+| `ratesV3` | ​[Rates V3](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/567279712/Rates+V3)  | To get all data for shipping widget |
