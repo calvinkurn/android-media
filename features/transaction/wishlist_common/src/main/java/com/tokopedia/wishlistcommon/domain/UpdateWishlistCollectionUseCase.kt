@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcollection.domain
+package com.tokopedia.wishlistcommon.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,8 +6,8 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
-import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import javax.inject.Inject
 
 @GqlQuery("UpdateWishlistCollectionMutation", UpdateWishlistCollectionUseCase.query)
