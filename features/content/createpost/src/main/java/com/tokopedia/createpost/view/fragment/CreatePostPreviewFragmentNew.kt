@@ -5,15 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.view.GestureDetector
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
@@ -42,22 +34,13 @@ import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 /**
@@ -149,6 +132,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
@@ -407,11 +391,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             productTagBottomSheet = ContentCreationProductTagBottomSheet()
         }
         if (!productTagBottomSheet.isVisible) {
-            productTagBottomSheet.show(Bundle.EMPTY,
+            productTagBottomSheet.show(
+                Bundle.EMPTY,
                 childFragmentManager,
                 productList,
                 this,
-                mediaType = mediaType)
+                mediaType = mediaType
+            )
         }
     }
 
@@ -566,12 +552,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (mediaModel.products.size > 0) {
             if (mediaModel.type == MediaType.VIDEO) {
                 bindVideo(mediaModel)
-            else {
+            } else {
                 bindImage(mediaModel)
                 openBottomSheet(mediaModel.products, MediaType.IMAGE)
             }
+            updateResultIntent()
         }
-        updateResultIntent()
     }
 
     private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
@@ -666,6 +652,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         return isAdded
     }
+
     fun detach() {
         if (videoPlayer != null) {
             videoPlayer?.pause()
@@ -674,6 +661,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             videoPlayer = null
         }
     }
+
     private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
         return if (bitmap.width > bitmap.height) {
             val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
@@ -691,6 +679,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             0
         }
     }
+
     private fun setMediaWidthAndHeight() {
         val mediaModel = createPostModel.completeImageList[0]
         try {
