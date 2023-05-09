@@ -2,8 +2,6 @@ package com.tokopedia.tokofood.feature.merchant.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 

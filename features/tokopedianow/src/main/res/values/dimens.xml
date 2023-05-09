@@ -31,4 +31,6 @@
     <dimen name="tokopedianow_product_card_margin_end_corner">16dp</dimen>
     <dimen name="tokopedianow_product_card_add_button_size">46dp</dimen>
     <dimen name="tokopedianow_space_item_claim_coupon_widget">4dp</dimen>
+    <dimen name="tokopedianow_chip_list_spacing">4dp</dimen>
+    <dimen name="tokopedianow_chip_list_margin">16dp</dimen>
 </resources>
