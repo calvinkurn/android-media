@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.view.GestureDetector
+import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -83,6 +85,34 @@ class FeedPostVideoViewHolder(
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
 
             with(binding) {
+                GestureDetector(root.context,
+                    object : GestureDetector.SimpleOnGestureListener() {
+                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onDoubleTap(e: MotionEvent): Boolean {
+                            if (data.like.isLiked.not()) {
+                                listener.onLikePostCLicked(
+                                    data.id,
+                                    data.like.isLiked,
+                                    absoluteAdapterPosition,
+                                    trackerDataModel
+                                        ?: trackerMapper.transformVideoContentToTrackerModel(data),
+                                    true
+                                )
+                            }
+                            return true
+                        }
+
+                        override fun onDown(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onLongPress(e: MotionEvent) {
+                        }
+                    })
+
                 bindAuthor(data)
                 bindCaption(data)
                 bindProductTag(data)
