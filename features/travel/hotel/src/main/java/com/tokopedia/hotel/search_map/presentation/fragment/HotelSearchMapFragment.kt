@@ -722,7 +722,7 @@ class HotelSearchMapFragment :
 
         sortIndex?.let { index ->
             val sort = findSortValue(selectedFilter[index])
-            sort?.let { hotelSearchMapViewModel.addSort(it) }
+            sort?.let { hotelSearchMapViewModel.addSort(it) }?: hotelSearchMapViewModel.addSort(Sort())
             selectedFilter.removeAt(index)
         }
 
