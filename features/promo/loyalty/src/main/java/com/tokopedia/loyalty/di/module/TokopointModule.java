@@ -1,6 +1,5 @@
 package com.tokopedia.loyalty.di.module;
 
-import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 
