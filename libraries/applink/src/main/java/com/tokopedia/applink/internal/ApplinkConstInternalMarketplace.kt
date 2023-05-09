@@ -1,5 +1,7 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -144,6 +146,14 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
+    const val SHOP_PAGE_SALAM = "$SHOP_PAGE_BASE/${ApplinkConst.SALAM_UMRAH_SHOP_ID}"
+
+    const val SHOP_PAGE_NOW_1 = "$SHOP_PAGE_BASE/${TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1}"
+
+    const val SHOP_PAGE_NOW_2 = "$SHOP_PAGE_BASE/${TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2}"
+
+    const val SHOP_PAGE_NOW_STAGING = "$SHOP_PAGE_BASE/${TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID}"
+
     // GmSubscribeHomeActivity
     const val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
 
@@ -231,8 +241,7 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
 
     // ShopPenaltyActivity
-    @JvmField
-    val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+    const val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
 
     // ShopPenaltyDetailPageActivity
     @JvmField

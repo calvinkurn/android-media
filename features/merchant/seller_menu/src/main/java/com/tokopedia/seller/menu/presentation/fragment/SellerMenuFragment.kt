@@ -232,6 +232,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopProductLiveData) {
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
+                else -> {
+                    //no-op
+                }
             }
             swipeRefreshLayout?.isRefreshing = false
         }
@@ -246,6 +249,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
                         item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
                     })
+                }
+                else -> {
+                    //no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false

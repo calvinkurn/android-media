@@ -15,9 +15,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 
 class ChangeItemViewHolder(
-        private val userSession: UserSessionInterface,
-        itemView: View?
-): AbstractViewHolder<ChangeSection>(itemView) {
+    private val userSession: UserSessionInterface,
+    itemView: View?
+) : AbstractViewHolder<ChangeSection>(itemView) {
 
     private val imgIcon = itemView?.findViewById<ImageView>(R.id.imgIcon)
     private val txtTitle = itemView?.findViewById<Typography>(R.id.txtTitle)
@@ -33,9 +33,12 @@ class ChangeItemViewHolder(
             imgIcon?.setImageResource(element.icon)
 
             btnChange?.setOnClickListener {
-                when(data.state) {
+                when (data.state) {
                     is Email -> ChangeEmailLink(context, userSession.email)
                     is Phone -> userSettingApplink(CHANGE_PHONE_NUMBER)
+                    else -> {
+                        // no op
+                    }
                 }
             }
         }
@@ -44,9 +47,9 @@ class ChangeItemViewHolder(
     private fun userSettingApplink(applink: String) {
         context?.let {
             val intent = it.changeUserInfoIntent(
-                    applink,
-                    userSession.email,
-                    userSession.phoneNumber
+                applink,
+                userSession.email,
+                userSession.phoneNumber
             )
             it.startActivity(intent)
         }
@@ -55,5 +58,4 @@ class ChangeItemViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_change_section
     }
-
 }

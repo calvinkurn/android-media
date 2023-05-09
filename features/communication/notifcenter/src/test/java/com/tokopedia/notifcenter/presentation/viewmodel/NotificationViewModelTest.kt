@@ -738,10 +738,9 @@ class NotificationViewModelTest {
         // given
         val listOfRecommWidget = productRecommResponse
             .productRecommendationWidget
-            ?.data
-            ?.let {
-                it.mappingToRecommendationModel()
-            }
+            .data
+            .mappingToRecommendationModel()
+
 
         val expectedValue = listOfRecommWidget.first()
 

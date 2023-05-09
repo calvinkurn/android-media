@@ -343,6 +343,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
                         toasterType = Toaster.TYPE_ERROR,
                         message = ErrorHandler.getErrorMessage(requireContext(), cache.value.state.error)
                     )
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }
@@ -354,6 +357,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 when (event) {
                     OpenUserReportEvent -> {
                         doActionUserReport()
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

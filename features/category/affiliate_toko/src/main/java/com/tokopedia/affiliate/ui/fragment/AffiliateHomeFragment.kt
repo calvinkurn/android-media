@@ -166,7 +166,7 @@ class AffiliateHomeFragment :
                 bottomNavBarClickListener = bottomNavBarClickListener,
                 affiliatePerformanceChipClick = this
             ),
-            source = AffiliateAdapter.SOURCE_HOME,
+            source = AffiliateAdapter.PageSource.SOURCE_HOME,
             userId = userSessionInterface.userId
         )
     }
@@ -634,9 +634,15 @@ class AffiliateHomeFragment :
     }
 
     private fun partialReset() {
-        val index = adapter.list.indexOfFirst { it is AffiliatePerformaSharedProductCardsModel }
-        adapter.list.removeAll { it is AffiliatePerformaSharedProductCardsModel }
-        adapter.notifyItemRangeRemoved(index, listSize - index)
+        val index = adapter.list.indexOfFirst {
+            it is AffiliatePerformaSharedProductCardsModel || it is AffiliateNoPromoItemFoundModel
+        }
+        adapter.list.removeAll {
+            it is AffiliatePerformaSharedProductCardsModel || it is AffiliateNoPromoItemFoundModel
+        }
+        if (index >= 0) {
+            adapter.notifyItemRangeRemoved(index, listSize - index)
+        }
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
         isNoMoreData = false

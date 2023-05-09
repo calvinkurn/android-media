@@ -14,7 +14,9 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
 class CreateReviewTopics @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = Int.ZERO
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewTopicsBinding>(context, attrs, defStyleAttr) {
 
     companion object {
@@ -41,7 +43,9 @@ class CreateReviewTopics @JvmOverloads constructor(
     private var isFirstShow: Boolean = true
 
     override val binding = WidgetCreateReviewTopicsBinding.inflate(
-        LayoutInflater.from(context), this, true
+        LayoutInflater.from(context),
+        this,
+        true
     )
 
     private fun WidgetCreateReviewTopicsBinding.showTopics(topics: List<String>) {

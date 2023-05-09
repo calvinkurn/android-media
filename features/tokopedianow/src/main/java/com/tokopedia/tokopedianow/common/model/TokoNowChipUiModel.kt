@@ -9,10 +9,15 @@ data class TokoNowChipUiModel(
     val text: String,
     val imageUrl: String = "",
     val selected: Boolean = false,
-    val isPopular: Boolean = true
+    val isPopular: Boolean = true,
+    val param: String = ""
 ): Visitable<TokoNowChipTypeFactory> {
 
     override fun type(typeFactory: TokoNowChipTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getChangePayload(newItem: TokoNowChipUiModel): Any? {
+        return selected != newItem.selected
     }
 }
