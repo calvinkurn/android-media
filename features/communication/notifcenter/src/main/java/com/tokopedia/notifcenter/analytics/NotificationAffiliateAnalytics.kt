@@ -6,14 +6,14 @@ import com.tokopedia.track.TrackApp
 
 object NotificationAffiliateAnalytics {
 
-    private const val BUSINESS_UNIT = "businessUnit"
+    private const val BUSINESS_UNIT = "affiliate"
     private const val CURRENT_SITE = "tokopediamarketplace"
     private val SESSION_IRIS = TrackApp.getInstance().gtm.irisSessionId
 
     private object Tracker {
-        const val EDUCATION_IMPRESSION = 42732
-        const val EDUCATION_SEE_MORE_CLICK = 42733
-        const val EDUCATION_CLICK = 42754
+        const val EDUCATION_IMPRESSION = 42736
+        const val EDUCATION_SEE_MORE_CLICK = 42739
+        const val EDUCATION_CLICK = 42737
     }
 
     private object EventKey {
