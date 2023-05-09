@@ -168,6 +168,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorUiOnErrorData()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -188,6 +191,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorUiOnErrorData()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

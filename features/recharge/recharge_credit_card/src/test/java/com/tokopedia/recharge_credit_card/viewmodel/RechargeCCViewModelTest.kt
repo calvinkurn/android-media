@@ -28,11 +28,15 @@ import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.Validation
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -45,7 +49,7 @@ class RechargeCCViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -334,10 +338,10 @@ class RechargeCCViewModelTest {
                 validations = getMockValidations()
             )
         )
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val clientNumber = VALID_CC_NUMBER
             rechargeCCViewModel.validateCCNumber(clientNumber)
-            advanceTimeBy(RechargeCCConst.VALIDATOR_DELAY_TIME)
+            advanceUntilIdle()
 
             val actualData = rechargeCCViewModel.prefixValidation
             Assert.assertNotNull(actualData)
@@ -353,7 +357,7 @@ class RechargeCCViewModelTest {
                 validations = getMockValidations()
             )
         )
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val clientNumber = MASKED_CC_NUMBER
             rechargeCCViewModel.validateCCNumber(clientNumber)
 
@@ -365,7 +369,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun cancelValidatorJob_GivenNonNullJob_ShouldCancelJob() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             rechargeCCViewModel.validateCCNumber(VALID_CC_NUMBER)
             rechargeCCViewModel.cancelValidatorJob()
             Assert.assertTrue(rechargeCCViewModel.validatorJob?.isCancelled == true)
@@ -374,7 +378,7 @@ class RechargeCCViewModelTest {
 
     @Test
     fun cancelValidatorJob_GivenNullJob_JobStaysNull() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             rechargeCCViewModel.cancelValidatorJob()
             Assert.assertNull(rechargeCCViewModel.validatorJob)
         }

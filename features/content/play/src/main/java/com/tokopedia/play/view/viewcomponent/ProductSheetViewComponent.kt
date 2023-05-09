@@ -27,6 +27,7 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -137,7 +138,7 @@ class ProductSheetViewComponent(
                 listener.onInformationImpressed(this@ProductSheetViewComponent)
             }
         },
-        productListener = productCardListener
+        productListener = productCardListener,
     )
 
     private val itemDecoration: ProductLineItemDecoration

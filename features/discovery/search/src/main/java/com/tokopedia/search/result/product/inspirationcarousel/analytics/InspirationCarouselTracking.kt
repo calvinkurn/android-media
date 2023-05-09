@@ -16,7 +16,6 @@ object InspirationCarouselTracking {
 
     private const val IMPRESSION_CAROUSEL_PRODUCT = "impression - carousel product"
     private const val CAROUSEL_UNIFICATION_LIST_NAME = "/search - carousel %s - component:%s"
-    private const val IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner"
     private const val CLICK_INSPIRATION_CAROUSEL_GRID_BANNER = "click lihat sekarang - carousel banner"
 
     data class Data(
@@ -105,27 +104,6 @@ object InspirationCarouselTracking {
             applink = applink,
             dimension90 = dimension90
         )
-
-    fun trackImpressionInspirationCarouselInfo(
-        trackingQueue: TrackingQueue,
-        type: String,
-        keyword: String,
-        list: ArrayList<Any>,
-    ) {
-        val map = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_ACTION, IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT,
-            SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
-            SearchTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                SearchEventTracking.Event.PROMO_VIEW, DataLayer.mapOf(
-                    SearchEventTracking.ECommerce.PROMOTIONS, list
-                )
-            )
-        ) as HashMap<String, Any>
-
-        trackingQueue.putEETracking(map)
-    }
 
     fun trackEventClickInspirationCarouselInfoProduct(type: String,
                                                       keyword: String,

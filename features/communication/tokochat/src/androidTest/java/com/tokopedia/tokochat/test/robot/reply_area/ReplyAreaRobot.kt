@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.tokochat.stub.common.matcher.withRecyclerView
 import com.tokopedia.tokochat_common.R
 
 object ReplyAreaRobot {
@@ -31,6 +32,19 @@ object ReplyAreaRobot {
     fun clickReplyButton() {
         Espresso.onView(
             ViewMatchers.withId(R.id.tokochat_ic_send_btn)
+        ).perform(click())
+    }
+
+    fun clickAttachmentPlusButton() {
+        Espresso.onView(
+            ViewMatchers.withId(R.id.tokochat_icon_chat_menu)
+        ).perform(click())
+    }
+
+    fun clickAttachmentMenuButton(position: Int) {
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_rv_attachment_menu)
+                .atPositionOnView(position, R.id.tokochat_icon_attachment_menu)
         ).perform(click())
     }
 }

@@ -31,6 +31,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
     public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
+    public static final String DISABLE_CATALOG_LIBRARY_PAGE = "android_main_app_disable_catalog_library";
 
 
 
@@ -245,4 +246,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
+
+    public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
+
+    public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
 }

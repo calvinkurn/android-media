@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
@@ -17,8 +18,10 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -26,6 +29,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -65,6 +69,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
+    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     private val productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     private val productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
@@ -77,7 +82,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     TokoNowRepurchaseTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowFeedbackWidgetTypeFactory,
-    TokoNowProductRecommendationTypeFactory{
+    TokoNowProductRecommendationTypeFactory,
+    TokoNowTickerTypeFactory
+{
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
@@ -113,11 +120,14 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
 
+    override fun type(uiModel: TokoNowTickerUiModel): Int  = TokoNowTickerViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(
                 itemView = view,
                 listener = productItemListener,
+                productCardCompactListener = productCardCompactListener,
                 productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
             )
             BannerViewHolder.LAYOUT -> BannerViewHolder(
@@ -167,6 +177,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TokoNowFeedbackWidgetViewHolder.LAYOUT -> TokoNowFeedbackWidgetViewHolder(
                 itemView = view,
                 listener = feedbackWidgetListener
+            )
+            TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
+                itemView = view
             )
             else -> super.createViewHolder(view, type)
         }
