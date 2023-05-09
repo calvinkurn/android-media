@@ -9,4 +9,6 @@ sealed interface NestHeaderVariant {
     object Default : NestHeaderVariant
 
     object Transparent : NestHeaderVariant
+
+    // TODO this need add variant for custom alpha
 }

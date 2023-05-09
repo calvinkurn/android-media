@@ -67,7 +67,7 @@ fun NestChips(
             if (showChevron) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
+                    painter = painterResource(id = R.drawable.ic_chevron_down),
                     contentDescription = "Dropdown Icon",
                     tint = chevronColor
                 )

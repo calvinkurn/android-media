@@ -60,6 +60,8 @@ sealed interface NestHeaderType {
         val onSearchChanges: (String) -> Unit = {},
         val onSearchKeyPressed: () -> Unit = {}
     ) : NestHeaderType, NestHeaderAttr
+
+    // TODO this need add type for custom view
 }
 
 internal interface NestHeaderAttr {
