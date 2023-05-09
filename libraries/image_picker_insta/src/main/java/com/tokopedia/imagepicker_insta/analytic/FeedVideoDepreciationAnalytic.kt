@@ -1,7 +1,9 @@
 package com.tokopedia.imagepicker_insta.analytic
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -22,15 +24,14 @@ class FeedVideoDepreciationAnalytic @Inject constructor(
         }
 
     fun openVideoDepreciationBottomSheetEvent() {
-        Tracker.Builder()
-            .setEvent("openScreen")
-            .setCustomProperty("trackerId", if (isSellerApp) "43254" else "43251")
-            .setBusinessUnit("content")
-            .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            "/content feed post creation - upload ke short video",
+            mapOf(
+                TrackerConstant.CURRENT_SITE to currentSite,
+                TrackerConstant.BUSINESS_UNIT to "content",
+                "trackerId" to if (isSellerApp) "43254" else "43251"
+            )
+        )
     }
 
     fun sendClickToShortVideoEvent(isBuyer: Boolean) {
