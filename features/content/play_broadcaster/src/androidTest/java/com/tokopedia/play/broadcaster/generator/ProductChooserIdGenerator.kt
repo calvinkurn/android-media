@@ -211,7 +211,7 @@ class ProductChooserIdGenerator {
 
     private val viewPrinter = ViewHierarchyPrinter(
         printConditions,
-        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        packageName = LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
 
@@ -309,5 +309,9 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
+    }
+
+    companion object {
+        const val LIBRARY_PACKAGE_NAME = "com.tokopedia.play.broadcaster"
     }
 }

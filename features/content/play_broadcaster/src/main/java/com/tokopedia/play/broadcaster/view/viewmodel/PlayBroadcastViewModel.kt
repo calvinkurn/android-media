@@ -455,6 +455,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(event.source)
             is PlayBroadcastAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -677,6 +680,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (giveaway.status) {
             GameUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             GameUiModel.Giveaway.Status.Unknown -> stopInteractive()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -685,6 +691,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (quiz.status) {
             GameUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             GameUiModel.Quiz.Status.Unknown -> stopInteractive()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1307,6 +1316,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1385,6 +1397,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getLeaderboardWithSlots(state.allowChat)
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1397,6 +1412,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     interactiveId = state.interactiveId,
                     interactiveTitle = state.interactiveTitle
                 )
+            }
+            else -> {
+                //no-op
             }
         }
     }
