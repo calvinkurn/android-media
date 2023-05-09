@@ -526,7 +526,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
                     viewModel.updateQuantity("123", 1)
                     advanceTimeBy(200L)
                     viewModel.updateQuantity("123", 2)
-                    advanceTimeBy(500L)
+                    advanceTimeBy(700L)
                 },
                 then = {
                     assertEquals(expectedOrderQty, it?.businessData?.carts?.firstOrNull()?.quantity)

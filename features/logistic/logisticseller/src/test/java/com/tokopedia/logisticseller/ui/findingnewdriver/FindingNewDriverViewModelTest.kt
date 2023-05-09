@@ -12,6 +12,7 @@ import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverAvailab
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverBookingState
 import com.tokopedia.logisticseller.ui.findingnewdriver.viewmodel.FindingNewDriverViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
