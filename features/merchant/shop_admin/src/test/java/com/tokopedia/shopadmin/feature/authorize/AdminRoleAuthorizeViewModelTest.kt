@@ -1,7 +1,7 @@
-package com.tokopedia.seller.menu.presentation.viewmodel
+package com.tokopedia.shopadmin.feature.authorize
 
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.shopadmin.common.util.AdminFeature
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

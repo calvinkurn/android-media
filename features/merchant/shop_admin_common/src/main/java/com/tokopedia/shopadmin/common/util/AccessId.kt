@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.constant
+package com.tokopedia.shopadmin.common.util
 
 import androidx.annotation.IntDef
 
@@ -9,29 +9,29 @@ import androidx.annotation.IntDef
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
-        AccessId.ADS_AND_PROMO,
-        AccessId.SHOP_SETTING_ADDRESS,
-        AccessId.SHOP_SETTING_ETALASE,
-        AccessId.SHOP_SETTING_INFO,
-        AccessId.SHOP_SETTING_NOTES,
-        AccessId.SHOP_SETTING_SERVICES,
-        AccessId.SHOP_SETTING_SHIPMENT,
-        AccessId.STATISTIC,
-        AccessId.PRODUCT_LIST,
-        AccessId.SOM_LIST,
-        AccessId.SOM_DETAIL,
-        AccessId.SOM_MULTI_ACCEPT,
-        AccessId.CHAT_LIST,
-        AccessId.CHAT_REPLY,
-        AccessId.PRODUCT_ADD,
-        AccessId.PRODUCT_EDIT,
-        AccessId.PRODUCT_DUPLICATE,
-        AccessId.EDIT_STOCK,
-        AccessId.CHAT,
-        AccessId.COMPLAINT,
-        AccessId.DISCUSSION,
-        AccessId.REVIEW,
-        AccessId.SHOP_SCORE
+    AccessId.ADS_AND_PROMO,
+    AccessId.SHOP_SETTING_ADDRESS,
+    AccessId.SHOP_SETTING_ETALASE,
+    AccessId.SHOP_SETTING_INFO,
+    AccessId.SHOP_SETTING_NOTES,
+    AccessId.SHOP_SETTING_SERVICES,
+    AccessId.SHOP_SETTING_SHIPMENT,
+    AccessId.STATISTIC,
+    AccessId.PRODUCT_LIST,
+    AccessId.SOM_LIST,
+    AccessId.SOM_DETAIL,
+    AccessId.SOM_MULTI_ACCEPT,
+    AccessId.CHAT_LIST,
+    AccessId.CHAT_REPLY,
+    AccessId.PRODUCT_ADD,
+    AccessId.PRODUCT_EDIT,
+    AccessId.PRODUCT_DUPLICATE,
+    AccessId.EDIT_STOCK,
+    AccessId.CHAT,
+    AccessId.COMPLAINT,
+    AccessId.DISCUSSION,
+    AccessId.REVIEW,
+    AccessId.SHOP_SCORE
 )
 annotation class AccessId {
     companion object {
