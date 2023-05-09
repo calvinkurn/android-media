@@ -88,6 +88,7 @@ class PlayWebSocketImpl(
 
             if (!newMessage.message.isTrackingIdAvailable) return
             webSocket.send(trackingParam)
+            webSocketLogger.send(event = "TRACKING", trackingParam)
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
