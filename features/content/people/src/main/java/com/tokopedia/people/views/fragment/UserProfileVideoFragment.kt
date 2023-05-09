@@ -267,6 +267,9 @@ class UserProfileVideoFragment @Inject constructor(
                     is UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog -> {
                         playChannelDeleteConfirmationDialog.confirmDelete(requireContext(), event.channel.channelId)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

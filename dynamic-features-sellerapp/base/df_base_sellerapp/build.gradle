@@ -65,7 +65,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.productManageList)
-    implementation projectOrAar(rootProject.ext.features.shopSettings)
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 

@@ -36,8 +36,8 @@ import kotlin.properties.Delegates
  * Created by jegul on 03/12/19
  */
 class PlayVideoManager private constructor(
-        private val applicationContext: Context,
-        private val exoPlayerCreator: ExoPlayerCreator
+    private val applicationContext: Context,
+    private val exoPlayerCreator: ExoPlayerCreator
 ) {
 
     /**
@@ -51,6 +51,7 @@ class PlayVideoManager private constructor(
 
     @Deprecated(message = "Use listener instead")
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
+
     @Deprecated(message = "Use listener instead")
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
@@ -95,18 +96,17 @@ class PlayVideoManager private constructor(
             val parsedException = exoPlaybackExceptionParser.parse(error)
 
             if (
-                    parsedException.isBehindLiveWindowException ||
-                    parsedException.isInvalidResponseCodeException
+                parsedException.isBehindLiveWindowException ||
+                parsedException.isInvalidResponseCodeException
             ) {
-
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     stop()
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else if (
-                    parsedException.isUnknownHostException ||
-                    parsedException.isConnectException
+                parsedException.isUnknownHostException ||
+                parsedException.isConnectException
             ) {
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
@@ -171,7 +171,7 @@ class PlayVideoManager private constructor(
     fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
         val listener = object : Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
-                try { offer(state) } catch (e: Throwable) {}
+                try { trySend(state) } catch (e: Throwable) {}
             }
         }
 
@@ -197,7 +197,6 @@ class PlayVideoManager private constructor(
         val prepareState = currentPrepareState
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
-
             val lastPosition = startPosition ?: if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
 
             val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
@@ -246,31 +245,33 @@ class PlayVideoManager private constructor(
 
     fun stop(resetState: Boolean = true) {
         val prepareState = currentPrepareState
-        if (prepareState is PlayVideoPrepareState.Prepared)
+        if (prepareState is PlayVideoPrepareState.Prepared) {
             currentPrepareState = PlayVideoPrepareState.Unprepared(
-                    previousUri = prepareState.uri,
-                    previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
-                    lastPosition = when (prepareState.positionHandle) {
-                        VideoPositionHandle.Handled -> getCurrentPosition()
-                        is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
-                    },
-                    resetState = resetState
+                previousUri = prepareState.uri,
+                previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
+                lastPosition = when (prepareState.positionHandle) {
+                    VideoPositionHandle.Handled -> getCurrentPosition()
+                    is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
+                },
+                resetState = resetState
             )
+        }
 
         videoPlayer.stop()
     }
 
     private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
-            previousUri = null,
-            previousType = PlayVideoType.Unknown,
-            lastPosition = null,
-            resetState = true
+        previousUri = null,
+        previousType = PlayVideoType.Unknown,
+        lastPosition = null,
+        resetState = true
     )
     //endregion
 
     //region video state
     @Deprecated(message = "Use listener instead")
     fun getObservablePlayVideoState(): LiveData<PlayVideoState> = _observablePlayVideoState
+
     @Deprecated(message = "Use listener instead")
     fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
@@ -301,7 +302,7 @@ class PlayVideoManager private constructor(
 
     private fun setRepeatMode(videoPlayer: SimpleExoPlayer, shouldRepeat: Boolean) = synchronized(this) {
         isRepeated = shouldRepeat
-        videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
+        videoPlayer.repeatMode = if (shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
     }
 
     fun isVideoRepeat(): Boolean {
@@ -334,14 +335,14 @@ class PlayVideoManager private constructor(
         playerModel?.player?.removeListener(playerEventListener)
         val videoLoadControl = initCustomLoadControl(bufferControl)
         val videoPlayer = exoPlayerCreator.createExoPlayer(videoLoadControl)
-                .apply {
-                    addListener(playerEventListener)
-                    setAudioAttributes(initAudioAttributes(), true)
-                }
-                .also {
-                    mute(it, isMuted)
-                    setRepeatMode(it, isRepeated)
-                }
+            .apply {
+                addListener(playerEventListener)
+                setAudioAttributes(initAudioAttributes(), true)
+            }
+            .also {
+                mute(it, isMuted)
+                setRepeatMode(it, isRepeated)
+            }
 
         return PlayPlayerModel(videoPlayer, videoLoadControl)
     }
@@ -375,9 +376,9 @@ class PlayVideoManager private constructor(
      */
     private fun initAudioAttributes(): AudioAttributes {
         return AudioAttributes.Builder()
-                .setContentType(C.CONTENT_TYPE_MOVIE)
-                .setUsage(C.USAGE_MEDIA)
-                .build()
+            .setContentType(C.CONTENT_TYPE_MOVIE)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
@@ -395,19 +396,22 @@ class PlayVideoManager private constructor(
 
         @JvmStatic
         fun getInstance(
-                context: Context,
-                creator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
+            context: Context,
+            creator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
         ): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
                 val player = PlayVideoManager(context.applicationContext, creator).also {
                     INSTANCE = it
                 }
 
-                if (playProcessLifecycleObserver == null)
+                if (playProcessLifecycleObserver == null) {
                     playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
+                }
 
-                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
-                        .lifecycle.addObserver(it) }
+                playProcessLifecycleObserver?.let {
+                    ProcessLifecycleOwner.get()
+                        .lifecycle.addObserver(it)
+                }
 
                 player
             }
@@ -416,8 +420,10 @@ class PlayVideoManager private constructor(
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
-                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
-                        .lifecycle.removeObserver(it) }
+                playProcessLifecycleObserver?.let {
+                    ProcessLifecycleOwner.get()
+                        .lifecycle.removeObserver(it)
+                }
 
                 INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
                 INSTANCE = null

@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATIO
 import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductNonVariantTracker
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -41,6 +42,9 @@ class ManageProductNonVariantViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = CoroutineTestRule()
 
     private lateinit var viewModel: ManageProductNonVariantViewModel
 

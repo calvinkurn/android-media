@@ -274,19 +274,22 @@ class HomeAccountUserViewModel @Inject constructor(
             })
     }
 
-    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean) {
+    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean, titleText: String) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
+                    result.data.titleAsset = titleText
                     setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
+                    result.data.titleAsset = titleText
                     setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
+                    result.data.titleAsset = titleText
                     setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 else -> {

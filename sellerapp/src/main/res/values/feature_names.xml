@@ -79,4 +79,8 @@
     <string name="pm_membership_detail_title_activity">Detail Keanggotaan</string>
 
     <string name="seller_feedback">Seller Feedback</string>
+
+    <!-- Shop Settings -->
+    <string name="title_module_shop_settings_sellerapp">Shop Settings</string>
+
 </resources>
