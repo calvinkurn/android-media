@@ -50,7 +50,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -65,8 +66,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val expectedResponse = createKeroAddrIsEligibleForAddressFeature().data.eligibleForRevampAna
         var actualResponse: Result<EligibleForAddressFeature>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowEligibleForAnaRevamp.collectLatest {
                     actualResponse = it
                 }
@@ -83,8 +84,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<EligibleForAddressFeature>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowEligibleForAnaRevamp.collectLatest {
                     actualResponse = it
                 }
@@ -102,8 +103,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val expectedResponse = createChooseAddress().response
         var actualResponse: Result<GetStateChosenAddressResponse>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowChooseAddress.collectLatest {
                     actualResponse = it
                 }
@@ -121,8 +122,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         onGetChooseAddress_thenReturn(Throwable())
 
         var actualResponse: Result<GetStateChosenAddressResponse>? = null
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowChooseAddress.collectLatest {
                     actualResponse = it
                 }
@@ -147,8 +148,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val expectedResponse = createKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
         var actualResponse: Result<Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowUpdatePinPointState.collectLatest {
                     actualResponse = it
                 }
@@ -168,8 +169,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val expectedResponse = false
         var actualResponse: Result<Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowUpdatePinPointState.collectLatest {
                     actualResponse = it
                 }
@@ -189,8 +190,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowUpdatePinPointState.collectLatest {
                     actualResponse = it
                 }
@@ -208,8 +209,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -247,8 +248,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = SHOW
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -290,8 +291,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = UPDATE
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -337,8 +338,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -384,8 +385,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -414,8 +415,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         addHomeLayoutItem(unknownLayout)
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -443,8 +444,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -465,8 +466,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     fun `when getting homeLayout, component layout, merchant list but address empty`() {
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -485,8 +486,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -534,8 +535,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -588,8 +589,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -613,8 +614,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         var actualResponse: Boolean? = null
         viewModel.isAddressManuallyUpdated = true
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = viewModel.isShownEmptyState()
                 }
@@ -631,8 +632,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         var actualResponse: Boolean? = null
         viewModel.isAddressManuallyUpdated = true
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = viewModel.isShownEmptyState()
                 }
@@ -658,8 +659,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -677,8 +678,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = false
         val expectedResponse = createLoadingState()
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -696,8 +697,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoAddressState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -715,8 +716,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = false
         val expectedResponse = createLoadingState()
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -759,8 +760,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = UPDATE
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -811,8 +812,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         )
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -863,8 +864,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = UPDATE
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -918,8 +919,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = LOAD_MORE
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -968,8 +969,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var nextActualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     nextActualResponse = it
                 }
@@ -1015,8 +1016,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             state = LOAD_MORE
         )
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1063,8 +1064,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var nextActualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     nextActualResponse = it
                 }
@@ -1089,8 +1090,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1116,8 +1117,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1143,8 +1144,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1169,8 +1170,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1189,8 +1190,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoAddressState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1229,8 +1230,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         var actualResponse: Result<TokoFoodListUiModel>? = null
         viewModel.isAddressManuallyUpdated = true
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1248,8 +1249,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1267,8 +1268,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1286,8 +1287,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1305,8 +1306,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1324,8 +1325,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1343,8 +1344,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1362,8 +1363,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1381,8 +1382,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         viewModel.isAddressManuallyUpdated = true
 
         val expectedResponse = createNoPinPoinState()
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -1400,8 +1401,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val hasShown = true
         onGetHasSearchCoachMarkShown_thenReturn(hasShown)
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowShouldShowSearchCoachMark.collectLatest {
                     actualResult = it
                 }
@@ -1420,8 +1421,8 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         val hasShown = false
         onGetHasSearchCoachMarkShown_thenReturn(hasShown)
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowShouldShowSearchCoachMark.collectLatest {
                     actualResult = it
                 }

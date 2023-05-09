@@ -261,6 +261,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 )
                 renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -305,6 +308,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -351,6 +357,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                //no-op
             }
         }
     }

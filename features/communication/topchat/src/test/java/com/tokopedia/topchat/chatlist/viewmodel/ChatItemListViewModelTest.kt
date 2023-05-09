@@ -12,16 +12,12 @@ import com.tokopedia.inboxcommon.RoleType.Companion.SELLER
 import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.*
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
@@ -47,8 +43,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import org.hamcrest.CoreMatchers.`is`
+import net.bytebuddy.implementation.InvokeDynamic.lambda
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Assert.*
@@ -118,11 +115,10 @@ class ChatItemListViewModelTest {
         val expectedValue = Success(getChatList)
         viewModel.filter = PARAM_FILTER_ALL
 
-        every {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), captureLambda(), any())
+        coEvery {
+            getChatListUseCase.invoke(any())
         } answers {
-            val onSuccess = lambda<(ChatListPojo, List<String>, List<String>) -> Unit>()
-            onSuccess.invoke(getChatList, listOf(), listOf())
+            ChatListResponse(getChatList, listOf(), listOf())
         }
 
         // when
@@ -137,11 +133,10 @@ class ChatItemListViewModelTest {
         val expectedValue = Success(getChatList)
         viewModel.filter = PARAM_FILTER_ALL
 
-        every {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), captureLambda(), any())
+        coEvery {
+            getChatListUseCase.invoke(any())
         } answers {
-            val onSuccess = lambda<(ChatListPojo, List<String>, List<String>) -> Unit>()
-            onSuccess.invoke(getChatList, listOf(), listOf())
+            ChatListResponse(getChatList, listOf(), listOf())
         }
 
         // when
@@ -156,11 +151,10 @@ class ChatItemListViewModelTest {
         val expectedValue = Success(getChatList)
         viewModel.filter = PARAM_FILTER_ALL
 
-        every {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), captureLambda(), any())
+        coEvery {
+            getChatListUseCase.invoke(any())
         } answers {
-            val onSuccess = lambda<(ChatListPojo, List<String>, List<String>) -> Unit>()
-            onSuccess.invoke(getChatList, listOf(), listOf())
+            ChatListResponse(getChatList, listOf(), listOf())
         }
         coEvery {
             userSession.isShopOwner
@@ -181,11 +175,10 @@ class ChatItemListViewModelTest {
         val expectedValue = Success(getChatList)
         viewModel.filter = PARAM_FILTER_ALL
 
-        every {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), captureLambda(), any())
+        coEvery {
+            getChatListUseCase.invoke(any())
         } answers {
-            val onSuccess = lambda<(ChatListPojo, List<String>, List<String>) -> Unit>()
-            onSuccess.invoke(getChatList, listOf(), listOf())
+            ChatListResponse(getChatList, listOf(), listOf())
         }
 
         // when
@@ -197,15 +190,12 @@ class ChatItemListViewModelTest {
 
     @Test fun `getChatListMessage should throw the Fail state`() {
         // given
-        val expectedValue = Throwable("")
+        val expectedValue = Exception("")
         viewModel.filter = PARAM_FILTER_ALL
 
-        every {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), captureLambda())
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(expectedValue)
-        }
+        coEvery {
+            getChatListUseCase.invoke(any())
+        } throws expectedValue
 
         // when
         viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
@@ -223,8 +213,8 @@ class ChatItemListViewModelTest {
         verify(exactly = 0) {
             isChatAdminEligibleObserver.onChanged(any())
         }
-        verify(exactly = 1) {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
+        coVerify(exactly = 1) {
+            getChatListUseCase.invoke(any())
         }
     }
 
@@ -237,8 +227,8 @@ class ChatItemListViewModelTest {
         verify(exactly = 0) {
             isChatAdminEligibleObserver.onChanged(any())
         }
-        verify(exactly = 1) {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
+        coVerify(exactly = 1) {
+            getChatListUseCase.invoke(any())
         }
     }
 
@@ -321,7 +311,10 @@ class ChatItemListViewModelTest {
     fun `on success delete chat`() {
         // Given
         val successDelete = ChatDelete(
-            isSuccess = 1, detailResponse = "", messageId = exMessageId)
+            isSuccess = 1,
+            detailResponse = "",
+            messageId = exMessageId
+        )
         val result = ChatDeleteStatus().apply {
             this.chatMoveToTrash.list = listOf(successDelete)
         }
@@ -342,7 +335,10 @@ class ChatItemListViewModelTest {
     fun `on failed to delete chat`() {
         // Given
         val failedDelete = ChatDelete(
-            isSuccess = 0, detailResponse = "Error", messageId = exMessageId)
+            isSuccess = 0,
+            detailResponse = "Error",
+            messageId = exMessageId
+        )
         val result = ChatDeleteStatus().apply {
             this.chatMoveToTrash.list = listOf(failedDelete)
         }
@@ -395,45 +391,45 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_get_false_has_next_when_use_case_false() {
-        //Given
+        // Given
         every {
             getChatListUseCase.hasNext
         } returns false
 
-        //When
+        // When
         val result = viewModel.chatListHasNext
 
-        //Then
+        // Then
         assertFalse(result)
     }
 
     @Test
     fun should_get_true_has_next_when_use_case_false() {
-        //Given
+        // Given
         every {
             getChatListUseCase.hasNext
         } returns true
 
-        //When
+        // When
         val result = viewModel.chatListHasNext
 
-        //Then
+        // Then
         assertTrue(result)
     }
 
     @Test
     fun should_get_false_has_next_when_use_case_reset() {
-        //When
+        // When
         viewModel.resetState()
         val result = viewModel.chatListHasNext
 
-        //Then
+        // Then
         assertFalse(result)
     }
 
     @Test
     fun should_invoke_onSuccess_when_success_unpin_chat() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -443,10 +439,10 @@ class ChatItemListViewModelTest {
             expectedSuccess.invoke(true)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, false, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 1) {
             expectedSuccess.invoke(true)
         }
@@ -457,7 +453,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onSuccess_when_success_unpin_chat_but_response_false() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -467,10 +463,10 @@ class ChatItemListViewModelTest {
             expectedSuccess.invoke(false)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, false, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 1) {
             expectedSuccess.invoke(false)
         }
@@ -481,7 +477,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onError_when_failed_to_unpin_chat() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -491,10 +487,10 @@ class ChatItemListViewModelTest {
             expectedError.invoke(expectedThrowable)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, false, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 0) {
             expectedSuccess.invoke(true)
         }
@@ -508,7 +504,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onSuccess_when_success_pin_chat() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -518,10 +514,10 @@ class ChatItemListViewModelTest {
             expectedSuccess.invoke(true)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, true, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 1) {
             expectedSuccess.invoke(true)
         }
@@ -532,7 +528,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onSuccess_when_success_pin_chat_but_response_false() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -542,10 +538,10 @@ class ChatItemListViewModelTest {
             expectedSuccess.invoke(false)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, true, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 1) {
             expectedSuccess.invoke(false)
         }
@@ -556,7 +552,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onError_when_failed_to_pin_chat() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         val expectedSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         val expectedError: (Throwable) -> Unit = mockk(relaxed = true)
@@ -566,10 +562,10 @@ class ChatItemListViewModelTest {
             expectedError.invoke(expectedThrowable)
         }
 
-        //When
+        // When
         viewModel.pinUnpinChat(exMessageId, true, expectedSuccess, expectedError)
 
-        //Then
+        // Then
         verify(exactly = 0) {
             expectedSuccess.invoke(true)
         }
@@ -583,18 +579,18 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_empty_pinnedMsgId_and_unpinnedMsgId_when_cleared() {
-        //Given
+        // Given
         viewModel.pinnedMsgId.add("Test123")
         viewModel.unpinnedMsgId.add("Test456")
         val sizeBeforePinnedMsgId = viewModel.pinnedMsgId.size
         val sizeBeforeUnpinnedMsgId = viewModel.unpinnedMsgId.size
 
-        //When
+        // When
         viewModel.clearPinUnpinData()
         val sizeAfterPinnedMsgId = viewModel.pinnedMsgId.size
         val sizeAfterUnpinnedMsgId = viewModel.unpinnedMsgId.size
 
-        //Then
+        // Then
         assertEquals(1, sizeBeforePinnedMsgId)
         assertEquals(1, sizeBeforeUnpinnedMsgId)
         assertEquals(0, sizeAfterPinnedMsgId)
@@ -603,87 +599,89 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_result_success_when_mark_chat_as_read() {
-        //Given
+        // Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedData = ChatChangeStateResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(ChatChangeStateResponse::class.java, expectedData)),
-            mapOf(), false
+            mapOf(),
+            false
         )
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.markChatAsRead(listOf(exMessageId), expectedResult)
 
-        //Then
-        verify (exactly = 1) {
+        // Then
+        verify(exactly = 1) {
             expectedResult.invoke(any())
         }
     }
 
     @Test
     fun should_invoke_result_fail_when_mark_chat_as_read() {
-        //Given
+        // Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedError = Throwable("Oops!")
         coEvery {
             repository.response(any(), any())
         } throws expectedError
 
-        //When
+        // When
         viewModel.markChatAsRead(listOf(exMessageId), expectedResult)
 
-        //Then
-        verify (exactly = 1) {
+        // Then
+        verify(exactly = 1) {
             expectedResult.invoke(any())
         }
     }
 
     @Test
     fun should_invoke_result_success_when_mark_chat_as_unread() {
-        //Given
+        // Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedData = ChatChangeStateResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(ChatChangeStateResponse::class.java, expectedData)),
-            mapOf(), false
+            mapOf(),
+            false
         )
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.markChatAsUnread(listOf(exMessageId), expectedResult)
 
-        //Then
-        verify (exactly = 1) {
+        // Then
+        verify(exactly = 1) {
             expectedResult.invoke(any())
         }
     }
 
     @Test
     fun should_invoke_result_fail_when_mark_chat_as_unread() {
-        //Given
+        // Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedError = Throwable("Oops!")
         coEvery {
             repository.response(any(), any())
         } throws expectedError
 
-        //When
+        // When
         viewModel.markChatAsUnread(listOf(exMessageId), expectedResult)
 
-        //Then
-        verify (exactly = 1) {
+        // Then
+        verify(exactly = 1) {
             expectedResult.invoke(any())
         }
     }
 
     @Test
     fun should_give_true_when_success_get_seller_banned_status() {
-        //Given
+        // Given
         every {
             chatBannedSellerUseCase.getStatus(captureLambda(), any())
         } answers {
@@ -691,17 +689,19 @@ class ChatItemListViewModelTest {
             onSuccess.invoke(true)
         }
 
-        //When
+        // When
         viewModel.loadChatBannedSellerStatus()
 
-        //Then
-        assertEquals(true,
-            (viewModel.chatBannedSellerStatus.value as Success).data)
+        // Then
+        assertEquals(
+            true,
+            (viewModel.chatBannedSellerStatus.value as Success).data
+        )
     }
 
     @Test
     fun should_give_false_when_success_get_seller_banned_status() {
-        //Given
+        // Given
         every {
             chatBannedSellerUseCase.getStatus(captureLambda(), any())
         } answers {
@@ -709,17 +709,19 @@ class ChatItemListViewModelTest {
             onSuccess.invoke(false)
         }
 
-        //When
+        // When
         viewModel.loadChatBannedSellerStatus()
 
-        //Then
-        assertEquals(false,
-            (viewModel.chatBannedSellerStatus.value as Success).data)
+        // Then
+        assertEquals(
+            false,
+            (viewModel.chatBannedSellerStatus.value as Success).data
+        )
     }
 
     @Test
     fun should_give_error_when_error_get_seller_banned_status() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         every {
             chatBannedSellerUseCase.getStatus(any(), captureLambda())
@@ -728,24 +730,27 @@ class ChatItemListViewModelTest {
             onError.invoke(expectedThrowable)
         }
 
-        //When
+        // When
         viewModel.loadChatBannedSellerStatus()
 
-        //Then
-        assertEquals(expectedThrowable.message,
-            (viewModel.chatBannedSellerStatus.value as Fail).throwable.message)
+        // Then
+        assertEquals(
+            expectedThrowable.message,
+            (viewModel.chatBannedSellerStatus.value as Fail).throwable.message
+        )
     }
 
     @Test
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata() {
-        //Given
+        // Given
         val testUrlBroadcast = "url broadcast 123"
         val expectedData = BlastSellerMetaDataResponse(
             ChatBlastSellerMetadata(urlBroadcast = testUrlBroadcast)
         )
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(), false
+            mapOf(),
+            false
         )
         coEvery {
             repository.response(any(), any())
@@ -754,73 +759,80 @@ class ChatItemListViewModelTest {
             userSession.isShopOwner
         } returns true
 
-        //When
+        // When
         viewModel.whenChatAdminAuthorized(PARAM_TAB_SELLER) {}
         viewModel.loadChatBlastSellerMetaData()
 
-        //Then
+        // Then
         assertEquals(true, viewModel.isAdminHasAccess)
-        assertEquals(testUrlBroadcast,
+        assertEquals(
+            testUrlBroadcast,
             viewModel.broadCastButtonUrl.value
         )
-        assertEquals(true,
+        assertEquals(
+            true,
             viewModel.broadCastButtonVisibility.value
         )
     }
 
     @Test
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata_but_no_access() {
-        //Given
+        // Given
         val expectedData = BlastSellerMetaDataResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(), false
+            mapOf(),
+            false
         )
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.loadChatBlastSellerMetaData()
 
-        //Then
-        assertEquals(null,
+        // Then
+        assertEquals(
+            null,
             viewModel.broadCastButtonUrl.value
         )
-        assertEquals(false,
+        assertEquals(
+            false,
             viewModel.broadCastButtonVisibility.value
         )
     }
 
     @Test
     fun should_get_data_when_load_error_get_chat_blast_seller_metadata() {
-        //Given
+        // Given
         val expectedError = Throwable("Oops!")
         coEvery {
             repository.response(any(), any())
         } throws expectedError
 
-        //When
+        // When
         viewModel.loadChatBlastSellerMetaData()
 
-        //Then
-        assertEquals(null,
+        // Then
+        assertEquals(
+            null,
             viewModel.broadCastButtonUrl.value
         )
-        assertEquals(false,
+        assertEquals(
+            false,
             viewModel.broadCastButtonVisibility.value
         )
     }
 
     @Test
     fun should_give_the_same_reply_time() {
-        //Given
-        val testLastItem = ReplyParcelableModel(exMessageId,"msg", "1000")
+        // Given
+        val testLastItem = ReplyParcelableModel(exMessageId, "msg", "1000")
 
-        //When
+        // When
         val result = viewModel.getReplyTimeStampFrom(testLastItem)
 
-        //Then
+        // Then
         assertEquals(
             (testLastItem.replyTime.toLongOrZero() / 1_000_000L).toString(),
             result
@@ -829,7 +841,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_invoke_onSuccess_when_success_load_top_bot_whitelist() {
-        //Given
+        // Given
         val expectedResponse = ChatWhitelistFeatureResponse(
             ChatWhitelistFeature(isWhitelist = true)
         )
@@ -840,16 +852,16 @@ class ChatItemListViewModelTest {
             onSuccess.invoke(expectedResponse)
         }
 
-        //When
+        // When
         viewModel.loadTopBotWhiteList()
 
-        //Then
-        assertTrue(viewModel.isWhitelistTopBot.value?: false)
+        // Then
+        assertTrue(viewModel.isWhitelistTopBot.value ?: false)
     }
 
     @Test
     fun should_invoke_onSuccess_when_success_load_top_bot_whitelist_but_false() {
-        //Given
+        // Given
         val expectedResponse = ChatWhitelistFeatureResponse(
             ChatWhitelistFeature(isWhitelist = false)
         )
@@ -860,16 +872,16 @@ class ChatItemListViewModelTest {
             onSuccess.invoke(expectedResponse)
         }
 
-        //When
+        // When
         viewModel.loadTopBotWhiteList()
 
-        //Then
-        assertFalse(viewModel.isWhitelistTopBot.value?: true)
+        // Then
+        assertFalse(viewModel.isWhitelistTopBot.value ?: true)
     }
 
     @Test
     fun should_invoke_onError_when_error_load_top_bot_whitelist() {
-        //Given
+        // Given
         val expectedThrowable = Throwable("Oops!")
         every {
             chatWhitelistFeature.getWhiteList(any(), any(), captureLambda())
@@ -878,95 +890,95 @@ class ChatItemListViewModelTest {
             onError.invoke(expectedThrowable)
         }
 
-        //When
+        // When
         viewModel.loadTopBotWhiteList()
 
-        //Then
+        // Then
         assertEquals(null, viewModel.isWhitelistTopBot.value)
     }
 
     @Test
     fun should_give_2_filter_titles_when_buyer() {
-        //Given
+        // Given
         val testContext: Context = mockk(relaxed = true)
         every {
             ChatItemListViewModel.arrayFilterParam.size
         } returns 3
 
-        //When
+        // When
         val result = viewModel.getFilterTitles(testContext, false)
 
-        //Then
+        // Then
         assertEquals(2, result.size)
     }
 
     @Test
     fun should_give_3_filter_titles_when_seller_default() {
-        //Given
+        // Given
         val testContext: Context = mockk(relaxed = true)
         every {
             ChatItemListViewModel.arrayFilterParam.size
         } returns 3
 
-        //When
+        // When
         val result = viewModel.getFilterTitles(testContext, true)
 
-        //Then
+        // Then
         assertEquals(3, result.size)
     }
 
     @Test
     fun should_give_4_filter_titles_when_seller_whitelisted() {
-        //Given
+        // Given
         val testContext: Context = mockk(relaxed = true)
         every {
             ChatItemListViewModel.arrayFilterParam.size
         } returns 4
 
-        //When
+        // When
         val result = viewModel.getFilterTitles(testContext, true)
 
-        //Then
+        // Then
         assertEquals(4, result.size)
     }
 
     @Test
     fun does_have_filter() {
-        //Give
+        // Give
         viewModel.filter = ChatListQueriesConstant.PARAM_FILTER_UNREAD
 
-        //When
+        // When
         val result = viewModel.hasFilter()
 
-        //Then
+        // Then
         assertTrue(result)
     }
 
     @Test
     fun does_not_have_filter() {
-        //When
+        // When
         val result = viewModel.hasFilter()
 
-        //Then
+        // Then
         assertFalse(result)
     }
 
     @Test
     fun does_not_have_filter_after_reset() {
-        //Given
+        // Given
         viewModel.filter = ChatListQueriesConstant.PARAM_FILTER_UNREAD
 
-        //When
+        // When
         viewModel.reset()
         val result = viewModel.hasFilter()
 
-        //Then
+        // Then
         assertFalse(result)
     }
 
     @Test
     fun should_get_ticker_with_true_show_when_get_operational_insight() {
-        //Given
+        // Given
         val expectedResponse = ShopChatMetricResponse().apply {
             this.shopChatTicker?.showTicker = true
         }
@@ -977,16 +989,16 @@ class ChatItemListViewModelTest {
             sharedPref.getLong(any(), any())
         } returns 0
 
-        //When
+        // When
         viewModel.getOperationalInsight(shopId)
 
-        //Then
-        assertTrue((viewModel.chatOperationalInsight.value as Success).data.showTicker?: false)
+        // Then
+        assertTrue((viewModel.chatOperationalInsight.value as Success).data.showTicker ?: false)
     }
 
     @Test
     fun should_get_ticker_with_false_show_when_get_operational_insight_but_not_next_monday() {
-        //Given
+        // Given
         val expectedResponse = ShopChatMetricResponse().apply {
             this.shopChatTicker?.showTicker = true
         }
@@ -997,16 +1009,16 @@ class ChatItemListViewModelTest {
             sharedPref.getLong(any(), any())
         } returns Long.MAX_VALUE
 
-        //When
+        // When
         viewModel.getOperationalInsight(shopId)
 
-        //Then
-        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker?: true)
+        // Then
+        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker ?: true)
     }
 
     @Test
     fun should_get_ticker_with_false_show_when_get_operational_insight() {
-        //Given
+        // Given
         val expectedResponse = ShopChatMetricResponse().apply {
             this.shopChatTicker?.showTicker = false
         }
@@ -1014,16 +1026,16 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.getOperationalInsight(shopId)
 
-        //Then
-        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker?: true)
+        // Then
+        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker ?: true)
     }
 
     @Test
     fun should_not_get_ticker_when_ticker_data_is_null() {
-        //Given
+        // Given
         val expectedResponse = ShopChatMetricResponse().apply {
             this.shopChatTicker = null
         }
@@ -1031,10 +1043,10 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.getOperationalInsight(shopId)
 
-        //Then
+        // Then
         assertEquals(
             null,
             viewModel.chatOperationalInsight.value
@@ -1043,7 +1055,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_return_success_when_get_chat_list_ticker() {
-        //Given
+        // Given
         val expectedResponse = ChatListTickerResponse(
             chatlistTicker = ChatListTickerResponse.ChatListTicker(
                 tickerBuyer = ChatListTickerResponse.ChatListTicker.TickerBuyer(
@@ -1062,10 +1074,10 @@ class ChatItemListViewModelTest {
             getChatListTickerUseCase(Unit)
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.getChatListTicker()
 
-        //Then
+        // Then
         val actualValue = (viewModel.chatListTicker.value as Success).data
         val expectedValue = expectedResponse.chatlistTicker
         assertEquals(expectedValue.tickerBuyer.message, actualValue.tickerBuyer.message)
@@ -1076,16 +1088,16 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_get_throwable_when_error_get_chatlist_ticker() {
-        //Given
+        // Given
         val expectedResult = Throwable("Oops!")
         coEvery {
             getChatListTickerUseCase(Unit)
         } throws expectedResult
 
-        //When
+        // When
         viewModel.getChatListTicker()
 
-        //Then
+        // Then
         assertEquals(
             expectedResult.message,
             (viewModel.chatListTicker.value as Fail).throwable.message
@@ -1094,16 +1106,16 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_get_throwable_when_error_get_operational_insight() {
-        //Given
+        // Given
         val expectedResult = Throwable("Oops!")
         coEvery {
             operationalInsightUseCase(any())
         } throws expectedResult
 
-        //When
+        // When
         viewModel.getOperationalInsight(shopId)
 
-        //Then
+        // Then
         assertEquals(
             expectedResult.message,
             (viewModel.chatOperationalInsight.value as Fail).throwable.message
@@ -1112,7 +1124,7 @@ class ChatItemListViewModelTest {
 
     @Test
     fun should_save_next_monday_date_in_millis() {
-        //Given
+        // Given
         mockkObject(Utils)
         val expectedTimeMillis: Long = 1
         every {
@@ -1122,11 +1134,11 @@ class ChatItemListViewModelTest {
             Utils.getNextParticularDay(any())
         } returns expectedTimeMillis
 
-        //When
+        // When
         viewModel.saveNextMondayDate()
         val result = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
 
-        //Then
+        // Then
         assertEquals(
             expectedTimeMillis,
             result
@@ -1231,9 +1243,8 @@ class ChatItemListViewModelTest {
         private const val shopId = "testShopId1"
         private const val SDK_INT = "SDK_INT"
         private val getChatList: ChatListPojo = FileUtil.parse(
-                "/success_get_chat_list.json",
-                ChatListPojo::class.java
+            "/success_get_chat_list.json",
+            ChatListPojo::class.java
         )
     }
-
 }

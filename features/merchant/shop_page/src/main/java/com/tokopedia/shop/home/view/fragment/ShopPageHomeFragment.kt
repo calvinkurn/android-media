@@ -910,6 +910,9 @@ open class ShopPageHomeFragment :
                     is Success -> {
                         onSuccessCheckWishlist(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -936,6 +939,9 @@ open class ShopPageHomeFragment :
                     is Success -> {
                         onSuccessGetCampaignNplRemindMeStatusData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -946,6 +952,9 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetCampaignFlashSaleRemindMeStatusData(it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -1011,6 +1020,9 @@ open class ShopPageHomeFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -1021,6 +1033,9 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

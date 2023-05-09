@@ -65,6 +65,8 @@ data class ProductRecommendationResponse(
         ){
 
             data class RecommendationItem(
+                @field:SerializedName("parentID")
+                val parentID: String? = null,
 
                 @field:SerializedName("clickUrl")
                 val clickUrl: String? = null,
