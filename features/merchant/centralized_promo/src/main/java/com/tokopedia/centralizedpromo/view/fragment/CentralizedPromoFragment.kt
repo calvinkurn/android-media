@@ -367,6 +367,10 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     )
                 }
 
+                detailPromoBottomSheet.onClickPerformanceListener {
+                    // TODO: Add logic to go to play performance page
+                }
+
                 CentralizedPromoTracking.sendImpressionBottomSheetPromo(
                     currentFilterTab.name,
                     promoCreationUiModel.title
