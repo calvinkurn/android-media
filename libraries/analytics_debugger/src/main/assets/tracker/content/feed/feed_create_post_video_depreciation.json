@@ -10,7 +10,12 @@
       "isLoggedInStatus": "(true|false)",
       "screenName": "/content feed post creation - upload ke short video",
       "sessionIris":".*",
-      "userId": ".*"
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "theme": ".*",
+      "shopId": ".*"
     },
     {
       "event": "clickContent",
