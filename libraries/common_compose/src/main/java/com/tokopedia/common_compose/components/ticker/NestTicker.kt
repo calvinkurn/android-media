@@ -30,10 +30,10 @@ fun NestTicker(
     title: CharSequence,
     description: CharSequence,
     onDismissed: () -> Unit = {},
+    closeButtonVisibility: Boolean = true,
     type: TickerType
 ) {
-
-    val style = when(type) {
+    val style = when (type) {
         TickerType.WARNING -> TickerColor(
             backgroundColor = NestTheme.colors.YN._50,
             strokeColor = NestTheme.colors.YN._200,
@@ -61,7 +61,6 @@ fun NestTicker(
         border = BorderStroke(1.dp, style.strokeColor)
     ) {
         Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-
             Icon(
                 modifier = Modifier.size(19.dp),
                 imageVector = Icons.Outlined.Info,
@@ -73,30 +72,28 @@ fun NestTicker(
 
             TickerTextContent(
                 modifier = Modifier.weight(4f),
-                title = title.toString(),
-                description = description.toString()
+                title = title,
+                description = description
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
-
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                modifier = Modifier
-                    .weight(0.25f)
-                    .size(19.dp)
-                    .clickable { onDismissed() },
-                contentDescription = "Close Icon",
-                tint = style.closeIconColor
-            )
-
-
+            if (closeButtonVisibility) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .size(19.dp)
+                        .clickable { onDismissed() },
+                    contentDescription = "Close Icon",
+                    tint = style.closeIconColor
+                )
+            }
         }
     }
-
 }
 
 @Composable
-private fun TickerTextContent(modifier: Modifier = Modifier, title: String, description: String) {
+private fun TickerTextContent(modifier: Modifier = Modifier, title: CharSequence, description: CharSequence) {
     if (title.isNotEmpty() && description.isNotEmpty()) {
         TitleWithDescription(
             modifier = modifier,
@@ -116,14 +113,13 @@ private fun TickerTextContent(modifier: Modifier = Modifier, title: String, desc
 @Composable
 private fun TitleWithDescription(
     modifier: Modifier = Modifier,
-    title: String,
-    description: String
+    title: CharSequence,
+    description: CharSequence
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
-
         NestTypography(
             text = title,
             textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
@@ -133,12 +129,11 @@ private fun TitleWithDescription(
             text = description,
             textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
         )
-
     }
 }
 
 @Composable
-private fun TitleOnly(modifier: Modifier = Modifier, title: String) {
+private fun TitleOnly(modifier: Modifier = Modifier, title: CharSequence) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
@@ -151,7 +146,7 @@ private fun TitleOnly(modifier: Modifier = Modifier, title: String) {
 }
 
 @Composable
-private fun DescriptionOnly(modifier: Modifier = Modifier, description: String) {
+private fun DescriptionOnly(modifier: Modifier = Modifier, description: CharSequence) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
@@ -161,11 +156,7 @@ private fun DescriptionOnly(modifier: Modifier = Modifier, description: String) 
             textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
         )
     }
-
 }
-
-
-
 
 data class TickerColor(
     val backgroundColor: Color,
@@ -207,7 +198,6 @@ fun NestTickerAnnouncementDarkPreview() {
     }
 }
 
-
 @Preview(name = "Ticker [Description Only]")
 @Composable
 fun DescriptionOnlyTicker() {
@@ -222,7 +212,6 @@ fun DescriptionOnlyTicker() {
     }
 }
 
-
 @Preview(name = "Ticker Warning")
 @Composable
 fun NestTickerWarningPreview() {
@@ -236,8 +225,6 @@ fun NestTickerWarningPreview() {
         )
     }
 }
-
-
 
 @Preview(name = "Ticker Error")
 @Composable

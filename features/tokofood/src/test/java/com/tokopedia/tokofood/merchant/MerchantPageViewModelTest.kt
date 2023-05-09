@@ -42,6 +42,9 @@ import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.*
 import org.junit.Test
 
 class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
@@ -501,11 +504,11 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
 
     @Test
     fun `when updateQuantity should emit notice to hit update API after debounce time`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
                     viewModel.updateQuantity("123", 1)
-                    advanceTimeBy(500L)
+                    advanceTimeBy(1000L)
                 },
                 then = {
                     assert(it != null)
@@ -516,14 +519,14 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
 
     @Test
     fun `when updateQuantity to replace should emit notice to hit update API after debounce time`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val expectedOrderQty = 2
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
                     viewModel.updateQuantity("123", 1)
-                    advanceTimeBy(100L)
+                    advanceTimeBy(200L)
                     viewModel.updateQuantity("123", 2)
-                    advanceTimeBy(500L)
+                    advanceTimeBy(700L)
                 },
                 then = {
                     assertEquals(expectedOrderQty, it?.businessData?.carts?.firstOrNull()?.quantity)
@@ -534,7 +537,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
 
     @Test
     fun `when updateQuantity should not emit notice to hit update API before debounce time`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
                     viewModel.updateQuantity("123", 1)
