@@ -48,12 +48,12 @@ object OclTracker {
     }
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3937
     // Tracker ID: 43362
-    fun sendClickOnOneClickLoginEvent () {
+    fun sendClickOnOneClickLoginEvent (label: String) {
         Tracker.Builder()
             .setEvent("clickAccount")
             .setEventAction("click on one click login")
             .setEventCategory("one click login")
-            .setEventLabel("click")
+            .setEventLabel(label)
             .setCustomProperty("trackerId", "43362")
             .setBusinessUnit(BUSSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
@@ -133,4 +133,8 @@ object OclTracker {
 
     private const val BUSSINESS_UNIT = "user platform"
     private const val CURRENT_SITE = "tokopediamarketplace"
+
+    const val LABEL_SUCCESS = "success"
+    const val LABEL_FAILED = "failed"
+    const val LABEL_CLICK = "click"
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +93,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
             sourceString.length,
             0
         )
+        binding?.oclBtnRegister?.movementMethod = LinkMovementMethod.getInstance()
         binding?.oclBtnRegister?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
@@ -148,7 +150,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
     }
 
     override fun onAccountSelected(account: OclAccount) {
-        OclTracker.sendClickOnOneClickLoginEvent()
+        OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_CLICK)
         viewModel.loginOcl(account.token)
     }
 
@@ -159,20 +161,19 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
 
     private fun showDeleteConfirmationDialog(account: OclAccount) {
         context?.let {
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.ocl_delete_confirmation_title))
             dialog.setDescription(getString(R.string.ocl_delete_confirmation_subtitle))
             dialog.setPrimaryCTAText(getString(R.string.ocl_delete_confirmation_negative_btn_title))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                OclTracker.sendClickOnButtonBatalEvent()
+                viewModel.deleteAccount(account)
+                OclTracker.sendClickOnButtonHapusDialogEvent()
             }
             dialog.setSecondaryCTAText(getString(R.string.ocl_delete_confirmation_positive_btn_title))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
-                viewModel.deleteAccount(account)
-                OclTracker.sendClickOnButtonHapusDialogEvent()
-
+                OclTracker.sendClickOnButtonBatalEvent()
             }
             dialog.show()
         }

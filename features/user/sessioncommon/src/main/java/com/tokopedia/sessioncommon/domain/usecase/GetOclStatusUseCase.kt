@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.ocl.GetOclStatusParam
 import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.data.ocl.OclStatusResponse
@@ -28,10 +27,6 @@ class GetOclStatusUseCase @Inject constructor (
 
     override suspend fun execute(params: GetOclStatusParam): OclStatus {
         val result: OclStatusResponse = repository.request(graphqlQuery(), params)
-        if(result.data.message.isNotEmpty()) {
-            throw MessageErrorException(result.data.message)
-        } else {
-            return result.data
-        }
+        return result.data
     }
 }

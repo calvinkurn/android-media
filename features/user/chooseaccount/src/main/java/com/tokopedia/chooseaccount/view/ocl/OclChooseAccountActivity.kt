@@ -14,6 +14,7 @@ import com.tokopedia.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.sessioncommon.tracker.OclTracker
 
 class OclChooseAccountActivity : BaseSimpleActivity(), HasComponent<ChooseAccountComponent> {
 
@@ -35,6 +36,7 @@ class OclChooseAccountActivity : BaseSimpleActivity(), HasComponent<ChooseAccoun
             headerTitle = getString(R.string.login)
             actionText = getString(R.string.register)
             actionTextView?.setOnClickListener {
+                OclTracker.sendClickOnButtonDaftarEvent()
                 goToRegisterInitial()
             }
         }

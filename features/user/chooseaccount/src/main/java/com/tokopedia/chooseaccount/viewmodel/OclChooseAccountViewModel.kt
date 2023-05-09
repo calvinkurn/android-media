@@ -13,6 +13,7 @@ import com.tokopedia.sessioncommon.data.ocl.LoginOclParam
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginOclUseCase
+import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,8 +72,10 @@ class OclChooseAccountViewModel @Inject constructor(
                 if(result.accessToken.isNotEmpty()) {
                     getUserInfoAndSaveSessionUseCase(Unit)
                 }
+                OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
                 _navigateToSuccessPage.value = true
             } catch (e: Exception) {
+                OclTracker.sendClickOnOneClickLoginEvent("${OclTracker.LABEL_FAILED} - ${e.message}")
                 _toasterError.value = e.message
             }
         }

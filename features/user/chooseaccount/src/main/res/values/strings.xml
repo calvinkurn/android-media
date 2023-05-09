@@ -104,7 +104,7 @@
     <string name="ocl_delete_confirmation_title">Hilangkan dari daftar?</string>
     <string name="ocl_delete_confirmation_subtitle">Kalau kamu hilangkan akun ini, kamu perlu login lagi.</string>
 
-    <string name="ocl_delete_confirmation_positive_btn_title">Ya, Hilangkan</string>
-    <string name="ocl_delete_confirmation_negative_btn_title">Batal</string>
+    <string name="ocl_delete_confirmation_positive_btn_title">Batal</string>
+    <string name="ocl_delete_confirmation_negative_btn_title">Ya, Hapus</string>
 
 </resources>

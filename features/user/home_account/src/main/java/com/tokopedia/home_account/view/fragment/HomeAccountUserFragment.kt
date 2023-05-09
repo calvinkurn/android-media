@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -113,6 +114,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.sessioncommon.tracker.OclTracker
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -1030,7 +1032,9 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        viewModel.getOclStatus()
+        if(OclUtils.isOclEnabled()) {
+            viewModel.getOclStatus()
+        }
     }
 
     private fun onRefresh() {
@@ -1415,6 +1419,7 @@ open class HomeAccountUserFragment :
             OclTracker.sendClickOnButtonNantiLoginAccountEvent()
             doLogout()
         }
+        child.oclSubtitleText.movementMethod = LinkMovementMethod.getInstance()
         child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
         child.imageUnify.loadImage(R.drawable.img_ocl_header)
         BottomSheetUnify().apply {
