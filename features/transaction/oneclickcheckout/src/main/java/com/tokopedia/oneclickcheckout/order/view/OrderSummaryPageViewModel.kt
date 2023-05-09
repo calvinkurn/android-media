@@ -176,6 +176,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 OccState.Failed(Failure(result.throwable))
             }
             orderShipment.value = OrderShipment()
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -395,6 +396,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             }
         }
         orderShipment.value = result.orderShipment
+            .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
@@ -572,11 +574,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
             clearBboIfExist().also { isBoExist ->
-                if (it.isShowLogisticPromoTickerMessage) {
-                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
-                } else {
-                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = isBoExist)
-                }
+                orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
                 sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
                 if (it.serviceErrorMessage.isNullOrEmpty()) {
                     validateUsePromo(isBoExist)
@@ -614,11 +612,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
             clearBboIfExist().also { isBoExist ->
-                if (it.isShowLogisticPromoTickerMessage) {
-                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
-                } else {
-                    orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = isBoExist)
-                }
+                orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
                 validateUsePromo(isBoExist)
             }
         }
@@ -642,6 +636,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, newGlobalEvent)
                     if (newShipment != null) {
                         orderShipment.value = newShipment
+                            .copy(isShowLogisticPromoTickerMessage = false)
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
@@ -696,9 +691,14 @@ class OrderSummaryPageViewModel @Inject constructor(
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
-                clearBboIfExist().also {
-                    orderShipment.value =
-                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = it)
+                clearBboIfExist().also { isBoExist ->
+                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                    } else {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                    }
                 }
             }
             globalEvent.value = newGlobalEvent
@@ -812,9 +812,14 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                clearBboIfExist().also {
-                    orderShipment.value =
-                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = it)
+                clearBboIfExist().also { isBoExist ->
+                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                    } else {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                    }
                 }
             }
             globalEvent.value = newGlobalEvent
