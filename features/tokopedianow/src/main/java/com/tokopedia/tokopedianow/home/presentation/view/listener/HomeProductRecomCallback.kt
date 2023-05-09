@@ -18,6 +18,7 @@ class HomeProductRecomCallback(
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeProductRecomListener {
 
@@ -110,6 +111,8 @@ class HomeProductRecomCallback(
             )
         }
     }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun openAppLink(appLink: String) {
         if (appLink.isNotEmpty()) {

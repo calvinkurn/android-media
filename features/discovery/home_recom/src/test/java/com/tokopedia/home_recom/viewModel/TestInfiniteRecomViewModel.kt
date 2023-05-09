@@ -34,7 +34,7 @@ import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -106,7 +106,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test add to cart non variant then return success cart data`() = runBlockingTest {
+    fun `test add to cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345"), status = "OK")
@@ -122,7 +122,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test add to cart non variant then return failed with message`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal maning euy"))
@@ -140,7 +140,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test add to cart non variant then return failed with throwable`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         coEvery {
@@ -157,7 +157,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return success cart data`() = runBlockingTest {
+    fun `test update cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
@@ -175,7 +175,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return failed with message`() = runBlockingTest {
+    fun `test update cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
@@ -194,7 +194,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return error throwable`() = runBlockingTest {
+    fun `test update cart non variant then return error throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
@@ -212,7 +212,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return success cart data`() = runBlockingTest {
+    fun `test delete cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
@@ -231,7 +231,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return failed with message`() = runBlockingTest {
+    fun `test delete cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
@@ -250,7 +250,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return error throwable`() = runBlockingTest {
+    fun `test delete cart non variant then return error throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0

@@ -9,7 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
@@ -118,7 +117,7 @@ class ResultNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun trackImpression() {
-        when (status){
+        when (status) {
             STATUS_APPROVED -> {
                 analytics.trackViewOtpPushNotifSuccessPage()
             }

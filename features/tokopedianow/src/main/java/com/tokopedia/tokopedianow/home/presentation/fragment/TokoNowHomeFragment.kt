@@ -62,6 +62,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -78,7 +79,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
@@ -116,6 +116,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
+import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -132,11 +133,13 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home2hSwitcher
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
@@ -145,6 +148,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBan
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCarouselChipListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
@@ -154,7 +158,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCal
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -181,7 +184,6 @@ class TokoNowHomeFragment :
     Fragment(),
     TokoNowView,
     TokoNowChooseAddressWidgetListener,
-    HomeTickerViewHolder.HomeTickerListener,
     MiniCartWidgetListener,
     TokoNowProductCardListener,
     ShareBottomsheetListener,
@@ -195,7 +197,6 @@ class TokoNowHomeFragment :
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
-        private const val DEFAULT_INTERVAL_HINT: Long = 10000L
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 1800000L
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_PLAY_WIDGET = 100
@@ -247,7 +248,6 @@ class TokoNowHomeFragment :
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
-                homeTickerListener = this,
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryMenuListener = createCategoryMenuCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
@@ -269,7 +269,8 @@ class TokoNowHomeFragment :
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
-                claimCouponWidgetListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetListener = createClaimCouponWidgetCallback(),
+                productCarouselChipListener = createProductCarouselChipListener()
             ),
             differ = HomeListDiffer()
         )
@@ -286,7 +287,6 @@ class TokoNowHomeFragment :
     private var stickyLoginTokonow: StickyLoginView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
-    private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
@@ -318,6 +318,7 @@ class TokoNowHomeFragment :
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
     private val rtrAnalytics by lazy { createRealTimeRecomAnalytics() }
+    private val chipCarouselAnalytics by lazy { HomeProductCarouselChipsAnalytics(userSession) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -327,7 +328,6 @@ class TokoNowHomeFragment :
         shareHomeTokonow = createShareHomeTokonow()
         firebaseRemoteConfig.let {
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
-            durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
     }
 
@@ -402,10 +402,6 @@ class TokoNowHomeFragment :
                 onUpdatePlayWidget(data)
             }
         }
-    }
-
-    override fun onTickerDismissed(id: String) {
-        viewModelTokoNow.removeTickerWidget(id)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -1069,6 +1065,12 @@ class TokoNowHomeFragment :
                     it.cartId,
                     it.data
                 )
+                is HomeProductCarouselChipsUiModel -> trackCarouselChipsAddToCart(
+                    it.quantity,
+                    it.position,
+                    it.cartId,
+                    it.data
+                )
             }
         }
 
@@ -1249,6 +1251,23 @@ class TokoNowHomeFragment :
             quantity = quantity.toString(),
             uiModel = product,
             cartId = cartId
+        )
+    }
+
+    private fun trackCarouselChipsAddToCart(
+        quantity: Int,
+        position: Int,
+        cartId: String,
+        data: HomeProductCarouselChipsUiModel
+    ) {
+        val chipName = data.chipList.first { it.selected }.text
+        chipCarouselAnalytics.trackClickAddToCart(
+            position = position,
+            channelId = data.id,
+            chipName = chipName,
+            cartId = cartId,
+            quantity = quantity,
+            carousel = data
         )
     }
 
@@ -1738,7 +1757,6 @@ class TokoNowHomeFragment :
                 ),
                 searchbarClickCallback = { onSearchBarClick() },
                 searchbarImpressionCallback = {},
-                durationAutoTransition = durationAutoTransition,
                 shouldShowTransition = shouldShowTransition()
             )
         }
@@ -1820,6 +1838,12 @@ class TokoNowHomeFragment :
         }
     }
 
+    private fun isEnableAffiliate(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+            .getString(RollenceKey.TOKOPEDIA_NOW_AFFILIATE, "")
+            .isNotEmpty()
+    }
+
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             val shareInput = viewModelTokoNow.getAffiliateShareInput()
@@ -1838,7 +1862,9 @@ class TokoNowHomeFragment :
             // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
 
-            enableAffiliateCommission(shareInput)
+            if (isEnableAffiliate()) {
+                enableAffiliateCommission(shareInput)
+            }
         }
 
         if (shareHomeTokonow?.isScreenShot == true) {
@@ -1913,6 +1939,7 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1923,6 +1950,7 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1942,7 +1970,12 @@ class TokoNowHomeFragment :
     }
 
     private fun createRealTimeRecommendationListener(): RealTimeRecommendationListener {
-        return HomeRealTimeRecommendationListener(this, viewModelTokoNow, userSession)
+        return HomeRealTimeRecommendationListener(
+            tokoNowView = this,
+            viewModel = viewModelTokoNow,
+            userSession = userSession,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked
+        )
     }
 
     private fun createRealTimeRecomAnalytics(): RealTimeRecommendationAnalytics {
@@ -1959,6 +1992,15 @@ class TokoNowHomeFragment :
 
     private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
         return ClaimCouponWidgetCallback(viewModelTokoNow)
+    }
+
+    private fun createProductCarouselChipListener(): HomeProductCarouselChipsViewListener {
+        return HomeProductCarouselChipListener(
+            requireContext(),
+            viewModelTokoNow,
+            chipCarouselAnalytics,
+            ::startActivityForResult
+        )
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
@@ -2034,5 +2076,12 @@ class TokoNowHomeFragment :
 
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=$linkUrl")
+    }
+
+    private fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            type = TYPE_ERROR
+        )
     }
 }

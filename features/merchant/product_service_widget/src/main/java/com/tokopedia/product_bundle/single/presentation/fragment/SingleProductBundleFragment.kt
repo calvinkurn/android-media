@@ -31,6 +31,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -229,7 +230,7 @@ class SingleProductBundleFragment(
                 it.responseResult.data[0].cartId
             )
 
-            if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+            if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART || pageSource == BundlingPageSource.CART_RECOMMENDATION_PAGE) {
                 sendSingleBundleAtcTrackerClickEvent(
                     selectedProductIds = parentProductID,
                     shopId = it.requestParams.shopId,

@@ -6,18 +6,20 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class TokoNowProductRecommendationViewModelTestAffiliate : TokoNowProductRecommendationViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 700L
     }
 
     @Test
     fun `given product when add to cart should call check atc affiliate cookie`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val quantity = 2
             val isVariant = true
 
@@ -65,7 +67,7 @@ class TokoNowProductRecommendationViewModelTestAffiliate : TokoNowProductRecomme
 
     @Test
     fun `given product when update cart should call check atc affiliate cookie`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val quantity = 2
             val currentQuantity = 3
             val isVariant = true
@@ -119,7 +121,7 @@ class TokoNowProductRecommendationViewModelTestAffiliate : TokoNowProductRecomme
 
     @Test
     fun `given check atc affiliate cookie throws error when add to cart should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val quantity = 2
             val isVariant = true
 

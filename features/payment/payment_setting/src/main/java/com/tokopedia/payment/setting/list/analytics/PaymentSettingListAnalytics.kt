@@ -96,4 +96,48 @@ class PaymentSettingListAnalytics @Inject constructor(val userSessionInterface: 
         map[Key.TRACKER_ID] = Value.TRACKER_ID_41444
         sendGeneralEvent(map)
     }
+
+    fun sendEventViewListCreditOrDebitCard() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_VIEW_PAYMENT_IRIS,
+            Category.PAYMENT_SETTING_PAGE,
+            Action.VIEW_LIST_CREDIT_OR_DEBIT_CARD,
+            ""
+        )
+        map[Key.TRACKER_ID] = Value.TRACKER_ID_42696
+        sendGeneralEvent(map)
+    }
+
+    fun sendEventClickCard() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_PAYMENT,
+            Category.PAYMENT_SETTING_PAGE,
+            Action.CLICK_CARD,
+            ""
+        )
+        map[Key.TRACKER_ID] = Value.TRACKER_ID_42697
+        sendGeneralEvent(map)
+    }
+
+    fun sendEventClickAddCard() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_PAYMENT,
+            Category.PAYMENT_SETTING_PAGE,
+            Action.CLICK_ADD_CARD,
+            ""
+        )
+        map[Key.TRACKER_ID] = Value.TRACKER_ID_42700
+        sendGeneralEvent(map)
+    }
+
+    fun sendEventClickAuthenticate() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_PAYMENT,
+            Category.PAYMENT_SETTING_PAGE,
+            Action.CLICK_NOTIFICATION_SETTING,
+            ""
+        )
+        map[Key.TRACKER_ID] = Value.TRACKER_ID_42701
+        sendGeneralEvent(map)
+    }
 }

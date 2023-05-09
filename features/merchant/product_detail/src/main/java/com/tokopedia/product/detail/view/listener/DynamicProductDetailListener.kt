@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -28,6 +29,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Pr
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -37,6 +39,9 @@ interface DynamicProductDetailListener {
     fun getParentViewModelStoreOwner(): ViewModelStore
     fun getParentLifeCyclerOwner(): LifecycleOwner
     fun getRemoteConfigInstance(): RemoteConfig?
+    fun getProductInfo(): DynamicProductInfoP1?
+    fun getTrackingQueueInstance(): TrackingQueue
+    fun getUserSession(): UserSessionInterface
 
     /**
      * ProductMediaViewHolder
@@ -59,6 +64,7 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
     fun showThumbnailImage(): Boolean
+    fun onShowProductMediaRecommendationClicked()
 
     /**
      * ProductSnapshotViewHolder
@@ -499,4 +505,9 @@ interface DynamicProductDetailListener {
     fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
 
     fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
+
+    /**
+     * Product Media Recom BottomSheet
+     */
+    fun onProductMediaRecomBottomSheetDismissed()
 }

@@ -12,8 +12,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,7 +32,7 @@ import org.mockito.ArgumentMatchers.anyString
 open class BaseTokoNowViewModelTestFixture {
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -42,6 +45,7 @@ open class BaseTokoNowViewModelTestFixture {
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
     private lateinit var affiliateHelper: AffiliateCookieHelper
     private lateinit var affiliateService: NowAffiliateService
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
 
@@ -52,6 +56,7 @@ open class BaseTokoNowViewModelTestFixture {
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
         affiliateHelper = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
@@ -63,6 +68,7 @@ open class BaseTokoNowViewModelTestFixture {
             deleteCartUseCase,
             getMiniCartUseCase,
             affiliateService,
+            getTargetedTickerUseCase,
             addressData,
             userSession,
             coroutineTestRule.dispatchers

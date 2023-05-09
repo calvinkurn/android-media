@@ -6,8 +6,8 @@ import com.tokopedia.user.session.UserSession
 class UserSessionStub(context: Context?) : UserSession(context) {
 
     var hasShopStub = true
-    var shopNameStub = "Toko Rifqi"
-    var nameStub = "Rifqi MF"
+    var shopNameStub = "Toko Rifqi 123"
+    var nameStub = "Rifqi MF 123"
     var loggedIn = true
 
     override fun hasShop(): Boolean {
@@ -25,5 +25,4 @@ class UserSessionStub(context: Context?) : UserSession(context) {
     override fun isLoggedIn(): Boolean {
         return loggedIn
     }
-
 }
