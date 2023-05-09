@@ -11,11 +11,11 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
+import com.tokopedia.topchat.chatlist.data.ChatListPreference
 
 class ToolTipSearchPopupWindow constructor(
     private val context: Context?,
-    private val viewModel: ChatTabCounterViewModel
+    private val pref: ChatListPreference
 ) : PopupWindow(context) {
 
     private lateinit var view: View
@@ -57,7 +57,6 @@ class ToolTipSearchPopupWindow constructor(
         setHeight(height)
     }
 
-
     fun showAtBottom(anchorView: View?) {
         if (anchorView == null) return
         anchorView.post {
@@ -97,7 +96,7 @@ class ToolTipSearchPopupWindow constructor(
 
     fun dismissOnBoarding() {
         if (!isShowing) return
-        viewModel.toolTipOnBoardingShown()
+        pref.searchTooltipShown = true
         dismiss()
     }
 }

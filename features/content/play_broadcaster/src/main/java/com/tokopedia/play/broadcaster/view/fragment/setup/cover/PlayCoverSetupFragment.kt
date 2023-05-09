@@ -66,7 +66,7 @@ class PlayCoverSetupFragment @Inject constructor(
     private val coverSetupViewModelFactory: PlayCoverSetupViewModel.Factory,
     private val dispatcher: CoroutineDispatchers,
     private val permissionPref: PermissionSharedPreferences,
-    private val analytic: PlayBroCoverPickerAnalytic,
+    private val analytic: PlayBroCoverPickerAnalytic
 ) : PlayBaseSetupFragment(),
     CoverCropViewComponent.Listener,
     CoverSetupViewComponent.Listener,
@@ -85,21 +85,21 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private val coverSetupView by viewComponent(isEagerInit = true) {
         CoverSetupViewComponent(
-                container = view as ViewGroup,
-                dataSource = object : CoverSetupViewComponent.DataSource {
-                    override fun getMaxTitleCharacters(): Int {
-                        return viewModel.maxTitleChars
-                    }
+            container = view as ViewGroup,
+            dataSource = object : CoverSetupViewComponent.DataSource {
+                override fun getMaxTitleCharacters(): Int {
+                    return viewModel.maxTitleChars
+                }
 
-                    override fun isValidCoverTitle(coverTitle: String): Boolean {
-                        return viewModel.isValidCoverTitle(coverTitle)
-                    }
+                override fun isValidCoverTitle(coverTitle: String): Boolean {
+                    return viewModel.isValidCoverTitle(coverTitle)
+                }
 
-                    override fun getCurrentCoverUri(): Uri? {
-                        return viewModel.coverUri
-                    }
-                },
-                listener = this
+                override fun getCurrentCoverUri(): Uri? {
+                    return viewModel.coverUri
+                }
+            },
+            listener = this
         )
     }
 
@@ -109,16 +109,23 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var dialogRationale: DialogUnify
     private val permissionStatusHandler: PermissionStatusHandler = {
-        if (!isAllGranted()) showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
-        else {
+        if (!isAllGranted()) {
+            showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+        } else {
             when (requestCode) {
                 REQUEST_CODE_PERMISSION_CROP_COVER -> {
-                    if (isAllGranted()) coverCropView.clickAdd()
-                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                    if (isAllGranted()) {
+                        coverCropView.clickAdd()
+                    } else {
+                        showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                    }
                 }
                 REQUEST_CODE_PERMISSION_UPLOAD -> {
-                    if (isAllGranted()) coverSetupView.clickNext()
-                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                    if (isAllGranted()) {
+                        coverSetupView.clickNext()
+                    } else {
+                        showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                    }
                 }
                 REQUEST_CODE_PERMISSION_COVER_CHOOSER -> {
                     if (isAllGranted()) openCoverChooser(CoverSource.None)
@@ -161,8 +168,8 @@ class PlayCoverSetupFragment @Inject constructor(
             }
             coverChangeState is NotChangeable -> {
                 showToaster(
-                        message = coverChangeState.reason.localizedMessage,
-                        type = Toaster.TYPE_NORMAL
+                    message = coverChangeState.reason.localizedMessage,
+                    type = Toaster.TYPE_NORMAL
                 )
                 true
             }
@@ -238,21 +245,23 @@ class PlayCoverSetupFragment @Inject constructor(
                 try {
                     val croppedUri = withContext(dispatcher.io) {
                         yalantisImageCropper.cropImage(
-                                inputPath = imageInputPath,
-                                cropRect = cropRect,
-                                currentRect = currentImageRect,
-                                currentScale = currentScale,
-                                currentAngle = currentAngle,
-                                exifInfo = exifInfo,
-                                viewBitmap = viewBitmap
+                            inputPath = imageInputPath,
+                            cropRect = cropRect,
+                            currentRect = currentImageRect,
+                            currentScale = currentScale,
+                            currentAngle = currentAngle,
+                            exifInfo = exifInfo,
+                            viewBitmap = viewBitmap
                         )
                     }
 
                     viewModel.setDraftCroppedCover(croppedUri)
                     if (isEditCoverMode) shouldUploadCover()
-                } catch (e: Throwable) {  /* Fail to crop */ }
+                } catch (e: Throwable) { /* Fail to crop */ }
             }
-        } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+        } else {
+            requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+        }
 
         analytic.clickContinueOnCroppingPage(mDataSource?.getSelectedAccount().orUnknown(), viewModel.pageSource)
     }
@@ -276,7 +285,6 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onTitleAreaHasFocus() {
-
     }
 
     override fun onViewDestroyed(view: CoverSetupViewComponent) {
@@ -325,17 +333,21 @@ class PlayCoverSetupFragment @Inject constructor(
         customErrMessage: String? = null,
         duration: Int = Toaster.LENGTH_LONG,
         actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
+        actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         val errMessage = if (customErrMessage == null) {
             ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
+                context,
+                err,
+                ErrorHandler.Builder()
                     .className(this::class.java.simpleName)
                     .build()
             )
         } else {
             val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
+                context,
+                err,
+                ErrorHandler.Builder()
                     .className(this::class.java.simpleName)
                     .build()
             )
@@ -357,12 +369,12 @@ class PlayCoverSetupFragment @Inject constructor(
         }
 
         view?.showToaster(
-                message = message,
-                type = type,
-                duration = duration,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
+            message = message,
+            type = type,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
+            bottomMargin = toasterBottomMargin
         )
     }
 
@@ -370,12 +382,12 @@ class PlayCoverSetupFragment @Inject constructor(
         when (val coverChangeState = viewModel.coverChangeState()) {
             Changeable -> {
                 getImagePickerHelper()
-                        .show(coverSource)
+                    .show(coverSource)
             }
             is NotChangeable -> {
                 showToaster(
-                        message = coverChangeState.reason.localizedMessage,
-                        type = Toaster.TYPE_NORMAL
+                    message = coverChangeState.reason.localizedMessage,
+                    type = Toaster.TYPE_NORMAL
                 )
             }
         }
@@ -413,38 +425,41 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun shouldUploadCover() {
-        if (isGalleryPermissionGranted()) viewModel.uploadCover()
-        else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
+        if (isGalleryPermissionGranted()) {
+            viewModel.uploadCover()
+        } else {
+            requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
+        }
     }
 
     private fun showDialogPermissionRationale() {
         getDialogRationale()
-                .show()
+            .show()
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {
         if (imagePickerHelper == null) {
             imagePickerHelper = CoverImagePickerHelper(
-                    context = requireContext(),
-                    fragmentManager = childFragmentManager,
-                    pageSource = mDataSource?.getPageSource().orUnknown(),
-                    account = mDataSource?.getSelectedAccount().orUnknown(),
-                    listener = object : CoverImagePickerHelper.OnChosenListener {
-                        override fun onGetFromProduct(productId: String, imageUrl: String) {
-                            onGetCoverFromProduct(productId, imageUrl)
-                        }
-
-                        override fun onGetFromCamera(uri: Uri) {
-                            onGetCoverFromCamera(uri)
-                        }
-
-                        override fun onGetFromGallery(uri: Uri) {
-                            onGetCoverFromGallery(uri)
-                        }
-                    },
-                    intentHandler = { intent, requestCode ->
-                        startActivityForResult(intent, requestCode)
+                context = requireContext(),
+                fragmentManager = childFragmentManager,
+                pageSource = mDataSource?.getPageSource().orUnknown(),
+                account = mDataSource?.getSelectedAccount().orUnknown(),
+                listener = object : CoverImagePickerHelper.OnChosenListener {
+                    override fun onGetFromProduct(productId: String, imageUrl: String) {
+                        onGetCoverFromProduct(productId, imageUrl)
                     }
+
+                    override fun onGetFromCamera(uri: Uri) {
+                        onGetCoverFromCamera(uri)
+                    }
+
+                    override fun onGetFromGallery(uri: Uri) {
+                        onGetCoverFromGallery(uri)
+                    }
+                },
+                intentHandler = { intent, requestCode ->
+                    startActivityForResult(intent, requestCode)
+                }
             )
         }
         return imagePickerHelper!!
@@ -453,16 +468,16 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun getDialogRationale(): DialogUnify {
         if (!::dialogRationale.isInitialized) {
             dialogRationale = requireContext().getDialog(
-                    actionType = DialogUnify.HORIZONTAL_ACTION,
-                    title = getString(R.string.play_storage_permission_rationale_title),
-                    desc = getString(R.string.play_storage_permission_rationale_desc),
-                    primaryCta = getString(R.string.play_yes),
-                    primaryListener = { dialog ->
-                        dialog.dismiss()
-                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = false)
-                    },
-                    secondaryCta = getString(R.string.play_no),
-                    secondaryListener = { dialog -> dialog.dismiss() }
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_storage_permission_rationale_title),
+                desc = getString(R.string.play_storage_permission_rationale_desc),
+                primaryCta = getString(R.string.play_yes),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = false)
+                },
+                secondaryCta = getString(R.string.play_no),
+                secondaryListener = { dialog -> dialog.dismiss() }
             )
         }
         return dialogRationale
@@ -473,7 +488,7 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun isGalleryPermissionGranted(): Boolean {
         return permissionHelper.isAllPermissionsGranted(
-                arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
+            arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         )
     }
 
@@ -481,15 +496,15 @@ class PlayCoverSetupFragment @Inject constructor(
         val permissions = arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
-                    permissions = permissions,
-                    requestCode = requestCode,
-                    permissionResultListener = permissionResultListener
+                permissions = permissions,
+                requestCode = requestCode,
+                permissionResultListener = permissionResultListener
             )
         } else {
             permissionHelper.requestMultiPermissions(
-                    permissions = permissions,
-                    requestCode = requestCode,
-                    statusHandler = permissionStatusHandler
+                permissions = permissions,
+                requestCode = requestCode,
+                statusHandler = permissionStatusHandler
             )
         }
     }
@@ -508,15 +523,15 @@ class PlayCoverSetupFragment @Inject constructor(
             try {
                 val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
                 Glide.with(requireContext())
-                        .asBitmap()
-                        .load(originalImageUrl)
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
-                            }
+                    .asBitmap()
+                    .load(originalImageUrl)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
+                        }
 
-                            override fun onLoadCleared(placeholder: Drawable?) {}
-                        })
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
             } catch (e: Throwable) {
                 showErrorToaster(
                     err = e,
@@ -547,7 +562,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         mDataSource?.getProductList().orEmpty(),
                         mDataSource?.getSelectedAccount().orUnknown(),
                         mDataSource?.getChannelId().orEmpty(),
-                        mDataSource?.getPageSource().orUnknown(),
+                        mDataSource?.getPageSource().orUnknown()
                     ) as T
                 }
             }
@@ -570,6 +585,9 @@ class PlayCoverSetupFragment @Inject constructor(
                 is CoverSetupState.Cropped.Uploaded -> {
                     if (!isEditCoverMode) showInitCoverLayout(it.localImage)
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -585,6 +603,9 @@ class PlayCoverSetupFragment @Inject constructor(
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
                     if (data != null) onUploadSuccess()
+                }
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -604,44 +625,44 @@ class PlayCoverSetupFragment @Inject constructor(
     @Suppress("MagicNumber")
     private fun setupEnterTransition() {
         enterTransition = TransitionSet()
-                .addTransition(Slide(Gravity.END))
-                .addTransition(Fade(Fade.IN))
-                .setStartDelay(200)
-                .setDuration(300)
+            .addTransition(Slide(Gravity.END))
+            .addTransition(Fade(Fade.IN))
+            .setStartDelay(200)
+            .setDuration(300)
 
         sharedElementEnterTransition = TransitionSet()
-                .addTransition(ChangeTransform())
-                .addTransition(ChangeBounds())
-                .setDuration(450)
+            .addTransition(ChangeTransform())
+            .addTransition(ChangeBounds())
+            .setDuration(450)
     }
 
     @Suppress("MagicNumber")
     private fun setupReturnTransition() {
         returnTransition = TransitionSet()
-                .addTransition(Slide(Gravity.END))
-                .addTransition(Fade(Fade.OUT))
-                .setDuration(250)
+            .addTransition(Slide(Gravity.END))
+            .addTransition(Fade(Fade.OUT))
+            .setDuration(250)
 
         sharedElementReturnTransition = TransitionSet()
-                .addTransition(ChangeTransform())
-                .addTransition(ChangeBounds())
-                .setDuration(450)
+            .addTransition(ChangeTransform())
+            .addTransition(ChangeBounds())
+            .setDuration(450)
     }
 
     @Suppress("MagicNumber")
     private fun setupExitTransition() {
         exitTransition = TransitionSet()
-                .addTransition(Slide(Gravity.START))
-                .addTransition(Fade(Fade.OUT))
-                .setDuration(300)
+            .addTransition(Slide(Gravity.START))
+            .addTransition(Fade(Fade.OUT))
+            .setDuration(300)
     }
 
     @Suppress("MagicNumber")
     private fun setupReenterTransition() {
         reenterTransition = TransitionSet()
-                .addTransition(Slide(Gravity.START))
-                .addTransition(Fade(Fade.IN))
-                .setDuration(300)
+            .addTransition(Slide(Gravity.START))
+            .addTransition(Fade(Fade.IN))
+            .setDuration(300)
     }
 
     companion object {

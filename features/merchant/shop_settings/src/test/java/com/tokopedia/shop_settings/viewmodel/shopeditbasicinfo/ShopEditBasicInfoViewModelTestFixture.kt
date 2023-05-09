@@ -20,6 +20,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import com.tokopedia.unit.test.rule.StandardTestRule
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.verify
@@ -35,7 +37,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = StandardTestRule()
 
     @RelaxedMockK
     lateinit var getShopBasicDataUseCase: GetShopBasicDataUseCase

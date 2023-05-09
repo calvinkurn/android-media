@@ -114,10 +114,6 @@ class DeactivationQuestionnaireBottomSheet :
         btnPmDeactivationSubmit.setOnClickListener {
             submitDeactivationPm()
         }
-
-        btnPmDeactivationCancel.setOnClickListener {
-            dismiss()
-        }
     }
 
     fun setOnDeactivationSuccess(callback: () -> Unit) {
@@ -282,10 +278,10 @@ class DeactivationQuestionnaireBottomSheet :
 
         questionnaireAdapter.data.forEach {
             when (it) {
-                is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
+                is QuestionnaireUiModel.QuestionnaireSingleOptionUiModel -> {
                     val answer = PMCancellationQuestionnaireAnswerModel(
                         question = it.question,
-                        answers = mutableListOf(it.givenRating.toString())
+                        answers = it.getAnswerList().toMutableList()
                     )
                     answers.add(answer)
                 }
@@ -293,6 +289,13 @@ class DeactivationQuestionnaireBottomSheet :
                     val answer = PMCancellationQuestionnaireAnswerModel(
                         question = it.question,
                         answers = it.getAnswerList().toMutableList()
+                    )
+                    answers.add(answer)
+                }
+                is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
+                    val answer = PMCancellationQuestionnaireAnswerModel(
+                        question = it.question,
+                        answers = mutableListOf(it.givenRating.toString())
                     )
                     answers.add(answer)
                 }
@@ -315,12 +318,10 @@ class DeactivationQuestionnaireBottomSheet :
     }
 
     private fun showButtonProgress() = binding?.run {
-        btnPmDeactivationCancel.isEnabled = false
         btnPmDeactivationSubmit.isLoading = true
     }
 
     private fun hideButtonProgress() = binding?.run {
-        btnPmDeactivationCancel.isEnabled = true
         btnPmDeactivationSubmit.isLoading = false
     }
 }

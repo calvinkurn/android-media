@@ -19,21 +19,21 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
 
 class SendableVoucherPreviewUiModel(
-        private val voucherPreview: VoucherPreview
+    private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
     private val voucher = MerchantVoucherModel(
-            voucherPreview.voucherId,
-            voucherPreview.voucherName,
-            voucherPreview.voucherCode,
-            MerchantVoucherType(voucherPreview.voucherType, voucherPreview.identifier),
-            MerchantVoucherAmount(voucherPreview.amountType, voucherPreview.amount.toFloat()),
-            voucherPreview.minimumSpend,
-            MerchantVoucherOwner(),
-            voucherPreview.validThru.toString(),
-            voucherPreview.tnc,
-            MerchantVoucherBanner(voucherPreview.desktopUrl, voucherPreview.mobileUrl),
-            MerchantVoucherStatus()
+        voucherPreview.voucherId,
+        voucherPreview.voucherName,
+        voucherPreview.voucherCode,
+        MerchantVoucherType(voucherPreview.voucherType, voucherPreview.identifier),
+        MerchantVoucherAmount(voucherPreview.amountType, voucherPreview.amount.toFloat()),
+        voucherPreview.minimumSpend,
+        MerchantVoucherOwner(),
+        voucherPreview.validThru.toString(),
+        voucherPreview.tnc,
+        MerchantVoucherBanner(voucherPreview.desktopUrl, voucherPreview.mobileUrl),
+        MerchantVoucherStatus()
     )
 
     val merchantVoucherViewModel = MerchantVoucherViewModel(voucher).apply {
@@ -57,57 +57,59 @@ class SendableVoucherPreviewUiModel(
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): Any {
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
-        val voucherPayload = generatePayload(msgId, toUid, localId)
+        val voucherPayload = generatePayload(msgId, toUid, localId, sourceReply)
         return CommonUtil.toJson(voucherPayload)
     }
 
     private fun generatePayload(
         messageId: String,
         opponentId: String,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): WebsocketAttachmentContract {
         val startTime = SendableUiModel.generateStartTime()
         val payload = WebsocketVoucherPayload(
-                voucherPreview.voucherId,
-                voucherPreview.tnc,
-                voucherPreview.voucherCode,
-                voucherPreview.voucherName,
-                voucherPreview.minimumSpend,
-                voucherPreview.validThru,
-                voucherPreview.desktopUrl,
-                voucherPreview.mobileUrl,
-                voucherPreview.amount,
-                voucherPreview.amountType,
-                voucherPreview.identifier,
-                voucherPreview.voucherType,
-                voucherPreview.isPublic,
-                voucherPreview.isLockToProduct,
-                voucherPreview.applink,
-                voucherPreview.weblink
+            voucherPreview.voucherId,
+            voucherPreview.tnc,
+            voucherPreview.voucherCode,
+            voucherPreview.voucherName,
+            voucherPreview.minimumSpend,
+            voucherPreview.validThru,
+            voucherPreview.desktopUrl,
+            voucherPreview.mobileUrl,
+            voucherPreview.amount,
+            voucherPreview.amountType,
+            voucherPreview.identifier,
+            voucherPreview.voucherType,
+            voucherPreview.isPublic,
+            voucherPreview.isLockToProduct,
+            voucherPreview.applink,
+            voucherPreview.weblink
         )
         val data = WebsocketAttachmentData(
             message_id = messageId.toLongOrZero(),
             local_id = localId,
             message = getMessageFormat(),
-            source = "inbox",
+            source = sourceReply,
             attachment_type = TYPE_VOUCHER_ATTACHMENT,
             start_time = startTime,
             payload = payload
         )
         return WebsocketAttachmentContract(
-                EVENT_TOPCHAT_REPLY_MESSAGE,
-                data
+            EVENT_TOPCHAT_REPLY_MESSAGE,
+            data
         )
     }
 
     private fun getMessageFormat(): String {
         return "Voucher - ${voucherPreview.voucherName},\n" +
-                "Minimum Pembelian: ${voucherPreview.minimumSpend},\n" +
-                "Kode voucher: ${voucherPreview.voucherCode}"
+            "Minimum Pembelian: ${voucherPreview.minimumSpend},\n" +
+            "Kode voucher: ${voucherPreview.voucherCode}"
     }
 
     override fun notEnoughRequiredData(): Boolean {
@@ -130,21 +132,21 @@ class SendableVoucherPreviewUiModel(
 
     @Keep
     class WebsocketVoucherPayload(
-            val voucher_id: Int,
-            val tnc: String,
-            val voucher_code: String,
-            val voucher_name: String,
-            val minimum_spend: Int,
-            val valid_thru: Long,
-            val desktop_url: String,
-            val mobile_url: String,
-            val amount: Int,
-            val amount_type: Int,
-            val identifier: String,
-            val voucher_type: Int,
-            val is_public: Int,
-            val is_lock_to_product: Int,
-            val applink: String,
-            val weblink: String
+        val voucher_id: Int,
+        val tnc: String,
+        val voucher_code: String,
+        val voucher_name: String,
+        val minimum_spend: Int,
+        val valid_thru: Long,
+        val desktop_url: String,
+        val mobile_url: String,
+        val amount: Int,
+        val amount_type: Int,
+        val identifier: String,
+        val voucher_type: Int,
+        val is_public: Int,
+        val is_lock_to_product: Int,
+        val applink: String,
+        val weblink: String
     )
 }
