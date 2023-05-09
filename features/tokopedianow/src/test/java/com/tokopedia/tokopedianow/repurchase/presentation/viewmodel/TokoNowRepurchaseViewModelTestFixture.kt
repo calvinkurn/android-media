@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.Ca
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -25,6 +26,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
@@ -81,6 +83,12 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
     @RelaxedMockK
+    lateinit var affiliateService: NowAffiliateService
+
+    @RelaxedMockK
+    lateinit var getTargetedTicker: GetTargetedTickerUseCase
+
+    @RelaxedMockK
     lateinit var addressData: TokoNowLocalAddress
 
     @RelaxedMockK
@@ -109,6 +117,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
+            affiliateService,
+            getTargetedTicker,
             addressData,
             coroutineTestRule.dispatchers
         )
@@ -337,12 +347,24 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         verify { addToCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyAddToCartUseCaseNotCalled() {
+        verify(exactly = 0) { addToCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyDeleteCartUseCaseCalled() {
         verify { deleteCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyDeleteCartUseCaseNotCalled() {
+        verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyUpdateCartUseCaseCalled() {
         verify { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyUpdateCartUseCaseNotCalled() {
+        verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyGetProductUseCaseCalled() {

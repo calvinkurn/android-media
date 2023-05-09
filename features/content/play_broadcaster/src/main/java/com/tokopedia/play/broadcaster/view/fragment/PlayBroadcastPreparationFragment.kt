@@ -45,10 +45,12 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccoun
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
@@ -94,7 +96,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -224,6 +226,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return parentViewModel.maxProduct
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
@@ -275,7 +281,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun clickAcceptTnc(isChecked: Boolean) {
-                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
+                        if (isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -323,28 +329,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(listener = this)
-                childFragment.setupDataSource(dataSource = object : DataSource {
-                    override fun getEntryPoint(): String {
-                        return PAGE_NAME
-                    }
+                childFragment.setupDataSource(
+                    dataSource = object : DataSource {
+                        override fun getEntryPoint(): String {
+                            return PAGE_NAME
+                        }
 
-                    override fun getContentAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
+                        override fun getContentAccount(): ContentAccountUiModel {
+                            return parentViewModel.selectedAccount
+                        }
 
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
+                        override fun getChannelId(): String {
+                            return parentViewModel.channelId
+                        }
 
-                    override fun getChannelTitle(): String {
-                        return parentViewModel.channelTitle
-                    }
+                        override fun getChannelTitle(): String {
+                            return parentViewModel.channelTitle
+                        }
 
-                    override fun getDataStore(): PlayBroadcastDataStore {
-                        return parentViewModel.mDataStore
+                        override fun getDataStore(): PlayBroadcastDataStore {
+                            return parentViewModel.mDataStore
+                        }
                     }
-
-                })
+                )
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -355,7 +362,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
             activity?.finish()
         }
     }
@@ -494,58 +501,56 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupCoachMark() {
-
         var isShortsEntryPointCoachMarkShown = false
 
         fun onDismissCoachMark() {
-            if(isShortsEntryPointCoachMarkShown)
+            if (isShortsEntryPointCoachMarkShown) {
                 analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
+            }
 
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMark != null) return
 
         val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
             isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
 
-            if(isShortsEntryPointCoachMarkShown) {
+            if (isShortsEntryPointCoachMarkShown) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.bannerShorts,
                         title = getString(R.string.play_bro_banner_shorts_coachmark_title),
                         description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-                        position = CoachMark2.POSITION_BOTTOM,
+                        position = CoachMark2.POSITION_BOTTOM
                     )
                 )
                 coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
 
-            if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
+            if (parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.toolbarContentCommon,
                         title = getString(contentCommonR.string.sa_coach_mark_title),
                         description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
+                        position = CoachMark2.POSITION_BOTTOM
                     )
                 )
                 viewModel.setNotFirstSwitchAccount()
             }
         }
 
-        if(coachMarkItems.isNotEmpty()) {
-
-            if(coachMark == null) {
+        if (coachMarkItems.isNotEmpty()) {
+            if (coachMark == null) {
                 coachMark = CoachMark2(requireContext())
             }
 
             coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
-            if(coachMarkItems.size == 1) {
+            if (coachMarkItems.size == 1) {
                 coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-            else {
+            } else {
                 coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
             }
         }
@@ -557,6 +562,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Loading -> showMainComponent(false)
                 is NetworkResult.Success -> showMainComponent(true)
                 is NetworkResult.Fail -> showMainComponent(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -569,7 +577,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
-                    getSetupTitleBottomSheet().failSubmit(content.error.message)
+                    val errorMessage = if (content.error.isNetworkError) getString(R.string.play_bro_default_error_message)
+                    else content.error.message
+                    getSetupTitleBottomSheet().failSubmit(errorMessage)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) getSetupTitleBottomSheet().successSubmit()
@@ -616,6 +626,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
                 NetworkResult.Loading -> showLoading(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -802,15 +815,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun renderShortsEntryPoint(
         prev: PlayChannelUiState?,
-        curr: PlayChannelUiState,
+        curr: PlayChannelUiState
     ) {
-        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+        if (prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
             binding.bannerShorts.show()
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-        }
-        else {
+        } else {
             binding.bannerShorts.gone()
         }
     }

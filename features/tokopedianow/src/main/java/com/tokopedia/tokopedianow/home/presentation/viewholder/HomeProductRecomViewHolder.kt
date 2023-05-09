@@ -20,7 +20,7 @@ class HomeProductRecomViewHolder(
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
@@ -90,6 +90,10 @@ class HomeProductRecomViewHolder(
             appLink = seeMoreUiModel.appLink,
             headerName = seeMoreUiModel.headerName
         )
+    }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
     }
 
     override fun onProductCardClicked(
@@ -172,5 +176,6 @@ class HomeProductRecomViewHolder(
             product: ProductCardCompactCarouselItemUiModel,
             position: Int
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

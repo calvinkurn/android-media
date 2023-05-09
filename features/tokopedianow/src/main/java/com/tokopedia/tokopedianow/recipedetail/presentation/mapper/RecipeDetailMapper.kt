@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.common.util.VariantUtil.isVariant
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeProductResponse
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
@@ -192,6 +193,7 @@ object RecipeDetailMapper {
     private fun mapToProductUiModel(index: Int, product: RecipeProductResponse): RecipeProductUiModel {
         val position = index + 1
         val detail = product.detail
+        val parentProductID = detail.parentProductID
 
         val similarProducts = product.similarProducts?.mapIndexed { idx, similarProduct ->
             mapToProductUiModel(idx, similarProduct)
@@ -202,6 +204,7 @@ object RecipeDetailMapper {
             shopId = detail.shopID,
             name = detail.name,
             stock = detail.stock,
+            isVariant = isVariant(parentProductID),
             minOrder = detail.minOrder,
             maxOrder = detail.maxOrder,
             priceFmt = detail.fmtPrice,

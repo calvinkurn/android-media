@@ -28,7 +28,9 @@ import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
@@ -91,6 +93,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -98,6 +102,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -270,11 +276,20 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }) {}
     }
 
-    fun onCartQuantityChanged(productId: String, quantity: Int, type: String, shopId: String) {
+    fun onCartQuantityChanged(
+        productId: String,
+        quantity: Int,
+        type: String,
+        shopId: String,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         onCartQuantityChanged(
             productId = productId,
             shopId = shopId,
             quantity = quantity,
+            stock = stock,
+            isVariant = isVariant,
             onSuccessAddToCart = {
                 trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateAddToCartQuantity(productId, quantity)

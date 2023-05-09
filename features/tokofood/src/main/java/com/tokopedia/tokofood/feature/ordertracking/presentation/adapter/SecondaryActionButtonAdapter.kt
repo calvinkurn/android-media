@@ -13,7 +13,7 @@ class SecondaryActionButtonAdapter(private val listener: ActionButtonListener) :
     private val actionButtonList = mutableListOf<ActionButtonsUiModel.ActionButton>()
 
     fun setActionButtonList(newActionButtonList: List<ActionButtonsUiModel.ActionButton>) {
-        if (newActionButtonList.isNullOrEmpty()) return
+        if (newActionButtonList.isEmpty()) return
         actionButtonList.clear()
         actionButtonList.addAll(newActionButtonList)
         notifyItemRangeInserted(Int.ONE, newActionButtonList.size)

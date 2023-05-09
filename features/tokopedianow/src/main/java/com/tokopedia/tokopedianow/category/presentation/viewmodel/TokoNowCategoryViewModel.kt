@@ -33,12 +33,12 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -77,6 +77,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
+    affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
 ) : BaseSearchCategoryViewModel(
     baseDispatcher,
@@ -88,6 +89,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     getWarehouseUseCase,
     setUserPreferenceUseCase,
     chooseAddressWrapper,
+    affiliateService,
     userSession
 ) {
 
@@ -150,11 +152,12 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         val searchProduct = categoryModel.searchProduct
         val headerDataView = HeaderDataView(
-            title = categoryModel.categoryDetail.data.name,
-            aceSearchProductHeader = searchProduct.header,
-            categoryFilterDataValue = categoryModel.categoryFilter,
-            quickFilterDataValue = categoryModel.quickFilter,
-            bannerChannel = categoryModel.bannerChannel
+                title = categoryModel.categoryDetail.data.name,
+                aceSearchProductHeader = searchProduct.header,
+                categoryFilterDataValue = categoryModel.categoryFilter,
+                quickFilterDataValue = categoryModel.quickFilter,
+                bannerChannel = categoryModel.bannerChannel,
+                targetedTicker = categoryModel.targetedTicker
         )
 
         val contentDataView = ContentDataView(
@@ -243,7 +246,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         val categoryList = getCategoryList()
 
-        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID
+        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
 
         updateCategoryUIModel(
             categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(

@@ -33,6 +33,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -55,14 +57,19 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -125,6 +132,7 @@ abstract class BaseSearchCategoryViewModel(
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
+    private val affiliateService: NowAffiliateService,
     protected val userSession: UserSessionInterface
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
@@ -138,6 +146,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val queryParamMutable = queryParamMap.toMutableMap()
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
+    protected var hasBlockedAddToCart = false
 
     private var headerYCoordinate = 0f
     private val filterController = FilterController()
@@ -254,6 +263,9 @@ abstract class BaseSearchCategoryViewModel(
     private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
     val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
 
+    private val blockAddToCartMutableLiveData = MutableLiveData<Unit>()
+    val blockAddToCartLiveData: LiveData<Unit> = blockAddToCartMutableLiveData
+
     var isEmptyResult: Boolean = false
 
     init {
@@ -279,6 +291,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated(source: MiniCartSource? = null) {
+        initAffiliateCookie()
         processLoadDataPage(source)
     }
 
@@ -535,6 +548,7 @@ abstract class BaseSearchCategoryViewModel(
         val headerList = mutableListOf<Visitable<*>>()
 
         headerList.add(chooseAddressDataView)
+        headerList.addTicker(headerDataView)
         headerList.add(createBannerDataView(headerDataView))
         headerList.add(createTitleDataView(headerDataView))
 
@@ -546,6 +560,19 @@ abstract class BaseSearchCategoryViewModel(
         postProcessHeaderList(headerList)
 
         return headerList
+    }
+
+    private fun MutableList<Visitable<*>>.addTicker(headerDataView: HeaderDataView) {
+        val (needToBlockAtc, tickerData) = TickerMapper.mapTickerData(headerDataView.targetedTicker)
+        hasBlockedAddToCart = needToBlockAtc
+        if (tickerData.isNotEmpty()) {
+            add(
+                TokoNowTickerUiModel(
+                    id = String.EMPTY,
+                    tickers = tickerData
+                )
+            )
+        }
     }
 
     protected abstract fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView
@@ -713,7 +740,8 @@ abstract class BaseSearchCategoryViewModel(
             mapResponseToProductItem(
                 index = index,
                 product = product,
-                cartService = cartService
+                cartService = cartService,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
         contentVisitableList.addAll(productListDataView)
@@ -1150,17 +1178,21 @@ abstract class BaseSearchCategoryViewModel(
         val productId = productItem.productCardModel.productId
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
+        val stock = productItem.productCardModel.availableStock
+        val isVariant = productItem.productCardModel.isVariant
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = {
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 sendTrackingUpdateQuantity(quantity, productItem)
                 onAddToCartSuccess(productItem, quantity)
                 updateToolbarNotification()
@@ -1303,29 +1335,34 @@ abstract class BaseSearchCategoryViewModel(
         val shopId = repurchaseProduct.shopId
         val currentQuantity = nonVariant.quantity
 
-        cartService.handleCart(
-            CartProductItem(productId, shopId, currentQuantity),
-            quantity,
-            onSuccessAddToCart = {
-                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
-                updateToolbarNotification()
-            },
-            onSuccessUpdateCart = {
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                updateToolbarNotification()
-            },
-            onSuccessDeleteCart = {
-                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
-                updateToolbarNotification()
-            },
-            onError = ::onAddToCartFailed,
-            handleCartEventNonLogin = {
-                handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
-            }
-        )
+        if (hasBlockedAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            blockAddToCartMutableLiveData.value = Unit
+        } else {
+            cartService.handleCart(
+                CartProductItem(productId, shopId, currentQuantity),
+                quantity,
+                onSuccessAddToCart = {
+                    addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                    sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
+                    updateToolbarNotification()
+                },
+                onSuccessUpdateCart = {
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                    updateToolbarNotification()
+                },
+                onSuccessDeleteCart = {
+                    removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
+                    updateToolbarNotification()
+                },
+                onError = ::onAddToCartFailed,
+                handleCartEventNonLogin = {
+                    handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
+                }
+            )
+        }
     }
 
     private fun onSuccessATCRepurchaseWidgetProduct(
@@ -1361,11 +1398,12 @@ abstract class BaseSearchCategoryViewModel(
         }
 
     protected class HeaderDataView(
-        val title: String = "",
-        val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
-        categoryFilterDataValue: DataValue = DataValue(),
-        quickFilterDataValue: DataValue = DataValue(),
-        val bannerChannel: Channels = Channels()
+            val title: String = "",
+            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+            categoryFilterDataValue: DataValue = DataValue(),
+            quickFilterDataValue: DataValue = DataValue(),
+            val bannerChannel: Channels = Channels(),
+            val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
     ) {
         val categoryFilterDataValue = DataValue(
             filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
@@ -1431,8 +1469,41 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
+    fun createAffiliateLink(url: String): String {
+        return affiliateService.createAffiliateLink(url)
+    }
+
     protected data class ContentDataView(
         val aceSearchProductData: SearchProductData = SearchProductData(),
         val repurchaseWidget: RepurchaseData = RepurchaseData()
     )
+
+    private fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
+        launchCatchError(block = {
+            affiliateService.initAffiliateCookie(
+                affiliateUuid,
+                affiliateChannel
+            )
+        }) {
+
+        }
+    }
+
+    private fun checkAtcAffiliateCookie(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
+        val miniCartItem = cartService.getMiniCartItem(productId)
+        val currentQuantity = miniCartItem?.quantity.orZero()
+        val data = NowAffiliateAtcData(productId, shopId, stock, isVariant, quantity, currentQuantity)
+
+        launchCatchError(block = {
+            affiliateService.checkAtcAffiliateCookie(data)
+        }) {
+
+        }
+    }
 }
