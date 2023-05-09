@@ -107,6 +107,7 @@ private fun FilledButton(
         buttonHeight = size.buttonHeight,
         buttonBorderStroke = null,
         progressBarColor = Color.White,
+        loaderHeight = size.loaderHeight,
         onClick = onClick,
     )
 }
@@ -141,6 +142,7 @@ private fun GhostButton(
             width = 1.dp,
             color = if (isEnabled) NestTheme.colors.GN._500 else NestTheme.colors.NN._100
         ),
+        loaderHeight = size.loaderHeight,
         progressBarColor = NestTheme.colors.GN._500,
         onClick = onClick,
     )
@@ -177,6 +179,7 @@ private fun GhostAlternateButton(
             color = if (isEnabled) NestTheme.colors.NN._300 else NestTheme.colors.NN._100
         ),
         progressBarColor = NestTheme.colors.NN._300,
+        loaderHeight = size.loaderHeight,
         onClick = onClick,
     )
 }
@@ -215,6 +218,7 @@ private fun GhostInvertedButton(
             color = if (isEnabled) NestTheme.colors.NN._1000 else NestTheme.colors.NN._100
         ),
         progressBarColor = NestTheme.colors.NN._1000,
+        loaderHeight = size.loaderHeight,
         onClick = onClick
     )
 }
@@ -258,6 +262,7 @@ private fun TransactionFilledButton(
             color = if (isEnabled) buttonBackgroundColor else NestTheme.colors.NN._100
         ),
         progressBarColor = Color.White,
+        loaderHeight = size.loaderHeight,
         onClick = onClick,
     )
 }
@@ -297,6 +302,7 @@ private fun TransactionGhostButton(
             color = if (isEnabled) textColor else NestTheme.colors.NN._100
         ),
         progressBarColor = textColor,
+        loaderHeight = size.loaderHeight,
         onClick = onClick,
     )
 }
@@ -328,6 +334,7 @@ private fun TextButton(
         ),
         buttonHeight = size.buttonHeight,
         buttonBorderStroke = null,
+        loaderHeight = size.loaderHeight,
         progressBarColor = NestTheme.colors.NN._400,
         onClick = onClick,
     )
@@ -344,6 +351,7 @@ private fun NestDefaultButton(
     buttonColors: ButtonColors,
     buttonHeight: Dp,
     buttonBorderStroke: BorderStroke?,
+    loaderHeight: Dp,
     progressBarColor: Color,
     onClick: () -> Unit
 ) {
@@ -371,7 +379,7 @@ private fun NestDefaultButton(
         }
 
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = progressBarColor)
+            CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
         }
     }
 }
@@ -390,11 +398,12 @@ enum class ButtonSize(
     val buttonHeight: Dp,
     val buttonCornerRadius: Dp,
     val fontSize: TextUnit,
+    val loaderHeight: Dp
 ) {
-    LARGE(48.dp, 8.dp, 16.sp),
-    MEDIUM(40.dp, 8.dp, 14.sp),
-    SMALL(32.dp, 8.dp, 12.sp),
-    MICRO(24.dp, 6.dp, 12.sp)
+    LARGE(48.dp, 8.dp, 16.sp, 24.dp),
+    MEDIUM(40.dp, 8.dp, 14.sp, 24.dp),
+    SMALL(32.dp, 8.dp, 12.sp, 16.dp),
+    MICRO(24.dp, 6.dp, 12.sp, 16.dp)
 }
 
 //region Preview
