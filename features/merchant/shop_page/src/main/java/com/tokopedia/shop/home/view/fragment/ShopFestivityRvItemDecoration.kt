@@ -35,50 +35,52 @@ class ShopFestivityRvItemDecoration(context: Context) : RecyclerView.ItemDecorat
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        if (parent.layoutManager == null || backgroundDrawableWhite == null) {
-            return
-        }
-        val childCount = parent.childCount
-        val adapter = (parent.adapter as? ShopHomeAdapter)
-        for (i in 0 until childCount) {
-            val child: View? = parent.getChildAt(i)
-            child?.let {
-                val widgetPosition = parent.getChildAdapterPosition(it)
-                val adapterData = adapter?.data
-                when (val widgetUiModel = adapterData?.getOrNull(widgetPosition)) {
-                    is BaseShopHomeWidgetUiModel -> {
-                        if (!widgetUiModel.isFestivity) {
-                            drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                        }
-                    }
-                    is ThematicWidgetUiModel -> {
-                        if (!widgetUiModel.isFestivity) {
-                            drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                        }
-                    }
-                    is ShopHomeProductUiModel -> {
-                        val productGridType = adapterData
-                            .filterIsInstance<ShopHomeProductChangeGridSectionUiModel>()
-                            .firstOrNull()
-                        if (productGridType?.gridType != ShopProductViewGridType.SMALL_GRID) {
-                            drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                        } else {
-                            val firstTwoProductData = adapterData
-                                .filterIsInstance<ShopHomeProductUiModel>().take(2)
-                            if (firstTwoProductData.contains(widgetUiModel)) {
+        try {
+            if (parent.layoutManager == null || backgroundDrawableWhite == null) {
+                return
+            }
+            val childCount = parent.childCount
+            val adapter = (parent.adapter as? ShopHomeAdapter)
+            for (i in 0 until childCount) {
+                val child: View? = parent.getChildAt(i)
+                child?.let {
+                    val widgetPosition = parent.getChildAdapterPosition(it)
+                    val adapterData = adapter?.data
+                    when (val widgetUiModel = adapterData?.getOrNull(widgetPosition)) {
+                        is BaseShopHomeWidgetUiModel -> {
+                            if (!widgetUiModel.isFestivity) {
                                 drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                            } else {
-                                drawWhiteBackgroundFromLeftChildToRightChild(it, parent, canvas)
                             }
                         }
-                        checkForGapAtTheEndOfProductList(widgetPosition, adapter, parent, canvas)
-                    }
-                    else -> {
-                        drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                        is ThematicWidgetUiModel -> {
+                            if (!widgetUiModel.isFestivity) {
+                                drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                            }
+                        }
+                        is ShopHomeProductUiModel -> {
+                            val productGridType = adapterData
+                                .filterIsInstance<ShopHomeProductChangeGridSectionUiModel>()
+                                .firstOrNull()
+                            if (productGridType?.gridType != ShopProductViewGridType.SMALL_GRID) {
+                                drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                            } else {
+                                val firstTwoProductData = adapterData
+                                    .filterIsInstance<ShopHomeProductUiModel>().take(INT_TWO)
+                                if (firstTwoProductData.contains(widgetUiModel)) {
+                                    drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                                } else {
+                                    drawWhiteBackgroundFromLeftChildToRightChild(it, parent, canvas)
+                                }
+                            }
+                            checkForGapAtTheEndOfProductList(widgetPosition, adapter, parent, canvas)
+                        }
+                        else -> {
+                            drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                        }
                     }
                 }
             }
-        }
+        } catch (_: Throwable) {}
     }
 
     private fun checkForGapAtTheEndOfProductList(widgetPosition: Int, adapter: ShopHomeAdapter, parent: RecyclerView, canvas: Canvas) {
