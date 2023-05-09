@@ -8,7 +8,9 @@ import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertInstanceOf
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
@@ -20,6 +22,7 @@ import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +37,10 @@ class PlayUserReportTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val modelBuilder = ModelBuilder()
 
@@ -50,6 +56,8 @@ class PlayUserReportTest {
             )
         )
     )
+
+    private val mockException = Exception("Something went wrong.")
 
     @Test
     fun `when click kebab button hit analytic`(){
@@ -170,6 +178,23 @@ class PlayUserReportTest {
             val actualValue = it.viewModel.userReportItems.value
             actualValue.resultState.assertEqualTo(ResultState.Success)
             actualValue.reasoningList.assertEqualTo(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when get reasoning list is error`(){
+        coEvery { mockRepo.getReasoningList() } throws mockException
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo
+        )
+
+        robot.use {
+            it.viewModel.getUserReportList()
+            val actualValue = it.viewModel.userReportItems.value
+            actualValue.resultState.assertInstanceOf<ResultState.Fail>()
+            actualValue.reasoningList.assertEqualTo(emptyList())
         }
     }
 

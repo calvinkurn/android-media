@@ -26,6 +26,7 @@ object MacroIntent {
      * Target package for dynamic feature module is com.tokopedia.tkpd.df_${module_name}
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
+    const val TKPD_PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
 
     /**
      * Please create intent with deeplink URI that DIRECTLY open your page
@@ -234,6 +235,35 @@ object MacroIntent {
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6961809872/?layoutID=4")
+            return intent
+        }
+    }
+
+    object ProductReport {
+
+        const val COLUMN_TAG = "product_report_column"
+
+        fun getIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-report/5468977597/?dffallbackurl=https%3A%2F%2Fm.tokopedia.com%2F11530573-tammamstore%2Fkemeja-pria-pendek%2Freport%2F")
+            return intent
+        }
+    }
+
+    object ReschedulePickup {
+
+        const val RECYCLER_VIEW_ID = "invoice_order_detail"
+
+        // todo for testapp only
+//        const val PACKAGE_NAME = TKPD_PACKAGE_NAME
+
+        const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
+        const val TRACE_NAME = "mp_reschedule_pickup"
+        const val CONTENT_DESCRIPTION = "reschedule_pickup_layout"
+
+        fun getIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://logistic/reschedulepickup?order_id=1111111")
             return intent
         }
     }

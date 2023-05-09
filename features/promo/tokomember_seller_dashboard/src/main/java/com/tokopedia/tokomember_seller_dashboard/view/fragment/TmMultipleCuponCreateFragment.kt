@@ -252,7 +252,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 action()
-            } 
+            }
         })
         if (programActionType == ProgramActionType.CREATE) {
             bottomsheet.setSecondaryCta {
@@ -324,6 +324,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleDataError()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -343,6 +346,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleDataError()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -378,6 +384,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     errorState.isPreValidateVipError = true
                     closeLoadingDialog()
                     handleProgramValidateNetworkError()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -477,6 +486,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 ).show()
                             }
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -509,6 +521,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                     Toaster.TYPE_ERROR
                                 ).show()
                             }
+                        }
+                        else -> {
+                            //no-op
                         }
                     }
                 }

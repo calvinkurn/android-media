@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -19,7 +21,7 @@ class TalkInboxViewHolder(
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
-        const val DELETED_PRODUCT_PLACEHOLDER = "https://images.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
+        const val DELETED_PRODUCT_PLACEHOLDER = TokopediaImageUrl.DELETED_PRODUCT_PLACEHOLDER
         val LAYOUT = R.layout.item_talk_inbox
     }
 

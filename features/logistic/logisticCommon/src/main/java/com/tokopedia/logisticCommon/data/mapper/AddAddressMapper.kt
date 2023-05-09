@@ -7,27 +7,31 @@ import com.tokopedia.logisticCommon.data.response.WarehousesAddAddress
 
 object AddAddressMapper {
     fun mapWarehouses(warehouses: List<WarehousesAddAddress>): List<WarehouseDataModel> {
-        return warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
-    }
-
-    fun mapAddressDetailToSaveAddressDataModel(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) : SaveAddressDataModel {
-        return data.let {
-            SaveAddressDataModel(
-                id = it.addrId,
-                addressName = it.addrName,
-                receiverName = it.receiverName,
-                address1 = it.address1,
-                address2 = it.address2,
-                postalCode = it.postalCode,
-                phone = it.phone,
-                cityId = it.city,
-                provinceId = it.province,
-                districtId = it.district,
-                latitude = it.latitude,
-                longitude = it.longitude,
-                selectedDistrict = "${it.provinceName}, ${it.cityName}, ${it.districtName}",
-                formattedAddress = "${it.districtName}, ${it.cityName}, ${it.provinceName}"
+        return warehouses.map {
+            WarehouseDataModel(
+                warehouseId = it.warehouseId,
+                serviceType = it.serviceType
             )
         }
+    }
+
+    fun mapAddressDetailToSaveAddressDataModel(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse): SaveAddressDataModel {
+        return SaveAddressDataModel(
+            id = data.addrId,
+            addressName = data.addrName,
+            receiverName = data.receiverName,
+            address1 = data.addressDetailStreet.ifEmpty { data.address1 },
+            address1Notes = data.addressDetailNotes,
+            address2 = data.address2,
+            postalCode = data.postalCode,
+            phone = data.phone,
+            cityId = data.city,
+            provinceId = data.province,
+            districtId = data.district,
+            latitude = data.latitude,
+            longitude = data.longitude,
+            selectedDistrict = "${data.provinceName}, ${data.cityName}, ${data.districtName}",
+            formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
+        )
     }
 }

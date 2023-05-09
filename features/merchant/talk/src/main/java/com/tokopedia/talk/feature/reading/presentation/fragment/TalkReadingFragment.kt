@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -76,7 +78,7 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
-        const val TALK_READING_EMPTY_IMAGE_URL = "https://images.tokopedia.net/android/others/talk_reading_empty_state.png"
+        const val TALK_READING_EMPTY_IMAGE_URL = TokopediaImageUrl.TALK_READING_EMPTY_IMAGE_URL
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean, availableVariants: String): TalkReadingFragment =
@@ -249,6 +251,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     is TalkGoToWrite -> {
                         goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -349,6 +354,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
                 }
+                else -> {
+                    //no-op
+                }
             }
 
         })
@@ -366,6 +374,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                             renderDiscussionData(TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(data), data.hasNext)
                         }
                     }
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

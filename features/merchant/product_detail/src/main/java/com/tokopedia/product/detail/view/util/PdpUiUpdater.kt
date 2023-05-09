@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -54,7 +55,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -114,9 +114,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val infoObatKerasMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.INFO_OBAT_KERAS] as? ProductGeneralInfoDataModel
-
-    val productOptionalVariantDataModel: VariantDataModel?
-        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
     val productSingleVariant: ProductSingleVariantDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] as? ProductSingleVariantDataModel
@@ -206,12 +203,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
-                productOptionalVariantDataModel?.run {
-                    isRefreshing = false
-                }
-            }
-
             updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS, loadInitialData) {
                 productSingleVariant?.run {
                     isRefreshing = false
@@ -271,7 +262,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateInitialMedia(media: List<Media>, containerType: String) {
+    fun updateInitialMedia(
+        media: List<Media>,
+        containerType: String,
+        productMediaRecomBasicInfo: ProductMediaRecomBasicInfo
+    ) {
         updateData(ProductDetailConstant.MEDIA, true) {
             mediaMap?.let {
                 it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
@@ -283,6 +278,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     containerType.asMediaContainerType()
                 }
+                it.recommendation = DynamicProductDetailMapper.convertRecomToDataModel(
+                    productMediaRecomBasicInfo
+                )
             }
         }
     }
@@ -382,14 +380,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             fintechWidgetMap?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
-            }
-        }
-    }
-
-    fun updateVariantError() {
-        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productOptionalVariantDataModel?.run {
-                isVariantError = true
             }
         }
     }
@@ -838,10 +828,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateVariantData(processedVariant: List<VariantCategory>?) {
-        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productOptionalVariantDataModel?.listOfVariantCategory = processedVariant
-        }
-
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             val variantLvlOne = processedVariant?.firstOrNull()
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
@@ -849,14 +835,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateVariantSelected(variantId: String, variantKey: String) {
-        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productOptionalVariantDataModel?.let {
-                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
-                copyMap[variantKey] = variantId
-                it.mapOfSelectedVariant = copyMap
-            }
-        }
-
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.let {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()

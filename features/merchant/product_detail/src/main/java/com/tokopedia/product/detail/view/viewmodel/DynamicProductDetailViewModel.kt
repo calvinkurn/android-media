@@ -23,6 +23,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -53,9 +54,10 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
@@ -89,6 +91,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -107,7 +111,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -145,6 +148,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
     private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
     private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
     private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
@@ -224,25 +228,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, String>>()
-    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, String>>
-        get() = _updatedImageVariant
-
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
-    val initialVariantData: LiveData<List<VariantCategory>?>
-        get() = _initialVariantData
-
     private val _singleVariantData = MutableLiveData<VariantCategory?>()
     val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
-
-    private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
-    val onVariantClickedData: LiveData<List<VariantCategory>?>
-        get() = _onVariantClickedData
 
     // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
     private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
@@ -293,6 +285,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
     val loadViewToView: LiveData<Result<RecommendationWidget>>
         get() = _loadViewToView
+
+    private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
+    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
+        get() = _productMediaRecomBottomSheetState
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
@@ -501,51 +498,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
     fun processVariant(
         data: ProductVariant,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        shouldRenderSingleVariant: Boolean
+        mapOfSelectedVariant: MutableMap<String, String>?
     ) {
         launchCatchError(dispatcher.io, block = {
-            if (shouldRenderSingleVariant) {
-                _singleVariantData.postValue(
-                    ProductDetailVariantLogic.determineVariant(
-                        mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
-                        productVariant = data
-                    )
+            _singleVariantData.postValue(
+                ProductDetailVariantLogic.determineVariant(
+                    mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
+                    productVariant = data
                 )
-            } else {
-                _initialVariantData.postValue(
-                    VariantCommonMapper.processVariant(
-                        data,
-                        mapOfSelectedVariant
-                    )
-                )
-            }
-        }) {}
-    }
-
-    fun onVariantClicked(
-        data: ProductVariant?,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        isPartialySelected: Boolean,
-        variantLevel: Int,
-        variantId: String
-    ) {
-        launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val processedVariant = VariantCommonMapper.processVariant(
-                    data,
-                    mapOfSelectedVariant,
-                    variantLevel,
-                    isPartialySelected
-                )
-
-                if (isPartialySelected) {
-                    _updatedImageVariant.postValue(processedVariant to variantId)
-                    return@withContext
-                } else {
-                    _onVariantClickedData.postValue(processedVariant)
-                }
-            }
+            )
         }) {}
     }
 
@@ -870,7 +831,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val requestParams = GetRecommendationRequestParam(
-                    pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                    pageNumber = DEFAULT_PAGE_NUMBER,
                     pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
                     queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                     productIds = arrayListOf(productId)
@@ -1069,7 +1030,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
             ?.hideFloatingButton.orFalse()
     }
 
-    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+    fun onAtcRecomNonVariantQuantityChanged(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
@@ -1078,9 +1043,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
+                atcRecomNonVariant(recomItem, quantity, recommendationNowAffiliateData)
             } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                updateRecomCartNonVariant(
+                    recomItem,
+                    quantity,
+                    miniCartItem,
+                    recommendationNowAffiliateData
+                )
             }
         }
     }
@@ -1112,7 +1082,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    fun atcRecomNonVariant(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
                 recomItem.productId.toString(),
@@ -1131,6 +1105,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     recomItem
                 )
             } else {
+                recommendationNowAffiliate.get()?.initCookieDirectATC(
+                    recommendationNowAffiliateData,
+                    recomItem,
+                )
                 recomItem.cartId = result.data.cartId
                 updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
             }
@@ -1142,7 +1120,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
     fun updateRecomCartNonVariant(
         recomItem: RecommendationItem,
         quantity: Int,
-        miniCartItem: MiniCartItem.MiniCartItemProduct?
+        miniCartItem: MiniCartItem.MiniCartItemProduct?,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
     ) {
         launchCatchError(block = {
             miniCartItem?.let {
@@ -1160,6 +1139,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                         recomItem
                     )
                 } else {
+                    recommendationNowAffiliate.get()?.initCookieDirectATC(
+                        recommendationNowAffiliateData,
+                        recomItem,
+                    )
                     updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
             }
@@ -1392,19 +1375,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun getChildOfVariantSelected(
-        singleVariant: ProductSingleVariantDataModel?,
-        optionalVariant: VariantDataModel?
-    ): VariantChild? {
-        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant
-            ?: optionalVariant?.mapOfSelectedVariant ?: mutableMapOf()
+    fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
+        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant ?: mutableMapOf()
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 
-        return VariantCommonMapper.selectedProductData(
-            variantData = variantDataNonNull,
-            selectedOptionIds = selectedOptionIds
-        )
+        return variantDataNonNull.children.firstOrNull {
+            it.optionIds == selectedOptionIds
+        }
     }
 
     /**
@@ -1481,16 +1459,91 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
-            is OneTimeMethodEvent.HitVariantTracker -> {
-                if (_oneTimeMethod.value.hitVariantTracker) return
-                _oneTimeMethod.update {
-                    it.copy(event = event, hitVariantTracker = true)
-                }
-            }
-            OneTimeMethodEvent.Empty -> {
-                //noop
+            else -> {
+                // noop
             }
         }
     }
 
+    fun showProductMediaRecomBottomSheet(
+        title: String,
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ) {
+        launchCatchError(dispatcher.main, block = {
+            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                if (
+                    productMediaRecomBottomSheetData?.pageName == pageName &&
+                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                ) {
+                    productMediaRecomBottomSheetData
+                } else {
+                    setProductMediaRecomBottomSheetLoading(title)
+                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                }
+            }
+            setProductMediaRecomBottomSheetData(title, data)
+        }) {
+            setProductMediaRecomBottomSheetError(title = title, error = it)
+        }
+    }
+
+    fun dismissProductMediaRecomBottomSheet() {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    private suspend fun loadProductMediaRecomBottomSheetData(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ): ProductMediaRecomBottomSheetData {
+        val requestParams = GetRecommendationRequestParam(
+            pageNumber = DEFAULT_PAGE_NUMBER,
+            pageName = pageName,
+            productIds = arrayListOf(productId),
+            isTokonow = isTokoNow
+        )
+        val response = getRecommendationUseCase
+            .get()
+            .getData(requestParams)
+            .first()
+            .copy(title = String.EMPTY)
+        return ProductMediaRecomBottomSheetData(
+            pageName = pageName,
+            recommendationWidget = response
+        ).also { _productMediaRecomBottomSheetData = it }
+    }
+
+    private fun setProductMediaRecomBottomSheetLoading(title: String) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Loading(
+            title = title
+        )
+    }
+
+    private fun setProductMediaRecomBottomSheetData(
+        title: String,
+        data: ProductMediaRecomBottomSheetData
+    ) {
+        _productMediaRecomBottomSheetState.value = if (
+            data.recommendationWidget.recommendationItemList.isEmpty()
+        ) {
+            ProductMediaRecomBottomSheetState.Dismissed
+        } else {
+            ProductMediaRecomBottomSheetState.ShowingData(
+                title = title,
+                recomWidgetData = data.recommendationWidget
+            )
+        }
+    }
+
+    private fun setProductMediaRecomBottomSheetError(
+        title: String,
+        error: Throwable
+    ) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.ShowingError(
+            title = title,
+            error = error
+        )
+    }
 }

@@ -116,6 +116,11 @@ class BuyerOrderDetailStickyActionButtonHandler(
             }
             BuyerOrderDetailActionButtonKey.PARTIAL_ORDER_FULFILLMENT -> {
                 onRespondToPartialOrderFulfillmentClicked()
+                trackClickActionButtonPG(
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_CONFIRMATION_POF,
+                    BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_CONFIRMATION_POF
+                )
             }
         }
     }

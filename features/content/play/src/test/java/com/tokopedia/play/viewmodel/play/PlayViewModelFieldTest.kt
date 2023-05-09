@@ -10,6 +10,7 @@ import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -22,6 +23,9 @@ class PlayViewModelFieldTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
@@ -140,6 +144,41 @@ class PlayViewModelFieldTest {
             setMockUserId(validUserId)
         } thenVerify {
             viewModel.userId.isEqualTo(validUserId)
+        }
+    }
+
+    @Test
+    fun `given a performance summary page link, when retrieved, then it should be correct`() {
+
+        val performanceSummaryPageLink = "page_link_example"
+
+        val channelData = channelDataBuilder.buildChannelData(
+            channelReportInfo = channelReportBuilder.buildChannelReport(
+                performanceSummaryPageLink = performanceSummaryPageLink
+            )
+        )
+
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            viewModel.performanceSummaryPageLink.assertEqualTo(performanceSummaryPageLink)
+        }
+    }
+
+    @Test
+    fun `given a quick reply list, when retrieved, then it should be correct`() {
+
+        val mockQuickReply = uiModelBuilder.buildQuickReply()
+        val channelData = channelDataBuilder.buildChannelData(
+            quickReplyInfo = mockQuickReply
+        )
+
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            viewModel.quickReply.assertEqualTo(mockQuickReply)
         }
     }
 }

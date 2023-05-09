@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
@@ -70,9 +72,9 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         const val SOURCE = "tokofood"
 
         // image resource url
-        const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
-        const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
-        const val IMG_STATIC_URI_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/ic_tokofood_home_out_of_coverage.png"
+        const val IMG_STATIC_URI_NO_PIN_POIN = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
+        const val IMG_STATIC_URI_NO_ADDRESS = TokopediaImageUrl.IMG_STATIC_URI_NO_ADDRESS
+        const val IMG_STATIC_URI_OUT_OF_COVERAGE = TokopediaImageUrl.IMG_STATIC_URI_OUT_OF_COVERAGE
 
         // negative case ids
         const val EMPTY_STATE_OUT_OF_COVERAGE = "2"
@@ -133,7 +135,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val viewBinding = FragmentManageLocationLayoutBinding.inflate(inflater)
         binding = viewBinding
         return viewBinding.root
@@ -303,7 +305,13 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
-        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        val applink =
+            if (activity is BaseTokofoodActivity) {
+                ApplinkConstInternalTokoFood.MERCHANT
+            } else {
+                ApplinkConstInternalTokoFood.MERCHANT_OLD
+            }
+        val merchantPageUri = Uri.parse(applink)
                 .buildUpon()
                 .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
                 .build()
@@ -403,11 +411,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                        this,
-                        it
+                    it,
+                    cacheModel
                 )
             }
         }

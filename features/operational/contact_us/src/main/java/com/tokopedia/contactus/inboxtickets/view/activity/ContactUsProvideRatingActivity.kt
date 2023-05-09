@@ -3,6 +3,8 @@ package com.tokopedia.contactus.inboxtickets.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -60,6 +62,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         setContentView(R.layout.activity_contact_us)
         initInjector()
         initObserver()
@@ -361,5 +364,11 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return null
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }

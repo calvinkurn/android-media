@@ -8,6 +8,8 @@ object TokoChatValueUtil {
     const val PICTURE = "gochat.picture"
     const val STICKER = "gochat.sticker"
 
+    const val IMAGE_EXTENSION = "jpeg"
+
     /**
      * Error values
      */
@@ -18,4 +20,9 @@ object TokoChatValueUtil {
      * Push Notif values
      */
     const val NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY = "nc_template_key"
+
+    /**
+     * Censor values
+     */
+    const val CENSOR_TEXT = "******"
 }

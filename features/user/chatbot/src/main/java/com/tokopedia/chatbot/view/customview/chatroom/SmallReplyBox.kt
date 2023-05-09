@@ -52,6 +52,10 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         return sendButton
     }
 
+    fun getAddAttachmentMenu(): ImageView? {
+        return addAttachmentMenu
+    }
+
     private fun initViewBindings() {
         val view = View.inflate(context, LAYOUT, this)
         with(view) {

@@ -35,7 +35,7 @@ open class TokoChatRepository @Inject constructor(
 
     /**
      * Conversation Repository initialisation needs to be in main thread
-     * Because inside the init function, setValue was called
+     * Because inside the init function in Gojek SDK, livedata setValue was called
      */
     fun initConversationRepository() {
         mainScope.launch {

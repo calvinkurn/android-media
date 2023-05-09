@@ -7,7 +7,7 @@ import dagger.Component
 
 @ActivationPageScope
 @Component(modules = [ActivationPageModule::class, ActivationPageViewModelModule::class], dependencies = [BaseAppComponent::class])
-interface ActivationPageComponent  {
+interface ActivationPageComponent {
     fun inject(activationPageActivity: ActivationPageActivity)
     fun inject(activationPageFragment: ActivationPageFragment)
 }

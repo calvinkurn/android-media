@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -201,6 +203,9 @@ class HotelHomepageFragment :
                             hidePromoContainer()
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
                 stopTrace()
             }
@@ -212,6 +217,9 @@ class HotelHomepageFragment :
                 when (it) {
                     is Success -> {
                         renderHotelLastSearch(it.data)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -225,6 +233,9 @@ class HotelHomepageFragment :
                         if (it.data) {
                             loadRecentSearchData()
                         }
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -862,7 +873,7 @@ class HotelHomepageFragment :
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
+        const val HOMEPAGE_BG_IMAGE_URL = TokopediaImageUrl.HOMEPAGE_BG_IMAGE_URL
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

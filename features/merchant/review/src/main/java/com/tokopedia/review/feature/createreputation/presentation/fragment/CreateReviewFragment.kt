@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -73,9 +75,13 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CreateReviewFragment : BaseDaggerFragment(),
-    ImageClickListener, TextAreaListener, ReviewScoreClickListener,
-    ReviewPerformanceMonitoringContract, VideoReviewViewHolder.Listener {
+class CreateReviewFragment :
+    BaseDaggerFragment(),
+    ImageClickListener,
+    TextAreaListener,
+    ReviewScoreClickListener,
+    ReviewPerformanceMonitoringContract,
+    VideoReviewViewHolder.Listener {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
@@ -95,11 +101,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val LOTTIE_ANIM_5 =
             "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
-        private const val IMAGE_PEDIE_1 = "https://images.tokopedia.net/android/pedie/1star.png"
-        private const val IMAGE_PEDIE_2 = "https://images.tokopedia.net/android/pedie/2star.png"
-        private const val IMAGE_PEDIE_3 = "https://images.tokopedia.net/android/pedie/3star.png"
-        private const val IMAGE_PEDIE_4 = "https://images.tokopedia.net/android/pedie/4star.png"
-        private const val IMAGE_PEDIE_5 = "https://images.tokopedia.net/android/pedie/5star.png"
+        private const val IMAGE_PEDIE_1 = TokopediaImageUrl.IMAGE_PEDIE_1
+        private const val IMAGE_PEDIE_2 = TokopediaImageUrl.IMAGE_PEDIE_2
+        private const val IMAGE_PEDIE_3 = TokopediaImageUrl.IMAGE_PEDIE_3
+        private const val IMAGE_PEDIE_4 = TokopediaImageUrl.IMAGE_PEDIE_4
+        private const val IMAGE_PEDIE_5 = TokopediaImageUrl.IMAGE_PEDIE_5
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
@@ -158,13 +164,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.createReviewScrollView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.createReviewScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.createReviewScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
@@ -233,6 +239,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> onSuccessGetReviewDetail(it.data)
                 is Fail -> onFailGetReviewDetail(it.fail)
+                else -> {
+                    // no op
+                }
             }
         }
 
@@ -266,29 +275,29 @@ class CreateReviewFragment : BaseDaggerFragment(),
         imgAnimationView = view.findViewById(R.id.img_animation_review)
         animatedReviewPicker.resetStars()
         animatedReviewPicker.setListener(object :
-            AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-            override fun onClick(position: Int) {
-                CreateReviewTracking.reviewOnRatingChangedTracker(
-                    orderId = "",
-                    productId = productId,
-                    ratingValue = (position).toString(),
-                    isSuccessful = true,
-                    isEditReview = true,
-                    feedbackId = feedbackId
-                )
-                reviewClickAt = position
-                shouldPlayAnimation = true
-                context?.let {
-                    if (isLowDevice) {
-                        generatePeddieImageByIndex()
-                    } else {
-                        playAnimation()
+                AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
+                override fun onClick(position: Int) {
+                    CreateReviewTracking.reviewOnRatingChangedTracker(
+                        orderId = "",
+                        productId = productId,
+                        ratingValue = (position).toString(),
+                        isSuccessful = true,
+                        isEditReview = true,
+                        feedbackId = feedbackId
+                    )
+                    reviewClickAt = position
+                    shouldPlayAnimation = true
+                    context?.let {
+                        if (isLowDevice) {
+                            generatePeddieImageByIndex()
+                        } else {
+                            playAnimation()
+                        }
                     }
+                    updateViewBasedOnSelectedRating(position)
+                    clearFocusAndHideSoftInput(view)
                 }
-                updateViewBasedOnSelectedRating(position)
-                clearFocusAndHideSoftInput(view)
-            }
-        })
+            })
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator) {

@@ -106,7 +106,7 @@ class BaseTokoFoodOrderTrackingFragment :
             DaggerTokoFoodOrderTrackingComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }
@@ -374,6 +374,9 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.INIT_MUTATION_PROFILE_ERROR,
                         TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

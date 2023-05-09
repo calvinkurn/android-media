@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -33,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -51,11 +51,10 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
@@ -96,7 +95,7 @@ import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-open class ChatListFragment constructor() :
+class ChatListFragment constructor() :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener,
     LifecycleOwner,
@@ -229,6 +228,9 @@ open class ChatListFragment constructor() :
             Observer {
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -314,6 +316,7 @@ open class ChatListFragment constructor() :
     }
 
     private fun initView(view: View) {
+        updateScrollListenerState(false)
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
@@ -539,7 +542,7 @@ open class ChatListFragment constructor() :
         }
     }
 
-    private fun onSuccessGetChatList(data: ChatListDataPojo) {
+    private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
     }
@@ -654,11 +657,10 @@ open class ChatListFragment constructor() :
     }
 
     private fun initInjectorSellerApp() {
-        DaggerChatListComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication?)?.baseAppComponent)
-            .chatListContextModule(context?.let { ChatListContextModule(it) })
-            .build()
-            .inject(this)
+        ActivityComponentFactory.instance.createChatListComponent(
+            requireActivity().application,
+            requireContext()
+        ).inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -997,8 +999,8 @@ open class ChatListFragment constructor() :
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_TAB_TITLE = "chat_tab_title"
-        const val CHAT_SELLER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-seller-empty.png"
-        const val CHAT_BUYER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        const val CHAT_SELLER_EMPTY = TokopediaImageUrl.CHAT_SELLER_EMPTY
+        const val CHAT_BUYER_EMPTY = TokopediaImageUrl.CHAT_BUYER_EMPTY
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
         const val ON_CREATE_KEY = "android_chatlist_oncreate"

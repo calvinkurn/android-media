@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
-apply from: "../../../compile-instrument-test.gradle"
-
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 
 android {
     buildFeatures {
@@ -37,6 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
+    testOptions {
+        animationsDisabled = true
+    }
     sourceSets {
         test {
             java.srcDirs += "$projectDir/src/testCommon/java"
@@ -46,19 +43,11 @@ android {
         }
     }
 
-
-    testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-                excludes = ['jdk.internal.*']
-            }
-        }
-    }
 }
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.cart_common)
@@ -157,6 +146,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler

@@ -11,7 +11,7 @@ import com.tokopedia.fcmcommon.di.FcmModule
 import timber.log.Timber
 import javax.inject.Inject
 
-class SyncFcmTokenService : JobIntentServiceX(), FirebaseMessagingManager.SyncListener {
+class SyncFcmTokenService : JobIntentServiceX() {
 
     @Inject
     lateinit var fcmManager: FirebaseMessagingManager
@@ -23,22 +23,18 @@ class SyncFcmTokenService : JobIntentServiceX(), FirebaseMessagingManager.SyncLi
 
     private fun initInjector() {
         DaggerFcmComponent.builder()
-                .fcmModule(FcmModule(this))
-                .build()
-                .inject(this)
+            .fcmModule(FcmModule(this))
+            .build()
+            .inject(this)
     }
 
     override fun onHandleWork(intent: Intent) {
         try {
-            fcmManager.syncFcmToken(this)
+            fcmManager.syncFcmToken()
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
-
-    override fun onSuccess() {}
-
-    override fun onError(exception: Exception?) {}
 
     companion object {
         private const val JOB_ID = 91219

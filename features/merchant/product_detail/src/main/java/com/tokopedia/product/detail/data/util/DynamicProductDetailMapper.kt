@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
@@ -23,12 +23,14 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -46,6 +48,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleD
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
@@ -63,7 +66,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -77,6 +79,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
@@ -88,6 +91,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
@@ -156,18 +160,13 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
-                    if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(
-                            ProductSingleVariantDataModel(
-                                type = component.type,
-                                name = component.componentName,
-                                thumbnailType = component.componentData.firstOrNull()
-                                    ?.componentType.orEmpty()
-                            )
+                    listOfComponent.add(
+                        ProductSingleVariantDataModel(
+                            type = component.type,
+                            name = ProductDetailConstant.MINI_VARIANT_OPTIONS,
+                            thumbnailType = component.componentData.firstOrNull()?.componentType.orEmpty()
                         )
-                    } else {
-                        listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
-                    }
+                    )
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
@@ -347,7 +346,8 @@ object DynamicProductDetailMapper {
         val newDataWithMedia = contentData?.copy(
             media = mediaData.media,
             youtubeVideos = mediaData.youtubeVideos,
-            containerType = mediaData.containerType
+            containerType = mediaData.containerType,
+            productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -651,6 +651,18 @@ object DynamicProductDetailMapper {
         )
     }
 
+    fun generatePersonalizedData(product: DynamicProductInfoP1, startTime: Long) = PersonalizedCampaignModel(
+        product.data.campaign.campaignTypeName,
+        product.data.price.priceFmt,
+        product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+        product.data.campaign.percentageAmount,
+        startTime,
+        (
+            product.data.campaign.endDateUnix
+                ?: ""
+            ).toLongOrZero()
+    )
+
     fun generateAffiliateShareData(
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
@@ -700,7 +712,7 @@ object DynamicProductDetailMapper {
         }
     }
 
-    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+    private fun isBebasOngkir(type: Int) = type != BebasOngkirType.NON_BO.value
 
     private fun mapBebasOngkirType(type: Int): String {
         return when (type) {
@@ -727,7 +739,6 @@ object DynamicProductDetailMapper {
                 (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
                 (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
                 (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
-                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
                 (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
@@ -790,6 +801,14 @@ object DynamicProductDetailMapper {
             type = component.type,
             title = data.title,
             status = ProductCustomInfoTitleDataModel.Status.fromString(data.status)
+        )
+    }
+
+    fun convertRecomToDataModel(productMediaRecomBasicInfo: ProductMediaRecomBasicInfo): ProductMediaRecomData {
+        return ProductMediaRecomData(
+            lightIcon = productMediaRecomBasicInfo.lightIcon,
+            darkIcon = productMediaRecomBasicInfo.darkIcon,
+            iconText = productMediaRecomBasicInfo.iconText
         )
     }
 }

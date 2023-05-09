@@ -24,7 +24,7 @@ class PortraitVideoBoundsProvider(
     private val toolbarCloseIcon = toolbarView.findViewById<View>(R.id.iv_back)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
     private val partnerInfoView = container.findViewById<View>(R.id.view_partner_info)
-    private val chatListView = container.findViewById<View>(R.id.view_chat_list)
+    private val chatListView = container.findViewById<View>(R.id.scrollable_host_chat)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
     private val verticalChatListHeight = container.resources.getDimensionPixelSize(
         R.dimen.play_chat_vertical_max_height
