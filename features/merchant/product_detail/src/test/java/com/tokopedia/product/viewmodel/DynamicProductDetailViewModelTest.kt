@@ -49,6 +49,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -3320,6 +3321,108 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(testResults.size == 2)
 
         job.cancel()
+    }
+
+    @Test
+    fun `product media recom bs state should showing when successfully fetch non-empty recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingData)
+    }
+
+    @Test
+    fun `product media recom bs state should dismissed when successfully fetch empty recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
+    }
+
+    @Test
+    fun `product media recom bs state should error when unsuccessfully fetch recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Exception("Dummy")
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+    }
+
+    @Test
+    fun `product media recom bs state should loading when fetching recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } answers {
+            Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Loading)
+            throw Exception("Dummy")
+        }
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+    }
+
+    @Test
+    fun `should not fetch recom data when pageName is not changed`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `should re-fetch recom data when pageName is changed`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy 1", "123", false)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `should re-fetch recom data when previous recom data is empty`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `product media recom bs state should dismissed when dismiss product media recom bs`() {
+        `product media recom bs state should showing when successfully fetch non-empty recom data`()
+
+        viewModel.dismissProductMediaRecomBottomSheet()
+
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
     }
 
     private fun getUserLocationCache(): LocalCacheModel {

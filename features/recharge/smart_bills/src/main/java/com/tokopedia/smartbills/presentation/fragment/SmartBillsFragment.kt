@@ -483,6 +483,7 @@ class SmartBillsFragment :
                             }
 
                             override fun onDismiss() {
+                                setHeightSpace(true, true)
                             }
                         })
                     } else {
@@ -515,6 +516,7 @@ class SmartBillsFragment :
                     updateCheckoutView()
 
                     loadInitialData()
+                    setHeightSpace(true)
                 }
             }
         }
@@ -949,12 +951,13 @@ class SmartBillsFragment :
         binding?.highlightCategory?.hideHighlightCategory()
     }
 
-    private fun setHeightSpace(isLowHeight: Boolean) {
+    private fun setHeightSpace(isLowHeight: Boolean, isTickerClosed: Boolean = false) {
         binding?.run {
-            val resource = if (isLowHeight) {
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
-            } else {
-                R.dimen.smart_bills_view_separator
+            val isTickerShown = tickerSmartBills.visibility == View.VISIBLE
+            val resource = when {
+                isTickerShown && !isTickerClosed -> R.dimen.smart_bills_view_separator_ticker
+                isLowHeight ->  com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+                else -> R.dimen.smart_bills_view_separator
             }
             val params: ViewGroup.LayoutParams = viewSpacerSbm.layoutParams
             params.width = ViewGroup.LayoutParams.MATCH_PARENT

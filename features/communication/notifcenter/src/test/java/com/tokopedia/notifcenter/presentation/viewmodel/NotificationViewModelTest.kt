@@ -2,9 +2,9 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
@@ -25,15 +25,15 @@ import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.DEFAULT_SHOP_ID
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -85,21 +85,21 @@ class NotificationViewModelTest {
     private val orderListObserver: Observer<Resource<NotifOrderListResponse>> = mockk(relaxed = true)
 
     private val viewModel = NotificationViewModel(
-            notifcenterDetailUseCase,
-            notifcenterFilterUseCase,
-            bumpReminderUseCase,
-            deleteReminderUseCase,
-            clearNotifUseCase,
-            markAsReadUseCase,
-            topAdsImageViewUseCase,
-            getRecommendationUseCase,
-            addToWishlistV2UseCase,
-            deleteWishlistV2UseCase,
-            topAdsWishlishedUseCase,
-            userSessionInterface,
-            addToCartUseCase,
-            notifOrderListUseCase,
-            dispatcher
+        notifcenterDetailUseCase,
+        notifcenterFilterUseCase,
+        bumpReminderUseCase,
+        deleteReminderUseCase,
+        clearNotifUseCase,
+        markAsReadUseCase,
+        topAdsImageViewUseCase,
+        getRecommendationUseCase,
+        addToWishlistV2UseCase,
+        deleteWishlistV2UseCase,
+        topAdsWishlishedUseCase,
+        userSessionInterface,
+        addToCartUseCase,
+        notifOrderListUseCase,
+        dispatcher
     )
 
     @Before
@@ -133,10 +133,10 @@ class NotificationViewModelTest {
         // then
         verify(exactly = 0) {
             notifcenterDetailUseCase.getFirstPageNotification(
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                any(),
+                any(),
+                any(),
+                any()
             )
         }
     }
@@ -146,17 +146,17 @@ class NotificationViewModelTest {
         // given
         val role = RoleType.SELLER
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
         )
 
         every {
             notifcenterDetailUseCase.getFirstPageNotification(
-                    any(),
-                    any(),
-                    captureLambda(),
-                    any()
+                any(),
+                any(),
+                captureLambda(),
+                any()
             )
         } answers {
             val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
@@ -177,9 +177,9 @@ class NotificationViewModelTest {
     fun `loadFirstPageNotification as seller should return data properly`() {
         // given
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
         )
 
         val role = RoleType.SELLER
@@ -187,10 +187,10 @@ class NotificationViewModelTest {
 
         every {
             notifcenterDetailUseCase.getFirstPageNotification(
-                    viewModel.filter,
-                    role,
-                    captureLambda(),
-                    any()
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
             )
         } answers {
             val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
@@ -209,9 +209,9 @@ class NotificationViewModelTest {
         // given
         val topAdsImageView = arrayListOf(TopAdsImageViewModel())
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
         )
 
         val role = RoleType.BUYER
@@ -221,10 +221,10 @@ class NotificationViewModelTest {
 
         every {
             notifcenterDetailUseCase.getFirstPageNotification(
-                    viewModel.filter,
-                    role,
-                    captureLambda(),
-                    any()
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
             )
         } answers {
             val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
@@ -248,10 +248,10 @@ class NotificationViewModelTest {
 
         every {
             notifcenterDetailUseCase.getFirstPageNotification(
-                    any(),
-                    any(),
-                    any(),
-                    captureLambda()
+                any(),
+                any(),
+                any(),
+                captureLambda()
             )
         } answers {
             val onError = lambda<(Throwable) -> Unit>()
@@ -377,10 +377,10 @@ class NotificationViewModelTest {
         // then
         verify(exactly = 0) {
             notifcenterDetailUseCase.getMoreEarlierNotifications(
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                any(),
+                any(),
+                any(),
+                any()
             )
         }
     }
@@ -389,10 +389,10 @@ class NotificationViewModelTest {
     fun `loadMoreEarlier should return correctly`() {
         // given
         val expectedValue = NotifcenterDetailMapper().mapEarlierSection(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false,
-                needDivider = false
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false,
+            needDivider = false
         )
 
         val role = RoleType.BUYER
@@ -400,10 +400,10 @@ class NotificationViewModelTest {
 
         every {
             notifcenterDetailUseCase.getMoreEarlierNotifications(
-                    viewModel.filter,
-                    role,
-                    captureLambda(),
-                    any()
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
             )
         } answers {
             val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
@@ -428,10 +428,10 @@ class NotificationViewModelTest {
 
         every {
             notifcenterDetailUseCase.getMoreEarlierNotifications(
-                    any(),
-                    any(),
-                    any(),
-                    captureLambda()
+                any(),
+                any(),
+                any(),
+                captureLambda()
             )
         } answers {
             val onError = lambda<(Throwable) -> Unit>()
@@ -563,10 +563,10 @@ class NotificationViewModelTest {
         // then
         verify(exactly = 0) {
             notifcenterDetailUseCase.getMoreNewNotifications(
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                any(),
+                any(),
+                any(),
+                any()
             )
         }
     }
@@ -597,10 +597,10 @@ class NotificationViewModelTest {
         // then
         verify(exactly = 0) {
             notifcenterDetailUseCase.getMoreEarlierNotifications(
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                any(),
+                any(),
+                any(),
+                any()
             )
         }
     }
@@ -623,11 +623,8 @@ class NotificationViewModelTest {
     fun `loadRecommendations should return data properly`() {
         // given
         val listOfRecommWidget = productRecommResponse
-                .productRecommendationWidget
-                ?.data
-                ?.let {
-                    it.mappingToRecommendationModel()
-                }
+            .productRecommendationWidget
+            .data.mappingToRecommendationModel()
 
         val expectedValue = listOfRecommWidget.first()
 
@@ -647,7 +644,7 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify add to wishlistV2 returns success` () {
+    fun `verify add to wishlistV2 returns success`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -662,7 +659,7 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify add to wishlistV2 returns fail` () {
+    fun `verify add to wishlistV2 returns fail`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val mockThrowable = mockk<Throwable>("fail")
 
@@ -677,7 +674,7 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns success`(){
+    fun `verify remove wishlistV2 returns success`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
@@ -692,7 +689,7 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns fail`(){
+    fun `verify remove wishlistV2 returns fail`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val mockThrowable = mockk<Throwable>("fail")
 
@@ -949,7 +946,7 @@ class NotificationViewModelTest {
 
         viewModel.loadTopAdsBannerData()
 
-        verify (exactly = 1) {
+        verify(exactly = 1) {
             getRecommendationUseCase.createObservable(any())
         }
         Assert.assertEquals(
@@ -967,14 +964,14 @@ class NotificationViewModelTest {
 
         viewModel.loadTopAdsBannerData()
 
-        verify (exactly = 1) {
+        verify(exactly = 1) {
             getRecommendationUseCase.createObservable(any())
         }
     }
 
     @Test
     fun should_invoke_callback_when_success_get_topAds_wishlist() {
-        //Given
+        // Given
         val testRecommendationItem = RecommendationItem()
         val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
         val expectedResponse = WishlistModel().apply {
@@ -986,18 +983,18 @@ class NotificationViewModelTest {
             topAdsWishlishedUseCase.createObservable(any<RequestParams>()).toBlocking().single()
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.addWishListTopAds(testRecommendationItem, testCallback)
 
-        //Then
-        verify (exactly = 1) {
+        // Then
+        verify(exactly = 1) {
             testCallback.invoke(any(), any())
         }
     }
 
     @Test
     fun should_not_invoke_callback_when_success_get_topAds_wishlist_but_empty() {
-        //Given
+        // Given
         val testRecommendationItem = RecommendationItem()
         val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
         val expectedResponse = WishlistModel()
@@ -1005,11 +1002,11 @@ class NotificationViewModelTest {
             topAdsWishlishedUseCase.createObservable(any<RequestParams>()).toBlocking().single()
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.addWishListTopAds(testRecommendationItem, testCallback)
 
-        //Then
-        verify (exactly = 0) {
+        // Then
+        verify(exactly = 0) {
             testCallback.invoke(any(), any())
         }
     }
@@ -1034,32 +1031,31 @@ class NotificationViewModelTest {
 
     companion object {
         private val notifCenterDetailResponse: NotifcenterDetailResponse = FileUtil.parse(
-                "/success_notifcenter_detail_v3.json",
-                NotifcenterDetailResponse::class.java
+            "/success_notifcenter_detail_v3.json",
+            NotifcenterDetailResponse::class.java
         )
 
         private val notifCenterFilterResponse: NotifcenterFilterResponse = FileUtil.parse(
-                "/success_notifcenter_filter_as_buyer.json",
-                NotifcenterFilterResponse::class.java
+            "/success_notifcenter_filter_as_buyer.json",
+            NotifcenterFilterResponse::class.java
         )
 
         private val productRecommResponse: RecommendationEntity = FileUtil.parse(
-                "/success_notifcenter_recomm_inbox.json",
-                RecommendationEntity::class.java
+            "/success_notifcenter_recomm_inbox.json",
+            RecommendationEntity::class.java
         )
 
         private val bumpReminderResponse: BumpReminderResponse = FileUtil.parse(
-                "/success_notifcenter_bump_reminder.json",
-                BumpReminderResponse::class.java
+            "/success_notifcenter_bump_reminder.json",
+            BumpReminderResponse::class.java
         )
 
         private val deleteReminderResponse: DeleteReminderResponse = FileUtil.parse(
-                "/success_notifcenter_delete_reminder.json",
-                DeleteReminderResponse::class.java
+            "/success_notifcenter_delete_reminder.json",
+            DeleteReminderResponse::class.java
         )
 
         private val notifOrderListResponse = NotifOrderListResponse()
         private val clearNotifCounterResponse = ClearNotifCounterResponse()
     }
-
 }

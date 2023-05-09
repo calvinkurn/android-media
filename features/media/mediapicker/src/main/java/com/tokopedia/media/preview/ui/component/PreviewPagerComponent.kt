@@ -4,10 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapter
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
+import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 class PreviewPagerComponent(
     parent: ViewGroup
@@ -63,7 +63,7 @@ class PreviewPagerComponent(
         adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.pause()
     }
 
-    override fun release() {} //no-op
+    override fun release() {} // no-op
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
@@ -109,5 +109,4 @@ class PreviewPagerComponent(
             adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
         }
     }
-
 }

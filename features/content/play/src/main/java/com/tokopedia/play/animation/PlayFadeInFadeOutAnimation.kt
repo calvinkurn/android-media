@@ -9,10 +9,10 @@ import com.tokopedia.play.util.animation.PlayAnimationUtil
  * Created by jegul on 15/04/20
  */
 class PlayFadeInFadeOutAnimation(
-        private val durationInMs: Long,
-        private val delayInMs: Long,
-        private val fadeInListener: Animator.AnimatorListener? = null,
-        private val fadeOutListener: Animator.AnimatorListener? = null
+    private val durationInMs: Long,
+    private val delayInMs: Long,
+    private val fadeInListener: Animator.AnimatorListener? = null,
+    private val fadeOutListener: Animator.AnimatorListener? = null
 ) : PlayAnimation {
 
     private val animatorSet = AnimatorSet()
