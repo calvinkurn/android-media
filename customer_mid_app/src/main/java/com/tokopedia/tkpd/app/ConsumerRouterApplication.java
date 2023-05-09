@@ -422,17 +422,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        if (omsComponent == null) {
-            omsComponent = DaggerOmsComponent.builder()
-                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
-                    .build();
-        }
-        return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
-                .verifyPromo(requestParams);
-    }
-
-    @Override
     public boolean isSupportApplink(String appLink) {
         return false;
     }
