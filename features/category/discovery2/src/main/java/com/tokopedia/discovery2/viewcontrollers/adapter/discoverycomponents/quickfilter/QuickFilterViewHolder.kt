@@ -115,7 +115,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     private fun createSortFilterItem(option: Option): SortFilterItem {
         var icon : Drawable? = null
         val item =
-            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+            if (quickFilterViewModel.components.isFromCategory) {
                 when (option.name) {
                     "Official Store" -> {
                         icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
