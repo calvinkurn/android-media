@@ -21,7 +21,7 @@ object BiometricPromptHelper {
                 return BiometricManager.from(context)
                     .canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
             }
-        } catch (e: Exception) { }
+        } catch (ignored: Exception) { }
         return false
     }
 
