@@ -59,6 +59,8 @@ class DynamicChannelHeaderView: FrameLayout {
 
     private val rotateAnimation = RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
 
+    private val isUsingHeaderRevamp by lazy { HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initHeaderWithAttrs(attrs)
@@ -68,7 +70,7 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     init {
-        val layout = if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant())
+        val layout = if(isUsingHeaderRevamp)
             R.layout.home_component_dynamic_channel_header_revamp
         else R.layout.home_component_dynamic_channel_header
         val view = LayoutInflater.from(context).inflate(layout, this)
@@ -123,7 +125,7 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
-            if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() && channel.style == ChannelStyle.ChannelHome) {
+            if(isUsingHeaderRevamp && channel.style == ChannelStyle.ChannelHome) {
                 channelTitle?.setTextColor(
                     if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
                     else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
@@ -155,11 +157,11 @@ class DynamicChannelHeaderView: FrameLayout {
             }
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
-            if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+            if(isUsingHeaderRevamp) {
                 channelSubtitle?.setTextColor(
                     if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
                     else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 )
             } else {
                 channelSubtitle?.setTextColor(
@@ -178,7 +180,7 @@ class DynamicChannelHeaderView: FrameLayout {
          * Only show `see all` button when it is exist
          */
         if (isHasSeeMoreApplink(channel) && !isReload) {
-            if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() && channel.style == ChannelStyle.ChannelHome) {
+            if(isUsingHeaderRevamp && channel.style == ChannelStyle.ChannelHome) {
                 if (stubSeeAllButton is ViewStub &&
                     !isViewStubHasBeenInflated(stubSeeAllButton)) {
                     stubSeeAllButton.inflate()?.initializeSeeAll()
@@ -235,15 +237,15 @@ class DynamicChannelHeaderView: FrameLayout {
                 (seeAllButtonRevampContainer?.background as? GradientDrawable)?.setColor(com.tokopedia.home_component.R.color.home_dms_header_see_all_border_inverted)
                 seeAllButtonRevamp?.setImage(
                     newIconId = IconUnify.CHEVRON_RIGHT,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.home_dms_header_see_all_button_inverted),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.home_dms_header_see_all_button_inverted)
+                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
                 )
             }
         }
     }
 
     private fun handleSeeAllPosition(channelSubtitleName: String?, channel: ChannelModel, channelTitleContainer: ConstraintLayout?) {
-        if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+        if(isUsingHeaderRevamp) {
             /**
              * Requirement (revamp):
              * `see all` button align to center between title and subtitle/countdown timer
@@ -287,7 +289,7 @@ class DynamicChannelHeaderView: FrameLayout {
          * Requirement:
          * Show unify button of see more button for dc sprint if back image is not empty
          */
-        if (channel.channelHeader.backImage.isNotBlank() && !HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+        if (channel.channelHeader.backImage.isNotBlank() && !isUsingHeaderRevamp) {
             seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
                     !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
                 val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
@@ -342,7 +344,7 @@ class DynamicChannelHeaderView: FrameLayout {
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
                 countDownView?.run {
-                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty()){
+                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty() && headerMode == MODE_INVERTED){
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
@@ -367,7 +369,7 @@ class DynamicChannelHeaderView: FrameLayout {
             }
         } else {
             countDownView?.let {
-                it.visibility = View.GONE
+                it.visibility = if(isUsingHeaderRevamp) View.INVISIBLE else View.GONE
                 channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 12f.toDpInt())
             }
         }
