@@ -19,12 +19,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home_component.HomeComponentRollenceController
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
@@ -62,6 +67,8 @@ class PopularKeywordViewHolder (val view: View,
     var loadingView: View? = null
     var channelSubtitle: TextView? = null
 
+    private val useNewHeader = HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()
+
     private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
     private val rotateAnimation = RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
@@ -69,6 +76,7 @@ class PopularKeywordViewHolder (val view: View,
     private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
     private val loaderPopularKeywordTitle = view.findViewById<LoaderUnify>(R.id.loader_popular_keyword_title)
     private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
+    private val headerView = view.findViewById<DynamicChannelHeaderView>(R.id.home_component_header_view)
 
     init{
         rotateAnimation.duration = ROTATE_DURATION
@@ -124,80 +132,122 @@ class PopularKeywordViewHolder (val view: View,
                 initLoadingView()
                 if(element.popularKeywordList.isEmpty()){
                     loadingView?.show()
-                }else {
+                } else {
                     loadingView?.gone()
-                }
-            }
+                    if(useNewHeader) {
+                        val channelModel = element.channel.copy(header = element.channel.header.copy(name = element.title.ifEmpty { element.channel.header.name }, subtitle = element.subTitle))
+                        anchorRecyclerViewTo(R.id.home_component_header_view)
+                        headerView.setChannel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channelModel, element.position),
+                            object : HeaderListener {
+                                override fun onSeeAllClick(link: String) {
+                                    homeCategoryListener.onDynamicChannelClicked(link)
+                                }
 
-            channelTitleStub?.let {
-                val title = if (element.title.isNotEmpty()) element.title else element.channel.header.name
-                if (title.isNotEmpty()) {
-                    it.visibility = View.VISIBLE
-                    channelTitle = if (channelTitleStub is ViewStub &&
-                            !isViewStubHasBeenInflated(channelTitleStub)) {
-                        val stubChannelView = channelTitleStub.inflate()
-                        stubChannelView?.findViewById(R.id.channel_title)
+                                override fun onChannelExpired(channelModel: ChannelModel) {
+                                }
+
+                                override fun onReloadClick(channelModel: ChannelModel) {
+                                    headerView.hideTitleAndSubtitle()
+                                    loaderPopularKeywordTitle?.show()
+                                    loadingView?.show()
+                                    errorPopularKeyword.hide()
+                                    adapter?.clearList()
+                                    errorPopularKeyword.progressState = true
+                                    popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
+                                }
+                            },
+                            isReload = true
+                        )
+                        containerPopularKeyword.setPadding(0, 0, 0, view.context.resources.getDimensionPixelSize(R.dimen.popular_keyword_bottom_padding))
+                        ivReload?.hide()
+                        tvReload?.hide()
+                        channelTitle?.hide()
+                        channelSubtitle?.hide()
+                        channelTitle?.hide()
+                        loaderPopularKeywordTitle?.gone()
                     } else {
-                        itemView.findViewById(R.id.channel_title)
+                        containerPopularKeyword.setPadding(0, view.context.resources.getDimensionPixelSize(R.dimen.popular_keyword_old_top_padding), 0, view.context.resources.getDimensionPixelSize(R.dimen.popular_keyword_bottom_padding))
+                        channelTitleStub?.let {
+                            val title = element.title.ifEmpty { element.channel.header.name }
+                            if (title.isNotEmpty()) {
+                                it.visibility = View.VISIBLE
+                                channelTitle = if (channelTitleStub is ViewStub &&
+                                    !isViewStubHasBeenInflated(channelTitleStub)) {
+                                    val stubChannelView = channelTitleStub.inflate()
+                                    stubChannelView?.findViewById(R.id.channel_title)
+                                } else {
+                                    itemView.findViewById(R.id.channel_title)
+                                }
+                                channelTitle?.text = title
+                                channelTitle?.visibility = View.VISIBLE
+                                channelTitle?.setTextColor(
+                                    if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
+                                    else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                                )
+                                loaderPopularKeywordTitle?.gone()
+                                anchorReloadButtonTo(R.id.channel_title)
+                                anchorRecyclerViewTo(R.id.channel_title)
+                            }
+                        }
+
+                        /**
+                         * Requirement:
+                         * Only show channel subtitle when it is exist
+                         */
+                        val channelSubtitleName = element.subTitle
+                        if (channelSubtitleName.isNotEmpty()) {
+                            channelSubtitle = if (channelSubtitleStub is ViewStub &&
+                                !isViewStubHasBeenInflated(channelSubtitleStub)) {
+                                val stubChannelView = channelSubtitleStub.inflate()
+                                stubChannelView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                            } else {
+                                itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                            }
+                            channelSubtitle?.text = channelSubtitleName
+                            channelSubtitle?.visibility = View.VISIBLE
+
+                            anchorReloadButtonTo(R.id.channel_subtitle)
+                            anchorRecyclerViewTo(R.id.channel_subtitle)
+                        } else {
+                            channelSubtitle?.visibility = View.GONE
+                        }
+
+                        tvReloadStub?.let {
+                            it.visibility = View.VISIBLE
+                            tvReload = if (tvReloadStub is ViewStub &&
+                                !isViewStubHasBeenInflated(tvReloadStub)) {
+                                val stubChannelView = tvReloadStub.inflate()
+                                stubChannelView?.findViewById(R.id.tv_reload)
+                            } else {
+                                itemView.findViewById(R.id.tv_reload)
+                            }
+                            tvReload?.setOnClickListener(reloadClickListener(element))
+                        }
+
+                        ivReloadStub?.let {
+                            it.visibility = View.VISIBLE
+                            ivReload = if (ivReloadStub is ViewStub &&
+                                !isViewStubHasBeenInflated(ivReloadStub)) {
+                                val stubChannelView = ivReloadStub.inflate()
+                                stubChannelView?.findViewById(R.id.iv_reload)
+                            } else {
+                                itemView.findViewById(R.id.iv_reload)
+                            }
+                            ivReload?.setOnClickListener(reloadClickListener(element))
+                        }
                     }
-                    channelTitle?.text = title
-                    channelTitle?.visibility = View.VISIBLE
-                    channelTitle?.setTextColor(
-                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
-                            else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
-                    )
-                    loaderPopularKeywordTitle?.gone()
-                    anchorReloadButtonTo(R.id.channel_title)
                 }
-            }
-            /**
-             * Requirement:
-             * Only show channel subtitle when it is exist
-             */
-            val channelSubtitleName = element.subTitle
-            if (channelSubtitleName.isNotEmpty()) {
-                channelSubtitle = if (channelSubtitleStub is ViewStub &&
-                        !isViewStubHasBeenInflated(channelSubtitleStub)) {
-                    val stubChannelView = channelSubtitleStub.inflate()
-                    stubChannelView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
-                } else {
-                    itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
-                }
-                channelSubtitle?.text = channelSubtitleName
-                channelSubtitle?.visibility = View.VISIBLE
-
-                anchorReloadButtonTo(R.id.channel_subtitle)
-            } else {
-                channelSubtitle?.visibility = View.GONE
             }
 
-            tvReloadStub?.let {
-                it.visibility = View.VISIBLE
-                tvReload = if (tvReloadStub is ViewStub &&
-                        !isViewStubHasBeenInflated(tvReloadStub)) {
-                    val stubChannelView = tvReloadStub.inflate()
-                    stubChannelView?.findViewById(R.id.tv_reload)
-                } else {
-                    itemView.findViewById(R.id.tv_reload)
-                }
-                tvReload?.setOnClickListener(reloadClickListener(element))
-            }
-            ivReloadStub?.let {
-                it.visibility = View.VISIBLE
-                ivReload = if (ivReloadStub is ViewStub &&
-                        !isViewStubHasBeenInflated(ivReloadStub)) {
-                    val stubChannelView = ivReloadStub.inflate()
-                    stubChannelView?.findViewById(R.id.iv_reload)
-                } else {
-                    itemView.findViewById(R.id.iv_reload)
-                }
-                ivReload?.setOnClickListener(reloadClickListener(element))
-            }
             if(!element.isErrorLoad) {
                 errorPopularKeyword?.hide()
-                channelTitle?.show()
-                ivReload?.show()
-                tvReload?.show()
+                if(useNewHeader) {
+                    headerView.show()
+                } else {
+                    channelTitle?.show()
+                    ivReload?.show()
+                    tvReload?.show()
+                }
             } else {
                 errorPopularKeyword.show()
                 loaderPopularKeywordTitle?.hide()
@@ -206,6 +256,7 @@ class PopularKeywordViewHolder (val view: View,
                 channelTitle?.hide()
                 channelSubtitle?.hide()
                 loadingView?.hide()
+                headerView.hide()
             }
             errorPopularKeyword.progressState = false
             errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
@@ -219,6 +270,13 @@ class PopularKeywordViewHolder (val view: View,
         constraintSet.clone(containerPopularKeyword)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(containerPopularKeyword)
+    }
+
+    private fun anchorRecyclerViewTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(containerPopularKeyword)
+        constraintSet.connect(R.id.rv_popular_keyword, ConstraintSet.TOP, anchorRef, ConstraintSet.BOTTOM, 0)
         constraintSet.applyTo(containerPopularKeyword)
     }
 

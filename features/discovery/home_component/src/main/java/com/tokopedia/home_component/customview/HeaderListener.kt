@@ -5,4 +5,5 @@ import com.tokopedia.home_component.model.ChannelModel
 interface HeaderListener {
     fun onSeeAllClick(link: String)
     fun onChannelExpired(channelModel: ChannelModel)
+    fun onReloadClick(channelModel: ChannelModel) { }
 }

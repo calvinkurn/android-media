@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/see_all_revamp_border"
+    android:id="@+id/reload_border"
     android:layout_width="@dimen/home_dynamic_header_cta_container"
     android:layout_height="@dimen/home_dynamic_header_cta_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,10 +9,12 @@
     android:gravity="center"
     xmlns:tools="http://schemas.android.com/tools">
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/see_all_button_revamp"
-        app:icon_name="CHEVRON_RIGHT"
+        android:id="@+id/reload_button"
+        app:icon_name="RELOAD"
         android:clickable="true"
         android:focusable="true"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:layout_width="@dimen/home_dynamic_header_cta_icon"
         android:layout_height="@dimen/home_dynamic_header_cta_icon"/>
 </LinearLayout>

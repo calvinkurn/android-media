@@ -10,6 +10,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,6 +32,7 @@ import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -48,7 +52,12 @@ class DynamicChannelHeaderView: FrameLayout {
 
     var seeAllButtonRevamp: IconUnify? = null
     var seeAllButtonRevampContainer: LinearLayout? = null
-    var seeAllButtonMode: Int = MODE_NORMAL
+    var headerMode: Int = MODE_NORMAL
+
+    var reloadButton: IconUnify? = null
+    var reloadButtonContainer: LinearLayout? = null
+
+    private val rotateAnimation = RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -64,32 +73,36 @@ class DynamicChannelHeaderView: FrameLayout {
         else R.layout.home_component_dynamic_channel_header
         val view = LayoutInflater.from(context).inflate(layout, this)
         this.itemView = view
+
+        rotateAnimation.duration = ROTATE_DURATION
+        rotateAnimation.interpolator = LinearInterpolator()
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-        seeAllButtonMode = context.obtainStyledAttributes(attrs, R.styleable.DynamicChannelHeaderRevampView).getInt(0, MODE_NORMAL)
+        headerMode = context.obtainStyledAttributes(attrs, R.styleable.DynamicChannelHeaderRevampView).getInt(0, MODE_NORMAL)
     }
 
-    fun setChannel(channelModel: ChannelModel, listener: HeaderListener) {
+    fun setChannel(channelModel: ChannelModel, listener: HeaderListener, isReload: Boolean = false) {
         this.listener = listener
-        handleHeaderComponent(channelModel)
+        handleHeaderComponent(channelModel, isReload)
     }
 
-    private fun handleHeaderComponent(
-            channel: ChannelModel) {
+    private fun handleHeaderComponent(channel: ChannelModel, isReload: Boolean) {
         val channelTitleContainer: ConstraintLayout? = itemView?.findViewById(R.id.channel_title_container)
         val stubChannelTitle: View? = itemView?.findViewById(R.id.channel_title)
         val stubCountDownView: View? = itemView?.findViewById(R.id.count_down)
         val stubSeeAllButton: View? = itemView?.findViewById(R.id.see_all_button)
         val stubSeeAllButtonUnify: View? = itemView?.findViewById(R.id.see_all_button_unify)
         val stubChannelSubtitle: View? = itemView?.findViewById(R.id.channel_subtitle)
+        val stubReloadButton: View? = itemView?.findViewById(R.id.reload_button)
         channelTitleContainer?.let {
             handleTitle(channel.channelHeader.name, channelTitleContainer, stubChannelTitle, channel)
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
-            handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
+            handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer, isReload)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView, channelTitleContainer)
             handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
+            handleReloadButton(channel, stubReloadButton, isReload)
         }
     }
 
@@ -112,7 +125,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.visibility = View.VISIBLE
             if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() && channel.style == ChannelStyle.ChannelHome) {
                 channelTitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
+                    if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
                     else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 )
             } else {
@@ -143,7 +157,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelSubtitle?.visibility = View.VISIBLE
             if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
                 channelSubtitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
+                    if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
                     else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 )
             } else {
@@ -157,24 +172,24 @@ class DynamicChannelHeaderView: FrameLayout {
         }
     }
 
-    private fun handleSeeAllApplink(channel: ChannelModel, stubSeeAllButton: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
+    private fun handleSeeAllApplink(channel: ChannelModel, stubSeeAllButton: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?, isReload: Boolean) {
         /**
          * Requirement:
          * Only show `see all` button when it is exist
          */
-        if (isHasSeeMoreApplink(channel)) {
+        if (isHasSeeMoreApplink(channel) && !isReload) {
             if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() && channel.style == ChannelStyle.ChannelHome) {
                 if (stubSeeAllButton is ViewStub &&
                     !isViewStubHasBeenInflated(stubSeeAllButton)) {
-                    stubSeeAllButton.inflate()?.initializeHeader()
+                    stubSeeAllButton.inflate()?.initializeSeeAll()
                 } else {
-                    itemView?.initializeHeader()
+                    itemView?.initializeSeeAll()
                 }
-                setHeaderRevampColor()
+                setHeaderRevampCtaColor()
 
                 seeAllButton?.hide()
                 seeAllButtonRevampContainer?.show()
-                seeAllButtonRevampContainer?.setOnClickListener {
+                seeAllButtonRevamp?.setOnClickListener {
                     listener?.onSeeAllClick(channel.channelHeader.getLink())
                 }
             } else {
@@ -206,13 +221,8 @@ class DynamicChannelHeaderView: FrameLayout {
         }
     }
 
-    private fun View.initializeHeader() {
-        seeAllButtonRevamp = findViewById(R.id.see_all_button_revamp)
-        seeAllButtonRevampContainer = findViewById(R.id.see_all_revamp_border)
-    }
-
-    private fun setHeaderRevampColor() {
-        when(seeAllButtonMode) {
+    private fun setHeaderRevampCtaColor() {
+        when(headerMode) {
             MODE_NORMAL -> {
                 (seeAllButtonRevampContainer?.background as? GradientDrawable)?.setColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
                 seeAllButtonRevamp?.setImage(
@@ -375,11 +385,43 @@ class DynamicChannelHeaderView: FrameLayout {
                     titleContainer.paddingRight,
                     titleContainer.paddingBottom)
         }
+    }
 
+    private fun handleReloadButton(channel: ChannelModel, stubReloadButton: View?, isReload: Boolean) {
+        if(isReload) {
+            if (stubReloadButton is ViewStub &&
+                !isViewStubHasBeenInflated(stubReloadButton)) {
+                stubReloadButton.inflate()?.initializeReload()
+            } else {
+                itemView?.initializeReload()
+            }
+            reloadButton?.setOnClickListener {
+                it.startAnimation(rotateAnimation)
+                listener?.onReloadClick(channel)
+            }
+        } else {
+            reloadButtonContainer?.hide()
+            reloadButton?.hide()
+        }
+    }
+
+    fun hideTitleAndSubtitle() {
+        channelTitle?.invisible()
+        channelSubtitle?.invisible()
     }
 
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
         return channel.channelHeader.getLink().isNotEmpty()
+    }
+
+    private fun View.initializeSeeAll() {
+        seeAllButtonRevamp = findViewById(R.id.see_all_button_revamp)
+        seeAllButtonRevampContainer = findViewById(R.id.see_all_revamp_border)
+    }
+
+    private fun View.initializeReload() {
+        reloadButton = findViewById(R.id.reload_button)
+        reloadButtonContainer = findViewById(R.id.reload_border)
     }
 
     private fun hasExpiredTime(channel: ChannelModel): Boolean {
@@ -398,5 +440,11 @@ class DynamicChannelHeaderView: FrameLayout {
         private const val TITLE_TOP_PADDING = 15f
         const val MODE_NORMAL = 0
         const val MODE_INVERTED = 1
+
+        private const val ROTATE_TO_DEGREES = 360f
+        private const val PIVOT_X_VALUE = 0.5f
+        private const val PIVOT_Y_VALUE = 0.5f
+        private const val ROTATE_FROM_DEGREES = 0f
+        private const val ROTATE_DURATION = 500L
     }
 }
