@@ -20,7 +20,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
-import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -101,7 +100,6 @@ class SharingUtil {
                     it.printStackTrace()
                 })
         }
-
 
         fun triggerSS(view: View?, imageSaved: (savedImgPath: String) -> Unit) {
             val bitmap = takeScreenshot(view)
@@ -280,11 +278,7 @@ class SharingUtil {
                     is ShareModel.CopyLink -> {
                         linkerShareData?.url?.let {
                             if (activity != null) {
-                                if (shareModel.pageType == PageType.PDP) {
-                                    ClipboardHandler().copyToClipboard(activity, shareString)
-                                } else {
-                                    ClipboardHandler().copyToClipboard(activity, it)
-                                }
+                                ClipboardHandler().copyToClipboard(activity, it)
                             }
                         }
                         view.let {
@@ -325,7 +319,7 @@ class SharingUtil {
                     is ShareModel.Whatsapp -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                if (shareImageFileUri != null) {
+                                if (shareImageFileUri != null && shareModel.shareOnlyLink) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
                                 type = UniversalShareBottomSheet.MimeType.TEXT.type

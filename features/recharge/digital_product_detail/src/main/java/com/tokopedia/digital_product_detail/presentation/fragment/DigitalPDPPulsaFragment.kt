@@ -37,7 +37,6 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Comp
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -45,7 +44,6 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -72,7 +70,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -94,7 +91,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -281,6 +277,9 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringRecommendation()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -290,18 +289,27 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.prefillData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -309,6 +317,9 @@ class DigitalPDPPulsaFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -360,6 +371,9 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringDenomGrid()
                     onLoadingAndFailMCCM()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -479,10 +493,8 @@ class DigitalPDPPulsaFragment :
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else {
-                setupDynamicScrollViewPadding()
             }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -1015,9 +1027,7 @@ class DigitalPDPPulsaFragment :
         viewModel.setAddToCartLoading()
         viewModel.addToCart(
             DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId,
-            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            userSession.userId
         )
     }
 
@@ -1039,10 +1049,11 @@ class DigitalPDPPulsaFragment :
                             this
                         )
                         binding?.run {
-                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
+                            val defaultPadding: Int = rechargePdpPulsaClientNumberWidget.height
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
                             } ?: 0
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }

@@ -92,10 +92,11 @@ import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdap
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
-import com.tokopedia.tokopedianow.repurchase.presentation.listener.TokoNowSimilarProductTrackerCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
@@ -104,6 +105,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.SortFilterListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
@@ -125,7 +127,6 @@ class TokoNowRepurchaseFragment:
     SortFilterListener,
     ServerErrorListener
 {
-
     companion object {
         const val SOURCE = "tokonow"
         const val CATEGORY_LEVEL_DEPTH = 1
@@ -160,7 +161,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
-                tokoNowSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
+                productCardCompactSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
@@ -171,7 +172,8 @@ class TokoNowRepurchaseFragment:
                 sortFilterListener = this,
                 serverErrorListener = this,
                 tokonowRecomBindPageNameListener = createProductRecommendationOocListener(),
-                productRecommendationListener = createProductRecommendationListener()
+                productRecommendationListener = createProductRecommendationListener(),
+                productCardCompactListener = createProductCardCompactCallback()
             ),
             RepurchaseListDiffer()
         )
@@ -199,6 +201,7 @@ class TokoNowRepurchaseFragment:
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
+        initAffiliateCookie()
 
         viewModel.showLoading()
     }
@@ -862,6 +865,10 @@ class TokoNowRepurchaseFragment:
         }
     }
 
+    private fun initAffiliateCookie() {
+        viewModel.initAffiliateCookie()
+    }
+
     private fun submitList(data: RepurchaseLayoutUiModel) {
         adapter.submitList(data.layoutList)
     }
@@ -1043,8 +1050,17 @@ class TokoNowRepurchaseFragment:
         )
     }
 
-    private fun createSimilarProductTrackerCallback(): TokoNowSimilarProductTrackerCallback {
-        return TokoNowSimilarProductTrackerCallback(analytics)
+    private fun createSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(analytics)
+    }
+
+    private fun createProductCardCompactCallback(): ProductCardCompactCallback {
+        return ProductCardCompactCallback { productId, similarProductTrackerListener ->
+            context?.apply {
+                val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun createCategoryMenuCallback(): CategoryMenuCallback {

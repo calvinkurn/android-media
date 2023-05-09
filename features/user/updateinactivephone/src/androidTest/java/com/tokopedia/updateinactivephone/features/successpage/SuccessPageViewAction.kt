@@ -8,6 +8,8 @@ import com.tokopedia.updateinactivephone.test.R
 
 object SuccessPageViewAction {
 
+
+
     fun checkSuccessPageIsDisplayed() {
         isDisplayed(R.id.imgHeader)
         isDisplayed(R.id.text_title)
