@@ -108,10 +108,10 @@ class EditorViewModel @Inject constructor(
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 // if use 'add logo' & 'add text' feature then need to flatten image first
-                var flattenBitmap = it.getOverlayTextValue()?.let { overlayData ->
+                var flattenBitmap = it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
                     saveImageRepository.flattenImage(
                         it.getImageUrl(),
-                        overlayData.textImagePath,
+                        textImagePath,
                         it.getOriginalUrl()
                     )
                 } ?: run {

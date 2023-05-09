@@ -15,7 +15,7 @@ class EditorAddTextUiModel(
     var textPosition: Int = TEXT_POSITION_BOTTOM,
     var textTemplate: Int = TEXT_TEMPLATE_FREE,
     private var textTemplateLatar: LatarTemplateDetail? = null,
-    var textImagePath: String = ""
+    var textImagePath: String? = null
 ) : Parcelable {
 
     // need to encapsulate latar template model to prevent error when using `Free Text` but accessing `Latar Text` template
