@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 class OnBoardAffiliateUseCase @Inject constructor(
@@ -22,7 +23,7 @@ class OnBoardAffiliateUseCase @Inject constructor(
         return mapOf(
             KEY_PARAM_NAME to VALUE_PARAM_NAME,
             KEY_PARAM_CHANNEL_ID to params.channelID,
-            KEY_PARAM_PROFILE_ID to String.format(VALUE_PARAM_PROFILE_ID, params.profileID),
+            KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
         )
     }
 
@@ -52,7 +53,7 @@ class OnBoardAffiliateUseCase @Inject constructor(
         private const val VALUE_PARAM_NAME = "play"
         private const val KEY_PARAM_CHANNEL_ID = "ChannelID"
         private const val KEY_PARAM_PROFILE_ID = "ProfileID"
-        private const val VALUE_PARAM_PROFILE_ID = "https://www.tokopedia.com/people/%s"
+        private val valueParamID = "${TokopediaUrl.getInstance().WEB}people/%s"
     }
 
 }
