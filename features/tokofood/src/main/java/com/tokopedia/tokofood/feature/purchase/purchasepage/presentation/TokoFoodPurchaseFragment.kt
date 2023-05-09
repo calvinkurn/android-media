@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -36,6 +34,8 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -48,16 +48,15 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
-import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessAddToCartResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -79,6 +78,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -130,6 +130,7 @@ class TokoFoodPurchaseFragment :
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
 
     private var shopId = ""
+    private var currentCartIdList: List<String> = listOf()
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -174,12 +175,12 @@ class TokoFoodPurchaseFragment :
         return null
     }
 
-    override fun getFragmentTitle(): String? {
-        return ""
+    override fun getFragmentTitle(): String {
+        return String.EMPTY
     }
 
     override fun getScreenName(): String {
-        return ""
+        return String.EMPTY
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
@@ -289,6 +290,7 @@ class TokoFoodPurchaseFragment :
     private fun observeList() {
         viewModel.visitables.observe(viewLifecycleOwner) {
             rvAdapter?.updateList(it)
+            setCurrentCartList(it)
         }
     }
 
@@ -305,21 +307,22 @@ class TokoFoodPurchaseFragment :
                     hideLoading()
                     renderRecyclerView()
                     (it.data as? Pair<*, *>)?.let { pair ->
-                        (pair.first as? CheckoutTokoFood)?.let { response ->
+                        (pair.first as? CartGeneralCartListData)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
-                                shopId = response.data.shop.shopId
+                                val businessData = response.data.getTokofoodBusinessData()
+                                shopId = businessData.customResponse.shop.shopId
                                 loadCartData(response)
                                 when {
-                                    response.data.popupErrorMessage.isNotEmpty() -> {
+                                    businessData.customResponse.popupErrorMessage.isNotEmpty() -> {
                                         showToasterError(
-                                            response.data.popupErrorMessage,
+                                            businessData.customResponse.popupErrorMessage,
                                             getOkayMessage()
                                         ) {}
                                     }
-                                    response.data.popupMessage.isNotEmpty() -> {
-                                        if (!isPreviousPopupPromo || !response.data.isPromoPopupType()) {
+                                    businessData.customResponse.popupMessage.isNotEmpty() -> {
+                                        if (!isPreviousPopupPromo || !businessData.isPromoPopupType()) {
                                             showToaster(
-                                                response.data.popupMessage,
+                                                businessData.customResponse.popupMessage,
                                                 getOkayMessage()
                                             ) {}
                                         }
@@ -391,7 +394,7 @@ class TokoFoodPurchaseFragment :
                     }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
-                    (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
+                    (it.data as? CartListBusinessDataBottomSheet)?.let { data ->
                         showConsentBottomSheet(data)
                     }
                 }
@@ -475,6 +478,11 @@ class TokoFoodPurchaseFragment :
                         navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
+                PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                    (it.data as? CartGeneralCartListData)?.let { cartData ->
+                        loadCartData(cartData)
+                    }
+                }
             }
         }
     }
@@ -493,11 +501,11 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         if (it.source == SOURCE) {
-                            (it.data as? Pair<*, *>)?.let { pair ->
-                                (pair.first as? String)?.let { previousCartId ->
-                                    (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
+                            (it.data as? Pair<*,*>)?.let { pair ->
+                                (pair.first as? String)?.let { productId ->
+                                    (pair.second as? String)?.let { cartId ->
                                         viewBinding?.recyclerViewPurchase?.post {
-                                            viewModel.deleteProduct(product.productId, previousCartId)
+                                            viewModel.deleteProduct(productId, cartId)
                                         }
                                     }
                                 }
@@ -511,8 +519,8 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
-                            it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
-                                cartTokoFoodData.carts.firstOrNull()?.let { product ->
+                            it.data?.getSuccessAddToCartResultPair()?.let { (_, cartTokoFoodData) ->
+                                cartTokoFoodData.data.getTokofoodBusinessData().getAvailableSectionProducts().firstOrNull()?.let { product ->
                                     viewBinding?.recyclerViewPurchase?.post {
                                         viewModel.updateNotes(product)
                                     }
@@ -527,18 +535,16 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                         if (it.source == SOURCE) {
-                            it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
-                                viewBinding?.recyclerViewPurchase?.post {
-                                    viewModel.updateCartId(updateParams, cartTokoFoodData)
+                            (it.data as? Pair<*, *>)?.let { pair ->
+                                (pair.first as? String)?.let { message ->
+                                    val toasterMessage = message.takeIf { cartMessage ->
+                                        cartMessage.isNotBlank()
+                                    } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
+                                    showToaster(toasterMessage, getOkayMessage())
                                 }
-
-                                val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
-                                    cartMessage.isNotBlank()
-                                } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
-                                showToaster(toasterMessage, getOkayMessage())
-                            }
-                            viewBinding?.recyclerViewPurchase?.post {
-                                viewModel.refreshPartialCartInformation()
+                                viewBinding?.recyclerViewPurchase?.post {
+                                    viewModel.refreshPartialCartInformation()
+                                }
                             }
                         }
                     }
@@ -587,6 +593,7 @@ class TokoFoodPurchaseFragment :
                                         TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
                                     )
                                 )
+                                showToasterError(throwable)
                             }
                         }
                     }
@@ -685,8 +692,8 @@ class TokoFoodPurchaseFragment :
         }
     }
 
-    private fun loadCartData(response: CheckoutTokoFood) {
-        if (response.isEnabled() && !response.data.summaryDetail.hideSummary) {
+    private fun loadCartData(response: CartGeneralCartListData) {
+        if (response.isEnabled() && !response.data.shoppingSummary.getTokofoodBusinessBreakdown().customResponse.hideSummary) {
             activityViewModel?.loadCartList(response)
         } else {
             activityViewModel?.loadCartList(SOURCE)
@@ -818,8 +825,8 @@ class TokoFoodPurchaseFragment :
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
     }
 
-    private fun showConsentBottomSheet(data: CheckoutTokoFoodConsentBottomSheet) {
-        if (data.isShowBottomsheet) {
+    private fun showConsentBottomSheet(data: CartListBusinessDataBottomSheet) {
+        if (data.isShowBottomSheet) {
             consentBottomSheet = TokoFoodPurchaseConsentBottomSheet.createInstance(
                 data.title,
                 data.description,
@@ -996,6 +1003,12 @@ class TokoFoodPurchaseFragment :
         putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
+    private fun setCurrentCartList(visitableList: List<Visitable<*>>) {
+        currentCartIdList =
+            visitableList.filterIsInstance(TokoFoodPurchaseProductTokoFoodPurchaseUiModel::class.java)
+                .map { it.cartId }
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -1031,11 +1044,23 @@ class TokoFoodPurchaseFragment :
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         activityViewModel?.deleteProduct(
-            productId = element.id,
             cartId = element.cartId,
+            productId = element.id,
             source = SOURCE,
             shouldRefreshCart = false
         )
+    }
+
+    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
+        // no-op
+    }
+
+    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
+        // no-op
+    }
+
+    override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
+        // no-op
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
@@ -1068,7 +1093,13 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onPromoWidgetClicked() {
-        navigateToNewFragment(TokoFoodPromoFragment.createInstance(SOURCE))
+        navigateToNewFragment(
+            TokoFoodPromoFragment.createInstance(
+                SOURCE,
+                String.EMPTY,
+                currentCartIdList
+            )
+        )
     }
 
     override fun onButtonCheckoutClicked() {

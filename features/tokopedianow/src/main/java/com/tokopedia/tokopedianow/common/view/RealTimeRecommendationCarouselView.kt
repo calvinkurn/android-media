@@ -25,7 +25,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouseBasicListener {
+    ProductCardCompactCarouselView.ProductCardCompactCarouselBasicListener {
 
     companion object {
         private const val FIRST_ITEM_POSITION = 0
@@ -255,6 +255,10 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onAddToCartProductVariantClick(position, product)
+    }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onAddToCartProductBlocked()
     }
 }
 

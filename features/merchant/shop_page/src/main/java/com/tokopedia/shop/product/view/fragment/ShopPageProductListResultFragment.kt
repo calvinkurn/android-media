@@ -476,10 +476,7 @@ class ShopPageProductListResultFragment :
     private fun initRecyclerView(view: View) {
         recyclerView = super.getRecyclerView(view)
         recyclerView?.let {
-            val animator = it.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
+            it.itemAnimator = null
             rvDefaultPaddingBottom = it.paddingBottom
         }
     }
@@ -599,6 +596,9 @@ class ShopPageProductListResultFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -609,6 +609,9 @@ class ShopPageProductListResultFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

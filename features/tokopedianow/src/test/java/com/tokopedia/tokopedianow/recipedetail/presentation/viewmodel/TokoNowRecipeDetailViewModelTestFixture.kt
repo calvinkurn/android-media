@@ -8,6 +8,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
@@ -17,6 +19,7 @@ import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -37,18 +40,20 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     val instantTaskExecutor = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     private lateinit var getRecipeUseCase: GetRecipeUseCase
     private lateinit var getAddressUseCase: GetChosenAddressWarehouseLocUseCase
     private lateinit var addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase
     private lateinit var removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var addToCartUseCase: AddToCartUseCase
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var affiliateService: NowAffiliateService
 
     protected lateinit var viewModel: TokoNowRecipeDetailViewModel
 
@@ -58,12 +63,14 @@ open class TokoNowRecipeDetailViewModelTestFixture {
         getAddressUseCase = mockk(relaxed = true)
         addRecipeBookmarkUseCase = mockk(relaxed = true)
         removeRecipeBookmarkUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         addToCartUseCase = mockk(relaxed = true)
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
+        affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowRecipeDetailViewModel(
             getRecipeUseCase,
@@ -75,6 +82,8 @@ open class TokoNowRecipeDetailViewModelTestFixture {
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
+            getTargetedTickerUseCase,
+            affiliateService,
             getMiniCartUseCase,
             coroutineTestRule.dispatchers
         )
@@ -178,6 +187,10 @@ open class TokoNowRecipeDetailViewModelTestFixture {
 
     protected fun verifyUpdateAddressDataCalled() {
         coVerify { addressData.updateLocalData() }
+    }
+
+    protected fun verifyInitAffiliateCookieCalled() {
+        coVerify { affiliateService.initAffiliateCookie() }
     }
 
     protected fun onGetLayoutItemList_returnNull() {

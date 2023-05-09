@@ -159,7 +159,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
+    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runTest {
         val notifications = NotificationUiModel(
             5,
             5,
@@ -187,7 +187,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
+    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runTest {
         val notifications = NotificationUiModel(
             5,
             5,
@@ -217,7 +217,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runBlockingTest {
+    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runTest {
         val notifications = NotificationUiModel(
             5,
             5,
@@ -244,7 +244,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runBlockingTest {
+    fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runTest {
         val notifications = NotificationUiModel(
             5,
             5,
@@ -300,7 +300,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get shop info then returns failed result`() = coroutineTestRule.runBlockingTest {
+    fun `get shop info then returns failed result`() = coroutineTestRule.runTest {
         val userId = "123456"
         val throwable = MessageErrorException()
 
@@ -331,7 +331,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner, user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner, user is eligible`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -342,7 +342,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -368,7 +368,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is not shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is not shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -394,7 +394,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is not shop owner and is location admin then mark as user is not eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is not shop owner and is location admin then mark as user is not eligible`() = coroutineTestRule.runTest {
         val isEligible = false
         val response = AdminDataResponse(
             data = AdminData(
@@ -420,7 +420,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner and is location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner and is location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -446,7 +446,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -458,7 +458,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner but is location admin, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner but is location admin, we dont need to check for role permission`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -473,7 +473,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get admin info then success return isEligible`() = coroutineTestRule.runBlockingTest {
+    fun `get admin info then success return isEligible`() = coroutineTestRule.runTest {
         val adminData = AdminDataResponse()
 
         everyGetAdminTypeThenReturn(adminData)
@@ -487,7 +487,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get admin info then return failed result`() = coroutineTestRule.runBlockingTest {
+    fun `get admin info then return failed result`() = coroutineTestRule.runTest {
         val throwable = MessageErrorException("")
 
         everyGetAdminTypeThenThrow(throwable)
@@ -501,7 +501,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runTest {
         val isShopAdmin = true
         val adminData = AdminDataResponse(
             data = AdminData(
@@ -524,7 +524,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is not shop admin but is location admin, get admin info will return isEligible false result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is not shop admin but is location admin, get admin info will return isEligible false result`() = coroutineTestRule.runTest {
         val isShopAdmin = false
         val isLocationAdmin = true
         val adminData = AdminDataResponse(
@@ -549,7 +549,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is not shop admin and not is location admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is not shop admin and not is location admin, get admin info will return isEligible true result`() = coroutineTestRule.runTest {
         val isShopAdmin = false
         val isLocationAdmin = false
         val adminData = AdminDataResponse(
@@ -878,7 +878,7 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `when get shop state info should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
@@ -906,7 +906,7 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `when get shop state info should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
