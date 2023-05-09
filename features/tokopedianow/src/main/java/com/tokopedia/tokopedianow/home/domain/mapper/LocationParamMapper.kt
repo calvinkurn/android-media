@@ -31,6 +31,7 @@ object LocationParamMapper {
 
             val warehouseId15m = warehouse15m?.warehouse_id.toString()
             val warehouseId2h = warehouse2h?.warehouse_id.toString()
+            val warehouseIds = mapToWarehouses(localCacheModel)
 
             locationParamsMap[PARAM_USER_LAT] = lat
             locationParamsMap[PARAM_USER_LONG] = long
@@ -38,7 +39,7 @@ object LocationParamMapper {
             locationParamsMap[PARAM_USER_DISTRICT_ID] = district_id
             locationParamsMap[PARAM_USER_POSTAL_CODE] = postal_code
             locationParamsMap[PARAM_USER_ADDRESS_ID] = address_id
-            locationParamsMap[PARAM_WAREHOUSE_IDS] = mapToWarehouses(localCacheModel)
+            locationParamsMap[PARAM_WAREHOUSE_IDS] = warehouseIds
             locationParamsMap[PARAM_SERVICE_TYPE] = service_type
             locationParamsMap[PARAM_SERVICE_TYPE_15M] = warehouseId15m
             locationParamsMap[PARAM_SERVICE_TYPE_2H] = warehouseId2h
