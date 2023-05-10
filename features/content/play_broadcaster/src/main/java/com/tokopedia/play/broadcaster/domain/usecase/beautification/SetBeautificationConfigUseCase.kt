@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.usecase.beautification
 
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.ContentCommonUserType
@@ -39,8 +40,13 @@ class SetBeautificationConfigUseCase @Inject constructor(
     }
 
     data class RequestParam(
+        @SerializedName("authorID")
         val authorId: String,
+
+        @SerializedName("authorType")
         val authorType: String,
+
+        @SerializedName("beautificationConfig")
         val beautificationConfig: BeautificationConfigUiModel,
     )
 
