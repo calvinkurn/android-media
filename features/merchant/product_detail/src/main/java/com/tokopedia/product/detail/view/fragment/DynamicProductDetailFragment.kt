@@ -5825,7 +5825,7 @@ open class DynamicProductDetailFragment :
             } else {
                 link
             }
-            RouteManager.route(context, processedLink)
+            gotoApplink(processedLink)
         }
     }
 
