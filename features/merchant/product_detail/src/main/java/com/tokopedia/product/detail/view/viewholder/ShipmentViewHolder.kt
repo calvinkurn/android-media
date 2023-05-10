@@ -95,7 +95,7 @@ class ShipmentViewHolder(
             }
             else -> {
                 loading(false)
-                loadShipmentState(element, rates, element.shipmentPlusData)
+                loadShipmentState(element, rates)
             }
         }
     }
@@ -124,8 +124,7 @@ class ShipmentViewHolder(
 
     private fun loadShipmentState(
         element: ProductShipmentDataModel,
-        rates: P2RatesEstimateData,
-        shipmentPlus: ShipmentPlusData
+        rates: P2RatesEstimateData
     ) = with(viewMain) {
         initialState()
         pdpShipmentTitle.text = rates.title
@@ -135,7 +134,7 @@ class ShipmentViewHolder(
         renderCourier(element, rates)
         renderTickers(rates)
         renderTips(rates)
-        renderShipmentPlus(shipmentPlus)
+        renderShipmentPlus(element.shipmentPlusData)
 
         itemView.addOnImpressionListener(element.impressHolder) {
             val componentTrackData = getComponentTrackData(element)
