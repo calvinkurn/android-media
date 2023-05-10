@@ -334,13 +334,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                         val currentBottomSheet = getShortsAffiliateTncBottomSheet()
                         currentBottomSheet.updateButtonState(event.isLoading)
                         if (event.isLoading) return@collect
-                        if (event.throwable != null) {
-                            toaster.showError(
-                                event.throwable,
-                                duration = Toaster.LENGTH_LONG
-                            )
-                            currentBottomSheet.dismissed()
-                        } else {
+                        if (event.throwable != null) currentBottomSheet.showErrorToast(event.throwable)
+                        else {
                             currentBottomSheet.dismissed()
                             openShortsAffiliateSuccessBottomSheet()
                         }

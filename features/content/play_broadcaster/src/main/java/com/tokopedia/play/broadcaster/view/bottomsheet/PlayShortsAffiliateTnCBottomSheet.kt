@@ -15,8 +15,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.setSpanOnText
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayShortsXAffiliateTncBinding
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
@@ -66,6 +70,10 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         }
     }
 
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
+
     private fun generateWebViewApplink(url: String): String {
         return getString(contentCommonR.string.up_webview_template, ApplinkConst.WEBVIEW, url)
     }
@@ -102,9 +110,9 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
             binding.btnContinue.isEnabled = binding.layoutTnc.cbxTnc.isChecked
         }
         binding.btnContinue.setOnClickListener {
+            if (binding.btnContinue.isLoading) return@setOnClickListener
             if (it.isEnabled) {
                 mListener?.onSubmitTnc()
-                it.isEnabled = false
             }
         }
     }
@@ -115,6 +123,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
 
     fun updateButtonState(isLoading: Boolean) {
         binding.btnContinue.isLoading = isLoading
+        if (isLoading) binding.btnContinue.isClickable = false
     }
 
     fun setListener(listener: Listener) {
@@ -123,6 +132,16 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
 
     fun show(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
+    }
+
+    fun showErrorToast(throwable: Throwable) {
+        binding.btnContinue.isClickable = true
+        toaster.showError(
+            throwable,
+            duration = Toaster.LENGTH_INDEFINITE,
+            actionLabel = getString(R.string.feed_try_again),
+            actionListener = {mListener?.onSubmitTnc() }
+        )
     }
 
     private fun getTncText(): CharSequence {
