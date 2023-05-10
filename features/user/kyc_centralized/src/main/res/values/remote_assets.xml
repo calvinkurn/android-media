@@ -5,9 +5,9 @@
     <string name="img_url_goto_kyc_benefit_item_seller">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_2.png</string>
     <string name="img_url_goto_kyc_benefit_item_gopay">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_3.png</string>
     <string name="img_url_goto_kyc_status_submission_blacklisted">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_status_submission_blacklisted.png</string>
-    <string name="img_url_goto_kyc_status_submission_pending">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_status_submission_pending.png</string>
+    <string name="img_url_goto_kyc_status_submission_pending">https://assets.tokopedia.net/asts/android/user/kyc/img_url_goto_kyc_status_submission_pending.json</string>
     <string name="img_url_goto_kyc_status_submission_rejected">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_status_submission_rejected.png</string>
-    <string name="img_url_goto_kyc_status_submission_verified">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_status_submission_verified.png</string>
+    <string name="img_url_goto_kyc_status_submission_verified">https://assets.tokopedia.net/asts/android/user/kyc/img_url_goto_kyc_status_submission_verified.json</string>
     <string name="img_url_goto_kyc_benefit_detail_affiliate">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_shopping_affiliate.png</string>
     <string name="img_url_goto_kyc_benefit_detail_adult_content">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_shopping_adult_content.png</string>
     <string name="img_url_goto_kyc_benefit_detail_power_merchant">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_seller_power_merchant.png</string>
