@@ -11,12 +11,7 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
-import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
-import com.tokopedia.tokopedianow.data.createDynamicLegoBannerDataModel
-import com.tokopedia.tokopedianow.data.createHomeLayoutList
-import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
-import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
-import com.tokopedia.tokopedianow.data.createTicker
+import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QUANTITY
@@ -25,7 +20,8 @@ import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -90,7 +86,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given ticker response when calling getTicker after getting getLayoutData then it should add ticker widget on home layout list`() = runBlockingTest {
+    fun `given ticker response when calling getTicker after getting getLayoutData then it should add ticker widget on home layout list`() = runTest {
         val repurchaseChannelId = "1001"
         val repurchaseProductId = "1"
         val repurchaseProductPosition = 1

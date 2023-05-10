@@ -36,18 +36,20 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 700L
     }
 
     @Test
     fun `given mini cart item is null when onCartQuantityChanged should update product quantity`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val productId = "1"
             val quantity = 5
@@ -138,7 +140,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given quantity is 0 when onCartQuantityChanged should update product quantity to 0`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val channelId = "1001"
             val productId = "100"
@@ -240,7 +242,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given mini cart item is NOT null when onCartQuantityChanged should update product quantity`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val channelId = "1001"
             val productId = "100"
@@ -299,7 +301,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when add product recom to cart should track add product recom to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val productId = "2"
             val quantity = 5
@@ -383,7 +385,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when update product recom cart item should track update product recom`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val channelId = "1001"
             val productId = "1"
@@ -493,7 +495,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given update cart error when update product cart item should set miniCartRemove value fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = NullPointerException()
             val warehouseId = "1"
             val channelId = "1001"
@@ -556,7 +558,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when remove product recom from cart should track remove product recom`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val channelId = "1001"
             val productId = "1"
@@ -664,7 +666,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `homeLayoutItemList does NOT contain product recom when remove from cart should NOT track the product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val channelId = "1001"
             val productId = "1"
@@ -696,7 +698,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given delete cart error when remove product from cart should set miniCartRemove fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = NullPointerException()
             val warehouseId = "1"
             val channelId = "1001"
@@ -759,7 +761,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given homeLayoutResponse does NOT contain product recom when add to cart should NOT track add product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val productId = "2"
             val quantity = 5
@@ -802,7 +804,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given product NOT found when add product recom to cart should NOT track add product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val quantity = 5
             val shopId = "5"
@@ -855,7 +857,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given recommendation list is empty when add product recom to cart should NOT track add product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val quantity = 5
             val shopId = "5"
@@ -907,7 +909,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when add repurchase product to cart should track add repurchase product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -989,7 +991,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given product not found when add repurchase product to cart should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -1049,7 +1051,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given layout list does NOT contain repurchase when add product to cart should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val homeLayoutResponse = emptyList<HomeLayoutResponse>()
             val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
@@ -1081,7 +1083,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when add mix left atc product to cart should track add mix left atc product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -1150,7 +1152,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when add mix left atc product to cart should not track add mix left atc product`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -1196,7 +1198,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given product not found when add mix left product to cart should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -1244,7 +1246,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given no product in response grid when add mix left product to cart should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
 
             val homeLayoutResponse = listOf(
@@ -1287,7 +1289,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given layout list does NOT contain mix left when add product to cart should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val homeLayoutResponse = emptyList<HomeLayoutResponse>()
             val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
@@ -1319,7 +1321,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given add to cart error when onCartQuantityChanged should set miniCartAdd value fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = NullPointerException()
             val invalidLayoutType = "random layout type"
             val channelId = "1001"
@@ -1339,7 +1341,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when layout type is NOT valid should NOT track add to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val invalidLayoutType = "random layout type"
             val channelId = "1001"
             val productId = "4"
@@ -1358,7 +1360,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when quatity is zero and minicart is null should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val invalidLayoutType = "random layout type"
             val channelId = "1001"
             val productId = "4"

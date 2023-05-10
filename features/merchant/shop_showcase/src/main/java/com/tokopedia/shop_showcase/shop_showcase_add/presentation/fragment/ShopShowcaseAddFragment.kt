@@ -500,6 +500,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                         showUnifyToaster(responseData.message)
                     }
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -571,6 +574,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     setCurrentlyShowcaseData(showcaseName)
                     updateSelectedProduct(showcaseAddAdapter, ArrayList(it.data))
                     showSelectedProductList()
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

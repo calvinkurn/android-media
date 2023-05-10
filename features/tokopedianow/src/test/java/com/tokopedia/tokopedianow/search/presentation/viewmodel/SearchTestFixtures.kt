@@ -21,6 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -32,6 +33,9 @@ open class SearchTestFixtures {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected val defaultKeyword = "samsung"
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
