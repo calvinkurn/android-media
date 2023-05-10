@@ -105,6 +105,29 @@ class FeedPostImageViewHolder(
             trackerDataModel = trackerMapper.transformImageContentToTrackerModel(data)
 
             with(binding) {
+                if (data.isTopAds) {
+                    postLikeButton.root.hide()
+                    commentButton.hide()
+                } else {
+                    postLikeButton.root.show()
+                    commentButton.show()
+
+                    bindLike(data)
+                    bindComments(data)
+
+                    postLikeButton.likeButton.setOnClickListener {
+                        listener.onLikePostCLicked(
+                            data.id,
+                            data.like.isLiked,
+                            absoluteAdapterPosition,
+                            trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
+                                data
+                            ),
+                            false
+                        )
+                    }
+                }
+
                 val postGestureDetector = GestureDetector(root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
@@ -112,13 +135,15 @@ class FeedPostImageViewHolder(
                         }
 
                         override fun onDoubleTap(e: MotionEvent): Boolean {
-                            if (data.like.isLiked.not()) {
+                            if (data.like.isLiked.not() && !data.isTopAds) {
                                 listener.onLikePostCLicked(
                                     data.id,
                                     data.like.isLiked,
                                     absoluteAdapterPosition,
                                     trackerDataModel
-                                        ?: trackerMapper.transformImageContentToTrackerModel(data),
+                                        ?: trackerMapper.transformImageContentToTrackerModel(
+                                            data
+                                        ),
                                     true
                                 )
                             }
@@ -138,10 +163,8 @@ class FeedPostImageViewHolder(
                 bindImagesContent(data.media)
                 bindIndicators(data.media.size)
                 bindProductTag(data)
-                bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
-                bindComments(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -167,15 +190,6 @@ class FeedPostImageViewHolder(
                         applink = data.applink,
                         weblink = data.weblink,
                         imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
-                }
-                postLikeButton.likeButton.setOnClickListener {
-                    listener.onLikePostCLicked(
-                        data.id,
-                        data.like.isLiked,
-                        absoluteAdapterPosition,
-                        trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data),
-                        false
                     )
                 }
 
