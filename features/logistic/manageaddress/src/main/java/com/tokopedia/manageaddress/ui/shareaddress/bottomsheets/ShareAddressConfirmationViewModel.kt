@@ -27,8 +27,8 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     val toastEvent: LiveData<Toast>
         get() = _toastEvent
 
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean>
+    private val _loading: MutableLiveData<LoadingState> = MutableLiveData(LoadingState.NotLoading)
+    val loading: LiveData<LoadingState>
         get() = _loading
 
     var isApprove = false
@@ -36,19 +36,20 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     fun shareAddress(param: ShareAddressToUserParam) {
         launchCatchError(
             block = {
-                _loading.value = true
+                _loading.value = LoadingState.AgreeLoading
                 val result = shareAddressToUserUseCase(param)
-                _loading.value = false
                 if (result.isSuccessShareAddress) {
                     _toastEvent.value = Toast.Success
                 } else {
                     _toastEvent.value = Toast.Error(result.errorMessage)
                 }
                 ShareAddressAnalytics.directShareAgreeSendAddress(result.isSuccessShareAddress)
+                _loading.value = LoadingState.NotLoading
                 _dismissEvent.call()
             },
             onError = {
-                _loading.value = false
+                _loading.value = LoadingState.NotLoading
+                _dismissEvent.call()
                 _toastEvent.value = Toast.Error(it.message.orEmpty())
                 ShareAddressAnalytics.directShareAgreeSendAddress(false)
             }
@@ -56,36 +57,50 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     }
 
     fun shareAddressFromNotif(param: SelectShareAddressParam) {
-        launchCatchError(block = {
-            _loading.value = true
-            val result = selectShareAddressUseCase(param)
-            _loading.value = false
-            if (result.isSuccess) {
-                _toastEvent.value = Toast.Success
-            } else {
+        launchCatchError(
+            block = {
                 if (param.param.approve) {
-                    _toastEvent.value = Toast.Error(result.errorMessage)
+                    _loading.value = LoadingState.AgreeLoading
+                } else {
+                    _loading.value = LoadingState.DisagreeLoading
                 }
-            }
-            if (param.param.approve) {
-                ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
-            } else {
-                ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
-            }
-            _dismissEvent.call()
-        }, onError = {
-                _loading.value = false
+                val result = selectShareAddressUseCase(param)
+                if (result.isSuccess) {
+                    _toastEvent.value = Toast.Success
+                } else {
+                    if (param.param.approve) {
+                        _toastEvent.value = Toast.Error(result.errorMessage)
+                    }
+                }
+                if (param.param.approve) {
+                    ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
+                } else {
+                    ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
+                }
+                _loading.value = LoadingState.NotLoading
+                _dismissEvent.call()
+            },
+            onError = {
+                _loading.value = LoadingState.NotLoading
                 _toastEvent.value = Toast.Error(it.message.orEmpty())
+                _dismissEvent.call()
                 if (param.param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(false)
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
                 }
-            })
+            }
+        )
     }
 
     sealed interface Toast {
         object Success : Toast
         data class Error(val msg: String) : Toast
+    }
+
+    sealed interface LoadingState {
+        object NotLoading : LoadingState
+        object AgreeLoading : LoadingState
+        object DisagreeLoading : LoadingState
     }
 }

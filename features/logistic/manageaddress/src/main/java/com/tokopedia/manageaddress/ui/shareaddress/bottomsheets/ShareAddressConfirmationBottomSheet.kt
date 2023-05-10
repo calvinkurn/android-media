@@ -76,15 +76,20 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
             mListener?.showToast(isError, msg)
         }
         viewModel.loading.observe(viewLifecycleOwner) {
-            onLoadingShareAddress(it)
-        }
-    }
-
-    private fun onLoadingShareAddress(isShowLoading: Boolean) {
-        if (viewModel.isApprove) {
-            binding.btnAgree.isLoading = isShowLoading
-        } else {
-            binding.btnDisagree.isLoading = isShowLoading
+            when (it) {
+                ShareAddressConfirmationViewModel.LoadingState.AgreeLoading -> {
+                    binding.btnAgree.isLoading = true
+                    binding.btnDisagree.isLoading = false
+                }
+                ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading -> {
+                    binding.btnAgree.isLoading = false
+                    binding.btnDisagree.isLoading = true
+                }
+                ShareAddressConfirmationViewModel.LoadingState.NotLoading -> {
+                    binding.btnAgree.isLoading = false
+                    binding.btnDisagree.isLoading = false
+                }
+            }
         }
     }
 
