@@ -12,32 +12,12 @@ kapt {
 repositories {
     google()
     mavenCentral()
-    maven {
-        credentials {
-            username = "tiket.dev"
-            password = "bE#Q!p3&Lqb=od"
-        }
-        url = 'https://repo.indodana.com/repository/indodana-maven-releases'
-        authentication {
-            basic(BasicAuthentication)
-        }
-    }
 }
 
 buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            credentials {
-                username = "tiket.dev"
-                password = "bE#Q!p3&Lqb=od"
-            }
-            url = 'https://repo.indodana.com/repository/indodana-maven-releases'
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
     }
 }
 
@@ -57,8 +37,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    implementation 'com.indodana:indodana-whitelabel-sdk-lite:0.5.12'
 }
 
 project.ext {

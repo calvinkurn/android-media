@@ -16,24 +16,19 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.indodana.whitelabelsdk.camera.CameraController
-import com.indodana.whitelabelsdk.camera.WhitelabelCameraView
-import com.indodana.whitelabelsdk.webview.jsinterface.WhitelabelCameraJsInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
+import org.json.JSONObject
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
 
 class IndodanaActivity : AppCompatActivity() {
 
     private lateinit var webview: WebView
-    private lateinit var cameraview: WhitelabelCameraView
-    private var cameraController: CameraController? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +36,6 @@ class IndodanaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_indodana)
 
         webview = findViewById(R.id.standardWebview)
-        cameraview = findViewById(R.id.whitelabelCameraView)
 
         val webSettings: WebSettings = webview.settings
         webSettings.javaScriptEnabled = true
@@ -61,24 +55,15 @@ class IndodanaActivity : AppCompatActivity() {
         }
 
         val url = intent.data?.getQueryParameter("url")
-//            ?: "https://csb-ioo7i.netlify.app/"
             ?: "https://sandbox01.indodana.com/borrower/credit-limit/apply/sign-in?campaignid=%7Btokopedia%7C%7Ccustomized%7D&formVersion=V4&network=tokopedia&phoneNumber=%7BphoneNumber%7D&uiVersion=V2&utm_campaign=%7Btokopedia%7C%7Ccustomized%7D&utm_medium=webform&utm_source=tokopedia"
 
         webview.loadUrl(url)
 
-        webview.addJavascriptInterface(
-            WhitelabelCameraJsInterface(
-                WhitelabelCameraJsInterface.OpenCamera { docType: String?, lang: String?, _: String? ->
-                    this.takePictureFromCamera(docType, lang)
-                }
-            ),
-            "CameraPicker"
-        )
 
-//        webview.addJavascriptInterface(
-//            WebAppInterface { this.takePictureFromCamera("", "") },
-//            "CameraPicker"
-//        )
+        webview.addJavascriptInterface(
+            WebAppInterface { docType -> this.takePictureFromCamera(docType, "") },
+            CAMERA_PICKER
+        )
 
         requestPermission()
     }
@@ -119,28 +104,6 @@ class IndodanaActivity : AppCompatActivity() {
 
         val intent = RouteManager.getIntent(this, applink)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
-//        runOnUiThread {
-//            if (cameraController == null) {
-//                cameraController = CameraController(
-//                    this,
-//                    this,
-//                    getRealScreenSize(),
-//                    cameraview,
-//                    docType
-//                ) { docsTyp, imageBase64 ->
-//                    finishTakePicture(docsTyp, imageBase64)
-//                }
-//            }
-//            cameraview.initialize(docType, lang, "", {
-//                cameraController?.takePicture()
-//            }, { toggled: Boolean ->
-//                cameraController?.flashToggled(toggled)
-//            }, {
-//                dismissTakeImageView()
-//            })
-//            cameraview.visibility = View.VISIBLE
-//            cameraController?.startTakingPicture()
-//        }
     }
 
     // Handler to inject image back to webview
@@ -158,17 +121,9 @@ class IndodanaActivity : AppCompatActivity() {
     }
 
     private fun executeJs(script: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webview.evaluateJavascript(
-                script
-            ) { value: String -> Log.i("executeJS", "result: $value") }
-        } else {
-            try {
-                webview.loadUrl("javascript:" + URLEncoder.encode(script, "UTF-8"))
-            } catch (ex: UnsupportedEncodingException) {
-                ex.printStackTrace()
-            }
-        }
+        webview.evaluateJavascript(
+            script
+        ) { value: String -> Timber.e("executeJS result: $value") }
     }
 
     @SuppressLint("PII Data Exposure")
@@ -206,15 +161,31 @@ class IndodanaActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 123
+        private const val CAMERA_PICKER = "CameraPicker"
     }
 }
 
-class WebAppInterface(private val openCamera: () -> Unit) {
+class WebAppInterface(private val openCamera: (docType: String?) -> Unit) {
 
-    /** Show a toast from the web page  */
     @JavascriptInterface
     fun takePicture(json: String) {
-        val a = json
-        openCamera.invoke()
+        var finalJson = json
+        if (json == UNDEFINED) {
+            finalJson = DEFAULT_JSON
+        }
+
+        try {
+            val jsonObject = JSONObject(finalJson)
+
+            openCamera.invoke(jsonObject.getString(DOCUMENT))
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    companion object {
+        private const val UNDEFINED = "undefined"
+        private const val DEFAULT_JSON = "{\"document\":\"selfie\",\"lang\":\"en\"}"
+        private const val DOCUMENT = "document"
     }
 }

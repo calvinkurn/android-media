@@ -84,16 +84,6 @@ buildscript {
         maven {
             url 'https://www.jitpack.io'
         }
-        maven {
-            credentials {
-                username = "tiket.dev"
-                password = "bE#Q!p3&Lqb=od"
-            }
-            url = 'https://repo.indodana.com/repository/indodana-maven-releases'
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics

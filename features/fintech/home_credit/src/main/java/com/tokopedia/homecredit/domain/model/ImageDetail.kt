@@ -8,5 +8,5 @@ import kotlinx.android.parcel.Parcelize
 data class ImageDetail(
     var bitMapWidth: Int,
     var bitmapHeight: Int,
-    val imagePath: String?,
+    val imagePath: String?
 ) : Parcelable
