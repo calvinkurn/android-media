@@ -14,6 +14,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.animation.addListener
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
@@ -47,11 +48,18 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private const val MARGIN_BOTTOM_ICON_ONLY = 4
         private const val BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON = 6
         private const val BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY = 16
+        private const val BACKGROUND_DRAWABLE_STROKE_WIDTH = 1
         private const val PROPERTY_NAME_ALPHA = "alpha"
         private const val PROPERTY_NAME_MAX_WIDTH = "maxWidth"
     }
 
-    private val binding = AutoCollapseLabelBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = AutoCollapseLabelBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    ).apply {
+        root.background = createBackgroundDrawable()
+    }
     private val animator = ViewAnimator()
     private var canShow: Boolean = false
 
@@ -91,6 +99,16 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
     private fun collapsed(): Boolean {
         return binding.tvAutoCollapseLabel.ellipsize == null
+    }
+
+    private fun createBackgroundDrawable() = GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        cornerRadius = BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
+        setStroke(
+            BACKGROUND_DRAWABLE_STROKE_WIDTH.toPx(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        )
     }
 
     inner class ViewAnimator {
