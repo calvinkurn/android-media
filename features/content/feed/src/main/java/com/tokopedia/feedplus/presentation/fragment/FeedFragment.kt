@@ -725,9 +725,20 @@ class FeedFragment :
                 is Success -> {
                     hideLoading()
                     if (it.data.items.isEmpty()) {
-                        adapter?.setElements(listOf(FeedNoContentModel()))
+                        context?.let { ctx ->
+                            adapter?.setElements(
+                                listOf(
+                                    FeedNoContentModel.getNoContentInstance(ctx)
+                                )
+                            )
+                        }
                     } else {
                         adapter?.updateList(it.data.items)
+                        context?.let { ctx ->
+                            if (feedPostViewModel.shouldShowNoMoreContent) {
+                                adapter?.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
+                            }
+                        }
                         feedPostViewModel.fetchTopAdsData()
                         if (it.data.pagination.totalData == it.data.items.size) {
                             view?.post { notifyItemSelected(0) }

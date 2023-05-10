@@ -104,6 +104,10 @@ dari Feed.</string>
     <string name="feed_label_no_content_subtitle">Cek konten menarik di Untuk Kamu. Siapa tahu ada kreator keren yang bisa kamu follow.</string>
     <string name="feed_label_no_content_button">Lihat Konten Lainnya</string>
 
+    <!-- No More Content -->
+    <string name="feed_label_no_more_content_title">Kamu sudah lihat semua konten</string>
+    <string name="feed_label_no_more_content_subtitle">Tenang, masih banyak konten menarik lainnya di Untuk Kamu</string>
+
     <!--  Error Load  -->
     <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
     <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>

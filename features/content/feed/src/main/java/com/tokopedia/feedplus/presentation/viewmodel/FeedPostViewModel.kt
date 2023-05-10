@@ -94,11 +94,16 @@ class FeedPostViewModel @Inject constructor(
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
 
+    private var _shouldShowNoMoreContent = false
+    val shouldShowNoMoreContent: Boolean
+        get() = _shouldShowNoMoreContent
+
     fun fetchFeedPosts(
         source: String,
         isNewData: Boolean = false,
         postId: String? = null
     ) {
+        _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
 
         viewModelScope.launch {
@@ -156,6 +161,10 @@ class FeedPostViewModel @Inject constructor(
                                 else -> it
                             }
                         }.toList()
+
+                        _shouldShowNoMoreContent =
+                            _feedHome.value?.items.orEmpty().isNotEmpty() &&
+                                items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
@@ -495,6 +504,8 @@ class FeedPostViewModel @Inject constructor(
     companion object {
         private const val SHOP = "toko"
         private const val USER = "akun"
+
+        private const val FOLLOWING = "following"
 
         private const val FOLLOWING_TYPE = "type"
     }
