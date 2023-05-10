@@ -12,14 +12,15 @@ import io.mockk.just
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class LoadAddOnTest: BaseAddOnTest() {
 
     @Test
-    fun `WHEN load add on data success and load add on saved state success THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data success and load add on saved state success THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         val addOnSuccessResponse = DataProvider.provideLoadAddOnDataSuccess()
@@ -36,7 +37,7 @@ class LoadAddOnTest: BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -49,7 +50,7 @@ class LoadAddOnTest: BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN load add on data got error exception THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data got error exception THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         coEvery { getAddOnByProductUseCase.setParams(any()) } just Runs
@@ -59,7 +60,7 @@ class LoadAddOnTest: BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -72,7 +73,7 @@ class LoadAddOnTest: BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN load add on data got error message THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data got error message THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         val addOnErrorResponse = DataProvider.provideLoadAddOnDataError()
@@ -88,7 +89,7 @@ class LoadAddOnTest: BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -101,7 +102,7 @@ class LoadAddOnTest: BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN load add on data success but load add on saved state got error message THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data success but load add on saved state got error message THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         val addOnSuccessResponse = DataProvider.provideLoadAddOnDataSuccess()
@@ -118,7 +119,7 @@ class LoadAddOnTest: BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 

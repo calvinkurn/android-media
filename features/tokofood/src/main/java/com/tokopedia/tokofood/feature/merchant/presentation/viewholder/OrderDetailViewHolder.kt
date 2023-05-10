@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText

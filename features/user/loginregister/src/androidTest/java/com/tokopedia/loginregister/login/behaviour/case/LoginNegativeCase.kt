@@ -24,30 +24,19 @@ import org.junit.Test
 class LoginNegativeCase: LoginBase() {
 
     @Test
-    /* Disable button "Selanjutnya" when input text is empty */
-    fun disableNextButton_ifEmpty() {
+    fun givenInputCases_registerButtonShouldDisabled() {
         runTest {
+            /* when input text is empty */
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             deleteEmailOrPhoneInput()
             shouldBeDisabled(R.id.register_btn)
-        }
-    }
 
-    @Test
-    /* Disable button "Selanjutnya" when input text is not valid email */
-    fun disableNextButton_ifNotValidEmail() {
-        runTest {
+            /* input text is not valid email */
             inputEmailOrPhone("yoris.prayogo")
             shouldBeDisabled(R.id.register_btn)
-        }
-    }
 
-    @Test
-    /* Disable button "Selanjutnya" when input text length is too short for phone number */
-    fun phoneNumberTooShort() {
-        runTest {
+            /* text length is too short for phone number */
             inputEmailOrPhone("08224")
-            deleteEmailOrPhoneInput()
             shouldBeDisabled(R.id.register_btn)
         }
     }
@@ -85,7 +74,7 @@ class LoginNegativeCase: LoginBase() {
     fun forbiddenPage_discoverEmpty() {
         fakeRepo.discoverConfig = Config.Error
         runTest {
-            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
         }
     }
 

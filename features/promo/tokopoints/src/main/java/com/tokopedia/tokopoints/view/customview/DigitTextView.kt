@@ -2,8 +2,8 @@ package com.tokopedia.tokopoints.view.customview
 
 import android.animation.Animator
 import android.content.Context
-import android.view.LayoutInflater
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.tokopoints.R
@@ -29,7 +29,7 @@ class DigitTextView : FrameLayout {
         nextTextView?.translationY = height.toFloat()
     }
 
-    fun setValue(oldValue:String, desiredValue: String ) {
+    fun setValue(oldValue: String, desiredValue: String) {
         if (currentTextView?.text == null || currentTextView?.text?.isEmpty() == true) {
             currentTextView?.text = oldValue
         }
