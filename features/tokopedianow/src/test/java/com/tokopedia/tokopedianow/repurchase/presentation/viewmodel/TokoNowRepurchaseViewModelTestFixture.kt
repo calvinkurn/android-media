@@ -17,6 +17,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -84,6 +85,9 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
+    lateinit var getTargetedTicker: GetTargetedTickerUseCase
+
+    @RelaxedMockK
     lateinit var addressData: TokoNowLocalAddress
 
     @RelaxedMockK
@@ -113,6 +117,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
             updateCartUseCase,
             deleteCartUseCase,
             affiliateService,
+            getTargetedTicker,
             addressData,
             coroutineTestRule.dispatchers
         )

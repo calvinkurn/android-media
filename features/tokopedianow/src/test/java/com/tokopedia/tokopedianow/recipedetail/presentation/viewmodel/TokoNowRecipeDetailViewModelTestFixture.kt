@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
@@ -44,6 +45,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     private lateinit var getAddressUseCase: GetChosenAddressWarehouseLocUseCase
     private lateinit var addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase
     private lateinit var removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var addToCartUseCase: AddToCartUseCase
@@ -60,6 +62,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
         getAddressUseCase = mockk(relaxed = true)
         addRecipeBookmarkUseCase = mockk(relaxed = true)
         removeRecipeBookmarkUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         addToCartUseCase = mockk(relaxed = true)
@@ -78,8 +81,9 @@ open class TokoNowRecipeDetailViewModelTestFixture {
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
-            getMiniCartUseCase,
+            getTargetedTickerUseCase,
             affiliateService,
+            getMiniCartUseCase,
             coroutineTestRule.dispatchers
         )
     }

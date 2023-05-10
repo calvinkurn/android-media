@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -92,6 +93,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ): BaseTokoNowViewModel(
@@ -100,6 +102,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     deleteCartUseCase,
     getMiniCartUseCase,
     affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
