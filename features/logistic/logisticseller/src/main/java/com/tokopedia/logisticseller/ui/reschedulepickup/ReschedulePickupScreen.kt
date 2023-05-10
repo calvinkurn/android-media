@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -80,6 +81,7 @@ fun ReschedulePickupScreen(
                     sheetState.show()
                 }
             } else {
+                setRescheduleBottomSheetState(bottomSheetState)
                 sheetState.hide()
             }
         }
@@ -91,8 +93,9 @@ fun ReschedulePickupScreen(
             showBackIcon = true,
             onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
         )
-    }) {
+    }) { paddingValues ->
         ModalBottomSheetLayout(
+            modifier = Modifier.padding(paddingValues),
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
             sheetContent = {
@@ -168,8 +171,9 @@ private fun ReschedulePickupScreenLayout(
         }
         NestButton(
             modifier = Modifier
+                .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()
-                .padding(16.dp),
+                .defaultMinSize(minHeight = 48.dp),
             text = stringResource(id = R.string.title_button_reschedule_pickup),
             enabled = state.valid
         ) {
