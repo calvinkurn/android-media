@@ -174,7 +174,7 @@ internal fun HeaderLocationContent(
         )
 
         Icon(
-            painter = painterResource(id = R.drawable.ic_chevron_down),
+            painter = painterResource(id = R.drawable.iconunify_chevron_down_non_padding),
             tint = iconColor,
             contentDescription = "chevron_down"
         )
