@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -866,10 +867,7 @@ class ChatbotViewModel @Inject constructor(
                     }
             },
             onError = {
-                ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it,
-                    pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }
@@ -946,10 +944,7 @@ class ChatbotViewModel @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Timber.d("Socket Reconnecting")
                 }
-                ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it,
-                    pageSourceAccess
-                )
+                FirebaseCrashlytics.getInstance().recordException(it)
             }
         )
     }

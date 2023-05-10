@@ -317,7 +317,7 @@ class ChatbotFragment2 :
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
 
     private var pageSource: String = ""
-    private var showAddAttachmentMenu: Boolean = false
+    private var showAddAttachmentMenu: Boolean = true
     private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
 

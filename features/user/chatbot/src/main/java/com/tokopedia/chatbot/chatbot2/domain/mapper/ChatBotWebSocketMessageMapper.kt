@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.domain.mapper
 
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.NonNull
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -351,7 +350,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 QuickReplyAttachmentAttributes::class.java
             )
 
-        Log.d("FATAL", "convertToChatActionSelectionBubbleModel: Converting to Ui Model")
         return ChatActionSelectionBubbleUiModel(
             pojo.msgId.toString(),
             pojo.fromUid,

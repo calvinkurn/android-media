@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -84,7 +83,6 @@ class ChatbotExoPlayer(val context: Context, var videoControl: ChatbotVideoContr
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
-                Log.d("FATAL", "onPlayerError: $error")
                 videoStateListener?.onVideoPlayerError(error)
             }
         })
@@ -141,11 +139,6 @@ class ChatbotExoPlayer(val context: Context, var videoControl: ChatbotVideoContr
         val dataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
 
-//        val dataSourceFactory = CacheDataSourceFactory(
-//            MediaPlayerCache.getInstance(context),
-//            mDataSourceFactory
-//        )
-
         val hlsMediaSourceInputStream = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
         val listener = object : DefaultMediaSourceEventListener() {
             override fun onLoadCompleted(
@@ -154,9 +147,6 @@ class ChatbotExoPlayer(val context: Context, var videoControl: ChatbotVideoContr
                 loadEventInfo: MediaSourceEventListener.LoadEventInfo?,
                 mediaLoadData: MediaSourceEventListener.MediaLoadData?
             ) {
-                Log.d("FATAL", "onLoadCompleted: $mediaPeriodId")
-                Log.d("FATAL", "onLoadCompleted: $loadEventInfo")
-                Log.d("FATAL", "onLoadCompleted: $mediaLoadData")
             }
         }
         hlsMediaSourceInputStream.addEventListener(Handler(Looper.getMainLooper()), listener)

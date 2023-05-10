@@ -16,17 +16,19 @@ internal constructor() {
 
         fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleUiModel): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
-            invoiceLinkAttributePojo.code = selectedInvoice.code
-            invoiceLinkAttributePojo.createTime = selectedInvoice.createdTime
-            invoiceLinkAttributePojo.description = selectedInvoice.description
-            invoiceLinkAttributePojo.hrefUrl = selectedInvoice.url
-            invoiceLinkAttributePojo.id = selectedInvoice.id
-            invoiceLinkAttributePojo.imageUrl = selectedInvoice.imageUrl
-            invoiceLinkAttributePojo.status = selectedInvoice.status
-            invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
-            invoiceLinkAttributePojo.title = selectedInvoice.title
-            invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount
-            invoiceLinkAttributePojo.color = selectedInvoice.color
+            invoiceLinkAttributePojo.apply {
+                code = selectedInvoice.code
+                createTime = selectedInvoice.createdTime
+                description = selectedInvoice.description
+                hrefUrl = selectedInvoice.url
+                id = selectedInvoice.id
+                imageUrl = selectedInvoice.imageUrl
+                status = selectedInvoice.status
+                statusId = selectedInvoice.statusId
+                title = selectedInvoice.title
+                totalAmount = selectedInvoice.amount
+                color = selectedInvoice.color
+            }
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
@@ -37,17 +39,19 @@ internal constructor() {
 
         fun convertInvoiceToDomainInvoiceModel(selectedInvoice: SelectedInvoice): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
-            invoiceLinkAttributePojo.code = selectedInvoice.invoiceNo.toString()
-            invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
-            invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
-            invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
-            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId ?: 0
-            invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
-            invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
-            invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
-            invoiceLinkAttributePojo.title = selectedInvoice.topProductName.toString()
-            invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount.toString()
-            invoiceLinkAttributePojo.color = selectedInvoice.color.toString()
+            invoiceLinkAttributePojo.apply {
+                code = selectedInvoice.invoiceNo.toString()
+                createTime = selectedInvoice.date.toString()
+                description = selectedInvoice.description.toString()
+                hrefUrl = selectedInvoice.invoiceUrl.toString()
+                id = selectedInvoice.invoiceId ?: 0
+                imageUrl = selectedInvoice.topProductImage.toString()
+                status = selectedInvoice.status.toString()
+                statusId = selectedInvoice.statusId
+                title = selectedInvoice.topProductName.toString()
+                totalAmount = selectedInvoice.amount.toString()
+                color = selectedInvoice.color.toString()
+            }
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr

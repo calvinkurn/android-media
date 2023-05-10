@@ -13,14 +13,13 @@ import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.usecase.GetFilteredIn
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.model.EmptyTransactionInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.data.invoicelist.api.GetInvoiceListPojo
+import com.tokopedia.imageassets.TokopediaImageUrl.INVOICE_EMPTY_URL
+import com.tokopedia.imageassets.TokopediaImageUrl.INVOICE_ERROR_URL
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
-private const val INVOICE_ERROR_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_error.png"
-private const val INVOICE_EMPTY_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_empty.png"
 
 class TransactionInvoiceListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
