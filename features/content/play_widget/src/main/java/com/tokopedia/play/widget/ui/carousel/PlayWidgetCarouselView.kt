@@ -84,15 +84,7 @@ class PlayWidgetCarouselView : ConstraintLayout {
         val prevModel = mModel
         mModel = data
 
-        setupHeader(data)
         setupChannels(data)
-    }
-
-    private fun setupHeader(data: PlayWidgetUiModel) {
-        binding.tvTitle.text = data.title
-        binding.iconChevron.setOnClickListener {
-            mListener?.onChevronClicked(this)
-        }
     }
 
     private fun setupChannels(data: PlayWidgetUiModel) {
