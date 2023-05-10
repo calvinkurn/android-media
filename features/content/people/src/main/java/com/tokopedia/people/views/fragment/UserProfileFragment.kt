@@ -92,7 +92,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.URLEncoder
