@@ -35,10 +35,11 @@ class AffiliateDiscoBannerVH(
                 itemID = element?.article?.pageId.toString(),
                 itemName = element?.article?.title.orEmpty(),
                 itemImage = element?.article?.imageBanner.orEmpty(),
-                itemURL = element?.article?.appUrl.orEmpty(),
+                itemURL = element?.article?.url.orEmpty(),
                 commison = element?.article?.commission?.percentage.toString(),
                 type = PAGE_TYPE_CAMPAIGN,
                 position = bindingAdapterPosition,
+                appUrl = element?.article?.appUrl.orEmpty(),
                 ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
                     true,
                     "",
