@@ -1,23 +1,23 @@
-package com.tokopedia.seller.menu.common.constant
+package com.tokopedia.shopadmin.common.util
 
 import androidx.annotation.StringDef
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
-        AdminFeature.SALDO,
-        AdminFeature.NEW_ORDER,
-        AdminFeature.READY_TO_SHIP_ORDER,
-        AdminFeature.ORDER_HISTORY,
-        AdminFeature.MANAGE_PRODUCT,
-        AdminFeature.ADD_PRODUCT,
-        AdminFeature.REVIEW,
-        AdminFeature.DISCUSSION,
-        AdminFeature.COMPLAINT,
-        AdminFeature.MANAGE_SHOP,
-        AdminFeature.STATISTIC,
-        AdminFeature.ADS_AND_PROMOTION,
-        AdminFeature.SHOP_SCORE
+    AdminFeature.SALDO,
+    AdminFeature.NEW_ORDER,
+    AdminFeature.READY_TO_SHIP_ORDER,
+    AdminFeature.ORDER_HISTORY,
+    AdminFeature.MANAGE_PRODUCT,
+    AdminFeature.ADD_PRODUCT,
+    AdminFeature.REVIEW,
+    AdminFeature.DISCUSSION,
+    AdminFeature.COMPLAINT,
+    AdminFeature.MANAGE_SHOP,
+    AdminFeature.STATISTIC,
+    AdminFeature.ADS_AND_PROMOTION,
+    AdminFeature.SHOP_SCORE
 )
 annotation class AdminFeature {
     companion object {

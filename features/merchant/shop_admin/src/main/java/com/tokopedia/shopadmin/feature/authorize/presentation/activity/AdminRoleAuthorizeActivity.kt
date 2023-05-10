@@ -1,24 +1,19 @@
-package com.tokopedia.seller.menu.presentation.activity
+package com.tokopedia.shopadmin.feature.authorize.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.presentation.fragment.AdminRoleAuthorizeFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.shopadmin.common.utils.ShopAdminComponentInstance
+import com.tokopedia.shopadmin.feature.authorize.di.component.AdminRoleAuthorizeComponent
+import com.tokopedia.shopadmin.feature.authorize.di.component.DaggerAdminRoleAuthorizeComponent
+import com.tokopedia.shopadmin.feature.authorize.presentation.fragment.AdminRoleAuthorizeFragment
 
-class AdminRoleAuthorizeActivity: BaseSimpleActivity() {
+class AdminRoleAuthorizeActivity: BaseSimpleActivity(), HasComponent<AdminRoleAuthorizeComponent> {
 
     companion object {
         internal const val KEY_ADMIN_FEATURE = "admin_feature"
-
-        @JvmStatic
-        fun createIntent(context: Context, @AdminFeature adminFeature: String): Intent =
-                Intent(context, AdminRoleAuthorizeActivity::class.java)
-                        .putExtra(KEY_ADMIN_FEATURE, adminFeature)
-
     }
 
     // Manually get feature from manual intent or applink (tokopedia-android-internal://sellerapp/admin-authorize/{feature}/)
@@ -33,5 +28,12 @@ class AdminRoleAuthorizeActivity: BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment = AdminRoleAuthorizeFragment.createInstance(adminFeature)
+
+    override fun getComponent(): AdminRoleAuthorizeComponent {
+        return DaggerAdminRoleAuthorizeComponent
+            .builder()
+            .shopAdminComponent(ShopAdminComponentInstance.getShopAdminComponent(application))
+            .build()
+    }
 
 }

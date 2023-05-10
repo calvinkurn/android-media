@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.presentation.fragment
+package com.tokopedia.shopadmin.feature.authorize.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,20 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.seller.menu.R
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
-import com.tokopedia.seller.menu.databinding.FragmentAdminRoleAuthorizeBinding
-import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
-import com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
-import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
+import com.tokopedia.shopadmin.R
+import com.tokopedia.shopadmin.common.util.AdminFeature
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
+import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
+import com.tokopedia.shopadmin.databinding.FragmentAdminRoleAuthorizeBinding
+import com.tokopedia.shopadmin.feature.authorize.di.component.AdminRoleAuthorizeComponent
+import com.tokopedia.shopadmin.feature.authorize.presentation.activity.AdminRoleAuthorizeActivity
+import com.tokopedia.shopadmin.feature.authorize.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +32,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         @JvmStatic
         fun createInstance(adminFeature: String): AdminRoleAuthorizeFragment = AdminRoleAuthorizeFragment().apply {
             Bundle().apply {
-                putString(com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE, adminFeature)
+                putString(AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE, adminFeature)
             }.let {
                 arguments = it
             }
@@ -50,7 +50,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private val adminFeature: String by lazy {
-        arguments?.getString(com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE).orEmpty()
+        arguments?.getString(AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE).orEmpty()
     }
 
     private var binding by autoClearedNullable<FragmentAdminRoleAuthorizeBinding>()
@@ -72,10 +72,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerSellerMenuComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        getComponent(AdminRoleAuthorizeComponent::class.java).inject(this)
     }
 
     private fun View.setupAdminView() {
@@ -114,7 +111,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    SellerMenuErrorHandler.logExceptionToCrashlytics(result.throwable, SellerMenuErrorHandler.ERROR_GET_ADMIN_ACCESS_ROLE)
+                    ShopAdminErrorLogger.logToCrashlytic(ShopAdminErrorLogger.ERROR_GET_ADMIN_ACCESS_ROLE, result.throwable)
                     adminErrorView?.show(false)
                 }
             }
