@@ -62,6 +62,8 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessa
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
@@ -104,6 +106,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsGeneralAnalytic(analytic: PlayShortsGeneralAnalyticImpl): PlayShortsGeneralAnalytic
 
     @Binds
     @PlayShortsScope
