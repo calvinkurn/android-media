@@ -63,6 +63,9 @@ class VideoCompressionRepositoryImpl @Inject constructor(
             val generateVideoSize = generateVideoSize(videoOriginalInfo, resolution)
             val cacheFile = compressedVideoPath(originalPath)
 
+            // get minimum bitrate
+            val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate)
+
             val compression = Compressor
                 .compressVideo(
                     index = 0,
@@ -71,7 +74,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                     streamableFile = null,
                     destination = cacheFile.path,
                     configuration = Configuration(
-                        videoBitrateInMbps = param.bitrate / 1000000,
+                        videoBitrateInMbps = mBitrate / 1_000_000,
                         videoHeight = generateVideoSize.height.toDouble(),
                         videoWidth = generateVideoSize.width.toDouble()
                     ),

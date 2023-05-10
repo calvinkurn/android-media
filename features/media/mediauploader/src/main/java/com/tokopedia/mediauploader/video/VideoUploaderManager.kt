@@ -1,5 +1,6 @@
 package com.tokopedia.mediauploader.video
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
@@ -8,6 +9,7 @@ import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.mbToBytes
+import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
@@ -41,21 +43,13 @@ class VideoUploaderManager @Inject constructor(
         policyManager.set(policy)
 
         // compress video if needed
-        val filePath = if (shouldCompress) {
-            val param = VideoCompressionParam(
-                sourceId = sourceId,
-                videoPath = file.path,
-                bitrate = 1_000_000,
-                resolution = 540
-            )
-
-            videoCompression.progressUploader = loader
-            videoCompression(param)
-        } else {
-            file.path
-        }
-
-        val compressedFile = File(filePath)
+        val filePath = onVideoCompression(
+            originalFile = file,
+            sourceId = sourceId,
+            shouldCompress = shouldCompress,
+            policy = policy.videoPolicy,
+            loader = loader
+        )
 
         // return the upload result
         return policy.videoPolicy?.let { videoPolicy ->
@@ -63,33 +57,33 @@ class VideoUploaderManager @Inject constructor(
             val maxFileSize = videoPolicy.maxFileSize
 
             when {
-                !compressedFile.exists() -> {
+                !filePath.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-                compressedFile.isMaxFileSize(maxFileSize) -> {
+                filePath.isMaxFileSize(maxFileSize) -> {
                     UploadResult.Error(maxFileSizeMessage(maxFileSize))
                 }
-                !allowedExt(compressedFile.path, videoPolicy.extension) -> {
+                !allowedExt(filePath.path, videoPolicy.extension) -> {
                     UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
                 }
                 else -> {
                     val startUploadTime = System.currentTimeMillis()
-                    val cacheResult = compressionCacheManager.get(sourceId, compressedFile.path)
+                    val cacheResult = compressionCacheManager.get(sourceId, filePath.path)
 
-                    isSimpleUpload = compressedFile.length() <= maxSizeOfSimpleUpload.mbToBytes()
+                    isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload.mbToBytes()
                     setProgressUploader(loader)
 
                     if (!isSimpleUpload) {
-                        largeUploaderManager(compressedFile, sourceId, withTranscode).also {
+                        largeUploaderManager(filePath, sourceId, withTranscode).also {
                             val endUploadTime = System.currentTimeMillis()
-                            Timber.d("Upload time: (${file.name}) | compression file-name: ${File(filePath).name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
-                            Timber.d("Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
+                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress file-name: ${filePath.name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
+                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
                         }
                     } else {
-                        simpleUploaderManager(compressedFile, sourceId, withTranscode).also {
+                        simpleUploaderManager(filePath, sourceId, withTranscode).also {
                             val endUploadTime = System.currentTimeMillis()
-                            Timber.d("Upload time: (${file.name}) | compression file-name: ${File(filePath).name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
-                            Timber.d("Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
+                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress file-name: ${filePath.name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
+                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
                         }
                     }
                 }
@@ -110,6 +104,43 @@ class VideoUploaderManager @Inject constructor(
             simpleUploaderManager.setProgressCallback(progress)
         } else {
             largeUploaderManager.setProgressCallback(progress)
+        }
+    }
+
+    private suspend fun onVideoCompression(
+        sourceId: String,
+        originalFile: File,
+        shouldCompress: Boolean,
+        policy: VideoPolicy?,
+        loader: ProgressUploader?
+    ): File {
+        // check if the policy exist, otherwise return the original file path
+        val compressionPolicy = policy?.videoCompression ?: return originalFile
+
+        // the toggle comes from policy
+        val isCompressionEnabled = compressionPolicy.isCompressionEnabled
+
+        // remote config
+        val isCompressionRemoteConfigEnabled = true
+
+        return if (shouldCompress && isCompressionEnabled && isCompressionRemoteConfigEnabled) {
+            val originalFileSizeInMb = originalFile.length() / (1024 * 1024)
+
+            if (originalFileSizeInMb < compressionPolicy.thresholdInMb.orZero()) {
+                return originalFile
+            }
+
+            val param = VideoCompressionParam(
+                sourceId = sourceId,
+                videoPath = originalFile.path,
+                bitrate = compressionPolicy.maxBitrateBps,
+                resolution = compressionPolicy.maxResolution
+            )
+
+            videoCompression.progressUploader = loader
+            File(videoCompression(param))
+        } else {
+            originalFile
         }
     }
 
