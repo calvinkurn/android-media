@@ -59,7 +59,7 @@ class ManageAddressRobot {
         waitForData()
     }
 
-    private fun waitForData(millis: Long = 2000L) {
+    private fun waitForData(millis: Long = 1000L) {
         Thread.sleep(millis)
     }
 
