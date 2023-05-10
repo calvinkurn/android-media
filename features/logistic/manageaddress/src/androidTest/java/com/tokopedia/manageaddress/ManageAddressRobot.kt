@@ -26,7 +26,26 @@ class ManageAddressRobot {
 
     fun selectItemAt(position: Int) {
         onView(withId(R.id.address_list))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
+    }
+
+    fun clickShareIconOnPosition(position: Int) {
+        onView(RecyclerViewMatcher(R.id.address_list).atPositionOnView(position, R.id.icon_share))
+            .perform(click())
+    }
+
+    fun typeEmailThenSubmit(s: String) {
+        onView(withId(R.id.text_field_input))
+            .perform(typeText(s), closeSoftKeyboard())
+
+        onView(withId(R.id.btn_share))
+            .perform(click())
+    }
+
+    fun clickAgreeButton() {
+        onView(withId(R.id.btn_agree))
+            .check(matches(isDisplayed()))
+            .perform(click())
     }
 
     fun selectAddress() {
@@ -52,6 +71,10 @@ class ResultRobot {
         dataKey?.let {
             assertThat(activityRule.activityResult, hasResultData(hasExtraWithKey(it)))
         }
+    }
+
+    fun hasDisplayedText(sId: Int) {
+        onView(withText(sId)).check(matches(isDisplayed()))
     }
 
     fun assertGlobalErrorNoInternetConnectionShown() {

@@ -67,6 +67,19 @@ class ManageAddressTest {
     }
 
     @Test
+    fun shareAddressTest() {
+        manageAddress {
+            val i = Intent()
+            launchWithParam(mActivityTestRule, i)
+            clickShareIconOnPosition(0)
+            typeEmailThenSubmit("0812345678")
+            clickAgreeButton()
+        } submit {
+            hasDisplayedText(R.string.success_share_address)
+        }
+    }
+
+    @Test
     fun givenUnknownHostExceptionResponseShowGlobalError() {
         fakeGql.returnException(UnknownHostException("gql.tokopedia.com"))
         val i = Intent()

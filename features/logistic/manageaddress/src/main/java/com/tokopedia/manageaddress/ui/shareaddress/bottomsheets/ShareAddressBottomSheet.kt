@@ -24,6 +24,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import timber.log.Timber
 import javax.inject.Inject
 
 class ShareAddressBottomSheet : BottomSheetUnify() {
@@ -122,6 +123,7 @@ class ShareAddressBottomSheet : BottomSheetUnify() {
         setRequestAddressView()
         setInputField()
         setBtnShare()
+        Timber.d("maDebug $isRequestAddress")
     }
 
     private fun setRequestAddressView() {
