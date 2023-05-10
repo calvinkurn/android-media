@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment.adapter
 
 import android.text.method.LinkMovementMethod
+import android.view.View
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -17,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.content.common.R as contentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -54,17 +54,20 @@ class CommentViewHolder {
             MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
         }
 
-        private val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
-        private val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+        private val space8 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl1)
+        private val space24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+        private val space32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
+        private val space48 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl6)
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 ivCommentPhoto.updateLayoutParams {
-                    width = if (item.commentType.isChild) layout24 else layout32
-                    height = if (item.commentType.isChild) layout24 else layout32
+                    width = if (item.commentType.isChild) space24 else space32
+                    height = if (item.commentType.isChild) space24 else space32
                 }
+
                 root.setPadding(
-                    if (item.commentType.isChild) 48.toPx() else 8.toPx(),
+                    if (item.commentType.isChild) space48 else space8,
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom
@@ -91,21 +94,11 @@ class CommentViewHolder {
                     listener.onReplyClicked(item)
                 }
 
-                root.setOnLongClickListener {
-                    listener.onLongClicked(item)
-                    true
-                }
-                tvCommentReply.setOnLongClickListener {
-                    listener.onLongClicked(item)
-                    true
-                }
-                ivCommentPhoto.setOnLongClickListener {
-                    listener.onLongClicked(item)
-                    true
-                }
-                tvCommentContent.setOnLongClickListener {
-                    listener.onLongClicked(item)
-                    true
+                grItemComment.referencedIds.forEach {
+                    root.findViewById<View>(it).setOnLongClickListener {
+                        listener.onLongClicked(item)
+                        true
+                    }
                 }
             }
         }

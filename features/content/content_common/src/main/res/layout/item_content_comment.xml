@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cl_content_comment"
     android:padding="@dimen/content_common_space_8">
 
 
@@ -59,5 +60,11 @@
         app:layout_constraintTop_toTopOf="@+id/tv_comment_time"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gr_item_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="cl_content_comment,tv_comment_reply,iv_comment_photo,tv_comment_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
