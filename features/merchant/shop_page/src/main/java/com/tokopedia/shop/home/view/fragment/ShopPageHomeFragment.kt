@@ -4200,8 +4200,8 @@ open class ShopPageHomeFragment :
     }
 
     private fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        val isShownAlreadyShown = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
-        if (isShownAlreadyShown) return
+        val isShownAlready = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
+        if (isShownAlready) return
         val recyclerView = getRecyclerView(view)
         recyclerView?.addOneTimeGlobalLayoutListener {
             val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
