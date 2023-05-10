@@ -7,6 +7,7 @@ import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperEntertainment {
@@ -50,7 +51,7 @@ object DeeplinkMapperEntertainment {
     }
 
     fun getRemoteConfigEntertainmentAlwaysNative(context: Context): Boolean{
-        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE))
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE, false))
     }
 }
