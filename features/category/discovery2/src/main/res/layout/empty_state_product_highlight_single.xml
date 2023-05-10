@@ -15,13 +15,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/empty_state_product_highlight_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_marginTop="@dimen/unify_space_16"
             android:lineHeight="@dimen/unify_space_16"
             android:lines="3"
+            android:gravity="left"
             android:paddingHorizontal="@dimen/dp_16"
-            android:text="Yuk, cari lagi\n produk paling\n oke!"
+            android:text="Yuk, cari lagi produk paling oke!"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

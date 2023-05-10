@@ -113,14 +113,6 @@ class ProductHighlightItem(
         }
         constraintSet.connect(productHighlightView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, context.resources.getDimensionPixelSize(R.dimen.dp_16))
         constraintSet.connect(productHighlightView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(R.dimen.dp_4))
-        if (!productHighlightData.imageUrlDynamicMobile.isNullOrEmpty()) {
-            try {
-                if (context.isValidGlideContext()) {
-                    (productHighlightView as ImageUnify).loadImage(productHighlightData.imageUrlDynamicMobile)
-                }
-            } catch (e: Throwable) {
-            }
-        }
         constraintSet.applyTo(constraintLayout)
     }
 
@@ -280,7 +272,6 @@ class ProductHighlightItem(
                     } else {
                         phDiscountedProductPrice.invisible()
                     }
-                    setMargin(this)
 
                     productHighlightData.labelsGroupList?.forEach { labels ->
                         if (labels.position == STATUS) {
@@ -329,6 +320,7 @@ class ProductHighlightItem(
                         productHighlightImage.colorFilter = filter
                         phShopLogo.colorFilter = filter
                     }
+                    setMargin(this)
                 }
             }
         }
@@ -337,12 +329,16 @@ class ProductHighlightItem(
     private fun setMargin(discoItemMultiProductHighlightBinding: DiscoItemMultiProductHighlightBinding) {
         if (productHighlightData.typeProductHighlightComponentCard == DOUBLE) {
             with(discoItemMultiProductHighlightBinding) {
+                phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_2)
+                phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 productHighlightImage.layoutParams.width = getScreenWidth() / 2 - context.resources.getDimensionPixelSize(R.dimen.dp_36)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_56), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLE) {
             with(discoItemMultiProductHighlightBinding) {
-                guideline.setGuidelinePercent(0.4f)
+                guideline.setGuidelinePercent(0.38f)
+                phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_3)
+                phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
