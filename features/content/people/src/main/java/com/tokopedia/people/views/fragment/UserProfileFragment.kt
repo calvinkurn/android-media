@@ -576,8 +576,11 @@ class UserProfileFragment @Inject constructor(
             }
             textDisplayName.text = curr.name
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
+            layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
             layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
             layoutUserProfileStats.textFollowingCount.text = curr.stats.totalFollowingFmt
+
+            layoutUserProfileStats.textReviewCount.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
