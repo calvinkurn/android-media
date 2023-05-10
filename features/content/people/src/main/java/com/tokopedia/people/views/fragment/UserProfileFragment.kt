@@ -351,10 +351,10 @@ class UserProfileFragment @Inject constructor(
 
     private fun initListener() {
         mainBinding.apply {
-            textFollowingLabel.setOnClickListener { goToFollowingFollowerPage(false) }
-            textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
-            textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
-            textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+            layoutUserProfileStats.textFollowingLabel.setOnClickListener { goToFollowingFollowerPage(false) }
+            layoutUserProfileStats.textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
+            layoutUserProfileStats.textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
+            layoutUserProfileStats.textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
@@ -589,9 +589,9 @@ class UserProfileFragment @Inject constructor(
                 textUserName.text = getString(R.string.up_username_template, curr.username)
             }
             textDisplayName.text = curr.name
-            textContentCount.text = curr.stats.totalPostFmt
-            textFollowerCount.text = curr.stats.totalFollowerFmt
-            textFollowingCount.text = curr.stats.totalFollowingFmt
+            layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
+            layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
+            layoutUserProfileStats.textFollowingCount.text = curr.stats.totalFollowingFmt
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
