@@ -912,7 +912,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         val asBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
         FeedVideoDepreciationBottomSheet
             .newInstance(asBuyer)
-            .show(childFragmentManager, "")
+            .show(childFragmentManager, FeedVideoDepreciationBottomSheet::class.java.name)
 
         viewModel.setFirstTimeUserVisit()
     }
