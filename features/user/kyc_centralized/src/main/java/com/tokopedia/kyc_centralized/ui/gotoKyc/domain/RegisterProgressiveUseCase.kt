@@ -35,11 +35,7 @@ class RegisterProgressiveUseCase @Inject constructor(
             ).registerProgressiveKYC
 
         return if (!response.isSuccess) {
-            val errorMessage = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
+            val errorMessage = response.errorMessages.first()
             RegisterProgressiveResult.Failed(throwable = MessageErrorException(errorMessage))
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
