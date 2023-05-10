@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
+@SuppressLint("ValidFragment")
 class ChatbotMediaRetryBottomSheet(private val element: SendableUiModel, private val onBottomSheetItemClicked: (position: Int) -> Unit) : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetChatbotRetryUploadMediaBinding>()

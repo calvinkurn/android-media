@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -32,6 +33,7 @@ class TicketListContactUsUsecase @Inject constructor(
             )
         } catch (throwable: Throwable) {
             onError()
+            FirebaseCrashlytics.getInstance().recordException(throwable)
         }
     }
 

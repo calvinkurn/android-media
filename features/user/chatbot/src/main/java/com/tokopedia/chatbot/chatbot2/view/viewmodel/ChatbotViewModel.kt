@@ -1105,7 +1105,7 @@ class ChatbotViewModel @Inject constructor(
                     convertToMediaButtonToggleData(dynamicAttachmentAttribute.dynamicContent)
                 }
                 else -> {
-                    // TODO need to show fallback message
+                    // need to show fallback message
                     mapToVisitable(pojo)
                 }
             }

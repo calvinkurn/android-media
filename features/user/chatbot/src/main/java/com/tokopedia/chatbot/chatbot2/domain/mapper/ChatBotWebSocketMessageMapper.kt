@@ -213,7 +213,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 StickyActionButtonPojo::class.java
             )
         return StickyActionButtonUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -233,7 +233,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 HelpFullQuestionPojo::class.java
             )
         return HelpFullQuestionsUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -253,7 +253,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 CsatAttributesPojo::class.java
             )
         return CsatOptionsUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -273,7 +273,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 QuickReplyAttachmentAttributes::class.java
             )
         return ChatRatingUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
@@ -323,12 +323,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
         }
 
         return AttachInvoiceSelectionUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
-            pojo.attachment!!.id,
-            pojo.attachment!!.type,
+            pojo.attachment?.id ?: "",
+            pojo.attachment?.type ?: "",
             pojo.message.timeStampUnixNano,
             list,
             pojo.message.censoredReply,
@@ -351,12 +351,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
             )
 
         return ChatActionSelectionBubbleUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
-            pojo.attachment!!.id,
-            pojo.attachment!!.type,
+            pojo.attachment?.id ?: "",
+            pojo.attachment?.type ?: "",
             pojo.message.timeStampUnixNano,
             pojo.message.censoredReply,
             convertToChatActionBubbleViewModelList(pojoAttribute),
@@ -389,12 +389,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 QuickReplyAttachmentAttributes::class.java
             )
         return QuickReplyListUiModel(
-            pojo.msgId.toString(),
+            pojo.msgId,
             pojo.fromUid,
             pojo.from,
             pojo.fromRole,
             pojo.message.censoredReply,
-            pojo.attachment!!.id,
+            pojo.attachment?.id ?: "",
             TYPE_QUICK_REPLY,
             pojo.message.timeStampUnixNano,
             convertToQuickReplyList(pojoAttribute),

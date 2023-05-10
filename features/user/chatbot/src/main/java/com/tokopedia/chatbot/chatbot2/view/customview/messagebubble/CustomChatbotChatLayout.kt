@@ -1,9 +1,7 @@
 package com.tokopedia.chatbot.chatbot2.view.customview.messagebubble
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -49,7 +47,6 @@ class CustomChatbotChatLayout : ViewGroup {
         initConfig(context, attrs)
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context,
         attrs: AttributeSet?,
