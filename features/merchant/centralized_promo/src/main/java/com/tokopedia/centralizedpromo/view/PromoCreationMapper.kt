@@ -12,8 +12,7 @@ object PromoCreationMapper {
     const val TAB_NAME_ALL_FEATURE = "Semua Fitur"
 
     private const val PAGE_ID_TOKOPEDIA_PLAY = "64"
-    // TODO: Change Short Video page id
-    private const val PAGE_ID_SHORT_VIDEO = "64"
+    private const val PAGE_ID_SHORT_VIDEO = "66"
 
     fun mapperToPromoCreationUiModel(merchantPromotionGetPromoList: MerchantPromotionGetPromoList,
                                      hasPlayContent: Boolean = false
