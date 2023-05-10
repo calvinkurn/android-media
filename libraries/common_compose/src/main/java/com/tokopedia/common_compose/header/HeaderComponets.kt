@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.components.NestNotification
 import com.tokopedia.common_compose.extensions.rippleClickable
 import com.tokopedia.common_compose.extensions.tag
@@ -142,7 +141,7 @@ internal fun HeaderIconBack(
             .height(24.dp)
             .width(24.dp)
             .rippleClickable(onClick = onClick),
-        painter = painterResource(id = R.drawable.iconunify_arrow_back),
+        painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_arrow_back),
         tint = iconColor,
         contentDescription = "BackButton"
     )
@@ -165,7 +164,6 @@ internal fun HeaderLocationContent(
         modifier = Modifier.clickable {
             properties.onTitleClicked.invoke()
         },
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         HeaderTitle(
@@ -174,7 +172,8 @@ internal fun HeaderLocationContent(
         )
 
         Icon(
-            painter = painterResource(id = R.drawable.iconunify_chevron_down_non_padding),
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_chevron_down),
             tint = iconColor,
             contentDescription = "chevron_down"
         )

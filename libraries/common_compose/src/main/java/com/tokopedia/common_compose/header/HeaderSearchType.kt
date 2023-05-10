@@ -67,7 +67,7 @@ private fun RowScope.SearchTextField(
     val leadingIcon: @Composable () -> Unit = {
         Icon(
             modifier = Modifier.size(16.dp),
-            painter = painterResource(id = R.drawable.iconunify_search),
+            painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_search),
             contentDescription = "search icon ",
             tint = NestTheme.colors.NN._500
         )
