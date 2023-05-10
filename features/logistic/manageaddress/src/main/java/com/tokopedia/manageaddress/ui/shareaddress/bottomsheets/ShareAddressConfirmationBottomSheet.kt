@@ -26,6 +26,7 @@ import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
+import timber.log.Timber
 import javax.inject.Inject
 
 class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
@@ -65,6 +66,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
 
     private fun initObserver() {
         viewModel.shareAddressResponse.observe(viewLifecycleOwner) {
+            Timber.d("manageAddressDebug $it")
             when (it) {
                 is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
                 is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)

@@ -1,22 +1,19 @@
 package com.tokopedia.manageaddress.shareaddress.directshareaddress
 
 import android.Manifest
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.manageaddress.di.*
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
@@ -32,19 +29,14 @@ class DirectShareAddressTest {
     @get:Rule
     var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     @Before
     fun setup() {
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        val component = DaggerTestAppComponent.builder().fakeAppModule(FakeAppModule(ctx)).build()
-        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
-        setupAbTestRemoteConfig()
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            KEY_SHARE_ADDRESS_LOGI,
-            KEY_SHARE_ADDRESS_LOGI
-        )
+        val stub = ActivityComponentFactoryStub()
+        ActivityComponentFactory.instance = stub
+        stub.activityComponent.inject(this)
     }
 
     @Test

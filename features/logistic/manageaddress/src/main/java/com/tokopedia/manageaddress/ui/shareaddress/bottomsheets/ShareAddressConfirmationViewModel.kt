@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
-import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
-import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import javax.inject.Inject
 
 class ShareAddressConfirmationViewModel @Inject constructor(
@@ -35,9 +35,9 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showLoadingState(false)
-            mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+                showLoadingState(false)
+                mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
+            })
     }
 
     fun shareAddressFromNotif(param: SelectShareAddressParam) {
@@ -51,9 +51,9 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showLoadingState(false)
-            mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+                showLoadingState(false)
+                mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
+            })
     }
 
     private fun showLoadingState(isShowLoading: Boolean) {

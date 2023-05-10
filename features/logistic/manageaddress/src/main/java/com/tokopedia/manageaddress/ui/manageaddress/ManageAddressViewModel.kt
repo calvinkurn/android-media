@@ -313,7 +313,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsReceiver(senderUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsReceiverParam(
                     senderUserId = senderUserId,
                     source = getSourceValue()
@@ -325,11 +324,9 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
     }
@@ -337,7 +334,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsSender(receiverUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsSenderParam(
                     receiverUserId = receiverUserId,
                     source = getSourceValue()
@@ -349,17 +345,11 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
-    }
-
-    private fun showValidateShareAddressLoadingState(isShowLoading: Boolean) {
-        _validateShareAddressState.value = ValidateShareAddressState.Loading(isShowLoading)
     }
 
     fun getSourceValue(): String {
@@ -372,6 +362,6 @@ class ManageAddressViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        compositeSubscription.clear()
+//        compositeSubscription.clear()
     }
 }
