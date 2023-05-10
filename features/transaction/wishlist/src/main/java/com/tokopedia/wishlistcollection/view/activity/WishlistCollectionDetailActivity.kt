@@ -26,7 +26,14 @@ class WishlistCollectionDetailActivity : BaseSimpleActivity() {
         if (uri != null && uri.pathSegments.size > 1) {
             val uriSegment = uri.pathSegments
             collectionId = uriSegment[uriSegment.size - 1]
+            val affiliateUniqueId =
+                uri.getQueryParameter(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID)
+                    ?: ""
             bundle.putString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID, collectionId)
+            bundle.putString(
+                ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                affiliateUniqueId
+            )
         }
         return WishlistCollectionDetailFragment.newInstance(bundle)
     }

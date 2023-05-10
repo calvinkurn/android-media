@@ -226,6 +226,7 @@ class WishlistCollectionDetailFragment :
     private var _toasterMaxBulk = ""
     private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
     private var _bulkModeIsAlreadyTurnedOff = false
+    private var affiliateUniqueId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -278,6 +279,12 @@ class WishlistCollectionDetailFragment :
                         EXTRA_COLLECTION_NAME_DESTINATION,
                         this.getString(
                             EXTRA_COLLECTION_NAME_DESTINATION
+                        )
+                    )
+                    putString(
+                        ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                        this.getString(
+                            ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
                         )
                     )
                 }
@@ -1131,6 +1138,7 @@ class WishlistCollectionDetailFragment :
         isShowingCleanerBottomSheet = arguments?.getBoolean(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET) ?: false
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
+        affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
         paramGetCollectionItems.collectionId = collectionId
 
         var titleToolbar = ""
