@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DobChallengeParam(
     val projectId: String = "",
-    val challengeId: String = ""
+    val challengeId: String = "",
+    val pageSource: String = ""
 ): Parcelable

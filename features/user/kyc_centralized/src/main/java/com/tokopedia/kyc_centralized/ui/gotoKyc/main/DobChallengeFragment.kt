@@ -19,8 +19,10 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -112,6 +114,15 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     setButtonLoading(false)
                     gotoFinalLoader()
                 }
+                is SubmitChallengeResult.WrongAnswer -> {
+                    binding?.fieldDob?.apply {
+                        isInputError = true
+                        setMessage(it.message)
+                    }
+                }
+                is SubmitChallengeResult.Exhausted -> {
+                    showDobChallengeFailedBottomSheet()
+                }
                 is SubmitChallengeResult.Failed -> {
                     setButtonLoading(false)
                     val message = it.throwable?.getMessage(requireContext())
@@ -185,11 +196,28 @@ class DobChallengeFragment : BaseDaggerFragment() {
             binding?.btnConfirmation?.isEnabled = true
             binding?.fieldDob?.apply {
                 isInputError = false
+                setMessage(" ")
             }
             datePicker.dismiss()
         }
 
         datePicker.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
+    }
+
+    private fun showDobChallengeFailedBottomSheet() {
+        val dobChallengeBottomSheet = DobChallengeBottomSheet(
+            source = args.parameter.pageSource
+        )
+
+        dobChallengeBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_DOB_CHALLENGE_FAILED
+        )
+
+        dobChallengeBottomSheet.setOnDismissListener {
+            activity?.setResult(Activity.RESULT_CANCELED)
+            activity?.finish()
+        }
     }
 
     private fun gotoFinalLoader() {
@@ -218,5 +246,6 @@ class DobChallengeFragment : BaseDaggerFragment() {
         private const val MAX_YEAR = -17
         private const val MIN_YEAR = -100
         private const val TAG_BOTTOM_SHEET_DATE_PICKER = "bottom sheet date picker"
+        private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_FAILED = "bottom_sheet_dob_challenge_failed"
     }
 }

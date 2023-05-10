@@ -53,7 +53,23 @@ class SubmitChallengeUseCase @Inject constructor(
             }
             SubmitChallengeResult.Failed(MessageErrorException(message))
         } else {
-            SubmitChallengeResult.Success()
+            when (response.submitStatus) {
+                KEY_WRONG_ANSWER -> {
+                    //TODO: change this value when BE was ready
+                    SubmitChallengeResult.WrongAnswer("Tanggal lahir nggak cocok. Sisa 2 kali coba lagi, ya.")
+                }
+                KEY_EXHAUSTED -> {
+                    SubmitChallengeResult.Exhausted()
+                }
+                else -> {
+                    SubmitChallengeResult.Success()
+                }
+            }
         }
+    }
+
+    companion object {
+        private const val KEY_WRONG_ANSWER = "KYC_CHALLENGE_SUBMITTED_WRONG_ANSWERS"
+        private const val KEY_EXHAUSTED = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
     }
 }

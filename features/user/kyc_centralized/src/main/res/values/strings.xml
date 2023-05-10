@@ -216,7 +216,7 @@
     <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
-    <string name="goto_kyc_status_verified_button">Ke %s</string>
+    <string name="goto_kyc_back_to_source">Balik ke %s</string>
     <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam <![CDATA[<b>%s detik</b>]]>.</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
@@ -273,6 +273,8 @@
     <string name="goto_kyc_dob_challenge_title">Konfirmasi pakai tanggal lahirmu</string>
     <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai KTP.</string>
     <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
+    <string name="goto_kyc_dob_failed_title">Yah, sisa coba kamu udah abis</string>
+    <string name="goto_kyc_dob_failed_subtitle">Kamu udah masukin tanggal lahir yang salah sebanyak 3 kali. Coba lagi dalam 24 jam, ya!</string>
     <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
     <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
     <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
