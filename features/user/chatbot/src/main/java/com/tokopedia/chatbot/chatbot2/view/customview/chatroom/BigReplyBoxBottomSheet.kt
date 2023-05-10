@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
@@ -16,8 +15,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
-
-    private var context: FragmentActivity? = null
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
     private var hintText = ""
@@ -124,13 +121,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     companion object {
         @JvmStatic
         fun newInstance(
-            context: FragmentActivity,
             replyBoxBottomSheetPlaceHolder: String,
             replyBoxBottomSheetTitle: String,
             shouldShowAddAttachmentButton: Boolean
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
-                this.context = context
                 this.labelText = replyBoxBottomSheetTitle
                 this.hintText = replyBoxBottomSheetPlaceHolder
                 this.shouldShowAddAttachmentButton = shouldShowAddAttachmentButton

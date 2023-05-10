@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +14,12 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-@SuppressLint("ValidFragment")
-class ChatbotMediaRetryBottomSheet(private val element: SendableUiModel, private val onBottomSheetItemClicked: (position: Int) -> Unit) : BottomSheetUnify() {
+class ChatbotMediaRetryBottomSheet() : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetChatbotRetryUploadMediaBinding>()
     private var retryAdapter: MediaRetryBottomSheetAdapter? = null
+    private var element: SendableUiModel? = null
+    private var onBottomSheetItemClicked: ((Int) -> Unit)? = null
 
     init {
         showCloseIcon = false
@@ -45,7 +45,7 @@ class ChatbotMediaRetryBottomSheet(private val element: SendableUiModel, private
             )
         }
 
-        retryAdapter = MediaRetryBottomSheetAdapter(onBottomSheetItemClicked)
+        retryAdapter = onBottomSheetItemClicked?.let { MediaRetryBottomSheetAdapter(it) }
         retryAdapter?.setList(
             listOf(
                 context?.resources?.getString(R.string.chatbot_delete).toBlankOrString(),
@@ -60,5 +60,18 @@ class ChatbotMediaRetryBottomSheet(private val element: SendableUiModel, private
             adapter = retryAdapter
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(
+            element: SendableUiModel,
+            onBottomSheetItemClicked: (position: Int) -> Unit
+        ): ChatbotMediaRetryBottomSheet {
+            return ChatbotMediaRetryBottomSheet().apply {
+                this.element = element
+                this.onBottomSheetItemClicked = onBottomSheetItemClicked
+            }
+        }
     }
 }

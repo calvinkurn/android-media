@@ -1959,9 +1959,7 @@ class ChatbotFragment :
 
     override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
         activity?.let {
-            replyBubbleBottomSheet = ChatbotReplyBottomSheet(
-                messageUiModel,
-                this,
+            replyBubbleBottomSheet = ChatbotReplyBottomSheet.newInstance(
                 replyBubbleEnabled
             )
             replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
@@ -2388,7 +2386,7 @@ class ChatbotFragment :
     }
 
     private fun createRetryMediaUploadBottomSheet(element: SendableUiModel) {
-        mediaRetryBottomSheet = ChatbotMediaRetryBottomSheet(
+        mediaRetryBottomSheet = ChatbotMediaRetryBottomSheet.newInstance(
             element,
             onBottomSheetItemClicked(element)
         )
