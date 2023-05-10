@@ -51,6 +51,8 @@ import com.tokopedia.common_compose.ui.NestTheme
  * @param loadingText: Text to be displayed on the button when button is in loading state
  * @param rightLoader: If rightLoader = true, progress bar will appear on the right side of button when we're on loading state.
  *                     If rightLoader = false then progress bar will be displayed on the left side
+ * @param leadingIcon: Icon to be placed on the left side of the button. Only visible if button not in loading state
+ * @param trailingIcon: Icon to be placed on the right side of the button. Only visible if button not in loading state
  * @param onClick: Contains action that should be executed when button tapped/clicked
  */
 @Composable
@@ -69,43 +71,31 @@ fun NestButton(
     onClick: () -> Unit,
 ) {
     if (variant == ButtonVariant.FILLED) {
-        FilledButton(
-            modifier,
-            isEnabled,
-            text,
-            size,
-            isLoading,
-            isClickable,
-            loadingText,
-            rightLoader,
-            leadingIcon,
-            trailingIcon,
-            onClick
-        )
+        FilledButton(modifier, isEnabled, text, size, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.GHOST) {
-        GhostButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader, onClick)
+        GhostButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.GHOST_ALTERNATE) {
-        GhostAlternateButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader,  onClick)
+        GhostAlternateButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.GHOST_INVERTED) {
-        GhostInvertedButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, onClick)
+        GhostInvertedButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.TEXT_ONLY) {
-        TextButton(modifier, text, isEnabled, isLoading, isClickable, size, loadingText, rightLoader, onClick)
+        TextButton(modifier, text, isEnabled, isLoading, isClickable, size, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.TRANSACTION_FILLED) {
-        TransactionFilledButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, onClick)
+        TransactionFilledButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 
     if (variant == ButtonVariant.TRANSACTION_GHOST) {
-        TransactionGhostButton(modifier, text, isEnabled, isClickable, size, isLoading, loadingText, rightLoader,  onClick)
+        TransactionGhostButton(modifier, text, isEnabled, isClickable, size, isLoading, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
     }
 }
 
@@ -166,6 +156,8 @@ private fun GhostButton(
     isClickable: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val ghostTextStyle = NestTheme.typography.display2.copy(
@@ -194,6 +186,8 @@ private fun GhostButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -208,6 +202,8 @@ private fun GhostAlternateButton(
     isClickable: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val ghostAlternateTextStyle = NestTheme.typography.display1.copy(
@@ -236,6 +232,8 @@ private fun GhostAlternateButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -251,6 +249,8 @@ private fun GhostInvertedButton(
     isClickable: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val ghostInvertedTextStyle = NestTheme.typography.display1.copy(
@@ -281,6 +281,8 @@ private fun GhostInvertedButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick
     )
 }
@@ -295,6 +297,8 @@ private fun TransactionFilledButton(
     isClickable: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val transactionFilledTextStyle = NestTheme.typography.display1.copy(
@@ -331,6 +335,8 @@ private fun TransactionFilledButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -345,6 +351,8 @@ private fun TransactionGhostButton(
     isLoading: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val transactionGhostTextStyle = NestTheme.typography.display2.copy(
@@ -377,6 +385,8 @@ private fun TransactionGhostButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -391,6 +401,8 @@ private fun TextButton(
     size: ButtonSize,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val textButtonTextStyle = NestTheme.typography.display1.copy(
@@ -416,6 +428,8 @@ private fun TextButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -474,14 +488,7 @@ private fun NestDefaultButton(
                     text = text,
                     textStyle = textStyle
                 )
-                else -> {
-                    NestTypography(
-                        text = text,
-                        textStyle = textStyle.copy(color = textStyle.color),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                else -> ButtonText(text = text, textStyle = textStyle)
             }
 
         }
@@ -497,71 +504,67 @@ private fun ProgressBar(loaderHeight: Dp, progressBarColor: Color) {
 }
 
 @Composable
+private fun ButtonText(modifier: Modifier = Modifier, text: String, textStyle: TextStyle) {
+    NestTypography(
+        modifier = modifier,
+        text = text,
+        textStyle = textStyle.copy(color = textStyle.color),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
 private fun RowScope.LoadingWithTextButton(
     loadingText: String,
     rightLoader: Boolean,
     textStyle: TextStyle,
     loaderHeight: Dp,
     progressBarColor: Color
-) {
-    this.apply {
-        if (!rightLoader) {
-            ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
-        }
-
-        NestTypography(
-            modifier = Modifier.padding(
-                start = if (!rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp,
-                end = if (rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp
-            ),
-            text = loadingText,
-            textStyle = textStyle.copy(color = textStyle.color),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-
-        if (rightLoader) {
-            ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
-        }
+) = apply {
+    if (!rightLoader) {
+        ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
     }
 
+    ButtonText(
+        modifier = Modifier.padding(
+            start = if (!rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp,
+            end = if (rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp
+        ),
+        text = loadingText,
+        textStyle = textStyle
+    )
+
+
+    if (rightLoader) {
+        ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
+    }
 }
+
 
 @Composable
 private fun RowScope.ButtonWithLeftIcon(
     leadingIcon: @Composable () -> Unit,
     text: String,
     textStyle: TextStyle
-) {
-    this.apply {
-        leadingIcon.invoke()
-        Spacer(modifier = Modifier.width(8.dp))
-        NestTypography(
-            text = text,
-            textStyle = textStyle.copy(color = textStyle.color),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
+) = apply {
+    leadingIcon.invoke()
+    Spacer(modifier = Modifier.width(8.dp))
+    ButtonText(text = text, textStyle = textStyle)
 }
+
 
 @Composable
 private fun RowScope.ButtonWithRightIcon(
     trailingIcon: @Composable () -> Unit,
     text: String,
     textStyle: TextStyle
-) {
-    this.apply {
-        NestTypography(
-            text = text,
-            textStyle = textStyle.copy(color = textStyle.color),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        trailingIcon.invoke()
-    }
+) = apply {
+    ButtonText(text = text, textStyle = textStyle)
+    Spacer(modifier = Modifier.width(8.dp))
+    trailingIcon.invoke()
 }
+
 
 enum class ButtonVariant {
     FILLED,
@@ -590,14 +593,14 @@ enum class ButtonSize(
     name = "Light Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true,
-    device = "spec:width=600dp,height=1200dp"
+    device = "spec:width=411dp,height=1200dp"
 )
 @Preview(
     name = "Dark Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
     backgroundColor = 0xFF222329,
-    device = "spec:width=600dp,height=1200dp"
+    device = "spec:width=411dp,height=1200dp"
 )
 @Composable
 private fun NestButtonPreview() {
