@@ -79,6 +79,8 @@ class FeedPostImageViewHolder(
 
     private var trackerDataModel: FeedTrackerDataModel? = null
 
+    private var isInClearView: Boolean = false
+
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
@@ -282,6 +284,10 @@ class FeedPostImageViewHolder(
                 }
             }
         }
+
+        if (isInClearView) {
+            productTagView.showClearView()
+        }
     }
 
     private fun updateCampaignAvailability(element: FeedCardImageContentModel) {
@@ -415,6 +421,7 @@ class FeedPostImageViewHolder(
     }
 
     private fun showClearView() {
+        isInClearView = true
         with(binding) {
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
@@ -432,6 +439,7 @@ class FeedPostImageViewHolder(
     }
 
     private fun hideClearView() {
+        isInClearView = false
         with(binding) {
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()

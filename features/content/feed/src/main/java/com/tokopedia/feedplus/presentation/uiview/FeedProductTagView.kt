@@ -92,6 +92,14 @@ class FeedProductTagView(
         }
     }
 
+    fun showClearView() {
+        binding.root.hide()
+    }
+
+    fun hideClearView() {
+        binding.root.show()
+    }
+
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
