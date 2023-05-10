@@ -20,7 +20,7 @@ import java.lang.Exception
 class ContactUsHomeActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         val url = intent.getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL)
-        return if (url != null && url.length > 0) {
+        return if (url != null && url.isNotEmpty()) {
             BaseSessionWebViewFragment.newInstance(url)
         } else {
             BaseSessionWebViewFragment.newInstance(URL_HELP)
@@ -31,6 +31,7 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         try {
             val webViewFragment = fragment as? BaseWebViewFragment

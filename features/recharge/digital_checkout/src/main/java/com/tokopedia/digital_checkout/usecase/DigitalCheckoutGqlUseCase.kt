@@ -1,9 +1,14 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.google.gson.Gson
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutFintechProduct
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
@@ -14,6 +19,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.util.GqlParamDeserializer
 import javax.inject.Inject
 
 /**
@@ -24,8 +30,7 @@ import javax.inject.Inject
     DigitalCheckoutGqlUseCase.QUERY_RECHARGE_CHECKOUT
 )
 class DigitalCheckoutGqlUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
-    private val gson: Gson
+    graphqlRepository: GraphqlRepository
 ) :
     GraphqlUseCase<RechargeCheckoutResponse.Response>(graphqlRepository) {
 
@@ -39,6 +44,13 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
         requestCheckoutParams: DigitalCheckoutDataParameter,
         digitalIdentifierParams: RequestBodyIdentifier
     ) {
+        val builder = GsonBuilder().apply {
+            registerTypeAdapter(
+                object : TypeToken<HashMap<String, Any>>() {}.type,
+                GqlParamDeserializer()
+            )
+        }
+        val customGson = builder.create()
         val requestParams = RechargeCheckoutRequest(
             voucherCode = requestCheckoutParams.voucherCode,
             transactionAmount = requestCheckoutParams.transactionAmount.toLong(),
@@ -52,9 +64,28 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
             cartId = requestCheckoutParams.cartId,
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
             fintechProducts = requestCheckoutParams.crossSellProducts.map {
+                val checkoutType = object : TypeToken<HashMap<String, Any>>() {}.type
+                val checkoutMetadataMap = customGson.fromJson<HashMap<String, Any>>(it.value.product.crossSellMetadata, checkoutType)
+
+                if (it.value.isSubscription) {
+                    try {
+                        val additionalMetadata = customGson.toJson(it.value.additionalMetadata)
+                        val additionalType = object : TypeToken<JsonElement>() {}.type
+                        val additionalMetadataJson = customGson.fromJson<JsonElement>(additionalMetadata, additionalType)
+
+                        // checking metadata
+                        val metadataKey = checkoutMetadataMap[KEY_METADATA]
+                        val consentMetadata = customGson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
+                        consentMetadata.consentPayload = additionalMetadataJson.toString()
+
+                        checkoutMetadataMap[KEY_METADATA] = customGson.toJson(consentMetadata)
+                    } catch (e: JsonSyntaxException) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
+                    }
+                }
                 RechargeCheckoutFintechProduct(
                     transactionType = it.value.product.transactionType,
-                    checkoutMetadata = gson.toJson(it.value.product)
+                    checkoutMetadata = customGson.toJson(checkoutMetadataMap)
                 )
             }.toList(),
             instant = requestCheckoutParams.isInstantCheckout,
@@ -72,6 +103,8 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
     companion object {
         private const val PARAMS_KEY = "request"
         private const val RECHARGE_MODULE_NAME = "recharge"
+        private const val KEY_METADATA = "metadata"
+        private const val KEY_CONSENT_PAYLOAD = "consent_payload"
 
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """

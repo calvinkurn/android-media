@@ -191,13 +191,25 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     // no-op
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     )
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        it?.let { refreshCatalog(it) }
+    })
 
-    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(
-        viewLifecycleOwner,
-        androidx.lifecycle.Observer {
-            it?.let { refreshCatalog(it) }
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        when (it) {
+            is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
+            is ValidationError<*, *> -> {
+                if (it.data is PreValidateError)
+                    onPreValidateError(it.data.title, it.data.message)
+            }
+            else -> {
+                //no-op
+            }
         }
     )
 
@@ -240,6 +252,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     stopRenderPerformanceMonitoring()
                     stopPerformanceMonitoring()
                 }
+            }
+            else -> {
+                //no-op
             }
         }
     )

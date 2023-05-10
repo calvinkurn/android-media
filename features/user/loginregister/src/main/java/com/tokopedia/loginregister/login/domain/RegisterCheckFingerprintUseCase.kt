@@ -15,18 +15,22 @@ class RegisterCheckFingerprintUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<RegisterCheckFingerprint>,
     private var dispatchers: CoroutineDispatchers,
     private val fingerprintPreferenceManager: FingerprintPreference
-): CoroutineScope {
+) : CoroutineScope {
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun checkRegisteredFingerprint(onSuccess: (RegisterCheckFingerprint) -> Unit,
-                                   onError: (Throwable) -> Unit) {
+    fun checkRegisteredFingerprint(
+        onSuccess: (RegisterCheckFingerprint) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         launchCatchError(dispatchers.io, {
             val data =
                 graphqlUseCase.apply {
                     setTypeClass(RegisterCheckFingerprint::class.java)
-                    setRequestParams(mapOf(
-                        PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
-                    ))
+                    setRequestParams(
+                        mapOf(
+                            PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
+                        )
+                    )
                     setGraphqlQuery(query)
                 }.executeOnBackground()
             withContext(dispatchers.main) {
@@ -37,7 +41,6 @@ class RegisterCheckFingerprintUseCase @Inject constructor(
                 onError(it)
             }
         })
-
     }
 
     companion object {
@@ -49,7 +52,7 @@ class RegisterCheckFingerprintUseCase @Inject constructor(
                         registered
                         errorMessage
                 }
-            }""".trimIndent()
+            }
+        """.trimIndent()
     }
-
 }

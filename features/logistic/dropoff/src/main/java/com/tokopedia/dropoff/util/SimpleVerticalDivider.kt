@@ -11,8 +11,8 @@ import com.tokopedia.dropoff.R
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.roundToInt
 
-internal class SimpleVerticalDivider(context: Context, @LayoutRes private val exclude: Int? = null)
-    : RecyclerView.ItemDecoration() {
+internal class SimpleVerticalDivider(context: Context, @LayoutRes private val exclude: Int? = null) :
+    RecyclerView.ItemDecoration() {
 
     private val mDivider = ContextCompat.getDrawable(context, R.drawable.item_divider)
     private val mBounds = Rect()
@@ -49,6 +49,5 @@ internal class SimpleVerticalDivider(context: Context, @LayoutRes private val ex
     }
 
     private fun RecyclerView.getViewTypeOfView(view: View): Int =
-            adapter?.getItemViewType(getChildAdapterPosition(view)) ?: 0
-
+        adapter?.getItemViewType(getChildAdapterPosition(view)) ?: 0
 }

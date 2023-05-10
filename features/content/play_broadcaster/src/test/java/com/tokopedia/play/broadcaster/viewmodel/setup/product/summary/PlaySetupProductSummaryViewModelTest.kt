@@ -7,7 +7,10 @@ import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,7 +40,6 @@ class PlaySetupProductSummaryViewModelTest {
     /** Summary Page */
     @Test
     fun `when user successfully delete product, it should emit success state`() {
-
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
         coEvery { mockRepo.setProductTags(any(), any()) } returns Unit
 
@@ -47,7 +49,7 @@ class PlaySetupProductSummaryViewModelTest {
         )
 
         robot.use {
-            val (state, event) = robot.recordSummaryStateAndEvent{
+            val (state, event) = robot.recordSummaryStateAndEvent {
                 robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSectionList[0].products[0]))
             }
 
@@ -60,7 +62,6 @@ class PlaySetupProductSummaryViewModelTest {
 
     @Test
     fun `when user failed delete product, it should emit fail state`() {
-
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
         val robot = PlayBroProductSetupViewModelRobot(
@@ -69,12 +70,46 @@ class PlaySetupProductSummaryViewModelTest {
         )
 
         robot.use {
-            val (state, event) = robot.recordSummaryStateAndEvent{
+            val (state, event) = robot.recordSummaryStateAndEvent {
                 robot.submitAction(ProductSetupAction.DeleteSelectedProduct(mockProductTagSectionList[0].products[0]))
             }
 
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
             Assertions.assertTrue(event[0] is PlayBroProductChooserEvent.DeleteProductError)
+        }
+    }
+
+    // Product Numeration
+    @Test
+    fun `when user in live broadcaster, product numeration is shown`() {
+        val vm = PlayBroProductSetupViewModelRobot(
+            source = PlayBroPageSource.Live,
+            dispatchers = testDispatcher
+        )
+        vm.use {
+            it.getViewModel().isNumerationShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when user in short video, product numeration is hidden`() {
+        val vm = PlayBroProductSetupViewModelRobot(
+            source = PlayBroPageSource.Shorts,
+            dispatchers = testDispatcher
+        )
+        vm.use {
+            it.getViewModel().isNumerationShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when user in unknown video, product numeration is hidden`() {
+        val vm = PlayBroProductSetupViewModelRobot(
+            source = PlayBroPageSource.Shorts,
+            dispatchers = testDispatcher
+        )
+        vm.use {
+            it.getViewModel().isNumerationShown.assertFalse()
         }
     }
 }

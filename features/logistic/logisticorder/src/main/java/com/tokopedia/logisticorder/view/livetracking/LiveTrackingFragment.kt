@@ -36,7 +36,9 @@ class LiveTrackingFragment : BaseWebViewFragment() {
             callIntent.data = Uri.parse(url)
             try {
                 startActivity(callIntent)
-            } catch (e: ActivityNotFoundException) {}
+            } catch (_: ActivityNotFoundException) {
+                // no op
+            }
         }
         return super.shouldOverrideUrlLoading(webView, url)
     }
@@ -52,6 +54,5 @@ class LiveTrackingFragment : BaseWebViewFragment() {
                 }
             }
         }
-
     }
 }

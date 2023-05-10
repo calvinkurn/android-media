@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.view.adapter.MenuAdapter
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
-import com.tokopedia.shop.settings.etalase.data.PowerMerchantAccessModel
-import com.tokopedia.shop.settings.etalase.view.bottomsheet.PowerMerchantAccessBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class MenuBottomSheet: BottomSheetUnify(){
+class MenuBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val LIST = "MENU_LIST"
@@ -45,7 +43,7 @@ class MenuBottomSheet: BottomSheetUnify(){
     }
 
     private fun setData() {
-        val menuList =  arguments?.getStringArrayList(LIST)
+        val menuList = arguments?.getStringArrayList(LIST)
         val rvMenu = contentView?.findViewById<RecyclerView>(R.id.rv_menu)
         val menuAdapter = MenuAdapter(listener)
         rvMenu?.adapter = menuAdapter
