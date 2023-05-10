@@ -2,8 +2,11 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.view.marginLeft
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.LayoutProductHighlightBinding
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -16,6 +19,7 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -32,6 +36,7 @@ class ProductHighlightComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
+        private const val HEX_WHITE = "#FFFFFF"
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
@@ -79,8 +84,23 @@ class ProductHighlightComponentViewHolder(
                 override fun onChannelExpired(channelModel: ChannelModel) {
                     listener?.onChannelExpired(channelModel, channelModel.verticalPosition, element)
                 }
-            }
+            },
+            colorMode = element.channelModel.channelBanner.gradientColor.getColorMode()
         )
+        val topPadding = if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+            view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_top_padding)
+        } else 0
+        binding?.masterProductCardDeals?.setMargin(
+            view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_horizontal_padding),
+            topPadding,
+            view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_horizontal_padding),
+            0
+        )
+    }
+
+    private fun ArrayList<String>.getColorMode(): Int {
+        return if(isEmpty() || get(0) == HEX_WHITE) DynamicChannelHeaderView.COLOR_MODE_NORMAL
+        else DynamicChannelHeaderView.COLOR_MODE_INVERTED
     }
 
     private fun setDealsProductGrid(channel: ChannelModel) {

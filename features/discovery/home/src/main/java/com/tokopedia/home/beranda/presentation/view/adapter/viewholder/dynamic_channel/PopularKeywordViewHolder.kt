@@ -155,8 +155,7 @@ class PopularKeywordViewHolder (val view: View,
                                     errorPopularKeyword.progressState = true
                                     popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
                                 }
-                            },
-                            isReload = true
+                            }
                         )
                         containerPopularKeyword.setPadding(0, 0, 0, view.context.resources.getDimensionPixelSize(R.dimen.popular_keyword_bottom_padding))
                         ivReload?.hide()
