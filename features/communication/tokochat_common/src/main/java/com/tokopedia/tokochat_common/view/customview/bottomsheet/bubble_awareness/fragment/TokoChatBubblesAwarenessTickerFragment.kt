@@ -63,7 +63,7 @@ class TokoChatBubblesAwarenessTickerFragment: Fragment() {
                     applyCustomStyling = {
                         isUnderlineText = false
                         typeface = Typeface.DEFAULT_BOLD
-                        color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     },
                     onUrlClicked = { _,_ ->
                         val bubbleChatHelpPageUrl = String.format(
