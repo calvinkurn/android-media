@@ -2,8 +2,8 @@ package com.tokopedia.common_compose.card2
 
 import android.animation.TimeInterpolator
 import android.util.Log
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -47,29 +47,26 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.ui.NestTheme
+import kotlinx.coroutines.launch
 
 private fun TimeInterpolator.toEasing() = Easing { x ->
     getInterpolation(x)
 }
 
-private val customInterpolator = PathInterpolatorCompat
+private val bezierCustomInterpolator = PathInterpolatorCompat
     .create(.2f, .64f, .21f, 1f)
     .toEasing()
 
+const val CARD_TRANSITION_DURATION = 300
+
 @Composable
-private fun borderSelected(): BorderStroke {
-    return BorderStroke(
-        2.dp,
-        NestTheme.colors.GN._500
-    )
+private fun borderSelected(): Color {
+    return NestTheme.colors.GN._500
 }
 
 @Composable
-private fun borderDisabled(): BorderStroke {
-    return BorderStroke(
-        2.dp,
-        NestTheme.colors.NN._200
-    )
+private fun borderDisabled(): Color {
+    return NestTheme.colors.NN._200
 }
 
 sealed interface Card2Border {
@@ -81,6 +78,12 @@ sealed interface Card2Border {
     object ShadowActive : Card2Border
     object ShadowDisabled : Card2Border
     object NoBorder : Card2Border
+
+    companion object {
+        fun default(): Card2Border {
+            return Border
+        }
+    }
 }
 
 private suspend fun PointerInputScope.configGesture(
@@ -113,6 +116,8 @@ private suspend fun PointerInputScope.configGesture(
 fun Card2Unify(
     enableBounceAnimation: Boolean = true,
     type: Card2Border = Card2Border.NoBorder,
+    onClick: () -> Unit,
+    onLongPress: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val onTouch = remember { mutableStateOf(false) }
@@ -120,46 +125,73 @@ fun Card2Unify(
         animateFloatAsState(
             if (onTouch.value) 0.95F else 1.01f,
             animationSpec = FloatTweenSpec(
-                300,
+                CARD_TRANSITION_DURATION,
                 0,
-                easing = customInterpolator
+                easing = bezierCustomInterpolator
             )
         ).value
     } else {
         1F
     }
 
-    var border: BorderStroke? = null
+    var borderColor = MaterialTheme.colors.surface
     var backgroundColor = MaterialTheme.colors.surface
     var shadow = false
 
     when (type) {
+        is Card2Border.StateBorder -> {
+            if (type.isSelected) {
+                shadow = true
+                borderColor = borderSelected()
+                backgroundColor = NestTheme.colors.GN._50
+            } else {
+                borderColor = borderSelected()
+            }
+        }
         is Card2Border.Border -> {
-            border = borderSelected()
+            borderColor = borderDisabled()
         }
         is Card2Border.Shadow -> {
             shadow = true
         }
         is Card2Border.BorderActive -> {
-            border = borderSelected()
+            borderColor = borderSelected()
             backgroundColor = NestTheme.colors.GN._50
         }
         is Card2Border.ShadowActive -> {
             shadow = true
-            border = borderSelected()
+            borderColor = borderSelected()
             backgroundColor = NestTheme.colors.GN._50
         }
         is Card2Border.BorderDisabled -> {
-            border = borderDisabled()
+            borderColor = borderDisabled()
             backgroundColor = NestTheme.colors.NN._50
         }
         is Card2Border.ShadowDisabled -> {
-            border = borderDisabled()
+            borderColor = borderDisabled()
             shadow = true
             backgroundColor = NestTheme.colors.NN._50
         }
         else -> {
-            Color.Transparent
+        }
+    }
+
+    val animateBackgroundColor = remember { Animatable(backgroundColor) }
+    val animateBorderColor = remember { Animatable(borderColor) }
+
+    LaunchedEffect(type) {
+        launch {
+            animateBackgroundColor.animateTo(
+                backgroundColor,
+                animationSpec = tween(CARD_TRANSITION_DURATION)
+            )
+        }
+
+        launch {
+            animateBorderColor.animateTo(
+                borderColor,
+                animationSpec = tween(CARD_TRANSITION_DURATION)
+            )
         }
     }
 
@@ -171,14 +203,16 @@ fun Card2Unify(
             .pointerInput(Unit) {
                 configGesture(onTouch = onTouch,
                     onClick = {
+                        onClick.invoke()
                         Log.e("click", "click")
                     },
                     onLongPress = {
+                        onLongPress.invoke()
                         Log.e("click", "long click")
                     })
             },
-        border = border,
-        backgroundColor = backgroundColor,
+        border = BorderStroke(2.dp, animateBorderColor.value),
+        backgroundColor = animateBackgroundColor.value,
         elevation = if (shadow) Integer.MAX_VALUE.dp else 0.dp,
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -207,7 +241,7 @@ fun BoxCustomRipple(
                     targetValue = 0.2F,
                     animationSpec = tween(
                         durationMillis = 120,
-                        easing = CubicBezierEasing(.2f, .64f, .21f, 1f)
+                        easing = bezierCustomInterpolator
                     )
                 )
             } else {
@@ -215,7 +249,7 @@ fun BoxCustomRipple(
                     targetValue = 0F,
                     animationSpec = tween(
                         durationMillis = 120,
-                        delayMillis = 100, CubicBezierEasing(.2f, .64f, .21f, 1f)
+                        delayMillis = 100, bezierCustomInterpolator
                     )
                 )
             }
@@ -236,17 +270,24 @@ fun BoxCustomRipple(
 @Preview
 fun Card2Preview() {
     Surface {
+        var type by remember { mutableStateOf(Card2Border.default()) }
         Card2Unify(
             enableBounceAnimation = true,
-            type = Card2Border.Shadow
+            type = type,
+            onClick = {
+                type = if (type == Card2Border.BorderActive) {
+                    Card2Border.Border
+                } else {
+                    Card2Border.BorderActive
+                }
+            },
+            onLongPress = {
+
+            }
         ) {
             var textTest by remember {
                 mutableStateOf("")
             }
-//            Text(
-//                modifier = Modifier.padding(16.dp),
-//                text = "Open the reward"
-//            )
 
             Column(
                 modifier = Modifier.wrapContentHeight().fillMaxWidth()
