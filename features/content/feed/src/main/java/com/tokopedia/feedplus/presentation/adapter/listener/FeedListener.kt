@@ -7,7 +7,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 
 interface FeedListener {
-    fun onMenuClicked(id: String, trackerModel: FeedTrackerDataModel)
+    fun onMenuClicked(id: String, showReport: Boolean, trackerModel: FeedTrackerDataModel)
     fun onFollowClicked(
         id: String,
         encryptedId: String,

@@ -145,8 +145,10 @@ class FeedPostImageViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
+                        !data.editable,
                         trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data)
+                            ?: trackerMapper.transformImageContentToTrackerModel(data),
+
                     )
                 }
                 shareButton.setOnClickListener {

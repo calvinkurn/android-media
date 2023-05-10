@@ -210,7 +210,11 @@ class FeedFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onMenuClicked(id: String, trackerModel: FeedTrackerDataModel) {
+    override fun onMenuClicked(
+        id: String,
+        showReport: Boolean,
+        trackerModel: FeedTrackerDataModel
+    ) {
         currentTrackerData = trackerModel
         feedAnalytics.eventClickThreeDots(trackerModel)
         activity?.let {
@@ -221,7 +225,7 @@ class FeedFragment :
                     TAG_FEED_MENU_BOTTOMSHEET
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), id)
+            feedMenuSheet.setData(getMenuItemData(showReport), id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
@@ -466,7 +470,7 @@ class FeedFragment :
         context: Context,
         shopId: String
     ) {
-//        TODO("Not yet implemented")
+        // do nothing
     }
 
     override fun onTaggedProductCardImpressed(
@@ -479,7 +483,7 @@ class FeedFragment :
         hasVoucher: Boolean,
         authorType: String
     ) {
-        // To be used for analytics
+        // do nothing
     }
 
     override fun onTaggedProductCardClicked(
@@ -942,7 +946,7 @@ class FeedFragment :
         }
     }
 
-    private fun getMenuItemData(): List<FeedMenuItem> {
+    private fun getMenuItemData(showReport: Boolean): List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
         items.add(
@@ -952,20 +956,23 @@ class FeedFragment :
                 type = FeedMenuIdentifier.MODE_NONTON
             )
         )
-        items.add(
-            FeedMenuItem(
-                drawable = getIconUnifyDrawable(
-                    requireContext(),
-                    IconUnify.WARNING,
-                    MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_RN500
-                    )
-                ),
-                name = getString(feedR.string.feed_report),
-                type = FeedMenuIdentifier.LAPORKAN
+        if (showReport) {
+            items.add(
+                FeedMenuItem(
+                    drawable = getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.WARNING,
+                        MethodChecker.getColor(
+                            context,
+                            unifyR.color.Unify_RN500
+                        )
+                    ),
+                    name = getString(feedR.string.feed_report),
+                    type = FeedMenuIdentifier.LAPORKAN
+                )
             )
-        )
+        }
+
         return items
     }
 

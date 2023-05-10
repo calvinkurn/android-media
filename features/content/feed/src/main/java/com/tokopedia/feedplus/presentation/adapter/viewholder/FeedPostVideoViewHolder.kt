@@ -125,6 +125,7 @@ class FeedPostVideoViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
+                        !data.editable,
                         trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                             data
                         )
