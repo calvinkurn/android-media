@@ -54,18 +54,13 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
     private fun getClickCouponData() {
         val dataItem = components.data?.firstOrNull()
         dataItem?.let { couponDataItem ->
-            if (!couponDataItem.catalogSlug.isNullOrEmpty()) {
-                launchCatchError(block = {
-                    myCouponUseCase.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
-                    setCouponsList()
-                }, onError = {
-                        components.noOfPagesLoaded = 1
-                        hideIfPresentInSection()
-                    })
-            } else {
-                componentList.value = null
-                hideIfPresentInSection()
-            }
+            launchCatchError(block = {
+                myCouponUseCase.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
+                setCouponsList()
+            }, onError = {
+                    components.noOfPagesLoaded = 1
+                    hideIfPresentInSection()
+                })
         }
     }
 
@@ -99,16 +94,12 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
 
     private fun getMyCoupleBundle(dataItem: DataItem): MyCouponsRequest {
         return MyCouponsRequest(
-            serviceID = SERVICE_ID,
-            categoryID = CATEGORY_ID,
-            categoryIDCoupon = CATEGORY_ID_COUPON,
-            page = PAGE,
-            limit = dataItem.limit ?: 20,
-            includeExtraInfo = INCLUDE_EXTRA_INFO,
-            apiVersion = API_VERSION,
-            isGetPromoInfo = IS_GET_PROMO_INFO,
-            clientID = CLIENT_ID,
-            catalogSlugs = dataItem.catalogSlug ?: listOf(),
+            serviceID = SERVICE_ID, categoryID = CATEGORY_ID, categoryIDCoupon = CATEGORY_ID_COUPON, page = PAGE,
+            limit = dataItem.limit
+                ?: 20,
+            includeExtraInfo = INCLUDE_EXTRA_INFO, apiVersion = API_VERSION, isGetPromoInfo = IS_GET_PROMO_INFO, clientID = CLIENT_ID,
+            catalogSlugs = dataItem.catalogSlug
+                ?: listOf(),
             source = SOURCE
         )
     }
