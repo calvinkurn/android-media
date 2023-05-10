@@ -2,10 +2,8 @@ package com.tokopedia.abstraction.base.view.debugbanner
 
 import android.content.Context
 import android.graphics.Point
-import android.os.Build
 import android.view.View
 import android.view.WindowManager
-
 
 internal fun View.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
@@ -16,5 +14,3 @@ internal fun Context.getScreenWidth(): Float {
     display.getSize(size)
     return size.x.toFloat()
 }
-
-

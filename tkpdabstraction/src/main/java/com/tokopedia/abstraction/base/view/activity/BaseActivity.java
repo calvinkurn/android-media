@@ -101,7 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private String getLiveStatus() {
         if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
             return "STAGING";
-        } else if (BannerDebugInterceptor.isBeta(this)) {
+        } else if (BannerDebugInterceptor.isBeta(getApplicationContext())) {
             return "BETA";
         } else {
             return "";

@@ -1,4 +1,4 @@
-package com.tokopedia.grapqhl.beta.notif
+package com.tokopedia.graphql.interceptor
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,7 +17,7 @@ import java.io.IOException
 const val CHANNEL_ID = "beta"
 const val NOTIFICATION_ID = 123 shr 5
 
-class BetaInterceptor(private val context: Context) : Interceptor {
+class BetaInterceptorTest(private val context: Context) : Interceptor {
 
     lateinit var sharedPreferences: SharedPreferences
 
@@ -59,69 +59,41 @@ class BetaInterceptor(private val context: Context) : Interceptor {
 
         val headers = response.headers
         if (headers.size > 0) {
-            val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mNotificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        CHANNEL_ID,
-                        context.getString(R.string.beta_notification_category),
-                        NotificationManager.IMPORTANCE_LOW
-                    )
-                )
-            }
-
             determineShowNotif(GlobalConfig.APPLICATION_TYPE, context) { appName: String, appType: Int, context: Context ->
 
-                val createNotif = { context: Context, appName: String, function: (context: Context) -> Unit ->
-                    {
-                        context.let {
-                            function(context)
-                            val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
-                            remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
-                            val mBuilder =
-                                NotificationCompat.Builder(context, CHANNEL_ID)
-                                    .setSmallIcon(R.drawable.beta_icon)
-                                    .setCustomContentView(remoteView)
-                                    .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
-
-                            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
-                        }
-                    }
-                }
-
-                val cancelNotif = { function: (context: Context) -> Unit ->
-                    {
-                        function(context)
-                        mNotificationManager.cancel(NOTIFICATION_ID)
-                    }
-                }
+//                val cancelNotif = { function: (context: Context) -> Unit ->
+//                    {
+//                        function(context)
+//                        mNotificationManager.cancel(NOTIFICATION_ID)
+//                    }
+//                }
 
                 when (GlobalConfig.APPLICATION_TYPE) {
                     GlobalConfig.CONSUMER_APPLICATION, GlobalConfig.SELLER_APPLICATION -> {
                         val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
                         if (get.equals(URL_BETA)) {
-//                            createNotif(context, appName) {
-                            saveBeta(it, true)
-//                            }
+                            createNotif(context, appName) {
+                                saveBeta(it, true)
+                            }
                         } else {
-                            cancelNotif {
-                                saveBeta(it, false)
-                            }
+//                            cancelNotif {
+//                                saveBeta(it, false)
+//                            }
                         }
                     }
-                    GlobalConfig.CONSUMER_PRO_APPLICATION -> {
-                        val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
-                        createNotif(
-                            context,
-                            if (get.equals(URL_BETA)) {
-                                appName + "-beta"
-                            } else {
-                                appName
-                            }
-                        ) {
-                            saveBeta(it, true)
-                        }
-                    }
+//                    GlobalConfig.CONSUMER_PRO_APPLICATION -> {
+//                        val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
+//                        createNotif(
+//                            context,
+//                            if (get.equals(URL_BETA)) {
+//                                appName + "-beta"
+//                            } else {
+//                                appName
+//                            }
+//                        ) {
+//                            saveBeta(it, true)
+//                        }
+//                    }
                     else -> {
                     }
                 }
@@ -129,6 +101,32 @@ class BetaInterceptor(private val context: Context) : Interceptor {
         }
 
         return response
+    }
+
+    fun createNotif(context: Context, appName: String, function: (context: Context) -> Unit) {
+        val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationManager.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_ID,
+                    context.getString(R.string.beta_notification_category),
+                    NotificationManager.IMPORTANCE_LOW
+                )
+            )
+        }
+
+        context.let {
+            function(context)
+            val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
+            remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
+            val mBuilder =
+                NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.beta_icon)
+                    .setCustomContentView(remoteView)
+                    .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+
+            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
+        }
     }
 
     fun determineShowNotif(
