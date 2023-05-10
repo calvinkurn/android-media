@@ -19,7 +19,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_1"
         android:layout_width="0dp"
-        android:layout_height="@dimen/play_dp_12"
+        android:layout_height="@dimen/content_common_space_12"
         android:layout_marginStart="@dimen/content_common_space_8"
         android:layout_marginEnd="@dimen/unify_space_4"
         app:layout_constraintEnd_toEndOf="parent"
