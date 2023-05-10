@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.uiview
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.ScrollingMovementMethod
 import android.text.style.StyleSpan
@@ -55,8 +56,8 @@ class FeedCaptionView(
     }
 
     private fun getSpannedActionText(text: String): SpannableString =
-        SpannableString(text).also {
-            it.setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        SpannableString(text).apply {
+            setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
     private fun handleEllipsize() {
@@ -79,13 +80,24 @@ class FeedCaptionView(
                     val newText =
                         fullText.subSequence(
                             0,
-                            lineEndIndex - actionText.length - ELLIPSIS.length - 1
+                            lineEndIndex - actionText.length - ELLIPSIS.length - ADDITIONAL_END_SUBSEQUENCE_LENGTH
                         ).toString()
 
+                    val spannableString = SpannableStringBuilder().apply {
+                        append(newText)
+                        append("$ELLIPSIS ")
+                        append(spannedActionText)
+                    }
+
                     textView.movementMethod = ScrollingMovementMethod.getInstance()
-                    textView.text = "$newText$ELLIPSIS $spannedActionText"
+                    textView.text = spannableString
                 } else if (!isCollapsed) {
-                    textView.text = "$fullText\n$spannedActionText"
+                    val spannableString = SpannableStringBuilder().apply {
+                        append("$fullText\n")
+                        append(spannedActionText)
+                    }
+
+                    textView.text = spannableString
                 }
             }
         })
@@ -94,6 +106,8 @@ class FeedCaptionView(
     companion object {
         private const val MAX_LINES_COLLAPSED = 2
         private const val MAX_LINES_EXPANDED = Int.MAX_VALUE
+
+        private const val ADDITIONAL_END_SUBSEQUENCE_LENGTH = 5
 
         private const val ELLIPSIS = "..."
     }
