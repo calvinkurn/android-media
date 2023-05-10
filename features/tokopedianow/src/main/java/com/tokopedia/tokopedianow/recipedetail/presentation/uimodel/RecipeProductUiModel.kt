@@ -14,6 +14,7 @@ data class RecipeProductUiModel(
     val name: String,
     val quantity: Int = 0,
     val stock: Int,
+    val isVariant: Boolean,
     val minOrder: Int,
     val maxOrder: Int,
     val priceFmt: String,
