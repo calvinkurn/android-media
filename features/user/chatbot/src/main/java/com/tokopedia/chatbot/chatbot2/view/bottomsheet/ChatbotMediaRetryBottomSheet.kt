@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class ChatbotMediaRetryBottomSheet() : BottomSheetUnify() {
+class ChatbotMediaRetryBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetChatbotRetryUploadMediaBinding>()
     private var retryAdapter: MediaRetryBottomSheetAdapter? = null
