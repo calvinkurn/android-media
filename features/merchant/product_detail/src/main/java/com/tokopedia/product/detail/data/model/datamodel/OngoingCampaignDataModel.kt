@@ -19,8 +19,8 @@ data class OngoingCampaignDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is OngoingCampaignDataModel &&
-            type == newData.type &&
-            name == newData.name
+            data?.hashCode() == newData.data?.hashCode() &&
+            upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
     }
 
     override fun newInstance(): DynamicPdpDataModel = this.copy()
