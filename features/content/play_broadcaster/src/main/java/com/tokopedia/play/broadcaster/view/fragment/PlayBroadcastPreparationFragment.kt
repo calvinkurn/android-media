@@ -530,7 +530,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun getCoachMarkSwitchAccountPoint(): CoachMark2Item? {
+    private fun getCoachMarkSwitchAccount(): CoachMark2Item? {
         val isSwitchAccountCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)
         if (!isSwitchAccountCoachMarkShown) return null
 
@@ -821,7 +821,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         if (parentViewModel.isAllowChangeAccount) {
-            val coachMark = getCoachMarkSwitchAccountPoint()
+            val coachMark = getCoachMarkSwitchAccount()
             if (coachMark != null) setupCoachMark(coachMark)
         }
     }
@@ -1237,7 +1237,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
         private const val PAGE_NAME = "prep page"
-        private const val HALF_DIVED = 2
         private const val REQ_PLAY_SHORTS = 12323
     }
 
