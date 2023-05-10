@@ -1,6 +1,7 @@
 package com.tokopedia.sellerfeedback.presentation.util
 
 import android.content.Context
+import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
 import com.tokopedia.sellerfeedback.R
 
 /**

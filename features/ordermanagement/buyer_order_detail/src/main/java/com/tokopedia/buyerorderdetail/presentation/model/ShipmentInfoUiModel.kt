@@ -69,7 +69,8 @@ data class ShipmentInfoUiModel(
         val name: String,
         val phoneNumber: String,
         val photoUrl: String,
-        val plateNumber: String
+        val plateNumber: String,
+        val buttonList: List<Button>
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -82,6 +83,13 @@ data class ShipmentInfoUiModel(
         override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
             return null
         }
+
+        data class Button (
+            val key: String,
+            val icon: String,
+            val actionValue: String,
+            val value: String
+        )
     }
 
     data class DriverTippingInfoUiModel(

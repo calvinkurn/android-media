@@ -4,7 +4,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
 
 object ProductCardMapper {
@@ -29,7 +29,7 @@ object ProductCardMapper {
                 parentId = parentId,
                 headerName = headerName,
                 categoryBreadcrumbs = product.categoryBreadcrumbs,
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = productId,
                     imageUrl = product.imageUrl,
                     minOrder = product.minOrder,
@@ -53,9 +53,9 @@ object ProductCardMapper {
         }
     }
 
-    private fun mapLabelGroup(item: RecommendationItem): List<TokoNowProductCardViewUiModel.LabelGroup> {
+    private fun mapLabelGroup(item: RecommendationItem): List<ProductCardCompactUiModel.LabelGroup> {
         return item.labelGroupList.map {
-            TokoNowProductCardViewUiModel.LabelGroup(it.position, it.title, it.type, it.imageUrl)
+            ProductCardCompactUiModel.LabelGroup(it.position, it.title, it.type, it.imageUrl)
         }
     }
 }

@@ -132,7 +132,7 @@ object ShipmentInfoUiStateMapper {
                 orderId,
                 resourceProvider
             ),
-            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
+            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(
                 driverTippingInfo,
                 resourceProvider
@@ -180,14 +180,30 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapCourierDriverInfoUiModel(
-        driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver
+        shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment
     ): ShipmentInfoUiModel.CourierDriverInfoUiModel {
+        val driver = shipment.driver
+        val buttonList = mapDriverButtonUiModel(shipment.buttons)
         return ShipmentInfoUiModel.CourierDriverInfoUiModel(
             name = driver.name,
             phoneNumber = driver.phone,
             photoUrl = driver.photoUrl,
-            plateNumber = driver.licenseNumber
+            plateNumber = driver.licenseNumber,
+            buttonList = buttonList
         )
+    }
+
+    private fun mapDriverButtonUiModel(
+        buttons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Button>
+    ): List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> {
+        return buttons.map { button ->
+            ShipmentInfoUiModel.CourierDriverInfoUiModel.Button(
+                key = button.key,
+                icon = button.icon,
+                actionValue = button.actionType,
+                value = button.value
+            )
+        }
     }
 
     private fun mapDriverTippingInfoUiModel(

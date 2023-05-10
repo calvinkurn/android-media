@@ -234,6 +234,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
                     recyclerView?.addItemDecoration(it)
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -324,6 +327,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         when(element.productBundling.ctaBundling?.isDisabled) {
             false -> bindActiveButton(button, element)
             true -> bindDisabledButton(button)
+            else -> {
+                //no-op
+            }
         }
     }
 
