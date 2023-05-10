@@ -35,7 +35,18 @@ import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
-
+/**
+ * @param text: Text to be displayed on the button
+ * @param variant: To determine the main appearance of button
+ * @param size: To determine the button size height
+ * @param isEnabled: To determine whether button should be enabled or not
+ * @param isLoading: Determine if button is in loading state or not. If isLoading = true, circular progress bar will be displayed in the middle of button
+ * @param isClickable: Determine if button should clickable or not. isClickable = false will make button non-clickable
+ * @param loadingText: Text to be displayed on the button when button is in loading state
+ * @param rightLoader: If rightLoader = true, progress bar will appear on the right side of button when we're on loading state.
+ *                     If rightLoader = false then progress bar will be displayed on the left side
+ * @param onClick: Contains action that should be executed when button tapped/clicked
+ */
 @Composable
 fun NestButton(
     modifier: Modifier = Modifier,
@@ -422,6 +433,7 @@ private fun NestDefaultButton(
         ) {
 
             if (isLoading && !rightLoader) {
+                //TODO: Replace loader with NestLoader
                 CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
             }
 
@@ -437,6 +449,7 @@ private fun NestDefaultButton(
             )
 
             if (isLoading && rightLoader) {
+                //TODO: Replace loader with NestLoader
                 CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
             }
         }
