@@ -16,6 +16,7 @@ import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 
 class ManageAddressRobot {
@@ -71,6 +72,10 @@ class ResultRobot {
         dataKey?.let {
             assertThat(activityRule.activityResult, hasResultData(hasExtraWithKey(it)))
         }
+    }
+
+    fun hasDisplayedText(s: String) {
+        onView(withText(containsString(s))).check(matches(isDisplayed()))
     }
 
     fun hasDisplayedText(sId: Int) {

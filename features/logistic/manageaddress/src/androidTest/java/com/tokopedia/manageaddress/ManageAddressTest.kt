@@ -33,6 +33,9 @@ class ManageAddressTest {
     @Inject
     lateinit var fakeGql: FakeGraphqlUseCase
 
+    @Inject
+    lateinit var fakeRepo: FakeGraphqlRepository
+
     @Before
     fun setup() {
         val stub = ActivityComponentFactoryStub()
@@ -67,7 +70,7 @@ class ManageAddressTest {
     }
 
     @Test
-    fun shareAddressTest() {
+    fun shareAddress_positiveFlow() {
         manageAddress {
             val i = Intent()
             launchWithParam(mActivityTestRule, i)
@@ -76,6 +79,21 @@ class ManageAddressTest {
             clickAgreeButton()
         } submit {
             hasDisplayedText(R.string.success_share_address)
+        }
+    }
+
+    @Test
+    fun shareAddress_negativeFlow() {
+        manageAddress {
+            val i = Intent()
+            launchWithParam(mActivityTestRule, i)
+            clickShareIconOnPosition(0)
+            typeEmailThenSubmit("0812345678")
+            fakeRepo.shareAddressNegative = true
+            clickAgreeButton()
+        } submit {
+            // Error toast is displayed and bottomsheet is dismissed
+            hasDisplayedText("something was wrong")
         }
     }
 
