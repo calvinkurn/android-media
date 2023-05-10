@@ -63,8 +63,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -128,8 +133,10 @@ class NotificationViewModelTest {
         dispatcher
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         viewModel.notificationItems.observeForever(notificationItemsObserver)
         viewModel.recommendations.observeForever(recommendationsObserver)
         viewModel.deleteReminder.observeForever(deleteReminderObserver)
@@ -309,7 +316,7 @@ class NotificationViewModelTest {
         viewModel.loadFirstPageNotification(role)
 
         // then
-        verify {
+        coVerify {
             notificationItemsObserver.onChanged(Success(notifResponse))
         }
         assertNotNull(viewModel.affiliateEducationArticle.value)
@@ -740,7 +747,6 @@ class NotificationViewModelTest {
             .productRecommendationWidget
             .data
             .mappingToRecommendationModel()
-
 
         val expectedValue = listOfRecommWidget.first()
 
@@ -1177,8 +1183,10 @@ class NotificationViewModelTest {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         viewModel.cancelAllUseCase()
     }
 
