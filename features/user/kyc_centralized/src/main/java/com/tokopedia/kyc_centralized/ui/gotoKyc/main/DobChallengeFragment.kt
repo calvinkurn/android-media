@@ -20,6 +20,7 @@ import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -28,6 +29,8 @@ import javax.inject.Inject
 class DobChallengeFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentGotoKycDobChallengeBinding>()
+
+    private var selectedDate = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,7 +78,9 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
         binding?.btnConfirmation?.setOnClickListener {
             viewModel.submitChallenge(
-                viewModel.getChallenge.value?.questionId.orEmpty()
+                challengeId = args.parameter.challengeId,
+                questionId = viewModel.getChallenge.value?.questionId.orEmpty(),
+                selectedDate = selectedDate
             )
         }
     }
@@ -94,6 +99,26 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     showToaster(message.orEmpty())
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
+                }
+            }
+        }
+
+        viewModel.submitChallenge.observe(viewLifecycleOwner) {
+            when (it) {
+                is SubmitChallengeResult.Loading -> {
+                    setButtonLoading(true)
+                }
+                is SubmitChallengeResult.Success -> {
+                    setButtonLoading(false)
+                    gotoFinalLoader()
+                }
+                is SubmitChallengeResult.Failed -> {
+                    setButtonLoading(false)
+                    val message = it.throwable?.getMessage(requireContext())
+                    binding?.fieldDob?.apply {
+                        isInputError = true
+                        setMessage(message.orEmpty())
+                    }
                 }
             }
         }
@@ -152,15 +177,27 @@ class DobChallengeFragment : BaseDaggerFragment() {
                 selectedDatePicker.get(Calendar.MONTH) + 1,
                 selectedDatePicker.get(Calendar.YEAR)
             )
+            this.selectedDate = selectedDate
             val date = DateFormatUtils.formatDate(
                 DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, selectedDate
             )
             binding?.fieldDob?.editText?.setText(date)
             binding?.btnConfirmation?.isEnabled = true
+            binding?.fieldDob?.apply {
+                isInputError = false
+            }
             datePicker.dismiss()
         }
 
         datePicker.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
+    }
+
+    private fun gotoFinalLoader() {
+        //TODO: goto final loader
+    }
+
+    private fun setButtonLoading(isLoading: Boolean) {
+        binding?.btnConfirmation?.isLoading = isLoading
     }
 
     private fun showToaster(message: String) {
