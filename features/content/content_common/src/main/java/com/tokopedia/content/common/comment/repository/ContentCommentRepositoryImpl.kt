@@ -1,25 +1,18 @@
 package com.tokopedia.content.common.comment.repository
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.CommentUiModelMapper
 import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.uimodel.CommentType
-import com.tokopedia.content.common.comment.uimodel.CommentUiModel
-import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
-import com.tokopedia.content.common.comment.uimodel.UserType
-import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
-import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
-import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
+import com.tokopedia.content.common.comment.uimodel.*
+import com.tokopedia.content.common.comment.usecase.*
+import com.tokopedia.content.common.comment.usecase.CommentParam
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 08/02/23
  */
 class ContentCommentRepositoryImpl @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
     private val mapper: CommentUiModelMapper,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val postCommentUseCase: PostCommentUseCase,
@@ -27,32 +20,29 @@ class ContentCommentRepositoryImpl @Inject constructor(
     private val getCommentsUseCase: GetCommentsUseCase
 ) : ContentCommentRepository {
 
-    override suspend fun deleteComment(commentId: String): Boolean = withContext(dispatchers.io) {
-        val response = deleteCommentUseCase.apply {
-            setRequestParams(DeleteCommentUseCase.setParam(commentId))
-        }.executeOnBackground().data.status.success == DeleteCommentUseCase.SUCCESS_VALUE
-        return@withContext response
-    }
+    override suspend fun deleteComment(commentId: String): Boolean =
+        deleteCommentUseCase(
+            DeleteParam(commentId)
+        ).data.status.success == DeleteCommentUseCase.SUCCESS_VALUE
 
     override suspend fun replyComment(
         source: PageSource,
         commentType: CommentType,
         comment: String,
         commenterType: UserType
-    ): CommentUiModel.Item = withContext(dispatchers.io) {
+    ): CommentUiModel.Item {
         val type =
             if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
-        val response = postCommentUseCase.apply {
-            setRequestParams(
-                PostCommentUseCase.setParam(
-                    source = source,
-                    commentType = commentType,
-                    comment = comment,
-                    commenterType = type
-                )
+        val response = postCommentUseCase(
+            PostCommentParam(
+                comment = comment,
+                contentID = source.id,
+                contentType = source.type,
+                commentParentId = commentType.parentId,
+                commenterType = type.value,
             )
-        }.executeOnBackground()
-        return@withContext mapper.mapNewComment(
+        )
+        return mapper.mapNewComment(
             response.parent.data,
             commenterType
         )
@@ -60,24 +50,22 @@ class ContentCommentRepositoryImpl @Inject constructor(
 
     override suspend fun reportComment(
         param: FeedReportRequestParamModel
-    ): Boolean = withContext(dispatchers.io) {
-        val response = submitReportCommentUseCase.apply {
-            setRequestParams(
-                FeedComplaintSubmitReportUseCase.createParam(param)
-            )
-        }.executeOnBackground().data.success
-        return@withContext response
-    }
+    ): Boolean = submitReportCommentUseCase(param).data.success
 
     override suspend fun getComments(
         source: PageSource,
         commentType: CommentType,
         cursor: String
-    ): CommentWidgetUiModel =
-        withContext(dispatchers.io) {
-            val response = getCommentsUseCase.apply {
-                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentType))
-            }.executeOnBackground()
-            return@withContext mapper.mapComments(response)
-        }
+    ): CommentWidgetUiModel {
+        val response = getCommentsUseCase(
+            CommentParam(
+                contentId = source.id,
+                contentType = source.type,
+                cursor = cursor,
+                limit = if (commentType.isParent) GetCommentsUseCase.PARAM_LIMIT_PARENT_VALUE else GetCommentsUseCase.PARAM_LIMIT_CHILD_VALUE,
+                commentParentId = commentType.parentId,
+            )
+        )
+        return mapper.mapComments(response)
+    }
 }

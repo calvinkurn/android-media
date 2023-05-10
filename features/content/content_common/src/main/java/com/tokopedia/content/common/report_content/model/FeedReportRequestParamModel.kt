@@ -12,4 +12,12 @@ data class FeedReportRequestParamModel(
     val reason: String,
     @SerializedName("reasonDetails")
     val reasonDetails: String
-)
+) {
+    fun convertToMap() : Map<String, Any> =
+        mapOf(
+            FeedComplaintSubmitReportUseCase.PARAM_REPORT_TYPE to reportType,
+            FeedComplaintSubmitReportUseCase.PARAM_CONTENT_ID to contentId,
+            FeedComplaintSubmitReportUseCase.PARAM_REASON to reason,
+            FeedComplaintSubmitReportUseCase.PARAM_REASON_DETAILS to reasonDetails
+        )
+}
