@@ -25,10 +25,6 @@ class FakeGraphqlRepository(private val context: Context, private val gson: Gson
         gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_save_share_address), SaveShareAddressResponse::class.java)
     }
 
-    private val selectAddressForShareResponse: SelectShareAddressResponse by lazy {
-        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_select_address_for_share), SelectShareAddressResponse::class.java)
-    }
-
     private val sendShareAddressReqResponse: KeroShareAddrRequestResponse by lazy {
         gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_send_share_address_request), KeroShareAddrRequestResponse::class.java)
     }
