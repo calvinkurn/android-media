@@ -53,6 +53,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.map
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.sortRepurchaseProduct
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
@@ -429,7 +430,7 @@ object HomeLayoutMapper {
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
                 val quantity = getAddToCartQuantity(productId, miniCartData)
-                updateProductQuantity(productId, quantity, type)
+                updateProductQuantity(productId, quantity, miniCartData, type)
             }
         }
     }
@@ -438,10 +439,11 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel?>.updateProductQuantity(
         productId: String,
         quantity: Int,
+        miniCartData: MiniCartSimplifiedData?,
         @TokoNowLayoutType type: String
     ) {
         when (type) {
-            REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
+            REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity, miniCartData)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
             MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
         }
@@ -465,12 +467,12 @@ object HomeLayoutMapper {
                         if (model.parentId != DEFAULT_PARENT_ID) {
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY, miniCartData)
                             } else {
-                                updateRepurchaseProductQuantity(model.productId, totalQuantity)
+                                updateRepurchaseProductQuantity(model.productId, totalQuantity, miniCartData)
                             }
                         } else {
-                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY, miniCartData)
                         }
                     }
                 }
@@ -561,7 +563,8 @@ object HomeLayoutMapper {
 
     private fun MutableList<HomeLayoutItemUiModel?>.updateRepurchaseProductQuantity(
         productId: String,
-        quantity: Int
+        quantity: Int,
+        miniCartData: MiniCartSimplifiedData?
     ) {
         firstOrNull { it?.layout is TokoNowRepurchaseUiModel }?.run {
             val layoutUiModel = layout as TokoNowRepurchaseUiModel
@@ -574,9 +577,10 @@ object HomeLayoutMapper {
             productUiModel?.run {
                 copy(orderQuantity = quantity)
             }?.let {
-                updateItemById(layout.getVisitableId()) {
+                updateItemById(layoutUiModel.getVisitableId()) {
                     productList[index] = it
-                    copy(layout = layoutUiModel.copy(productList = productList))
+                    val sortedProductList = sortRepurchaseProduct(productList, miniCartData)
+                    copy(layout = layoutUiModel.copy(productList = sortedProductList))
                 }
             }
         }

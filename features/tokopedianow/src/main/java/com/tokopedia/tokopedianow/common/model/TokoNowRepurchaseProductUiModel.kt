@@ -29,6 +29,7 @@ data class TokoNowRepurchaseProductUiModel(
     val needToShowQuantityEditor: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
+    val originalPosition: Int = 0,
     val position: Int = 0,
     /**
      * Optional params

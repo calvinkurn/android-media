@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
@@ -31,7 +32,27 @@ object HomeRepurchaseMapper {
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(item.id, response, miniCartData)
-        return item.copy(title = response.title, productList = productList, state = state)
+        val sortedProductList = sortRepurchaseProduct(productList, miniCartData)
+        return item.copy(title = response.title, productList = sortedProductList, state = state)
+    }
+
+    fun sortRepurchaseProduct(
+        productList: List<TokoNowRepurchaseProductUiModel>,
+        miniCartData: MiniCartSimplifiedData?
+    ): List<TokoNowRepurchaseProductUiModel> {
+        val productsInCart = productList.filter {
+            getAddToCartQuantity(it.productId, miniCartData) != DEFAULT_QUANTITY
+        }.sortedBy { it.originalPosition }
+
+        val productsNotInCart = productList.filter {
+            getAddToCartQuantity(it.productId, miniCartData) == DEFAULT_QUANTITY
+        }.sortedBy { it.originalPosition }
+
+        val sortedProductList = (productsNotInCart + productsInCart).mapIndexed { index, item ->
+            item.copy(position = index + ADDITIONAL_POSITION)
+        }
+
+        return sortedProductList
     }
 
     private fun mapToProductCardUiModel(
@@ -59,6 +80,7 @@ object HomeRepurchaseMapper {
                 labelGroupList = mapLabelGroup(product),
                 isVariant = product.isVariant(),
                 position = index + ADDITIONAL_POSITION,
+                originalPosition = index + ADDITIONAL_POSITION,
                 headerName = response.title,
                 needToShowQuantityEditor = true
             )

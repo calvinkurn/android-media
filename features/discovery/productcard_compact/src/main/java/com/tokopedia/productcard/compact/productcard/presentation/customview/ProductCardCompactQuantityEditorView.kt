@@ -229,12 +229,16 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun loadLayoutDescription() {
-        val scene = if(enableQuantityEditor) {
-            R.xml.layout_product_card_compact_quantity_editor_custom_view_scene
+        val animScene = R.xml.layout_product_card_compact_quantity_editor_custom_view_scene
+
+        if(enableQuantityEditor) {
+            binding.root.loadLayoutDescription(animScene)
         } else {
-            R.xml.layout_product_card_compact_quantity_editor_no_anim_view_scene
+            val scene = R.xml.layout_product_card_compact_quantity_editor_no_anim_view_scene
+            binding.root.getTransition(animScene)?.setEnable(false)
+            binding.root.loadLayoutDescription(scene)
         }
-        binding.root.loadLayoutDescription(scene)
+
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showCheckMarkIcon() {

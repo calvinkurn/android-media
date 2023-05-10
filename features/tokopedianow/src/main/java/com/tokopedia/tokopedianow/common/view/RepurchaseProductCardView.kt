@@ -41,9 +41,7 @@ class RepurchaseProductCardView @JvmOverloads constructor(
         view.quantityEditor.onClickAddVariantListener = onClickAddVariantListener
     }
 
-    fun setQuantity(
-        model: TokoNowRepurchaseProductUiModel
-    ) {
+    fun setQuantity(model: TokoNowRepurchaseProductUiModel) {
         view.quantityEditor.setQuantity(model.orderQuantity)
     }
 

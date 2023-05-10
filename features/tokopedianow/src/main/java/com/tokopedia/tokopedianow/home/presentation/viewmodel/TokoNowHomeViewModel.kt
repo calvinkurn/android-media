@@ -35,7 +35,6 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -466,20 +465,20 @@ class TokoNowHomeViewModel @Inject constructor(
             shopId = shopId,
             quantity = quantity,
             onSuccessAddToCart = {
-                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateProductCartQuantity(productId, quantity, type)
                 checkRealTimeRecommendation(channelId, productId, type)
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = { miniCartItem, _ ->
                 val cartId = miniCartItem.cartId
-                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateProductCartQuantity(productId, quantity, type)
+                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = { miniCartItem, _ ->
-                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateToolbarNotification()
             },
             onError = {
@@ -1033,7 +1032,7 @@ class TokoNowHomeViewModel @Inject constructor(
         quantity: Int,
         @TokoNowLayoutType type: String
     ) {
-        homeLayoutItemList.updateProductQuantity(productId, quantity, type)
+        homeLayoutItemList.updateProductQuantity(productId, quantity, miniCartData, type)
 
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),
