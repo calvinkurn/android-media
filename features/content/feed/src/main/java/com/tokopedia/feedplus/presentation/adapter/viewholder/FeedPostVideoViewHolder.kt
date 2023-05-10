@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -125,7 +126,15 @@ class FeedPostVideoViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        !data.editable,
+                        data.editable,
+                        data.deletable,
+                        data.reportable,
+                        FeedContentData(
+                            data.text,
+                            data.id,
+                            data.author.id,
+                            absoluteAdapterPosition
+                        ),
                         trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                             data
                         )

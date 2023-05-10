@@ -136,4 +136,10 @@ dari Feed.</string>
 
     <string name="feed_product_list_bottom_sheet_title">Produk pilihan</string>
 
+    <!-- Delete Post-->
+    <string name="dialog_delete_post_title">Yakin ingin hapus konten?</string>
+    <string name="dialog_delete_post_subtitle">Konten ini akan hilang dari Halamanmu jika dihapus, lho.</string>
+    <string name="toast_delete_post_success">Konten berhasil dihapus</string>
+    <string name="toast_delete_post_failed">Oops, gagal menghapus konten. Coba lagi, ya</string>
+
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -25,6 +26,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -61,6 +63,7 @@ class FeedPostViewModel @Inject constructor(
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
+    private val deletePostUseCase: SubmitActionContentUseCase,
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
@@ -86,6 +89,10 @@ class FeedPostViewModel @Inject constructor(
     private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
     val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
         get() = _likeKolResp
+
+    private val _deletePostResult = MutableLiveData<Result<Int>>()
+    val deletePostResult: LiveData<Result<Int>>
+        get() = _deletePostResult
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
@@ -382,6 +389,31 @@ class FeedPostViewModel @Inject constructor(
                 _likeKolResp.value = FeedResult.Success(mappedResponse)
             } catch (it: Throwable) {
                 _likeKolResp.value = FeedResult.Failure(it)
+            }
+        }
+    }
+
+    fun doDeletePost(id: String, rowNumber: Int) {
+        viewModelScope.launch {
+            try {
+                deletePostUseCase.setRequestParams(
+                    SubmitActionContentUseCase.paramToDeleteContent(
+                        id
+                    )
+                )
+
+                val isSuccess = withContext(dispatchers.io) {
+                    deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+                }
+
+                _deletePostResult.value = if (isSuccess) {
+                    Success(rowNumber)
+                } else {
+                    throw MessageErrorException()
+                }
+
+            } catch (t: Throwable) {
+                _deletePostResult.value = Fail(t)
             }
         }
     }

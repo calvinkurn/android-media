@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
+import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -7,7 +8,12 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 
 interface FeedListener {
-    fun onMenuClicked(id: String, showReport: Boolean, trackerModel: FeedTrackerDataModel)
+    fun onMenuClicked(id: String,
+                      editable: Boolean,
+                      deletable: Boolean,
+                      reportable: Boolean,
+                      contentData: FeedContentData,
+                      trackerModel: FeedTrackerDataModel)
     fun onFollowClicked(
         id: String,
         encryptedId: String,
