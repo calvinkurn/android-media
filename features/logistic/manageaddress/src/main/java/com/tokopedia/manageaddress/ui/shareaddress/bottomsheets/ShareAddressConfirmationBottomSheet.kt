@@ -143,17 +143,13 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     private fun onClickBtnShare() {
-        viewModel.isApprove = true
-
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
-                SelectShareAddressParam(
-                    SelectShareAddressParam.SelectShareAddressData(
-                        receiverUserId = receiverUserId.orEmpty(),
-                        senderAddressId = senderAddressId.orEmpty(),
-                        approve = true,
-                        source = source
-                    )
+                SelectShareAddressParam.Param(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = true,
+                    source = source
                 )
             )
         } else {
@@ -171,16 +167,12 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     private fun onClickBtnCancel() {
-        viewModel.isApprove = false
-
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
-                SelectShareAddressParam(
-                    SelectShareAddressParam.SelectShareAddressData(
-                        receiverUserId = receiverUserId.orEmpty(),
-                        senderAddressId = senderAddressId.orEmpty(),
-                        approve = false
-                    )
+                SelectShareAddressParam.Param(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = false
                 )
             )
         } else {

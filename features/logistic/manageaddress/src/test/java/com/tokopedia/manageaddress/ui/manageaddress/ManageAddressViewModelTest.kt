@@ -38,9 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,7 +75,6 @@ class ManageAddressViewModelTest {
         mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
-
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
@@ -91,7 +88,8 @@ class ManageAddressViewModelTest {
             chooseAddressMapper,
             eligibleForAddressUseCase,
             validateShareAddressAsReceiverUseCase,
-            validateShareAddressAsSenderUseCase
+            validateShareAddressAsSenderUseCase,
+            mockk(relaxed = true)
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -197,7 +195,7 @@ class ManageAddressViewModelTest {
             SetDefaultPeopleAddressGqlResponse(
                 SetDefaultPeopleAddressResponse(
                     status = ManageAddressConstant.STATUS_OK,
-                    data = DefaultPeopleAddressData(success = 1),
+                    data = DefaultPeopleAddressData(success = 1)
                 )
             )
         )
@@ -205,7 +203,6 @@ class ManageAddressViewModelTest {
         coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } returns mockDefaultPeopleAddressGqlResponse
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
         verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Success }) }
-
     }
 
     @Test
@@ -248,7 +245,6 @@ class ManageAddressViewModelTest {
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
 
-
     @Test
     fun `Get Chosen Address Fail`() {
         coEvery {
@@ -268,7 +264,6 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
-
 
     @Test
     fun `Set Chosen Address Fail`() {
@@ -558,7 +553,6 @@ class ManageAddressViewModelTest {
         assertEquals(manageAddressViewModel.senderUserId, suid)
         assertFalse(manageAddressViewModel.isFromMoneyIn)
     }
-
 
     @Test
     fun `verify when source from money in is correct`() {

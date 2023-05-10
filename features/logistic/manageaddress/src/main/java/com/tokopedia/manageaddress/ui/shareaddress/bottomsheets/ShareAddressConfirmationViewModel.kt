@@ -31,8 +31,6 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     val loading: LiveData<LoadingState>
         get() = _loading
 
-    var isApprove = false
-
     fun shareAddress(param: ShareAddressToUserParam) {
         launchCatchError(
             block = {
@@ -56,10 +54,10 @@ class ShareAddressConfirmationViewModel @Inject constructor(
         )
     }
 
-    fun shareAddressFromNotif(param: SelectShareAddressParam) {
+    fun shareAddressFromNotif(param: SelectShareAddressParam.Param) {
         launchCatchError(
             block = {
-                if (param.param.approve) {
+                if (param.approve) {
                     _loading.value = LoadingState.AgreeLoading
                 } else {
                     _loading.value = LoadingState.DisagreeLoading
@@ -68,11 +66,11 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 if (result.isSuccess) {
                     _toastEvent.value = Toast.Success
                 } else {
-                    if (param.param.approve) {
+                    if (param.approve) {
                         _toastEvent.value = Toast.Error(result.errorMessage)
                     }
                 }
-                if (param.param.approve) {
+                if (param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
@@ -84,7 +82,7 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 _loading.value = LoadingState.NotLoading
                 _toastEvent.value = Toast.Error(it.message.orEmpty())
                 _dismissEvent.call()
-                if (param.param.approve) {
+                if (param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(false)
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
