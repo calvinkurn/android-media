@@ -18,6 +18,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -83,6 +86,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             // reload
             createSuccessGetBuyerOrderDetailDataResult {
+                advanceUntilIdle()
                 uiStateBeforeSuccessReloading = uiStates.last()
             }
 
@@ -111,6 +115,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
+            advanceUntilIdle()
 
             coVerify {
                 finishOrderUseCase.execute(expectedParams)
@@ -130,7 +135,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -148,7 +153,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -169,6 +174,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.finishOrder()
+                advanceUntilIdle()
 
                 val result = viewModel.finishOrderResult.value as Fail
                 assertTrue(result.throwable is MessageErrorException)
