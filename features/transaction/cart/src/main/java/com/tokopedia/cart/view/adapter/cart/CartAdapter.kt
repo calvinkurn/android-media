@@ -33,6 +33,8 @@ import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
@@ -889,16 +891,16 @@ class CartAdapter constructor(
         return null
     }
 
-    fun getCartGroupHolderDataAndIndexByCartString(cartString: String): Pair<Int, List<Any>> {
+    fun getCartGroupHolderDataAndIndexByCartString(cartString: String, isUnavailableGroup: Boolean): Pair<Int, List<Any>> {
         val cartGroupList = arrayListOf<Any>()
         var startingIndex = RecyclerView.NO_POSITION
         for ((index, data) in cartDataList.withIndex()) {
-            if (data is CartGroupHolderData && data.cartString == cartString) {
+            if (data is CartGroupHolderData && data.cartString == cartString && data.isError == isUnavailableGroup) {
                 startingIndex = index
                 cartGroupList.add(data)
-            } else if (data is CartItemHolderData && data.cartString == cartString) {
+            } else if (data is CartItemHolderData && startingIndex >= 0 && data.cartString == cartString) {
                 cartGroupList.add(data)
-            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartString) {
+            } else if (data is CartShopBottomHolderData && startingIndex >= 0 && data.shopData.cartString == cartString) {
                 cartGroupList.add(data)
                 break
             }
@@ -1096,6 +1098,7 @@ class CartAdapter constructor(
                             toBeRemovedIndices.add(index)
                         } else {
                             // update selection
+                            data.productUiModelList.last().isFinalItem = true
                             updateShopShownByCartGroup(data)
                             data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
                             data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
@@ -1395,26 +1398,22 @@ class CartAdapter constructor(
                     if (data.isAllSelected != cheked) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
-                        indices.add(index)
+                        notifyItemChanged(index)
                     }
                 }
                 is CartItemHolderData -> {
                     if (!data.isError) {
                         if (data.isSelected != cheked) {
                             data.isSelected = cheked
-                            indices.add(index)
+                            notifyItemChanged(index)
                         }
                     } else {
                         return@forEachIndexed
                     }
                 }
                 is CartShopBottomHolderData -> {
-                    if (data.shopData.isAllSelected != cheked) {
-                        data.shopData.isAllSelected = cheked
-                        data.shopData.isPartialSelected = false
-                        indices.add(index)
-                        actionListener.checkCartShopGroupTicker(data.shopData)
-                    }
+                    data.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
+                    notifyItemChanged(index)
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
                     return@forEachIndexed
@@ -1422,9 +1421,9 @@ class CartAdapter constructor(
             }
         }
 
-        indices.forEach {
-            notifyItemChanged(it)
-        }
+//        indices.forEach {
+//            notifyItemChanged(it)
+//        }
     }
 
     fun isAllAvailableItemCheked(): Boolean {
