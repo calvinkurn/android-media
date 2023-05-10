@@ -337,10 +337,8 @@ class UserProfileFragment @Inject constructor(
 
     private fun initListener() {
         mainBinding.apply {
-            layoutUserProfileStats.textFollowingLabel.setOnClickListener { goToFollowingFollowerPage(false) }
-            layoutUserProfileStats.textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
-            layoutUserProfileStats.textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
-            layoutUserProfileStats.textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+            layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(isFollowers = true) }
+            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(isFollowers =false) }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
@@ -580,7 +578,8 @@ class UserProfileFragment @Inject constructor(
             layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
             layoutUserProfileStats.textFollowingCount.text = curr.stats.totalFollowingFmt
 
-            layoutUserProfileStats.textReviewCount.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
+            layoutUserProfileStats.llReview.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
+            layoutUserProfileStats.viewReviewDivider.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
