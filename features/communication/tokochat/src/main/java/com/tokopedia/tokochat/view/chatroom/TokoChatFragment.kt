@@ -1035,6 +1035,13 @@ open class TokoChatFragment :
         element: TokoChatReminderTickerUiModel,
         linkUrl: String
     ) {
+        if (element.tag == BUBBLES_NOTIF) {
+            tokoChatAnalytics.clickCheckHereOnBoardingTicker(
+                orderId = viewModel.tkpdOrderId,
+                source = viewModel.source,
+                role = TokoChatAnalyticsConstants.BUYER
+            )
+        }
         if (linkUrl.isNotEmpty()) {
             context?.let {
                 RouteManager.route(it, linkUrl)
@@ -1046,9 +1053,14 @@ open class TokoChatFragment :
         if (position == adapter.itemCount) {
             mapper.setFirstTicker(null)
         }
-        if (position == Int.ZERO && element.tag == BUBBLES_NOTIF) {
+        if (element.tag == BUBBLES_NOTIF) {
             mapper.setBubbleTicker(null)
             viewModel.setBubblesClose()
+            tokoChatAnalytics.clickCloseOnBoardingTicker(
+                orderId = viewModel.tkpdOrderId,
+                source = viewModel.source,
+                role = TokoChatAnalyticsConstants.BUYER
+            )
         }
         adapter.removeItem(element)
         adapter.notifyItemRemoved(position)
