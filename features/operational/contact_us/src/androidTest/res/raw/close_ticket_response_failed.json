@@ -1,0 +1,6 @@
+{
+  "chipCloseTicketByUser": {
+    "data": null,
+    "messageError": ["Failed close user"]
+  }
+}

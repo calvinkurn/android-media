@@ -1,0 +1,8 @@
+{
+  "chipSubmitRatingCSAT": {
+    "data": {
+      "isSuccess": 0
+    },
+    "messageError": ["Failed to send Rating"]
+  }
+}

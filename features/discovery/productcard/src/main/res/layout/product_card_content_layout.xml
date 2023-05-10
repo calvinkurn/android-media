@@ -539,6 +539,23 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewInlineETA"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_text_view_eta_height"
+        android:layout_marginStart="@dimen/product_card_text_view_inline_eta_margin_start"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/imageFreeOngkirPromo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/imageFreeOngkirPromo"
+        app:layout_constraintTop_toTopOf="@id/imageFreeOngkirPromo"
+        app:typographyType="body_3"
+        tools:text="Tiba 28 Feb - 1 Mar"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShipping"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_view_shipping_height"

@@ -1,14 +1,13 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
-import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.domain.StepTwoResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Param
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
-
-const val FILE_UPLOADED = "fileUploaded"
-const val POST_KEY = "postKey"
-const val TICKETID = "ticketID"
 
 private const val TICKET_REPLY_ATTACH: String = """
     mutation ticketReplyAttach(${'$'}ticketID: String, ${'$'}userID: String!, ${'$'}postKey: String, ${'$'}fileUploaded: String) {
@@ -20,28 +19,25 @@ private const val TICKET_REPLY_ATTACH: String = """
   }
 }"""
 
-@GqlQuery("TicketReplyAttach", TICKET_REPLY_ATTACH)
-class PostMessageUseCase2 @Inject internal constructor(private val repository: ContactUsRepository) {
-
-    suspend fun getInboxDataResponse(requestParams: RequestParams): StepTwoResponse {
-        return repository.getGQLData(
-            TicketReplyAttach.GQL_QUERY,
-            StepTwoResponse::class.java,
-            requestParams.parameters
-        )
-    }
+class PostMessageUseCase2 @Inject internal constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+): CoroutineUseCase<PostMessage2Param, StepTwoResponse>(dispatchers.io)  {
 
     fun createRequestParams(
         ticketId: String,
         userId: String,
         fileUploaded: String,
         postKey: String
-    ): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(USER_ID, userId)
-        requestParams.putString(FILE_UPLOADED, fileUploaded)
-        requestParams.putString(POST_KEY, postKey)
-        requestParams.putString(TICKETID, ticketId)
-        return requestParams
+    ): PostMessage2Param {
+        return PostMessage2Param(userId, fileUploaded, postKey, ticketId)
+    }
+
+    override fun graphqlQuery(): String {
+        return TICKET_REPLY_ATTACH
+    }
+
+    override suspend fun execute(params: PostMessage2Param): StepTwoResponse {
+        return repository.request(graphqlQuery(), params)
     }
 }

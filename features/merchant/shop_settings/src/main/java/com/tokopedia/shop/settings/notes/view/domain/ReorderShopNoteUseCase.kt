@@ -5,12 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ReorderShopNoteMutation
 import com.tokopedia.usecase.RequestParams
-import java.util.ArrayList
 import javax.inject.Inject
 
 class ReorderShopNoteUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<ReorderShopNoteMutation>(graphqlRepository) {
+) : GraphqlUseCase<ReorderShopNoteMutation>(graphqlRepository) {
 
     companion object {
         const val IDS = "ids"
@@ -32,9 +31,11 @@ class ReorderShopNoteUseCase @Inject constructor(
     }
 
     suspend fun execute(noteIdList: ArrayList<String>): String {
-        setRequestParams(RequestParams.create().apply {
-            putObject(IDS, noteIdList)
-        }.parameters)
+        setRequestParams(
+            RequestParams.create().apply {
+                putObject(IDS, noteIdList)
+            }.parameters
+        )
         executeOnBackground().apply {
             if (graphQLSuccessMessage?.isSuccess == true) {
                 return graphQLSuccessMessage?.message.orEmpty()

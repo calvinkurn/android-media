@@ -1,0 +1,84 @@
+{
+  "chipGetInboxDetail": {
+    "data": {
+      "isSuccess": 1,
+      "tickets": {
+        "id": "5005D000009383CQAQ",
+        "showRating": false,
+        "badCsatReasonList": [
+          {
+            "id": 31,
+            "message": "Kecepatan respons",
+            "messageEn": "Response speed"
+          },
+          {
+            "id": 32,
+            "message": "Kejelasan bahasa",
+            "messageEn": "Language clarity"
+          },
+          {
+            "id": 33,
+            "message": "Waktu penyelesaian",
+            "messageEn": "Problem-solving time"
+          },
+          {
+            "id": 35,
+            "message": "Pemahaman masalah",
+            "messageEn": "Understanding problems"
+          },
+          {
+            "id": 36,
+            "message": "Solusi yang diberikan",
+            "messageEn": "Providing solutions"
+          }
+        ],
+        "comments": [
+          {
+            "id": "a175D000001nticQAA",
+            "create_time": "2023-02-14T10:07:18.000+0000",
+            "message": "<span>Halo, Kak Gaow :) \nTerima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 14 Feb 2023 yang lalu ya.</span><br><br><span style=\"color: #6C727C;\">[17:02] <b>Gaow</b></span><br><span id=\"1676368945923909000\">Pilih Invoice: Pengajuan #111256 ORDER ID: (111256) TYPE (Fintech Insurance)</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">TANYA (Virtual Assistant)</b></span><br><span id=\"1676368947861177000\">Kendala apa yang kamu hadapi untuk transaksi tersebut?</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">System</b></span><br><span>Info dan kendala seputar transaksi Emas</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">TANYA (Virtual Assistant)</b></span><br><span id=\"1676368960464569000\">Tokopedia menyediakan fitur investasi Emas dimulai dengan nominal Rp5000. Kamu bisa mulai investasi atau mempelajari cara menabung Emas dengan klik <a href=\"https://www.tokopedia.com/emas\" target=\"_blank\">di sini</a>, ya.\n</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">TANYA (Virtual Assistant)</b></span><br><span id=\"1676368961420953000\">Klik pilihan di bawah ini untuk informasi lain seputar investasi Emas:\n</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">System</b></span><br><span>Tidak bisa akses tabungan emas Pegadaian</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">TANYA (Virtual Assistant)</b></span><br><span id=\"1676368967353635000\">TANYA infokan saat ini Pegadaian Tabungan Emas belum dapat diakses karena pihak Pegadaian masih melakukan pembaruan sistem hingga Kamis 6 Oktober 2022. Hal tersebut terkait dengan adanya implementasi peraturan registrasi offline (KYC offline) dan biaya titipan dari sisi Pegadaian.\n</span><br><br><span style=\"color: #6C727C;\">[17:02] <b style=\"color: #12883D;\">TANYA (Virtual Assistant)</b></span><br><span id=\"1676368967653640000\">Mohon kesediaannya untuk menunggu dulu ya, kamu bisa cek dashboard Pegadaian Tabungan Emas secara berkala. Terima kasih atas kepercayaannya terhadap Pegadaian Tabungan Emas. Untuk informasi lebih lanjut kamu bisa klik  <a href=\"https://www.tokopedia.com/discovery/finansial-emas-pegadaian\" target=\"_blank\">di sini </a> ya.\n</span><br><br><span style=\"color: #6C727C;\">[17:04] <b>Gaow</b></span><br><span id=\"1676369062244742000\">Haiii jadi saya ingin bertanya tentang bagaimana cara kerja emas</span><br><br><span style=\"color: #6C727C;\">[17:05] <b>Gaow</b></span><br><span id=\"1676369109509414000\">Dan ya itu saja</span>",
+            "message_plaintext": "Halo, Kak Gaow :) Terima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 14 Feb 2023 yang lalu ya.\n\n[17:02] Gaow\nPilih Invoice: Pengajuan #111256 ORDER ID: (111256) TYPE (Fintech Insurance)\n\n[17:02] TANYA (Virtual Assistant)\nKendala apa yang kamu hadapi untuk transaksi tersebut?\n\n[17:02] System\nInfo dan kendala seputar transaksi Emas\n\n[17:02] TANYA (Virtual Assistant)\nTokopedia menyediakan fitur investasi Emas dimulai dengan nominal Rp5000. Kamu bisa mulai investasi atau mempelajari cara menabung Emas dengan klik di sini, ya. \n\n[17:02] TANYA (Virtual Assistant)\nKlik pilihan di bawah ini untuk informasi lain seputar investasi Emas: \n\n[17:02] System\nTidak bisa akses tabungan emas Pegadaian\n\n[17:02] TANYA (Virtual Assistant)\nTANYA infokan saat ini Pegadaian Tabungan Emas belum dapat diakses karena pihak Pegadaian masih melakukan pembaruan sistem hingga Kamis 6 Oktober 2022. Hal tersebut terkait dengan adanya implementasi peraturan registrasi offline (KYC offline) dan biaya titipan dari sisi Pegadaian. \n\n[17:02] TANYA (Virtual Assistant)\nMohon kesediaannya untuk menunggu dulu ya, kamu bisa cek dashboard Pegadaian Tabungan Emas secara berkala. Terima kasih atas kepercayaannya terhadap Pegadaian Tabungan Emas. Untuk informasi lebih lanjut kamu bisa klik di sini ya. \n\n[17:04] Gaow\nHaiii jadi saya ingin bertanya tentang bagaimana cara kerja emas\n\n[17:05] Gaow\nDan ya itu saja",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001ntihQAA",
+            "create_time": "2023-02-14T10:08:52.000+0000",
+            "message": "<p>Hai. Trimakasih telah bertanya kepada kami. Jadi infonya bisa anda tutup dahulu saja ya. Trimakasih</p>",
+            "message_plaintext": "Hai. Trimakasih telah bertanya kepada kami. Jadi infonya bisa anda tutup dahulu saja ya. Trimakasih",
+            "created_by": {
+              "name": "Tim Tokopedia Care",
+              "picture": "https://ecs7.tokopedia.net/img/contact-us/cs_square.png",
+              "role": "agent"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": "5"
+          }
+        ],
+        "number": "02141677",
+        "subject": "Chat from Customer",
+        "invoice": "Pengajuan #111256",
+        "status": "closed",
+        "readStatus": "read",
+        "message": "<span>Halo, Kak Gaow :) <br>Terima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 14 Feb 2023 yang lalu ya.</span><br><br><span style='color:#6C727C'>[17:02] <b>Gaow</b></span><br><span id='1676368945923909000'>Pilih Invoice: Pengajuan #111256 ORDER ID: (111256) TYPE (Fintech Insurance)</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368947861177000'>Kendala apa yang kamu hadapi untuk transaksi tersebut?</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>System</b></span><br><span>Info dan kendala seputar transaksi Emas</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368960464569000'>Tokopedia menyediakan fitur investasi Emas dimulai dengan nominal Rp5000. Kamu bisa mulai investasi atau mempelajari cara menabung Emas dengan klik <a href=\"https://www.tokopedia.com/emas\" rel=\"nofollow\" target=\"_blank\">di sini</a>, ya.<br></span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368961420953000'>Klik pilihan di bawah ini untuk informasi lain seputar investasi Emas:<br></span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>System</b></span><br><span>Tidak bisa akses tabungan emas Pegadaian</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368967353635000'>TANYA infokan saat ini Pegadaian Tabungan Emas belum dapat diakses karena pihak Pegadaian masih melakukan pembaruan sistem hingga Kamis 6 Oktober 2022. Hal tersebut terkait dengan adanya implementasi peraturan registrasi offline (KYC offline) dan biaya titipan dari sisi Pegadaian.<br></span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368967653640000'>Mohon kesediaannya untuk menunggu dulu ya, kamu bisa cek dashboard Pegadaian Tabungan Emas secara berkala. Terima kasih atas kepercayaannya terhadap Pegadaian Tabungan Emas. Untuk informasi lebih lanjut kamu bisa klik  <a href=\"https://www.tokopedia.com/discovery/finansial-emas-pegadaian\" rel=\"nofollow\" target=\"_blank\">di sini </a> ya.<br></span><br><br><span style='color:#6C727C'>[17:04] <b>Gaow</b></span><br><span id='1676369062244742000'>Haiii jadi saya ingin bertanya tentang bagaimana cara kerja emas</span><br><br><span style='color:#6C727C'>[17:05] <b>Gaow</b></span><br><span id='1676369109509414000'>Dan ya itu saja</span>",
+        "createdBy": {
+          "name": "Gaow",
+          "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+          "role": "customer"
+        },
+        "createTime": "2023-02-14T10:07:16.000+0000",
+        "needAttachment": false,
+        "attachment": [],
+        "allowClose": false
+      }
+    },
+    "messageError": []
+  }
+}

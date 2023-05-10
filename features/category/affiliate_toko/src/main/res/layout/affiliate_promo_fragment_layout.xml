@@ -21,7 +21,8 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/transparent"
         app:layout_constraintTop_toBottomOf="@id/promo_navToolbar">
 
@@ -29,7 +30,7 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:minHeight="?attr/actionBarSize"
             app:elevation="@dimen/layout_lvl0">
 
@@ -231,8 +232,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
-                            android:text="@string/affiliate_otw_jadi_sultan_komisi"
-                            app:layout_constraintTop_toBottomOf="@id/gamification_container"
+                            android:text="@string/affiliate_promo_carousel_title"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
 
@@ -242,82 +242,68 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="4dp"
-                            android:text="@string/affiliate_dengan_promosiin_toko_komisi_ekstra"
+                            android:text="@string/affiliate_promo_carousel_subtitle"
                             app:typographyType="display_3"
                             app:typographyWeight="reguler" />
 
-                        <com.tokopedia.unifycomponents.CardUnify2
-                            android:id="@+id/card_ssa_entry"
+                        <com.tokopedia.carousel.CarouselUnify
+                            android:id="@+id/promo_carousel"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bg_ssa_promo_entry"
-                                android:paddingVertical="16dp"
-                                android:paddingStart="12dp"
-                                android:paddingEnd="16dp">
-
-                                <com.tokopedia.unifycomponents.ImageUnify
-                                    android:id="@+id/image_ssa_entry"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/ssa/SSAshoplisticon.png" />
-
-                                <com.tokopedia.unifyprinciples.Typography
-                                    android:id="@+id/ssa_entry_title"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="12dp"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:text="@string/ssa_entry_promo_title"
-                                    android:textColor="@color/Unify_NN0"
-                                    app:layout_constraintEnd_toStartOf="@id/ssa_action_icon"
-                                    app:layout_constraintStart_toEndOf="@id/image_ssa_entry"
-                                    app:layout_constraintTop_toTopOf="@id/image_ssa_entry"
-                                    app:typographyType="display_2"
-                                    app:typographyWeight="bold" />
-
-                                <com.tokopedia.unifyprinciples.Typography
-                                    android:id="@+id/ssa_entry_desc"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="12dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:text="@string/ssa_entry_promo_desc"
-                                    android:textColor="@color/Unify_NN0"
-                                    app:layout_constraintEnd_toStartOf="@id/ssa_action_icon"
-                                    app:layout_constraintStart_toEndOf="@id/image_ssa_entry"
-                                    app:layout_constraintTop_toBottomOf="@id/ssa_entry_title"
-                                    app:typographyType="small" />
-
-                                <com.tokopedia.iconunify.IconUnify
-                                    android:id="@+id/ssa_action_icon"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:icon_color_light_disabled="@color/Unify_NN0"
-                                    app:icon_color_light_enable="@color/Unify_NN0"
-                                    app:icon_color_night_disabled="@color/Unify_NN0"
-                                    app:icon_color_night_enable="@color/Unify_NN0"
-                                    app:icon_enable_state="true"
-                                    app:icon_name="CHEVRON_RIGHT"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent" />
-
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-                        </com.tokopedia.unifycomponents.CardUnify2>
+                            android:layout_marginBottom="8dp" />
 
                     </LinearLayout>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/disco_inspiration_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/affiliate_disco_inspiration_title"
+                        app:layout_constraintEnd_toStartOf="@id/disco_inspiration_lihat_semua"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ssa_container"
+                        app:typographyType="display_1"
+                        app:typographyWeight="bold" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/disco_inspiration_lihat_semua"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/affiliate_lihat_semua"
+                        android:textColor="@color/Unify_GN500"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ssa_container"
+                        app:typographyType="display_3"
+                        app:typographyWeight="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_disco_promotion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/disco_inspiration_title" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/disco_promotion_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:constraint_referenced_ids="disco_inspiration_title, disco_inspiration_lihat_semua, rv_disco_promotion"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_goneMarginBottom="16dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -339,12 +325,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_4"
-                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabIndicatorColor="@color/Unify_GN500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabSelectedTextColor="@color/Unify_GN500"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@color/Unify_N700_68" />
+                app:tabTextColor="@color/Unify_NN600" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/affiliate_announcement_ticker"

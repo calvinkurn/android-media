@@ -13,19 +13,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
-import com.tokopedia.product.detail.postatc.base.CommonTracker
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
-import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.tracker.CommonTracker
+import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
+import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
 import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -156,8 +158,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -172,8 +174,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
+                    adapter.removeComponent(uiModelId)
+                })
         }
 
     private fun showError(it: Throwable) {
@@ -214,15 +216,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         RouteManager.route(context, appLink)
     }
 
-    override fun goToProduct(productId: String) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        dismiss()
-    }
-
     override fun refreshPage() {
         initData()
     }
@@ -252,7 +245,30 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         goToCart(cartId)
     }
 
+    override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
+        }
+        onClickProduct(productId)
+    }
+
+    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
+        }
+    }
+
     /**
      * Listener Area - End
      */
+
+    var onClickProduct: (String) -> Unit = { productId ->
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        dismiss()
+    }
 }

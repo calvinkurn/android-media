@@ -34,10 +34,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var backPressedEnabled = true
     protected var backPressedMessage = ""
     var webViewTitle = ""
-    var whiteListedDomains = WhiteListedDomains()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getWhiteListedDomains()
         init(intent)
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -145,9 +143,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val currentUrl = f.webView?.url
             if (currentUrl != null &&
                 (
-                    currentUrl.contains("/paylater/acquisition/status") ||
-                        currentUrl.contains("/paylater/thank-you")
-                    )
+                        currentUrl.contains("/paylater/acquisition/status") ||
+                                currentUrl.contains("/paylater/thank-you")
+                        )
             ) {
                 this.finish()
                 return
@@ -277,25 +275,29 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun logWebViewApplink() {
-        val domain = getDomainName(url)
-        if (domain.isNotEmpty()) {
-            val baseDomain = getBaseDomain(domain)
-            if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
-                if (!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
-                    ServerLogger.log(
-                        Priority.P1,
-                        "WEBVIEW_OPENED",
-                        mapOf("type" to "browser", "domain" to domain, "url" to url)
-                    )
-                    redirectToNativeBrowser()
-                    return
-                }
+        if (!WebViewHelper.isTokopediaDomain(url)) {
+            if (!WebViewHelper.isUrlWhitelisted(this, url)) {
                 ServerLogger.log(
                     Priority.P1,
                     "WEBVIEW_OPENED",
-                    mapOf("type" to "webview", "domain" to domain, "url" to url)
+                    mapOf(
+                        "type" to "browser",
+                        "domain" to WebViewHelper.getDomainName(url),
+                        "url" to url
+                    )
                 )
+                redirectToNativeBrowser()
+                return
             }
+            ServerLogger.log(
+                Priority.P1,
+                "WEBVIEW_OPENED",
+                mapOf(
+                    "type" to "webview",
+                    "domain" to WebViewHelper.getDomainName(url),
+                    "url" to url
+                )
+            )
         }
     }
 
@@ -312,48 +314,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    fun isDomainWhitelisted(domain: String): Boolean {
-        if (whiteListedDomains.isEnabled) {
-            whiteListedDomains.domains.forEach {
-                if (it.contains(domain)) {
-                    return true
-                }
-            }
-            return false
-        }
-        return false
-    }
-
-    private fun getWhiteListedDomains() {
-        try {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
-            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-            if (whiteListedDomainsCsv.isNotBlank()) {
-                whiteListedDomains =
-                    Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
-            }
-        } catch (e: Exception) {
-            whiteListedDomains = WhiteListedDomains()
-
-            if (!GlobalConfig.isAllowDebuggingTools()) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-            }
-        }
-    }
-
-    fun getBaseDomain(host: String): String {
-        val split = host.split('.')
-        return if (split.size > 2) split[1] else split[0]
-    }
-
-    fun getDomainName(url: String): String {
-        return Uri.parse(url).host ?: ""
-    }
-
     companion object {
-
-        const val TOKOPEDIA_DOMAIN = "tokopedia"
-        const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
         const val KEY_BACK_URL = "back_url"
 
         fun getStartIntent(
