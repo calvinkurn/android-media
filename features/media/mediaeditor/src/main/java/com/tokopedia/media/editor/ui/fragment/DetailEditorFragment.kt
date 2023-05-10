@@ -1142,38 +1142,42 @@ class DetailEditorFragment @Inject constructor(
                         originalImageWidth = bitmap.width
                         originalImageHeight = bitmap.height
 
-                        viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+                        viewBinding?.imgViewPreview?.apply {
+                            setImageBitmap(validateImageSize(bitmap))
 
-                        if (readPreviousValue) {
-                            readPreviousState()
-                            viewBinding?.imgViewPreview?.let {
-                                setOverlaySize(
-                                    getDisplayedImageSize(
-                                        viewBinding?.imgViewPreview,
-                                        it.drawable.toBitmap()
+                            post {
+                                if (readPreviousValue) {
+                                    readPreviousState()
+                                    viewBinding?.imgViewPreview?.let {
+                                        setOverlaySize(
+                                            getDisplayedImageSize(
+                                                viewBinding?.imgViewPreview,
+                                                it.drawable.toBitmap()
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    implementedBaseBitmap = bitmap
+                                    viewBinding?.imgViewPreview?.post {
+                                        setOverlaySize(
+                                            getDisplayedImageSize(
+                                                viewBinding?.imgViewPreview,
+                                                bitmap
+                                            )
+                                        )
+                                    }
+                                }
+
+                                if (data.isToolWatermark()) {
+                                    setWatermarkDrawerItem(bitmap)
+                                    watermarkComponent.setWatermarkTypeSelected(
+                                        WatermarkType.map(data.watermarkMode?.watermarkType)
                                     )
-                                )
-                            }
-                        } else {
-                            implementedBaseBitmap = bitmap
-                            viewBinding?.imgViewPreview?.post {
-                                setOverlaySize(
-                                    getDisplayedImageSize(
-                                        viewBinding?.imgViewPreview,
-                                        bitmap
-                                    )
-                                )
+                                }
+
+                                onImageReady()
                             }
                         }
-
-                        if (data.isToolWatermark()) {
-                            setWatermarkDrawerItem(bitmap)
-                            watermarkComponent.setWatermarkTypeSelected(
-                                WatermarkType.map(data.watermarkMode?.watermarkType)
-                            )
-                        }
-
-                        onImageReady()
                     },
                     onCleared = {}
                 )
@@ -1186,16 +1190,17 @@ class DetailEditorFragment @Inject constructor(
         displaySize?.let { (width, height) ->
             viewBinding?.let {
                 it.imgPreviewOverlayContainer.apply {
-                    val lp = layoutParams
-
-                    lp.width = width.toInt()
-                    lp.height = height.toInt()
-
-                    layoutParams = lp
+                    layoutParams.apply {
+                        this.width = width.toInt()
+                        this.height = height.toInt()
+                    }
+                    requestLayout()
 
                     post {
                         if (data.isToolAddLogo()) return@post
-                        it.imgPreviewOverlay.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+                        if (data.addLogoValue.overlayLogoUrl.isNotEmpty()) {
+                            it.imgPreviewOverlay.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+                        }
 
                         if (!data.isToolAddText() && data.addTextValue != null) {
                             it.imgPreviewOverlaySecondary.loadImage(data.addTextValue?.textImagePath)
