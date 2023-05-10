@@ -7,20 +7,15 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrRequestResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.DeleteShareAddressResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.GetSharedAddressListResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.SaveShareAddressResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.SelectShareAddressResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsReceiverResponse
-import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.*
 import com.tokopedia.manageaddress.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 
 class FakeGraphqlRepository(private val context: Context, private val gson: Gson) : GraphqlRepository {
+
+    var isValidAddressFromNotif: Boolean = false
 
     private val deleteShareAddressResponse: DeleteShareAddressResponse by lazy {
         gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_delete_share_address), DeleteShareAddressResponse::class.java)
@@ -55,11 +50,18 @@ class FakeGraphqlRepository(private val context: Context, private val gson: Gson
     }
 
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
-        return when(GqlQueryParser.parse(requests).first()) {
+        return when (GqlQueryParser.parse(requests).first()) {
             KERO_SET_CHOSEN_ADDRES -> GqlMockUtil.createSuccessResponse(SetStateChosenAddressQqlResponse())
             KERO_DELETE_SHARE_ADDRESS -> GqlMockUtil.createSuccessResponse(deleteShareAddressResponse)
             KERO_SAVE_SHARE_ADDRESS -> GqlMockUtil.createSuccessResponse(saveShareAddressResponse)
-            KERO_SELECT_ADDRESS_FOR_SHARE -> GqlMockUtil.createSuccessResponse(selectAddressForShareResponse)
+            KERO_SELECT_ADDRESS_FOR_SHARE -> {
+                val res = if (isValidAddressFromNotif) {
+                    SelectShareAddressResponse(data = SelectShareAddressResponse.KeroAddrSelectAddressForShareAddressRequest(true, "Alamat berhasil dibagi ke teman anda!"))
+                } else {
+                    SelectShareAddressResponse(data = SelectShareAddressResponse.KeroAddrSelectAddressForShareAddressRequest(false, "Alamat tidak disetujui", error = KeroAddressError(message = "Address tidak disetujui")))
+                }
+                return GqlMockUtil.createSuccessResponse(res)
+            }
             KERO_SEND_SHARE_ADDRESS_REQUEST -> GqlMockUtil.createSuccessResponse(sendShareAddressReqResponse)
             KERO_SHARE_ADDRESS_TO_USER -> GqlMockUtil.createSuccessResponse(shareAddressToUserResponse)
             KERO_GET_SHARED_ADDRESS_LIST -> GqlMockUtil.createSuccessResponse(getSharedAddressListResponse)

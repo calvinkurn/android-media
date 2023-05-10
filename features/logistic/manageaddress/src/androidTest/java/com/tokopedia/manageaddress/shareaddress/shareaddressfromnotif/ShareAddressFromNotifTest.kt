@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
@@ -20,6 +21,9 @@ class ShareAddressFromNotifTest {
 
     @get:Rule
     var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
+
+    @Inject
+    lateinit var repo: FakeGraphqlRepository
 
     @Before
     fun setup() {
@@ -35,6 +39,7 @@ class ShareAddressFromNotifTest {
             selectFirstAddress()
             clickShareAddressButton()
             clickDisagreeButton()
+            repo.isValidAddressFromNotif = true
             selectFirstAddress()
             clickShareAddressButton()
             clickAgreeButton()

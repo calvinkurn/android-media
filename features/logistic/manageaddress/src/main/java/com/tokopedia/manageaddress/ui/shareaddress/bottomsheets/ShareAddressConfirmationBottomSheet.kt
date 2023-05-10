@@ -22,11 +22,9 @@ import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmati
 import com.tokopedia.manageaddress.di.ActivityComponentFactory
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
-import timber.log.Timber
 import javax.inject.Inject
 
 class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
@@ -44,7 +42,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: ShareAddressConfirmationViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ShareAddressConfirmationViewModel::class.java]
+        ViewModelProvider(requireParentFragment(), viewModelFactory)[ShareAddressConfirmationViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,46 +63,21 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initObserver() {
-        viewModel.shareAddressResponse.observe(viewLifecycleOwner) {
-            Timber.d("manageAddressDebug $it")
-            when (it) {
-                is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
-                is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
+        viewModel.dismissEvent.observe(viewLifecycleOwner) {
+            dismiss()
+        }
+        viewModel.toastEvent.observe(viewLifecycleOwner) {
+            val isError = it !is ShareAddressConfirmationViewModel.Toast.Success
+            val msg = if (isError) {
+                (it as ShareAddressConfirmationViewModel.Toast.Error).msg
+            } else {
+                getString(R.string.success_share_address)
             }
+            mListener?.showToast(isError, msg)
         }
-    }
-
-    private fun onSuccessShareAddress() {
-        if (viewModel.isApprove) {
-            trackOnAgreeShareAddress(isSuccess = true)
-        } else {
-            trackOnDisagreeShareAddress(isSuccess = true)
+        viewModel.loading.observe(viewLifecycleOwner) {
+            onLoadingShareAddress(it)
         }
-        mListener?.onSuccessConfirmShareAddress(viewModel.isApprove)
-    }
-
-    private fun onFailedShareAddress(errorMessage: String) {
-        if (viewModel.isApprove) {
-            trackOnAgreeShareAddress(isSuccess = false)
-        } else {
-            trackOnDisagreeShareAddress(isSuccess = false)
-        }
-        mListener?.onFailedShareAddress(errorMessage)
-    }
-
-    private fun trackOnAgreeShareAddress(isSuccess: Boolean) {
-        ShareAddressAnalytics.onAgreeSendAddress(
-            isDirectShare = isFromNotif().not(),
-            isSuccess = isSuccess
-        )
-    }
-
-    private fun trackOnDisagreeShareAddress(isSuccess: Boolean) {
-        ShareAddressAnalytics.onDisagreeSendAddress(
-            isDirectShare = isFromNotif().not(),
-            isSuccess = isSuccess
-        )
     }
 
     private fun onLoadingShareAddress(isShowLoading: Boolean) {
@@ -206,7 +179,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
                 )
             )
         } else {
-            trackOnDisagreeShareAddress(isSuccess = true)
+            ShareAddressAnalytics.directShareDisagreeSendAddress()
             dismiss()
         }
     }
@@ -246,9 +219,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onSuccessConfirmShareAddress(isApproved: Boolean)
-
-        fun onFailedShareAddress(errorMessage: String)
+        fun showToast(isError: Boolean, msg: String)
     }
 
     companion object {
