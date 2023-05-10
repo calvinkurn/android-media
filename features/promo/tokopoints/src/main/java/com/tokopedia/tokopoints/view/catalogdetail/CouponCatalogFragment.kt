@@ -187,6 +187,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                         showErrorDialog(it.data.desc, it.data.messageCode)
                     }
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     )
