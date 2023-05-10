@@ -9,20 +9,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +36,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -58,10 +64,24 @@ fun NestButton(
     isClickable: Boolean = true,
     loadingText: String = "",
     rightLoader: Boolean = true,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     if (variant == ButtonVariant.FILLED) {
-        FilledButton(modifier, isEnabled, text, size, isLoading, isClickable, loadingText, rightLoader, onClick)
+        FilledButton(
+            modifier,
+            isEnabled,
+            text,
+            size,
+            isLoading,
+            isClickable,
+            loadingText,
+            rightLoader,
+            leadingIcon,
+            trailingIcon,
+            onClick
+        )
     }
 
     if (variant == ButtonVariant.GHOST) {
@@ -99,6 +119,8 @@ private fun FilledButton(
     isClickable: Boolean,
     loadingText: String,
     rightLoader: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     val filledTextStyle = NestTheme.typography.display1.copy(
@@ -128,6 +150,8 @@ private fun FilledButton(
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         onClick = onClick,
     )
 }
@@ -412,6 +436,8 @@ private fun NestDefaultButton(
     progressBarColor: Color,
     rightLoader: Boolean,
     loadingText: String,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
@@ -432,29 +458,108 @@ private fun NestDefaultButton(
             interactionSource = interactionSource
         ) {
 
-            if (isLoading && !rightLoader) {
-                //TODO: Replace loader with NestLoader
-                CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
+            when {
+                isLoading && loadingText.isNotEmpty() -> LoadingWithTextButton(loadingText, rightLoader, textStyle, loaderHeight, progressBarColor)
+                isLoading && loadingText.isEmpty() -> ProgressBar(
+                    loaderHeight = loaderHeight,
+                    progressBarColor = progressBarColor
+                )
+                !isLoading && leadingIcon != null -> ButtonWithLeftIcon(
+                    leadingIcon = { leadingIcon.invoke() },
+                    text = text,
+                    textStyle = textStyle
+                )
+                !isLoading && trailingIcon != null -> ButtonWithRightIcon(
+                    trailingIcon = { trailingIcon.invoke() },
+                    text = text,
+                    textStyle = textStyle
+                )
+                else -> {
+                    NestTypography(
+                        text = text,
+                        textStyle = textStyle.copy(color = textStyle.color),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
 
-            NestTypography(
-                modifier = Modifier.padding(
-                    start = if (isLoading && !rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp,
-                    end = if (isLoading && rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp
-                ),
-                text = if (isLoading) loadingText else text,
-                textStyle = textStyle.copy(color = textStyle.color),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            if (isLoading && rightLoader) {
-                //TODO: Replace loader with NestLoader
-                CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
-            }
         }
 
 
+    }
+}
+
+@Composable
+private fun ProgressBar(loaderHeight: Dp, progressBarColor: Color) {
+    //TODO: Replace loader with NestLoader
+    CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
+}
+
+@Composable
+private fun RowScope.LoadingWithTextButton(
+    loadingText: String,
+    rightLoader: Boolean,
+    textStyle: TextStyle,
+    loaderHeight: Dp,
+    progressBarColor: Color
+) {
+    this.apply {
+        if (!rightLoader) {
+            ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
+        }
+
+        NestTypography(
+            modifier = Modifier.padding(
+                start = if (!rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp,
+                end = if (rightLoader && loadingText.isNotEmpty()) 6.dp else 0.dp
+            ),
+            text = loadingText,
+            textStyle = textStyle.copy(color = textStyle.color),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        if (rightLoader) {
+            ProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
+        }
+    }
+
+}
+
+@Composable
+private fun RowScope.ButtonWithLeftIcon(
+    leadingIcon: @Composable () -> Unit,
+    text: String,
+    textStyle: TextStyle
+) {
+    this.apply {
+        leadingIcon.invoke()
+        Spacer(modifier = Modifier.width(8.dp))
+        NestTypography(
+            text = text,
+            textStyle = textStyle.copy(color = textStyle.color),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun RowScope.ButtonWithRightIcon(
+    trailingIcon: @Composable () -> Unit,
+    text: String,
+    textStyle: TextStyle
+) {
+    this.apply {
+        NestTypography(
+            text = text,
+            textStyle = textStyle.copy(color = textStyle.color),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        trailingIcon.invoke()
     }
 }
 
@@ -485,14 +590,14 @@ enum class ButtonSize(
     name = "Light Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true,
-    device = "spec:width=411dp,height=891dp"
+    device = "spec:width=600dp,height=1200dp"
 )
 @Preview(
     name = "Dark Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
     backgroundColor = 0xFF222329,
-    device = "spec:width=411dp,height=891dp"
+    device = "spec:width=600dp,height=1200dp"
 )
 @Composable
 private fun NestButtonPreview() {
@@ -532,6 +637,9 @@ private fun NestButtonPreview() {
 
                 NestTypography(text = "Button loading state - With loading text", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
                 NestButtonWithLoadingTextPreview()
+
+                NestTypography(text = "Button icon - With icon", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
+                NestButtonWithIcon()
             }
         }
 
@@ -877,6 +985,49 @@ private fun NestButtonWithLoadingTextPreview() {
             isLoading = true,
             rightLoader = true,
             loadingText = "Tunggu sebentar..",
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun NestButtonWithIcon() {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Left Icon",
+            variant = ButtonVariant.FILLED,
+            size = ButtonSize.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            rightLoader = false,
+            loadingText = "",
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
+                    contentDescription = ""
+                )
+            },
+            trailingIcon = null,
+            onClick = {},
+        )
+
+        NestButton(
+            modifier = Modifier.weight(1f),
+            text = "Right icon",
+            variant = ButtonVariant.FILLED,
+            size = ButtonSize.MEDIUM,
+            isEnabled = true,
+            isLoading = false,
+            rightLoader = false,
+            loadingText = "",
+            leadingIcon = null,
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
+                    contentDescription = ""
+                )
+            },
             onClick = {},
         )
     }

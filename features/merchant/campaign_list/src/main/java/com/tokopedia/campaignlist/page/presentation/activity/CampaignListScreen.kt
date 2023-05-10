@@ -359,7 +359,7 @@ fun CampaignItem(
                     .fillMaxWidth()
                     .padding(12.dp),
                 text = stringResource(id = R.string.cl_action_share),
-                onClick = { onTapShareButton(campaign) }
+                onClick = { onTapShareButton(campaign) },
             )
         }
 
