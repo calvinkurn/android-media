@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -23,7 +24,9 @@ import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -73,6 +76,9 @@ class ShipmentViewHolder(
     private val viewMain: ViewShipmentBinding by viewMainDelegate
     private val viewError: ViewShipmentErrorBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate
+    private val viewShipmentPlus: ViewShipmentPlusBinding by lazyThreadSafetyNone {
+        ViewShipmentPlusBinding.bind(viewMain.vsShipmentPlus.inflate())
+    }
 
     override fun bind(element: ProductShipmentDataModel) {
         val rates = element.rates
@@ -318,7 +324,7 @@ class ShipmentViewHolder(
 
     private fun renderShipmentPlus(shipmentPlus: ShipmentPlusData) {
         if (shipmentPlus.isShow) {
-            with(viewMain) {
+            with(viewShipmentPlus) {
                 pdpShipmentPlusBackground.loadImage(shipmentPlus.getBackgroundUrl(context))
                 pdpShipmentPlusLogo.loadImage(shipmentPlus.getLogoUrl(context))
                 pdpShipmentPlusText.text = HtmlLinkHelper(context, shipmentPlus.text).spannedString
@@ -373,7 +379,9 @@ class ShipmentViewHolder(
             pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
             pdpShipmentTips.hide()
-            pdpShipmentPlus.hide()
+            if (vsShipmentPlus.isInflated()) {
+                viewShipmentPlus.root.hide()
+            }
         }
     }
 
