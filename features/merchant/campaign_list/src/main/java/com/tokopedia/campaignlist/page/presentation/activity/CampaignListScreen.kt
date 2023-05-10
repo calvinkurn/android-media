@@ -397,7 +397,7 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
         AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
         else -> NestLabelType.HIGHLIGHT_LIGHT_RED
     }
-    NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
+    NestLabel(modifier = modifier, labelText = campaignStatus, labelType = nestLabelType)
 }
 
 
