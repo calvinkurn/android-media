@@ -1,6 +1,7 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
@@ -11,6 +12,7 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
+import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -40,6 +42,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase,
     private val updateChannelUseCase: UpdateChannelUseCase,
+    private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -136,6 +139,25 @@ class UserProfileRepositoryImpl @Inject constructor(
             UpdateChannelUseCase.createUpdateStatusRequest(channelId, userId, PlayChannelStatusType.Deleted)
         )
         updateChannelUseCase.executeOnBackground().id
+    }
+
+    override suspend fun setShowReview(
+        userID: String,
+        settingID: String,
+        isShow: Boolean,
+    ) = withContext(dispatcher.io) {
+        setProfileSettingsUseCase(
+            SetProfileSettingsRequest(
+                authorID = userID,
+                authorType = ContentCommonUserType.TYPE_USER,
+                data = listOf(
+                    SetProfileSettingsRequest.Data(
+                        settingID = settingID,
+                        enable = isShow,
+                    )
+                )
+            )
+        ).data.success
     }
 
     companion object {
