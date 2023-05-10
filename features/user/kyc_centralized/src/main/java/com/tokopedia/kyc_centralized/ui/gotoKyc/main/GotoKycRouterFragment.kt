@@ -42,7 +42,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         when (sourcePage) {
             PAGE_STATUS_SUBMISSION -> {
                 val parameter = StatusSubmissionParam(
-                    isFromAccountPage = data?.sourcePage == KYCConstant.GotoKycSourceAccountPage,
+                    isCameFromAccountPage = data?.sourcePage == KYCConstant.GotoKycSourceAccountPage,
                     dataSource = data?.gotoKycType.orEmpty(),
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
