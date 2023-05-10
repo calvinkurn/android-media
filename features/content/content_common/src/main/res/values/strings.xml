@@ -152,7 +152,6 @@
     <string name="content_comment_error_secondary">Ke Pengaturan</string>
 
     <!--Report Bottom Sheet -->
-    <string name="feed_common_reason_type_fraud" translatable="false">fraud</string>
     <string name="content_comment_edit_text_hint">Ketik komentarmu…</string>
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>

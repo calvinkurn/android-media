@@ -2,9 +2,6 @@ package com.tokopedia.content.common.comment.usecase
 
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.CountComment
-import com.tokopedia.content.common.producttag.domain.usecase.FeedAceSearchShopUseCase
-import com.tokopedia.content.common.producttag.domain.usecase.GetShopInfoByIDUseCase
-import com.tokopedia.content.common.producttag.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
