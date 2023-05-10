@@ -1183,18 +1183,24 @@ class DetailEditorFragment @Inject constructor(
 
     private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
         if (data.isToolCrop()) return
-        displaySize?.let {
-            viewBinding?.imgPreviewOverlay?.apply {
-                val lp = layoutParams
+        displaySize?.let { (width, height) ->
+            viewBinding?.let {
+                it.imgPreviewOverlayContainer.apply {
+                    val lp = layoutParams
 
-                lp.width = it.first.toInt()
-                lp.height = it.second.toInt()
+                    lp.width = width.toInt()
+                    lp.height = height.toInt()
 
-                layoutParams = lp
+                    layoutParams = lp
 
-                post {
-                    if (data.isToolAddLogo()) return@post
-                    this.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+                    post {
+                        if (data.isToolAddLogo()) return@post
+                        it.imgPreviewOverlay.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+
+                        if (!data.isToolAddText() && data.addTextValue != null) {
+                            it.imgPreviewOverlaySecondary.loadImage(data.addTextValue?.textImagePath)
+                        }
+                    }
                 }
             }
         }
