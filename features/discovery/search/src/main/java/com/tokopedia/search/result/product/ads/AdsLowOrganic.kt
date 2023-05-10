@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
@@ -24,7 +25,8 @@ class AdsLowOrganic @Inject constructor(
     private val viewUpdater: ViewUpdater,
     private val requestParamsGenerator: RequestParamsGenerator,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-) {
+    responseCodeProvider: ResponseCodeProvider,
+): ResponseCodeProvider by responseCodeProvider {
 
     val isEnabledRollence by lazy(LazyThreadSafetyMode.NONE, ::getIsEnabledRollence)
 
@@ -34,8 +36,21 @@ class AdsLowOrganic @Inject constructor(
         false
     }
 
+    private var injectCount = 0
     private var lastPosition = 0
     private var canLoadMore = true
+
+    private val isBelowInjectLimit: Boolean
+        get() = injectCount < ADS_INJECT_LIMIT
+
+    private val isExperimentResponseCode: Boolean
+        get() = responseCode in experimentResponseCode
+
+    private val isRollOutResponseCode: Boolean
+        get() = responseCode in rollOutResponseCode
+
+    private val isAdsLowOrganicAllowed: Boolean
+        get() = (isExperimentResponseCode && isEnabledRollence) || isRollOutResponseCode
 
     fun processAdsLowOrganic(
         isHideProductAds: Boolean,
@@ -44,7 +59,7 @@ class AdsLowOrganic @Inject constructor(
         productData: SearchPageProductData,
         action: (List<Visitable<*>>) -> Unit,
     ) {
-        if (isHideProductAds || !isEnabledRollence || topAdsModel.data.isEmpty()) return
+        if (isHideProductAds || !isAdsLowOrganicAllowed || topAdsModel.data.isEmpty() || !isBelowInjectLimit) return
 
         val topAdsProductList = createTopAdsProductList(topAdsModel, productData)
 
@@ -90,7 +105,7 @@ class AdsLowOrganic @Inject constructor(
         topAdsUseCase.execute(requestParams, topAdsNextPageSubscriber(productData, onSuccessListener))
     }
 
-    private fun canLoadNextPage() = isEnabledRollence && canLoadMore
+    private fun canLoadNextPage() = isAdsLowOrganicAllowed && canLoadMore && isBelowInjectLimit
 
     private fun topAdsNextPageSubscriber(
         productData: SearchPageProductData,
@@ -129,10 +144,12 @@ class AdsLowOrganic @Inject constructor(
 
         viewUpdater.removeLoading()
         viewUpdater.appendItems(topAdsProductList)
+        injectCount++
         onSuccessListener()
     }
 
     fun clearData() {
+        injectCount = 0
         lastPosition = 0
         canLoadMore = true
     }
@@ -147,5 +164,10 @@ class AdsLowOrganic @Inject constructor(
     companion object {
         const val EXP_NAME = "ads_low_organic_sup"
         const val VAR_ADS = "var_ads"
+
+        private const val ADS_INJECT_LIMIT = 2
+
+        private val rollOutResponseCode = listOf("0", "1")
+        private val experimentResponseCode = listOf("4", "5",)
     }
 }
