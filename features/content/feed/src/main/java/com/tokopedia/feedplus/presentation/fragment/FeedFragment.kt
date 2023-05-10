@@ -311,7 +311,7 @@ class FeedFragment :
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
-        // implement bottomsheet close tracker
+        // do nothing
     }
 
     override fun onSharePostClicked(
