@@ -39,7 +39,11 @@ android {
         }
     }
     buildFeatures {
+        compose true
         viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -86,6 +90,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.fragmentKtx
+
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeFoundation
+    implementation rootProject.ext.composeDependencies.composeActivity
+    debugImplementation rootProject.ext.composeDependencies.composeUiTooling
+    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
