@@ -34,6 +34,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                 totalPostFmt = response.profileHeader.stats.totalPostFmt,
                 totalFollowerFmt = response.profileHeader.stats.totalFollowerFmt,
                 totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt,
+                totalReviewFmt = getReviewStats(response.profileHeader.stats.extraStats),
             ),
             shareLink = LinkUiModel(
                 webLink = response.profileHeader.profile.sharelink.weblink,
@@ -144,10 +145,15 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
+    private fun getReviewStats(extraStats: List<ExtraStats>): String {
+        return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEW_FIELD }?.countFmt.orEmpty()
+    }
+
     companion object {
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
+        private const val EXTRA_STATS_REVIEW_FIELD = "reviews"
     }
 }

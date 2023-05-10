@@ -7,6 +7,7 @@ data class ProfileStatsUiModel(
     val totalPostFmt: String,
     val totalFollowerFmt: String,
     val totalFollowingFmt: String,
+    val totalReviewFmt: String,
 ) {
     companion object {
         val Empty: ProfileStatsUiModel
@@ -14,6 +15,7 @@ data class ProfileStatsUiModel(
                 totalPostFmt = "",
                 totalFollowerFmt = "",
                 totalFollowingFmt = "",
+                totalReviewFmt = "",
             )
     }
 }
