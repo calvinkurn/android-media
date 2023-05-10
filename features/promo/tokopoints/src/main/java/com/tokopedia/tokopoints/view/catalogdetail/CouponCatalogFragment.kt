@@ -211,6 +211,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                         onPreValidateError(it.data.title, it.data.message)
                     }
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     )
