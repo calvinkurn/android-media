@@ -40,25 +40,21 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class DynamicChannelHeaderView: FrameLayout {
-    private var itemView: View?
-
-    private var listener: HeaderListener? = null
-
-    var countDownView: TimerUnifySingle? = null
-    var seeAllButton: TextView? = null
-    var channelTitle: Typography? = null
-    var seeAllButtonUnify: UnifyButton? = null
-    var channelSubtitle: TextView? = null
-
-    var seeAllButtonRevamp: IconUnify? = null
-    var seeAllButtonRevampContainer: LinearLayout? = null
-    var headerMode: Int = MODE_NORMAL
-
-    var reloadButton: IconUnify? = null
-    var reloadButtonContainer: LinearLayout? = null
-
+    private val itemView: View
+    
+    private val channelHeaderContainer: ConstraintLayout
+    private var channelTitle: Typography? = null
+    private var channelSubtitle: TextView? = null
+    private var countDownView: TimerUnifySingle? = null
+    private var seeAllButton: TextView? = null
+    private var seeAllButtonUnify: UnifyButton? = null
+    private var seeAllButtonRevamp: IconUnify? = null
+    private var seeAllButtonRevampContainer: LinearLayout? = null
+    private var reloadButton: IconUnify? = null
+    private var reloadButtonContainer: LinearLayout? = null
     private val rotateAnimation = RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
-
+    private var headerMode: Int = MODE_NORMAL
+    private var listener: HeaderListener? = null
     private val isUsingHeaderRevamp by lazy { HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant() }
 
     constructor(context: Context) : super(context)
@@ -75,6 +71,8 @@ class DynamicChannelHeaderView: FrameLayout {
         else R.layout.home_component_dynamic_channel_header
         val view = LayoutInflater.from(context).inflate(layout, this)
         this.itemView = view
+        
+        channelHeaderContainer = view.findViewById(R.id.channel_title_container)
 
         rotateAnimation.duration = ROTATE_DURATION
         rotateAnimation.interpolator = LinearInterpolator()
@@ -90,19 +88,18 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     private fun handleHeaderComponent(channel: ChannelModel, isReload: Boolean) {
-        val channelTitleContainer: ConstraintLayout? = itemView?.findViewById(R.id.channel_title_container)
-        val stubChannelTitle: View? = itemView?.findViewById(R.id.channel_title)
-        val stubCountDownView: View? = itemView?.findViewById(R.id.count_down)
-        val stubSeeAllButton: View? = itemView?.findViewById(R.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = itemView?.findViewById(R.id.see_all_button_unify)
-        val stubChannelSubtitle: View? = itemView?.findViewById(R.id.channel_subtitle)
-        val stubReloadButton: View? = itemView?.findViewById(R.id.reload_button)
-        channelTitleContainer?.let {
-            handleTitle(channel.channelHeader.name, channelTitleContainer, stubChannelTitle, channel)
+        val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
+        val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
+        val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
+        val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
+        val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
+        val stubReloadButton: View? = itemView.findViewById(R.id.reload_button)
+        channelHeaderContainer.let {
+            handleTitle(channel.channelHeader.name, channelHeaderContainer, stubChannelTitle, channel)
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
-            handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer, isReload)
-            handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
-            handleHeaderExpiredTime(channel, stubCountDownView, channelTitleContainer)
+            handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelHeaderContainer, isReload)
+            handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelHeaderContainer)
+            handleHeaderExpiredTime(channel, stubCountDownView, channelHeaderContainer)
             handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
             handleReloadButton(channel, stubReloadButton, isReload)
         }
@@ -120,7 +117,7 @@ class DynamicChannelHeaderView: FrameLayout {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
-                itemView?.findViewById(R.id.channel_title)
+                itemView.findViewById(R.id.channel_title)
             }
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
@@ -128,13 +125,14 @@ class DynamicChannelHeaderView: FrameLayout {
             if(isUsingHeaderRevamp && channel.style == ChannelStyle.ChannelHome) {
                 channelTitle?.setTextColor(
                     if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
+                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView.context)
                     else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 )
+                adjustTitleVerticalPosition(channel)
             } else {
                 channelTitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
                 )
             }
         } else {
@@ -153,20 +151,20 @@ class DynamicChannelHeaderView: FrameLayout {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
-                itemView?.findViewById(R.id.channel_subtitle)
+                itemView.findViewById(R.id.channel_subtitle)
             }
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             if(isUsingHeaderRevamp) {
                 channelSubtitle?.setTextColor(
                     if (headerMode == MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView?.context)
+                    else if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).staticIfDarkMode(itemView.context)
                     else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 )
             } else {
                 channelSubtitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
                 )
             }
         } else {
@@ -185,7 +183,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     !isViewStubHasBeenInflated(stubSeeAllButton)) {
                     stubSeeAllButton.inflate()?.initializeSeeAll()
                 } else {
-                    itemView?.initializeSeeAll()
+                    itemView.initializeSeeAll()
                 }
                 setHeaderRevampCtaColor()
 
@@ -200,7 +198,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     val stubSeeAllView = stubSeeAllButton.inflate()
                     stubSeeAllView?.findViewById(R.id.see_all_button)
                 } else {
-                    itemView?.findViewById(R.id.see_all_button)
+                    itemView.findViewById(R.id.see_all_button)
                 }
 
                 if(channel.style == ChannelStyle.ChannelHome){
@@ -295,7 +293,7 @@ class DynamicChannelHeaderView: FrameLayout {
                 val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
                 stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
             } else {
-                itemView?.findViewById(R.id.see_all_button_unify)
+                itemView.findViewById(R.id.see_all_button_unify)
             }
 
             handleUnifySeeAllButton(channelSubtitleName, channel, channelTitleContainer)
@@ -338,13 +336,13 @@ class DynamicChannelHeaderView: FrameLayout {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
-                itemView?.findViewById(R.id.count_down)
+                itemView.findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
                 countDownView?.run {
-                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty() && headerMode == MODE_INVERTED){
+                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty()){
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
@@ -352,6 +350,7 @@ class DynamicChannelHeaderView: FrameLayout {
 
                     visibility = View.VISIBLE
                     channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDpInt())
+                    if(isUsingHeaderRevamp) anchorSubtitleToTimer()
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
@@ -368,8 +367,9 @@ class DynamicChannelHeaderView: FrameLayout {
                 }
             }
         } else {
+            if(isUsingHeaderRevamp) anchorSubtitleToTitle()
             countDownView?.let {
-                it.visibility = if(isUsingHeaderRevamp) View.INVISIBLE else View.GONE
+                it.visibility = View.GONE
                 channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 12f.toDpInt())
             }
         }
@@ -395,7 +395,7 @@ class DynamicChannelHeaderView: FrameLayout {
                 !isViewStubHasBeenInflated(stubReloadButton)) {
                 stubReloadButton.inflate()?.initializeReload()
             } else {
-                itemView?.initializeReload()
+                itemView.initializeReload()
             }
             reloadButton?.setOnClickListener {
                 it.startAnimation(rotateAnimation)
@@ -412,7 +412,7 @@ class DynamicChannelHeaderView: FrameLayout {
         channelSubtitle?.invisible()
     }
 
-    fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
+    private fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
         return channel.channelHeader.getLink().isNotEmpty()
     }
 
@@ -436,6 +436,36 @@ class DynamicChannelHeaderView: FrameLayout {
 
     private fun Int.staticIfDarkMode(context: Context?): Int {
         return if(context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950) else this
+    }
+
+    private fun adjustTitleVerticalPosition(channel: ChannelModel) {
+        if(hasExpiredTime(channel) || channel.channelHeader.subtitle.isNotEmpty()) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelHeaderContainer)
+            constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
+            constraintSet.applyTo(channelHeaderContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelHeaderContainer)
+            constraintSet.connect(R.id.channel_title, ConstraintSet.BOTTOM, channelHeaderContainer.id, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelHeaderContainer)
+        }
+    }
+    
+    private fun anchorSubtitleToTitle() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(channelHeaderContainer)
+        constraintSet.connect(R.id.channel_subtitle, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(R.dimen.home_dynamic_header_subtitle_top_padding))
+        constraintSet.connect(R.id.channel_subtitle, ConstraintSet.BOTTOM, channelHeaderContainer.id, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(channelHeaderContainer)
+    }
+
+    private fun anchorSubtitleToTimer() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(channelHeaderContainer)
+        constraintSet.connect(R.id.channel_subtitle, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.channel_subtitle, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(channelHeaderContainer)
     }
 
     companion object {

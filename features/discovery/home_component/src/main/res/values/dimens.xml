@@ -57,7 +57,6 @@
     <dimen name="home_dynamic_icon_image_size_revamp">64dp</dimen>
     <dimen name="home_dynamic_icon_title_width_revamp">64dp</dimen>
 
-
     <dimen name="home_todo_widget_height">98dp</dimen>
     <dimen name="home_todo_widget_image_size">44dp</dimen>
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
@@ -65,4 +64,6 @@
 
     <dimen name="home_dynamic_header_cta_container">32dp</dimen>
     <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
+    <dimen name="home_dynamic_header_subtitle_top_padding">10dp</dimen>
+    <dimen name="home_dynamic_header_timer_top_padding">8dp</dimen>
 </resources>
