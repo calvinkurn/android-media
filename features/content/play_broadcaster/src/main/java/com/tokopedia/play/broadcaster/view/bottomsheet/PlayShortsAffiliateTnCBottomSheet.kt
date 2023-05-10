@@ -139,7 +139,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         toaster.showError(
             throwable,
             duration = Toaster.LENGTH_INDEFINITE,
-            actionLabel = getString(R.string.feed_try_again),
+            actionLabel = getString(R.string.title_try_again),
             actionListener = {mListener?.onSubmitTnc() }
         )
     }
