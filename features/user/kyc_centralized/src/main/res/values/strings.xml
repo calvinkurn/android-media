@@ -274,5 +274,7 @@
     <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai KTP.</string>
     <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
     <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
+    <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
+    <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
 
 </resources>
