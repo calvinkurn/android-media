@@ -739,7 +739,7 @@ class RechargeCCFragment :
     //region RechargeCCBankListListener
     override fun onClickBankList() {
         activity?.let {
-            val bottomSheetBankList = CCBankListBottomSheet(categoryId)
+            val bottomSheetBankList = CCBankListBottomSheet.newBottomSheet(categoryId)
             bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
         }
     }
