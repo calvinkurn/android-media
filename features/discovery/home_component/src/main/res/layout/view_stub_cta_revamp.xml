@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/see_all_revamp_border"
+    android:id="@+id/cta_border_revamp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,7 +9,7 @@
     android:gravity="center"
     xmlns:tools="http://schemas.android.com/tools">
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/see_all_button_revamp"
+        android:id="@+id/cta_button_revamp"
         app:icon_name="CHEVRON_RIGHT"
         android:clickable="true"
         android:focusable="true"

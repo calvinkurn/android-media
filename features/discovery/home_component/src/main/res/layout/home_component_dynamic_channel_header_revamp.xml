@@ -58,9 +58,9 @@
         tools:visibility="visible"/>
 
     <ViewStub
-        android:id="@+id/see_all_button"
-        android:inflatedId="@+id/see_all_button"
-        android:layout="@layout/view_stub_see_all_revamp"
+        android:id="@+id/cta_button"
+        android:inflatedId="@+id/cta_button"
+        android:layout="@layout/view_stub_cta_revamp"
         android:layout_marginRight="@dimen/home_component_margin_default"
         android:layout_marginEnd="@dimen/home_component_margin_default"
         android:layout_width="wrap_content"
@@ -69,18 +69,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ViewStub
-        android:id="@+id/reload_button"
-        android:inflatedId="@+id/iv_reload"
-        android:layout="@layout/view_stub_reload_button"
-        android:layout_marginRight="@dimen/home_component_margin_default"
-        android:layout_marginEnd="@dimen/home_component_margin_default"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

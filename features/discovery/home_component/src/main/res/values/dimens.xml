@@ -64,6 +64,11 @@
 
     <dimen name="home_dynamic_header_cta_container">32dp</dimen>
     <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
-    <dimen name="home_dynamic_header_subtitle_top_padding">10dp</dimen>
-    <dimen name="home_dynamic_header_timer_top_padding">8dp</dimen>
+    <dimen name="home_dynamic_header_subtitle_top_padding">6dp</dimen>
+    <dimen name="home_dynamic_header_timer_top_padding">4dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding_with_timer">12dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding_without_timer">12dp</dimen>
+
+    <dimen name="home_product_highlight_content_top_padding">9dp</dimen>
+    <dimen name="home_product_highlight_content_horizontal_padding">12dp</dimen>
 </resources>
