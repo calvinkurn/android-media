@@ -27,6 +27,7 @@ import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -46,6 +47,9 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -156,6 +160,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
+
+    val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -179,6 +188,27 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         feedMainViewModel.fetchFeedTabs()
+
+        try {
+            // check for the remote config
+            if (remoteConfig.getBoolean(REMOTE_CONFIG_KEY, true)) {
+                // check for rollence
+                if (!RemoteConfigInstance.getInstance().abTestPlatform
+                        .getBoolean(ROLLENCE_KEY, false)
+                ) {
+                    parentFragmentManager.beginTransaction()
+                        .replace((view.parent as View).id, FeedPlusContainerFragment())
+                        .addToBackStack(null)
+                        .commit()
+                }
+            } else {
+                parentFragmentManager.beginTransaction()
+                    .replace((view.parent as View).id, FeedPlusContainerFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        } catch (t: Throwable) {
+        }
 
         setupView()
 
@@ -702,5 +732,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         private const val COACHMARK_START_DELAY_IN_SEC = 1
 
         private const val ONBOARDING_SHOW_DELAY = 500L
+
+        private const val ROLLENCE_KEY = "immersive_feed"
+        private const val REMOTE_CONFIG_KEY = "android_main_app_show_unified_feed"
     }
 }
