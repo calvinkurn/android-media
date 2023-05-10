@@ -274,6 +274,9 @@ class CartItemViewHolder constructor(
         }
 
         checkboxProduct.show()
+        checkboxProduct.setOnCheckedChangeListener { compoundButton, b ->
+            // disable listener before setting current selection state
+        }
         checkboxProduct.isChecked = data.isSelected
         checkboxProduct.skipAnimation()
 
@@ -308,6 +311,9 @@ class CartItemViewHolder constructor(
         }
         binding.productBundlingInfo.setPadding(0, 0, 0, 0)
         checkboxBundle.show()
+        checkboxBundle.setOnCheckedChangeListener { compoundButton, b ->
+            // disable listener before setting current selection state
+        }
         checkboxBundle.isChecked = data.isSelected
         checkboxBundle.skipAnimation()
 
@@ -826,16 +832,16 @@ class CartItemViewHolder constructor(
         }
         qtyEditorProduct.show()
         qtyEditorProduct.autoHideKeyboard = true
+        if (qtyTextWatcher != null) {
+            // reset listener
+            qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
+        }
         qtyEditorProduct.minValue = data.minOrder
         qtyEditorProduct.maxValue = data.maxOrder
         if (data.isBundlingItem) {
             qtyEditorProduct.setValue(data.bundleQuantity)
         } else {
             qtyEditorProduct.setValue(data.quantity)
-        }
-        if (qtyTextWatcher != null) {
-            // reset listener
-            qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
         }
         qtyTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
