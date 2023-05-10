@@ -383,6 +383,9 @@ class PlayBroadcastActivity : BaseActivity(),
                             actionListener = { result.onRetry() }
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -409,6 +412,9 @@ class PlayBroadcastActivity : BaseActivity(),
             ChannelStatus.Draft,
             ChannelStatus.CompleteDraft,
             ChannelStatus.Unknown, ChannelStatus.Live -> openBroadcastSetupPage()
+            else -> {
+                //no-op
+            }
         }
     }
 

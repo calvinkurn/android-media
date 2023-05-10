@@ -103,7 +103,7 @@ class ChatListActivityTest : ChatListTest() {
 
         // When
         startChatListActivity()
-        onView(withText("Toko Rifqi 123")).perform(click())
+        onView(withText("Toko Rifq.. (19)")).perform(click())
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
@@ -121,7 +121,7 @@ class ChatListActivityTest : ChatListTest() {
 
         // When
         startChatListActivity()
-        onView(withText("Toko Rifqi 123")).perform(click())
+        onView(withText("Toko Rifq.. (19)")).perform(click())
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
@@ -136,7 +136,7 @@ class ChatListActivityTest : ChatListTest() {
 
         // When
         startChatListActivity()
-        onView(withText("Rifqi MF 123")).perform(click())
+        onView(withText("Rifqi MF .. (45)")).perform(click())
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then

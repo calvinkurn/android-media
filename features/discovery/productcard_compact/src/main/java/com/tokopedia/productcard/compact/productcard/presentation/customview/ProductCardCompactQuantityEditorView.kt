@@ -68,8 +68,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
 
     var isVariant: Boolean = false
+    var hasBlockedAddToCart: Boolean = false
     var onClickListener: ((counter: Int) -> Unit)? = null
     var onClickVariantListener: ((counter: Int) -> Unit)? = null
+    var onBlockAddToCartListener: (() -> Unit)? = null
 
     init {
         binding = LayoutProductCardCompactQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
@@ -207,6 +209,11 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
+            if (hasBlockedAddToCart) {
+                onBlockAddToCartListener?.invoke()
+                return@setOnClickListener
+            }
+
             if (isVariant) {
                 onClickVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
             } else {
@@ -285,8 +292,12 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         )
 
         editText.onEnterClickedListener = {
-            onClickListener?.invoke(counter)
-            collapseAnimation()
+            if (hasBlockedAddToCart) {
+                onBlockAddToCartListener?.invoke()
+            } else {
+                onClickListener?.invoke(counter)
+                collapseAnimation()
+            }
         }
 
         editText.onAnyKeysClickedListener = {

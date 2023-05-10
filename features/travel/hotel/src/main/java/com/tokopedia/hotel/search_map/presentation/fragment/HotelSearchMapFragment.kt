@@ -304,6 +304,9 @@ class HotelSearchMapFragment :
                             lat = it.data.latitude
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )

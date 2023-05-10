@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit.DAYS as DAYS
 import java.util.concurrent.TimeUnit.MILLISECONDS as MILLISECONDS
 
 class ActivationItemViewHolder(
-        private val listener: ActivationItemListener,
-        itemView: View?
-): AbstractViewHolder<NotificationActivation>(itemView) {
+    private val listener: ActivationItemListener,
+    itemView: View?
+) : AbstractViewHolder<NotificationActivation>(itemView) {
 
     private val txtTitle = itemView?.findViewById<Typography>(R.id.txtTitle)
     private val txtDescription = itemView?.findViewById<Typography>(R.id.txtDescription)
@@ -54,10 +54,13 @@ class ActivationItemViewHolder(
                 btnActivation?.text = context?.getString(data.action)
                 btnActivation?.setOnClickListener {
                     context?.let {
-                        when(data.type) {
+                        when (data.type) {
                             is PushNotif -> it.startActivity(it.notificationSetting())
                             is Email -> it.startActivity(it.intent(ADD_EMAIL))
                             is Phone -> it.startActivity(it.intent(ADD_PHONE))
+                            else -> {
+                                // no op
+                            }
                         }
                     }
                 }
@@ -80,7 +83,7 @@ class ActivationItemViewHolder(
 
     private fun setLastCheckedText() {
         val lastChecked = getCacheLong(context, KEY_PREF_DATE)
-        if(lastChecked != 0L) {
+        if (lastChecked != 0L) {
             txtLastChecked?.show()
             val formattedDate = lastChecked.toLastCheckFormat()
             val amountDays = DAYS.convert((currentTimeMillis() - lastChecked), MILLISECONDS)
@@ -99,5 +102,4 @@ class ActivationItemViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_push_notif_activation
     }
-
 }

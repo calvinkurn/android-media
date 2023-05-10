@@ -43,8 +43,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
 
-        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"

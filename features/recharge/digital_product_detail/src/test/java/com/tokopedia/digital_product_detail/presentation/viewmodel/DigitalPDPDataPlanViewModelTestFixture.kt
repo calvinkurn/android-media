@@ -18,6 +18,8 @@ import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRep
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -26,6 +28,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -37,7 +42,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: DigitalPDPDataPlanViewModel
 
@@ -506,24 +511,24 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertFalse(isChanged)
     }
 
-    protected fun TestCoroutineScope.skipPrefixOperatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_PREFIX_TIME)
+    protected fun TestScope.skipPrefixOperatorDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipValidatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
+    protected fun TestScope.skipValidatorDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipMultitabDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipMultitabDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipRecommendationDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipRecommendationDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipClientNumberTransitionDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION)
+    protected fun TestScope.skipClientNumberTransitionDelay() {
+        advanceUntilIdle()
     }
 
     companion object {

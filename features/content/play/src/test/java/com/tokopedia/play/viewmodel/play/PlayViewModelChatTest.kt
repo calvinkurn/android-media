@@ -12,6 +12,7 @@ import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -27,6 +28,9 @@ class PlayViewModelChatTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     /**
      * TODO("Find out why sometimes there is still error when calling cleanUpTestCoroutines")

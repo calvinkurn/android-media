@@ -17,13 +17,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     @Test
-    fun `currentReviewDetail should null when _currentMediaItem is null`() = runBlockingTest {
+    fun `currentReviewDetail should null when _currentMediaItem is null`() = runTest {
         viewModel.updateCurrentMediaItem(null)
         viewModel.updateGetDetailedReviewMediaResult(mockk())
         val currentReviewDetail = viewModel.currentReviewDetail.first()
@@ -31,14 +31,14 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `currentReviewDetail should null when _getDetailedReviewMediaResult is null`() = runBlockingTest {
+    fun `currentReviewDetail should null when _getDetailedReviewMediaResult is null`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(null)
         val currentReviewDetail = viewModel.currentReviewDetail.first()
         Assert.assertNull(currentReviewDetail)
     }
 
     @Test
-    fun `currentReviewDetail should not null when currentMediaItem has review detail`() = runBlockingTest {
+    fun `currentReviewDetail should not null when currentMediaItem has review detail`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val reviewDetailData = getDetailedReviewMediaResultWithImageAndVideo.detail.reviewDetail.first {
             it.feedbackId == firstMedia.feedbackId
@@ -81,7 +81,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `currentReviewDetail should null when currentMediaItem don't have review detail`() = runBlockingTest {
+    fun `currentReviewDetail should null when currentMediaItem don't have review detail`() = runTest {
         val firstMedia = preloadedDetailedReviewMediaResult.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -98,7 +98,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `reviewDetailFragmentUiState should equal to Hidden when _basicInfoUiState is Hidden and _supplementaryInfoUiState is Hidden`() = runBlockingTest {
+    fun `reviewDetailFragmentUiState should equal to Hidden when _basicInfoUiState is Hidden and _supplementaryInfoUiState is Hidden`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -117,7 +117,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Loading and _supplementaryInfoUiState is Loading`() = runBlockingTest {
+    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Loading and _supplementaryInfoUiState is Loading`() = runTest {
         viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 1))
         val reviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         Assert.assertTrue(
@@ -128,7 +128,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing and _supplementaryInfoUiState is Showing`() = runBlockingTest {
+    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing and _supplementaryInfoUiState is Showing`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -146,7 +146,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing, _supplementaryInfoUiState is Hidden`() = runBlockingTest {
+    fun `reviewDetailFragmentUiState should equal to Showing when _basicInfoUiState is Showing, _supplementaryInfoUiState is Hidden`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -167,14 +167,14 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `expandedReviewDetailBottomSheetUiState should equal to Hidden when _showExpandedReviewDetailBottomSheet is false`() = runBlockingTest {
+    fun `expandedReviewDetailBottomSheetUiState should equal to Hidden when _showExpandedReviewDetailBottomSheet is false`() = runTest {
         viewModel.dismissExpandedReviewDetailBottomSheet()
         val expandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
         Assert.assertTrue(expandedReviewDetailBottomSheetUiState is ExpandedReviewDetailBottomSheetUiState.Hidden)
     }
 
     @Test
-    fun `expandedReviewDetailBottomSheetUiState should equal to Showing when _showExpandedReviewDetailBottomSheet is true`() = runBlockingTest {
+    fun `expandedReviewDetailBottomSheetUiState should equal to Showing when _showExpandedReviewDetailBottomSheet is true`() = runTest {
         viewModel.showExpandedReviewDetailBottomSheet()
         val expandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
         Assert.assertTrue(expandedReviewDetailBottomSheetUiState is ExpandedReviewDetailBottomSheetUiState.Showing)
@@ -188,7 +188,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreSavedState should restore _showExpandedReviewDetailBottomSheet latest state saved in given Bundle object`() = runBlockingTest {
+    fun `restoreSavedState should restore _showExpandedReviewDetailBottomSheet latest state saved in given Bundle object`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -225,7 +225,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreSavedState should not change _showExpandedReviewDetailBottomSheet if no state is saved`() = runBlockingTest {
+    fun `restoreSavedState should not change _showExpandedReviewDetailBottomSheet if no state is saved`() = runTest {
         val firstMedia = getDetailedReviewMediaResultWithImageAndVideo.reviewMedia.first()
         val mediaItemUiModel = VideoMediaItemUiModel(
             id = firstMedia.videoId,
@@ -265,14 +265,14 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `getFeedbackID should return feedback id from current review detail`() = runBlockingTest {
+    fun `getFeedbackID should return feedback id from current review detail`() = runTest {
         `currentReviewDetail should not null when currentMediaItem has review detail`()
         val feedbackID = viewModel.getFeedbackID()
         Assert.assertEquals(viewModel.currentReviewDetail.first()!!.feedbackID, feedbackID)
     }
 
     @Test
-    fun `getInvertedLikeStatus should return inverted isLiked status from current review detail`() = runBlockingTest {
+    fun `getInvertedLikeStatus should return inverted isLiked status from current review detail`() = runTest {
         `currentReviewDetail should not null when currentMediaItem has review detail`()
         val currentLikeStatus = if (viewModel.currentReviewDetail.first()!!.basicInfoUiModel.isLiked) ToggleLikeReviewUseCase.LIKED else ToggleLikeReviewUseCase.NEUTRAL
         val invertedLikeStatus = viewModel.getInvertedLikeStatus()

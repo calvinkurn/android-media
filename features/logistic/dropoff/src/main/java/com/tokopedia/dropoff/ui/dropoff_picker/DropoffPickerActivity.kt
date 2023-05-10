@@ -61,9 +61,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
     }
 
-    private lateinit var mPermissionChecker: PermissionCheckerHelper
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private lateinit var mLocationCallback: LocationCallback
+    private var mPermissionChecker: PermissionCheckerHelper? = null
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
+    private var mLocationCallback: LocationCallback? = null
 
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
@@ -73,9 +73,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
     private val mMarkerList: MutableList<Marker> = arrayListOf()
 
-    private lateinit var mDisabledLocationView: View
-    private lateinit var mNoPermissionsView: View
-    private lateinit var mStoreDetail: LocationDetailBottomSheet
+    private var mDisabledLocationView: View? = null
+    private var mNoPermissionsView: View? = null
+    private var mStoreDetail: LocationDetailBottomSheet? = null
 
     private val storeBitmap: BitmapDescriptor? by lazy {
         bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)
@@ -114,11 +114,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
-        mStoreDetail.setOnCancelClickListener { _, data ->
+        mStoreDetail?.setOnCancelClickListener { _, data ->
             data?.let { tracker.trackClickBatalOnDetail(it) }
             mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
-        mStoreDetail.setOnOkClickListener { _, data ->
+        mStoreDetail?.setOnOkClickListener { _, data ->
             data?.let { tracker.trackClickPilihOnDetail(it) }
             val resultIntent = Intent().apply {
                 val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
@@ -151,19 +151,22 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mNearbiesBehavior?.setBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(p0: View, p1: Float) {
-                    // no op
-                }
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+                // no op
+            }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                        tracker.trackExpandList()
-                    }
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    tracker.trackExpandList()
                 }
-            })
-        mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
-        mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        })
+
+        mStoreDetail?.let {
+            mDetailBehavior = BottomSheetBehavior.from(it)
+            mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -212,8 +215,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun setNoMapsAvailableView() {
-        mDisabledLocationView.visibility = View.GONE
-        mNoPermissionsView.visibility = View.GONE
+        mDisabledLocationView?.visibility = View.GONE
+        mNoPermissionsView?.visibility = View.GONE
         mMapFragment?.let {
             supportFragmentManager.beginTransaction().hide(it).commit()
         }
@@ -270,13 +273,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        mPermissionChecker.onRequestPermissionsResult(
+        mPermissionChecker?.onRequestPermissionsResult(
             this,
             requestCode,
             permissions,
             grantResults
         )
-        if (requestCode == mPermissionChecker.REQUEST_PERMISSION_CODE) {
+        if (requestCode == mPermissionChecker?.REQUEST_PERMISSION_CODE) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 tracker.trackUserClickIzinkan()
             } else {
@@ -333,12 +336,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     @SuppressWarnings("MissingPermission")
     private fun checkForPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mPermissionChecker.checkPermissions(
+            mPermissionChecker?.checkPermissions(
                 this,
                 getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        mPermissionChecker.onPermissionDenied(
+                        mPermissionChecker?.onPermissionDenied(
                             this@DropoffPickerActivity,
                             permissionText
                         )
@@ -346,7 +349,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {
-                        mPermissionChecker.onNeverAskAgain(
+                        mPermissionChecker?.onNeverAskAgain(
                             this@DropoffPickerActivity,
                             permissionText
                         )
@@ -354,8 +357,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                     }
 
                     override fun onPermissionGranted() {
-                        mFusedLocationClient.lastLocation
-                            .addOnSuccessListener {
+                        mFusedLocationClient?.lastLocation
+                            ?.addOnSuccessListener {
                                 if (it != null) {
                                     moveCamera(getLatLng(it.latitude, it.longitude))
                                 } else {
@@ -364,7 +367,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                                     checkAndRequestLocation()
                                 }
                             }
-                            .addOnFailureListener { _ -> setLocationEmptyView() }
+                            ?.addOnFailureListener { _ -> setLocationEmptyView() }
                     }
                 },
                 ""
@@ -412,24 +415,24 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         if (mMapFragment?.isVisible == true) {
             supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
         }
-        mDisabledLocationView.visibility = View.VISIBLE
-        mNoPermissionsView.visibility = View.GONE
+        mDisabledLocationView?.visibility = View.VISIBLE
+        mNoPermissionsView?.visibility = View.GONE
     }
 
     private fun setNoPermissionsView() {
         if (mMapFragment?.isVisible == true) {
             supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
         }
-        mDisabledLocationView.visibility = View.GONE
-        mNoPermissionsView.visibility = View.VISIBLE
+        mDisabledLocationView?.visibility = View.GONE
+        mNoPermissionsView?.visibility = View.VISIBLE
     }
 
     private fun setMapView() {
         if (mMapFragment?.isHidden == true) {
             supportFragmentManager.beginTransaction().show(mMapFragment!!).commit()
         }
-        mDisabledLocationView.visibility = View.GONE
-        mNoPermissionsView.visibility = View.GONE
+        mDisabledLocationView?.visibility = View.GONE
+        mNoPermissionsView?.visibility = View.GONE
     }
 
     private fun showStoreDetail(datum: DropoffNearbyModel) {
@@ -443,7 +446,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 }
             }
         }
-        mStoreDetail.setStore(datum)
+        mStoreDetail?.setStore(datum)
         if (mNearbiesBehavior?.state != BottomSheetBehavior.STATE_HIDDEN) {
             mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -487,7 +490,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
             // Request location update once then remove when settings are satisfied
-            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
+            mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback, null)
         }
         task.addOnFailureListener {
             if (it is ResolvableApiException) {
@@ -497,7 +500,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
                     it.startResolutionForResult(this@DropoffPickerActivity, REQUEST_CODE_LOCATION)
-                } catch (sendEx: IntentSender.SendIntentException) {
+                } catch (@Suppress("SwallowedException") sendEx: IntentSender.SendIntentException) {
                     // Ignore the error.
                 }
             }
@@ -505,11 +508,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun stopLocationRequest() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+        mFusedLocationClient?.removeLocationUpdates(mLocationCallback)
     }
 
     private val goToAutoComplete: (View?) -> Unit = {
-        if (mDisabledLocationView.visibility == View.VISIBLE) {
+        if (mDisabledLocationView?.visibility == View.VISIBLE) {
             tracker.trackClickSearchBarGpsOff("")
         } else {
             tracker.trackClickSearchBarGpsOn("")
