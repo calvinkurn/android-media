@@ -341,6 +341,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun onResumeInternal() {
         feedMainViewModel.resumePage()
 
+        val meta = feedMainViewModel.metaData.value
+        if (meta is Success) showOnboarding(meta.data)
+
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
     }
@@ -509,43 +512,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(ONBOARDING_SHOW_DELAY)
-            mOnboarding?.dismiss()
-            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-                .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
-                        binding.btnFeedCreatePost
-                    } else {
-                        null
-                    }
-                )
-                .setProfileEntryPointView(
-                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                        binding.feedUserProfileImage
-                    } else {
-                        null
-                    }
-                )
-                .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                    }
-
-                    override fun onCompleteCreateContentOnboarding() {
-                        feedMainViewModel.setHasShownCreateContent()
-                    }
-
-                    override fun onCompleteProfileEntryPointOnboarding() {
-                        feedMainViewModel.setHasShownProfileEntryPoint()
-                    }
-
-                    override fun onFinished(isForcedDismiss: Boolean) {
-                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                    }
-                }).build()
-
-            mOnboarding?.show()
-        }
+        showOnboarding(meta)
 
         if (meta.showMyProfile) {
             if (meta.profilePhotoUrl.isNotEmpty()) {
@@ -626,6 +593,46 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         scrollToDefaultTabPosition()
+    }
+
+    private fun showOnboarding(meta: MetaModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(ONBOARDING_SHOW_DELAY)
+            mOnboarding?.dismiss()
+            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+                .setCreateContentView(
+                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                        binding.btnFeedCreatePost
+                    } else {
+                        null
+                    }
+                )
+                .setProfileEntryPointView(
+                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                        binding.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setListener(object : ImmersiveFeedOnboarding.Listener {
+                    override fun onStarted() {
+                    }
+
+                    override fun onCompleteCreateContentOnboarding() {
+                        feedMainViewModel.setHasShownCreateContent()
+                    }
+
+                    override fun onCompleteProfileEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onFinished(isForcedDismiss: Boolean) {
+                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                    }
+                }).build()
+
+            mOnboarding?.show()
+        }
     }
 
     private fun scrollToDefaultTabPosition() {
