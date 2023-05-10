@@ -8,4 +8,5 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_CLEAR_MODE = 1022
     const val FEED_POST_NOT_SELECTED = 1033
     const val FEED_POST_SELECTED = 1044
+    const val FEED_POST_FOLLOW_CHANGED = 1055
 }

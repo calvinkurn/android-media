@@ -201,6 +201,9 @@ class FeedPostVideoViewHolder(
                 campaignView.resetView()
                 hideClearView()
             }
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
+                bindAuthor(element)
+            }
         }
     }
 
