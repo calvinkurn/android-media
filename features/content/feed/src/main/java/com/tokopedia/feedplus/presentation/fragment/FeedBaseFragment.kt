@@ -81,7 +81,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     @Inject
     lateinit var router: Router
 
-    private var adapter: FeedPagerAdapter? = null
+    private val adapter by lazy {
+        FeedPagerAdapter(
+            childFragmentManager,
+            lifecycle,
+            appLinkExtras = arguments ?: Bundle.EMPTY
+        )
+    }
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
@@ -174,7 +180,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onDestroyView() {
         _binding = null
-        adapter = null
         super.onDestroyView()
     }
 
@@ -227,6 +232,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun setupView() {
+        binding.vpFeedTabItemsContainer.adapter = adapter
+
         if (isJustLoggedIn) {
             showJustLoggedInToaster()
             feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
@@ -250,7 +257,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     }
                     onChangeTab(position)
                 }
-            })
+
+            override fun onPageSelected(position: Int) {
+                appLinkTabPosition = position
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -263,11 +274,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun onResumeInternal() {
+        feedMainViewModel.resumePage()
+
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
     }
 
     private fun onPauseInternal() {
+        feedMainViewModel.pausePage()
+
         mOnboarding?.dismiss()
         mOnboarding = null
     }
@@ -289,14 +304,19 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
-        feedMainViewModel.metaData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> initMetaView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.metaData.collectLatest {
+                    when (it) {
+                        is Success -> initMetaView(it.data)
+                        is Fail -> Toast.makeText(
+                            requireContext(),
+                            it.throwable.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> {}
+                    }
+                }
             }
         }
     }
@@ -424,41 +444,41 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-            .setCreateContentView(
-                if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
-                    binding.btnFeedCreatePost
-                } else {
-                    null
-                }
-            )
-            .setProfileEntryPointView(
-                if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                    binding.feedUserProfileImage
-                } else {
-                    null
-                }
-            )
-            .setListener(object : ImmersiveFeedOnboarding.Listener {
-                override fun onStarted() {
-                }
-
-                override fun onCompleteCreateContentOnboarding() {
-                    feedMainViewModel.setHasShownCreateContent()
-                }
-
-                override fun onCompleteProfileEntryPointOnboarding() {
-                    feedMainViewModel.setHasShownProfileEntryPoint()
-                }
-
-                override fun onFinished(isForcedDismiss: Boolean) {
-                    if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                }
-            })
-            .build()
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(ONBOARDING_SHOW_DELAY)
             mOnboarding?.dismiss()
+            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+                .setCreateContentView(
+                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                        binding.btnFeedCreatePost
+                    } else {
+                        null
+                    }
+                )
+                .setProfileEntryPointView(
+                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                        binding.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setListener(object : ImmersiveFeedOnboarding.Listener {
+                    override fun onStarted() {
+                    }
+
+                    override fun onCompleteCreateContentOnboarding() {
+                        feedMainViewModel.setHasShownCreateContent()
+                    }
+
+                    override fun onCompleteProfileEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onFinished(isForcedDismiss: Boolean) {
+                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                    }
+                }).build()
+
             mOnboarding?.show()
         }
 
@@ -503,14 +523,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initTabsView(data: List<FeedDataModel>) {
-        adapter = FeedPagerAdapter(
-            childFragmentManager,
-            lifecycle,
-            data,
-            appLinkExtras = arguments ?: Bundle.EMPTY
-        )
-
-        binding.vpFeedTabItemsContainer.adapter = adapter
+        adapter.setTabsList(data)
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
@@ -636,5 +649,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         const val TAB_TYPE_FOLLOWING = "following"
 
         private const val COACHMARK_START_DELAY_IN_SEC = 1
+
+        private const val ONBOARDING_SHOW_DELAY = 500L
     }
 }

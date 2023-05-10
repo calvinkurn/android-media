@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
@@ -14,9 +15,9 @@ import com.tokopedia.iconunify.IconUnify
 class FeedErrorViewHolder(
     private val binding: ItemFeedNoContentBinding,
     private val listener: FeedListener
-) : AbstractViewHolder<FeedNoContentModel>(binding.root) {
+) : AbstractViewHolder<ErrorNetworkModel>(binding.root) {
 
-    override fun bind(element: FeedNoContentModel?) {
+    override fun bind(element: ErrorNetworkModel?) {
         with(binding) {
             iconFeedNoContent.setImage(IconUnify.RELOAD)
             tyFeedNoContentTitle.text =

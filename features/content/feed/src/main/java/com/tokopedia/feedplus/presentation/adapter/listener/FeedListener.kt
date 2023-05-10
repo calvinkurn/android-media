@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
@@ -12,6 +13,7 @@ interface FeedListener {
     fun onReminderClicked(campaignId: Long, setReminder: Boolean)
     fun onTimerFinishUpcoming()
     fun onTimerFinishOnGoing()
+    fun onTopAdsImpression(adViewUrl: String, id: String, shopId: String, uri: String, fullEcs: String?, position: Int)
 
     fun onProductTagButtonClicked(
         postId: String,
@@ -19,7 +21,8 @@ interface FeedListener {
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>
     )
 
     fun onProductTagViewClicked(
@@ -42,4 +45,12 @@ interface FeedListener {
     )
 
     fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int)
+
+    /**
+     * Video
+     */
+    fun getVideoPlayer(id: String): FeedExoPlayer
+
+    fun detachPlayer(player: FeedExoPlayer)
+
 }

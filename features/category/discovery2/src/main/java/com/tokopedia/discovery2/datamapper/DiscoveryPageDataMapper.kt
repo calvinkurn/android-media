@@ -332,7 +332,7 @@ class DiscoveryPageDataMapper(
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
-                                                    position + compIndex + 1
+                                                    position + listComponents.size
                                                 )
                                             )
                                         }
@@ -343,7 +343,7 @@ class DiscoveryPageDataMapper(
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
-                                                    position + compIndex + 1
+                                                    position + listComponents.size
                                                 )
                                             )
                                         }

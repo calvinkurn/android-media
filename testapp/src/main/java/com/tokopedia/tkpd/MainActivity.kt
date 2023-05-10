@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.url.TokopediaUrl
@@ -52,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                             HomeDestination.LOGOUT -> handleNavigationLogout()
                             HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
                             HomeDestination.APPLINK -> goTo()
-                            HomeDestination.LOGINHELPER -> goToLoginHelper()
                         }
                     }
                 )
@@ -62,17 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoDeveloperOptions() {
         RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
-    }
-
-    private fun goToLoginHelper() {
-        val loginHelperIntent = RouteManager.getIntent(
-            this@MainActivity,
-            ApplinkConstInternalGlobal.LOGIN_HELPER
-        )
-        startActivityForResult(
-            loginHelperIntent,
-            REQUEST_CODE_DEVELOPER_OPTIONS
-        )
     }
 
     private fun setDarkModeAndRecreate(active: Boolean) {
@@ -146,9 +133,9 @@ class MainActivity : AppCompatActivity() {
         if (userSession.isLoggedIn) {
             val identity =
                 if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            model.value = model.value.copy(loginText = "Logged in as:\n$identity")
+            model.value = model.value.copy(isLoggedIn = true, loginText = "Logged in as:\n$identity")
         } else {
-            model.value = model.value.copy(loginText = "Login")
+            model.value = model.value.copy(isLoggedIn = false, loginText = "Login")
         }
     }
 
@@ -182,7 +169,8 @@ class MainActivity : AppCompatActivity() {
         val applink: String = "",
         val urlState: String = "LIVE",
         val isDarkModeChecked: Boolean = false,
-        val loginText: String = "Login"
+        val loginText: String = "Login",
+        val isLoggedIn: Boolean = false
     )
 
     sealed interface HomeDestination {
@@ -190,7 +178,5 @@ class MainActivity : AppCompatActivity() {
         object LOGOUT : HomeDestination
         object DEVELOPER_OPTION : HomeDestination
         object APPLINK : HomeDestination
-
-        object LOGINHELPER : HomeDestination
     }
 }

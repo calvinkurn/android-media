@@ -31,11 +31,7 @@ import java.util.*
  * Created By : Muhammad Furqan on 16/03/23
  */
 enum class FeedCampaignRibbonType {
-    ASGC_GENERAL, ASGC_DISCOUNT,
-    ASGC_FLASH_SALE_UPCOMING,
-    ASGC_FLASH_SALE_ONGOING,
-    ASGC_SPECIAL_RELEASE_ONGOING,
-    ASGC_SPECIAL_RELEASE_UPCOMING
+    ASGC_GENERAL, ASGC_DISCOUNT, ASGC_FLASH_SALE_UPCOMING, ASGC_FLASH_SALE_ONGOING, ASGC_SPECIAL_RELEASE_ONGOING, ASGC_SPECIAL_RELEASE_UPCOMING
 }
 
 class FeedCampaignRibbonView(
@@ -56,7 +52,7 @@ class FeedCampaignRibbonView(
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
         hasVoucher: Boolean,
-        isTypeHighlight: Boolean,
+        isTypeHighlight: Boolean
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
@@ -75,6 +71,15 @@ class FeedCampaignRibbonView(
             }
 
             buildRibbonBasedOnType()
+        }
+    }
+
+    fun bindProduct(
+        product: FeedCardProductModel
+    ) {
+        mProduct = product
+        if (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING) {
+            setupAvailabilityProgress()
         }
     }
 
@@ -218,8 +223,7 @@ class FeedCampaignRibbonView(
     private fun buildRibbonBasedOnType() {
         with(binding) {
             when (type) {
-                FeedCampaignRibbonType.ASGC_GENERAL,
-                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT -> {
                     if (!mCta?.texts.isNullOrEmpty()) {
                         tyFeedCampaignRibbonTitle.text = mCta?.texts!![0]
                     } else {
@@ -229,20 +233,16 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
                     icFeedCampaignRibbonIcon.setOnClickListener { }
                 }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING,
-                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
-                    tyFeedCampaignRibbonSubtitle.text = mProduct?.stockWording
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
 
-                    val value = getProgressValue()
-                    pbFeedCampaignRibbon.setValue(value, true)
+                    setupAvailabilityProgress()
 
                     setupTimer(mCampaign?.endTime ?: "") {}
                     icFeedCampaignRibbonIcon.setOnClickListener { }
                 }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING,
-                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                     setupTimer(mCampaign?.startTime ?: "") {}
 
@@ -263,6 +263,15 @@ class FeedCampaignRibbonView(
         }
     }
 
+    private fun setupAvailabilityProgress() {
+        with(binding) {
+            tyFeedCampaignRibbonSubtitle.text = mProduct?.stockWording
+
+            val value = getProgressValue()
+            pbFeedCampaignRibbon.setValue(value, true)
+        }
+    }
+
     private fun getProgressValue(): Int = if (mProduct == null) {
         SEVENTY_FIVE_PERCENT
     } else if (mProduct!!.stockSoldPercentage > 1) {
@@ -274,10 +283,7 @@ class FeedCampaignRibbonView(
     private fun resetAnimationBasedOnType() {
         with(binding) {
             when (type) {
-                FeedCampaignRibbonType.ASGC_GENERAL,
-                FeedCampaignRibbonType.ASGC_DISCOUNT,
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING,
-                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
+                FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT, FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     root.setTransition(
                         root.currentState,
                         R.id.initial_title_with_icon
@@ -285,8 +291,7 @@ class FeedCampaignRibbonView(
                     root.transitionToEnd()
                     root.progress = 1f
                 }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING,
-                FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
+                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     root.setTransition(
                         root.currentState,
                         R.id.initial_title_with_timer_and_icon

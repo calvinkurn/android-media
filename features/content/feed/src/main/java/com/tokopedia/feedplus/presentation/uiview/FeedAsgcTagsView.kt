@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_RESTOCK
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_DISCOUNT
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH_SALE
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.presentation.adapter.FeedAsgcTagAdapter
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 /**
  * Created By : Muhammad Furqan on 14/03/23
  */
-class FeedAsgcTagsView(val recyclerView: RecyclerView) {
+class FeedAsgcTagsView(private val recyclerView: RecyclerView) {
     val adapter = FeedAsgcTagAdapter(mutableListOf())
     fun bindData(type: String, campaign: FeedCardCampaignModel) {
         val asgcList = mutableListOf<String>()
@@ -51,6 +52,7 @@ class FeedAsgcTagsView(val recyclerView: RecyclerView) {
         TYPE_FEED_ASGC_SHOP_DISCOUNT -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_diskon_toko)
         TYPE_FEED_ASGC_SHOP_FLASH_SALE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_flash_sale_toko)
         TYPE_FEED_ASGC_SPECIAL_RELEASE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_rilisan_special)
+        TYPE_FEED_TOP_ADS -> getString(com.tokopedia.feedcomponent.R.string.feeds_ads_text)
         else -> ""
     }
 

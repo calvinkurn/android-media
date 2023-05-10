@@ -5,6 +5,8 @@ import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_LONG_VIDEO
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
@@ -287,7 +289,11 @@ object MapperFeedHome {
     )
 
     private fun isImagesPost(card: FeedXCard) =
-        ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)) &&
+        (
+            (card.typename == TYPE_FEED_X_CARD_POST) ||
+                (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) ||
+                isTopAdsPost(card)
+            ) &&
             card.media.none { it.type == TYPE_FEED_LONG_VIDEO }
 
     private fun isVideoPost(card: FeedXCard) =
@@ -297,6 +303,9 @@ object MapperFeedHome {
     private fun isLivePreviewPost(card: FeedXCard) =
         card.typename == TYPE_FEED_X_CARD_PLAY && card.type == TYPE_FEED_PLAY_LIVE &&
             card.media.isNotEmpty() && card.media[0].type == TYPE_MEDIA_VIDEO
+
+    private fun isTopAdsPost(card: FeedXCard) =
+        card.typename == TYPE_FEED_X_CARD_PLACEHOLDER && card.type == TYPE_FEED_TOP_ADS
 
     private fun shouldShow(card: FeedXCard) =
         isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card)

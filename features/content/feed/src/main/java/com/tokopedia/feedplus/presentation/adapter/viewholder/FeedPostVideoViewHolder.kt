@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
+import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
@@ -10,6 +11,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
@@ -23,10 +25,6 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnima
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -36,10 +34,6 @@ class FeedPostVideoViewHolder(
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardVideoContentModel>(binding.root) {
 
-    private var feedVideoJob: Job? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
-    private var videoPlayer: FeedExoPlayer? = null
-
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption)
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
@@ -48,6 +42,33 @@ class FeedPostVideoViewHolder(
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+
+    private var mVideoPlayer: FeedExoPlayer? = null
+
+    init {
+        binding.playerControl.setListener(object : FeedPlayerControl.Listener {
+            override fun onScrubbing(
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
+            ) {
+                binding.videoTimeView.setCurrentPosition(currPosition)
+                binding.videoTimeView.setTotalDuration(totalDuration)
+                binding.videoTimeView.show()
+                showClearView(showDisableClearMode = false)
+            }
+
+            override fun onStopScrubbing(
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
+            ) {
+                binding.videoTimeView.hide()
+                hideClearView()
+            }
+        })
+    }
+
     override fun bind(element: FeedCardVideoContentModel?) {
         element?.let { data ->
             with(binding) {
@@ -58,6 +79,7 @@ class FeedPostVideoViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
                 bindComments(data)
+                bindVideoPlayer(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -91,18 +113,16 @@ class FeedPostVideoViewHolder(
             }
             if (payloads.contains(FEED_POST_SELECTED)) {
                 campaignView.startAnimation()
-                bindVideoPlayer(element)
+                mVideoPlayer?.resume()
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                videoPlayer?.stop()
+                mVideoPlayer?.pause()
+                mVideoPlayer?.reset()
+
                 campaignView.resetView()
                 hideClearView()
             }
         }
-    }
-
-    override fun onViewRecycled() {
-        videoPlayer?.destroy()
     }
 
     private fun renderLikeView(
@@ -165,7 +185,7 @@ class FeedPostVideoViewHolder(
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
-            totalProducts = data.totalProducts
+            products = data.products,
         )
     }
 
@@ -193,43 +213,49 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel) {
-        feedVideoJob?.cancel()
-        with(binding) {
-            if (videoPlayer == null) {
-                videoPlayer = FeedExoPlayer(root.context)
+        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
+        mVideoPlayer = videoPlayer
+
+        videoPlayer.stop()
+
+        videoPlayer.setVideoStateListener(object : VideoStateListener {
+            override fun onInitialStateLoading() {
+
             }
 
-            feedVideoJob = scope.launch {
-                playerFeedVideo.player = videoPlayer?.getExoPlayer()
-                playerControl.player = videoPlayer?.getExoPlayer()
-                playerFeedVideo.videoSurfaceView?.setOnClickListener {
-                    videoPlayer?.getExoPlayer()?.playWhenReady =
-                        videoPlayer?.getExoPlayer()?.playWhenReady != true
-                }
-                element.media[0].let {
-                    videoPlayer?.start(it.mediaUrl, false)
-                }
-                videoPlayer?.setVideoStateListener(object : VideoStateListener {
-                    override fun onInitialStateLoading() {
-                        showLoading()
-                        binding.iconPlay.hide()
-                    }
-
-                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
-                        hideLoading()
-                        binding.iconPlay.showWithCondition(!isPlaying)
-                    }
-
-                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                    }
-                })
+            override fun onBuffering() {
+                showLoading()
+                binding.iconPlay.hide()
             }
+
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
+                hideLoading()
+                binding.iconPlay.showWithCondition(!isPlaying)
+            }
+
+            override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+            }
+        })
+
+        binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
+        binding.playerControl.player = videoPlayer.getExoPlayer()
+        binding.playerFeedVideo.videoSurfaceView?.setOnClickListener {
+            videoPlayer.getExoPlayer().playWhenReady =
+                !videoPlayer.getExoPlayer().playWhenReady
         }
+
+        videoPlayer.start(
+            element.media.firstOrNull()?.mediaUrl.orEmpty(),
+            false,
+            playWhenReady = false,
+        )
     }
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
-        binding.playerFeedVideo.hide()
+        if (mVideoPlayer?.getExoPlayer()?.currentPosition == 0L) {
+            binding.playerFeedVideo.hide()
+        }
     }
 
     private fun hideLoading() {
@@ -237,7 +263,7 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.show()
     }
 
-    private fun showClearView() {
+    private fun showClearView(showDisableClearMode: Boolean = true) {
         with(binding) {
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
@@ -247,7 +273,10 @@ class FeedPostVideoViewHolder(
             shareButton.hide()
             productTagButton.root.hide()
             productTagView.root.hide()
-            btnDisableClearMode.show()
+            overlayTop.root.hide()
+            overlayBottom.root.hide()
+            overlayRight.root.hide()
+            btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
     }
 
@@ -261,8 +290,21 @@ class FeedPostVideoViewHolder(
             shareButton.show()
             productTagButton.root.show()
             productTagView.root.show()
+            overlayTop.root.show()
+            overlayBottom.root.show()
+            overlayRight.root.show()
             btnDisableClearMode.hide()
         }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        val thePlayer = mVideoPlayer
+        mVideoPlayer = null
+
+        binding.playerFeedVideo.player = null
+        binding.playerControl.player = null
+        thePlayer?.let { listener.detachPlayer(it) }
     }
 
     companion object {

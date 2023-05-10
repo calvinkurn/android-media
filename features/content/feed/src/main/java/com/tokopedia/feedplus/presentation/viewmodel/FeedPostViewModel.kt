@@ -12,7 +12,9 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
@@ -27,6 +29,22 @@ import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,6 +66,8 @@ class FeedPostViewModel @Inject constructor(
     private val userFollowUseCase: ProfileFollowUseCase,
     private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
+    private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+    private val topAdsAddressHelper: TopAdsAddressHelper,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -68,7 +88,11 @@ class FeedPostViewModel @Inject constructor(
         get() = _likeKolResp
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
+    private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
+
     private var cursor = ""
+    private var currentTopAdsPage = 0
+    private var shouldFetchTopAds = true
 
     fun fetchFeedPosts(
         source: String,
@@ -79,6 +103,7 @@ class FeedPostViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
+                shouldFetchTopAds = true
                 cursor = _feedHome.value?.cursor.orEmpty()
 
                 val relevantPostsDeferred = async {
@@ -93,47 +118,54 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val feedPostsDeferred = async {
-                    getFeedPosts(
-                        source = source,
-                        cursor = _feedHome.value?.cursor.orEmpty()
-                    )
+                    try {
+                        Success(
+                            getFeedPosts(
+                                source = source,
+                                cursor = _feedHome.value?.cursor.orEmpty()
+                            )
+                        )
+                    } catch (e: Throwable) {
+                        Fail(e)
+                    }
                 }
 
-                _feedHome.value = try {
-                    val feedPosts = feedPostsDeferred.await()
-                    val items = feedPosts.items.map {
-                        when (it) {
-                            is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
-                                it.copy(
-                                    campaign = it.campaign.copy(
-                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                val feedPosts = feedPostsDeferred.await()
+                _feedHome.value = when (feedPosts) {
+                    is Success -> {
+                        val items = feedPosts.items.map {
+                            when (it) {
+                                is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                    it.copy(
+                                        campaign = it.campaign.copy(
+                                            isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                        )
                                     )
-                                )
-                            } else {
-                                it
-                            }
-                            is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
-                                it.copy(
-                                    campaign = it.campaign.copy(
-                                        isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                } else {
+                                    it
+                                }
+                                is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
+                                    it.copy(
+                                        campaign = it.campaign.copy(
+                                            isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                        )
                                     )
-                                )
-                            } else {
-                                it
+                                } else {
+                                    it
+                                }
+                                else -> it
                             }
-                            else -> it
-                        }
-                    }.toList()
+                        }.toList()
 
-                    Success(
-                        feedPosts.copy(
-                            items = relevantPostsDeferred.await() +
-                                _feedHome.value?.items.orEmpty() +
-                                items
+                        Success(
+                            data = feedPosts.data.copy(
+                                items = relevantPostsDeferred.await() +
+                                    _feedHome.value?.items.orEmpty() +
+                                    items
+                            )
                         )
-                    )
-                } catch (e: Throwable) {
-                    Fail(e)
+                    }
+                    else -> feedPosts
                 }
             }
         }
@@ -201,32 +233,57 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postId: String): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createPostDetailParams(postId)
-        )
-    }
+    fun fetchTopAdsData() {
+        viewModelScope.launch {
+            feedHome.value?.let {
+                if (it is Success && shouldFetchTopAds) {
+                    shouldFetchTopAds = false
 
-    private suspend fun getFeedPosts(
-        source: String,
-        cursor: String = ""
-    ): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParams(
-                source,
-                cursor
-            )
-        )
-    }
+                    val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
+                    val topAdsAddressData = topAdsAddressHelper.getAddressData()
+                    val indexToRemove = mutableListOf<Int>()
 
-    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
-        try {
-            checkCampaignReminderUseCase(
-                checkCampaignReminderUseCase.createParams(campaignId)
-            ).isAvailable
-        } catch (e: Throwable) {
-            false
+                    val newItems = it.data.items.mapIndexed { index, item ->
+                        when {
+                            item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
+                                val topAdsDeferred = async {
+                                    topAdsHeadlineUseCase.setParams(
+                                        UrlParamHelper.generateUrlParamString(
+                                            defaultTopAdsUrlParams.apply {
+                                                put(PARAM_PAGE, ++currentTopAdsPage)
+                                            }
+                                        ),
+                                        topAdsAddressData
+                                    )
+                                    val data = topAdsHeadlineUseCase.executeOnBackground()
+                                    if (data.displayAds.data.isNotEmpty()) {
+                                        val cpmModel = data.displayAds
+                                        transformCpmToFeedTopAds(item, cpmModel)
+                                    } else {
+                                        // Error fetch TopAds, should remove the view
+                                        indexToRemove.add(index)
+                                        item.copy(isFetched = true)
+                                    }
+                                }
+                                topAdsDeferred.await()
+                            }
+                            else -> item
+                        }
+                    }.toMutableList()
+
+                    indexToRemove.forEach { indexNumber ->
+                        newItems.removeAt(indexNumber)
+                    }
+
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = newItems
+                        )
+                    )
+                }
+            }
         }
+    }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
         _suspendedFollowData.value =
@@ -283,6 +340,20 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun suspendLikeContent(contentId: String, rowNumber: Int) {
+        _suspendedLikeData.value = LikeFeedDataModel(
+            contentId,
+            rowNumber,
+            FeedLikeAction.Like,
+        )
+    }
+
+    fun processSuspendedLike() {
+        _suspendedLikeData.value?.let {
+            likeContent(it.contentId, it.action, it.rowNumber)
+        }
+    }
+
     fun likeContent(contentId: String, action: FeedLikeAction, rowNumber: Int) {
         _likeKolResp.value = FeedResult.Loading
         viewModelScope.launch {
@@ -298,7 +369,7 @@ class FeedPostViewModel @Inject constructor(
                 if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
                     throw CustomUiMessageThrowable(R.string.feed_like_error_message)
                 }
-                val mappedResponse = mapLikeResponse(action, rowNumber)
+                val mappedResponse = mapLikeResponse(contentId, action, rowNumber)
                 _likeKolResp.value = FeedResult.Success(mappedResponse)
             } catch (it: Throwable) {
                 _likeKolResp.value = FeedResult.Failure(it)
@@ -306,8 +377,36 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private fun mapLikeResponse(likeAction: FeedLikeAction, rowNumber: Int) =
+    private suspend fun getRelevantPosts(postId: String): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createPostDetailParams(postId)
+        )
+    }
+
+    private suspend fun getFeedPosts(
+        source: String,
+        cursor: String = ""
+    ): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createParams(
+                source,
+                cursor
+            )
+        )
+    }
+
+    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
+        try {
+            checkCampaignReminderUseCase(
+                checkCampaignReminderUseCase.createParams(campaignId)
+            ).isAvailable
+        } catch (e: Throwable) {
+            false
+        }
+
+    private fun mapLikeResponse(contentId: String, likeAction: FeedLikeAction, rowNumber: Int) =
         LikeFeedDataModel(
+            contentId = contentId,
             rowNumber = rowNumber,
             action = likeAction
         )
@@ -369,6 +468,17 @@ class FeedPostViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getTopAdsParams(): MutableMap<String, Any> =
+        mutableMapOf(
+            PARAM_DEVICE to VALUE_DEVICE,
+            PARAM_EP to VALUE_EP,
+            PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+            PARAM_ITEM to VALUE_ITEM,
+            PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
+            PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+            PARAM_USER_ID to userSession.userId
+        )
 
     private val Result<FeedModel>.cursor: String
         get() = when (this) {

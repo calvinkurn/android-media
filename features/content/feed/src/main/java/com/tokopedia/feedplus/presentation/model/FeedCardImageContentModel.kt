@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_LONG_VIDEO
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
@@ -42,7 +43,10 @@ data class FeedCardImageContentModel(
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
     val maxDiscountPercentage: Int,
-    val maxDiscountPercentageFmt: String
+    val maxDiscountPercentageFmt: String,
+    val adViewUri: String = "",  // use only for topads
+    val adViewUrl: String = "",  // use only for topads
+    val isFetched: Boolean = false // use only for topads
 ) : Visitable<FeedAdapterTypeFactory> {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
@@ -58,6 +62,9 @@ data class FeedCardImageContentModel(
 
     val isTypeUGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
+
+    val isTopAds: Boolean
+        get() = type == TYPE_FEED_TOP_ADS && typename == TYPE_FEED_X_CARD_PLACEHOLDER
 
     companion object {
         private const val AUTHOR_SGC = 2

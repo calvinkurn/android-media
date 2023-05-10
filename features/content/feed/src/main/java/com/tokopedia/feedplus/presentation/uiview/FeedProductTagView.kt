@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.show
 class FeedProductTagView(
     private val binding: FeedProductTagViewBinding, private val listener: FeedListener
 ) {
-
     fun bindData(
         postId: String,
         author: FeedAuthorModel,
@@ -27,25 +26,7 @@ class FeedProductTagView(
         totalProducts: Int
     ) {
         with(binding) {
-            when {
-                totalProducts == PRODUCT_COUNT_ZERO -> {
-                    root.hide()
-                }
-                totalProducts == PRODUCT_COUNT_ONE -> {
-                    tvTagProduct.text = products.firstOrNull()?.name
-                    root.show()
-                }
-                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
-                    tvTagProduct.text =
-                        root.context.getString(R.string.feeds_tag_product_99_more_text)
-                    root.show()
-                }
-                else -> {
-                    tvTagProduct.text =
-                        root.context.getString(R.string.feeds_tag_product_text, totalProducts)
-                    root.show()
-                }
-            }
+            bindText(products)
 
             root.setOnClickListener {
                 listener.onProductTagViewClicked(
@@ -58,6 +39,32 @@ class FeedProductTagView(
                     products,
                     totalProducts
                 )
+            }
+        }
+    }
+
+    fun bindText(
+        products: List<FeedCardProductModel>
+    ) {
+        with(binding) {
+            when {
+                products.size == PRODUCT_COUNT_ZERO -> {
+                    root.hide()
+                }
+                products.size == PRODUCT_COUNT_ONE -> {
+                    tvTagProduct.text = products.firstOrNull()?.name
+                    root.show()
+                }
+                products.size > PRODUCT_COUNT_NINETY_NINE -> {
+                    tvTagProduct.text =
+                        root.context.getString(R.string.feeds_tag_product_99_more_text)
+                    root.show()
+                }
+                else -> {
+                    tvTagProduct.text =
+                        root.context.getString(R.string.feeds_tag_product_text, products.size)
+                    root.show()
+                }
             }
         }
     }
