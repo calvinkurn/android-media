@@ -30,7 +30,8 @@ fun Modifier.tag(tag: String) = semantics {
     contentDescription = tag
 }
 
-fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
+// still dummy
+internal fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
     val transition = rememberInfiniteTransition()
     val translateAnimation by transition.animateFloat(
         initialValue = 0f,
