@@ -127,7 +127,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, ATC_TRACKER_ID)
 
-            val bundlePromotion = product.asBundle(product.position + 1)
+            val bundlePromotion = product.asBundle(product.position + 1, isAtc = true)
             val list = arrayListOf(bundlePromotion)
             putParcelableArrayList(ITEMS, list)
 
@@ -142,11 +142,11 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
     }
 
-    private fun RecommendationItem.asBundle(position: Int): Bundle {
+    private fun RecommendationItem.asBundle(position: Int, isAtc: Boolean = false): Bundle {
         return Bundle().apply {
             putInt(CATEGORY_ID, departmentId)
             putString(DIMENSION_40, asItemList())
-            putString(DIMENSION_45, cartId)
+            if(isAtc) putString(DIMENSION_45, cartId)
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, categoryBreadcrumbs)
             putLong(ITEM_ID, productId)
