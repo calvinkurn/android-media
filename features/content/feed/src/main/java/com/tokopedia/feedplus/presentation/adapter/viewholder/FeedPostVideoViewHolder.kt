@@ -284,7 +284,11 @@ class FeedPostVideoViewHolder(
             model.isTypeProductHighlight,
             trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                 model
-            )
+            ),
+            model.id,
+            model.author,
+            model.typename,
+            model.followers.isFollowed
         )
     }
 

@@ -408,7 +408,11 @@ class FeedPostImageViewHolder(
             model.products.firstOrNull(),
             model.hasVoucher,
             model.isTypeProductHighlight,
-            trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model)
+            trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model),
+            model.id,
+            model.author,
+            model.typename,
+            model.followers.isFollowed
         )
     }
 

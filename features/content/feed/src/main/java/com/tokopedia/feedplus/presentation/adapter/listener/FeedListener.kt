@@ -63,6 +63,17 @@ interface FeedListener {
         trackerModel: FeedTrackerDataModel?
     )
 
+    fun onOngoingCampaignClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?
+    )
+
     fun onSharePostClicked(
         id: String,
         authorName: String,
