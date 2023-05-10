@@ -562,6 +562,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.adminRedirection.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onLocationAdminRedirection()
+                else -> {
+                    //no-op
+                }
             }
         }
 

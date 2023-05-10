@@ -30,6 +30,8 @@ import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -38,13 +40,13 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mViewModel.setDefaultToasterState(false)
             mViewModel.onCheckDelayErrorResponseTrigger()
 
             mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
 
-            advanceTimeBy(5000L)
+            advanceUntilIdle()
 
             mViewModel.isToasterAlreadyShown.verifyValueEquals(false)
         }
@@ -52,13 +54,13 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when onCheckDelayErrorResponseTrigger with isToasterAlreadyShown default value true should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mViewModel.setDefaultToasterState(true)
             mViewModel.onCheckDelayErrorResponseTrigger()
 
             mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
 
-            advanceTimeBy(5000L)
+            advanceUntilIdle()
 
             mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
         }
@@ -66,7 +68,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData called should get all other page data`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetFreeShippingRemoteConfigDisabled_thenReturn(
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
@@ -88,7 +90,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData called with free shipping disabled and in transition period should get all other page data`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetFreeShippingRemoteConfigDisabled_thenReturn(
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = true
@@ -103,7 +105,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData called with free shipping enabled and not in transition period should get all other page data`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetFreeShippingRemoteConfigDisabled_thenReturn(
                 isFreeShippingEnabled = true,
                 isInTransitionPeriod = false
@@ -136,7 +138,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when reloadErrorData should reload data that was failed`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetShopBadge_thenThrow()
             onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
@@ -199,7 +201,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when reloadErrorData and error state map hasn't been set, should not reload any data`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetShopBadge_thenThrow()
             onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
@@ -229,7 +231,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData and all secondary info success, should swipe with delay`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetShopBadge_thenReturn("")
             onGetShopOperational_thenReturn(
                 ShopOperationalData(
@@ -264,7 +266,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 Assert.assertFalse(it)
             }
 
-            advanceTimeBy(1000L)
+            advanceUntilIdle()
 
             mViewModel.shouldSwipeSecondaryInfo.observeOnce {
                 Assert.assertTrue(it)
@@ -273,7 +275,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData but not all secondary info success, should not swipe gently`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetShopBadge_thenThrow()
             onGetShopOperational_thenThrow()
             onGetUserShopInfo_thenThrow()
@@ -290,14 +292,14 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when startToggleTopadsCredit and kredit topads is 0f, should toggle topads topup with delay`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(0f)
 
             mViewModel.getKreditTopAds()
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 1)
@@ -305,7 +307,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(1000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 2)
@@ -314,14 +316,14 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when startToggleTopadsCredit and kredit topads is 0f, should toggle topads topup with delay until max limit`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(0f)
 
             mViewModel.getKreditTopAds()
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 1)
@@ -329,7 +331,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(1000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 2)
@@ -337,7 +339,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(1000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 3)
@@ -345,7 +347,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             mViewModel.startToggleTopadsCredit()
 
-            advanceTimeBy(1000L)
+            advanceUntilIdle()
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 4)
@@ -360,11 +362,11 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when startToggleTopadsCredit, kredit topads is 0f, and job is not completed yet, should not toggle topads topup`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(0f)
             mViewModel.getKreditTopAds()
             mViewModel.startToggleTopadsCredit()
-            advanceTimeBy(100L)
+            coroutineTestRule.dispatchers.coroutineDispatcher.scheduler.advanceTimeBy(100L)
 
             mViewModel.startToggleTopadsCredit()
 
@@ -373,11 +375,11 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when startToggleTopadsCredit, kredit topads is 0f, and job is completed, should toggle topads topup`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(0f)
             mViewModel.getKreditTopAds()
             mViewModel.startToggleTopadsCredit()
-            advanceTimeBy(3000L)
+            advanceUntilIdle()
 
             mViewModel.startToggleTopadsCredit()
 
@@ -388,7 +390,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when startToggleTopadsCredit and kredit topads is not 0f, should not toggle topads topup`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(100f)
             mViewModel.getKreditTopAds()
             mViewModel.startToggleTopadsCredit()
@@ -398,14 +400,14 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllOtherMenuData should cancel toggle topads job`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTopAdsKredit_thenReturn(0f)
             mViewModel.getKreditTopAds()
             mViewModel.startToggleTopadsCredit()
-            advanceTimeBy(100L)
+            advanceUntilIdle()
 
             mViewModel.getAllOtherMenuData()
-            advanceTimeBy(3000L)
+            advanceUntilIdle()
 
             Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
         }
@@ -448,7 +450,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopOperational success should set live data success`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val uiModel = ShopOperationalData(
                 isShopOpen = true,
                 isShopClosed = false,
@@ -471,7 +473,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopOperational error should set live data fail`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
 
             onGetShopOperational_thenThrow(error)
@@ -486,7 +488,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopBadge success should set live data state success`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val badgeUrl = "www.abc.com"
             onGetShopBadge_thenReturn(badgeUrl)
 
@@ -499,7 +501,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopBadge error should set live data state error`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetShopBadge_thenThrow(error)
 
@@ -512,7 +514,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getTotalTokoMember success should set live data state success`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTotalTokoMember_thenReturn(0L)
             mViewModel.getTotalTokoMember()
 
@@ -523,7 +525,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getTotalTokoMember success should set live data state success with data null`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetTotalTokoMember_thenReturn(0L)
             mViewModel.getTotalTokoMember()
             verifyGetTotalTokoMemberCalled()
@@ -533,7 +535,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getTotalTokoMember error should set live data state error`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetTotalTokoMember_thenThrow(error)
 
@@ -546,7 +548,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopFollowers success should set live data state success`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopFollowers = 10L
             onGetShopTotalFollowers_thenReturn(shopFollowers)
 
@@ -559,7 +561,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopFollowers success but result invalide should set live data state error`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopFollowers: Long = -1
             onGetShopTotalFollowers_thenReturn(shopFollowers)
 
@@ -571,7 +573,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopFollowers error should set live data state error`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetShopTotalFollowers_thenThrow(error)
 
@@ -584,7 +586,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getFreeShippingStatus disabled by remote config, should set live data false and empty`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onGetFreeShippingRemoteConfigDisabled_thenReturn(
                 isFreeShippingEnabled = true,
                 isInTransitionPeriod = true
@@ -601,7 +603,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo success should set live data state success`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
             onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
@@ -613,7 +615,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo returns RM status, should set user session data accordingly`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val userShopInfoWrapper = UserShopInfoWrapper(RegularMerchant.NeedUpgrade)
             onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
@@ -627,7 +629,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo returns PM Inactive status, should set user session data accordingly`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.NotActive)
             onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
@@ -641,7 +643,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo returns PM Active status, should set user session data accordingly`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.Active)
             onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
@@ -655,7 +657,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo returns OS status, should set user session data accordingly`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
             onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
@@ -669,7 +671,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo error should set live data state error`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetUserShopInfo_thenThrow(error)
 
@@ -791,7 +793,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getNewIklanAndPromotion is show tag centralize promo value success should set live data sucess`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val merchantPromotionGetPromoList = MerchantPromotionGetPromoList()
             onGetNewIklanPromotion_thenReturn(userSession.userId, merchantPromotionGetPromoList)
 
@@ -804,7 +806,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getNewIklanAndPromotion is show tag centralize promo value success with list new should set live data sucess`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val merchantPromotionGetPromoList = MerchantPromotionGetPromoList(data = MerchantPromotionGetPromoListData(pages = listOf(
                 MerchantPromotionGetPromoListPage(pageName = "Top Ads", pageNameSuffix = "Baru")
             )))
@@ -818,7 +820,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         }
     @Test
     fun `when getNewIklanAndPromotion is show tag centralize promo value error should set live data false`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetNewIklanAndPromotion_thenThrow(error)
 

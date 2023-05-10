@@ -313,6 +313,9 @@ class AddressFormFragment :
                         binding?.layoutCbDefaultLoc?.gone()
                     }
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -358,6 +361,9 @@ class AddressFormFragment :
                         toasterType = Toaster.TYPE_ERROR
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -387,6 +393,9 @@ class AddressFormFragment :
                         message = it.throwable.message.toString(),
                         toasterType = Toaster.TYPE_ERROR
                     )
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

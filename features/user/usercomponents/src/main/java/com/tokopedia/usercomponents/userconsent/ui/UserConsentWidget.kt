@@ -316,6 +316,9 @@ class UserConsentWidget :
             is ConsentType.MultipleChecklist -> {
                 renderMultiplePurpose()
             }
+            else -> {
+                // no op
+            }
         }
     }
 

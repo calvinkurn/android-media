@@ -11,6 +11,8 @@ import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -18,12 +20,12 @@ import org.junit.Test
 class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
     
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 700L
     }
 
     @Test
     fun `given mini cart item is null when add to cart should call init affiliate cookie`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val affiliateUuid = "123e4567-e89b-12d3-a456-426614174000"
             val affiliateChannel = "channel"
 
@@ -61,7 +63,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given mini cart item is not null when update cart item should call init affiliate cookie`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val affiliateUuid = "123e4567-e89b-12d3-a456-426614174122"
             val affiliateChannel = "affiliate-channel"
 
@@ -100,7 +102,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given new quantity less than current quantity when update cart item should NOT call init affiliate`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val affiliateUuid = "123e4567-e89b-12d3-a456-426614174122"
             val affiliateChannel = "affiliate-channel"
 
@@ -138,7 +140,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given add to cart when init affiliate cookie error should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val affiliateUuid = "123e4567-e89b-12d3-a456-426614174000"
             val affiliateChannel = "channel"
 

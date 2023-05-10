@@ -690,6 +690,9 @@ class ShopPageHeaderFragment :
                             isFollowing = this?.status?.userIsFollowing == true
                         }
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
                 val followStatusData = (it as? Success)?.data?.followStatus
                 shopPageHeaderFragmentHeaderViewHolder?.showCoachMark(

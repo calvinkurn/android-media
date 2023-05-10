@@ -228,6 +228,9 @@ class ChatListFragment constructor() :
             Observer {
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
