@@ -17,6 +17,15 @@ class FeedProductTagView(
     private val binding: FeedProductTagViewBinding,
     private val listener: FeedListener
 ) {
+    private var postId: String = ""
+    private var author: FeedAuthorModel? = null
+    private var postType: String = ""
+    private var isFollowing: Boolean = false
+    private var campaign: FeedCardCampaignModel? = null
+    private var hasVoucher: Boolean = false
+    private var totalProducts: Int = 0
+    private var trackerData: FeedTrackerDataModel? = null
+
     fun bindData(
         postId: String,
         author: FeedAuthorModel,
@@ -28,23 +37,15 @@ class FeedProductTagView(
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?
     ) {
-        with(binding) {
-            bindText(products)
+        this.postId = postId
+        this.author = author
+        this.postType = postType
+        this.isFollowing = isFollowing
+        this.campaign = campaign
+        this.trackerData = trackerData
+        this.totalProducts = totalProducts
 
-            root.setOnClickListener {
-                listener.onProductTagViewClicked(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    totalProducts,
-                    trackerData
-                )
-            }
-        }
+        bindText(products)
     }
 
     fun bindText(
@@ -68,6 +69,24 @@ class FeedProductTagView(
                     tvTagProduct.text =
                         root.context.getString(R.string.feeds_tag_product_text, products.size)
                     root.show()
+                }
+            }
+
+            root.setOnClickListener {
+                author?.let { mAuthor ->
+                    campaign?.let { mCampaign ->
+                        listener.onProductTagViewClicked(
+                            postId,
+                            mAuthor,
+                            postType,
+                            isFollowing,
+                            mCampaign,
+                            hasVoucher,
+                            products,
+                            totalProducts,
+                            trackerData
+                        )
+                    }
                 }
             }
         }

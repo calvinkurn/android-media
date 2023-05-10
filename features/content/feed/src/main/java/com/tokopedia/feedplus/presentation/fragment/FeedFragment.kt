@@ -488,7 +488,7 @@ class FeedFragment :
             feedAnalytics.eventClickProductLabel(it)
             feedAnalytics.eventClickContentProductLabel(it)
         }
-        if (totalProducts == FeedProductTagView.PRODUCT_COUNT_ONE) {
+        if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
             val appLink = products.firstOrNull()?.applink
             if (appLink?.isNotEmpty() == true) {
                 activity?.let {
