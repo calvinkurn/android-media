@@ -3,7 +3,6 @@ package com.tokopedia.search.result.mps.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 
 data class MPSModel(
@@ -49,6 +48,10 @@ data class MPSModel(
             @SerializedName("name")
             @Expose
             val name: String = "",
+
+            @SerializedName("city")
+            @Expose
+            val city: String = "",
 
             @SerializedName("location")
             @Expose

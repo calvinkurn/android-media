@@ -57,8 +57,8 @@ class MPSShopWidgetViewHolder(
     }
 
     private fun bindShopLocation(dataView: MPSShopWidgetDataView) {
-        binding?.searchMPSShopLocation?.shouldShowWithAction(dataView.location.isNotEmpty()) {
-            binding?.searchMPSShopLocation?.text = dataView.location
+        binding?.searchMPSShopLocation?.shouldShowWithAction(dataView.city.isNotEmpty()) {
+            binding?.searchMPSShopLocation?.text = dataView.city
         }
 
         binding?.searchMPSShopLocationLine?.showWithCondition(
