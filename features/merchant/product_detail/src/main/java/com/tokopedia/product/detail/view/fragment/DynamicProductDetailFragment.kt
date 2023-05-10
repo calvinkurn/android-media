@@ -5825,7 +5825,7 @@ open class DynamicProductDetailFragment :
             } else {
                 link
             }
-            gotoApplink(processedLink)
+            goToApplink(processedLink)
         }
     }
 
