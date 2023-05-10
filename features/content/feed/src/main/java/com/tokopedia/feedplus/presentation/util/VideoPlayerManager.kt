@@ -34,10 +34,12 @@ class VideoPlayerManager(
         videoMap.keys.forEach { release(it) }
     }
 
-    fun pause(id: String) {
-        videoMap.entries.firstOrNull {
+    fun pause(id: String, shouldReset: Boolean = false) {
+        val videoPlayer = videoMap.entries.firstOrNull {
             it.value == id
-        }?.key?.pause()
+        }?.key
+        videoPlayer?.pause()
+        if (shouldReset) videoPlayer?.reset()
     }
 
     fun resume(id: String) {

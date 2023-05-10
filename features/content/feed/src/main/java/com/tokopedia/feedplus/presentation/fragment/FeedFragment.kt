@@ -898,7 +898,7 @@ class FeedFragment :
         val item = adapter?.list?.get(currentIndex) ?: return
         if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.pause(item.id)
+        videoPlayerManager.pause(item.id, shouldReset = true)
     }
 
     private fun resumeCurrentVideo() {
