@@ -9,7 +9,6 @@ import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.util.ContentDateConverter
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import java.time.*
 import javax.inject.Inject
 
 /**
@@ -61,8 +60,7 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel.Item {
-        val username = comment.userInfo.username.ifBlank { comment.userInfo.username }
-            .ifBlank { comment.userInfo.name }
+        val username = comment.userInfo.username.ifBlank { comment.userInfo.name }
         return CommentUiModel.Item(
             id = comment.id,
             username = username.parseAsHtml().toString(),
