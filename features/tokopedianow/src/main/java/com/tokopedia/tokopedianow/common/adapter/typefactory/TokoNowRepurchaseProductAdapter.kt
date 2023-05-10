@@ -70,6 +70,17 @@ class TokoNowRepurchaseProductAdapter(
             this.newList = newList
             return this
         }
+
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return if(oldItem is TokoNowRepurchaseProductUiModel && newItem is TokoNowRepurchaseProductUiModel) {
+                oldItem.getChangePayload(newItem)
+            } else {
+                super.getChangePayload(oldItemPosition, newItemPosition)
+            }
+        }
     }
 
     interface TokoNowRepurchaseProductTypeFactory {

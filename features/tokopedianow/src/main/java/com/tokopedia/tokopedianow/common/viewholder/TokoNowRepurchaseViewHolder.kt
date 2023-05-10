@@ -63,6 +63,14 @@ class TokoNowRepurchaseViewHolder(
         tvSeeAll = binding?.tvSeeAll
         layoutShimmering = binding?.carouselShimmering?.carouselShimmeringLayout
         rvProduct = binding?.rvProduct
+
+        rvProduct?.apply {
+            adapter = this@TokoNowRepurchaseViewHolder.adapter
+            linearLayoutManager = createLinearLayoutManager()
+            layoutManager = linearLayoutManager
+            addOnScrollListener(createScrollListener())
+            addItemDecoration(RepurchaseProductItemDecoration())
+        }
     }
 
     override fun bind(data: TokoNowRepurchaseUiModel) {
@@ -86,14 +94,6 @@ class TokoNowRepurchaseViewHolder(
 
         tvSeeAll?.setOnClickListener {
             goToRepurchasePage()
-        }
-
-        rvProduct?.apply {
-            adapter = this@TokoNowRepurchaseViewHolder.adapter
-            linearLayoutManager = createLinearLayoutManager()
-            layoutManager = linearLayoutManager
-            addOnScrollListener(createScrollListener())
-            addItemDecoration(RepurchaseProductItemDecoration())
         }
 
         adapter.submitList(data.productList)

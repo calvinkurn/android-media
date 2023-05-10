@@ -25,28 +25,26 @@ class RepurchaseProductCardView @JvmOverloads constructor(
             setupLabelDiscount(model)
             setupProductPrice(model)
             setupProductWeight(model)
-
-            setupQuantityEditor(
-                isVariant = model.isVariant,
-                minOrder = model.minOrder,
-                maxOrder = model.maxOrder,
-                orderQuantity = model.orderQuantity,
-                isOos = model.isOos(),
-                needToShowQuantityEditor = model.needToShowQuantityEditor
-            )
+            setupQuantityEditor(model)
         }
     }
 
-    fun setOnClickQuantityEditorListener(
-        onClickListener: (Int) -> Unit
+    fun setOnQuantityChangedListener(
+        onQuantityChangedListener: (Int) -> Unit
     ) {
-        view.quantityEditor.onClickListener = onClickListener
+        view.quantityEditor.onQuantityChangedListener = onQuantityChangedListener
     }
 
-    fun setOnClickQuantityEditorVariantListener(
-        onClickVariantListener: (Int) -> Unit
+    fun setOnClickAddVariantListener(
+        onClickAddVariantListener: (Int) -> Unit
     ) {
-        view.quantityEditor.onClickVariantListener = onClickVariantListener
+        view.quantityEditor.onClickAddVariantListener = onClickAddVariantListener
+    }
+
+    fun setQuantity(
+        model: TokoNowRepurchaseProductUiModel
+    ) {
+        view.quantityEditor.setQuantity(model.orderQuantity)
     }
 
     private fun LayoutRepurchaseProductCardBinding.setupProductImage(
@@ -70,20 +68,14 @@ class RepurchaseProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutRepurchaseProductCardBinding.setupQuantityEditor(
-        isVariant: Boolean,
-        minOrder: Int,
-        maxOrder: Int,
-        orderQuantity: Int,
-        isOos: Boolean,
-        needToShowQuantityEditor: Boolean
+        model: TokoNowRepurchaseProductUiModel
     ) {
-        quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
-            quantityEditor.isVariant = isVariant
-            quantityEditor.minQuantity = minOrder
-            quantityEditor.maxQuantity = maxOrder
-            quantityEditor.setQuantity(
-                quantity = orderQuantity
-            )
+        quantityEditor.showIfWithBlock(!model.isOos() && model.needToShowQuantityEditor) {
+            quantityEditor.enableQuantityEditor = false
+            quantityEditor.isVariant = model.isVariant
+            quantityEditor.minQuantity = model.minOrder
+            quantityEditor.maxQuantity = model.maxOrder
+            setQuantity(model)
         }
     }
 

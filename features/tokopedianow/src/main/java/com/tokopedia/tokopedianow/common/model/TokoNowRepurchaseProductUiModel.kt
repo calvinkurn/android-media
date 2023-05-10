@@ -46,6 +46,10 @@ data class TokoNowRepurchaseProductUiModel(
         return typeFactory.type(this)
     }
 
+    fun getChangePayload(newItem: TokoNowRepurchaseProductUiModel): Any {
+        return orderQuantity != newItem.orderQuantity
+    }
+
     fun getWeightLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isWeightPosition() }
 
     fun isOos() = availableStock < minOrder

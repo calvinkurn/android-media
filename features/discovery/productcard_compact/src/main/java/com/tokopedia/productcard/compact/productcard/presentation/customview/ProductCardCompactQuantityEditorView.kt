@@ -9,17 +9,19 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.util.ContextUtil.getActivityFromContext
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.setDimenAsTextSize
+import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactQuantityEditorViewBinding
 import com.tokopedia.productcard.compact.productcard.helper.MotionLayoutTransitionImpl
 import com.tokopedia.productcard.compact.productcard.helper.TextWatcherImpl
-import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.productcard.helper.TimerTaskImpl
-import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactQuantityEditorViewBinding
+import com.tokopedia.unifycomponents.BaseCustomView
 import java.util.Timer
 import java.util.TimerTask
 
@@ -67,24 +69,35 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
             }
         }
 
+    var enableQuantityEditor: Boolean = true
+        set(value) {
+            field = value
+            loadLayoutDescription()
+        }
+
     var isVariant: Boolean = false
-    var onClickListener: ((counter: Int) -> Unit)? = null
-    var onClickVariantListener: ((counter: Int) -> Unit)? = null
+    // Cart quantity listener for non variant product
+    var onQuantityChangedListener: ((counter: Int) -> Unit)? = null
+    // Add to cart listener for variant product
+    var onClickAddVariantListener: ((counter: Int) -> Unit)? = null
+    var orderQuantity: Int = DEFAULT_NUMBER
 
     init {
         binding = LayoutProductCardCompactQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
             setupAddButton()
             setupSubButton()
-            setupEditText()
 
-            safeRunBlock {
-                root.setTransitionListener(
-                    MotionLayoutTransitionImpl(
-                        onTransitionCompleted = {
-                            onTransitionCompleted(it)
-                        }
+            if (enableQuantityEditor) {
+                setupEditText()
+                safeRunBlock {
+                    root.setTransitionListener(
+                        MotionLayoutTransitionImpl(
+                            onTransitionCompleted = {
+                                onTransitionCompleted(it)
+                            }
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -122,7 +135,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun initializeTimerTask() {
         timerTaskChangingQuantity = TimerTaskImpl {
-            onClickListener?.invoke(counter)
+            onQuantityChangedListener?.invoke(counter)
         }
         timerTaskCollapsingWidget = TimerTaskImpl {
             binding.collapseAnimation()
@@ -208,14 +221,40 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
             if (isVariant) {
-                onClickVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
+                onClickAddVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
             } else {
                 onClickAddNonVariant()
             }
         }
     }
 
+    private fun loadLayoutDescription() {
+        val scene = if(enableQuantityEditor) {
+            R.xml.layout_product_card_compact_quantity_editor_custom_view_scene
+        } else {
+            R.xml.layout_product_card_compact_quantity_editor_no_anim_view_scene
+        }
+        binding.root.loadLayoutDescription(scene)
+    }
+
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.showCheckMarkIcon() {
+        background.hide()
+        editText.hide()
+        addButton.hide()
+        subButton.hide()
+        addToCartBtnShimmer.hide()
+        imageCheckMark.show()
+    }
+
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddNonVariant() {
+        if(enableQuantityEditor) {
+            onClickAddToCartWithAnimation()
+        } else {
+            onClickAddToCartWithoutAnimation()
+        }
+    }
+
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddToCartWithAnimation() {
         executeTimerAfterTextChanged = false
         val currentState = root.currentState
         when {
@@ -241,11 +280,20 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         executeTimer()
     }
 
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddToCartWithoutAnimation() {
+        background.hide()
+        editText.hide()
+        addButton.hide()
+        subButton.hide()
+        addToCartBtnShimmer.show()
+        onQuantityChangedListener?.invoke(minQuantity)
+    }
+
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupSubButton() {
         subButton.setOnClickListener {
             counter--
             if (counter < minQuantity) {
-                onClickListener?.invoke(DEFAULT_NUMBER)
+                onQuantityChangedListener?.invoke(DEFAULT_NUMBER)
                 collapseAnimation()
             } else {
                 executeTimerAfterTextChanged = false
@@ -285,7 +333,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         )
 
         editText.onEnterClickedListener = {
-            onClickListener?.invoke(counter)
+            onQuantityChangedListener?.invoke(counter)
             collapseAnimation()
         }
 
@@ -296,7 +344,8 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.collapseAnimation() {
         context.getActivityFromContext()?.runOnUiThread {
-            editText.setDimenAsTextSize(R.dimen.product_card_compact_quantity_editor_text_size_start_with_value)
+            editText.setDimenAsTextSize(
+                R.dimen.product_card_compact_quantity_editor_text_size_start_with_value)
             editText.clearFocus()
             hideKeyboardFrom(context, editText)
             executeTimerAfterTextChanged = false
@@ -370,15 +419,41 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         imm.hideSoftInputFromWindow(view.windowToken, HIDE_SOFT_INPUT_KEYBOARD_FLAG)
     }
 
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onSetQuantityWithAnimation(quantity: Int) {
+        counter = quantity
+        if (quantity > DEFAULT_NUMBER) {
+            setStartTransitionWithValue()
+        } else {
+            setStartTransition()
+        }
+    }
+
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onSetQuantityWithoutAnimation(quantity: Int) {
+        counter = quantity
+        if (quantity > DEFAULT_NUMBER) {
+            showCheckMarkIcon()
+        } else {
+            showAddButton()
+        }
+    }
+
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
+        background.show()
+        addButton.show()
+        editText.hide()
+        subButton.hide()
+        addToCartBtnShimmer.hide()
+        imageCheckMark.hide()
+    }
+
     fun setQuantity(quantity: Int) {
         binding.apply {
             if (isAnimationRunning || counter == quantity) return@apply
 
-            if (quantity > DEFAULT_NUMBER) {
-                counter = quantity
-                setStartTransitionWithValue()
+            if(enableQuantityEditor) {
+                onSetQuantityWithAnimation(quantity)
             } else {
-                setStartTransition()
+                onSetQuantityWithoutAnimation(quantity)
             }
         }
     }

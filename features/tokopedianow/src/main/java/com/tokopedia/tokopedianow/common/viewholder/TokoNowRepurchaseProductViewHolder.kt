@@ -32,17 +32,23 @@ class TokoNowRepurchaseProductViewHolder(
                 listener?.onProductCardClicked(product.position, product)
             }
 
-            setOnClickQuantityEditorListener { quantity ->
+            setOnQuantityChangedListener { quantity ->
                 listener?.onCartQuantityChanged(product, quantity)
             }
 
-            setOnClickQuantityEditorVariantListener {
+            setOnClickAddVariantListener {
                 listener?.onAddVariantClicked(product)
             }
 
             addOnImpressionListener(product) {
                 listener?.onProductCardImpressed(layoutPosition, product)
             }
+        }
+    }
+
+    override fun bind(element: TokoNowRepurchaseProductUiModel?, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true && element != null) {
+            binding?.productCard?.setQuantity(element)
         }
     }
 
