@@ -40,6 +40,9 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
@@ -116,8 +119,9 @@ class ShopHomeViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>,
-    private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>
-) : BaseViewModel(dispatcherProvider.main) {
+    private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>,
+    private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>,
+    ) : BaseViewModel(dispatcherProvider.main) {
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
@@ -212,6 +216,10 @@ class ShopHomeViewModel @Inject constructor(
     val isShowHomeTabConfettiLiveData: LiveData<Boolean>
         get() = _isShowHomeTabConfettiLiveData
     private val _isShowHomeTabConfettiLiveData = MutableLiveData<Boolean>()
+
+    val productComparisonLiveData: LiveData<Result<ShopHomePersoProductComparisonUiModel>>
+        get() = _productComparisonLiveData
+    private val _productComparisonLiveData = MutableLiveData<Result<ShopHomePersoProductComparisonUiModel>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -1299,5 +1307,32 @@ class ShopHomeViewModel @Inject constructor(
         } else {
             _isShowHomeTabConfettiLiveData.postValue(false)
         }
+    }
+
+    fun getProductComparisonData(
+        shopId: String,
+        shopHomePersoProductComparisonUiModel: ShopHomePersoProductComparisonUiModel
+    ) {
+        launchCatchError(block = {
+            val productComparisonData = getProductComparisonResponse(shopId)
+            val uiModel = shopHomePersoProductComparisonUiModel.copy(
+                recommendationWidget = productComparisonData.firstOrNull()
+            )
+            _productComparisonLiveData.postValue(Success(uiModel))
+        }) {
+            _productComparisonLiveData.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getProductComparisonResponse(shopId: String): List<RecommendationWidget> {
+        return getComparisonProductUseCase.get().getData(
+            GetRecommendationRequestParam(
+                //TODO need to change this implementation on prod
+//                shopIds = listOf(shopId)
+                //need to be hardcoded for staging
+                productIds = listOf("2150849620"),
+                pageName = "shop_camparison_test"
+            )
+        )
     }
 }

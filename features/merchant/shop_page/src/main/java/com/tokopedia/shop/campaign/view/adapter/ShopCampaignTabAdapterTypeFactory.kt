@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.listener.*
@@ -49,8 +50,9 @@ class ShopCampaignTabAdapterTypeFactory(
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val widgetConfigListener: WidgetConfigListener,
     private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener,
-    private val shopHomeListener: ShopHomeListener
-) : ShopHomeAdapterTypeFactory(
+    private val shopHomeListener: ShopHomeListener,
+    private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
+    ) : ShopHomeAdapterTypeFactory(
     listener,
     onMerchantVoucherListWidgetListener,
     shopHomeEndlessProductListener,
@@ -68,7 +70,8 @@ class ShopCampaignTabAdapterTypeFactory(
     singleProductBundleListener,
     thematicWidgetListener,
     shopHomeProductListSellerEmptyListener,
-    shopHomeListener
+    shopHomeListener,
+    shopPersoProductComparisonListener
 ) {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
