@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
@@ -49,15 +50,20 @@ import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
 
+
+private const val CARD_TRANSITION_DURATION = 300
+private const val LONG_PRESS_DURATION = 400
+
 private fun TimeInterpolator.toEasing() = Easing { x ->
     getInterpolation(x)
 }
 
-private val bezierCustomInterpolator = PathInterpolatorCompat
-    .create(.2f, .64f, .21f, 1f)
-    .toEasing()
-
-const val CARD_TRANSITION_DURATION = 300
+private val bezierCustomInterpolator = PathInterpolatorCompat.create(
+    .2f,
+    .64f,
+    .21f,
+    1f
+).toEasing()
 
 @Composable
 private fun borderSelected(): Color {
@@ -87,34 +93,28 @@ sealed interface Card2Border {
 }
 
 private suspend fun PointerInputScope.configGesture(
-    onTouch: MutableState<Boolean>,
-    onClick: () -> Unit,
-    onLongPress: () -> Unit
+    onTouch: MutableState<Boolean>, onClick: () -> Unit, onLongPress: () -> Unit
 ) {
-    detectTapGestures(
-        onPress = { offset ->
-            val currentTimePress = System.currentTimeMillis()
-            onTouch.value = true
+    detectTapGestures(onPress = { offset ->
+        val currentTimePress = System.currentTimeMillis()
+        onTouch.value = true
 
-            tryAwaitRelease()
-            onTouch.value = false
+        tryAwaitRelease()
+        onTouch.value = false
 
-            val clickDuration = System.currentTimeMillis() - currentTimePress
-            if (clickDuration < 400) {
-                onClick.invoke()
-            }
-        },
-        onDoubleTap = { offset -> },
-        onLongPress = { offset ->
-            onLongPress.invoke()
-        },
-        onTap = { offset -> }
-    )
+        val clickDuration = System.currentTimeMillis() - currentTimePress
+        if (clickDuration < LONG_PRESS_DURATION) {
+            onClick.invoke()
+        }
+    }, onDoubleTap = { offset -> }, onLongPress = { offset ->
+        onLongPress.invoke()
+    }, onTap = { offset -> })
 }
 
 @Composable
 fun Card2Unify(
-    enableBounceAnimation: Boolean = true,
+    enableTransitionAnimation: Boolean = false,
+    enableBounceAnimation: Boolean = false,
     type: Card2Border = Card2Border.NoBorder,
     onClick: () -> Unit,
     onLongPress: () -> Unit,
@@ -123,11 +123,8 @@ fun Card2Unify(
     val onTouch = remember { mutableStateOf(false) }
     val scale = if (enableBounceAnimation) {
         animateFloatAsState(
-            if (onTouch.value) 0.95F else 1.01f,
-            animationSpec = FloatTweenSpec(
-                CARD_TRANSITION_DURATION,
-                0,
-                easing = bezierCustomInterpolator
+            if (onTouch.value) 0.95F else 1.01f, animationSpec = FloatTweenSpec(
+                CARD_TRANSITION_DURATION, 0, easing = bezierCustomInterpolator
             )
         ).value
     } else {
@@ -182,37 +179,32 @@ fun Card2Unify(
     LaunchedEffect(type) {
         launch {
             animateBackgroundColor.animateTo(
-                backgroundColor,
-                animationSpec = tween(CARD_TRANSITION_DURATION)
+                backgroundColor, animationSpec = tween(CARD_TRANSITION_DURATION)
             )
         }
 
         launch {
             animateBorderColor.animateTo(
-                borderColor,
-                animationSpec = tween(CARD_TRANSITION_DURATION)
+                borderColor, animationSpec = tween(CARD_TRANSITION_DURATION)
             )
         }
     }
 
     Card(
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(16.dp)
-            .scale(scale)
-            .pointerInput(Unit) {
-                configGesture(onTouch = onTouch,
-                    onClick = {
-                        onClick.invoke()
-                        Log.e("click", "click")
-                    },
-                    onLongPress = {
-                        onLongPress.invoke()
-                        Log.e("click", "long click")
-                    })
-            },
-        border = BorderStroke(2.dp, animateBorderColor.value),
-        backgroundColor = animateBackgroundColor.value,
+        modifier = Modifier.wrapContentSize().padding(16.dp).scale(scale).pointerInput(Unit) {
+            configGesture(onTouch = onTouch, onClick = {
+                onClick.invoke()
+                Log.e("click", "click")
+            }, onLongPress = {
+                onLongPress.invoke()
+                Log.e("click", "long click")
+            })
+        },
+        border = BorderStroke(
+            2.dp, if (enableTransitionAnimation) animateBorderColor.value else borderColor
+        ),
+        backgroundColor = if (enableTransitionAnimation) animateBackgroundColor.value
+        else backgroundColor,
         elevation = if (shadow) Integer.MAX_VALUE.dp else 0.dp,
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -226,9 +218,7 @@ fun Card2Unify(
 
 @Composable
 fun BoxCustomRipple(
-    boxScope: BoxScope,
-    enableAnimation: Boolean,
-    clickChange: Boolean
+    boxScope: BoxScope, enableAnimation: Boolean, clickChange: Boolean
 ) {
     if (enableAnimation) {
         val color = remember {
@@ -238,18 +228,14 @@ fun BoxCustomRipple(
         LaunchedEffect(key1 = clickChange) {
             if (clickChange) {
                 color.animateTo(
-                    targetValue = 0.2F,
-                    animationSpec = tween(
-                        durationMillis = 120,
-                        easing = bezierCustomInterpolator
+                    targetValue = 0.2F, animationSpec = tween(
+                        durationMillis = 120, easing = bezierCustomInterpolator
                     )
                 )
             } else {
                 color.animateTo(
-                    targetValue = 0F,
-                    animationSpec = tween(
-                        durationMillis = 120,
-                        delayMillis = 100, bezierCustomInterpolator
+                    targetValue = 0F, animationSpec = tween(
+                        durationMillis = 120, delayMillis = 100, bezierCustomInterpolator
                     )
                 )
             }
@@ -257,10 +243,7 @@ fun BoxCustomRipple(
 
         boxScope.run {
             Spacer(
-                Modifier
-                    .matchParentSize()
-                    .alpha(color.value)
-                    .background(Color(0xFF525A67))
+                Modifier.matchParentSize().alpha(color.value).background(Color(0xFF525A67))
             )
         }
     }
@@ -271,22 +254,17 @@ fun BoxCustomRipple(
 fun Card2Preview() {
     Surface {
         var type by remember { mutableStateOf(Card2Border.default()) }
-        Card2Unify(
-            enableBounceAnimation = true,
-            type = type,
-            onClick = {
-                type = if (type == Card2Border.BorderActive) {
-                    Card2Border.Border
-                } else {
-                    Card2Border.BorderActive
-                }
-            },
-            onLongPress = {
-
+        Card2Unify(enableBounceAnimation = true, type = type, onClick = {
+            type = if (type == Card2Border.BorderActive) {
+                Card2Border.Border
+            } else {
+                Card2Border.BorderActive
             }
-        ) {
+        }, onLongPress = {
+
+        }) {
             var textTest by remember {
-                mutableStateOf("")
+                mutableStateOf("Click Me")
             }
 
             Column(
@@ -301,16 +279,15 @@ fun Card2Preview() {
                 )
 
                 Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "Open the reward"
+                    modifier = Modifier.padding(16.dp), text = "Open the reward"
                 )
-                Button(modifier = Modifier.wrapContentSize(),
+                Button(modifier = Modifier.wrapContentSize()
+                    .align(alignment = Alignment.CenterHorizontally).padding(bottom = 16.dp),
                     onClick = {
-                        textTest = "asdasd"
+                        textTest = "Button Clicked"
                     }) {
                     Text(
-                        modifier = Modifier.padding(8.dp),
-                        text = textTest
+                        modifier = Modifier.padding(8.dp), text = textTest
                     )
                 }
             }
