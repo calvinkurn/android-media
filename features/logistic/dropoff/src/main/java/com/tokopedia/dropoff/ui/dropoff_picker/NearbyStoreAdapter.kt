@@ -90,7 +90,6 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             view.setOnClickListener { mListener?.onItemClicked(it, adapterPosition) }
             view.tag = datum
         }
-
     }
 
     private inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)

@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import javax.inject.Inject

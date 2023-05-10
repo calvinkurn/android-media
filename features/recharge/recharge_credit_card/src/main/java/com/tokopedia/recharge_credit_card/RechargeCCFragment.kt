@@ -244,6 +244,9 @@ class RechargeCCFragment :
                     is RechargeNetworkResult.Fail -> {
                         // TODO: show global error
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -279,6 +282,9 @@ class RechargeCCFragment :
                     }
                     is RechargeNetworkResult.Fail -> {
                         showErrorToaster(it.error)
+                    }
+                    else -> {
+                        // no-op
                     }
                 }
             }
@@ -350,18 +356,27 @@ class RechargeCCFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.ccWidgetClientNumber?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
 
         rechargeCCViewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    // no-op
+                }
             }
         }
 
         rechargeCCViewModel.prefillData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    // no-op
+                }
             }
         }
     }

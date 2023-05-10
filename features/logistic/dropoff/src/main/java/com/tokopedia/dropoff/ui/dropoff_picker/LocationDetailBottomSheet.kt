@@ -48,5 +48,4 @@ class LocationDetailBottomSheet : ConstraintLayout {
     fun setOnCancelClickListener(listener: (view: View, data: DropoffNearbyModel?) -> Unit) {
         buttonCancel.setOnClickListener { listener(it, mData) }
     }
-
 }
