@@ -492,7 +492,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 val tickerPageAdapter = TickerPagerAdapter(context, message)
                 tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        openWebViewFromTicker(linkUrl)
                     }
                 })
                 binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
@@ -508,7 +508,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
                 binding?.tickerInfoCourier?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        openWebViewFromTicker(linkUrl)
                     }
 
                     override fun onDismiss() {
@@ -517,6 +517,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 })
             }
         }
+    }
+
+    private fun openWebViewFromTicker(linkUrl: CharSequence) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
     }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {

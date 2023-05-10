@@ -59,7 +59,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
     private var orderId: String? = ""
     private var trackingDataModel: TrackingDataModel? = null
-    private lateinit var tippingValueAdapter: TippingValueAdapter
+    private var tippingValueAdapter: TippingValueAdapter? = null
     private var selectedTippingValue: Int? = null
 
     init {
@@ -191,7 +191,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
         ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
         tippingValueAdapter = TippingValueAdapter(this)
-        tippingValueAdapter.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
+        tippingValueAdapter?.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
 
         binding.rvChipsTip.apply {
             layoutManager = chipsLayoutManagerTipping
@@ -210,13 +210,28 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             description = setTippingDescription(logisticDriverModel.prepayment.info)
         }
         binding.etNominalTip.run {
-            setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
-            editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+            setMessage(
+                        getString(
+                            R.string.nominal_tip_message,
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
+                        )
+                    )
+            editText.addTextChangedListener(
+                        setWrapperWatcherTipping(
+                            binding.etNominalTip.textInputLayout,
+                            logisticDriverModel.prepayment.minAmount,
+                            logisticDriverModel.prepayment.maxAmount
+                        )
+                    )
             counterView?.visibility = View.GONE
         }
 
         binding.btnTipping.setOnClickListener {
-            val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.editText.text.toString())
+            val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace(
+                        "{{amount}}",
+                        binding.etNominalTip.editText.text.toString()
+                    )
 
             RouteManager.route(
                 context,
@@ -240,15 +255,28 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     private fun setWrapperWatcherTipping(wrapper: TextInputLayout, minAmount: Int, maxAmount: Int): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // no op
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
                 if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
-                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)))
+                    setWrapperError(
+                        wrapper,
+                        getString(
+                            com.tokopedia.logisticorder.R.string.minimum_tipping,
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)
+                        )
+                    )
                     binding.btnTipping.isEnabled = false
                 } else if (s.isNotEmpty() && text.toIntSafely() > maxAmount) {
-                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)))
+                    setWrapperError(
+                        wrapper,
+                        getString(
+                            com.tokopedia.logisticorder.R.string.maksimum_tipping,
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)
+                        )
+                    )
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
@@ -259,13 +287,14 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             }
 
             override fun afterTextChanged(text: Editable) {
+                // no op
             }
         }
     }
 
     private fun validateSelectedChip(nominalTip: String?) {
         if (selectedTippingValue != nominalTip?.toIntOrNull()) {
-            tippingValueAdapter.replaceSelectedChip()
+            tippingValueAdapter?.replaceSelectedChip()
             selectedTippingValue = null
         }
     }

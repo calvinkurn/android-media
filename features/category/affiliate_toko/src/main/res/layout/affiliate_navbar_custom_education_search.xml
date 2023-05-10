@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|start"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/edukasi_searchbar"
+        app:search_bar_placeholder="Mau cari tahu apa?"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_show_icon="false" />
+</LinearLayout>
+

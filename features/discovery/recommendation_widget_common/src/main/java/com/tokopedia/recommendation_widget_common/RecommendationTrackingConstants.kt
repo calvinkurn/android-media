@@ -5,7 +5,7 @@ object RecommendationTrackingConstants {
 
         const val TRACKER_ID = "trackerId"
 
-        const val ITEM_LIST = "itemList"
+        const val ITEM_LIST = "item_list"
         const val ITEMS = "items"
 
         const val PRODUCT_ID = "productId"

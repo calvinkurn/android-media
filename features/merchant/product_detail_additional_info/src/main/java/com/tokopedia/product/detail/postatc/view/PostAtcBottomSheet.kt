@@ -43,8 +43,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
 
-        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
@@ -218,15 +216,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         RouteManager.route(context, appLink)
     }
 
-    override fun goToProduct(productId: String) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        dismiss()
-    }
-
     override fun refreshPage() {
         initData()
     }
@@ -258,12 +247,28 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
-        goToProduct(productId)
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
+        }
+        onClickProduct(productId)
     }
 
-    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {}
+    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
+        }
+    }
 
     /**
      * Listener Area - End
      */
+
+    var onClickProduct: (String) -> Unit = { productId ->
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        dismiss()
+    }
 }

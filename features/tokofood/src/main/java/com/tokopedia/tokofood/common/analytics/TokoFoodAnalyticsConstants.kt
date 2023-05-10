@@ -42,7 +42,6 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_32008 = "32008"
 
     // post purchase
-    const val ORDER_DETAIL_PAGE = "Order detail page"
     const val VIEW_TOKOFOOD_ORDER_DETAIL_PAGE = "view tokofood order detail page"
     const val CLICK_CALL_ICON = "click call icon"
     const val CLICK_CALL_DRIVER = "click call driver"
