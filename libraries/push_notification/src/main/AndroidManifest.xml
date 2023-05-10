@@ -8,5 +8,6 @@
         android:supportsRtl="true">
         <receiver android:name=".services.DismissBroadcastReceiver" />
         <receiver android:name=".services.ReviewNotificationBroadcastReceiver" />
+        <receiver android:name=".services.ClickedBroadcastReceiver" />
     </application>
 </manifest>
