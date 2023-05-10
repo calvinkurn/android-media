@@ -50,7 +50,7 @@ class CommentUiModelMapper @Inject constructor() {
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
             content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(), // to make sure new line doesn't skip
-            createdTime = convertTime(comment.createdTime),
+            createdTime = ContentDateConverter.convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
             isOwner = comment.isCommentOwner,
