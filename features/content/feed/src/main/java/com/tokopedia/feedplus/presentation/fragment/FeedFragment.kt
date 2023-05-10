@@ -80,7 +80,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
@@ -675,6 +674,30 @@ class FeedFragment :
         position: Int
     ) {
 //        TODO("Not yet implemented")
+    }
+
+    override fun onOngoingCampaignClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?
+    ) {
+        trackerModel?.let {
+            openProductTagBottomSheet(
+                postId = postId,
+                author = author,
+                postType = postType,
+                isFollowing = isFollowing,
+                campaign = campaign,
+                hasVoucher = hasVoucher,
+                products = products,
+                trackerData = it,
+            )
+        }
     }
 
     private fun observeAddToCart() {
