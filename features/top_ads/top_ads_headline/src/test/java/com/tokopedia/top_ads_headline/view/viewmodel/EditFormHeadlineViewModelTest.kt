@@ -5,6 +5,7 @@ import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.data.response.Error
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import org.junit.Assert.*
 
@@ -16,6 +17,9 @@ class EditFormHeadlineViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private var createHeadlineAdsUseCase: CreateHeadlineAdsUseCase = mockk(relaxed = true)
     private var viewModel = spyk(EditFormHeadlineViewModel(createHeadlineAdsUseCase))

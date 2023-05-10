@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.repurchase.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseTypeFactory
 
 data class RepurchaseProductUiModel(
@@ -11,7 +11,7 @@ data class RepurchaseProductUiModel(
     val categoryId: String,
     val category: String,
     val position: Int,
-    val productCardModel: TokoNowProductCardViewUiModel,
+    val productCardModel: ProductCardCompactUiModel,
 ) : Visitable<RepurchaseTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: RepurchaseTypeFactory): Int {

@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat_common.util
 
 import android.content.SharedPreferences
-import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +16,7 @@ class TokoChatCacheManagerImpl @Inject constructor(
             .apply()
     }
 
-    override fun <T> loadCache(key: String, type: Type): T? {
+    override fun <T> loadCache(key: String, type: Class<T>): T? {
         val cacheString = sharedPreferences.getString(key, "")
         return CommonUtil.fromJson(cacheString, type)
     }
@@ -32,4 +31,7 @@ class TokoChatCacheManagerImpl @Inject constructor(
         return sharedPreferences.getBoolean(stateCacheKey, false)
     }
 
+    companion object {
+        const val TOKOCHAT_IMAGE_ATTACHMENT_MAP = "image_attachment_map"
+    }
 }

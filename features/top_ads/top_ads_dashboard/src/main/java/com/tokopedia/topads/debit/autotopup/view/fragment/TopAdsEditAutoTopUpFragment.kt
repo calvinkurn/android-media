@@ -164,6 +164,9 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                     is ResponseSaving -> {
                         handleResponseSaving(it)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )

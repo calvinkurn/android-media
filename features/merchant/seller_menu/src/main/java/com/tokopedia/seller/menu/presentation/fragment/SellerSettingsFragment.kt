@@ -101,6 +101,9 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
                 sellerMenuAdapter.addElement(settingsList)
                 sellerMenuAdapter.notifyDataSetChanged()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

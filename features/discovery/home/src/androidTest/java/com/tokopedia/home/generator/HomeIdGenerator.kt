@@ -69,11 +69,11 @@ class HomeIdGenerator {
     private val parentViewPrinter = ViewHierarchyPrinter(
         parentPrintCondition,
         customIdPrefix = "P",
-        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        packageName = BuildConfig.APPLICATION_ID
     )
     private val viewPrinter = ViewHierarchyPrinter(
         printConditions,
-        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        packageName = BuildConfig.APPLICATION_ID
     )
     private val fileWriter = FileWriter()
 

@@ -100,7 +100,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setTitleMerchant(title: String) {
-        if (title.isNullOrEmpty()){
+        if (title.isEmpty()){
             tgTokoFoodMerchantTitle?.hide()
         } else {
             tgTokoFoodMerchantTitle?.show()
@@ -138,16 +138,16 @@ class TokoFoodMerchantListViewHolder (
 
     private fun setMerchantDistance(distance: String, eta: String) {
         val etaDistance = StringBuilder()
-        if (!distance.isNullOrEmpty()) {
+        if (distance.isNotEmpty()) {
             etaDistance.append(distance)
         }
 
-        if (!eta.isNullOrEmpty()) {
+        if (eta.isNotEmpty()) {
             etaDistance.append(" - ")
             etaDistance.append(eta)
         }
 
-        if (etaDistance.toString().isNullOrEmpty()){
+        if (etaDistance.toString().isEmpty()){
             tgTokoFoodMerchantDistance?.hide()
         } else {
             tgTokoFoodMerchantDistance?.show()
@@ -156,7 +156,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setMerchantRating(rating: String, ratingDouble: Double) {
-        if (rating.isNullOrEmpty() || ratingDouble <= 0f){
+        if (rating.isEmpty() || ratingDouble <= 0f){
             tgTokoFoodMerchantRating?.hide()
             imgTokoFoodMerchantRating?.hide()
         } else {
@@ -169,7 +169,7 @@ class TokoFoodMerchantListViewHolder (
     private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: PriceLevel){
         val price = getPriceLevelString(priceLevel)
         val category = getCategoryString(categories)
-        if (category.isNullOrEmpty() || price.isNullOrEmpty() || priceLevel.fareCount <= 0){
+        if (category.isEmpty() || price.isEmpty() || priceLevel.fareCount <= 0){
             viewDividerTokoFoodMerchant?.hide()
         } else {
             viewDividerTokoFoodMerchant?.show()
@@ -178,7 +178,7 @@ class TokoFoodMerchantListViewHolder (
 
     private fun setMerchantCategory(categories: List<String>, priceLevel: PriceLevel){
         val category = getCategoryString(categories)
-        if (category.isNullOrEmpty()){
+        if (category.isEmpty()){
             tgTokoFoodMerchantCategory?.hide()
         } else {
             tgTokoFoodMerchantCategory?.show()
@@ -222,7 +222,7 @@ class TokoFoodMerchantListViewHolder (
 
     private fun setPriceLevel(priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
-        if (price.isNullOrEmpty() || priceLevel.fareCount <= 0){
+        if (price.isEmpty() || priceLevel.fareCount <= 0){
             tgTokoFoodMerchantPriceScale?.hide()
         } else {
             tgTokoFoodMerchantPriceScale?.show()

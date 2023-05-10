@@ -51,4 +51,8 @@
     <!--Vertical Swipe-->
     <color name="play_dms_vertical_swipe_overlay">#99212121</color>
 
+    <!--Social Proof-->
+    <color name="play_dms_text_social_proof">#AD31353B</color>
+    <color name="play_dms_rating_social_proof">#FFC400</color>
+
 </resources>

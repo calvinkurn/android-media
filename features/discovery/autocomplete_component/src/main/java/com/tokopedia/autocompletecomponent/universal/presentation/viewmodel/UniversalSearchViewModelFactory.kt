@@ -32,7 +32,7 @@ internal class UniversalSearchViewModelFactory(
             universalSearchUseCase,
             universalSearchModelMapper,
             searchParameter,
-            chooseAddressWrapper,
+            chooseAddressWrapper
         )
     }
 }
