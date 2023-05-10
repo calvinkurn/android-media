@@ -272,7 +272,7 @@ open class AddToCartDoneBottomSheet :
                     addToCartButton.hide()
                 } else if (result is Fail) {
                     dialog?.run {
-                        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
+                        Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
                         Toaster.make(
                             findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
@@ -285,6 +285,7 @@ open class AddToCartDoneBottomSheet :
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeRecommendationProduct() {
         addToCartDoneViewModel.recommendationProduct.observe(
             this,
