@@ -49,6 +49,7 @@ import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
+import com.tokopedia.tokochat.util.isFromBubble
 import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
@@ -115,8 +116,7 @@ open class TokoChatFragment :
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
 
-    @Inject
-    lateinit var tokoChatAnalytics: TokoChatAnalytics
+    private lateinit var tokoChatAnalytics: TokoChatAnalytics
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -1286,6 +1286,8 @@ open class TokoChatFragment :
     }
 
     private fun setupTrackers() {
+        tokoChatAnalytics = TokoChatAnalytics(isFromBubble = activity?.isFromBubble() ?: false)
+
         getComposeMessageArea()?.setTracker(
             trackOnClickComposeArea = {
                 if (viewModel.channelId.isNotBlank()) {
