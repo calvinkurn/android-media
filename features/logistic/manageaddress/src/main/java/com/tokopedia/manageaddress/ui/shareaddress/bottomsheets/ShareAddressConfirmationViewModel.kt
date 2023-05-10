@@ -34,22 +34,25 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     var isApprove = false
 
     fun shareAddress(param: ShareAddressToUserParam) {
-        launchCatchError(block = {
-            _loading.value = true
-            val result = shareAddressToUserUseCase(param)
-            _loading.value = false
-            if (result.isSuccessShareAddress) {
-                _toastEvent.value = Toast.Success
-            } else {
-                _toastEvent.value = Toast.Error(result.errorMessage)
-            }
-            ShareAddressAnalytics.directShareAgreeSendAddress(result.isSuccessShareAddress)
-            _dismissEvent.call()
-        }, onError = {
+        launchCatchError(
+            block = {
+                _loading.value = true
+                val result = shareAddressToUserUseCase(param)
+                _loading.value = false
+                if (result.isSuccessShareAddress) {
+                    _toastEvent.value = Toast.Success
+                } else {
+                    _toastEvent.value = Toast.Error(result.errorMessage)
+                }
+                ShareAddressAnalytics.directShareAgreeSendAddress(result.isSuccessShareAddress)
+                _dismissEvent.call()
+            },
+            onError = {
                 _loading.value = false
                 _toastEvent.value = Toast.Error(it.message.orEmpty())
                 ShareAddressAnalytics.directShareAgreeSendAddress(false)
-            })
+            }
+        )
     }
 
     fun shareAddressFromNotif(param: SelectShareAddressParam) {
