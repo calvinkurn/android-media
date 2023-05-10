@@ -42,7 +42,10 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: ShareAddressConfirmationViewModel by lazy {
-        ViewModelProvider(requireParentFragment(), viewModelFactory)[ShareAddressConfirmationViewModel::class.java]
+        ViewModelProvider(
+            requireParentFragment(),
+            viewModelFactory
+        )[ShareAddressConfirmationViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,20 +79,10 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
             mListener?.showToast(isError, msg)
         }
         viewModel.loading.observe(viewLifecycleOwner) {
-            when (it) {
-                ShareAddressConfirmationViewModel.LoadingState.AgreeLoading -> {
-                    binding.btnAgree.isLoading = true
-                    binding.btnDisagree.isLoading = false
-                }
-                ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading -> {
-                    binding.btnAgree.isLoading = false
-                    binding.btnDisagree.isLoading = true
-                }
-                ShareAddressConfirmationViewModel.LoadingState.NotLoading -> {
-                    binding.btnAgree.isLoading = false
-                    binding.btnDisagree.isLoading = false
-                }
-            }
+            binding.btnAgree.isLoading =
+                it is ShareAddressConfirmationViewModel.LoadingState.AgreeLoading
+            binding.btnDisagree.isLoading =
+                it is ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading
         }
     }
 

@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShareAddressConfirmationViewModel @Inject constructor(
@@ -32,36 +32,27 @@ class ShareAddressConfirmationViewModel @Inject constructor(
         get() = _loading
 
     fun shareAddress(param: ShareAddressToUserParam) {
-        launchCatchError(
-            block = {
+        launch {
+            try {
                 _loading.value = LoadingState.AgreeLoading
                 val result = shareAddressToUserUseCase(param)
-                if (result.isSuccessShareAddress) {
-                    _toastEvent.value = Toast.Success
-                } else {
-                    _toastEvent.value = Toast.Error(result.errorMessage)
-                }
+                _toastEvent.value =
+                    if (result.isSuccessShareAddress) Toast.Success else Toast.Error(result.errorMessage)
                 ShareAddressAnalytics.directShareAgreeSendAddress(result.isSuccessShareAddress)
-                _loading.value = LoadingState.NotLoading
-                _dismissEvent.call()
-            },
-            onError = {
-                _loading.value = LoadingState.NotLoading
-                _dismissEvent.call()
-                _toastEvent.value = Toast.Error(it.message.orEmpty())
+            } catch (e: Exception) {
+                _toastEvent.value = Toast.Error(e.message.orEmpty())
                 ShareAddressAnalytics.directShareAgreeSendAddress(false)
             }
-        )
+            _loading.value = LoadingState.NotLoading
+            _dismissEvent.call()
+        }
     }
 
     fun shareAddressFromNotif(param: SelectShareAddressParam.Param) {
-        launchCatchError(
-            block = {
-                if (param.approve) {
-                    _loading.value = LoadingState.AgreeLoading
-                } else {
-                    _loading.value = LoadingState.DisagreeLoading
-                }
+        launch {
+            try {
+                _loading.value =
+                    if (param.approve) LoadingState.AgreeLoading else LoadingState.DisagreeLoading
                 val result = selectShareAddressUseCase(param)
                 if (result.isSuccess) {
                     _toastEvent.value = Toast.Success
@@ -75,20 +66,17 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
                 }
-                _loading.value = LoadingState.NotLoading
-                _dismissEvent.call()
-            },
-            onError = {
-                _loading.value = LoadingState.NotLoading
-                _toastEvent.value = Toast.Error(it.message.orEmpty())
-                _dismissEvent.call()
+            } catch (e: Exception) {
+                _toastEvent.value = Toast.Error(e.message.orEmpty())
                 if (param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(false)
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
                 }
             }
-        )
+            _loading.value = LoadingState.NotLoading
+            _dismissEvent.call()
+        }
     }
 
     sealed interface Toast {
