@@ -51,7 +51,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestButton(
     modifier: Modifier = Modifier,
     text: String,
-    variant: Variant = Variant.FILLED,
+    variant: ButtonVariant = ButtonVariant.FILLED,
     size: ButtonSize = ButtonSize.MEDIUM,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
@@ -60,31 +60,31 @@ fun NestButton(
     rightLoader: Boolean = true,
     onClick: () -> Unit,
 ) {
-    if (variant == Variant.FILLED) {
+    if (variant == ButtonVariant.FILLED) {
         FilledButton(modifier, isEnabled, text, size, isLoading, isClickable, loadingText, rightLoader, onClick)
     }
 
-    if (variant == Variant.GHOST) {
+    if (variant == ButtonVariant.GHOST) {
         GhostButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader, onClick)
     }
 
-    if (variant == Variant.GHOST_ALTERNATE) {
+    if (variant == ButtonVariant.GHOST_ALTERNATE) {
         GhostAlternateButton(modifier, text, isEnabled, size, isLoading, isClickable, loadingText, rightLoader,  onClick)
     }
 
-    if (variant == Variant.GHOST_INVERTED) {
+    if (variant == ButtonVariant.GHOST_INVERTED) {
         GhostInvertedButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, onClick)
     }
 
-    if (variant == Variant.TEXT_ONLY) {
+    if (variant == ButtonVariant.TEXT_ONLY) {
         TextButton(modifier, text, isEnabled, isLoading, isClickable, size, loadingText, rightLoader, onClick)
     }
 
-    if (variant == Variant.TRANSACTION_FILLED) {
+    if (variant == ButtonVariant.TRANSACTION_FILLED) {
         TransactionFilledButton(modifier, text, size, isEnabled, isLoading, isClickable, loadingText, rightLoader, onClick)
     }
 
-    if (variant == Variant.TRANSACTION_GHOST) {
+    if (variant == ButtonVariant.TRANSACTION_GHOST) {
         TransactionGhostButton(modifier, text, isEnabled, isClickable, size, isLoading, loadingText, rightLoader,  onClick)
     }
 }
@@ -458,7 +458,7 @@ private fun NestDefaultButton(
     }
 }
 
-enum class Variant {
+enum class ButtonVariant {
     FILLED,
     GHOST,
     GHOST_ALTERNATE,
@@ -545,7 +545,7 @@ private fun NestButtonFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -555,7 +555,7 @@ private fun NestButtonFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -565,7 +565,7 @@ private fun NestButtonFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -580,7 +580,7 @@ private fun NestButtonGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.GHOST,
+            variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -589,7 +589,7 @@ private fun NestButtonGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.GHOST,
+            variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -598,7 +598,7 @@ private fun NestButtonGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.GHOST,
+            variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -613,7 +613,7 @@ private fun NestButtonGhostAlternatePreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.GHOST_ALTERNATE,
+            variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -622,7 +622,7 @@ private fun NestButtonGhostAlternatePreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.GHOST_ALTERNATE,
+            variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -631,7 +631,7 @@ private fun NestButtonGhostAlternatePreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.GHOST_ALTERNATE,
+            variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -646,7 +646,7 @@ private fun NestButtonGhostInvertedPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.GHOST_INVERTED,
+            variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -656,7 +656,7 @@ private fun NestButtonGhostInvertedPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.GHOST_INVERTED,
+            variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -667,7 +667,7 @@ private fun NestButtonGhostInvertedPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.GHOST_INVERTED,
+            variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -682,7 +682,7 @@ private fun NestButtonTextPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.TEXT_ONLY,
+            variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -692,7 +692,7 @@ private fun NestButtonTextPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.TEXT_ONLY,
+            variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -702,7 +702,7 @@ private fun NestButtonTextPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.TEXT_ONLY,
+            variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -717,7 +717,7 @@ private fun NestButtonTransactionFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.TRANSACTION_FILLED,
+            variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -727,7 +727,7 @@ private fun NestButtonTransactionFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.TRANSACTION_FILLED,
+            variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -737,7 +737,7 @@ private fun NestButtonTransactionFilledPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.TRANSACTION_FILLED,
+            variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -752,7 +752,7 @@ private fun NestButtonTransactionGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Enabled",
-            variant = Variant.TRANSACTION_GHOST,
+            variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -761,7 +761,7 @@ private fun NestButtonTransactionGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            variant = Variant.TRANSACTION_GHOST,
+            variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
             isLoading = false,
@@ -770,7 +770,7 @@ private fun NestButtonTransactionGhostPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Loading",
-            variant = Variant.TRANSACTION_GHOST,
+            variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -785,7 +785,7 @@ private fun NestButtonSizesPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Large",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.LARGE,
             isEnabled = true,
             isLoading = false,
@@ -795,7 +795,7 @@ private fun NestButtonSizesPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Medium",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
@@ -805,7 +805,7 @@ private fun NestButtonSizesPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Small",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.SMALL,
             isEnabled = true,
             isLoading = false,
@@ -815,7 +815,7 @@ private fun NestButtonSizesPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Micro",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MICRO,
             isEnabled = true,
             isLoading = false,
@@ -830,7 +830,7 @@ private fun NestButtonLoadingStatePreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Left loader",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -842,7 +842,7 @@ private fun NestButtonLoadingStatePreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Right loader",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -859,7 +859,7 @@ private fun NestButtonWithLoadingTextPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Left loader",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
@@ -871,7 +871,7 @@ private fun NestButtonWithLoadingTextPreview() {
         NestButton(
             modifier = Modifier.weight(1f),
             text = "Right loader",
-            variant = Variant.FILLED,
+            variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
