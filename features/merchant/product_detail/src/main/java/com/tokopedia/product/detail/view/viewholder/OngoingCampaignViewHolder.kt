@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
@@ -35,6 +36,10 @@ class OngoingCampaignViewHolder(
                 CampaignRibbon.THEMATIC_CAMPAIGN -> campaignRibbon.renderOnGoingCampaign(data)
                 else -> campaignRibbon.renderOnGoingCampaign(data)
             }
+        }
+
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
