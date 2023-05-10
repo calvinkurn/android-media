@@ -219,20 +219,6 @@ class UserProfileFragment @Inject constructor(
             )
         }
 
-        mainBinding.btnKebabOption.setDrawable(
-            getIconUnifyDrawable(
-                requireContext(),
-                IconUnify.MENU_KEBAB_HORIZONTAL
-            )
-        )
-
-        mainBinding.btnKebabOption.setOnClickListener {
-            UserProfileOptionBottomSheet.getOrCreate(
-                childFragmentManager,
-                requireContext().classLoader
-            ).show(childFragmentManager)
-        }
-
         initFabUserProfile()
         initTab()
     }
@@ -646,17 +632,6 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.btnAction.hide()
             }
         }
-
-        (mainBinding.btnAction.layoutParams as MarginLayoutParams)
-            .updateMarginsRelative(
-                end = if (value.profileType == ProfileType.OtherUser ||
-                    value.profileType == ProfileType.NotLoggedIn
-                ) {
-                    dp8
-                } else {
-                    0
-                }
-            )
     }
 
     private fun renderButtonOption(
@@ -665,10 +640,27 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.profileType == value.profileType) return
 
-        mainBinding.btnKebabOption.showWithCondition(
-            shouldShow = value.profileType == ProfileType.OtherUser ||
-                value.profileType == ProfileType.NotLoggedIn
+        mainBinding.btnOption.setDrawable(
+            getIconUnifyDrawable(
+                requireContext(),
+                if (viewModel.isSelfProfile) {
+                    IconUnify.SETTING
+                } else {
+                    IconUnify.MENU_KEBAB_HORIZONTAL
+                }
+            )
         )
+
+        mainBinding.btnOption.setOnClickListener {
+            if (viewModel.isSelfProfile) {
+                /** TODO: handle this */
+            } else {
+                UserProfileOptionBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).show(childFragmentManager)
+            }
+        }
     }
 
     private fun renderCreateContentButton(
