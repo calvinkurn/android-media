@@ -629,14 +629,16 @@ class AtcVariantBottomSheet :
                 requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
                 cartId = cartId
             )
-        } else showPostATC(context, productId, postAtcLayoutId, cartId)
+        } else {
+            showPostATC(context, productId, postAtcLayoutId, cartId)
+        }
     }
 
     private fun showPostATC(
         context: Context,
         productId: String,
-        postAtcLayoutId: String
-        cartId: String,
+        postAtcLayoutId: String,
+        cartId: String
     ) {
         dismiss()
         PostAtcHelper.start(
