@@ -67,7 +67,7 @@ class FeedPostLiveViewHolder(
                 )
 
                 bindVideoPlayer(element)
-                mVideoPlayer?.resume()
+                mVideoPlayer?.resume(shouldReset = false)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 mVideoPlayer?.stop()

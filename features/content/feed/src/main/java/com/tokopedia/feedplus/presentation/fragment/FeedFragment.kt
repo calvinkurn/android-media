@@ -51,6 +51,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
@@ -924,18 +925,32 @@ class FeedFragment :
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.pause(item.id, shouldReset = true)
+        when (item) {
+            is FeedCardVideoContentModel -> pauseVideo(item.id)
+            is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            else -> {}
+        }
     }
 
     private fun resumeCurrentVideo() {
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.resume(item.id)
+        when (item) {
+            is FeedCardVideoContentModel -> resumeVideo(item.id)
+            is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            else -> {}
+        }
+    }
+
+    private fun pauseVideo(id: String) {
+        videoPlayerManager.pause(id, shouldReset = true)
+    }
+
+    private fun resumeVideo(id: String) {
+        videoPlayerManager.resume(id)
     }
 
     private fun onGoToLogin() {
