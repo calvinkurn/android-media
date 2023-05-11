@@ -1,19 +1,18 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -178,10 +177,14 @@ class PlayBroProductUiMapper @Inject constructor() {
             ProductTagSectionUiModel(
                 name = it.name,
                 campaignStatus = mapCampaignStatusFromType(it.statusFmt),
-                products = it.products.map { product ->
+                products = it.products.mapIndexed { index, product ->
                     ProductUiModel(
                         id = product.productID,
                         name = product.productName,
+                        hasCommission = true,
+                        commissionFmt = "Rp50.000",
+                        commission = 50000,
+                        extraCommission = index % 2 == 0 ,
                         imageUrl = product.imageURL,
                         stock = product.quantity.toLong(),
                         price = if(product.discount == "0") {
