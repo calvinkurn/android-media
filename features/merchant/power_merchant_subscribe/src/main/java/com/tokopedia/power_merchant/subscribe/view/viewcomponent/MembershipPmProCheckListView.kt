@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.gm.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmProMembershipCheckListViewBinding
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
