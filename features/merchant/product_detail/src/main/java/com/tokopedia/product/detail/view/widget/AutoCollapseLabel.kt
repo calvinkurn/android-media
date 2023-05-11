@@ -14,7 +14,6 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.animation.addListener
-import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
@@ -24,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.AutoCollapseLabelBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -103,11 +103,11 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
     private fun createBackgroundDrawable() = GradientDrawable().apply {
         shape = GradientDrawable.RECTANGLE
-        setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        setColor(context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         cornerRadius = BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
         setStroke(
             BACKGROUND_DRAWABLE_STROKE_WIDTH.toPx(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+            context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
         )
     }
 
