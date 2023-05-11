@@ -8,12 +8,15 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 
 interface FeedListener {
-    fun onMenuClicked(id: String,
-                      editable: Boolean,
-                      deletable: Boolean,
-                      reportable: Boolean,
-                      contentData: FeedContentData,
-                      trackerModel: FeedTrackerDataModel)
+    fun onMenuClicked(
+        id: String,
+        editable: Boolean,
+        deletable: Boolean,
+        reportable: Boolean,
+        contentData: FeedContentData,
+        trackerModel: FeedTrackerDataModel
+    )
+
     fun onFollowClicked(
         id: String,
         encryptedId: String,
@@ -29,8 +32,6 @@ interface FeedListener {
         trackerModel: FeedTrackerDataModel?
     )
 
-    fun onTimerFinishUpcoming()
-    fun onTimerFinishOnGoing()
     fun onTopAdsImpression(
         adViewUrl: String,
         id: String,
@@ -48,7 +49,8 @@ interface FeedListener {
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     )
 
     fun onProductTagViewClicked(
@@ -60,6 +62,18 @@ interface FeedListener {
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
+    )
+
+    fun onASGCGeneralClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
         trackerModel: FeedTrackerDataModel?
     )
 
@@ -71,7 +85,9 @@ interface FeedListener {
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        campaignName: String,
+        positionInFeed: Int
     )
 
     fun onSharePostClicked(

@@ -87,6 +87,7 @@ class FeedAnalytics @Inject constructor(
         const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottomsheet"
         const val UNIFIED_FEED_CONTENT = "unified-feed-content\\\""
         const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
+        const val CAMPAIGN_POST_IN_UNIFIED_FEED = "campaign post in unified feed"
     }
 
     fun eventPostImpression(
@@ -208,28 +209,37 @@ class FeedAnalytics @Inject constructor(
     }
 
     fun eventClickCampaignRibbon(
-        trackerData: FeedTrackerDataModel
+        trackerData: FeedTrackerDataModel,
+        campaignName: String,
+        positionInFeed: Int
     ) {
-        sendEventTracker(
-            generateGeneralTrackerData(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT,
+            generateGeneralTrackerBundleData(
                 Event.SELECT_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CTA_BUTTON_CAMPAIGN,
                 getEventLabel(trackerData),
                 "41574"
-            )
+            ).also {
+                it.putParcelableArrayList(
+                    EnhanceEcommerce.KEY_PROMOTIONS,
+                    arrayListOf(
+                        Bundle().apply {
+                            putString(
+                                EnhanceEcommerce.KEY_CREATIVE_NAME,
+                                EnhanceEcommerce.CAMPAIGN_POST_IN_UNIFIED_FEED
+                            )
+                            putString(EnhanceEcommerce.KEY_CREATIVE_SLOT, "${positionInFeed + 1}")
+                            putString(
+                                EnhanceEcommerce.KEY_ITEM_ID,
+                                trackerData.activityId
+                            )
+                            putString(EnhanceEcommerce.KEY_ITEM_NAME, campaignName)
+                        }
+                    )
+                )
+            }
         )
-        // TODO : IMPLEMENT EE
-        /*
-            "promotions": [
-                {
-                  "creative_name": "campaign post in unified feed",
-                  "creative_slot": "{this is integer}",
-                  "item_id": "{activity_id}",
-                  "item_name": "{campaign name}"
-                }
-              ],
-         */
     }
 
     fun eventClickRemindMe(

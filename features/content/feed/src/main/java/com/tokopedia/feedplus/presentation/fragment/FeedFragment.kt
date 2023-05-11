@@ -28,6 +28,7 @@ import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -77,6 +78,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -101,6 +103,7 @@ class FeedFragment :
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     ProductItemInfoBottomSheet.Listener,
+    FeedFollowersOnlyBottomSheet.Listener,
     ShareBottomsheetListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
@@ -134,6 +137,9 @@ class FeedFragment :
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ""
         )
     }
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -153,6 +159,8 @@ class FeedFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             feedPostViewModel.processSuspendedLike()
         }
+
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -464,20 +472,23 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerData: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
-        openProductTagBottomSheet(
-            postId = postId,
-            author = author,
-            postType = postType,
-            isFollowing = isFollowing,
-            campaign = campaign,
-            hasVoucher = hasVoucher,
-            products = products,
-            trackerData = trackerData,
-        )
-        trackerData?.let {
-            feedAnalytics.eventClickProductTag(it)
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            openProductTagBottomSheet(
+                postId = postId,
+                author = author,
+                postType = postType,
+                isFollowing = isFollowing,
+                campaign = campaign,
+                hasVoucher = hasVoucher,
+                products = products,
+                trackerData = trackerModel,
+            )
+            trackerModel?.let {
+                feedAnalytics.eventClickProductTag(it)
+            }
         }
     }
 
@@ -490,31 +501,56 @@ class FeedFragment :
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
-        trackerData: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
-        trackerData?.let {
-            feedAnalytics.eventClickProductLabel(it)
-            feedAnalytics.eventClickContentProductLabel(it)
-        }
-        if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
-            val appLink = products.firstOrNull()?.applink
-            if (appLink?.isNotEmpty() == true) {
-                activity?.let {
-                    RouteManager.route(it, appLink)
-                }
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            trackerModel?.let {
+                feedAnalytics.eventClickProductLabel(it)
+                feedAnalytics.eventClickContentProductLabel(it)
             }
-        } else {
-            openProductTagBottomSheet(
-                postId = postId,
-                author = author,
-                postType = postType,
-                isFollowing = isFollowing,
-                campaign = campaign,
-                hasVoucher = hasVoucher,
-                products = products,
-                trackerData = trackerData
-            )
+            if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
+                val appLink = products.firstOrNull()?.applink
+                if (appLink?.isNotEmpty() == true) {
+                    activity?.let {
+                        RouteManager.route(it, appLink)
+                    }
+                }
+            } else {
+                openProductTagBottomSheet(
+                    postId = postId,
+                    author = author,
+                    postType = postType,
+                    isFollowing = isFollowing,
+                    campaign = campaign,
+                    hasVoucher = hasVoucher,
+                    products = products,
+                    trackerData = trackerModel
+                )
+            }
         }
+    }
+
+    override fun onASGCGeneralClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?,
+    ) {
+        openProductTagBottomSheet(
+            postId = postId,
+            author = author,
+            postType = postType,
+            isFollowing = isFollowing,
+            campaign = campaign,
+            hasVoucher = hasVoucher,
+            products = products,
+            trackerData = trackerModel
+        )
     }
 
     override fun onBottomSheetThreeDotsClicked(
@@ -590,7 +626,6 @@ class FeedFragment :
                 item.positionInFeed
             )
         }
-//        TODO("Not yet implemented")
     }
 
     override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
@@ -638,7 +673,7 @@ class FeedFragment :
                     }
 
                     override fun onError(linkerError: LinkerError?) {
-                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+
                     }
                 }
             )
@@ -666,14 +701,6 @@ class FeedFragment :
 
     }
 
-    override fun onTimerFinishUpcoming() {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onTimerFinishOnGoing() {
-//        TODO("Not yet implemented")
-    }
-
     override fun onTopAdsImpression(
         adViewUrl: String,
         id: String,
@@ -682,7 +709,13 @@ class FeedFragment :
         fullEcs: String?,
         position: Int
     ) {
-//        TODO("Not yet implemented")
+        topAdsUrlHitter.hitImpressionUrl(
+            this::class.java.simpleName,
+            adViewUrl,
+            id,
+            uri,
+            fullEcs
+        )
     }
 
     override fun onOngoingCampaignClicked(
@@ -693,19 +726,57 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        campaignName: String,
+        positionInFeed: Int
     ) {
-        trackerModel?.let {
-            openProductTagBottomSheet(
-                postId = postId,
-                author = author,
-                postType = postType,
-                isFollowing = isFollowing,
-                campaign = campaign,
-                hasVoucher = hasVoucher,
-                products = products,
-                trackerData = it,
-            )
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            trackerModel?.let {
+                feedAnalytics.eventClickCampaignRibbon(
+                    it,
+                    campaignName,
+                    positionInFeed
+                )
+                openProductTagBottomSheet(
+                    postId = postId,
+                    author = author,
+                    postType = postType,
+                    isFollowing = isFollowing,
+                    campaign = campaign,
+                    hasVoucher = hasVoucher,
+                    products = products,
+                    trackerData = it,
+                )
+            }
+        }
+    }
+
+    override fun onFollowClickedFromFollowBottomSheet(position: Int) {
+        if (adapter?.itemCount.orZero() > position) {
+            adapter?.list?.get(position)?.let {
+                var author: FeedAuthorModel? = null
+                when (it) {
+                    is FeedCardImageContentModel -> author = it.author
+                    is FeedCardVideoContentModel -> author = it.author
+                }
+                author?.let {
+                    if (userSession.isLoggedIn) {
+                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.isShop)
+                    } else {
+                        feedPostViewModel.suspendFollow(
+                            author.id,
+                            author.encryptedUserId,
+                            author.isShop
+                        )
+                        followLoginResult.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -1061,13 +1132,6 @@ class FeedFragment :
                 tnImage = shareModel.tnImage
             )
         }
-        universalShareBottomSheet.setOnDismissListener {
-            if (dissmisByGreyArea) {
-                // TODO to be used for analytics
-            } else {
-                dissmisByGreyArea = true
-            }
-        }
         universalShareBottomSheet.let {
             if (!it.isAdded) {
                 it.show(childFragmentManager, this, null)
@@ -1213,6 +1277,30 @@ class FeedFragment :
 
     private fun notifyItemNotSelected(position: Int) {
         adapter?.notifyItemChanged(position, FEED_POST_NOT_SELECTED)
+    }
+
+    private fun checkForFollowerBottomSheet(
+        positionInFeed: Int,
+        campaign: FeedCardCampaignModel
+    ): Boolean {
+        if (campaign.isExclusiveForMember) {
+            showFollowerBottomSheet(positionInFeed, campaign.status)
+        }
+        return campaign.isExclusiveForMember
+    }
+
+    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
+        feedFollowersOnlyBottomSheet =
+            FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+
+        if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false) {
+            feedFollowersOnlyBottomSheet?.show(
+                childFragmentManager,
+                this,
+                positionInFeed,
+                status = campaignStatus
+            )
+        }
     }
 
     companion object {
