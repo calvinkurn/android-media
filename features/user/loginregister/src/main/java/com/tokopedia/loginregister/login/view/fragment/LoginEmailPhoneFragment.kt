@@ -84,6 +84,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentLoginWithPhoneBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
@@ -116,10 +117,10 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -334,7 +335,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         refreshRolloutVariant()
 
         if(oclPreferences.getToken().isNotEmpty() &&
-            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false
+            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
+            OclUtils.isOclEnabled()
         ) {
             goToOclChooseAccount()
         }
