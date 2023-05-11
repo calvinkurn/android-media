@@ -21,7 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 abstract class ChatbotMessageUnifyViewHolder(
     itemView: View?,
     protected val listener: ChatLinkHandlerListener,
-    private val replyBubbleListener : ReplyBubbleAreaMessage.Listener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val userSession: UserSessionInterface
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
@@ -72,13 +72,15 @@ abstract class ChatbotMessageUnifyViewHolder(
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
-                    it,
-                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
-                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
+                it,
+                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
+                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)
+            )
         }
         date?.text = time
-        if (date != null && element.isShowDate ==true
-                && !TextUtils.isEmpty(time)) {
+        if (date != null && element.isShowDate == true &&
+            !TextUtils.isEmpty(time)
+        ) {
             dateContainer?.show()
         } else if (date != null) {
             dateContainer?.hide()
@@ -87,5 +89,4 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     override val dateId: Int
         get() = R.id.date
-
 }

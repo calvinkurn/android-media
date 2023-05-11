@@ -12,7 +12,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -28,7 +27,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -39,9 +38,9 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by jegul on 31/07/20
  */
 class VariantSheetViewComponent(
-        container: ViewGroup,
-        private val listener: Listener
-) : ViewComponent(container, R.id.cl_variant_sheet), AtcVariantListener {
+    container: ViewGroup,
+    private val listener: Listener
+) : BottomSheetViewComponent(container, R.id.cl_variant_sheet), AtcVariantListener {
 
     private val clProductVariant: ConstraintLayout = findViewById(R.id.cl_product_variant)
     private val phProductVariant: ConstraintLayout = findViewById(R.id.ph_product_variant)
@@ -63,7 +62,6 @@ class VariantSheetViewComponent(
 
     private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
     private val toasterMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
     private var mAction: ProductAction = ProductAction.Buy
@@ -108,14 +106,6 @@ class VariantSheetViewComponent(
 
         tvSheetTitle.text = getString(R.string.play_title_variant)
         tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {

@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.fragment
 
 import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -161,6 +160,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showGlobalError(state.throwable, state.errorCode)
                 is UiState.Success -> showPage(state.data)
                 is UiState.Loading -> showLoadingState()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -171,6 +173,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showFailToaster(state.throwable, state.data)
                 is UiState.Success -> showSuccessToaster(state.data)
                 is UiState.Loading -> showRecipeItemLoading(state.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -181,6 +186,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> { /* nothing to do */ }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 buildscript {
     repositories {
@@ -42,7 +36,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

@@ -9,6 +9,7 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatBackgroundResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatFirstTickerResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
 import com.tokopedia.tokochat.stub.domain.response.ResponseStub
 import javax.inject.Inject
 
@@ -39,6 +40,12 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                 shouldThrow(chatOrderHistoryResponse)
                 GqlMockUtil.createSuccessResponse(
                     chatOrderHistoryResponse.responseObject
+                )
+            }
+            query.contains(getNeedConsentResponse.query) -> {
+                shouldThrow(getNeedConsentResponse)
+                GqlMockUtil.createSuccessResponse(
+                    getNeedConsentResponse.responseObject
                 )
             }
             else -> GqlMockUtil.createSuccessResponse(Unit)

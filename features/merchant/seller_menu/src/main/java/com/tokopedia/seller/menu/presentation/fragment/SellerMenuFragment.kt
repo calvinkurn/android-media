@@ -35,10 +35,10 @@ import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -232,6 +232,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopProductLiveData) {
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
+                else -> {
+                    //no-op
+                }
             }
             swipeRefreshLayout?.isRefreshing = false
         }
@@ -246,6 +249,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
                         item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
                     })
+                }
+                else -> {
+                    //no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false

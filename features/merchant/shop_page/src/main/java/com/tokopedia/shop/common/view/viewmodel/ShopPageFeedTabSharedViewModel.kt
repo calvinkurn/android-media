@@ -7,7 +7,7 @@ import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 
 /**
- * Shared ViewModel to share live data between NewShopPageFragment.kt and FeedShopFragment.kt
+ * Shared ViewModel to share live data between ShopPageHeaderFragment.kt and FeedShopFragment.kt
  */
 class ShopPageFeedTabSharedViewModel : ViewModel(), ISharedViewModel {
 

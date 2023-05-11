@@ -1,15 +1,32 @@
 package com.tokopedia.tokochat.test
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
+import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub.Companion.TEST_ID
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.robot.general.GeneralResult
 import com.tokopedia.tokochat.test.robot.header_date.HeaderDateResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleRobot
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat.test.robot.ticker.TickerResult
+import com.tokopedia.tokochat.util.TokoChatViewUtil
+import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
+import com.tokopedia.utils.file.FileUtil
 import org.junit.Test
+import timber.log.Timber
+import java.io.FileOutputStream
 
 @UiTest
 class TokoChatHistoryChatTest : BaseTokoChatTest() {
@@ -37,7 +54,7 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
     }
 
     @Test
-    fun should_show_picture_attachment() {
+    fun should_show_image_attachment() {
         // Given
         ApiResponseStub.chatHistoryResponse = Pair(
             200,
@@ -52,6 +69,121 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
         MessageBubbleResult.assertImageAttachmentVisibility(
             position = 0,
             isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
+            position = 0,
+            isVisible = false
+        )
+    }
+
+    @Test
+    fun should_show_image_attachment_when_user_upload_image() {
+        // Given
+        saveDummyImage()
+
+        // When
+        launchChatRoomActivity()
+        Intents.intending(IntentMatchers.hasData(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
+
+        ReplyAreaRobot.clickAttachmentPlusButton()
+        ReplyAreaRobot.clickAttachmentMenuButton(0)
+
+        // Then
+        MessageBubbleResult.assertImageAttachmentVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
+            position = 0,
+            isVisible = false
+        )
+    }
+
+    @Test
+    fun should_show_dummy_image_attachment_when_user_fail_upload_image() {
+        // Given
+        ApiResponseStub.imageAttachmentUploadResponse = Pair(
+            200,
+            "image_attachment/fail_upload_image_attachment.json"
+        )
+        cacheManager.saveCache(TokoChatCacheManagerImpl.TOKOCHAT_IMAGE_ATTACHMENT_MAP, mapOf(Pair(TEST_ID, TEST_ID)))
+        saveDummyImage()
+
+        // When
+        launchChatRoomActivity()
+        Intents.intending(IntentMatchers.hasData(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
+
+        ReplyAreaRobot.clickAttachmentPlusButton()
+        ReplyAreaRobot.clickAttachmentMenuButton(0)
+
+
+        // Then
+        MessageBubbleResult.assertImageAttachmentVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
+            position = 0,
+            isVisible = true
+        )
+        GeneralResult.assertSnackBarWithSubText("Custom message error from BE")
+    }
+
+    @Test
+    fun should_show_broken_image_attachment_when_user_fail_download_image() {
+        // Given
+        FileUtil.deleteFolder(TokoChatViewUtil.getTokopediaTokoChatCacheDirectory().absolutePath)
+        ApiResponseStub.imageAttachmentDownloadResponse = Pair(404, "")
+        ApiResponseStub.chatHistoryResponse = Pair(
+            200,
+            "chat_history/success_get_chat_history_image_ext.json"
+        )
+
+        // When
+        launchChatRoomActivity()
+
+        // Then
+        MessageBubbleResult.assertImageAttachmentVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
+            position = 0,
+            isVisible = false
+        )
+        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
+            position = 0,
+            isVisible = true
+        )
+        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
+            position = 0,
+            isVisible = false
         )
     }
 
@@ -210,5 +342,32 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
 
         // Then
         MessageBubbleResult.assertGuideChatBottomSheet()
+    }
+
+    private fun saveDummyImage() {
+        try {
+            val dummyBitmap: Bitmap = BitmapFactory.decodeResource(
+                context.resources, com.tokopedia.tokochat.test.R.drawable.dummy_image)
+            val file = TokoChatViewUtil.getTokoChatPhotoPath("dummy_image")
+            if (!file.exists()) {
+                val outStream = FileOutputStream(file)
+                dummyBitmap.compress(Bitmap.CompressFormat.JPEG, 1, outStream)
+                outStream.flush()
+                outStream.close()
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    private fun getImageData(): Intent {
+        return Intent().apply {
+            putExtra(
+                EXTRA_RESULT_PICKER,
+                PickerResult(
+                    originalPaths = listOf(TokoChatViewUtil.getTokoChatPhotoPath("dummy_image").path)
+                )
+            )
+        }
     }
 }
