@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Insur
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -2334,6 +2335,23 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shippingRecommendationData = helper.shippingRecommendationData
         shippingRecommendationData.logisticPromo = null
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.clearBboIfExist()
+
+        // Then
+        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any()) }
+    }
+
+    @Test
+    fun `Clear Bbo If Exist When No Shipping Courier Available`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = LogisticPromoUiModel(),
+            logisticPromoShipping = null
+        )
 
         // When
         orderSummaryPageViewModel.clearBboIfExist()
