@@ -57,4 +57,7 @@
     <string name="up_play_video_link_copied">Link disalin!</string>
     <string name="up_play_video_deleted">Video telah dihapus.</string>
 
+    <!-- Review Tab -->
+    <string name="up_profile_settings_review_text">Tampilkan ulasan publik di Halaman Profil</string>
+
 </resources>

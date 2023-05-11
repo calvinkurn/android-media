@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.SetProfileSettingsRequest
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -143,7 +144,6 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun setShowReview(
         userID: String,
-        settingID: String,
         isShow: Boolean,
     ) = withContext(dispatcher.io) {
         setProfileSettingsUseCase(
@@ -152,7 +152,7 @@ class UserProfileRepositoryImpl @Inject constructor(
                 authorType = ContentCommonUserType.TYPE_USER,
                 data = listOf(
                     SetProfileSettingsRequest.Data(
-                        settingID = settingID,
+                        settingID = ProfileSettingsUiModel.KEY_REVIEWS,
                         enable = isShow,
                     )
                 )

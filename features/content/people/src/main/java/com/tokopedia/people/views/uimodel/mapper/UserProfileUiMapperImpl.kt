@@ -9,6 +9,7 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -146,7 +147,7 @@ class UserProfileUiMapperImpl @Inject constructor(
     }
 
     private fun getReviewStats(extraStats: List<ExtraStats>): String {
-        return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEW_FIELD }?.countFmt.orEmpty()
+        return extraStats.firstOrNull { it.field == ProfileSettingsUiModel.KEY_REVIEWS }?.countFmt.orEmpty()
     }
 
     companion object {
@@ -154,6 +155,5 @@ class UserProfileUiMapperImpl @Inject constructor(
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
-        private const val EXTRA_STATS_REVIEW_FIELD = "reviews"
     }
 }

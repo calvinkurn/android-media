@@ -15,6 +15,7 @@ import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
@@ -106,6 +107,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
+    private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.createReview(false))
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -122,9 +124,10 @@ class UserProfileViewModel @AssistedInject constructor(
         _feedPostsContent,
         _videoPostContent,
         _isLoading,
-        _error
+        _error,
+        _reviewSettings,
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
-        isLoading, error ->
+        isLoading, error, reviewSettings ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -135,7 +138,8 @@ class UserProfileViewModel @AssistedInject constructor(
             feedPostsContent = feedPostsContent,
             videoPostsContent = videoPostContent,
             isLoading = isLoading,
-            error = error
+            error = error,
+            reviewSettings = reviewSettings,
         )
     }
 
@@ -160,6 +164,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
+            is UserProfileAction.SetShowReview -> handleSetShowReview(action.isShow)
         }
     }
 
@@ -484,6 +489,23 @@ class UserProfileViewModel @AssistedInject constructor(
         launchCatchError(block = {
             _uiEvent.emit(UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog(channel))
         }) {}
+    }
+
+    private fun handleSetShowReview(isShow: Boolean) {
+        launchCatchError(block = {
+            val isSuccess = repo.setShowReview(
+                userID = profileUserID,
+                isShow = isShow
+            )
+
+            if (isSuccess) {
+                _reviewSettings.update { it.copy(isEnabled = isShow) }
+            } else {
+                throw Exception()
+            }
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorSetShowReview(it))
+        }
     }
 
     /** Helper */

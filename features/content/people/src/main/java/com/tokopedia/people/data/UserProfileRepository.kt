@@ -54,7 +54,6 @@ interface UserProfileRepository {
 
     suspend fun setShowReview(
         userID: String,
-        settingID: String,
         isShow: Boolean,
     ): Boolean
 }
