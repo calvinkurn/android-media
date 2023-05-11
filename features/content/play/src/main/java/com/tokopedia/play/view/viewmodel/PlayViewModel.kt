@@ -1103,6 +1103,7 @@ class PlayViewModel @AssistedInject constructor(
                 viewModelScope.launch {
                     _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
                 }
+                if(!action.isOpen) return
                 updateCommentConfig()
             }
         }
