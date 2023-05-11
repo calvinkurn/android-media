@@ -60,5 +60,10 @@
     <!-- Review Tab -->
     <string name="up_profile_settings_title">Pengaturan Profil</string>
     <string name="up_profile_settings_review_text">Tampilkan ulasan publik di Halaman Profil</string>
-
+    <string name="up_profile_review_onboarding_title">Yay, kini ulasan publikmu bisa otomatis tampil di profil!</string>
+    <string name="up_profile_review_onboarding_desc_1">Ulasanmu bisa menginspirasi lebih banyak pengguna</string>
+    <string name="up_profile_review_onboarding_desc_2">Kamu juga bisa cari inspirasi dari ulasannya pengguna lain</string>
+    <string name="up_profile_review_onboarding_desc_3">Bisa dapat lebih banyak followers berkat ulasanmu yang tepercaya</string>
+    <string name="up_profile_review_onboarding_desc_4">Ulasan dengan produk sensitif (rokok, produk dewasa, pakaian dalam, dll) tidak akan ditampilkan di profilmu</string>
+    <string name="up_profile_review_onboarding_see_my_review">Lihat Ulasan Saya</string>
 </resources>

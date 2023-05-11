@@ -60,6 +60,7 @@ import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -75,6 +76,7 @@ import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -110,6 +112,7 @@ class UserProfileFragment @Inject constructor(
     private val impressionCoordinator: ShopRecomImpressCoordinator,
     private val coachMarkManager: ContentCoachMarkManager,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val userProfileSharedPref: UserProfileSharedPref,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -507,6 +510,13 @@ class UserProfileFragment @Inject constructor(
                     is UserProfileUiEvent.BlockingUserState -> {
                         emptyPostVisitor()
                         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+                    }
+                    is UserProfileUiEvent.ShowReviewOnboarding -> {
+                        UserProfileReviewOnboardingBottomSheet
+                            .getOrCreate(childFragmentManager, requireActivity().classLoader)
+                            .show(childFragmentManager)
+
+                        userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
                     }
                     else -> {
                         //no-op
