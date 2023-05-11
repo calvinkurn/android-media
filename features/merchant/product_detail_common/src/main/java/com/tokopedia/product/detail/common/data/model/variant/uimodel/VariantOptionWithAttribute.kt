@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.common.data.model.variant.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantOption
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -25,6 +27,29 @@ data class VariantOptionWithAttribute(
 
     companion object {
         val EMPTY = VariantOptionWithAttribute()
+
+        fun create(
+            variantOption: VariantOption,
+            variant: Variant,
+            state: Int,
+            stock: Int,
+            hasCustomImages: Boolean,
+            isFlashSale: Boolean,
+            level: Int
+        ) = VariantOptionWithAttribute(
+            variantName = variantOption.value.orEmpty(),
+            variantId = variantOption.id.orEmpty(),
+            image100 = variantOption.picture?.url100.orEmpty(),
+            imageOriginal = variantOption.picture?.original.orEmpty(),
+            variantHex = variantOption.hex.orEmpty(),
+            currentState = state,
+            stock = stock,
+            hasCustomImages = hasCustomImages,
+            level = level,
+            variantOptionIdentifier = variant.identifier.orEmpty(),
+            variantCategoryKey = variant.pv.toString(),
+            flashSale = isFlashSale
+        )
     }
 
     fun isEmpty() = this == EMPTY

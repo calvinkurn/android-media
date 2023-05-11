@@ -64,6 +64,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -75,7 +76,6 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
@@ -89,6 +89,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -229,6 +230,7 @@ import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
@@ -239,7 +241,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
@@ -260,6 +261,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -295,6 +297,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
@@ -334,6 +337,7 @@ open class DynamicProductDetailFragment :
         private const val DEBOUNCE_CLICK = 750
         private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
+        private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
 
         fun newInstance(
             productId: String? = null,
@@ -435,6 +439,9 @@ open class DynamicProductDetailFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
+
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
 
@@ -506,7 +513,8 @@ open class DynamicProductDetailFragment :
             viewModel.userId,
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
-            }
+            },
+            affiliateCookieHelper.get(),
         )
     }
     private val adapter by lazy {
@@ -565,6 +573,10 @@ open class DynamicProductDetailFragment :
                 }
             )
         }
+    }
+
+    private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
+        ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -669,6 +681,7 @@ open class DynamicProductDetailFragment :
         observePlayWidget()
         observeVerticalRecommendation()
         observeOneTimeMethod()
+        observeProductMediaRecomData()
     }
 
     private fun observeOneTimeMethod() {
@@ -688,6 +701,12 @@ open class DynamicProductDetailFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun observeProductMediaRecomData() {
+        viewModel.productMediaRecomBottomSheetState.observe(viewLifecycleOwner) {
+            productMediaRecomBottomSheetManager.updateState(it)
         }
     }
 
@@ -919,6 +938,9 @@ open class DynamicProductDetailFragment :
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
             }
@@ -1602,13 +1624,22 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onRecomAddToCartNonVariantQuantityChangedClick(
+        recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,
         quantity: Int,
         adapterPosition: Int,
         itemPosition: Int
     ) {
         pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recomItem,
+            quantity,
+            RecommendationNowAffiliateData(
+                affiliateUniqueId,
+                affiliateChannel,
+                recommendationWidget.affiliateTrackerId,
+            ),
+        )
     }
 
     override fun onRecomAddVariantClick(
@@ -1699,18 +1730,6 @@ open class DynamicProductDetailFragment :
                 componentTrackDataModel
             )
         }
-    }
-
-    override fun onThreeDotsClick(
-        recomItem: RecommendationItem,
-        adapterPosition: Int,
-        carouselPosition: Int
-    ) {
-        recomWishlistItem = recomItem
-        showProductCardOptions(
-            this,
-            recomItem.createProductCardOptionsModel(adapterPosition)
-        )
     }
 
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
@@ -2182,6 +2201,17 @@ open class DynamicProductDetailFragment :
         } catch (throwable: Throwable) {
             false
         }
+    }
+
+    override fun onShowProductMediaRecommendationClicked() {
+        val productMediaRecomBasicInfo = viewModel.getDynamicProductInfoP1?.data?.productMediaRecomBasicInfo
+        val basicData = viewModel.getDynamicProductInfoP1?.basic
+        viewModel.showProductMediaRecomBottomSheet(
+            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
+            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
+            productId = basicData?.productID.orEmpty(),
+            isTokoNow = basicData?.isTokoNow.orFalse()
+        )
     }
 
     private fun trackingEventSuccessRemoveFromWishlist(componentTrackDataModel: ComponentTrackDataModel) {
@@ -3166,7 +3196,11 @@ open class DynamicProductDetailFragment :
         renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
+        pdpUiUpdater?.updateInitialMedia(
+            productInfo.data.media,
+            productInfo.data.containerType,
+            productInfo.data.productMediaRecomBasicInfo
+        )
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
@@ -3421,6 +3455,10 @@ open class DynamicProductDetailFragment :
             productInfo = viewModel.getDynamicProductInfoP1,
             userId = viewModel.userId
         )
+    }
+
+    override fun onProductMediaRecomBottomSheetDismissed() {
+        viewModel.dismissProductMediaRecomBottomSheet()
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
@@ -4390,7 +4428,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            showTopAdsBottomSheet()
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }
@@ -5652,6 +5690,18 @@ open class DynamicProductDetailFragment :
 
     override fun getRemoteConfigInstance(): RemoteConfig? {
         return remoteConfig
+    }
+
+    override fun getProductInfo(): DynamicProductInfoP1? {
+        return viewModel.getDynamicProductInfoP1
+    }
+
+    override fun getTrackingQueueInstance(): TrackingQueue {
+        return trackingQueue
+    }
+
+    override fun getUserSession(): UserSessionInterface {
+        return viewModel.userSessionInterface
     }
 
     override fun onImpressStockAssurance(

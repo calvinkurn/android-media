@@ -1,8 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import com.tokopedia.power_merchant.subscribe.databinding.ItemPmQuestionnaireRatingOptionBinding
 import android.view.View
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.databinding.ItemPmQuestionnaireRatingBinding
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.utils.view.binding.viewBinding
@@ -17,10 +17,10 @@ class QuestionnaireRatingViewHolder(
 ) : BaseViewHolder<QuestionnaireUiModel.QuestionnaireRatingUiModel>(itemView) {
 
     companion object {
-        val RES_LAYOUT = R.layout.item_pm_questionnaire_rating
+        val RES_LAYOUT = R.layout.item_pm_questionnaire_rating_option
     }
 
-    private val binding: ItemPmQuestionnaireRatingBinding? by viewBinding()
+    private val binding: ItemPmQuestionnaireRatingOptionBinding? by viewBinding()
 
     override fun bind(element: QuestionnaireUiModel.QuestionnaireRatingUiModel) {
         showItem(element)

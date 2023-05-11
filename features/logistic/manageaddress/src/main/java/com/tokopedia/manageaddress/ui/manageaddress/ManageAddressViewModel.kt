@@ -14,9 +14,13 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.model.TickerModel
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
@@ -34,6 +38,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +56,8 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
-    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : ViewModel() {
 
     companion object {
@@ -111,6 +118,17 @@ class ManageAddressViewModel @Inject constructor(
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
+
+    private val _tickerState = MutableLiveData<Result<TickerModel>>()
+    val tickerState: LiveData<Result<TickerModel>>
+        get() = _tickerState
+
+    val deleteCollectionId: String
+        get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_STAGING
+        } else {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_PRODUCTION
+        }
 
     private val compositeSubscription = CompositeSubscription()
 
@@ -187,11 +205,17 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String) {
+    fun deletePeopleAddress(id: String, consentJson: String) {
         viewModelScope.launchCatchError(
             block = {
                 val resultDelete =
-                    deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow))
+                    deletePeopleAddressUseCase(
+                        DeleteAddressParam(
+                            id.toLong(),
+                            isTokonow,
+                            consentJson
+                        )
+                    )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                     resultDelete.response.data.success == STATUS_SUCCESS
                 ) {
@@ -214,7 +238,7 @@ class ManageAddressViewModel @Inject constructor(
         setAsStateChosenAddress: Boolean,
         prevState: Int,
         localChosenAddrId: Long,
-        isWhiteListChosenAddress: Boolean,
+        isWhiteListChosenAddress: Boolean
     ) {
         viewModelScope.launchCatchError(
             block = {
@@ -370,6 +394,30 @@ class ManageAddressViewModel @Inject constructor(
         } else {
             source
         }
+    }
+
+    fun getTargetedTicker(firstTickerContent: String? = null) {
+        viewModelScope.launchCatchError(
+            block = {
+                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
+                _tickerState.value = Success(
+                    convertTargetedTickerToUiModel(
+                        targetedTickerData = response.getTargetedTickerData,
+                        firstTickerContent = firstTickerContent
+                    )
+                )
+            }, onError = {
+                if (firstTickerContent?.isNotBlank() == true) {
+                    _tickerState.value = Success(
+                        convertTargetedTickerToUiModel(
+                            firstTickerContent = firstTickerContent
+                        )
+                    )
+                } else {
+                    _tickerState.value = Fail(it)
+                }
+            }
+        )
     }
 
     override fun onCleared() {

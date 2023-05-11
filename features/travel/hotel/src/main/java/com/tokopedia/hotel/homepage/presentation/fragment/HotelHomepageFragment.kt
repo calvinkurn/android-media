@@ -203,6 +203,9 @@ class HotelHomepageFragment :
                             hidePromoContainer()
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
                 stopTrace()
             }
@@ -214,6 +217,9 @@ class HotelHomepageFragment :
                 when (it) {
                     is Success -> {
                         renderHotelLastSearch(it.data)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -227,6 +233,9 @@ class HotelHomepageFragment :
                         if (it.data) {
                             loadRecentSearchData()
                         }
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }

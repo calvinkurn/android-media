@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 repositories {
@@ -22,10 +21,6 @@ android {
     buildFeatures{
         viewBinding true
     }
-}
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 dependencies {
     implementation projectOrAar(rootProject.ext.features.basemvvm)
@@ -68,7 +63,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.utils)
-
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -81,8 +77,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
