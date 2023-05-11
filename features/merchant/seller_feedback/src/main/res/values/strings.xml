@@ -7,7 +7,7 @@
     <string name="feedback_form_score_bad">Kecewa</string>
     <string name="feedback_form_score_neutral">Biasa Aja</string>
     <string name="feedback_form_score_good">Puas</string>
-    <string name="feedback_form_question_1">Bagaimana pendapatmu tentang halaman ini?</string>
+    <string name="feedback_form_question_1">Bagaimana pendapatmu \ntentang halaman ini?</string>
     <string name="feedback_form_question_2">Feedback apa yang ingin kamu kasih?</string>
     <string name="feedback_form_question_3">Halaman apa yang menurutmu perlu diperbaiki?</string>
     <string name="feedback_form_question_4">Ceritakan detailnya di sini, ya</string>
