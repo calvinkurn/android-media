@@ -3416,9 +3416,9 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        if (variantOptions.isEmpty()) { // lihat semua
+        if (variantOptions.isEmpty()) { // lihat semua label clicked
             goToAtcVariant()
-        } else { // chip variant
+        } else { // chip variant clicked
             val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
             singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
             val child = viewModel.getChildOfVariantSelected(singleVariant)
