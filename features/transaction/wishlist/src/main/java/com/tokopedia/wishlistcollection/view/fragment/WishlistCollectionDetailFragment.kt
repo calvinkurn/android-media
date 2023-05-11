@@ -116,6 +116,7 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW_COACHMARK_TOOLBAR
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_CHANNEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
@@ -150,7 +151,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.UUID
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 import com.tokopedia.wishlist.R as Rv2
@@ -227,6 +230,8 @@ class WishlistCollectionDetailFragment :
     private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
     private var _bulkModeIsAlreadyTurnedOff = false
     private var affiliateUniqueId = ""
+    private var affiliateChannel = ""
+    private var affiliateUUID = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -285,6 +290,12 @@ class WishlistCollectionDetailFragment :
                         ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
                         this.getString(
                             ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                        )
+                    )
+                    putString(
+                        EXTRA_CHANNEL,
+                        this.getString(
+                            EXTRA_CHANNEL
                         )
                     )
                 }
@@ -357,6 +368,7 @@ class WishlistCollectionDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+//        hitWishlistAffiliateCookie()
     }
 
     override fun onDestroyView() {
@@ -1139,7 +1151,9 @@ class WishlistCollectionDetailFragment :
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
+        affiliateChannel = arguments?.getString(EXTRA_CHANNEL) ?: ""
         paramGetCollectionItems.collectionId = collectionId
+        affiliateUUID = UUID.randomUUID().toString()
 
         var titleToolbar = ""
         if (newCollectionDetailTitle.isNotEmpty()) titleToolbar = newCollectionDetailTitle
@@ -1207,6 +1221,14 @@ class WishlistCollectionDetailFragment :
                 setTypeLayoutIcon()
             }
         }
+    }
+
+    private fun hitWishlistAffiliateCookie() {
+        wishlistCollectionDetailViewModel.hitAffiliateCookie(
+            affiliateUniqueId,
+            affiliateUUID,
+            affiliateChannel,
+        )
     }
 
     private fun setupGearIcon() {

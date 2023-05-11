@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -39,6 +42,7 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -60,7 +64,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
     private val getWishlistCollectionTypeUseCase: GetWishlistCollectionTypeUseCase,
     private val addWishlistBulkUseCase: AddWishlistBulkUseCase,
-    private val addToWishlistV2UseCase: AddToWishlistV2UseCase
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -357,6 +362,24 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 listener.onErrorAddWishList((result as Fail).throwable, productId)
             }
         }
+    }
+
+    fun hitAffiliateCookie(
+        affiliateUuid: String,
+        uuid: String,
+        affiliateChannel: String
+    ) {
+        launchCatchError(block = {
+            // TODO: Change affiliatePageDetail data
+            affiliateCookieHelper.get().initCookie(
+                affiliateUUID = affiliateUuid,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = AffiliatePageDetail("", source = AffiliateSdkPageSource.Shop("")),
+                uuid = uuid
+            )
+        }, onError = {
+            // no op, expect to be handled by Affiliate SDK
+        })
     }
 
     companion object {

@@ -108,7 +108,7 @@ object DeeplinkMapperMarketplace {
             UriUtil.buildUri(
                 ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_WITH_AFFILIATE_UUID,
                 idList?.getOrNull(0),
-                uri.getQueryParameter("aff_unique_id")
+                uri.getQueryParameter(AFFILIATE_UNIQUE_ID)
             )
         } else {
             UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0))
