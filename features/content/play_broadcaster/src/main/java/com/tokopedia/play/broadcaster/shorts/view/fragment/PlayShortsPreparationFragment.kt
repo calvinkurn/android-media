@@ -81,9 +81,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var _binding: FragmentPlayShortsPreparationBinding? = null
     private val binding: FragmentPlayShortsPreparationBinding get() = _binding!!
 
-    /** TODO better to migrate this implementation with Carousel from Unify
-     * read: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/706284924/Carousel
-     **/
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }

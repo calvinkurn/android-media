@@ -124,7 +124,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
-
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
