@@ -306,7 +306,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
-    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
