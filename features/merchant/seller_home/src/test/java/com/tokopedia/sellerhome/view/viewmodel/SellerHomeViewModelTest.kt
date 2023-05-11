@@ -31,6 +31,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
@@ -61,6 +62,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -125,6 +128,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
         private const val DATA_KEY_MILESTONE = "MILESTONE"
         private const val DATA_KEY_UNIFICATION = "UNIFICATION"
+        private const val DATA_KEY_RICH_LIST = "RICH_LIST"
     }
 
     @RelaxedMockK
@@ -182,6 +186,9 @@ class SellerHomeViewModelTest {
     lateinit var getUnificationDataUseCase: GetUnificationDataUseCase
 
     @RelaxedMockK
+    lateinit var getRichListDataUseCase: GetRichListDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -228,6 +235,7 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { userSession },
             { remoteConfig },
             coroutineTestRule.dispatchers
@@ -252,6 +260,7 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
@@ -1294,6 +1303,101 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.unificationWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `get rich list widget data then returns success result`() = runBlocking {
+        val widgets = getRichListMockData()
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val result = listOf(RichListDataUiModel(dataKey = DATA_KEY_RICH_LIST))
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(widgets.size == expectedResult.data.size)
+        viewModel.richListWidgetData.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get rich list widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val throwable = MessageErrorException("error message")
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        viewModel.richListWidgetData.verifyErrorEquals(Fail(throwable))
+    }
+
+    @Test
+    fun `when get rich list from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.richListWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -3586,6 +3690,29 @@ class SellerHomeViewModelTest {
                 tag = "",
                 appLink = "",
                 dataKey = DATA_KEY_UNIFICATION,
+                ctaText = "",
+                gridSize = WidgetGridSize.GRID_SIZE_1,
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                emptyState = WidgetEmptyStateUiModel()
+            )
+        )
+    }
+
+    private fun getRichListMockData(): List<RichListWidgetUiModel> {
+        return listOf(
+            RichListWidgetUiModel(
+                id = "123",
+                widgetType = WidgetType.RICH_LIST,
+                title = "richlist",
+                subtitle = "",
+                tooltip = null,
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_RICH_LIST,
                 ctaText = "",
                 gridSize = WidgetGridSize.GRID_SIZE_1,
                 isShowEmpty = true,
