@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWi
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.databinding.ItemShopHomePersoProductComparisonBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
@@ -47,15 +48,14 @@ class ShopHomePersoProductComparisonViewHolder(
 
     private fun setComparisonWidget(uiModel: ShopHomePersoProductComparisonUiModel) {
         uiModel.recommendationWidget?.let {
-            //TODO need to change this hardcoded value
             comparisonWidget?.setComparisonWidgetData(
                 it,
                 this,
                 RecommendationTrackingModel(
-                    "pageName",
-                    "headerTitle",
-                    "eventClick",
-                    "eventCategory"
+                    "",
+                    uiModel.recommendationWidget.title,
+                    ShopPageTrackingConstant.CLICK_PG,
+                    ShopPageTrackingConstant.SHOP_PAGE_BUYER
                 ),
                 shopHomeListener.getFragmentTrackingQueue()
             )

@@ -39,6 +39,8 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
@@ -160,6 +162,9 @@ class ShopHomeViewModelTest {
     lateinit var getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>
 
     @RelaxedMockK
+    lateinit var  getComparisonProductUseCase: Provider<GetRecommendationUseCase>
+
+    @RelaxedMockK
     lateinit var gqlShopPageGetHomeType: GqlShopPageGetHomeType
 
     @RelaxedMockK
@@ -261,7 +266,8 @@ class ShopHomeViewModelTest {
             playWidgetTools,
             gqlShopPageGetHomeType,
             getShopPageHomeLayoutV2UseCase,
-            getShopDynamicTabUseCase
+            getShopDynamicTabUseCase,
+            getComparisonProductUseCase
         )
     }
 
@@ -2258,4 +2264,27 @@ class ShopHomeViewModelTest {
         val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
         assert(liveDataValue == false)
     }
+
+    @Test
+    fun `when calling getProductComparisonData and success, then live data should return success`() {
+        val mockRecommendationWidget = RecommendationWidget()
+        coEvery {
+            getComparisonProductUseCase.get().getData(any())
+        } returns listOf(mockRecommendationWidget)
+        viewModel.getProductComparisonData(mockShopId, ShopHomePersoProductComparisonUiModel())
+        val liveDataValue = viewModel.productComparisonLiveData.value
+        assert(liveDataValue is Success)
+        assert((liveDataValue as Success).data.recommendationWidget == mockRecommendationWidget )
+    }
+
+    @Test
+    fun `when calling getProductComparisonData and error, then live data should return fail`() {
+        coEvery {
+            getComparisonProductUseCase.get().getData(any())
+        } throws Throwable()
+        viewModel.getProductComparisonData(mockShopId, ShopHomePersoProductComparisonUiModel())
+        val liveDataValue = viewModel.productComparisonLiveData.value
+        assert(liveDataValue is Fail)
+    }
+
 }
