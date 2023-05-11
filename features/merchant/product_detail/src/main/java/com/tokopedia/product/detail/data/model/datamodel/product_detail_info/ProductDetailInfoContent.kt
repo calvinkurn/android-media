@@ -30,8 +30,11 @@ data class ProductDetailInfoContent(
     val impressionHolder: ImpressHolder = ImpressHolder()
 ) : Parcelable {
 
+    private val isAppLinkType: Boolean
+        get() = type == Content.TYPE_APPLINK && applink.isNotBlank()
+
     val isClickable: Boolean
-        get() = applink.isNotBlank() || type != Content.TYPE_DEFAULT
+        get() = isAppLinkType || type == Content.TYPE_ACTION
 
     fun routeOnClick(
         navigator: ProductDetailInfoNavigator

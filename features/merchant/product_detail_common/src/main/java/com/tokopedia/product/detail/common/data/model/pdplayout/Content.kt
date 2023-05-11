@@ -42,7 +42,6 @@ data class Content(
         const val KEY_CATALOG = "katalog"
         const val KEY_PANDUAN_UKURAN = "panduan_ukuran"
 
-        const val TYPE_DEFAULT = ""
         const val TYPE_ACTION = "action"
         const val TYPE_APPLINK = "applink"
         const val TYPE_WEBLINK = "weblink"
