@@ -706,7 +706,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
                         cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                            data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -714,7 +714,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
                         cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                            data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -822,7 +822,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
                 cardModel = data.recomWidgetData?.recommendationItemList
-                    ?.toProductCardModels(hasThreeDots = true).orEmpty()
+                    ?.toProductCardModels().orEmpty()
             }
         }
     }

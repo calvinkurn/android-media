@@ -2,7 +2,7 @@ package com.tokopedia.shop.settings.common.util
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 
 object NavigationController {
     fun navigate(fragment: Fragment, directions: NavDirections) {

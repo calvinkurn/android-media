@@ -114,6 +114,9 @@ class OperationalInsightBottomSheet(
                     val notMaintainTickerColor = getNotMaintainTickerColors()
                     drawable.colors = notMaintainTickerColor
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

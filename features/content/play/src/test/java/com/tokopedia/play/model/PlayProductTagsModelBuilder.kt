@@ -37,6 +37,8 @@ class PlayProductTagsModelBuilder {
         buttons: List<ProductButtonUiModel> = emptyList(),
         isProductNumerationShown: Boolean = false,
         number: String = "0",
+        rating: String = "",
+        soldQuantity: String = "",
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -54,6 +56,8 @@ class PlayProductTagsModelBuilder {
         buttons = buttons,
         number = number,
         isNumerationShown = isProductNumerationShown,
+        rating = rating,
+        soldQuantity = soldQuantity,
     )
 
     fun buildMerchantVoucher(

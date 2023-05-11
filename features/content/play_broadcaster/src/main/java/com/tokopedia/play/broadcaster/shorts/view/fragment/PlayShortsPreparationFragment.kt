@@ -417,6 +417,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

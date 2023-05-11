@@ -25,7 +25,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.plt.ShopPenaltyMonitoringContract
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPerformanceMonitoringListener
-import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
 import com.tokopedia.shop.score.databinding.FragmentPenaltyPageBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.*
@@ -39,12 +38,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+open class ShopPenaltyPageFragment :
+    BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
-    ItemDetailPenaltyListener, ItemHeaderCardPenaltyListener,
-    ItemPeriodDateFilterListener, ItemPenaltyErrorListener,
-    ItemSortFilterPenaltyListener, ShopPenaltyMonitoringContract {
+    ItemDetailPenaltyListener,
+    ItemHeaderCardPenaltyListener,
+    ItemPeriodDateFilterListener,
+    ItemPenaltyErrorListener,
+    ItemSortFilterPenaltyListener,
+    ShopPenaltyMonitoringContract {
 
     @Inject
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
@@ -55,7 +58,10 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
             this,
-            this, this, this, this
+            this,
+            this,
+            this,
+            this
         )
     }
 
@@ -64,7 +70,7 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
     private val binding: FragmentPenaltyPageBinding? by viewBinding()
 
     private var shopPenaltyPerformanceMonitoringListener:
-            ShopPenaltyPerformanceMonitoringListener? = null
+        ShopPenaltyPerformanceMonitoringListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -119,7 +125,6 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         viewModelShopPenalty.getDataPenalty()
     }
 
-
     override fun loadInitialData() {
         clearAllPenaltyData()
         showLoading()
@@ -127,7 +132,7 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        //no op
+        // no op
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory> {
@@ -164,7 +169,6 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         endlessRecyclerViewScrollListener.resetState()
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
     }
-
 
     private fun updateItemChildSortFilterPenalty(sortFilterItemPeriodWrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
         val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: ZERO_NUMBER
@@ -254,6 +258,9 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
                 is Success -> {
                     updateItemChildSortFilterPenalty(it.data)
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -279,7 +286,8 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                        ShopScoreReputationErrorLogger.SHOP_PENALTY_ERROR, it.throwable
+                        ShopScoreReputationErrorLogger.SHOP_PENALTY_ERROR,
+                        it.throwable
                     )
                 }
             }
@@ -296,7 +304,8 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                        ShopScoreReputationErrorLogger.SHOP_PENALTY_DETAIL_NEXT_ERROR, it.throwable
+                        ShopScoreReputationErrorLogger.SHOP_PENALTY_DETAIL_NEXT_ERROR,
+                        it.throwable
                     )
                 }
             }
@@ -358,7 +367,8 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val filterPenalty = viewModelShopPenalty.getPenaltyFilterUiModelList()
         cacheManager?.put(
-            PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper(
+            PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY,
+            FilterTypePenaltyUiModelWrapper(
                 filterPenalty
             )
         )
@@ -391,13 +401,13 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
     override fun startRenderPerformanceMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopPenaltyPerformanceMonitoringListener? {

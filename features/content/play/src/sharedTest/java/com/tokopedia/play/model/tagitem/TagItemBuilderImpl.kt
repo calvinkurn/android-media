@@ -57,6 +57,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         buttons: List<ProductButtonUiModel>,
         number: String,
         isNumerationShown: Boolean,
+        rating: String,
+        soldQuantity: String,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -74,6 +76,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         buttons = buttons,
         number = number,
         isNumerationShown = isNumerationShown,
+        rating = rating,
+        soldQuantity = soldQuantity,
     )
 
     override fun buildMerchantVoucher(

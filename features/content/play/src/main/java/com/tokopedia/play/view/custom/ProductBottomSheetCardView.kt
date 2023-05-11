@@ -16,7 +16,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.isShowRating
+import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.CardUnify
 
@@ -127,6 +130,20 @@ class ProductBottomSheetCardView(
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.text = item.number
+
+        //Social Proof
+        if (section.config.type.isUpcoming) {
+            binding.ivPlayProductStars.hide()
+            binding.tvPlayRatingAndSoldQuantity.hide()
+        } else {
+            binding.ivPlayProductStars.showWithCondition(item.isShowRating)
+            binding.tvPlayRatingAndSoldQuantity.show()
+            binding.tvPlayRatingAndSoldQuantity.text = buildString {
+                append(item.rating)
+                append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
+                append(item.soldQuantity)
+            }
+        }
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {

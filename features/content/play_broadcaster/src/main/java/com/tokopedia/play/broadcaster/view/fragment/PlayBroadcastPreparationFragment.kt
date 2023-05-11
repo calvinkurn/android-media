@@ -105,6 +105,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -126,9 +127,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
 
-    /** TODO better to migrate this implementation with Carousel from Unify
-     * read: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/706284924/Carousel
-     **/
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
@@ -317,7 +315,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun clickAcceptTnc(isChecked: Boolean) {
-                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
+                        if (isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -365,28 +363,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(listener = this)
-                childFragment.setupDataSource(dataSource = object : DataSource {
-                    override fun getEntryPoint(): String {
-                        return PAGE_NAME
-                    }
+                childFragment.setupDataSource(
+                    dataSource = object : DataSource {
+                        override fun getEntryPoint(): String {
+                            return PAGE_NAME
+                        }
 
-                    override fun getContentAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
+                        override fun getContentAccount(): ContentAccountUiModel {
+                            return parentViewModel.selectedAccount
+                        }
 
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
+                        override fun getChannelId(): String {
+                            return parentViewModel.channelId
+                        }
 
-                    override fun getChannelTitle(): String {
-                        return parentViewModel.channelTitle
-                    }
+                        override fun getChannelTitle(): String {
+                            return parentViewModel.channelTitle
+                        }
 
-                    override fun getDataStore(): PlayBroadcastDataStore {
-                        return parentViewModel.mDataStore
+                        override fun getDataStore(): PlayBroadcastDataStore {
+                            return parentViewModel.mDataStore
+                        }
                     }
-
-                })
+                )
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -397,7 +396,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
             activity?.finish()
         }
     }
@@ -623,6 +622,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Loading -> showMainComponent(false)
                 is NetworkResult.Success -> showMainComponent(true)
                 is NetworkResult.Fail -> showMainComponent(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -684,6 +686,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
                 NetworkResult.Loading -> showLoading(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }

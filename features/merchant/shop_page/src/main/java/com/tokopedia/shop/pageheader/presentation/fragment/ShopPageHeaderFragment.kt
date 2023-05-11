@@ -100,7 +100,9 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -705,6 +707,9 @@ class ShopPageHeaderFragment :
                             )
                             isFollowing = this?.status?.userIsFollowing == true
                         }
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
                 val followStatusData = (it as? Success)?.data?.followStatus
@@ -1358,7 +1363,12 @@ class ShopPageHeaderFragment :
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
             val iconBuilder = IconBuilder()
-            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
+            val iconShare = if (isAffiliateShareIcon()) {
+                IconList.ID_SHARE_AB_TEST
+            } else {
+                IconList.ID_SHARE
+            }
+            iconBuilder.addIcon(iconShare) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
             }
@@ -1369,6 +1379,13 @@ class ShopPageHeaderFragment :
             }
             setToolbarPageName(SHOP_PAGE)
         }
+    }
+
+    private fun isAffiliateShareIcon(): Boolean {
+        val abTestValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+        )
+        return abTestValue == RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
     }
 
     private fun getCartCounter(): Int {
