@@ -105,6 +105,8 @@ class PlayShortsViewModel @Inject constructor(
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
     private val _isAffiliate = MutableStateFlow(false)
+    val isAffiliate: Boolean
+        get() = _isAffiliate.value
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)

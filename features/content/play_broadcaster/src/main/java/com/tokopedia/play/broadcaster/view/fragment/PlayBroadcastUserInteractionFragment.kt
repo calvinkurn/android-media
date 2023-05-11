@@ -279,6 +279,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             0
                         }
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {

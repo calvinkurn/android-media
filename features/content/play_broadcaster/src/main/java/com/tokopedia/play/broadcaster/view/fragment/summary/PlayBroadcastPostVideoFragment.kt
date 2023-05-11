@@ -174,6 +174,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return parentViewModel.maxProduct
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
