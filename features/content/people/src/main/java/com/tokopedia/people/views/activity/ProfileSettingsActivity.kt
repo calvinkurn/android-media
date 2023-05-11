@@ -34,6 +34,8 @@ import com.tokopedia.people.views.uimodel.action.UserProfileSettingsAction
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.databinding.ActivityUserProfileSettingsBinding
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
@@ -127,6 +129,16 @@ class ProfileSettingsActivity : AppCompatActivity() {
             viewModel.reviewSettings.collectLatest {
                 binding.tvReview.text = it.title
                 binding.switchReview.isChecked = it.isEnabled
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is UserProfileSettingsEvent.ErrorSetShowReview -> {
+                        binding.root.showErrorToast(event.throwable.message ?: getString(R.string.up_error_unknown))
+                    }
+                }
             }
         }
     }
