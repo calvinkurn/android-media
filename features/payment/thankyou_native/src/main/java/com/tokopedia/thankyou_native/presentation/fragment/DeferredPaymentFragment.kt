@@ -96,6 +96,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     highlightAmountDigits = false,
                     paymentType = paymentType
                 )
+                else -> {
+                    //no-op
+                }
             }
         }
         if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {

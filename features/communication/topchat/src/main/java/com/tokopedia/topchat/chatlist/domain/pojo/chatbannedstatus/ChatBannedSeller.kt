@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.domain.pojo.chatbannedstatus
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ChatBannedSeller(

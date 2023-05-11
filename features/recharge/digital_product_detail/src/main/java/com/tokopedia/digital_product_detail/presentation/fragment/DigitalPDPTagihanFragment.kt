@@ -159,6 +159,9 @@ class DigitalPDPTagihanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -168,18 +171,27 @@ class DigitalPDPTagihanFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpTagihanListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.prefillData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -187,6 +199,9 @@ class DigitalPDPTagihanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -194,6 +209,9 @@ class DigitalPDPTagihanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     productId = it.data.id.toIntOrZero()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

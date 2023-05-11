@@ -396,6 +396,8 @@
 /dynamic-features-customerapp_pro/                      @tokopedia/android-core-dev
 /dynamic-features-sellerapp/                            @tokopedia/android-core-dev
 /tools/                                                 @tokopedia/android-core-dev
+/docs/                                                  @tokopedia/android-core-dev
+/docs/internal/                                         @tokopedia/android-core-dev
 
 /tkpddiscovery/                                        	@tokopedia/android-core-dev
 /tkpdsession/                                       	@tokopedia/android-core-dev
@@ -412,7 +414,9 @@
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
 /build.gradle                                           @tokopedia/android-core-dev
+/settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
+/gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
 

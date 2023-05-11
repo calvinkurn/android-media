@@ -75,7 +75,8 @@ class ProductCardCompactView @JvmOverloads constructor(
             maxOrder = model.maxOrder,
             orderQuantity = model.orderQuantity,
             isOos = model.isOos(),
-            needToShowQuantityEditor = model.needToShowQuantityEditor
+            needToShowQuantityEditor = model.needToShowQuantityEditor,
+            hasBlockedAddToCart = model.hasBlockedAddToCart
         )
         initAssignedValueTypography(
             labelGroup = model.getAssignedValueLabelGroup()
@@ -139,9 +140,11 @@ class ProductCardCompactView @JvmOverloads constructor(
         maxOrder: Int,
         orderQuantity: Int,
         isOos: Boolean,
-        needToShowQuantityEditor: Boolean
+        needToShowQuantityEditor: Boolean,
+        hasBlockedAddToCart: Boolean
     ) {
         quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
+            quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
             quantityEditor.isVariant = isVariant
             quantityEditor.minQuantity = minOrder
             quantityEditor.maxQuantity = maxOrder
@@ -506,10 +509,17 @@ class ProductCardCompactView @JvmOverloads constructor(
     ){
         this.productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
     }
+
     fun setWishlistButtonListener(
         wishlistButtonListener: ProductCardCompactWishlistButtonView.WishlistButtonListener
     ) {
         binding.wishlistButton.setListener(wishlistButtonListener)
+    }
+
+    fun setOnBlockAddToCartListener(
+        onBlockAddToCartListener: () -> Unit
+    ) {
+        binding.quantityEditor.onBlockAddToCartListener = onBlockAddToCartListener
     }
 
     fun setListener(productCardCompactListener: ProductCardCompactListener?) {
