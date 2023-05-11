@@ -29,7 +29,7 @@ class ShareAddressConfirmationViewModelTest {
 
     lateinit var viewModel: ShareAddressConfirmationViewModel
 
-    private val mockThrowable = mockk<Throwable>(relaxed = true)
+    private val exception = Exception("error")
 
     @Before
     fun setup() {
@@ -93,12 +93,12 @@ class ShareAddressConfirmationViewModelTest {
     fun `verify when share address error`() {
         coEvery {
             shareAddressUseCase.invoke(any())
-        } throws mockThrowable
+        } throws exception
 
         viewModel.shareAddress(mockk())
 
         verify {
-            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(mockThrowable.message.orEmpty()))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
         }
     }
 
@@ -154,12 +154,12 @@ class ShareAddressConfirmationViewModelTest {
     fun `verify when share address from notif error`() {
         coEvery {
             selectShareAddressUseCase.invoke(any())
-        } throws mockThrowable
+        } throws exception
 
         viewModel.shareAddressFromNotif(SelectShareAddressParam.Param())
 
         verify {
-            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(mockThrowable.message.orEmpty()))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
         }
     }
 }
