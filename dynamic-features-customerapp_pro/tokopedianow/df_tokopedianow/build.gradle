@@ -49,5 +49,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.tokopediaNow)
 }
