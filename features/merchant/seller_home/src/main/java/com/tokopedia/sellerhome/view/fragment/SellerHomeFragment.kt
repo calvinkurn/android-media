@@ -1324,18 +1324,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getCalendarWidgetData(dataKeys)
     }
 
-    private fun getRichListData(widgets: List<BaseWidgetUiModel<*>>) {
-        startCustomMetric(SELLER_HOME_RICH_LIST_TRACE)
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
-        sellerHomeViewModel.getRichListWidgetData(dataKeys)
-    }
-
     private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {
         startCustomMetric(SELLER_HOME_UNIFICATION_TRACE)
         widgets.setLoading()
         val mWidgets = widgets.filterIsInstance<UnificationWidgetUiModel>()
         sellerHomeViewModel.getUnificationWidgetData(mWidgets)
+    }
+
+    private fun getRichListData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_RICH_LIST_TRACE)
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        sellerHomeViewModel.getRichListWidgetData(dataKeys)
     }
 
     private fun setupShopSharing() {
