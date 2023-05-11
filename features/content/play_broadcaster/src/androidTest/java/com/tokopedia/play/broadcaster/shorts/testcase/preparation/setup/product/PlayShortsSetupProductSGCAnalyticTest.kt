@@ -87,6 +87,7 @@ class PlayShortsSetupProductSGCAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockIdleManager = mockIdleManager,
                         mockRouter = mockk(relaxed = true),
+                        mockDataStore = mockk(relaxed = true),
                     )
                 )
                 .build()

@@ -47,6 +47,14 @@ import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.DtShareUniversalUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_LINKER_TYPE
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_OG_IMAGE
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_PAGE_ID
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_PAGE_NAME
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_THUMBNAIL_IMAGE
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_TITLE
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil.SHARE_LINK_URL
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -96,20 +104,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         // scroll listener
         private const val RV_DIRECTION_TOP = 1
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
-        private const val SHARE = "share"
 
         private const val CLICK_TIME_INTERVAL: Long = 500
-
-        private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
-        private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
-        private const val SHARE_LINK_THUMBNAIL_IMAGE =
-            "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
-        private const val SHARE_LINK_OG_IMAGE =
-            "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
-        private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
-
-        private const val SHARE_LINK_LINKER_TYPE = "Dilayani-tokopedia"
-        private const val SHARE_LINK_PAGE_ID = "home"
     }
 
     @Inject
@@ -243,8 +239,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun initAnchorTabMenu() {
         anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
-        binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
-        binding?.headerCompHolder?.adapter = anchorTabAdapter
+        binding?.rvAnchorTab?.layoutManager = anchorTabLinearLayoutManager
+        binding?.rvAnchorTab?.adapter = anchorTabAdapter
     }
 
     private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
@@ -353,7 +349,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 } else {
                     PARAM_APPLINK_AUTOCOMPLETE
                 },
-                searchbarClickCallback = { onSearchBarClick() }, searchbarImpressionCallback = {}
+                searchbarClickCallback = { onSearchBarClick() },
+                searchbarImpressionCallback = {}
             )
         }
     }
@@ -383,12 +380,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         shareHome.thumbNailImage = SHARE_LINK_THUMBNAIL_IMAGE
     }
 
-    private fun shareClicked(shareHomeTokonow: DtShareUniversalUiModel?) {
+    private fun shareClicked(shareDt: DtShareUniversalUiModel?) {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-            showUniversalShareBottomSheet(shareHomeTokonow)
+            showUniversalShareBottomSheet(shareDt)
         } else {
             LinkerManager.getInstance().apply {
-                executeShareRequest(DtUniversalShareUtil.shareRequest(context, shareHomeTokonow))
+                executeShareRequest(DtUniversalShareUtil.shareRequest(context, shareDt))
             }
         }
     }
@@ -830,7 +827,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val transparentUnify = android.R.color.transparent
         val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
         navToolbar?.setBackgroundColor(transparentColor)
-        binding?.headerCompHolder?.setBackgroundColor(transparentColor)
+        binding?.rvAnchorTab?.setBackgroundColor(transparentColor)
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
         binding?.dtViewBackgroundImage?.visible()
 
@@ -843,7 +840,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val whiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_NN0
         val whiteColor = ResourcesCompat.getColor(requireContext().resources, whiteUnify, null)
         navToolbar?.setBackgroundColor(whiteColor)
-        binding?.headerCompHolder?.setBackgroundColor(whiteColor)
+        binding?.rvAnchorTab?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
         statusBarState = AnchorTabStatus.MINIMIZE
@@ -897,7 +894,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             override val homeMainAnchorTabHeight: Int
                 get() {
-                    return binding?.headerCompHolder?.height ?: 0
+                    return binding?.rvAnchorTab?.height ?: 0
                 }
         }
     }

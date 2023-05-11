@@ -33,7 +33,8 @@ class CheckEligibilityUseCase @Inject constructor(
         val response: CheckOneKYCEligibility = repository.request<Unit, CheckEligibilityResponse>(graphqlQuery(), params).checkOneKYCEligibility
 
         return if (!response.isSuccess) {
-            CheckEligibilityResult.Failed(MessageErrorException(response.errorMessages.first()))
+            val messageError = response.errorMessages.first()
+            CheckEligibilityResult.Failed(MessageErrorException(messageError))
         } else if (response.data.flow == KYCConstant.GotoKycFlow.PROGRESSIVE) {
             CheckEligibilityResult.Progressive(response.data.name)
         } else {
