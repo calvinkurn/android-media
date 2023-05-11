@@ -245,14 +245,6 @@ class FeedPostImageViewHolder(
                 showClearView()
             }
             if (payloads.contains(FEED_POST_SELECTED)) {
-                listener.onPostImpression(
-                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
-                        it
-                    ),
-                    it.id,
-                    absoluteAdapterPosition
-                )
-
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
                 updateProductTagText(it)
@@ -309,14 +301,23 @@ class FeedPostImageViewHolder(
     }
 
     private fun sendImpressionTracker(element: FeedCardImageContentModel) {
-        listener.onTopAdsImpression(
-            adViewUrl = element.adViewUrl,
-            id = element.id,
-            shopId = element.author.id,
-            uri = element.adViewUri,
-            fullEcs = element.author.logoUrl,
-            position = absoluteAdapterPosition
+        listener.onPostImpression(
+            trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
+                element
+            ),
+            element.id,
+            absoluteAdapterPosition
         )
+        if (element.isTopAds) {
+            listener.onTopAdsImpression(
+                adViewUrl = element.adViewUrl,
+                id = element.id,
+                shopId = element.author.id,
+                uri = element.adViewUri,
+                fullEcs = element.author.logoUrl,
+                position = absoluteAdapterPosition
+            )
+        }
     }
 
     private fun renderLikeView(

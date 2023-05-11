@@ -48,7 +48,8 @@ interface FeedListener {
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     )
 
     fun onProductTagViewClicked(
@@ -60,7 +61,8 @@ interface FeedListener {
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     )
 
     fun onOngoingCampaignClicked(
@@ -71,7 +73,8 @@ interface FeedListener {
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     )
 
     fun onSharePostClicked(
