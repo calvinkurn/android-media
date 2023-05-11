@@ -53,10 +53,6 @@ class FeedMainViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedMainEvent>,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
-    private val _isInClearView = MutableLiveData<Boolean>(false)
-    val isInClearView: LiveData<Boolean>
-        get() = _isInClearView
-
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
 
@@ -111,10 +107,6 @@ class FeedMainViewModel @Inject constructor(
 
     fun pausePage() {
         _isPageResumed.value = false
-    }
-
-    fun changeCurrentTabByIndex(index: Int) {
-        _currentTabIndex.value = index
     }
 
     fun changeCurrentTabByType(type: String) {

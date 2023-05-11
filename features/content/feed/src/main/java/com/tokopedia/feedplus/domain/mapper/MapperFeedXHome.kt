@@ -108,7 +108,8 @@ object MapperFeedHome {
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
-            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt
+            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
+            topAdsId = if (isTopAdsPost(card)) card.id else "",
         )
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel =

@@ -28,7 +28,8 @@ class FeedDiffUtilCallback(
         val newItem = newList[newItemPosition]
 
         return if (oldItem is FeedCardImageContentModel && newItem is FeedCardImageContentModel) {
-            oldItem.id == newItem.id
+            if (oldItem.isTopAds && newItem.isTopAds) oldItem.topAdsId == newItem.topAdsId
+            else oldItem.id == newItem.id
         } else if (oldItem is FeedCardVideoContentModel && newItem is FeedCardVideoContentModel) {
             oldItem.id == newItem.id
         } else if (oldItem is FeedCardLivePreviewContentModel && newItem is FeedCardLivePreviewContentModel) {
@@ -53,7 +54,8 @@ class FeedDiffUtilCallback(
         val newItem = newList[newItemPosition]
 
         return if (oldItem is FeedCardImageContentModel && newItem is FeedCardImageContentModel) {
-            if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
+            if (oldItem.isTopAds && !oldItem.isFetched && newItem.isTopAds && newItem.isFetched) null
+            else if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
                 FeedViewHolderPayloads(
                     listOf(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
                 )
