@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcRichList"
             app:layout_constraintVertical_bias="0"
-            app:typographyType="body_3"
+            app:typographyType="small"
             tools:text="Update terakhir 6 Jun 2023, 15:00 WIB" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

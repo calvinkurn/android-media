@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -24,6 +25,7 @@ class RichListViewHolder(
 ) : AbstractViewHolder<RichListWidgetUiModel>(itemView) {
 
     companion object {
+        @LayoutRes
         val RES_LAYOUT = R.layout.shc_rich_list_widget
     }
 
