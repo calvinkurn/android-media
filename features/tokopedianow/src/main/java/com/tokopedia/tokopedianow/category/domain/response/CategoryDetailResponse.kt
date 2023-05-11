@@ -1,10 +1,10 @@
-package com.tokopedia.tokopedianow.oldcategory.domain.model
+package com.tokopedia.tokopedianow.category.domain.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class TokonowCategoryDetail(
-        @SerializedName("TokonowCategoryDetailResponse")
+data class CategoryDetailResponse(
+        @SerializedName("TokonowCategoryDetail")
         @Expose
         val categoryDetail: CategoryDetail = CategoryDetail(),
 ) {
@@ -64,7 +64,7 @@ data class TokonowCategoryDetail(
 
             @SerializedName("color")
             @Expose
-            val color: String = "",
+            val color: String = "#FFFAE6",
     )
 
     data class Navigation(

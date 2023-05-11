@@ -96,8 +96,8 @@ class GetCategoryFirstPageUseCase(
 
     companion object {
         private const val TOKONOW_CATEGORY_DETAIL_GQL_QUERY = """
-            query TokonowCategoryDetail(${'$'}categoryID: String!, ${'$'}slug: String!, ${'$'}warehouseID: String!){
-              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, warehouseID: ${'$'}warehouseID) {
+            query TokonowCategoryDetailResponse(${'$'}categoryID: String!, ${'$'}slug: String!, ${'$'}warehouseID: String!){
+              TokonowCategoryDetailResponse(categoryID: ${'$'}categoryID, slug: ${'$'}slug, warehouseID: ${'$'}warehouseID) {
                 header {
                   process_time
                   messages

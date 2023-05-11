@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
@@ -10,6 +11,8 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil
+import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChooseAddressWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -33,8 +36,8 @@ class TokoNowChooseAddressWidgetViewHolder(
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var coachMark: CoachMark2? = null
 
-    override fun bind(element: TokoNowChooseAddressWidgetUiModel?) {
-        setupChooseAddressWidget()
+    override fun bind(element: TokoNowChooseAddressWidgetUiModel) {
+        setupChooseAddressWidget(element)
     }
 
     private fun bindChooseAddressWidget() {
@@ -73,10 +76,25 @@ class TokoNowChooseAddressWidgetViewHolder(
         }
     }
 
-    private fun setupChooseAddressWidget() {
+    private fun setupChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         chooseAddressWidget = binding?.chooseAddressWidget
         bindChooseAddressWidget()
         showCoachMark()
+        setBackgroundColor(element)
+    }
+
+    private fun setBackgroundColor(element: TokoNowChooseAddressWidgetUiModel) {
+        if (element.backgroundColor.isNotBlank()) {
+            binding?.root?.setBackgroundColor(
+                safeParseColor(
+                    color = element.backgroundColor,
+                    defaultColor = ContextCompat.getColor(
+                        itemView.context,
+                        R.color.tokopedianow_card_dms_color
+                    )
+                )
+            )
+        }
     }
 
     private fun showCoachMark(){
