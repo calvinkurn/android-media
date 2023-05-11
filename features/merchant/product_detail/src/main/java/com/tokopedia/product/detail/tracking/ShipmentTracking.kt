@@ -78,7 +78,7 @@ object ShipmentTracking {
             "event" to "clickPG",
             "eventAction" to eventAction,
             "eventCategory" to "product detail page",
-            "eventLabel" to "plus_eligible:${trackerData.isPlus};;",
+            "eventLabel" to "plus_eligible:${trackerData.isPlus};",
             "trackerId" to "43263",
             "businessUnit" to "product detail page",
             "component" to "comp:${component.componentName};temp:${component.componentType};elem:$eventAction;cpos:${component.adapterPosition};",
