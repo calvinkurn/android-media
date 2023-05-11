@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterGenerateChannelAffiliateLinkUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
@@ -34,6 +35,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val broadcasterCheckAffiliateUseCase: BroadcasterCheckIsAffiliateUseCase,
     private val onboardAffiliateUseCase: OnBoardAffiliateUseCase,
+    private val generateChannelAffiliateLinkUseCase: BroadcasterGenerateChannelAffiliateLinkUseCase,
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -105,6 +107,12 @@ class PlayShortsRepositoryImpl @Inject constructor(
     override suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
         return withContext(dispatchers.io) {
             mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request))
+        }
+    }
+
+    override suspend fun generateChannelAffiliateLink(shortsId: String): Boolean {
+        return withContext(dispatchers.io) {
+            generateChannelAffiliateLinkUseCase(shortsId).data.success
         }
     }
 
