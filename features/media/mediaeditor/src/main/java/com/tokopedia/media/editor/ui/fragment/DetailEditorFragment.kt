@@ -710,7 +710,11 @@ class DetailEditorFragment @Inject constructor(
                     }
 
                     if (data.addTextValue == null) {
-                        showAddTextTips()
+                        if (!addTextCacheManager.getTipsState()) {
+                            showAddTextTips(isOpenTextActivity = true)
+                        } else {
+                            openAddTextActivity()
+                        }
                     } else {
                         // set flag according to prev state
                         data.addTextValue?.textTemplate?.let {
@@ -1344,12 +1348,13 @@ class DetailEditorFragment @Inject constructor(
         isAddLogoTipsShowed = true
     }
 
-    fun showAddTextTips() {
+    fun showAddTextTips(isOpenTextActivity: Boolean = false) {
         EditorAddTextTipsBottomSheet().apply {
             show(this@DetailEditorFragment.childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
-            if (data.addTextValue == null) {
+            if (isOpenTextActivity) {
                 setOnDismissListener {
                     openAddTextActivity()
+                    addTextCacheManager.setTipsState()
                 }
             }
         }
