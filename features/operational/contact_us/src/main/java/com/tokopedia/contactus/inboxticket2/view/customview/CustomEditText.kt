@@ -48,11 +48,14 @@ class CustomEditText : AppCompatEditText {
 
             private fun runTimer(text: String) {
                 timer = Timer()
-                timer?.schedule(object : TimerTask() {
-                    override fun run() {
-                        updateListener(text)
-                    }
-                }, delayTextChanged)
+                timer?.schedule(
+                    object : TimerTask() {
+                        override fun run() {
+                            updateListener(text)
+                        }
+                    },
+                    delayTextChanged
+                )
             }
 
             private fun updateListener(text: String) {

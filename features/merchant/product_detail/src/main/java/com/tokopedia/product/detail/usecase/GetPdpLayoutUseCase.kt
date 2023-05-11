@@ -118,6 +118,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         variantOptionID
                         URLMaxRes
                       }
+                      recommendation {
+                        lightIcon
+                        darkIcon
+                        iconText
+                        bottomsheetTitle
+                        recommendation
+                      }
                       videos {
                         source
                         url

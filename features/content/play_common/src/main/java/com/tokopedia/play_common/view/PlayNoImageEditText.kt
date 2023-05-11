@@ -30,7 +30,9 @@ class PlayNoImageEditText : AppCompatEditText {
                 mOnErrorListener?.onForbiddenImage(this@PlayNoImageEditText)
                 true
             }
-        } else inputConnection
+        } else {
+            inputConnection
+        }
     }
 
     fun setOnErrorListener(onErrorListener: OnErrorListener) {

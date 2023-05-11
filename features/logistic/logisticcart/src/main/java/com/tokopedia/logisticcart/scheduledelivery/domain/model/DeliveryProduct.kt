@@ -3,8 +3,8 @@ package com.tokopedia.logisticcart.scheduledelivery.domain.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
-import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlStrikethroughText
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlStrikethroughText
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

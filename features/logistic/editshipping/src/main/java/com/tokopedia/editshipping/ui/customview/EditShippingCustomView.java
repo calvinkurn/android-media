@@ -12,8 +12,9 @@ import androidx.annotation.NonNull;
  * Created by Kris on 6/9/2016.
  * TOKOPEDIA
  */
-public abstract class EditShippingCustomView<D, P, V> extends RelativeLayout{
+public abstract class EditShippingCustomView<D, P, V, B> extends RelativeLayout{
 
+    private B binding;
     public EditShippingCustomView(Context context) {
         super(context);
         initView(context);
@@ -30,15 +31,17 @@ public abstract class EditShippingCustomView<D, P, V> extends RelativeLayout{
     }
 
     protected void initView(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view =  inflater.inflate(getLayoutView(), this, true);
-        bindView(view);
+        binding = getLayoutView(context);
+        bindView(binding);
     }
 
-    protected abstract void bindView (View view);
+    protected B getBinding() {
+        return binding;
+    }
 
-    protected abstract int getLayoutView();
+    protected abstract void bindView (B view);
+
+    protected abstract B getLayoutView(Context context);
 
     public abstract void renderData(@NonNull D data);
 

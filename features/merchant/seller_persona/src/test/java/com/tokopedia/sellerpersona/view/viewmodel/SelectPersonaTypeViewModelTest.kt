@@ -45,7 +45,7 @@ class SelectPersonaTypeViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when get fetch persona list should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val personaList = listOf(PersonaUiModel())
 
             coEvery {
@@ -64,7 +64,7 @@ class SelectPersonaTypeViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when get fetch persona list should return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val throwable = Throwable()
 
             coEvery {
@@ -83,7 +83,7 @@ class SelectPersonaTypeViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when set persona then return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val personaName = anyString()
             val shopId = anyString()
 
@@ -115,7 +115,7 @@ class SelectPersonaTypeViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when set persona then return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val throwable = Throwable()
             val personaName = anyString()
             val shopId = anyString()

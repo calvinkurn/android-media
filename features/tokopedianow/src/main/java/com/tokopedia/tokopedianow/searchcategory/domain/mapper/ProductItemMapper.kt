@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.domain.mapper
 
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -13,7 +13,8 @@ object ProductItemMapper {
     private fun mapAceSearchProductToProductCard(
         product: AceSearchProductModel.Product,
         cartService: CartService,
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        hasBlockedAddToCart: Boolean
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
         imageUrl = product.imageUrl300,
         minOrder = product.minOrder,
@@ -29,7 +30,7 @@ object ProductItemMapper {
         isWishlistShown = true,
         isSimilarProductShown = true,
         isVariant = product.childs.isNotEmpty(),
-        needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = true,
         labelGroupList = product.labelGroupList.map {
             LabelGroup(
                 position = it.position,
@@ -37,13 +38,15 @@ object ProductItemMapper {
                 title = it.title,
                 imageUrl = it.url
             )
-        }
+        },
+        hasBlockedAddToCart = hasBlockedAddToCart
     )
 
     fun mapResponseToProductItem(
         index: Int,
         product: AceSearchProductModel.Product,
-        cartService: CartService
+        cartService: CartService,
+        hasBlockedAddToCart: Boolean
     ): ProductItemDataView = ProductItemDataView(
         parentId = product.parentId,
         boosterList = product.boosterList,
@@ -55,7 +58,8 @@ object ProductItemMapper {
         position = index + ADDITIONAL_POSITION,
         productCardModel = mapAceSearchProductToProductCard(
             product = product,
-            cartService = cartService
+            cartService = cartService,
+            hasBlockedAddToCart = hasBlockedAddToCart
         )
     )
 }
