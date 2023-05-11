@@ -176,15 +176,6 @@ repositories {
 }
 
 dependencies {
-    implementation("com.gojek.android:OneKycSdk:0.1.35Pre27@aar")
-    implementation("com.gojek.android:clickstream:2.0.1-alpha"){
-        exclude(group:"com.google.protobuf")
-    }
-    implementation("com.gojek.clickstream:proto-consumer:4.210.1")
-    implementation("com.gojek.clickstream:proto-sdk:1.18.2")
-
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation platform(rootProject.ext.firebase.bom)
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
