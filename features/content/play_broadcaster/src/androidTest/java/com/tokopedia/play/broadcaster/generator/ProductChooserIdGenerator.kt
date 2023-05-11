@@ -108,7 +108,8 @@ class ProductChooserIdGenerator {
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean
+            isEligibleForPin: Boolean,
+            fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 creationId = creationId,
@@ -119,6 +120,7 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
+                fetchCommissionProduct = fetchCommissionProduct,
             )
         }
     }

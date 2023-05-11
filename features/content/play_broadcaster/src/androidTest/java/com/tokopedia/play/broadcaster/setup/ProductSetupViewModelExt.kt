@@ -5,11 +5,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -28,6 +26,7 @@ fun productSetupViewModel(
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
+    fetchCommissionProduct: Boolean = false,
 ): PlayBroProductSetupViewModel {
     return PlayBroProductSetupViewModel(
         creationId = creationId,
@@ -38,6 +37,7 @@ fun productSetupViewModel(
         repo = repo,
         userSession = userSession,
         dispatchers = dispatchers,
+        fetchCommissionProduct = fetchCommissionProduct,
     )
 }
 

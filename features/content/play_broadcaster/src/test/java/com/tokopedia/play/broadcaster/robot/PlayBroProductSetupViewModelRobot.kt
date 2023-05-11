@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
@@ -33,6 +32,7 @@ internal class PlayBroProductSetupViewModelRobot(
     isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
+    fetchCommissionProduct: Boolean = false,
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
@@ -42,6 +42,7 @@ internal class PlayBroProductSetupViewModelRobot(
         productSectionList,
         handle,
         isEligibleForPin,
+        fetchCommissionProduct,
         channelRepo,
         userSession,
         dispatchers,

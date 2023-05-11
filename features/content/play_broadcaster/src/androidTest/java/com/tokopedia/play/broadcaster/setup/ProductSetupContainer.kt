@@ -5,7 +5,6 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
@@ -38,11 +37,15 @@ class ProductSetupContainer(
                         maxProduct: Int,
                         productSectionList: List<ProductTagSectionUiModel>,
                         savedStateHandle: SavedStateHandle,
-                        isEligibleForPin: Boolean
+                        isEligibleForPin: Boolean,
+                        fetchCommissionProduct: Boolean,
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle, false) as T
+                }.create("123", 30, emptyList(), handle,
+                    isEligibleForPin = false,
+                    fetchCommissionProduct = false
+                ) as T
             }
         }
     }
