@@ -96,7 +96,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
     fun sendReport() {
         mListener?.onReportPost(
-            FeedReportRequestParamModel(
+            FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel(
                 reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_POST,
                 contentId = contentId,
                 reason = reasonType,
@@ -187,7 +187,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
     interface Listener {
         fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
-        fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel)
+        fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel)
         fun onMenuBottomSheetCloseClick(contentId: String)
     }
 }

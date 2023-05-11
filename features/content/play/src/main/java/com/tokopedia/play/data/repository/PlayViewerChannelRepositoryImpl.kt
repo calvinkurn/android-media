@@ -86,11 +86,16 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         return@withContext getCartCountUseCase.executeOnBackground()
     }
 
-    override suspend fun getCountComment(channelId: String): PlayCommentUiModel = withContext(dispatchers.io) {
-        val result = getCountComment.apply {
-            setRequestParams(GetCountCommentsUseCase.setParam(PageSource.Play(channelId)))
-        }.executeOnBackground()
-        return@withContext PlayCommentUiModel(
+    override suspend fun getCountComment(channelId: String): PlayCommentUiModel {
+        val source = PageSource.Play(channelId)
+        val result = getCountComment(
+            GetCountCommentsUseCase.CountCommentParam(
+                sourceId = listOf(source.id),
+                sourceType = source.type
+            )
+        )
+
+        return PlayCommentUiModel(
             shouldShow = result.parent.child.data.firstOrNull()?.shouldShow.orFalse(),
             total = result.parent.child.data.firstOrNull()?.countFmt.orEmpty()
         )

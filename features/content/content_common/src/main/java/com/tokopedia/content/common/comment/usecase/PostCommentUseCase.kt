@@ -2,9 +2,7 @@ package com.tokopedia.content.common.comment.usecase
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.PostComment
-import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -14,7 +12,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 08/02/23
  */
 class PostCommentUseCase @Inject constructor(private val repo: GraphqlRepository, dispatchers: CoroutineDispatchers) :
-    CoroutineUseCase<PostCommentParam, PostComment>(dispatchers.io) {
+    CoroutineUseCase<PostCommentUseCase.PostCommentParam, PostComment>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
 
@@ -23,11 +21,11 @@ class PostCommentUseCase @Inject constructor(private val repo: GraphqlRepository
     }
 
     companion object {
-        const val PARAM_COMMENT = "comment"
-        const val PARAM_COMMENTER_TYPE = "commenterType"
-        const val PARAM_COMMENT_PARENT_ID = "commentParentID"
-        const val PARAM_CONTENT_TYPE = "contentType"
-        const val PARAM_ID = "contentID"
+        private const val PARAM_COMMENT = "comment"
+        private const val PARAM_COMMENTER_TYPE = "commenterType"
+        private const val PARAM_COMMENT_PARENT_ID = "commentParentID"
+        private const val PARAM_CONTENT_TYPE = "contentType"
+        private const val PARAM_ID = "contentID"
 
         const val QUERY = """
             mutation postComment(
@@ -72,25 +70,25 @@ class PostCommentUseCase @Inject constructor(private val repo: GraphqlRepository
     enum class CommenterType(val value: Int) {
         SHOP(2), BUYER(3)
     }
-}
 
-data class PostCommentParam(
-    @SerializedName("comment")
-    val comment: String,
-    @SerializedName("commenterType")
-    val commenterType: Int,
-    @SerializedName("commentParentID")
-    val commentParentId: String,
-    @SerializedName("contentType")
-    val contentType: String,
-    @SerializedName("contentID")
-    val contentID: String,
-) {
-    fun convertToMap() : Map<String, Any> = mutableMapOf(
-        PostCommentUseCase.PARAM_ID to contentID,
-        PostCommentUseCase.PARAM_CONTENT_TYPE to contentType,
-        PostCommentUseCase.PARAM_COMMENT_PARENT_ID to commentParentId,
-        PostCommentUseCase.PARAM_COMMENTER_TYPE to commenterType,
-        PostCommentUseCase.PARAM_COMMENT to comment,
-    )
+    data class PostCommentParam(
+        @SerializedName("comment")
+        val comment: String,
+        @SerializedName("commenterType")
+        val commenterType: Int,
+        @SerializedName("commentParentID")
+        val commentParentId: String,
+        @SerializedName("contentType")
+        val contentType: String,
+        @SerializedName("contentID")
+        val contentID: String,
+    ) {
+        fun convertToMap() : Map<String, Any> = mutableMapOf(
+            PARAM_ID to contentID,
+            PARAM_CONTENT_TYPE to contentType,
+            PARAM_COMMENT_PARENT_ID to commentParentId,
+            PARAM_COMMENTER_TYPE to commenterType,
+            PARAM_COMMENT to comment,
+        )
+    }
 }

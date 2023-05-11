@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
 import com.tokopedia.content.common.comment.uimodel.*
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.user.session.UserSessionInterface
@@ -250,7 +250,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun reportComment(
-        param: FeedReportRequestParamModel
+        param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel
     ) {
         viewModelScope.launchCatchError(block = {
             val result = repo.reportComment(param)

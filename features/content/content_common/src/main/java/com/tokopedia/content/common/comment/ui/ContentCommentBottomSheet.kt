@@ -31,7 +31,6 @@ import com.tokopedia.content.common.databinding.FragmentContentCommentBottomShee
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
@@ -503,7 +502,7 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+    override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel) {
         analytics?.clickReportReason(feedReportRequestParamModel.reportType)
         viewModel.submitAction(
             CommentAction.ReportComment(

@@ -5,7 +5,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 
 /**
  * @author by astidhiyaa on 08/02/23
@@ -21,7 +21,7 @@ interface ContentCommentRepository {
     ): CommentUiModel.Item
 
     suspend fun reportComment(
-        param: FeedReportRequestParamModel,
+        param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel,
     ): Boolean
 
     suspend fun getComments(
