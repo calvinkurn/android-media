@@ -3713,10 +3713,10 @@ class ShipmentPresenter @Inject constructor(
         getPaymentFeeCheckoutUseCase.execute(
                 { (platformFeeData): PaymentFeeGqlResponse ->
                     if (view != null) {
-                        if (platformFeeData.getResponse().getSuccess()) {
+                        if (platformFeeData.success) {
                             view?.showPaymentFeeData(platformFeeData);
                         } else {
-                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
                         }
                     }
                     Unit
@@ -3724,10 +3724,14 @@ class ShipmentPresenter @Inject constructor(
         ){ throwable: Throwable ->
             Timber.d(throwable);
             if (view != null) {
-                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
             }
             Unit
         }
+    }
+
+    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData? {
+        return shipmentPlatformFeeData
     }
 
     companion object {

@@ -12,7 +12,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.checkout.view.uimodel.*
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -183,7 +183,7 @@ interface ShipmentContract {
         fun setShipmentNewUpsellLoading(isLoading: Boolean)
         fun showPaymentFeeSkeletonLoading()
         fun showPaymentFeeTickerFailedToLoad(ticker: String)
-        fun showPaymentFeeData(platformFeeData: PaymentFeeGqlResponse)
+        fun showPaymentFeeData(platformFeeData: PaymentFeeResponse)
     }
 
     interface AnalyticsActionListener {

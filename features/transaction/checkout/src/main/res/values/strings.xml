@@ -135,4 +135,9 @@
     <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
     <string name="label_protection_product_with_format">Proteksi Produk (%d Barang)</string>
     <string name="checkout_label_upsell_description">%s/%s</string>
+
+    <!--PLATFORM FEE-->
+    <string name="platform_fee_title_info">Tentang %s</string>
+    <string name="platform_fee_diskon_label">Diskon %s</string>
+    <string name="platform_fee_diskon_format" formatted="false">-%s</string>
 </resources>
