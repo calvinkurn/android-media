@@ -1,5 +1,6 @@
 package com.tokopedia.scp_rewards.common.utils
 
+import android.view.View
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,3 +23,23 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
             }
         }
     }
+
+fun Long?.isNullOrZero(defaultValue:Long) : Long{
+    if(this == null || this == 0L) return defaultValue
+    return this
+}
+
+fun Int?.isNullOrZero(defaultValue:Int) : Int{
+    if(this == null || this == 0) return defaultValue
+    return this
+}
+
+fun View.show(){
+    if(visibility == View.GONE)
+        visibility = View.VISIBLE
+}
+
+fun View.hide(){
+    if(visibility == View.VISIBLE)
+        visibility = View.GONE
+}

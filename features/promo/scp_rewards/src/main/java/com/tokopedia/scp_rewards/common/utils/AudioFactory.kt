@@ -1,33 +1,64 @@
 package com.tokopedia.scp_rewards.common.utils
 
-import android.content.Context
 import android.media.MediaPlayer
-import java.io.FileNotFoundException
-import java.io.IOException
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class AudioFactory{
+class AudioFactory private constructor(){
     private var mMediaPlayer:MediaPlayer? = null
-    fun createAudioFromUrl(url:String,loop:Boolean = false,onPrepare:(() -> Unit)?=null,onError:(() -> Unit)?=null) {
+    private var current = 0L
+    private var isAudioLoading = false
+    private var errorListener:(() -> Unit)? = null
+    companion object{
+        private const val BASE_TIMEOUT = 1500L
+        fun createAudioFromUrl(url:String,loop:Boolean = false,onPrepare:(() -> Unit)?=null,onError:(() -> Unit)?=null) : AudioFactory {
+            return AudioFactory().apply {
+                errorListener = onError
+                mMediaPlayer = MediaPlayer().apply {
+                    isLooping = loop
+                    isAudioLoading = true
+                    try {
+                        setDataSource(url)
+                    } catch (err: Throwable) {
+                        onError?.invoke()
+                    }
 
-        mMediaPlayer = MediaPlayer().apply {
-            isLooping = loop
-            try{
-                setDataSource(url)
+                    setOnPreparedListener {
+                        val elapsed = System.currentTimeMillis() - current
+                        Log.i("from audio factory", "elapsed time -> ${elapsed / 1000L}")
+                        if (isAudioLoading) {
+                            isAudioLoading = false
+                            onPrepare?.invoke()
+                        }
+                    }
+                    setOnErrorListener { _, _, _ ->
+                        isAudioLoading = false
+                        onError?.invoke()
+                        false
+                    }
+                    current = System.currentTimeMillis()
+                    prepareAsync()
+                }
             }
-            catch (err:Throwable){
-                onError?.invoke()
-            }
-
-          setOnPreparedListener {
-             onPrepare?.invoke()
-          }
-            setOnErrorListener { _,_,_ ->
-                onError?.invoke()
-                false
-            }
-            prepareAsync()
         }
     }
+
+    fun withTimeout(timeout:Long = BASE_TIMEOUT) : AudioFactory{
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(timeout)
+            if (isAudioLoading) {
+                isAudioLoading = false
+                errorListener?.invoke()
+                errorListener = null
+                releaseMediaPlayer()
+            }
+        }
+        return this
+    }
+
 
     fun playAudio(){
         if(mMediaPlayer==null){

@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -38,22 +39,25 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.AudioFactory
 import com.tokopedia.scp_rewards.common.utils.EASE_IN
 import com.tokopedia.scp_rewards.common.utils.dpToPx
+import com.tokopedia.scp_rewards.common.utils.hide
+import com.tokopedia.scp_rewards.common.utils.isNullOrZero
+import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
-@SuppressLint("DeprecatedMethod")
+@Suppress("UNCHECKED_CAST")
 class MedalCelebrationFragment : BaseDaggerFragment() {
 
     companion object{
         private const val ANIMATION_DURATION = 300L
         private const val ROTATION_DURATION = 5000L
         private const val ANIMATION_INITIAL_DELAY = 400L
-        private const val ANIMATION_REDIRECT_DELAY = 2000L
         private const val CONFETTI_URL = "https://json.extendsclass.com/bin/8c8a50287360"
         private const val STARS_URL = "https://json.extendsclass.com/bin/8124418c86cf"
         private const val ASSET_TOTAL_COUNT = 5
         private const val SOUND_EFFECT_URL = "https://res.cloudinary.com/dv9upuqs7/video/upload/v1683464110/samples/people/GoTo_Medali_-_SFX_FINAL_lgskby.mp3"
+        private const val FALLBACK_DELAY = 2000L
     }
 
     //Assets
@@ -67,7 +71,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private var isBackgroundLoading = false
     private var isSoundAvailable = false
     private var isSoundLoading = false
-    private val audioManager = AudioFactory()
+    private var audioManager:AudioFactory? = null
 
     //urls
     private var badgeUrl = ""
@@ -90,7 +94,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     var viewModelFactory:ViewModelFactory? = null
 
     private val medalCelebrationViewModel by lazy {
-        ViewModelProvider(this,viewModelFactory!!).get(MedalCelebrationViewModel::class.java)
+        ViewModelProvider(this,viewModelFactory!!)[MedalCelebrationViewModel::class.java]
     }
 
     override fun initInjector() {
@@ -110,8 +114,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        binding?.mainFlipper?.displayedChild = 0
-//        downloadAssets()
         setupViewModelObservers()
         medalCelebrationViewModel.getRewards()
     }
@@ -132,6 +134,123 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun downloadAssets(){
+        setAssetUrls()
+        loadSound()
+        loadBadge()
+        loadSunflare()
+        loadSpotlight()
+        loadBackgroundImage()
+        loadCelebrationLottie()
+        loadStarsLottie()
+    }
+
+    private fun setAssetUrls(){
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            badgeUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliIconImageURL ?: ""
+            sunflareUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliEffectImageURL ?: ""
+            spotlightUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliSpotLightImageURL ?: ""
+            starsLottieUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliBlinkingLottieURL ?: ""
+            celebrationLottieUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliConfettiLottieURL ?: ""
+            soundaEffectUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliSoundEffectURL ?: ""
+            backgroundImageUrl = scpRewardsCelebrationPage?.celebrationPage?.backgroundImageURL ?: ""
+        }
+    }
+
+    private fun loadSound(){
+        isSoundLoading = true
+        audioManager = AudioFactory.createAudioFromUrl(
+            url = SOUND_EFFECT_URL,
+            onPrepare = {
+                isSoundAvailable = true
+                isSoundLoading = false
+                incrementAssetCount(false)
+            },
+            onError = {
+                isSoundAvailable = false
+                isSoundLoading = false
+                incrementAssetCount(false)
+            }
+        ).withTimeout()
+    }
+
+    private fun loadBadge(){
+        loadImageFromUrl(badgeUrl ,{
+            badgeImage = it
+            incrementAssetCount()
+        }){
+            redirectToMedaliDetail()
+        }
+    }
+
+    private fun loadSunflare(){
+        loadImageFromUrl(sunflareUrl,{
+            sunburstImage = it
+            incrementAssetCount()
+        }){
+            redirectToMedaliDetail()
+        }
+    }
+
+    private fun loadSpotlight(){
+        loadImageFromUrl(spotlightUrl,{
+            spotlightImage = it
+            incrementAssetCount()
+        }){
+            redirectToMedaliDetail()
+        }
+    }
+
+    private fun loadBackgroundImage(){
+        isBackgroundLoading = true
+        loadImageFromUrl(backgroundImageUrl,{
+            isBackgroundLoading = false
+            isBackgroundImageAvailable = true
+            backgroundImage = it
+            incrementAssetCount(mandatory = false)
+        },{
+            isBackgroundLoading = false
+            isBackgroundImageAvailable = false
+            incrementAssetCount(false)
+        })
+    }
+
+    private fun loadCelebrationLottie(){
+        loadLottieFromUrl(binding?.mainView?.celebrationView,celebrationLottieUrl,{
+            celebrationLottieComposition = it
+            incrementAssetCount()
+        }){
+            redirectToMedaliDetail()
+        }
+    }
+
+    private fun loadStarsLottie(){
+        loadLottieFromUrl(binding?.mainView?.lottieStars, starsLottieUrl,{
+            starsLottieComposition = it
+            incrementAssetCount()
+        }){
+            redirectToMedaliDetail()
+        }
+    }
+
+    private fun incrementAssetCount(mandatory:Boolean = true){
+        if(mandatory) assetCount++
+        if(assetCount == ASSET_TOTAL_COUNT && !isSoundLoading && !isBackgroundLoading){
+            showMainView()
+        }
+    }
+
+    private fun showMainView(){
+        binding?.mainFlipper?.displayedChild = 1
+        initViewSetup()
+        configureStatusBar()
+//        setupHeader()
+        handler.postDelayed({
+            startPageAnimation()
+        }, ANIMATION_INITIAL_DELAY
+        )
+    }
+
     private fun initViewSetup(){
         binding?.mainView?.apply {
             celebrationHeading.alpha = 0f
@@ -140,13 +259,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             sunflare.alpha = 0f
             sponsorCard.alpha = 0f
             spotlight.alpha = 0f
+            badgeImage.alpha = 0f
             celebrationView.setImageDrawable(null)
-            backgroundImage.setImageDrawable(null)
+            lottieStars.setImageDrawable(null)
             setAllText()
             configureBackground()
         }
     }
-
 
     private fun setAllText(){
        binding?.mainView?.apply {
@@ -169,63 +288,18 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 if(isBackgroundImageAvailable){
                     backgroundImage.setImageDrawable(this@MedalCelebrationFragment.backgroundImage)
                 }
+                else{
+                    backgroundImage.hide()
+                }
             }
         }
     }
 
-    private fun setupHeader(){
-        binding?.mainView?.closeBtn?.setOnClickListener {
-            activity?.finish()
-        }
-    }
-
-
-//    private fun animateBadge(){
-//        val badgeDrawable = ResourcesCompat.getDrawable(resources,R.drawable.category_medali,null)
-//        binding?.badgeImage?.setImageDrawable(badgeDrawable)
-//        scaleView(
-//          view = binding?.badgeImage,
-//            duration = ANIMATION_DURATION,
-//            interpolatorType = EASE_IN
-//        )
-//        loadSpotLight()
-//        loadSunflare()
-//        animateRest()
-//        handler.postDelayed({
-//            showCelebrationConfetti()
-//        }, ANIMATION_DURATION)
+//    private fun setupHeader(){
+//        binding?.mainView?.closeBtn?.setOnClickListener {
+//            activity?.finish()
+//        }
 //    }
-
-    private fun animateRest(){
-        binding?.mainView?.apply {
-            context?.let{
-                translateView(
-                    view = celebrationHeading,
-                    duration = ANIMATION_DURATION,
-                    from = dpToPx(it,-53).toInt(),
-                    interpolatorType = EASE_IN
-                )
-                translateView(
-                    view = badgeName,
-                    duration = ANIMATION_DURATION,
-                    from = dpToPx(it,40).toInt(),
-                    interpolatorType = EASE_IN
-                )
-                translateView(
-                    view = sponsorCard,
-                    duration  = ANIMATION_DURATION,
-                    from = dpToPx(it,44).toInt(),
-                    interpolatorType = EASE_IN
-                )
-                translateView(
-                    view = badgeDescription,
-                    duration = ANIMATION_DURATION,
-                    from = dpToPx(it,40).toInt(),
-                    interpolatorType = EASE_IN
-                )
-            }
-        }
-    }
 
     private fun scaleView(view:View?,duration:Long,from:Int = 0,to:Int = 1,interpolatorType:Int,listener:Animator.AnimatorListener?=null){
         view?.let { _ ->
@@ -252,12 +326,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             val translatePvh = getTranslationPropertyValueHolder(from,to)
             val opacityPvh = getOpacityPropertyValueHolder()
             ObjectAnimator.ofPropertyValuesHolder(view,translatePvh,opacityPvh).apply {
-//                   addUpdateListener {
-//                       val opacity = getAnimatedValue("opacity") as Float
-//                       val translationY = getAnimatedValue("translationY") as Float
-//                       animatedView.alpha = opacity
-//                       animatedView.translationY = translationY
-//                   }
                    this.duration = duration
                    interpolator = when(interpolatorType){
                        EASE_IN -> AccelerateDecelerateInterpolator()
@@ -317,7 +385,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadImageFromUrl(view:ImageUnify?,url:String,success:(drawable:Drawable) -> Unit,error:(() -> Unit)? = null){
+    private fun loadImageFromUrl(url:String,success:(drawable:Drawable) -> Unit,error:(() -> Unit)? = null){
         context?.let {
             Glide.with(it)
                 .load(url)
@@ -337,132 +405,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-//    private fun animateSunflare(){
-//        val drawable = ResourcesCompat.getDrawable(resources,R.drawable.sunburst,null)
-//        binding?.sunflare?.setImageDrawable(drawable)
-//        val listener = object : Animator.AnimatorListener {
-//            override fun onAnimationStart(animation: Animator) {}
-//            override fun onAnimationEnd(animation: Animator) {
-//              rotateSunflare()
-//            }
-//            override fun onAnimationCancel(animation: Animator) {}
-//            override fun onAnimationRepeat(animation: Animator) {}
-//        }
-//        scaleView(
-//            view = binding?.sunflare,
-//            duration = ANIMATION_DURATION,
-//            interpolatorType = EASE_IN,
-//            listener = listener
-//        )
-//    }
-
-    private fun downloadAssets(){
-        setAssetUrls()
-        loadSound()
-        loadBadge()
-        loadSunflare()
-        loadSpotlight()
-        loadBackgroundImage()
-        loadCelebrationLottie()
-        loadStarsLottie()
-    }
-
-    private fun setAssetUrls(){
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
-            badgeUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliIconImageURL ?: ""
-            sunflareUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliEffectImageURL ?: ""
-            spotlightUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliSpotLightImageURL ?: ""
-            starsLottieUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliBlinkingLottieURL ?: ""
-            celebrationLottieUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliConfettiLottieURL ?: ""
-            soundaEffectUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliSoundEffectURL ?: ""
-            backgroundImageUrl = scpRewardsCelebrationPage?.celebrationPage?.backgroundImageURL ?: ""
-        }
-    }
-
-    private fun loadBadge(){
-        loadImageFromUrl(binding?.mainView?.badgeImage,badgeUrl ,{
-            badgeImage = it
-            incrementAssetCount()
-        }){
-            redirectToMedaliDetail()
-        }
-    }
-
-    private fun loadSpotlight(){
-        loadImageFromUrl(binding?.mainView?.spotlight, spotlightUrl,{
-            spotlightImage = it
-            incrementAssetCount()
-        }){
-            redirectToMedaliDetail()
-        }
-    }
-
-    private fun loadSunflare(){
-        loadImageFromUrl(binding?.mainView?.sunflare, sunflareUrl,{
-            sunburstImage = it
-            incrementAssetCount()
-        }){
-            redirectToMedaliDetail()
-        }
-    }
-
-    private fun loadCelebrationLottie(){
-        loadLottieFromUrl(binding?.mainView?.celebrationView,celebrationLottieUrl,{
-            celebrationLottieComposition = it
-            incrementAssetCount()
-        }){
-            redirectToMedaliDetail()
-        }
-    }
-
-    private fun loadStarsLottie(){
-        loadLottieFromUrl(binding?.mainView?.lottieStars, starsLottieUrl,{
-            starsLottieComposition = it
-            incrementAssetCount()
-        }){
-            redirectToMedaliDetail()
-        }
-    }
-
-    private fun loadSound(){
-        isSoundLoading = true
-        audioManager.createAudioFromUrl(
-            url = SOUND_EFFECT_URL,
-            loop = true,
-            onPrepare = {
-                isSoundAvailable = true
-                isSoundLoading = false
-                incrementAssetCount(false)
-            },
-            onError = {
-                isSoundAvailable = false
-                isSoundLoading = false
-                incrementAssetCount(false)
-            }
-        )
-    }
-
-    private fun loadBackgroundImage(){
-        isBackgroundLoading = true
-        loadImageFromUrl(binding?.mainView?.backgroundImage,backgroundImageUrl,{
-            isBackgroundLoading = false
-            isBackgroundImageAvailable = true
-            backgroundImage = it
-            incrementAssetCount(mandatory = false)
-        },{
-            isBackgroundLoading = false
-            isBackgroundImageAvailable = false
-            incrementAssetCount(false)
-        })
-    }
-
-    private fun incrementAssetCount(mandatory:Boolean = true){
-        if(mandatory) assetCount++
-        if(assetCount == ASSET_TOTAL_COUNT && !isSoundLoading && !isBackgroundLoading){
-            showMainView()
-        }
-    }
-
     private fun startPageAnimation(){
         animateBadge()
         animateSunflare()
@@ -473,11 +415,26 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             {
                 showCelebrationConfetti()
                 showStarsConfetti()
-                handler.postDelayed({
-                    fadeOutConfetti()
-                }, ANIMATION_REDIRECT_DELAY)
             },
             ANIMATION_DURATION
+        )
+    }
+
+    private fun animateBadge(){
+        binding?.mainView?.badgeImage?.setImageDrawable(badgeImage)
+        val listener = object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                startRedirection()
+            }
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        }
+        scaleView(
+            view = binding?.mainView?.badgeImage,
+            duration = ANIMATION_DURATION,
+            interpolatorType = EASE_IN,
+            listener = listener
         )
     }
 
@@ -508,13 +465,35 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun animateBadge(){
-        binding?.mainView?.badgeImage?.setImageDrawable(badgeImage)
-        scaleView(
-            view = binding?.mainView?.badgeImage,
-            duration = ANIMATION_DURATION,
-            interpolatorType = EASE_IN
-        )
+    private fun animateRest(){
+        binding?.mainView?.apply {
+            context?.let{
+                translateView(
+                    view = celebrationHeading,
+                    duration = ANIMATION_DURATION,
+                    from = dpToPx(it,-53).toInt(),
+                    interpolatorType = EASE_IN
+                )
+                translateView(
+                    view = badgeName,
+                    duration = ANIMATION_DURATION,
+                    from = dpToPx(it,40).toInt(),
+                    interpolatorType = EASE_IN
+                )
+                translateView(
+                    view = sponsorCard,
+                    duration  = ANIMATION_DURATION,
+                    from = dpToPx(it,44).toInt(),
+                    interpolatorType = EASE_IN
+                )
+                translateView(
+                    view = badgeDescription,
+                    duration = ANIMATION_DURATION,
+                    from = dpToPx(it,40).toInt(),
+                    interpolatorType = EASE_IN
+                )
+            }
+        }
     }
 
     private fun showCelebrationConfetti(){
@@ -522,7 +501,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             binding?.mainView?.celebrationView?.apply {
                 setComposition(it)
                 playAnimation()
-                loop(true)
             }
         }
     }
@@ -532,57 +510,32 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             binding?.mainView?.lottieStars?.apply {
                 setComposition(it)
                 playAnimation()
-                loop(true)
             }
         }
     }
 
     private fun playSound(){
         if(isSoundAvailable)
-          audioManager.playAudio()
+          audioManager?.playAudio()
     }
-
-    private fun showMainView(){
-        binding?.mainFlipper?.displayedChild = 1
-        configureStatusBar()
-        setupHeader()
-        initViewSetup()
-        handler.postDelayed({
-            startPageAnimation()
-        }, ANIMATION_INITIAL_DELAY
-        )
-    }
-
-//    private fun showLoader(){
-//        binding?.loader?.visibility = View.VISIBLE
-//        hideMainView()
-//    }
-//
-//    private fun hideLoader(){
-//        binding?.loader?.visibility = View.GONE
-//    }
-//
-//    private fun showMainView(){
-//        hideLoader()
-//        binding?.mainView?.visibility = View.VISIBLE
-//    }
-//
-//    private fun hideMainView(){
-//        binding?.mainView?.visibility = View.GONE
-//    }
-
 
     private fun configureStatusBar(){
         activity?.let {
             it.window.apply {
-                binding?.mainView?.statusBarBg?.layoutParams?.height = getStatusBarHeight()
-                setStatusBarColor()
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                val layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                val statusBarHeight = getStatusBarHeight()
+                layoutParams.setMargins(0,statusBarHeight,0,0)
+                binding?.mainView?.mainViewContainer?.layoutParams = layoutParams
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 statusBarColor = Color.TRANSPARENT
             }
         }
     }
 
+    @SuppressLint("DiscouragedApi")
     private fun getStatusBarHeight() : Int{
         var height = 0
         context?.let {
@@ -594,17 +547,17 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         return height
     }
 
-    private fun setStatusBarColor(){
-        context?.let {
-            binding?.mainView?.statusBarBg?.setBackgroundColor(ContextCompat.getColor(it,com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-        }
-    }
-
     private fun showErrorView(){
         binding?.mainFlipper?.displayedChild = 2
         binding?.errorView?.apply {
+            errorSecondaryAction.show()
+            if(errorSecondaryAction is UnifyButton){
+                (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            }
             errorSecondaryAction.text = context?.getString(R.string.go_back_text)
             errorSecondaryAction.setTextColor(ContextCompat.getColor(context,R.color.dark_grey_nav_color))
+            val buttonColor = ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            errorSecondaryAction.setBackgroundColor(buttonColor)
             setActionClickListener { resetPage() }
             setSecondaryActionClickListener { activity?.finish() }
         }
@@ -616,7 +569,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun fadeOutConfetti(){
-        binding?.mainView?.celebrationView?.apply {
+        binding?.mainView?.apply {
             val opacityPvh = getOpacityPropertyValueHolder(from = 255,to = 0)
             ObjectAnimator.ofPropertyValuesHolder(this,opacityPvh).apply {
                 duration = ANIMATION_DURATION
@@ -634,12 +587,19 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun startRedirection(){
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            val delay = scpRewardsCelebrationPage?.celebrationPage?.redirectDelayInMilliseconds.isNullOrZero(
+                FALLBACK_DELAY)
+            handler.postDelayed({
+                fadeOutConfetti()
+            },delay)
+        }
+    }
+
     private fun redirectToMedaliDetail(){
         Toast.makeText(context,"redirecting to medali detail",Toast.LENGTH_LONG).show()
         activity?.finish()
-//        handler.postDelayed({
-//            activity?.finish()
-//        },300)
     }
 
     override fun onStop() {
@@ -648,12 +608,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             celebrationView.clearAnimation()
             lottieStars.clearAnimation()
         }
-        audioManager.releaseMediaPlayer()
-    }
-
-
-    private fun getStringResourceByName(aString: String): Int? {
-        return resources.getIdentifier(aString, "color", context?.packageName)
+        audioManager?.releaseMediaPlayer()
     }
 
 }

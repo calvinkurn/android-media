@@ -1,148 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
     android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_GN500">
-
-    <View
-        android:id="@+id/status_bar_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/background_image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/spotlight"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/celebration_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="359dp"
+        android:layout_height="637dp"
+        android:layout_gravity="center_horizontal"
+        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_view_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        >
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/celebration_heading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/celebration_header"
-        app:typographyType="heading_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:text="Kamu dapat Medali!"
-        android:textColor="@color/Unify_NN0" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/sunflare"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/celebration_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_stars"
-        app:layout_constraintBottom_toBottomOf="@+id/sunflare"
-        app:layout_constraintEnd_toEndOf="@+id/sunflare"
-        app:layout_constraintStart_toStartOf="@+id/sunflare"
-        app:layout_constraintTop_toTopOf="@+id/sunflare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/badge_image"
-        app:layout_constraintBottom_toBottomOf="@+id/sunflare"
-        app:layout_constraintEnd_toEndOf="@+id/sunflare"
-        app:layout_constraintStart_toStartOf="@+id/sunflare"
-        app:layout_constraintTop_toTopOf="@+id/sunflare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/sponsor_card"
-        app:cardBackgroundColor="@color/brand_tag_color"
-        app:cardCornerRadius="20dp"
-        app:contentPaddingBottom="4dp"
-        app:contentPaddingLeft="8dp"
-        app:contentPaddingRight="8dp"
-        app:contentPaddingTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/badge_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/celebration_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/brand_tag"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
+            android:id="@+id/celebration_heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Powered by L’Oreal Paris"
+            android:layout_marginTop="43dp"
             android:textColor="@color/Unify_NN0" />
-    </androidx.cardview.widget.CardView>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/badge_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/badge_image"
-        app:typographyType="heading_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
-        android:text="The Beauty Shopper"
-        android:textColor="@color/Unify_NN0" />
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/sunflare"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/celebration_heading"
+            android:layout_width="300dp"
+            android:layout_height="300dp" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/badge_description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/badge_name"
-        app:typographyType="paragraph_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="Yipee! Kamu dapet Medali ini karena sering intip Official Store L'oreal di 3 bulan terakhir."
-        android:textColor="@color/Unify_NN0" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_stars"
+            app:layout_constraintBottom_toBottomOf="@+id/sunflare"
+            app:layout_constraintEnd_toEndOf="@+id/sunflare"
+            app:layout_constraintStart_toStartOf="@+id/sunflare"
+            app:layout_constraintTop_toTopOf="@+id/sunflare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/celebration_header"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/status_bar_bg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:paddingVertical="13dp"
-        android:paddingLeft="19dp">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/badge_image"
+            app:layout_constraintBottom_toBottomOf="@+id/sunflare"
+            app:layout_constraintEnd_toEndOf="@+id/sunflare"
+            app:layout_constraintStart_toStartOf="@+id/sunflare"
+            app:layout_constraintTop_toTopOf="@+id/sunflare"
+            android:layout_width="189dp"
+            android:layout_height="206dp"
+            />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/close_btn"
-            app:icon_color_light_enable="@color/Unify_NN0"
-            app:icon_name="CLOSE"
-            android:layout_width="17.5dp"
-            android:layout_height="17.5dp" />
-    </androidx.appcompat.widget.Toolbar>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/sponsor_card"
+            app:cardBackgroundColor="@color/brand_tag_color"
+            app:cardCornerRadius="20dp"
+            app:contentPaddingBottom="4dp"
+            app:contentPaddingLeft="8dp"
+            app:contentPaddingRight="8dp"
+            app:contentPaddingTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/badge_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/brand_tag"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN0" />
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/badge_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/badge_image"
+            app:typographyType="heading_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+            android:textColor="@color/Unify_NN0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/badge_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/badge_name"
+            app:typographyType="paragraph_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/Unify_NN0" />
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/celebration_header"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:paddingVertical="13dp"-->
+<!--            android:paddingLeft="19dp">-->
+
+<!--            <com.tokopedia.iconunify.IconUnify-->
+<!--                android:id="@+id/close_btn"-->
+<!--                app:icon_color_light_enable="@color/Unify_NN0"-->
+<!--                app:icon_name="CLOSE"-->
+<!--                android:layout_width="17.5dp"-->
+<!--                android:layout_height="17.5dp" />-->
+<!--        </androidx.appcompat.widget.Toolbar>-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
