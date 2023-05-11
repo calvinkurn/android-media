@@ -1,12 +1,8 @@
 package com.tokopedia.notifications.data.converters
 
-import android.util.Log
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
-import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.model.PushPayloadExtra
 
 class PushPayloadExtraConverter {

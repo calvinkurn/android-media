@@ -4,20 +4,19 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.notifications.model.Carousel
-import java.util.ArrayList
 
 class CarouselConverter {
 
     @TypeConverter
-    fun toCarousel(value: String?): ArrayList<Carousel>? {
+    fun toCarousel(value: String?): List<Carousel>? {
         if (value == null)
             return null
-        val listType = object : TypeToken<ArrayList<Carousel>>() {}.type
-        return Gson().fromJson<ArrayList<Carousel>>(value, listType)
+        val listType = object : TypeToken<List<Carousel>>() {}.type
+        return Gson().fromJson<List<Carousel>>(value, listType)
     }
 
     @TypeConverter
-    fun toJson(list: ArrayList<Carousel>?): String? {
+    fun toJson(list: List<Carousel>?): String? {
         if (list == null)
             return null
         return Gson().toJson(list)

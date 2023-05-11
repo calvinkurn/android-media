@@ -4,19 +4,18 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.notifications.model.ProductInfo
-import java.util.ArrayList
 
 class ProductInfoConverter {
     @TypeConverter
-    fun toProductInfo(value: String?): ArrayList<ProductInfo>? {
+    fun toProductInfo(value: String?): List<ProductInfo>? {
         if (value == null)
             return null
-        val listType = object : TypeToken<ArrayList<ProductInfo>>() {}.type
-        return Gson().fromJson<ArrayList<ProductInfo>>(value, listType)
+        val listType = object : TypeToken<List<ProductInfo>>() {}.type
+        return Gson().fromJson<List<ProductInfo>>(value, listType)
     }
 
     @TypeConverter
-    fun toJson(list: ArrayList<ProductInfo>?): String? {
+    fun toJson(list: List<ProductInfo>?): String? {
         if (list == null)
             return null
         return Gson().toJson(list)

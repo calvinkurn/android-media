@@ -63,7 +63,7 @@ data class BaseNotificationModel(
     var appLink: String? = null,
 
     @ColumnInfo(name = "actionBtn")
-    var actionButton: ArrayList<ActionButton> = ArrayList(),
+    var actionButton: List<ActionButton> = ArrayList(),
 
     @ColumnInfo(name = "customValues")
     var customValues: String? = null,
@@ -75,7 +75,7 @@ data class BaseNotificationModel(
     var channelName: String? = null,
 
     @ColumnInfo(name = "persistButton")
-    var persistentButtonList: ArrayList<PersistentButton>? = null,
+    var persistentButtonList: List<PersistentButton>? = null,
 
     @ColumnInfo(name = "videoPush")
     var videoPushModel: String? = null,
@@ -108,13 +108,13 @@ data class BaseNotificationModel(
     var isUpdateExisting: Boolean = false,
 
     @ColumnInfo(name = "carousel")
-    var carouselList: ArrayList<Carousel> = ArrayList(),
+    var carouselList: List<Carousel> = ArrayList(),
 
     @ColumnInfo(name = "grid")
-    var gridList: ArrayList<Grid> = ArrayList(),
+    var gridList: List<Grid> = ArrayList(),
 
     @ColumnInfo(name = "productInfo")
-    var productInfoList: ArrayList<ProductInfo> = ArrayList(),
+    var productInfoList: List<ProductInfo> = ArrayList(),
 
     @ColumnInfo(name = "parentId")
     var parentId: Long = 0,
