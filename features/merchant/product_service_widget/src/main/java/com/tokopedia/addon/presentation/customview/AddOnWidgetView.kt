@@ -41,8 +41,10 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.errorThrowable.observe(this) {
 
             }
-            viewModel.getAddOnResult
-            viewModel.getAddOn("2148784281")
+            viewModel.getAddOnResult.observe(this) {
+                addonAdapter.setItems(it)
+            }
+            viewModel.getAddOn("2148784281", "123", false)
         }
     }
 
@@ -59,22 +61,6 @@ class AddOnWidgetView : BaseCustomView {
         rvBundles.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = addonAdapter
-            addonAdapter?.setItems(listOf(
-                Pair(
-                    "Title Satu",
-                    listOf(
-                        "Name satu",
-                        "Name dua",
-                    )
-                ),
-                Pair(
-                    "Title Dua",
-                    listOf(
-                        "Name satu",
-                        "Name dua",
-                    )
-                )
-            ))
         }
     }
 

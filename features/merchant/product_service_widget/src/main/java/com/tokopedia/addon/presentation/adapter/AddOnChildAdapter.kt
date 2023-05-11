@@ -2,10 +2,11 @@ package com.tokopedia.addon.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 
 class AddOnChildAdapter: RecyclerView.Adapter<AddOnChildViewHolder>() {
 
-    private var items: List<String> = emptyList()
+    private var items: List<AddOnUIModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddOnChildViewHolder {
         val rootView = AddOnChildViewHolder.createRootView(parent)
@@ -18,7 +19,7 @@ class AddOnChildAdapter: RecyclerView.Adapter<AddOnChildViewHolder>() {
 
     override fun getItemCount() = items.size
 
-    fun setItems(items: List<String>) {
+    fun setItems(items: List<AddOnUIModel>) {
         this.items = items
         notifyDataSetChanged()
     }

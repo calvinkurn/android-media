@@ -20,8 +20,7 @@ class GetAddOnByProductUseCase @Inject constructor(
         private const val ADDON_LEVEL_NON_TC = "PRODUCT_ADDON"
         private const val ADDON_LEVEL_TC = "ORDER_ADDON"
         private const val PARAM_INPUT = "input"
-        private val query =
-            """ 
+        private val query = """ 
             query getAddOn(${'$'}input: GetAddOnByProductRequest) {
               GetAddOnByProduct(getAddOnByProductRequest: ${'$'}input) {
                 Error {
@@ -46,6 +45,13 @@ class GetAddOnByProductUseCase @Inject constructor(
                         NotesTemplate
                         Description
                         CustomInfoJSON
+                        InfoURL {
+                          IconURL
+                          IconDarkURL
+                          EduPageURL
+                          AppLinkURL
+                          Title
+                        }
                       }
                       Rules {
                         MaxOrder
@@ -101,7 +107,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                         addOnLevel = if (isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC
                     )
                 ),
-                source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
+                source = Source(usecase = "testing", squad = "test")
             )
         )
         setRequestParams(requestParams.parameters)

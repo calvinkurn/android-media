@@ -1,19 +1,30 @@
 package com.tokopedia.addon.presentation.uimodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.tokopedia.gifting.domain.model.GetAddOnByID
+import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 
 object AddOnMapper {
-    private const val NON_TOKOCABANG_LEVEL = "PRODUCT_ADDON"
 
-    fun isTokoCabang(getAddOnByID: MutableLiveData<GetAddOnByID>): LiveData<Boolean> {
-        return Transformations.map(getAddOnByID) { getAddOnData ->
-            getAddOnData.addOnByIDResponse.firstOrNull()?.basic?.addOnLevel?.let { addOnLevel ->
-                return@map addOnLevel != NON_TOKOCABANG_LEVEL
+    fun mapAddonToUiModel(response: GetAddOnByProductResponse): List<AddOnGroupUIModel> {
+        val addons = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()?.addons
+            ?.groupBy {
+                it.basic.metadata.infoURL.title
             }
-            return@map false
-        }
+
+        return addons?.map {
+            val infoUrl = it.value.firstOrNull()?.basic?.metadata?.infoURL
+            AddOnGroupUIModel(
+                title = it.key,
+                iconUrl = infoUrl?.iconURL.orEmpty(),
+                iconDarkmodeUrl = infoUrl?.iconDarkURL.orEmpty(),
+                addon = it.value.map {
+                    AddOnUIModel(
+                        name = it.basic.name,
+                        priceFormatted = it.inventory.price.getCurrencyFormatted(),
+                        isSelected = it.basic.rules.autoSelect
+                    )
+                }
+            )
+        }.orEmpty()
     }
 }

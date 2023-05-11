@@ -7,11 +7,31 @@ class Metadata {
     var pictures: List<Picture> = emptyList()
 
     @SerializedName("NotesTemplate")
-    var notesTemplate  : String = ""
+    var notesTemplate: String = ""
 
     @SerializedName("Description")
-    var description    : String = ""
+    var description: String = ""
 
     @SerializedName("CustomInfoJSON")
-    var customInfoJSON : String = ""
+    var customInfoJSON: String = ""
+
+    @SerializedName("InfoURL")
+    var infoURL: InfoURL = InfoURL()
+}
+
+class InfoURL {
+    @SerializedName("IconURL")
+    var iconURL: String = ""
+
+    @SerializedName("IconDarkURL")
+    var iconDarkURL: String = ""
+
+    @SerializedName("EduPageURL")
+    var eduPageURL: String = ""
+
+    @SerializedName("AppLinkURL")
+    var appLinkURL: String = ""
+
+    @SerializedName("Title")
+    var title: String = ""
 }

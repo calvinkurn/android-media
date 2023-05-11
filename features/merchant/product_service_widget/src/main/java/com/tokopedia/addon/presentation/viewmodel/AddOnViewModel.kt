@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
+import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -14,19 +16,19 @@ class AddOnViewModel @Inject constructor(
     private val getAddOnUseCase: GetAddOnByProductUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val mGetAddOnResult = MutableLiveData<String>()
-    val getAddOnResult: LiveData<String> get() = mGetAddOnResult
+    private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
+    val getAddOnResult: LiveData<List<AddOnGroupUIModel>> get() = mGetAddOnResult
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
-    fun getAddOn(addOnId: String) {
+    fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(addOnId, "123", false)
+                getAddOnUseCase.setParams(productId, warehouseId, isTokocabang)
                 getAddOnUseCase.executeOnBackground()
             }
-            mGetAddOnResult.value = result.toString()
+            mGetAddOnResult.value = AddOnMapper.mapAddonToUiModel(result)
         }, onError = {
             mErrorThrowable.value = it
         })
