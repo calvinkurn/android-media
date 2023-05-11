@@ -161,7 +161,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
 
-    val remoteConfig: RemoteConfig by lazy {
+    private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
 
@@ -193,8 +193,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             // check for the remote config
             if (remoteConfig.getBoolean(REMOTE_CONFIG_KEY, true)) {
                 // check for rollence
-                if (!RemoteConfigInstance.getInstance().abTestPlatform
-                        .getBoolean(ROLLENCE_KEY, false)
+                if (RemoteConfigInstance.getInstance()
+                        .abTestPlatform?.getString(ROLLENCE_KEY, "")
+                        .orEmpty().isEmpty()
                 ) {
                     parentFragmentManager.beginTransaction()
                         .replace((view.parent as View).id, FeedPlusContainerFragment())
