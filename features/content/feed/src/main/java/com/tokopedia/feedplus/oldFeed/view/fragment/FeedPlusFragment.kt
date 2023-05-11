@@ -655,6 +655,9 @@ class FeedPlusFragment :
                             val message = it.throwable.localizedMessage ?: ""
                             showToast(message, Toaster.TYPE_ERROR)
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
             )
@@ -696,6 +699,9 @@ class FeedPlusFragment :
                         is Success -> {
                             onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
             )
@@ -706,6 +712,9 @@ class FeedPlusFragment :
                     when (it) {
                         is Success -> {
                             onSuccessFetchStatusCampaignReminderButton(it.data)
+                        }
+                        else -> {
+                            //no-op
                         }
                     }
                 }
@@ -734,6 +743,9 @@ class FeedPlusFragment :
                         is Success -> {
                             onSuccessAddViewVODPost(it.data.rowNumber)
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
             )
@@ -743,6 +755,9 @@ class FeedPlusFragment :
                     when (it) {
                         is Success -> {
                             onSuccessAddViewVODPost(it.data.rowNumber)
+                        }
+                        else -> {
+                            //no-op
                         }
                     }
                 }

@@ -2003,6 +2003,9 @@ class ContentDetailFragment :
                         requireView()
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -2049,6 +2052,9 @@ class ContentDetailFragment :
                                 .show()
                         }
                     }
+                }
+                else -> {
+                    //no-op
                 }
             }
         }
@@ -2442,6 +2448,9 @@ class ContentDetailFragment :
                 is ContentDetailResult.Success -> {
                     onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -2460,6 +2469,9 @@ class ContentDetailFragment :
                         Toaster.TYPE_ERROR
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -2471,6 +2483,9 @@ class ContentDetailFragment :
             when (it) {
                 is Success -> {
                     onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

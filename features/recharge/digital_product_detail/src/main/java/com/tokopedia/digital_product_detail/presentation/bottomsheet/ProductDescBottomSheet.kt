@@ -1,6 +1,5 @@
 package com.tokopedia.digital_product_detail.presentation.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +10,17 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.BottomSheetProductDescBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.ProductDescAdapter
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
-class ProductDescBottomSheet: BottomSheetUnify() {
+class ProductDescBottomSheet : BottomSheetUnify() {
 
     private lateinit var listener: RechargeBuyWidgetListener
     private lateinit var denomData: DenomData
@@ -71,7 +70,6 @@ class ProductDescBottomSheet: BottomSheetUnify() {
     }
 
     private fun initView() {
-
         isFullpage = false
         isDragable = false
         showCloseIcon = true
@@ -94,11 +92,13 @@ class ProductDescBottomSheet: BottomSheetUnify() {
                 if (!denomData?.title.isNullOrEmpty()) {
                     tgTitleProductDesc.show()
                     tgTitleProductDesc.text = denomData?.title
-                } else tgTitleProductDesc.hide()
+                } else {
+                    tgTitleProductDesc.hide()
+                }
 
                 if (!denomData?.greenLabel.isNullOrEmpty()) {
                     tickerWidgetProductDesc.show()
-                    tickerWidgetProductDesc.setText(denomData?.greenLabel)
+                    tickerWidgetProductDesc.setText(denomData.greenLabel)
                 } else {
                     tickerWidgetProductDesc.hide()
                     rvProductDesc.run {

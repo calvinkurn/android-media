@@ -9,8 +9,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -19,8 +19,9 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 object ProductRecommendationMapper {
     private fun mapRecommendationItemToProductCard(
         item: RecommendationItem,
-        miniCartData: MiniCartSimplifiedData?
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = item.productId.toString(),
         imageUrl = item.imageUrl,
         minOrder = item.minOrder,
@@ -42,18 +43,21 @@ object ProductRecommendationMapper {
                 imageUrl = it.imageUrl
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 
     fun mapResponseToProductRecommendation(
         recommendationWidget: RecommendationWidget,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductRecommendationViewUiModel {
         val productModels = recommendationWidget.recommendationItemList.map { item ->
             ProductCardCompactCarouselItemUiModel(
                 productCardModel = mapRecommendationItemToProductCard(
                     item = item,
-                    miniCartData = miniCartData
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 ),
                 recommendationType = item.recommendationType,
                 shopId = item.shopId.toString(),

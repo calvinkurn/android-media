@@ -17,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -144,7 +143,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -158,15 +156,21 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
-        SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
-    TickerCallback, TickerPagerCallback, TextWatcher,
-    SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
+open class SomListFragment :
+    BaseListFragment<Visitable<SomListAdapterTypeFactory>,
+        SomListAdapterTypeFactory>(),
+    SomListSortFilterTab.SomListSortFilterTabClickListener,
+    TickerCallback,
+    TickerPagerCallback,
+    TextWatcher,
+    SomListOrderViewHolder.SomListOrderItemListener,
+    CoroutineScope,
     SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
     SomFilterBottomSheet.SomFilterFinishListener,
     SomListOrderEmptyViewHolder.SomListEmptyStateListener,
     SomListBulkPrintDialog.SomListBulkPrintDialogClickListener,
-    SellerHomeFragmentListener, SomListOrderStatusFilterTab.Listener,
+    SellerHomeFragmentListener,
+    SomListOrderStatusFilterTab.Listener,
     SomListOrderMultiSelectSectionViewHolder.Listener {
 
     companion object {
@@ -553,8 +557,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             skipSearch = false
         }, onError = {
-            // TODO: Log to crashlytics
-        })
+                // TODO: Log to crashlytics
+            })
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -801,32 +805,32 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     ) {
         somOrderRequestCancelBottomSheet.apply {
             setListener(object :
-                SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder(actionName: String) {
-                    onAcceptOrderButtonClicked(actionName, selectedOrderId, true)
-                }
+                    SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                    override fun onAcceptOrder(actionName: String) {
+                        onAcceptOrderButtonClicked(actionName, selectedOrderId, true)
+                    }
 
-                override fun onRejectOrder(reasonBuyer: String) {
-                    SomAnalytics.eventClickButtonTolakPesananPopup(
-                        "${order.orderStatusId}",
-                        order.status
-                    )
-                    val orderRejectRequest = SomRejectRequestParam(
-                        orderId = selectedOrderId,
-                        rCode = Int.ZERO.toString(),
-                        reason = reasonBuyer
-                    )
-                    rejectOrder(orderRejectRequest)
-                }
+                    override fun onRejectOrder(reasonBuyer: String) {
+                        SomAnalytics.eventClickButtonTolakPesananPopup(
+                            "${order.orderStatusId}",
+                            order.status
+                        )
+                        val orderRejectRequest = SomRejectRequestParam(
+                            orderId = selectedOrderId,
+                            rCode = Int.ZERO.toString(),
+                            reason = reasonBuyer
+                        )
+                        rejectOrder(orderRejectRequest)
+                    }
 
-                override fun onRejectCancelRequest() {
-                    SomAnalytics.eventClickButtonTolakPesananPopup(
-                        "${order.orderStatusId}",
-                        order.status
-                    )
-                    rejectCancelOrder(selectedOrderId)
-                }
-            })
+                    override fun onRejectCancelRequest() {
+                        SomAnalytics.eventClickButtonTolakPesananPopup(
+                            "${order.orderStatusId}",
+                            order.status
+                        )
+                        rejectCancelOrder(selectedOrderId)
+                    }
+                })
             init(
                 order.buttons.firstOrNull()?.popUp ?: PopUp(),
                 order.cancelRequestOriginNote,
@@ -858,9 +862,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun getOrderBy(orderId: String): String {
-        return (adapter.data.firstOrNull {
-            it is SomListOrderUiModel && it.orderId == orderId
-        } as? SomListOrderUiModel)?.orderResi.orEmpty()
+        return (
+            adapter.data.firstOrNull {
+                it is SomListOrderUiModel && it.orderId == orderId
+            } as? SomListOrderUiModel
+            )?.orderResi.orEmpty()
     }
 
     private fun showBulkAcceptOrderDialog(orderCount: Int) {
@@ -1008,6 +1014,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         SomErrorHandler.SomMessage.GET_WAITING_PAYMENT_COUNTER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
+                }
+                else -> {
+                    // no op
                 }
             }
             updateHeaderMenu()
@@ -1673,7 +1682,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-
     private fun observeValidateOrder() {
         viewModel.validateOrderResult.observe(viewLifecycleOwner) { result ->
             getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
@@ -2135,12 +2143,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     .and(data.isNotEmpty())
                 val newItems = if (shouldShowMultiSelectSection) {
                     ArrayList<Visitable<SomListAdapterTypeFactory>>(data).apply {
-                        add(Int.ZERO, SomListMultiSelectSectionUiModel(
-                            isEnabled = viewModel.isMultiSelectEnabled,
-                            totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
-                            totalSelected = Int.ZERO,
-                            totalSelectable = data.count { !it.isOrderWithCancellationRequest() }
-                        ))
+                        add(
+                            Int.ZERO,
+                            SomListMultiSelectSectionUiModel(
+                                isEnabled = viewModel.isMultiSelectEnabled,
+                                totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                                totalSelected = Int.ZERO,
+                                totalSelectable = data.count { !it.isOrderWithCancellationRequest() }
+                            )
+                        )
                     }
                 } else {
                     data
@@ -2368,7 +2379,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         addAll(
                             getOrdersProducts(
                                 adapter.data.filterIsInstance<SomListOrderUiModel>()
-                                    .filter { it.isChecked })
+                                    .filter { it.isChecked }
+                            )
                         )
                     }
                     bottomSheet.init(it)

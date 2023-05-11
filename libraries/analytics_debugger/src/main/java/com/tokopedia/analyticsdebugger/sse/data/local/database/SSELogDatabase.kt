@@ -11,7 +11,7 @@ import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
  * Created By : Jonathan Darwin on November 09, 2021
  */
 @Database(entities = [SSELogEntity::class], version = 1)
-abstract class SSELogDatabase: RoomDatabase() {
+abstract class SSELogDatabase : RoomDatabase() {
 
     abstract fun sseLogDao(): SSELogDao
 
@@ -29,8 +29,11 @@ abstract class SSELogDatabase: RoomDatabase() {
                 synchronized(lock) {
                     r = instance
                     if (r == null) {
-                        r = Room.databaseBuilder(context,
-                            SSELogDatabase::class.java, DATABASE_NAME)
+                        r = Room.databaseBuilder(
+                            context,
+                            SSELogDatabase::class.java,
+                            DATABASE_NAME
+                        )
                             .fallbackToDestructiveMigration().build()
                         instance = r
                     }
