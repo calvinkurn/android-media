@@ -33,7 +33,13 @@ object HomeRepurchaseMapper {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(item.id, response, miniCartData)
         val sortedProductList = sortRepurchaseProduct(productList, miniCartData)
-        return item.copy(title = response.title, productList = sortedProductList, state = state)
+        return item.copy(
+            title = response.title,
+            subtitle = response.subtitle,
+            subtitleColor = response.subtitleColor,
+            productList = sortedProductList,
+            state = state
+        )
     }
 
     fun sortRepurchaseProduct(

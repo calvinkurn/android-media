@@ -7,6 +7,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 data class TokoNowRepurchaseUiModel(
     val id: String,
     val title: String = "",
+    val subtitle: String = "",
+    val subtitleColor: String = "",
     val productList: List<TokoNowRepurchaseProductUiModel>,
     @TokoNowLayoutState val state: Int
 ) : Visitable<TokoNowRepurchaseTypeFactory> {

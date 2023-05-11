@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,6 +19,8 @@ import com.tokopedia.tokopedianow.common.adapter.decoration.RepurchaseProductIte
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter.TokoNowRepruchaseProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowRepurchaseSubtitleColor.NN500
+import com.tokopedia.tokopedianow.common.constant.TokoNowRepurchaseSubtitleColor.YN500
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseProductViewHolder.TokoNowRepurchaseProductListener
@@ -48,7 +51,7 @@ class TokoNowRepurchaseViewHolder(
 
     private var vsTitle: ViewStub? = null
     private var tvTitle: Typography? = null
-    private var tvSeeAll: Typography? = null
+    private var cardViewChevron: CardView? = null
     private var layoutShimmering: View? = null
     private var rvProduct: RecyclerView? = null
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -60,7 +63,7 @@ class TokoNowRepurchaseViewHolder(
         }
         vsTitle?.inflate()
         tvTitle = stubBinding?.channelTitle
-        tvSeeAll = binding?.tvSeeAll
+        cardViewChevron = binding?.cardViewChevron
         layoutShimmering = binding?.carouselShimmering?.carouselShimmeringLayout
         rvProduct = binding?.rvProduct
 
@@ -89,26 +92,41 @@ class TokoNowRepurchaseViewHolder(
     }
 
     private fun initView(data: TokoNowRepurchaseUiModel) {
-        tvTitle?.text = data.title
-        tvTitle?.setType(Typography.HEADING_4)
+        initTitle(data)
+        initSubtitle(data)
 
-        tvSeeAll?.setOnClickListener {
+        cardViewChevron?.setOnClickListener {
             goToRepurchasePage()
         }
 
         adapter.submitList(data.productList)
     }
 
+    private fun initTitle(data: TokoNowRepurchaseUiModel) {
+        tvTitle?.text = data.title
+        tvTitle?.setType(Typography.DISPLAY_2)
+        tvTitle?.setWeight(Typography.BOLD)
+    }
+
+    private fun initSubtitle(data: TokoNowRepurchaseUiModel) {
+        binding?.textSubtitle?.text = data.subtitle
+
+        when(data.subtitleColor) {
+            NN500.name -> setSubtitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            YN500.name -> setSubtitleColor(com.tokopedia.unifyprinciples.R.color.Unify_YN500)
+        }
+    }
+
     private fun showAllView() {
         vsTitle?.show()
         rvProduct?.show()
-        tvSeeAll?.show()
+        cardViewChevron?.show()
     }
 
     private fun hideAllView() {
         vsTitle?.hide()
         rvProduct?.hide()
-        tvSeeAll?.hide()
+        cardViewChevron?.hide()
     }
 
     private fun showShimmering() {
@@ -158,5 +176,10 @@ class TokoNowRepurchaseViewHolder(
     private fun restoreScrollState() {
         val scrollState = tokoNowView?.getScrollState(adapterPosition)
         linearLayoutManager?.onRestoreInstanceState(scrollState)
+    }
+
+    private fun setSubtitleColor(resId: Int) {
+        val color = ContextCompat.getColor(itemView.context, resId)
+        binding?.textSubtitle?.setTextColor(color)
     }
 }
