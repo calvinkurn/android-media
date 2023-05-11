@@ -244,10 +244,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showCheckMarkIcon() {
         background.hide()
         editText.hide()
-        addButton.hide()
         subButton.hide()
-        addToCartBtnShimmer.hide()
         imageCheckMark.show()
+        addButton.alpha = MIN_ALPHA
+        addToCartBtnShimmer.alpha = MIN_ALPHA
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddNonVariant() {
@@ -287,9 +287,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddToCartWithoutAnimation() {
         background.hide()
         editText.hide()
-        addButton.hide()
         subButton.hide()
-        addToCartBtnShimmer.show()
+        addButton.alpha = MIN_ALPHA
+        addToCartBtnShimmer.alpha = MAX_ALPHA
         onQuantityChangedListener?.invoke(minQuantity)
     }
 
@@ -445,11 +445,11 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
         background.show()
-        addButton.show()
         editText.hide()
         subButton.hide()
-        addToCartBtnShimmer.hide()
         imageCheckMark.hide()
+        addButton.alpha = MAX_ALPHA
+        addToCartBtnShimmer.alpha = MIN_ALPHA
     }
 
     fun setQuantity(quantity: Int) {
