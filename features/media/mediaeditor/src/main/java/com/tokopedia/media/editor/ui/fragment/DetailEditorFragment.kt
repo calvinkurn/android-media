@@ -343,6 +343,15 @@ class DetailEditorFragment @Inject constructor(
 
         viewBinding?.imgUcropPreview?.let {
             rotateAddLogoOverlay(it)
+            rotateAddTextOverlay(it)
+
+            // update overlay view with new asset & size
+            it.overlayView.cropViewRect.let { overlayRect ->
+                setOverlaySize(
+                    Pair(overlayRect.width(), overlayRect.height())
+                )
+            }
+
         }
     }
 
@@ -1317,7 +1326,8 @@ class DetailEditorFragment @Inject constructor(
                         }
                     }
                 }
-            ))
+            )
+        )
     }
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
@@ -1374,8 +1384,43 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun rotateAddLogoOverlay(previewWidget: EditorDetailPreviewWidget) {
-        val cropViewRect = previewWidget.overlayView.cropViewRect
+        getLatestImageSize(previewWidget).let { (width, height) ->
+            // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
+            val rotateSize = when(checkLatestOrientation()) {
+                ORIENTATION_ROTATED -> Pair(height, width)
+                else -> Pair(width, height)
+            }
 
+            updateAddLogoOverlay(rotateSize) { resultUrl ->
+                viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+            }
+        }
+    }
+
+    private fun rotateAddTextOverlay(previewWidget: EditorDetailPreviewWidget) {
+        getLatestImageSize(previewWidget).let { (width, height) ->
+            // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
+            val rotateSize = when(checkLatestOrientation()) {
+                ORIENTATION_ROTATED -> Pair(height, width)
+                else -> Pair(width, height)
+            }
+
+            data.addTextValue?.let {
+                viewModel.generateAddTextOverlay(rotateSize, it).let { newTextOverlay ->
+                    viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
+                        data.addTextValue?.textImagePath = cacheFile.absolutePath
+                        viewBinding?.imgPreviewOverlaySecondary?.setImageBitmap(newTextOverlay)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * used for manual rotate overlay image
+     * return Pair<Width, Height>
+     */
+    private fun getLatestImageSize(previewWidget: EditorDetailPreviewWidget): Pair<Int, Int> {
         // get image width between edited (if any crop / rotate state) or original
         val realImageWidth = if (data.cropRotateValue.imageWidth != 0) {
             data.cropRotateValue.imageWidth
@@ -1390,19 +1435,14 @@ class DetailEditorFragment @Inject constructor(
             previewWidget.cropImageView.drawable.intrinsicHeight
         }
 
-        // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
-        val rotateSize =
-            if ((viewModel.rotateNumber - data.cropRotateValue.orientationChangeNumber) % 2 == 1) {
-                Pair(realImageHeight, realImageWidth)
-            } else {
-                Pair(realImageWidth, realImageHeight)
-            }
+        return Pair(realImageWidth, realImageHeight)
+    }
 
-        updateAddLogoOverlay(rotateSize) { resultUrl ->
-            setOverlaySize(
-                Pair(cropViewRect.width(), cropViewRect.height())
-            )
-            viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+    private fun checkLatestOrientation(): Int {
+        return if ((viewModel.rotateNumber - data.cropRotateValue.orientationChangeNumber) % 2 == 1) {
+            ORIENTATION_ROTATED
+        } else {
+            ORIENTATION_ORIGINAL
         }
     }
 
@@ -1425,7 +1465,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun implementAddTextData() {
         data.addTextValue?.let {
-            viewModel.getAddTextFilterOverlay(
+            viewModel.generateAddTextOverlay(
                 Pair(originalImageWidth, originalImageHeight),
                 it
             ).let { bitmapResult ->
@@ -1509,7 +1549,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val HTTPS_KEY = "https:"
 
-        // key to generate PNG result for AddLogo overlay
+        // key to generate PNG result for AddLogo & AddText overlay
         private const val PNG_KEY = "image.png"
 
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
@@ -1521,5 +1561,8 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
         private const val DEFAULT_CONTRAST_BRIGHTNESS_INDEX = -1
         private const val DEFAULT_CROP_SCALE = 0f
+
+        private const val ORIENTATION_ORIGINAL = 0
+        private const val ORIENTATION_ROTATED = 1
     }
 }

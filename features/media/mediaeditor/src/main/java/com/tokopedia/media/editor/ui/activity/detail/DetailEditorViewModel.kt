@@ -16,7 +16,6 @@ import com.tokopedia.media.editor.utils.ResourceProvider
 import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -228,7 +227,7 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun getAddTextFilterOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap {
+    fun generateAddTextOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap {
         return addTextFilterRepository.generateTextOverlay(
             size,
             data
