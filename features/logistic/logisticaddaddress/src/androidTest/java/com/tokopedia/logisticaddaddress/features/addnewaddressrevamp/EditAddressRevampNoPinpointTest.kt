@@ -46,6 +46,7 @@ class EditAddressRevampNoPinpointTest {
         logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail_no_pinpoint)
         logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
         logisticInterceptor.editAddressResponsePath = getRawString(context, R.raw.editaddress_success_response)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_edit)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 

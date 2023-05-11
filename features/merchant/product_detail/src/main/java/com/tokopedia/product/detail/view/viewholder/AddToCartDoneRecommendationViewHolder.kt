@@ -13,8 +13,8 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class AddToCartDoneRecommendationViewHolder(
-        itemView: View,
-        private val recommendationListener: RecommendationListener
+    itemView: View,
+    private val recommendationListener: RecommendationListener
 ) : AbstractViewHolder<AddToCartDoneRecommendationDataModel>(itemView) {
 
     companion object {
@@ -29,34 +29,28 @@ class AddToCartDoneRecommendationViewHolder(
             val products = element.recommendationWidget.recommendationItemList
             val parentPosition = adapterPosition
             productRecom.bindCarouselProductCardViewGrid(
-                    carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                        override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                            recommendationListener.onProductClick(
-                                    productRecommendation,
-                                    null,
-                                    parentPosition,
-                                    carouselProductCardPosition
-                            )
-                        }
-                    },
-                    carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                        override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                            return products.getOrNull(carouselProductCardPosition)
-                        }
+                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                        recommendationListener.onProductClick(
+                            productRecommendation,
+                            null,
+                            parentPosition,
+                            carouselProductCardPosition
+                        )
+                    }
+                },
+                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return products.getOrNull(carouselProductCardPosition)
+                    }
 
-                        override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                            recommendationListener.onProductImpression(productRecommendation)
-                        }
-                    },
-                    carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
-                        override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val product = products.getOrNull(carouselProductCardPosition) ?: return
-                            recommendationListener.onThreeDotsClick(product, adapterPosition, carouselProductCardPosition)
-                        }
-                    },
-                    productCardModelList = products.map { it.toProductCardModel(hasThreeDots = true) }
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                        recommendationListener.onProductImpression(productRecommendation)
+                    }
+                },
+                productCardModelList = products.map { it.toProductCardModel() }
 
             )
             itemView.visible()
