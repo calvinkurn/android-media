@@ -52,7 +52,7 @@
                 app:layout_constraintEnd_toEndOf="@id/image"
                 app:layout_constraintTop_toTopOf="@id/image"
                 app:layout_constraintBottom_toBottomOf="@id/image"
-                android:background="@color/dms_vps_widget_background" />
+                android:background="@color/Unify_NN100" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image"

@@ -11,6 +11,7 @@ import com.tokopedia.home_component.model.ChannelModel
  */
 class VpsWidgetComponentCallback(val homeCategoryListener: HomeCategoryListener): VpsWidgetListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, applink: String, position: Int) {
+        homeCategoryListener.sendEETracking(VpsWidgetTracking.getVpsViewAllClick(channelModel))
         homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
