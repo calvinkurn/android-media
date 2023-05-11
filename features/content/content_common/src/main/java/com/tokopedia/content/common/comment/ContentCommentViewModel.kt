@@ -28,6 +28,9 @@ class ContentCommentViewModel @AssistedInject constructor(
     val comments: Flow<CommentWidgetUiModel>
         get() = _comments
 
+    val query: Flow<CommentParam>
+        get() = _query
+
     val event: Flow<CommentEvent>
         get() = _event
 
@@ -102,11 +105,11 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastChildCursor
                 )
                 _comments.update { curr ->
-                    //get selected expandable index
+                    // get selected expandable index
                     val selected = curr.list.indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
-                    //get parent comment
+                    // get parent comment
                     val parent = curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
-                    //build new list
+                    // build new list
                     val newList = buildList {
                         val transformExpand = curr.list.mapIndexed { index, model ->
                             if (index == selected && model is CommentUiModel.Expandable) {
