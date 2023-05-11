@@ -94,6 +94,92 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN get shipping rates and schedule delivery rates success with default selly THEN should render success with selly`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "SICEPATTEST",
+                        shippingId = 10,
+                        spId = 28,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "1",
+            ratesValidationFlow = true
+        )
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            getRatesWithScheduleUseCase.execute(any(), any())
+            view.setSelectedCourier(itemPosition, match { it.scheduleDeliveryUiModel!!.isSelected }, true, false)
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates and schedule delivery rates success with no matching sp id with auto courier selection THEN should render success`() {
         // Given
         val ratesResponse = DataProvider.provideRatesV3Response()

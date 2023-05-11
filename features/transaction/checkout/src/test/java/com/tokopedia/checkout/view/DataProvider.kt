@@ -48,4 +48,8 @@ object DataProvider {
     fun provideScheduleDeliveryRatesResponse(): ScheduleDeliveryRatesResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_rates.json"), ScheduleDeliveryRatesResponse::class.java)
     }
+
+    fun provideScheduleDeliveryRecommendedRatesResponse(): ScheduleDeliveryRatesResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_recommended_rates.json"), ScheduleDeliveryRatesResponse::class.java)
+    }
 }
