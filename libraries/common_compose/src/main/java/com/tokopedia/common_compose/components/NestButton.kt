@@ -514,6 +514,7 @@ private fun NestButtonProgressBar(loaderHeight: Dp, progressBarColor: Color) {
 }
 @Composable
 private fun NestButtonIcon(resourceId: Int, buttonIconHeightAndWidth: Dp) {
+    //TODO: Replace with NestIcon
     Icon(
         modifier = Modifier.size(buttonIconHeightAndWidth),
         painter = painterResource(id = resourceId),
