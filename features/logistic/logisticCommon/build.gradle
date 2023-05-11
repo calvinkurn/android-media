@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -8,11 +7,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 buildscript {

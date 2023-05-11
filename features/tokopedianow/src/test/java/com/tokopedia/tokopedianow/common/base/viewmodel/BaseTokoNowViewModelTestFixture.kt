@@ -7,11 +7,16 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,12 +26,13 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 open class BaseTokoNowViewModelTestFixture {
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -37,6 +43,9 @@ open class BaseTokoNowViewModelTestFixture {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var affiliateHelper: AffiliateCookieHelper
+    private lateinit var affiliateService: NowAffiliateService
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
 
@@ -46,14 +55,20 @@ open class BaseTokoNowViewModelTestFixture {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
+        affiliateHelper = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+
+        affiliateService = NowAffiliateService(affiliateHelper)
 
         viewModel = BaseTokoNowViewModel(
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            affiliateService,
+            getTargetedTickerUseCase,
             addressData,
             userSession,
             coroutineTestRule.dispatchers
@@ -140,12 +155,15 @@ open class BaseTokoNowViewModelTestFixture {
         every { addressData.isOutOfCoverage() } returns outOfCoverage
     }
 
-    protected fun verifyGetMiniCartUseCaseCalled() {
-        coVerify { getMiniCartUseCase.executeOnBackground() }
-
+    protected fun onInitAffiliateCookie_thenReturn(error: Throwable) {
+        coEvery { affiliateHelper.initCookie(any(), any(), any()) } throws error
     }
 
-    protected fun verifyGetMiniCartUseCaseNotCalled(){
+    protected fun verifyGetMiniCartUseCaseCalled() {
+        coVerify { getMiniCartUseCase.executeOnBackground() }
+    }
+
+    protected fun verifyGetMiniCartUseCaseNotCalled() {
         coVerify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
     }
 
@@ -161,7 +179,7 @@ open class BaseTokoNowViewModelTestFixture {
         verify { deleteCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifyDeleteCartUseNotCaseCalled() {
+    protected fun verifyDeleteCartUseCaseNotCalled() {
         verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
     }
 
@@ -171,5 +189,23 @@ open class BaseTokoNowViewModelTestFixture {
 
     protected fun verifyUpdateCartUseCaseNotCalled() {
         verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyInitAffiliateCookieCalled(
+        affiliateUUID: String,
+        affiliateChannel: String
+    ) {
+        coVerify(exactly = 2) { affiliateHelper.initCookie(affiliateUUID, affiliateChannel, any()) }
+    }
+
+    protected fun verifyInitAffiliateCookieNotCalled(
+        affiliateUUID: String,
+        affiliateChannel: String
+    ) {
+        coVerify(exactly = 0) { affiliateHelper.initCookie(affiliateUUID, affiliateChannel, any()) }
+    }
+
+    protected fun verifyCreateAffiliateLinkCalled(url: String) {
+        verify { affiliateHelper.createAffiliateLink(url, anyString()) }
     }
 }

@@ -17,7 +17,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate_toko.R
 
 private const val DEFAULT_HEIGHT = 56f
@@ -73,19 +72,19 @@ class LottieBottomNavbar : LinearLayout {
         if (badgeValue == 0) {
             badgeText?.layoutParams = emptyBadgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
             )
             badgeText?.text = ""
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
-                    resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
             )
 
             badgeText?.text = badgeValue.toString()
@@ -97,27 +96,28 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun adjustBadgePosition() {
         if (menu.isEmpty()) return
-        val itemWidthSize = containerWidth/menu.size
-        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize/2.7).toInt() else itemWidthSize/4
+        val itemWidthSize = containerWidth / menu.size
+        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize / 2.7).toInt() else itemWidthSize / 4
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                badgeRightMargin,
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            badgeRightMargin,
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12))
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+        )
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                badgeRightMargin,
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            badgeRightMargin,
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
         )
 
         badgeTextViewList?.forEach {
@@ -169,27 +169,30 @@ class LottieBottomNavbar : LinearLayout {
         containerList.clear()
 
         val llLayoutParam = LayoutParams(itemWidth, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
-        val imgLayoutParam = LayoutParams(LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
+        val imgLayoutParam = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
+        )
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12))
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+        )
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         )
 
         val txtLayoutParam = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -201,7 +204,6 @@ class LottieBottomNavbar : LinearLayout {
             it.setBackgroundColor(buttonContainerBackgroundColor)
             it.orientation = HORIZONTAL
         }
-
 
         // for each menu:
         // create item container, draw image icon and title, add click listener if set
@@ -217,7 +219,7 @@ class LottieBottomNavbar : LinearLayout {
 
             // add image view to display menu icon
             val icon = LottieAnimationView(context)
-            icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
+            icon.tag = context.getString(R.string.tag_lottie_animation_view) + bottomMenu.id
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
             if (!isDeviceAnimationDisabled()) {
@@ -239,12 +241,14 @@ class LottieBottomNavbar : LinearLayout {
             iconList.add(index, Pair(icon, false))
 
             val imageContainer = FrameLayout(context)
-            val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT)
+            val fLayoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
             imageContainer.layoutParams = fLayoutParams
 
             val iconPlaceholder = ImageView(context)
-            iconPlaceholder.tag = "iconPlaceholder"+bottomMenu.id
+            iconPlaceholder.tag = "iconPlaceholder" + bottomMenu.id
             iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
             iconPlaceholder.layoutParams = imgLayoutParam
             iconPlaceholder.visibility = View.INVISIBLE
@@ -302,11 +306,11 @@ class LottieBottomNavbar : LinearLayout {
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
-                        .inflate(R.layout.affiliate_badge_layout, imageContainer, false)
+                    .inflate(R.layout.affiliate_badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
                 badgeTextViewList?.add(badgeTextView)
-                badgeTextView.tag = context.getString(R.string.tag_badge_textview)+bottomMenu.id.toString()
+                badgeTextView.tag = context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
                 badge.bringToFront()
@@ -319,7 +323,7 @@ class LottieBottomNavbar : LinearLayout {
             title.layoutParams = txtLayoutParam
             title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
             title.text = bottomMenu.title
-            title.tag = context.getString(R.string.tag_title_textview)+bottomMenu.id
+            title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id
             title.textSize = DEFAULT_TEXT_SIZE
             if (selectedItem != null && selectedItem == index) {
                 title.setTextColor(menu[selectedItem!!].activeButtonColor)
@@ -349,10 +353,10 @@ class LottieBottomNavbar : LinearLayout {
         addView(navbarContainer)
     }
 
-    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu, isNotFromBottom : Boolean = false) {
+    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu, isNotFromBottom: Boolean = false) {
         // invoke listener
         Handler().post {
-            if (listener?.menuClicked(index, bottomMenu.id,isNotFromBottom) == true) {
+            if (listener?.menuClicked(index, bottomMenu.id, isNotFromBottom) == true) {
                 changeColor(index)
                 selectedItem = index
             }
@@ -365,8 +369,8 @@ class LottieBottomNavbar : LinearLayout {
             return
         }
 
-        //when device animation disabled, only use image resource to prevent stackoverflow error
-        //https://github.com/airbnb/lottie-android/issues/1534
+        // when device animation disabled, only use image resource to prevent stackoverflow error
+        // https://github.com/airbnb/lottie-android/issues/1534
         if (isDeviceAnimationDisabled()) {
             val pairSelectedItem = iconList[selectedItem ?: 0]
             menu[selectedItem ?: 0].imageEnabledName?.let {
@@ -378,10 +382,10 @@ class LottieBottomNavbar : LinearLayout {
                 pairNewItem.first.setImageResource(it)
             }
             titleList.forEachIndexed { index, _ ->
-                if(index == newPosition){
+                if (index == newPosition) {
                     val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
                     titleList[index].setTextColor(activeSelectedItemColor)
-                }else {
+                } else {
                     val nonActiveSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].nonActiveButtonColor)
                     titleList[index].setTextColor(nonActiveSelectedItemColor)
                 }
@@ -389,15 +393,15 @@ class LottieBottomNavbar : LinearLayout {
             return
         }
 
-        if (iconList[selectedItem?:0].second) {
-            val pair = iconList[selectedItem?:0]
+        if (iconList[selectedItem ?: 0].second) {
+            val pair = iconList[selectedItem ?: 0]
             pair.first.cancelAnimation()
-            menu[selectedItem?:0].animToEnabledName?.let {
+            menu[selectedItem ?: 0].animToEnabledName?.let {
                 pair.first.setAnimation(it)
-                pair.first.speed = menu[selectedItem?:0].animToEnabledSpeed
+                pair.first.speed = menu[selectedItem ?: 0].animToEnabledSpeed
             }
 
-            iconList[selectedItem?:0] = Pair(pair.first, false)
+            iconList[selectedItem ?: 0] = Pair(pair.first, false)
         }
 
         selectedItem?.let {
@@ -431,9 +435,9 @@ class LottieBottomNavbar : LinearLayout {
         selectedItem = newPosition
     }
 
-    fun setSelected(position: Int, isNotFromBottom : Boolean = false) {
+    fun setSelected(position: Int, isNotFromBottom: Boolean = false) {
         if (menu.size > position) {
-            handleItemClicked(position, menu[position],isNotFromBottom)
+            handleItemClicked(position, menu[position], isNotFromBottom)
         }
     }
 
@@ -444,7 +448,7 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
-    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
+    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav: Boolean = false) {
         this.menu.clear()
         this.menu.addAll(menu)
         this.isThreeItemBottomNav = isThreeItemBottomNav
@@ -468,28 +472,36 @@ class LottieBottomNavbar : LinearLayout {
 
     fun getAnimationScale(context: Context): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Settings.Global.getFloat(context.contentResolver,
-                    Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+            Settings.Global.getFloat(
+                context.contentResolver,
+                Settings.Global.ANIMATOR_DURATION_SCALE,
+                1.0f
+            )
         } else {
-            Settings.System.getFloat(context.contentResolver,
-                    Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
+            Settings.System.getFloat(
+                context.contentResolver,
+                Settings.System.ANIMATOR_DURATION_SCALE,
+                1.0f
+            )
         }
     }
 }
 
-data class BottomMenu(val id: Int,
-                      val title: String,
-                      val animName: Int? = null,
-                      val animToEnabledName: Int? = null,
-                      val imageName: Int? = null,
-                      val imageEnabledName: Int? = null,
-                      val activeButtonColor: Int,
-                      val nonActiveButtonColor : Int,
-                      val useBadge: Boolean = true,
-                      val animSpeed: Float = 1f,
-                      val animToEnabledSpeed: Float = 1f)
+data class BottomMenu(
+    val id: Int,
+    val title: String,
+    val animName: Int? = null,
+    val animToEnabledName: Int? = null,
+    val imageName: Int? = null,
+    val imageEnabledName: Int? = null,
+    val activeButtonColor: Int,
+    val nonActiveButtonColor: Int,
+    val useBadge: Boolean = true,
+    val animSpeed: Float = 1f,
+    val animToEnabledSpeed: Float = 1f
+)
 interface IBottomClickListener {
-    fun menuClicked(position: Int, id: Int,isNotFromBottom: Boolean = false): Boolean
+    fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean = false): Boolean
     fun menuReselected(position: Int, id: Int)
 }
 

@@ -323,23 +323,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
-        } else if(isWhitelisted(url)) {
+        } else if(WebViewHelper.isUrlWhitelisted(getContext(), url)) {
             webView.requestFocus();
             webView.loadAuthUrl(url, null);
         } else {
             redirectToNativeBrowser();
-        }
-    }
-
-    private boolean isWhitelisted(String mUrl) {
-        try {
-            if (getActivity() instanceof BaseSimpleWebViewActivity) {
-                BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
-                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getDomainName(baseSimpleWebViewActivity.getBaseDomain(mUrl)));
-            }
-            return false;
-        } catch (Exception ex) {
-            return false;
         }
     }
 
