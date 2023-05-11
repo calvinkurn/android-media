@@ -166,7 +166,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
-            is UserProfileAction.SetShowReview -> handleSetShowReview(action.isShow)
+            else -> {}
         }
     }
 
@@ -491,24 +491,6 @@ class UserProfileViewModel @AssistedInject constructor(
         launchCatchError(block = {
             _uiEvent.emit(UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog(channel))
         }) {}
-    }
-
-    private fun handleSetShowReview(isShow: Boolean) {
-        launchCatchError(block = {
-            val isSuccess = repo.setShowReview(
-                userID = profileUserID,
-                settingID = _reviewSettings.value.settingID,
-                isShow = isShow
-            )
-
-            if (isSuccess) {
-                _reviewSettings.update { it.copy(isEnabled = isShow) }
-            } else {
-                throw Exception()
-            }
-        }) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorSetShowReview(it))
-        }
     }
 
     /** Helper */

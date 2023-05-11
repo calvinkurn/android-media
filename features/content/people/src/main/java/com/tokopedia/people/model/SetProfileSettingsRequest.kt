@@ -20,7 +20,7 @@ data class SetProfileSettingsRequest(
         @SerializedName("settingID")
         val settingID: String,
 
-        @SerializedName("enable")
-        val enable: Boolean,
+        @SerializedName("enabled")
+        val enabled: Boolean,
     )
 }

@@ -167,7 +167,7 @@ class UserProfileRepositoryImpl @Inject constructor(
                 data = listOf(
                     SetProfileSettingsRequest.Data(
                         settingID = settingID,
-                        enable = isShow,
+                        enabled = isShow,
                     )
                 )
             )
