@@ -33,8 +33,8 @@ class RichListMapper @Inject constructor(
         private const val LAST_UPDATED_FORMAT = "Update terakhir %s WIB"
         private const val START_DELIMITER_URL = "='"
         private const val END_DELIMITER_URL = "'>"
-        private const val START_DELIMITER_CTA_TEXT = "'>"
-        private const val END_DELIMITER_CTA_TEXT = "</"
+        private const val START_DELIMITER_CTA_TEXT = ">"
+        private const val END_DELIMITER_CTA_TEXT = "<"
     }
 
     override fun mapRemoteDataToUiData(
