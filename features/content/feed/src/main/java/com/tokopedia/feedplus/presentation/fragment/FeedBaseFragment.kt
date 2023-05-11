@@ -101,8 +101,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private val isFromPushNotif: Boolean
-        get() = activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM).isNullOrEmpty().not()
-            && activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM)
+        get() = activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM)
             ?.contains(PARAM_PUSH_NOTIFICATION, true)
             ?: false
 
