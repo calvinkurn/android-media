@@ -339,6 +339,10 @@ class ShopOpenRevampInputShopFragment :
                     val _shopId = it.data.createShop.createdId
                     val _isSuccess = it.data.createShop.success
                     var _message = it.data.createShop.message
+                    var ctaTitle = it.data.createShop.cta.title
+                    var ctaUrl = it.data.createShop.cta.url
+                    var isSuccess = false
+
                     if (_shopId.isNotEmpty() && _isSuccess) {
                         userSession.shopId = _shopId
                         userSession.shopName = shopNameValue
@@ -351,7 +355,7 @@ class ShopOpenRevampInputShopFragment :
                     } else {
                         shopOpenRevampTracking?.clickCreateShop()
                         if (_message.isNotEmpty()) {
-                            showErrorResponse(_message)
+                            showErrorResponse(_message, ctaTitle, ctaUrl)
                         } else {
                             _message = getString(R.string.open_shop_revamp_error_retry)
                             showErrorResponse(_message)
@@ -454,10 +458,27 @@ class ShopOpenRevampInputShopFragment :
         }
     }
 
-    private fun showErrorResponse(message: String) {
+    private fun showErrorResponse(message: String, ctaTitle: String = "", ctaUrl: String = "") {
         view?.let {
-            Toaster.showError(it, message, Snackbar.LENGTH_LONG)
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_LONG,
+                actionText = ctaTitle,
+                clickListener = {
+                    redirectToUrl(ctaUrl)
+                },
+                type = Toaster.TYPE_ERROR
+            ).show()
         }
+    }
+
+    private fun redirectToUrl(ctaUrl: String) {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalGlobal.WEBVIEW,
+            ctaUrl
+        )
     }
 
     private fun setupTncShopOpenRevamp() {

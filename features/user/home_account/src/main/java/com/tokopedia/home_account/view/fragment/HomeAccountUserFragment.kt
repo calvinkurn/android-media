@@ -120,6 +120,7 @@ import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -178,7 +179,6 @@ open class HomeAccountUserFragment :
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
     private var topAdsHeadlineUiModel: TopadsHeadlineUiModel? = null
-    private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
 
@@ -436,7 +436,6 @@ open class HomeAccountUserFragment :
     }
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
-        initCoachMark(position, itemView, data)
         if (position == POSITION_0) {
             initMemberLocalLoad(itemView)
             initBalanceAndPointLocalLoad(itemView)
@@ -611,7 +610,7 @@ open class HomeAccountUserFragment :
                     balanceAndPointUiModel
                 )
             )
-            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle)
+            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle, balanceAndPointUiModel.title)
         } else if (!balanceAndPointUiModel.applink.isEmpty()) {
             goToApplink(balanceAndPointUiModel.applink)
         }
@@ -619,7 +618,6 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowHomeAccountTokopoints = getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
             isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
@@ -823,7 +821,7 @@ open class HomeAccountUserFragment :
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            viewModel.getBalanceAndPoint(it.id, it.hideTitle)
+            viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
 
             if (it.id == AccountConstants.WALLET.GOPAY) {
                 balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
@@ -924,6 +922,47 @@ open class HomeAccountUserFragment :
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
+
+        if (accountPref.isShowCoachmark()) {
+            setCoachMark()
+        }
+    }
+
+    private fun setCoachMark() {
+        lifecycleScope.launchWhenResumed {
+            try {
+                // Add coachmark delay to prevent racing condition
+                delay(COACHMARK_DELAY_MS)
+                val profileView = binding?.homeAccountUserFragmentRv?.layoutManager?.findViewByPosition(PROFILE_POS)
+                profileView?.let {
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            it.findViewById(R.id.home_account_profile_section),
+                            getString(R.string.coachmark_title_account_info),
+                            getString(R.string.coachmark_desc_account_info),
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                }
+                val accountSettingView = binding?.homeAccountUserFragmentRv?.layoutManager?.findViewByPosition(ACC_SETTING_POS)
+                accountSettingView?.let {
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            accountSettingView.findViewById(R.id.home_account_expandable_layout_content_title),
+                            getString(R.string.coachmark_title_setting),
+                            getString(R.string.coachmark_desc_setting),
+                            CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+                context?.run {
+                    coachMark?.onFinishListener = {
+                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                    }
+                    coachMark?.showCoachMark(coachMarkItem)
+                }
+            } catch (ignored: Exception) {}
+        }
     }
 
     private fun onSuccessGetFirstRecommendationData(
@@ -1016,10 +1055,6 @@ open class HomeAccountUserFragment :
         viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
     }
 
-    private fun showHomeAccountTokopoints(): Boolean {
-        return isShowHomeAccountTokopoints
-    }
-
     private fun getData() {
         viewModel.refreshUserProfile()
         binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
@@ -1061,8 +1096,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun setupList() {
-        binding?.homeAccountUserFragmentRv?.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding?.homeAccountUserFragmentRv?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding?.homeAccountUserFragmentRv?.adapter = adapter
         binding?.homeAccountUserFragmentRv?.isNestedScrollingEnabled = false
     }
@@ -1474,48 +1508,6 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun initCoachMark(position: Int, itemView: View, data: Any) {
-        if (accountPref.isShowCoachmark()) {
-            if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < COACHMARK_SIZE) {
-                    if (position == 0 && data is ProfileDataView) {
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                itemView.findViewById(R.id.account_user_item_profile_email),
-                                getString(R.string.coachmark_title_account_info),
-                                getString(R.string.coachmark_desc_account_info),
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-                    }
-                    if (position == 1 && data is SettingDataView) {
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                itemView.findViewById(R.id.home_account_expandable_layout_title),
-                                getString(R.string.coachmark_title_setting),
-                                getString(R.string.coachmark_desc_setting),
-                                CoachMark2.POSITION_TOP
-                            )
-                        )
-                        showCoachMark()
-                    }
-                } else {
-                    showCoachMark()
-                }
-            }
-        }
-    }
-
-    private fun showCoachMark() {
-        context?.run {
-            coachMark?.onFinishListener = {
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
-            }
-            coachMark?.showCoachMark(coachMarkItem)
-            isProfileSectionBinded = true
-        }
-    }
-
     private fun initMemberLocalLoad(itemView: View) {
         itemView.findViewById<LocalLoad>(R.id.home_account_member_local_load)?.let {
             memberLocalLoad = it
@@ -1760,8 +1752,6 @@ open class HomeAccountUserFragment :
         private const val FPM_BUYER = "mp_account_buyer"
         private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
             "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
-        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS =
-            "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
@@ -1775,6 +1765,10 @@ open class HomeAccountUserFragment :
         private const val POSITION_2 = 2
         private const val POSITION_3 = 3
 
+        private const val PROFILE_POS = 0
+        private const val ACC_SETTING_POS = 1
+
+        private const val COACHMARK_DELAY_MS = 1000L
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
                 arguments = bundle

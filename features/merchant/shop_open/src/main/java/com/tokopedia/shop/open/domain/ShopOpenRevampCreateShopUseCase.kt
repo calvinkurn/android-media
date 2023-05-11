@@ -40,20 +40,24 @@ class ShopOpenRevampCreateShopUseCase @Inject constructor(
         private const val POSTAL_CODE = "postalCode"
         private const val SKIP_LOCATION = "skipLocation"
         private const val QUERY = "mutation CreateShop(\$name:String!, \$domain: String!, \$postalCode: Int!, \$districtID: Int!) {\n" +
-            "    createShop(\n" +
-            "        input: {\n" +
-            "            name: \$name,\n" +
-            "            domain: \$domain,\n" +
-            "            postalCode: \$postalCode,\n" +
-            "            districtID: \$districtID,\n" +
-            "            skipLocation: true\n" +
-            "        }\n" +
-            "    ){\n" +
-            "        success\n" +
-            "        message\n" +
-            "        createdId\n" +
-            "    }\n" +
-            "}"
+                "    createShop(\n" +
+                "        input: {\n" +
+                "            name: \$name,\n" +
+                "            domain: \$domain,\n" +
+                "            postalCode: \$postalCode,\n" +
+                "            districtID: \$districtID,\n" +
+                "            skipLocation: true\n" +
+                "        }\n" +
+                "    ){\n" +
+                "        success\n" +
+                "        message\n" +
+                "        createdId\n" +
+                "        cta{\n" +
+                "           title\n" +
+                "           url\n" +
+                "        }\n" +
+                "    }\n" +
+                "}"
 
         fun createRequestParams(domainName: String, shopName: String): RequestParams = RequestParams.create().apply {
             putString(SHOP_NAME, shopName)
