@@ -12,4 +12,7 @@ object ApplinkConstInternalCommunication {
 
     //TokoChatActivity
     const val TOKO_CHAT = "${INTERNAL_COMMUNICATION}/tokochat"
+
+    //UniversalInboxActivity
+    const val UNIVERSAL_INBOX = "${INTERNAL_COMMUNICATION}/universal-inbox"
 }

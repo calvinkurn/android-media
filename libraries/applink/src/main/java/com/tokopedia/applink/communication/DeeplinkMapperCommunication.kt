@@ -3,13 +3,16 @@ package com.tokopedia.applink.communication
 import android.content.Context
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
+    private const val KEY_ROLLENCE_UNIVERSAL_INBOX = "universal_inbox"
 
     const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
@@ -23,6 +26,22 @@ object DeeplinkMapperCommunication {
     ): Boolean {
         return try {
             FirebaseRemoteConfigInstance.get(context).getBoolean(key, default)
+        } catch (throwable: Throwable) {
+            true
+        }
+    }
+
+    /**
+     * Rollence util
+     */
+    private fun isRollenceActive(key: String): Boolean {
+        return try {
+            RemoteConfigInstance
+                .getInstance()
+                .abTestPlatform.getString(
+                    key,
+                    ""
+                ) == key
         } catch (throwable: Throwable) {
             true
         }
@@ -56,6 +75,19 @@ object DeeplinkMapperCommunication {
                 "${DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH}$CHAT_SETTINGS/",
                 "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/"
             )
+        }
+    }
+
+
+
+    /**
+     * Inbox mapper with remote config
+     */
+    fun getRegisteredNavigationInbox(): String {
+        return if (isRollenceActive(KEY_ROLLENCE_UNIVERSAL_INBOX)) {
+            ApplinkConstInternalCommunication.UNIVERSAL_INBOX
+        } else {
+            ApplinkConsInternalHome.HOME_INBOX
         }
     }
 }
