@@ -121,6 +121,19 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
+    fun scrollCurrentTabToTop() {
+        viewModelScope.launch {
+            val feedTabsValue = feedTabs.value
+            if (feedTabsValue !is Success) return@launch
+            feedTabsValue.data.forEachIndexed { _, tab ->
+                if (!tab.isActive) return@forEachIndexed
+                uiEventManager.emitEvent(
+                    FeedMainEvent.ScrollToTop(tab.key)
+                )
+            }
+        }
+    }
+
     fun getCurrentTabType() =
         feedTabs.value?.let {
             if (it is Success) {

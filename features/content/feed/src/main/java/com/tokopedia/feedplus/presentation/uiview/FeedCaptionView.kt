@@ -107,7 +107,7 @@ class FeedCaptionView(
         private const val MAX_LINES_COLLAPSED = 2
         private const val MAX_LINES_EXPANDED = Int.MAX_VALUE
 
-        private const val ADDITIONAL_END_SUBSEQUENCE_LENGTH = 5
+        private const val ADDITIONAL_END_SUBSEQUENCE_LENGTH = 1
 
         private const val ELLIPSIS = "..."
     }

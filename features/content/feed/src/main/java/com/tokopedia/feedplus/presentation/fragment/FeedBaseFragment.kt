@@ -46,6 +46,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -67,7 +68,9 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
+class FeedBaseFragment : BaseDaggerFragment(),
+    FeedContentCreationTypeBottomSheet.Listener,
+    FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -224,6 +227,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onScrollToTop() {
+        feedMainViewModel.scrollCurrentTabToTop()
+    }
+
+    override fun isLightThemeStatusBar(): Boolean {
+        return true
     }
 
     override fun initInjector() {
