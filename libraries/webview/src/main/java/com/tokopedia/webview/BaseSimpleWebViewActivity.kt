@@ -15,11 +15,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR
 import com.tokopedia.track.TrackApp
+import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 
@@ -33,9 +35,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var needLogin = false
     protected var backPressedEnabled = true
     protected var backPressedMessage = ""
+    var whiteListedFintechPath = WhiteListedFintechPath()
     var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getWhitelistFintechPrefixUrl()
         init(intent)
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -143,9 +147,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val currentUrl = f.webView?.url
             if (currentUrl != null &&
                 (
-                        currentUrl.contains("/paylater/acquisition/status") ||
-                                currentUrl.contains("/paylater/thank-you")
-                        )
+                    currentUrl.contains("/paylater/acquisition/status") ||
+                        currentUrl.contains("/paylater/thank-you")
+                    )
             ) {
                 this.finish()
                 return
@@ -312,6 +316,44 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             messageMap["url"] = url
             ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
         }
+    }
+
+    fun updateToolbarVisibility(url: String) {
+        if (whiteListedFintechPath.isEnabled) {
+            val uri = Uri.parse(url)
+            val path = uri.pathSegments.joinToString("/")
+            if (isFintechUrlPathWhiteList(path)) {
+                supportActionBar?.hide()
+            } else {
+                setupToolbar()
+            }
+        } else {
+            setupToolbar()
+        }
+    }
+
+    private fun getWhitelistFintechPrefixUrl() {
+        try {
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(this)
+            val whitelistedFintechPrefixes = remoteConfig.getString(FINTECH_WEBVIEW_HIDE_TOOLBAR)
+            if (whitelistedFintechPrefixes.isNotBlank()) {
+                whiteListedFintechPath = Gson().fromJson(
+                    whitelistedFintechPrefixes,
+                    WhiteListedFintechPath::class.java
+                )
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
+    }
+
+    private fun isFintechUrlPathWhiteList(path: String): Boolean {
+        whiteListedFintechPath.path.forEach {
+            if (path.startsWith(it)) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {
