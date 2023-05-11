@@ -326,6 +326,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
 
+    private Boolean isToastErrorAkamaiCalled = false;
+
+
     // count down component
     private View cdLayout;
     private TimerUnify cdView;
@@ -942,6 +945,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
                         .show();
             }
+        }
+    }
+
+    @Override
+    public void showToastErrorAkamai(String message) {
+        if (!isToastErrorAkamaiCalled) {
+            showToastError(message);
+            isToastErrorAkamaiCalled = true;
         }
     }
 
