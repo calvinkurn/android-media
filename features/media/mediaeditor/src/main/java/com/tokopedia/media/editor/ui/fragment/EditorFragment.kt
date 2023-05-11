@@ -192,6 +192,7 @@ class EditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
             EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
+            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickAddText()
         }
     }
 

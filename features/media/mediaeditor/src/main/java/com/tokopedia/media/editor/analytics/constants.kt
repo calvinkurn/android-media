@@ -32,6 +32,7 @@ const val ACTION_AUTO_CROP_TIME = "click auto crop"
 const val ACTION_CLICK_LOGO_UPLOAD = "click logo toko"
 const val ACTION_CLICK_LOGO_LOAD_RETRY = "view failed to load"
 const val ACTION_CLICK_ADD_LOGO = "click logo"
+const val ACTION_CLICK_ADD_TEXT = "click add text button"
 
 // TRACKER ID
 const val TRACKER_ID_CLICK_UPLOAD = "30547"
@@ -49,6 +50,7 @@ const val TRACKER_ID_AUTO_CROP_TIME = "36009"
 const val TRACKER_ID_CLICK_LOGO_UPLOAD = "40241"
 const val TRACKER_ID_CLICK_LOGO_LOAD_RETRY = "40242"
 const val TRACKER_ID_CLICK_ADD_LOGO = "40243"
+const val TRACKER_ID_CLICK_ADD_TEXT = "42922"
 
 // OTHER
 const val REMOVE_BG_TYPE_ORI = "original"

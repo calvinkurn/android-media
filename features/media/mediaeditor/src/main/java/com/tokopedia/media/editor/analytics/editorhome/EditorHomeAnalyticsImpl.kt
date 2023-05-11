@@ -92,6 +92,14 @@ class EditorHomeAnalyticsImpl @Inject constructor(
         )
     }
 
+    override fun clickAddText() {
+        sendGeneralEvent(
+            ACTION_CLICK_ADD_TEXT,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_ADD_TEXT
+        )
+    }
+
     override fun autoCropProcessTime(loadTime: Long, fileNumber: Int) {
         sendGeneralEvent(
             ACTION_AUTO_CROP_TIME,
