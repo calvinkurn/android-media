@@ -347,6 +347,17 @@ class UserProfileFragment @Inject constructor(
                     }
                 })
             }
+            is UserProfileReviewOnboardingBottomSheet -> {
+                childFragment.setListener(object : UserProfileReviewOnboardingBottomSheet.Listener {
+                    override fun onClickOpenReviewTab() {
+                        /** TODO: handle this */
+                    }
+
+                    override fun onClickOpenProfileSettingsPage() {
+                        openProfileSettingsPage()
+                    }
+                })
+            }
         }
     }
 
@@ -677,8 +688,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
-                profileSettingsForActivityResult.launch(intent)
+                openProfileSettingsPage()
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
@@ -1051,6 +1061,11 @@ class UserProfileFragment @Inject constructor(
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()
+    }
+
+    private fun openProfileSettingsPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
+        profileSettingsForActivityResult.launch(intent)
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {

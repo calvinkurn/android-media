@@ -532,8 +532,8 @@ class UserProfileViewModel @AssistedInject constructor(
         if (isRefresh) loadProfileTab()
 
         if (isSelfProfile &&
-            profileSettings.getReviewSettings().isEnabled &&
-            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+            profileSettings.getReviewSettings().isEnabled
+//            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
         ) {
             viewModelScope.launch {
                 delay(DELAY_SHOW_REVIEW_ONBOARDING)
