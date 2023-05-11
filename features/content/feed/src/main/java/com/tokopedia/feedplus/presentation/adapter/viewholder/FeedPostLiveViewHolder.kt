@@ -17,10 +17,6 @@ import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -31,14 +27,12 @@ class FeedPostLiveViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardLivePreviewContentModel>(binding.root) {
 
-    private var feedVideoJob: Job? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
-    private var videoPlayer: FeedExoPlayer? = null
-
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
 
     private var trackerDataModel: FeedTrackerDataModel? = null
+
+    private var mVideoPlayer: FeedExoPlayer? = null
 
     override fun bind(element: FeedCardLivePreviewContentModel?) {
         element?.let { data ->
@@ -72,16 +66,21 @@ class FeedPostLiveViewHolder(
                     absoluteAdapterPosition
                 )
 
-                bindVideoPlayer(it)
+                bindVideoPlayer(element)
+                mVideoPlayer?.resume(shouldReset = false)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                videoPlayer?.stop()
+                mVideoPlayer?.stop()
             }
         }
     }
 
     override fun onViewRecycled() {
-        videoPlayer?.destroy()
+        val thePlayer = mVideoPlayer
+        mVideoPlayer = null
+
+        binding.playerFeedVideo.player = null
+        thePlayer?.let { listener.detachPlayer(it) }
     }
 
     private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
@@ -93,36 +92,41 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindVideoPlayer(element: FeedCardLivePreviewContentModel) {
-        feedVideoJob?.cancel()
-        with(binding) {
-            if (videoPlayer == null) {
-                videoPlayer = FeedExoPlayer(root.context)
+        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
+        mVideoPlayer = videoPlayer
+
+        videoPlayer.stop()
+
+        videoPlayer.setVideoStateListener(object : VideoStateListener {
+            override fun onInitialStateLoading() {
+
             }
 
-            feedVideoJob = scope.launch {
-                playerFeedVideo.player = videoPlayer?.getExoPlayer()
-                element.media[0].let {
-                    videoPlayer?.start(it.mediaUrl, false)
-                }
-                videoPlayer?.setVideoStateListener(object : VideoStateListener {
-                    override fun onInitialStateLoading() {
-                        showLoading()
-                    }
-
-                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
-                        hideLoading()
-                    }
-
-                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                    }
-                })
+            override fun onBuffering() {
+                showLoading()
             }
-        }
+
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
+                hideLoading()
+            }
+
+            override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+            }
+        })
+
+        binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
+        videoPlayer.start(
+            element.media.firstOrNull()?.mediaUrl.orEmpty(),
+            false,
+            playWhenReady = false,
+        )
     }
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
-        binding.playerFeedVideo.hide()
+        if (mVideoPlayer?.getExoPlayer()?.currentPosition == 0L) {
+            binding.playerFeedVideo.hide()
+        }
     }
 
     private fun hideLoading() {

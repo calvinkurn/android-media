@@ -53,10 +53,6 @@ class FeedMainViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedMainEvent>,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
-    private val _isInClearView = MutableLiveData<Boolean>(false)
-    val isInClearView: LiveData<Boolean>
-        get() = _isInClearView
-
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
 
@@ -113,10 +109,6 @@ class FeedMainViewModel @Inject constructor(
         _isPageResumed.value = false
     }
 
-    fun changeCurrentTabByIndex(index: Int) {
-        _currentTabIndex.value = index
-    }
-
     fun changeCurrentTabByType(type: String) {
         feedTabs.value?.let {
             if (it is Success) {
@@ -125,6 +117,19 @@ class FeedMainViewModel @Inject constructor(
                         _currentTabIndex.value = index
                     }
                 }
+            }
+        }
+    }
+
+    fun scrollCurrentTabToTop() {
+        viewModelScope.launch {
+            val feedTabsValue = feedTabs.value
+            if (feedTabsValue !is Success) return@launch
+            feedTabsValue.data.forEachIndexed { _, tab ->
+                if (!tab.isActive) return@forEachIndexed
+                uiEventManager.emitEvent(
+                    FeedMainEvent.ScrollToTop(tab.key)
+                )
             }
         }
     }

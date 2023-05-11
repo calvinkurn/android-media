@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
@@ -48,9 +51,11 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -80,6 +85,8 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
@@ -188,6 +195,8 @@ class FeedFragment :
         observeFollow()
         observeLikeContent()
         observeResumePage()
+
+        observeEvent()
     }
 
     override fun onPause() {
@@ -892,22 +901,56 @@ class FeedFragment :
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.uiEvent.collect { event ->
+                    if (event == null) return@collect
+
+                    when (event) {
+                        is FeedMainEvent.ScrollToTop -> {
+                            if (event.tabKey != data?.key) return@collect
+                            binding.rvFeedPost.setCurrentItem(0, true)
+                        }
+                        else -> {}
+                    }
+
+                    feedMainViewModel.consumeEvent(event)
+                }
+            }
+        }
+    }
+
     private fun pauseCurrentVideo() {
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.pause(item.id)
+        when (item) {
+            is FeedCardVideoContentModel -> pauseVideo(item.id)
+            is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            else -> {}
+        }
     }
 
     private fun resumeCurrentVideo() {
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.resume(item.id)
+        when (item) {
+            is FeedCardVideoContentModel -> resumeVideo(item.id)
+            is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            else -> {}
+        }
+    }
+
+    private fun pauseVideo(id: String) {
+        videoPlayerManager.pause(id, shouldReset = true)
+    }
+
+    private fun resumeVideo(id: String) {
+        videoPlayerManager.resume(id)
     }
 
     private fun onGoToLogin() {

@@ -46,6 +46,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -67,7 +68,9 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
+class FeedBaseFragment : BaseDaggerFragment(),
+    FeedContentCreationTypeBottomSheet.Listener,
+    FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -226,6 +229,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         super.onDestroyView()
     }
 
+    override fun onScrollToTop() {
+        feedMainViewModel.scrollCurrentTabToTop()
+    }
+
+    override fun isLightThemeStatusBar(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -340,6 +351,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun onResumeInternal() {
         feedMainViewModel.resumePage()
+
+        val meta = feedMainViewModel.metaData.value
+        if (meta is Success) showOnboarding(meta.data)
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
@@ -509,43 +523,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(ONBOARDING_SHOW_DELAY)
-            mOnboarding?.dismiss()
-            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-                .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
-                        binding.btnFeedCreatePost
-                    } else {
-                        null
-                    }
-                )
-                .setProfileEntryPointView(
-                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                        binding.feedUserProfileImage
-                    } else {
-                        null
-                    }
-                )
-                .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                    }
-
-                    override fun onCompleteCreateContentOnboarding() {
-                        feedMainViewModel.setHasShownCreateContent()
-                    }
-
-                    override fun onCompleteProfileEntryPointOnboarding() {
-                        feedMainViewModel.setHasShownProfileEntryPoint()
-                    }
-
-                    override fun onFinished(isForcedDismiss: Boolean) {
-                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                    }
-                }).build()
-
-            mOnboarding?.show()
-        }
+        showOnboarding(meta)
 
         if (meta.showMyProfile) {
             if (meta.profilePhotoUrl.isNotEmpty()) {
@@ -626,6 +604,46 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         scrollToDefaultTabPosition()
+    }
+
+    private fun showOnboarding(meta: MetaModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(ONBOARDING_SHOW_DELAY)
+            mOnboarding?.dismiss()
+            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+                .setCreateContentView(
+                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                        binding.btnFeedCreatePost
+                    } else {
+                        null
+                    }
+                )
+                .setProfileEntryPointView(
+                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                        binding.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setListener(object : ImmersiveFeedOnboarding.Listener {
+                    override fun onStarted() {
+                    }
+
+                    override fun onCompleteCreateContentOnboarding() {
+                        feedMainViewModel.setHasShownCreateContent()
+                    }
+
+                    override fun onCompleteProfileEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onFinished(isForcedDismiss: Boolean) {
+                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                    }
+                }).build()
+
+            mOnboarding?.show()
+        }
     }
 
     private fun scrollToDefaultTabPosition() {

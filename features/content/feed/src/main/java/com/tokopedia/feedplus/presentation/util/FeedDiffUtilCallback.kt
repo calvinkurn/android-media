@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.presentation.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -26,7 +28,8 @@ class FeedDiffUtilCallback(
         val newItem = newList[newItemPosition]
 
         return if (oldItem is FeedCardImageContentModel && newItem is FeedCardImageContentModel) {
-            oldItem.id == newItem.id
+            if (oldItem.isTopAds && newItem.isTopAds) oldItem.topAdsId == newItem.topAdsId
+            else oldItem.id == newItem.id
         } else if (oldItem is FeedCardVideoContentModel && newItem is FeedCardVideoContentModel) {
             oldItem.id == newItem.id
         } else if (oldItem is FeedCardLivePreviewContentModel && newItem is FeedCardLivePreviewContentModel) {
@@ -44,5 +47,27 @@ class FeedDiffUtilCallback(
         val newItem = newList[newItemPosition]
 
         return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is FeedCardImageContentModel && newItem is FeedCardImageContentModel) {
+            if (oldItem.isTopAds && !oldItem.isFetched && newItem.isTopAds && newItem.isFetched) null
+            else if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
+                FeedViewHolderPayloads(
+                    listOf(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
+                )
+            } else null
+        } else if (oldItem is FeedCardVideoContentModel && newItem is FeedCardVideoContentModel) {
+            if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
+                FeedViewHolderPayloads(
+                    listOf(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
+                )
+            } else null
+        } else {
+            null
+        }
     }
 }
