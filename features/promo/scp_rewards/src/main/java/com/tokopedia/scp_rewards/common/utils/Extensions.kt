@@ -148,3 +148,23 @@ fun Activity.setTransparentSystemBar() {
         }
     }
 }
+
+fun Long?.isNullOrZero(defaultValue:Long) : Long{
+    if(this == null || this == 0L) return defaultValue
+    return this
+}
+
+fun Int?.isNullOrZero(defaultValue:Int) : Int{
+    if(this == null || this == 0) return defaultValue
+    return this
+}
+
+fun View.show(){
+    if(visibility == View.GONE)
+        visibility = View.VISIBLE
+}
+
+fun View.hide(){
+    if(visibility == View.VISIBLE)
+        visibility = View.GONE
+}
