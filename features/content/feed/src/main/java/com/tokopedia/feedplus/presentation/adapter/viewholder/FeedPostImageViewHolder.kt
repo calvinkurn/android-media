@@ -85,6 +85,8 @@ class FeedPostImageViewHolder(
 
     private var isInClearView: Boolean = false
 
+    private var mData: FeedCardImageContentModel? = null
+
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
@@ -99,6 +101,13 @@ class FeedPostImageViewHolder(
             rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     indicatorFeedContent.setCurrentIndicator(layoutManager.findFirstVisibleItemPosition())
+
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        mData?.let {
+                            updateProductTagText(it)
+                            updateCampaignAvailability(it)
+                        }
+                    }
                 }
             })
         }
@@ -107,6 +116,7 @@ class FeedPostImageViewHolder(
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
+        mData = element
         element?.let { data ->
             trackerDataModel = trackerMapper.transformImageContentToTrackerModel(data)
 
@@ -222,14 +232,6 @@ class FeedPostImageViewHolder(
                     }
                     postGestureDetector.onTouchEvent(event)
                 }
-                rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
-                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            updateProductTagText(data)
-                            updateCampaignAvailability(data)
-                        }
-                    }
-                })
             }
         }
     }
@@ -280,6 +282,7 @@ class FeedPostImageViewHolder(
 
     private fun updateProductTagText(element: FeedCardImageContentModel) {
         val index = layoutManager.findFirstVisibleItemPosition()
+
         if (index in PRODUCT_COUNT_ZERO until element.media.size) {
             element.media[index].let {
                 if (it.tagging.isNotEmpty()) {
@@ -292,6 +295,8 @@ class FeedPostImageViewHolder(
                             element.products
                         )
                     }
+                } else {
+                    productTagView.showClearView()
                 }
             }
         }
@@ -462,13 +467,14 @@ class FeedPostImageViewHolder(
             commentButton.show()
             menuButton.show()
             shareButton.show()
-            productTagButton.root.show()
-            productTagView.root.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
+
+        productTagView.showIfPossible()
+        productButtonView.showIfPossible()
     }
 
     private fun runAutoSwipe() {
