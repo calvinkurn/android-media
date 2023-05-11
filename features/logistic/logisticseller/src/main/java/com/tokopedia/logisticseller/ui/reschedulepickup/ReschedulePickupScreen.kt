@@ -176,21 +176,14 @@ fun ReschedulePickupScreenLayout(
             }
             InputReason(
                 reason = state.reason,
-                onOpenBottomSheet = {
-                    onEvent(
-                        ReschedulePickupUiEvent.OpenBottomSheet(
-                            it
-                        )
-                    )
-                }
+                onOpenBottomSheet = onBottomSheetEvent
             )
-            if (state.isCustomReason) {
-                InputCustomReason(
-                    customReason = input.reason,
-                    onOtherReasonChanged = { onEvent(ReschedulePickupUiEvent.CustomReason(it)) },
-                    error = state.customReasonError
-                )
-            }
+            InputCustomReason(
+                customReason = input.reason,
+                onOtherReasonChanged = { onEvent(ReschedulePickupUiEvent.CustomReason(it)) },
+                error = state.customReasonError,
+                shouldRequestFocus = state.isCustomReason
+            )
             RescheduleResultDialog(
                 saveRescheduleModel = state.saveRescheduleModel,
                 onCloseDialog = { onEvent(ReschedulePickupUiEvent.CloseDialog(it)) }
