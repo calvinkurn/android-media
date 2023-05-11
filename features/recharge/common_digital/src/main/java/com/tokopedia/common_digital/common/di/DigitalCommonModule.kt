@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common_digital.atc.DigitalAddToCartRestUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
@@ -44,33 +43,35 @@ class DigitalCommonModule {
 
     @DigitalCommonScope
     @Provides
-    fun provideDigitalCartInterceptor(@ApplicationContext context: Context,
-                                      networkRouter: NetworkRouter,
-                                      userSession: UserSessionInterface): DigitalInterceptor {
+    fun provideDigitalCartInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSession: UserSessionInterface
+    ): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @DigitalCommonScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return if (context is NetworkRouter) context
-        else throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
+        return if (context is NetworkRouter) {
+            context
+        } else {
+            throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
+        }
     }
 
     @Provides
     @DigitalCommonScope
     @DigitalAddToCartQualifier
-    fun provideRestRepository(@DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+    fun provideRestRepository(
+        @DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
     }
-
-    @DigitalCommonScope
-    @Provides
-    fun provideDigitalAtcUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
-            : DigitalAddToCartRestUseCase = DigitalAddToCartRestUseCase(restRepository)
 
     @Provides
     @DigitalCommonScope

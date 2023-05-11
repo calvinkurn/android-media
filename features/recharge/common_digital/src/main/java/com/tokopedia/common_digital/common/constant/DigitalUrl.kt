@@ -15,7 +15,5 @@ object DigitalUrl {
 
     val BASE_URL = DIGITAL_API_DOMAIN + VERSION
 
-    val CART = BASE_URL + "cart"
-    val CHECKOUT = BASE_URL + "checkout"
     val OTP = BASE_URL + PATH_PATCH_OTP_SUCCESS
 }
