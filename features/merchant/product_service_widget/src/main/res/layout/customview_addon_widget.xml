@@ -8,7 +8,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_widget_title"
-        android:text="Lengkapi belanjaanmu"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_1"
         app:typographyWeight="bold"
