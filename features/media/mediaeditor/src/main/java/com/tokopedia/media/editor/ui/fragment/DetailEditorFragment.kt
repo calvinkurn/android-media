@@ -196,21 +196,15 @@ class DetailEditorFragment @Inject constructor(
                         sourcePath = data.originalUrl
                     )?.path
 
-                    if (data.addLogoValue != EditorAddLogoUiModel()) {
-                        // crop current overlay
-                        val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
-                        val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
-
-                        if (!isWidthSame || !isHeightSame) {
-                            updateAddLogoOverlay(Pair(it.width, it.height)) {
-                                finishPage()
-                            }
-                        } else {
-                            finishPage()
-                        }
-                    } else {
-                        finishPage()
+                    if (data.addLogoValue.logoUrl.isNotEmpty()) {
+                        updateAddLogoOverlay(Pair(it.width, it.height)) {}
                     }
+
+                    if (data.addTextValue?.textImagePath?.isNotEmpty() == true) {
+                        updateAddTextOverlay(Pair(it.width, it.height)) {}
+                    }
+
+                    finishPage()
                 } ?: run {
                     showErrorGeneralToaster(context)
                     activity?.finish()
@@ -351,7 +345,6 @@ class DetailEditorFragment @Inject constructor(
                     Pair(overlayRect.width(), overlayRect.height())
                 )
             }
-
         }
     }
 
@@ -1330,6 +1323,20 @@ class DetailEditorFragment @Inject constructor(
         )
     }
 
+    private fun updateAddTextOverlay (
+        newSize: Pair<Int, Int>,
+        onFinish: (filePath: String) -> Unit
+    ) {
+        data.addTextValue?.let {
+            viewModel.generateAddTextOverlay(newSize, it).let { newTextOverlay ->
+                viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
+                    data.addTextValue?.textImagePath = cacheFile.absolutePath
+                    onFinish(cacheFile.absolutePath)
+                }
+            }
+        }
+    }
+
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
         addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
         isAddLogoTipsShowed = true
@@ -1405,13 +1412,8 @@ class DetailEditorFragment @Inject constructor(
                 else -> Pair(width, height)
             }
 
-            data.addTextValue?.let {
-                viewModel.generateAddTextOverlay(rotateSize, it).let { newTextOverlay ->
-                    viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
-                        data.addTextValue?.textImagePath = cacheFile.absolutePath
-                        viewBinding?.imgPreviewOverlaySecondary?.setImageBitmap(newTextOverlay)
-                    }
-                }
+            updateAddTextOverlay(rotateSize) { resultUrl ->
+                viewBinding?.imgPreviewOverlaySecondary?.loadImage(resultUrl)
             }
         }
     }
@@ -1554,8 +1556,6 @@ class DetailEditorFragment @Inject constructor(
 
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
-
-        private const val TYPEFACE = "OpenSauceOneRegular.ttf"
 
         // watermark & rotate index is used 99 since the conditional need to compare which is smaller
         private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
