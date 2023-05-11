@@ -123,7 +123,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
 
     fun updateButtonState(isLoading: Boolean) {
         binding.btnContinue.isLoading = isLoading
-        if (isLoading) binding.btnContinue.isClickable = false
+        binding.btnContinue.isClickable = !isLoading
     }
 
     fun setListener(listener: Listener) {
@@ -135,7 +135,6 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     fun showErrorToast(throwable: Throwable) {
-        binding.btnContinue.isClickable = true
         toaster.showError(
             throwable,
             duration = Toaster.LENGTH_INDEFINITE,
