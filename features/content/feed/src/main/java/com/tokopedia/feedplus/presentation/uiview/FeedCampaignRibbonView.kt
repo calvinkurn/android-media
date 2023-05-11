@@ -12,9 +12,11 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,7 +38,7 @@ enum class FeedCampaignRibbonType {
 
 class FeedCampaignRibbonView(
     private val binding: LayoutFeedCampaignRibbonMotionBinding,
-    private val listener: FeedListener
+    private val listener: FeedListener,
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -45,6 +47,12 @@ class FeedCampaignRibbonView(
     private var mCampaign: FeedCardCampaignModel? = null
     private var mCta: FeedCardCtaModel? = null
     private var mHasVoucher: Boolean = false
+    private var trackerData: FeedTrackerDataModel? = null
+
+    private var mPostId: String = ""
+    private var mAuthor: FeedAuthorModel? = null
+    private var mPostType: String = ""
+    private var mIsFollowing: Boolean = false
 
     fun bindData(
         modelType: String,
@@ -52,7 +60,12 @@ class FeedCampaignRibbonView(
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
         hasVoucher: Boolean,
-        isTypeHighlight: Boolean
+        isTypeHighlight: Boolean,
+        trackerDataModel: FeedTrackerDataModel,
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
@@ -60,6 +73,11 @@ class FeedCampaignRibbonView(
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
+            trackerData = trackerDataModel
+            mPostId = postId
+            mAuthor = author
+            mPostType = postType
+            mIsFollowing = isFollowing
 
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
@@ -240,7 +258,24 @@ class FeedCampaignRibbonView(
                     setupAvailabilityProgress()
 
                     setupTimer(mCampaign?.endTime ?: "") {}
-                    icFeedCampaignRibbonIcon.setOnClickListener { }
+                    icFeedCampaignRibbonIcon.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                mProduct?.let { product ->
+                                    listener.onOngoingCampaignClicked(
+                                        mPostId,
+                                        author,
+                                        mPostType,
+                                        mIsFollowing,
+                                        campaign,
+                                        mHasVoucher,
+                                        listOf(product),
+                                        trackerData
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
@@ -255,7 +290,8 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         listener.onReminderClicked(
                             mCampaign?.id.toLongOrZero(),
-                            !(mCampaign?.isReminderActive ?: false)
+                            !(mCampaign?.isReminderActive ?: false),
+                            trackerData
                         )
                     }
                 }

@@ -66,6 +66,8 @@ data class FeedCardImageContentModel(
     val isTopAds: Boolean
         get() = type == TYPE_FEED_TOP_ADS && typename == TYPE_FEED_X_CARD_PLACEHOLDER
 
+    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
+
     companion object {
         private const val AUTHOR_SGC = 2
         private const val AUTHOR_UGC = 3

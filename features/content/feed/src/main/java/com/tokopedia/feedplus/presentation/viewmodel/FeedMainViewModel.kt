@@ -18,9 +18,8 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -129,6 +128,15 @@ class FeedMainViewModel @Inject constructor(
             }
         }
     }
+
+    fun getCurrentTabType() =
+        feedTabs.value?.let {
+            if (it is Success) {
+                it.data[currentTabIndex.value ?: 0].type
+            } else {
+                ""
+            }
+        } ?: ""
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {

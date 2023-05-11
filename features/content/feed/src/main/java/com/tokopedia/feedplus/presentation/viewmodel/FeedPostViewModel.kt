@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -25,6 +26,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -61,6 +63,7 @@ class FeedPostViewModel @Inject constructor(
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
+    private val deletePostUseCase: SubmitActionContentUseCase,
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
@@ -87,6 +90,10 @@ class FeedPostViewModel @Inject constructor(
     val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
         get() = _likeKolResp
 
+    private val _deletePostResult = MutableLiveData<Result<Int>>()
+    val deletePostResult: LiveData<Result<Int>>
+        get() = _deletePostResult
+
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
 
@@ -94,11 +101,16 @@ class FeedPostViewModel @Inject constructor(
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
 
+    private var _shouldShowNoMoreContent = false
+    val shouldShowNoMoreContent: Boolean
+        get() = _shouldShowNoMoreContent
+
     fun fetchFeedPosts(
         source: String,
         isNewData: Boolean = false,
         postId: String? = null
     ) {
+        _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
 
         viewModelScope.launch {
@@ -156,6 +168,10 @@ class FeedPostViewModel @Inject constructor(
                                 else -> it
                             }
                         }.toList()
+
+                        _shouldShowNoMoreContent =
+                            _feedHome.value?.items.orEmpty().isNotEmpty() &&
+                                items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
@@ -377,6 +393,31 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun doDeletePost(id: String, rowNumber: Int) {
+        viewModelScope.launch {
+            try {
+                deletePostUseCase.setRequestParams(
+                    SubmitActionContentUseCase.paramToDeleteContent(
+                        id
+                    )
+                )
+
+                val isSuccess = withContext(dispatchers.io) {
+                    deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+                }
+
+                _deletePostResult.value = if (isSuccess) {
+                    Success(rowNumber)
+                } else {
+                    throw MessageErrorException()
+                }
+
+            } catch (t: Throwable) {
+                _deletePostResult.value = Fail(t)
+            }
+        }
+    }
+
     private suspend fun getRelevantPosts(postId: String): FeedModel {
         return feedXHomeUseCase(
             feedXHomeUseCase.createPostDetailParams(postId)
@@ -495,6 +536,8 @@ class FeedPostViewModel @Inject constructor(
     companion object {
         private const val SHOP = "toko"
         private const val USER = "akun"
+
+        private const val FOLLOWING = "following"
 
         private const val FOLLOWING_TYPE = "type"
     }

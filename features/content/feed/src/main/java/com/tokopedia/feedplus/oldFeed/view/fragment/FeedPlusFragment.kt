@@ -2570,7 +2570,8 @@ class FeedPlusFragment :
             customMvcTracker.hasVoucher = card.hasVoucher
             customMvcTracker.contentScore = (card.contentScore).firstOrNull()?.value ?: String.EMPTY
 
-            productTagBS.show(
+            productTagBS.
+            show(
                 childFragmentManager,
                 this,
                 ProductBottomSheetData(
@@ -3928,6 +3929,10 @@ class FeedPlusFragment :
                 item
             )
         }
+    }
+
+    override fun onBuyButtonClicked(item: ProductPostTagModelNew) {
+        // do nothing
     }
 
     override fun onTaggedProductCardClicked(

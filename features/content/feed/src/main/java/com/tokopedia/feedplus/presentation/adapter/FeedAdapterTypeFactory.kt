@@ -12,6 +12,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
+import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
@@ -28,8 +29,9 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedAdapterTypeFactory(
-    private val context: FeedFragment,
+    context: FeedFragment,
     private val parentToBeDisabled: ViewParent?,
+    private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : BaseAdapterTypeFactory() {
 
     private val feedListener: FeedListener
@@ -55,7 +57,8 @@ class FeedAdapterTypeFactory(
                     false
                 ),
                 parentToBeDisabled,
-                feedListener
+                feedListener,
+                trackerMapper
             )
             FeedPostVideoViewHolder.LAYOUT -> FeedPostVideoViewHolder(
                 ItemFeedPostVideoBinding.inflate(
@@ -63,7 +66,8 @@ class FeedAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 ),
-                feedListener
+                feedListener,
+                trackerMapper
             )
             FeedPostLiveViewHolder.LAYOUT -> FeedPostLiveViewHolder(
                 ItemFeedPostLiveBinding.inflate(
@@ -71,7 +75,8 @@ class FeedAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 ),
-                feedListener
+                feedListener,
+                trackerMapper
             )
             FeedNoContentViewHolder.LAYOUT -> FeedNoContentViewHolder(
                 ItemFeedNoContentBinding.inflate(
