@@ -229,13 +229,22 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
             is PlayShortsAffiliateTnCBottomSheet -> {
                 childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
+                    override fun onCheckBoxChecked() {
+                        analytic.sendClickAcceptTcAffiliateEvent(viewModel.selectedAccount.id)
+                    }
                     override fun onSubmitTnc() {
+                        analytic.sendClickNextRegisterAffiliateEvent(viewModel.selectedAccount.id)
                         viewModel.submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
                     }
                 })
             }
             is PlayShortsAffiliateSuccessBottomSheet -> {
                 childFragment.setupData(viewModel.selectedAccount.name)
+                childFragment.setListener(object: PlayShortsAffiliateSuccessBottomSheet.Listener{
+                    override fun onClickNext() {
+                        analytic.sendClickNextCreateContentEvent(viewModel.selectedAccount.id)
+                    }
+                })
             }
         }
     }
@@ -388,6 +397,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
                 bannerIcon = IconUnify.SALDO
                 setOnClickListener {
+                    analytic.sendClickRegisterAffiliateCardEvent(viewModel.selectedAccount.id)
                     openShortsAffiliateTncBottomSheet()
                 }
                 visible()

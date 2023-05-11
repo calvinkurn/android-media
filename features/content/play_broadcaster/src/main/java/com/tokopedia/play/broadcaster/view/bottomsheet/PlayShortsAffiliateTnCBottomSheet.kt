@@ -107,6 +107,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
+            if (binding.layoutTnc.cbxTnc.isChecked) mListener?.onCheckBoxChecked()
             binding.btnContinue.isEnabled = binding.layoutTnc.cbxTnc.isChecked
         }
         binding.btnContinue.setOnClickListener {
@@ -159,6 +160,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     interface Listener {
+        fun onCheckBoxChecked()
         fun onSubmitTnc()
     }
 

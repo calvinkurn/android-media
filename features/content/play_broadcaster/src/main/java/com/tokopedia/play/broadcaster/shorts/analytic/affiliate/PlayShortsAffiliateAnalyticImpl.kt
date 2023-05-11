@@ -89,7 +89,7 @@ class PlayShortsAffiliateAnalyticImpl @Inject constructor(
         eventLabel: String,
         trackerId: String
     ) {
-        analyticSender.sendGeneralViewEvent(eventAction, eventLabel, trackerId)
+        analyticSender.sendGeneralViewEventContent(eventAction, eventLabel, trackerId)
     }
 
     private fun sendGeneralClickEvent(
@@ -97,7 +97,7 @@ class PlayShortsAffiliateAnalyticImpl @Inject constructor(
         eventLabel: String,
         trackerId: String
     ) {
-        analyticSender.sendGeneralClickEvent(eventAction, eventLabel, trackerId)
+        analyticSender.sendGeneralClickEventContent(eventAction, eventLabel, trackerId)
     }
 
 }
