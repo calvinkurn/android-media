@@ -10,3 +10,7 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_SELECTED = 1044
     const val FEED_POST_FOLLOW_CHANGED = 1055
 }
+
+data class FeedViewHolderPayloads(
+    val payloads: List<Int>,
+)
