@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.track.constant.TrackerConstant
 
@@ -14,57 +14,52 @@ import com.tokopedia.track.constant.TrackerConstant
 object ProductDetailInfoTracking {
 
     fun onClickAnnotationGeneric(
-        trackDataModel: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
-        key: String,
-        userId: String
+        trackDataModel: ProductDetailInfoAnnotationTrackData,
+        productInfo: DynamicProductInfoP1?
     ) {
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-            action = "click - annotation $key on pdp",
-            trackerId = "43296",
-            userId = userId
+            action = "click - annotation information on detail produk",
+            trackerId = "43296"
         )
     }
 
     fun onImpressionAnnotationGeneric(
-        trackDataModel: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
-        key: String,
-        userId: String
+        trackDataModel: ProductDetailInfoAnnotationTrackData,
+        productInfo: DynamicProductInfoP1?
     ) {
         doTracking(
             component = trackDataModel,
             productInfo = productInfo,
             event = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS,
-            action = "impression - annotation $key on pdp",
-            trackerId = "43295",
-            userId = userId
+            action = "impression - annotation information on detail produk",
+            trackerId = "43295"
         )
     }
 
     private fun doTracking(
-        component: ComponentTrackDataModel,
+        component: ProductDetailInfoAnnotationTrackData,
         productInfo: DynamicProductInfoP1?,
         event: String,
         action: String,
-        trackerId: String,
-        userId: String
+        trackerId: String
     ) {
-        val productId = productInfo?.basic?.productID.orEmpty()
-        val label = "Product_ID : $productId"
+        val label = "annotation_key:${component.key};annotation_value:${component.value}"
+        val shopId = productInfo?.basic?.shopID.orEmpty()
+        val userId = component.userId
 
         TrackingUtil.addClickEvent(
             productInfo = productInfo,
-            trackDataModel = component,
+            trackDataModel = component.parentTrackData,
             action = action,
             trackerId = trackerId,
             eventLabel = label,
             modifier = {
                 it[TrackerConstant.EVENT] = event
                 it[TrackerConstant.USERID] = userId
+                it[TrackerConstant.SHOP_ID] = shopId
             }
         )
     }
