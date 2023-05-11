@@ -74,6 +74,8 @@ dependencies {
 
     // need androidx.core for androidx.core.view.*
     implementation rootProject.ext.supportLibDependencies.design
+    implementation "com.google.accompanist:accompanist-pager:0.23.1"
+
 }
 
 project.ext {
