@@ -43,7 +43,7 @@ class SetProfileSettingsUseCase @Inject constructor(
         const val QUERY_NAME = "SetProfileSettingsUseCaseQuery"
         const val QUERY = """
             mutation FeedXProfileSetProfileSettings(
-                ${"$${PARAM_REQ}"}: feedXProfileSetProfileSettingsResponse!
+                ${"$${PARAM_REQ}"}: feedXProfileSetProfileSettingsRequest!
             ) {
                 feedXProfileSetProfileSettings(
                     ${PARAM_REQ}: ${"$${PARAM_REQ}"}

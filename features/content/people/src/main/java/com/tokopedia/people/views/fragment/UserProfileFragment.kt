@@ -655,7 +655,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                RouteManager.route(requireContext(), ApplinkConst.PROFILE_SETTINGS)
+                RouteManager.route(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
