@@ -33,6 +33,9 @@ const val ACTION_CLICK_LOGO_UPLOAD = "click logo toko"
 const val ACTION_CLICK_LOGO_LOAD_RETRY = "view failed to load"
 const val ACTION_CLICK_ADD_LOGO = "click logo"
 const val ACTION_CLICK_ADD_TEXT = "click add text button"
+const val ACTION_CLICK_TEXT_FREE = "click teks bebas"
+const val ACTION_CLICK_TEXT_BACKGROUND = "click latar teks"
+const val ACTION_CLICK_TEXT_TEMPLATE = "click jadikan template"
 
 // TRACKER ID
 const val TRACKER_ID_CLICK_UPLOAD = "30547"
@@ -51,6 +54,9 @@ const val TRACKER_ID_CLICK_LOGO_UPLOAD = "40241"
 const val TRACKER_ID_CLICK_LOGO_LOAD_RETRY = "40242"
 const val TRACKER_ID_CLICK_ADD_LOGO = "40243"
 const val TRACKER_ID_CLICK_ADD_TEXT = "42922"
+const val TRACKER_ID_CLICK_TEXT_FREE = "42923"
+const val TRACKER_ID_CLICK_TEXT_BACKGROUND = "42924"
+const val TRACKER_ID_CLICK_TEXT_TEMPLATE = "42925"
 
 // OTHER
 const val REMOVE_BG_TYPE_ORI = "original"
@@ -62,3 +68,14 @@ const val WATERMARK_TYPE_DIAGONAL = "diagonal"
 
 const val ADD_LOGO_TYPE_CUSTOM = "custom"
 const val ADD_LOGO_TYPE_PROFILE = "profile"
+
+const val ADD_TEXT_BEBAS = "bebas"
+const val ADD_TEXT_TEMPLATE = "template"
+
+const val ADD_TEXT_COLOR_WHITE = "white"
+const val ADD_TEXT_COLOR_BLACK = "black"
+
+const val ADD_TEXT_POSITION_TOP = "_top"
+const val ADD_TEXT_POSITION_RIGHT = "_right"
+const val ADD_TEXT_POSITION_BOTTOM = "_bottom"
+const val ADD_TEXT_POSITION_LEFT = "_left"

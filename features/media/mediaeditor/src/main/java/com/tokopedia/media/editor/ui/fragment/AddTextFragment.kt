@@ -27,6 +27,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_BLACK
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_WHITE
 import com.tokopedia.media.editor.ui.widget.AddTextColorItem
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
 import com.tokopedia.media.loader.loadImage
@@ -45,12 +47,10 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
-    // add new text color here
-    private val rawColor = listOf(
-        editorR.color.Unify_Static_Black,
-        editorR.color.Unify_Static_White
+    private var colorList = arrayListOf(
+        TEXT_COLOR_BLACK,
+        TEXT_COLOR_WHITE
     )
-    private var colorList = arrayListOf<Int>()
 
     /**
      * 0 -> regular
@@ -387,15 +387,6 @@ class AddTextFragment @Inject constructor(
     }
 
     private fun initStartValue() {
-        context?.let {
-            rawColor.forEach { colorAddress ->
-                ContextCompat.getColor(it, colorAddress).apply {
-                    colorList.add(this)
-                    return@forEach
-                }
-            }
-        }
-
         activeStyleIndex = viewModel.textData.textStyle
         alignmentIndex = viewModel.textData.textAlignment
         activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: DEFAULT_COLOR_INDEX

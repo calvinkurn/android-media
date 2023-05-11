@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.analytics
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.types.EditorToolType
 
@@ -49,5 +50,36 @@ fun addLogoToText(logoState: Int?): String {
         AddLogoToolUiComponent.LOGO_UPLOAD -> ADD_LOGO_TYPE_CUSTOM
         AddLogoToolUiComponent.LOGO_SHOP -> ADD_LOGO_TYPE_PROFILE
         else -> ""
+    }
+}
+
+fun addTextToText(textDetail: EditorAddTextUiModel?): String {
+    return textDetail?.let { textValue ->
+        var text = ""
+
+        text += when (textValue.textTemplate) {
+            EditorAddTextUiModel.TEXT_TEMPLATE_FREE -> ADD_TEXT_BEBAS
+            else -> ADD_TEXT_TEMPLATE
+        }
+
+        text += "_" + when (textValue.textColor) {
+            EditorAddTextUiModel.TEXT_COLOR_BLACK -> ADD_TEXT_COLOR_BLACK
+            else -> ADD_TEXT_COLOR_WHITE
+        }
+
+        textValue.getLatarTemplate()?.let {
+            text += "_${it.latarModel}"
+        }
+
+        text += when (textValue.textPosition) {
+            EditorAddTextUiModel.TEXT_POSITION_TOP -> ADD_TEXT_POSITION_TOP
+            EditorAddTextUiModel.TEXT_POSITION_RIGHT -> ADD_TEXT_POSITION_RIGHT
+            EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> ADD_TEXT_POSITION_BOTTOM
+            else -> ADD_TEXT_POSITION_LEFT
+        }
+
+        return text
+    } ?: run{
+        ""
     }
 }

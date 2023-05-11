@@ -69,12 +69,16 @@ class EditorAddTextUiModel(
 
         // --- if edit this line please check AddTextLatarBottomSheet
         const val TEXT_LATAR_TEMPLATE_FULL = 0
-        const val TEXT_LATAR_TEMPLATE_FLOATING = 1
-        const val TEXT_LATAR_TEMPLATE_SIDE_CUT = 2
+        const val TEXT_LATAR_TEMPLATE_SIDE_CUT = 1
+        const val TEXT_LATAR_TEMPLATE_FLOATING = 2
 
         const val TEXT_LATAR_TEMPLATE_BLACK = 0
         const val TEXT_LATAR_TEMPLATE_WHITE = 1
         // ---
+
+        // Int color, get from hex => android color
+        const val TEXT_COLOR_WHITE = -1
+        const val TEXT_COLOR_BLACK = -16777216
     }
 }
 

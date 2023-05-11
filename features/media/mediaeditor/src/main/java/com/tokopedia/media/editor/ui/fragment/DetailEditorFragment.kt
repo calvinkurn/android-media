@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.analytics.addLogoToText
+import com.tokopedia.media.editor.analytics.addTextToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
@@ -45,6 +46,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_BLACK
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
@@ -426,7 +429,8 @@ class DetailEditorFragment @Inject constructor(
 
     // === Listener add text
     override fun onAddFreeText() {
-        EditorAddTextUiModel.TEXT_TEMPLATE_FREE.let { templateIndex ->
+        editorDetailAnalytics.clickAddTextFreeText()
+        TEXT_TEMPLATE_FREE.let { templateIndex ->
             data.addTextValue?.let {
                 it.textTemplate = templateIndex
             }
@@ -436,6 +440,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onAddSingleBackgroundText() {
+        editorDetailAnalytics.clickAddTextBackgroundText()
         showAddTextLatarSelection{ color, model ->
             EditorAddTextUiModel.TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
                 data.addTextValue?.let {
@@ -464,6 +469,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onTemplateSave(isSave: Boolean) {
+        editorDetailAnalytics.clickAddTextTemplate()
         if (isSave) {
             showAddTextTemplateSaveDialog()
         } else {
@@ -1269,6 +1275,7 @@ class DetailEditorFragment @Inject constructor(
                 viewModel.rotateSliderValue.toInt()
             }
             val addLogoValue = addLogoToText(addLogoComponent.getLogoState())
+            val addTextValue = addTextToText(data.addTextValue)
 
             val currentEditorText =
                 requireContext().getText(getToolEditorText(data.editorToolType)).toString()
@@ -1280,7 +1287,8 @@ class DetailEditorFragment @Inject constructor(
                 rotateText,
                 watermarkText,
                 removeBackgroundText,
-                addLogoValue
+                addLogoValue,
+                addTextValue
             )
         }
     }
@@ -1501,16 +1509,10 @@ class DetailEditorFragment @Inject constructor(
 
     // color mapping for latar -> text (automatic choose text color according to latar color)
     private fun latarSelectionTextColor(latarColor: Int): Int {
-        context?.let {
-            return ContextCompat.getColor(
-                it, when (latarColor) {
-                    TEXT_LATAR_TEMPLATE_BLACK -> editorR.color.Unify_Static_White
-                    TEXT_LATAR_TEMPLATE_WHITE -> editorR.color.Unify_Static_Black
-                    else -> 0
-                }
-            )
+        return when (latarColor) {
+            TEXT_LATAR_TEMPLATE_BLACK -> TEXT_COLOR_WHITE
+            else -> TEXT_COLOR_BLACK
         }
-        return 0
     }
 
     private fun showAddTextTemplateSaveDialog() {
