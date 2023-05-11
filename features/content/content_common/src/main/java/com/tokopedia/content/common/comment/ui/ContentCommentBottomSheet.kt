@@ -131,7 +131,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (newLength > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
-                        CommentException.SendCommentFailed.message,
+                        CommentException.createSendCommentFailed().message.orEmpty(),
                         Toaster.LENGTH_SHORT
                     )
                 }
@@ -306,12 +306,12 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty()).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
-                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
+                            type = if (event.message.message?.equals(CommentException.createLinkNotAllowed().message.orEmpty())
                                 .orFalse()
                             ) {
                                 Toaster.TYPE_ERROR
@@ -555,7 +555,7 @@ class ContentCommentBottomSheet @Inject constructor(
         if (newLength > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
-                CommentException.SendCommentFailed.message,
+                CommentException.createSendCommentFailed().message.orEmpty(),
                 Toaster.LENGTH_SHORT
             )
         } else {

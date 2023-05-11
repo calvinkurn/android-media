@@ -1,10 +1,19 @@
 package com.tokopedia.content.common.comment
 
+import com.tokopedia.network.exception.MessageErrorException
+
 /**
  * @author by astidhiyaa on 13/03/23
  */
-enum class CommentException (val message: String) {
-    LinkNotAllowed("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya."),
-    FailedDelete("Oops, gagal menghapus komentar."),
-    SendCommentFailed("Oops, tidak bisa memberi komentar.")
+class CommentException(
+    message: String
+) : MessageErrorException(message) {
+    companion object {
+        fun createSendCommentFailed(): CommentException =
+            CommentException("Oops, tidak bisa memberi komentar.")
+        fun createDeleteFailed(): CommentException =
+            CommentException("Oops, gagal menghapus komentar.")
+        fun createLinkNotAllowed(): CommentException =
+            CommentException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
+    }
 }

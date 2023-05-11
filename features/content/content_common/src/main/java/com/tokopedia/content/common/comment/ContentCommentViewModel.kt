@@ -8,7 +8,7 @@ import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -240,7 +240,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }) {
             undoComment()
             _event.emit(
-                CommentEvent.ShowErrorToaster(message = MessageErrorException(CommentException.FailedDelete.message)) {
+                CommentEvent.ShowErrorToaster(message = CommentException.createDeleteFailed()) {
                     deleteComment(isFromToaster = false)
                 }
             )
@@ -285,9 +285,9 @@ class ContentCommentViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
-                    .count() > 0 && !comment.contains(TOKPED_ESCAPE)
+                    .count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)
                 ) {
-                    throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                    throw CommentException.createLinkNotAllowed()
                 }
                 val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 var index = 0
@@ -308,7 +308,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
-                        message = if (it.message?.isBlank() == true) MessageErrorException(CommentException.SendCommentFailed.message) else it,
+                        message = if (it.message?.isBlank() == true) CommentException.createSendCommentFailed() else it,
                         onClick = { sendReply(comment, commentType) }
                     )
                 )
