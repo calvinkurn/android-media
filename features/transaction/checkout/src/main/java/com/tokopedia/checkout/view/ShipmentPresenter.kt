@@ -677,9 +677,6 @@ class ShipmentPresenter @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension54(
                         getFulfillmentStatus(shipmentCartItemModel.shopId)
                     )
-                    enhancedECommerceProductCartMapData.setDimension12(
-                        courierItemData?.selectedShipper?.shipperPrice?.toString() ?: ""
-                    )
                     enhancedECommerceProductCartMapData.setWarehouseId(cartItemModel.analyticsProductCheckoutData.warehouseId)
                     enhancedECommerceProductCartMapData.setProductWeight(cartItemModel.analyticsProductCheckoutData.productWeight)
                     enhancedECommerceProductCartMapData.setPromoCode(cartItemModel.analyticsProductCheckoutData.promoCode)

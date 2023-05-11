@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
@@ -80,6 +82,30 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val products = checkoutData[EnhancedECommerceCheckout.KEY_PRODUCT] as List<*>
         val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(VALUE_BEBAS_ONGKIR_EXTRA, product["dimension83"])
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data with courier data THEN enhanced ecommerce product data dimension83 should contains courier data`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA))
+                selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(shipperPrice = 1000, serviceId = 1, shipperProductId = 1))
+            }
+        )
+
+        // When
+        val enhancedEcommerceData =
+            presenter.generateCheckoutAnalyticsDataLayer("3", "")
+
+        // Then
+        val checkoutData =
+            enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
+        val products = checkoutData[EnhancedECommerceCheckout.KEY_PRODUCT] as List<*>
+        val product = products.firstOrNull() as MutableMap<*, *>
+        assertEquals("1000", product["dimension12"])
+        assertEquals("1", product["dimension14"])
+        assertEquals("1", product["dimension16"])
     }
 
     @Test
