@@ -264,7 +264,7 @@ object DeeplinkMapper {
         }
 
         val appLinkEvents =
-            DeeplinkMapperEntertainment.getRegisteredNavigationFromHttpEvents(deeplink)
+            DeeplinkMapperEntertainment.getRegisteredNavigationFromHttpEvents(deeplink, context)
         if (appLinkEvents.isNotEmpty()) {
             return appLinkEvents
         }
