@@ -72,6 +72,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
+import com.tokopedia.wishlistcollection.view.IWishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -81,7 +82,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWis
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -91,8 +91,8 @@ import kotlin.math.roundToInt
 @Keep
 class WishlistCollectionFragment :
     BaseDaggerFragment(),
+    IWishlistCollectionFragment,
     WishlistCollectionAdapter.ActionListener,
-    ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
     ActionListenerBottomSheetMenu {
