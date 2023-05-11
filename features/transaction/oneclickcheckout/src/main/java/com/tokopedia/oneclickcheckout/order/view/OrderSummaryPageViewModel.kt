@@ -395,8 +395,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                 hasOldPromoCode = true
             }
         }
-        orderShipment.value = result.orderShipment
-            .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
+        if (hasOldPromoCode) {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = true)
+        } else {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
+        }
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
