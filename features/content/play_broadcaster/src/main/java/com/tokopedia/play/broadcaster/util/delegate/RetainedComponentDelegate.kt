@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 class RetainedComponentDelegate<T>(
     private val clazz: Class<out ViewModel>,
     private val owner: () -> ViewModelStoreOwner,
-    private val componentCreator: () -> T,
+    private val componentCreator: () -> T
 ) : ReadOnlyProperty<ViewModelStoreOwner, T> {
 
     private var value: T? = null

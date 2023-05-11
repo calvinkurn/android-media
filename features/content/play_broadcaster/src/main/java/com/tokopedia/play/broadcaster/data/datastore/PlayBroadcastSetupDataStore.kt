@@ -2,7 +2,13 @@ package com.tokopedia.play.broadcaster.data.datastore
 
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 
-interface PlayBroadcastSetupDataStore : CoverDataStore, TitleDataStore, TagsDataStore, BroadcastScheduleDataStore, InteractiveDataStore {
+interface PlayBroadcastSetupDataStore :
+    CoverDataStore,
+    TitleDataStore,
+    TagsDataStore,
+    BroadcastScheduleDataStore,
+    InteractiveDataStore,
+    ProductTagDataStore {
 
     fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode> = emptyList())
 
@@ -13,4 +19,6 @@ interface PlayBroadcastSetupDataStore : CoverDataStore, TitleDataStore, TagsData
     fun getBroadcastScheduleDataStore(): BroadcastScheduleDataStore
 
     fun getInteractiveDataStore(): InteractiveDataStore
+
+    fun getProductTagDataStore(): ProductTagDataStore
 }

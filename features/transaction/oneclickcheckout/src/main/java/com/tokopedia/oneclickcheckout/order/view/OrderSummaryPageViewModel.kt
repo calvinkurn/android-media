@@ -886,7 +886,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
-    fun updatePromoState(promoUiModel: PromoUiModel) {
+    private fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(
             lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
             isDisabled = false,
@@ -992,7 +992,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoState(resultValidateUse.promoUiModel)
+                    updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel)
                     if (isSuccess) {
                         doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch

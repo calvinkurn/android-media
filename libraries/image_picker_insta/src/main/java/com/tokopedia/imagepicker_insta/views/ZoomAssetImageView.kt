@@ -69,7 +69,9 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         initView()
     }
@@ -80,58 +82,72 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         scaleType = ScaleType.MATRIX
         scaleDetector = ScaleGestureDetector(context, scaleListener)
         scroller = OverScroller(context, DecelerateInterpolator())
-        tapDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDoubleTap(e: MotionEvent): Boolean {
-                return false
-            }
-
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                onClickListener?.onClick(this@ZoomAssetImageView)
-                return true
-            }
-
-            override fun onLongPress(e: MotionEvent) {
-                onLongClickListener?.onLongClick(this@ZoomAssetImageView)
-            }
-
-            override fun onScroll(
-                e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float
-            ): Boolean {
-                if (scaleDetector.isInProgress) return false
-                val xAbs = distanceX.absoluteValue
-                val yAbs = distanceY.absoluteValue
-                panImage(distanceX, distanceY)
-                return (xAbs > touchSlop || yAbs > touchSlop)
-            }
-
-            override fun onFling(
-                e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float
-            ): Boolean {
-                if (currentZoom <= MIN_SCALE) return false
-                val maxX = (preEventImgRect.width() - viewWidth).toInt()
-                val maxY = (preEventImgRect.height() - viewHeight).toInt()
-                flingRunnable.lastX = -preEventImgRect.left
-                flingRunnable.lastY = -preEventImgRect.top
-                scroller.fling(
-                    flingRunnable.lastX.toInt(), flingRunnable.lastY.toInt(), -velocityX.toInt(),
-                    -velocityY.toInt(), 0, maxX, 0, maxY
-                )
-                ViewCompat.postOnAnimation(this@ZoomAssetImageView, flingRunnable)
-                return true
-            }
-
-            override fun onDown(e: MotionEvent): Boolean {
-                removeCallbacks(flingRunnable)
-                scroller.forceFinished(true)
-                displayRect?.let {
-                    preEventImgRect.set(it)
+        tapDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    return false
                 }
-                panAnimator?.removeAllUpdateListeners()
-                panAnimator?.cancel()
-                return true
-            }
-        })
 
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    onClickListener?.onClick(this@ZoomAssetImageView)
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    onLongClickListener?.onLongClick(this@ZoomAssetImageView)
+                }
+
+                override fun onScroll(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float
+                ): Boolean {
+                    if (scaleDetector.isInProgress) return false
+                    val xAbs = distanceX.absoluteValue
+                    val yAbs = distanceY.absoluteValue
+                    panImage(distanceX, distanceY)
+                    return (xAbs > touchSlop || yAbs > touchSlop)
+                }
+
+                override fun onFling(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    if (currentZoom <= MIN_SCALE) return false
+                    val maxX = (preEventImgRect.width() - viewWidth).toInt()
+                    val maxY = (preEventImgRect.height() - viewHeight).toInt()
+                    flingRunnable.lastX = -preEventImgRect.left
+                    flingRunnable.lastY = -preEventImgRect.top
+                    scroller.fling(
+                        flingRunnable.lastX.toInt(),
+                        flingRunnable.lastY.toInt(),
+                        -velocityX.toInt(),
+                        -velocityY.toInt(),
+                        0,
+                        maxX,
+                        0,
+                        maxY
+                    )
+                    ViewCompat.postOnAnimation(this@ZoomAssetImageView, flingRunnable)
+                    return true
+                }
+
+                override fun onDown(e: MotionEvent): Boolean {
+                    removeCallbacks(flingRunnable)
+                    scroller.forceFinished(true)
+                    displayRect?.let {
+                        preEventImgRect.set(it)
+                    }
+                    panAnimator?.removeAllUpdateListeners()
+                    panAnimator?.cancel()
+                    return true
+                }
+            }
+        )
     }
 
     private val flingRunnable = object : Runnable {
@@ -166,10 +182,10 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         return tapDetector.onTouchEvent(event) || return scaleDetector.onTouchEvent(event) || return true
     }
 
-    private fun setZoom(scale: Float, x: Float, y: Float, absolute:Boolean = false) {
-        if(absolute){
+    private fun setZoom(scale: Float, x: Float, y: Float, absolute: Boolean = false) {
+        if (absolute) {
             zoomMatrix.setScale(scale, scale, x, y)
-        }else{
+        } else {
             zoomMatrix.postScale(scale, scale, x, y)
         }
         setBounds()
@@ -201,13 +217,15 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
             zoomInfo?.bmpHeight = drawable.intrinsicHeight
             zoomInfo?.bmpWidth = drawable.intrinsicWidth
         }
-        Timber.d("update zoom: uri = ${asset?.contentUri}," +
+        Timber.d(
+            "update zoom: uri = ${asset?.contentUri}," +
                 "scale=${zoomInfo?.scale}," +
                 "matrix=${zoomInfo?.matrix}," +
                 "bmpW=${zoomInfo?.bmpWidth}," +
                 "bmpH=${zoomInfo?.bmpHeight}," +
                 "left=${zoomInfo?.rectF?.left}," +
-                "top=${zoomInfo?.rectF?.top}")
+                "top=${zoomInfo?.rectF?.top}"
+        )
     }
 
     private fun setScaleAbsolute(scale: Float, x: Float, y: Float) {
@@ -243,7 +261,7 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         if (changed) resetZoom()
     }
 
-    fun resetZoom(skipMatrix:Boolean = false) {
+    fun resetZoom(skipMatrix: Boolean = false) {
         val tempSrc = RectF(0F, 0F, drawableWidth.toFloat(), drawableHeight.toFloat())
         val tempDst = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
 
@@ -254,7 +272,7 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
             imageMatrix.set(zoomInfo!!.matrix)
         } else {
             val scale = getInitialScale()
-            zoomMatrix.setScale(scale,scale,viewWidth / 2f, viewHeight / 2f)
+            zoomMatrix.setScale(scale, scale, viewWidth / 2f, viewHeight / 2f)
             setBounds()
             updateMatrix(drawMatrix)
             updateZoomInfo()
@@ -264,8 +282,9 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     private val scaleListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            if (detector.scaleFactor.isNaN() || detector.scaleFactor.isInfinite())
+            if (detector.scaleFactor.isNaN() || detector.scaleFactor.isInfinite()) {
                 return false
+            }
             if (currentScale >= MAX_SCALE && detector.scaleFactor > 1F) return true
             if (currentScale <= MIN_SCALE && detector.scaleFactor < 1F) return true
 
@@ -305,7 +324,6 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     private fun animateZoom(startZoom: Float, endZoom: Float, x: Float, y: Float) {
-
         zoomAnimator = ValueAnimator.ofFloat(startZoom, endZoom).apply {
             duration = VALUE_ANIMATOR_DURATION
             addUpdateListener {
@@ -318,7 +336,6 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
-
         if (!isValidGlideContext()) {
             return
         }
@@ -334,7 +351,11 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     private fun animatePan(
-        startX: Float, startY: Float, endX: Float, endY: Float, dismissProgress: Float? = null
+        startX: Float,
+        startY: Float,
+        endX: Float,
+        endY: Float,
+        dismissProgress: Float? = null
     ) {
         panAnimator = ValueAnimator.ofFloat(startX, startY, endX, endY).apply {
             duration = VALUE_ANIMATOR_DURATION
@@ -350,7 +371,6 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
             }
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator) {
-
                 }
 
                 override fun onAnimationEnd(p0: Animator) {
@@ -363,7 +383,6 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
                 }
 
                 override fun onAnimationRepeat(p0: Animator) {
-
                 }
             })
             interpolator = zoomInterpolator
@@ -377,10 +396,11 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     private fun panImage(x: Float, y: Float, setAbsolute: Boolean = false) {
-        if (setAbsolute)
+        if (setAbsolute) {
             zoomMatrix.setTranslate(x, y)
-        else
+        } else {
             zoomMatrix.postTranslate(-x, -y)
+        }
         setBounds()
         updateMatrix(drawMatrix)
         updateZoomInfo()
@@ -395,8 +415,9 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         var deltaY = 0f
         when {
             height <= viewHeight -> {
-                if (!handlingDismiss)
+                if (!handlingDismiss) {
                     deltaY = (viewHeight - height) / 2 - rect.top
+                }
             }
             rect.top > 0 -> {
                 deltaY = -rect.top
@@ -448,7 +469,10 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         get() {
             drawable?.let { d ->
                 field?.set(
-                    0f, 0f, d.intrinsicWidth.toFloat(), d.intrinsicHeight.toFloat()
+                    0f,
+                    0f,
+                    d.intrinsicWidth.toFloat(),
+                    d.intrinsicHeight.toFloat()
                 )
                 drawMatrix.mapRect(field)
                 return field
@@ -489,21 +513,20 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     fun getCenterCropZoom(): Float {
         val bmp = (drawable as? BitmapDrawable)?.bitmap
         if (bmp != null) {
-
             val dwidth = bmp.width
             val dheight = bmp.height
 
-            val vwidth = width - paddingLeft - paddingRight;
-            val vheight = height - paddingTop - paddingBottom;
+            val vwidth = width - paddingLeft - paddingRight
+            val vheight = height - paddingTop - paddingBottom
 
             var scale: Float
 
             if (dwidth * vheight > vwidth * dheight) {
-                //Landscape
+                // Landscape
                 scale = (vheight / dheight.toFloat())
                 scale = max(scale, MIN_SCALE)
             } else {
-                //Portrait
+                // Portrait
                 scale = (vwidth / dwidth.toFloat())
                 scale = max(scale, MIN_SCALE)
             }
@@ -514,12 +537,12 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     fun setScaleToCenterCrop() {
-        if(drawable!=null) {
+        if (drawable != null) {
             currentZoom = getCenterCropZoom()
         }
     }
     fun setScaleToCenterInside() {
-        if(drawable!=null) {
+        if (drawable != null) {
             currentZoom = MIN_SCALE
         }
     }
@@ -541,7 +564,7 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     private fun getInitialScale(): Float {
-        if(drawable == null) return MIN_SCALE
+        if (drawable == null) return MIN_SCALE
         if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
             return getCenterCropZoom()
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
@@ -554,8 +577,8 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         setImageDrawable(null)
     }
 
-    private fun isValidGlideContext():Boolean{
-        if(context is Activity) {
+    private fun isValidGlideContext(): Boolean {
+        if (context is Activity) {
             val activity = context as Activity
             return !(activity.isFinishing || activity.isDestroyed)
         }

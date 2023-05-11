@@ -6,7 +6,6 @@ import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.param.GetTicketListParam
-import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
@@ -79,8 +78,9 @@ class InboxContactUsViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val topBotStatusResponse = topBotStatusUseCase(Unit)
-                if (topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isActive
+                val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
+                if (topBotStatusInbox.getTopBotStatusData().isActive &&
+                    topBotStatusInbox.messageError.isNullOrEmpty()
                 ) {
                     val messageId =
                         topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
@@ -101,7 +101,8 @@ class InboxContactUsViewModel @Inject constructor(
                     }
                 } else {
                     InboxUiState(
-                        showChatBotWidget = false
+                        showChatBotWidget = false,
+                        errorMessageChatBotWidget = topBotStatusInbox.messageError?.firstOrNull().orEmpty()
                     )
                 }
             },

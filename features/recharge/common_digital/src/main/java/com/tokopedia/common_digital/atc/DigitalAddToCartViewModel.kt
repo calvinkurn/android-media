@@ -3,7 +3,6 @@ package com.tokopedia.common_digital.atc
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -39,12 +38,9 @@ class DigitalAddToCartViewModel @Inject constructor(
     val errorAtc: LiveData<ErrorAtc>
         get() = _errorAtc
 
-
     fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
-        digitalIdentifierParam: RequestBodyIdentifier,
-        digitalSubscriptionParams: DigitalSubscriptionParams,
-        isUseGql: Boolean
+        digitalIdentifierParam: RequestBodyIdentifier
     ) {
         if (!userSession.isLoggedIn) {
             _addToCartResult.postValue(Fail(MessageErrorException(MESSAGE_ERROR_NON_LOGIN)))
@@ -54,10 +50,7 @@ class DigitalAddToCartViewModel @Inject constructor(
                     digitalAddToCartUseCase.execute(
                         digitalCheckoutPassData,
                         userSession.userId,
-                        digitalIdentifierParam,
-                        digitalSubscriptionParams,
-                        digitalCheckoutPassData.idemPotencyKey,
-                        isUseGql
+                        digitalIdentifierParam
                     )
                 }
 

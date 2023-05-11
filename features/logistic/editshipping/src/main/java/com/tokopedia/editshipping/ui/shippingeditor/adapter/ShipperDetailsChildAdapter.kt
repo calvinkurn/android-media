@@ -1,12 +1,10 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
-import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.ItemShipperDetailChildBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductDetailsModel
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.unifyprinciples.Typography
 
 class ShipperDetailsChildAdapter :
     RecyclerView.Adapter<ShipperDetailsChildAdapter.ShipperDetailsChildViewHolder>() {
@@ -17,7 +15,15 @@ class ShipperDetailsChildAdapter :
         parent: ViewGroup,
         viewType: Int
     ): ShipperDetailsChildViewHolder {
-        return ShipperDetailsChildViewHolder(parent.inflateLayout(R.layout.item_shipper_detail_child))
+        return ShipperDetailsChildViewHolder(
+            ItemShipperDetailChildBinding.inflate(
+                LayoutInflater.from(
+                    parent.context
+                ),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -33,19 +39,11 @@ class ShipperDetailsChildAdapter :
         notifyDataSetChanged()
     }
 
-
-    inner class ShipperDetailsChildViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val tvDetailShipperName =
-            itemView.findViewById<Typography>(R.id.tv_detail_shipper_feature_name)
-        private val tvDetailShipperDesc =
-            itemView.findViewById<Typography>(R.id.tv_shipper_feature_desc)
-
+    inner class ShipperDetailsChildViewHolder(private val binding: ItemShipperDetailChildBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bindData(data: ShipperProductDetailsModel) {
-            tvDetailShipperName.text = data.name
-            tvDetailShipperDesc.text = data.description
+            binding.tvDetailShipperFeatureName.text = data.name
+            binding.tvShipperFeatureDesc.text = data.description
         }
     }
-
-
 }
