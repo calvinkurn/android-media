@@ -1,7 +1,9 @@
 package com.tokopedia.people.views.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,7 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.viewmodels.UserProfileSettingsViewModel
@@ -98,13 +101,25 @@ class ProfileSettingsActivity : AppCompatActivity() {
 
     private fun setupListener() {
         binding.headerUnify.setNavigationOnClickListener {
-            /** TODO: setResult here if the settings is changed */
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.switchReview.setOnCheckedChangeListener { compoundButton, isChecked ->
             viewModel.submitAction(UserProfileSettingsAction.SetShowReview(isChecked))
         }
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    setResult(RESULT_OK, Intent().apply {
+                        putExtra(EXTRA_IS_ANY_SETTINGS_CHANGED, viewModel.isAnySettingsChanged)
+                    })
+
+                    finish()
+                }
+            }
+        )
     }
 
     private fun setupObserver() {
@@ -257,5 +272,13 @@ class ProfileSettingsActivity : AppCompatActivity() {
 //                }
 //            }
 //        )
+    }
+
+    companion object {
+        private const val EXTRA_IS_ANY_SETTINGS_CHANGED = "EXTRA_IS_ANY_SETTINGS_CHANGED"
+
+        fun getIsAnySettingsChanged(intent: Intent?): Boolean {
+            return intent?.getBooleanExtra(EXTRA_IS_ANY_SETTINGS_CHANGED, false).orFalse()
+        }
     }
 }

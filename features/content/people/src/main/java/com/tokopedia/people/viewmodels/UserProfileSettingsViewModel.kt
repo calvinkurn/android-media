@@ -29,10 +29,14 @@ class UserProfileSettingsViewModel @AssistedInject constructor(
         fun create(userID: String): UserProfileSettingsViewModel
     }
 
+    val isAnySettingsChanged: Boolean
+        get() = _oldReviewSettings.value != _reviewSettings.value
+
     private val _uiEvent = MutableSharedFlow<UserProfileSettingsEvent>()
     val uiEvent: Flow<UserProfileSettingsEvent>
         get() = _uiEvent
 
+    private val _oldReviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
     private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
     val reviewSettings: Flow<ProfileSettingsUiModel>
         get() = _reviewSettings
@@ -50,8 +54,10 @@ class UserProfileSettingsViewModel @AssistedInject constructor(
 
     private fun handleGetProfileSettings() {
         viewModelScope.launchCatchError(block = {
-            val profileSettings = repo.getProfileSettings(userID)
-            _reviewSettings.update { profileSettings.getReviewSettings() }
+            val reviewSettings = repo.getProfileSettings(userID).getReviewSettings()
+
+            _oldReviewSettings.update { reviewSettings }
+            _reviewSettings.update { reviewSettings }
         }) {
 
         }

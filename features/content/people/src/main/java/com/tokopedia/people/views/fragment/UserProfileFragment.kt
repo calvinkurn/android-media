@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
@@ -68,6 +69,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_SHORTS
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
@@ -159,6 +161,16 @@ class UserProfileFragment @Inject constructor(
 
     private var ugcOnboardingOpenFrom: Int = 0
     private var viewPagerSelectedPage: Int = 0
+
+    private val profileSettingsForActivityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK &&
+            ProfileSettingsActivity.getIsAnySettingsChanged(result.data)
+        ) {
+            refreshLandingPageData(isRefreshPost = false)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -655,7 +667,8 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                RouteManager.route(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
+                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
+                profileSettingsForActivityResult.launch(intent)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
