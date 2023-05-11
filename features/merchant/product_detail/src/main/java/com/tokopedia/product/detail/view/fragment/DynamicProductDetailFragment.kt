@@ -1176,12 +1176,13 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
-            == ProductDetailConstant.PRODUCT_PROTECTION
-        ) {
-            getPurchaseProtectionUrl()
-        } else {
-            ""
+        val purchaseProtectionUrl = when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
+            else -> ""
+        }
+        val promoId = when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.SHIPMENT_V2 -> getShipmentPlusText()
+            else -> ""
         }
 
         DynamicProductDetailTracking.Impression
@@ -1192,7 +1193,8 @@ open class DynamicProductDetailFragment :
                 componentName = "",
                 purchaseProtectionUrl = purchaseProtectionUrl,
                 userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId()
+                lcaWarehouseId = getLcaWarehouseId(),
+                promoId = promoId
             )
     }
 
@@ -1532,6 +1534,10 @@ open class DynamicProductDetailFragment :
     private fun getPurchaseProtectionUrl(): String {
         return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
             ?: ""
+    }
+
+    private fun getShipmentPlusText(): String {
+        return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
     }
 
     private fun getPPTitleName(): String {
