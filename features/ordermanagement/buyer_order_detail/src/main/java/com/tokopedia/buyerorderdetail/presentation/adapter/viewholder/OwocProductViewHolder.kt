@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class OwocProductViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator
+    private val navigator: BuyerOrderDetailNavigator?
 ) : AbstractViewHolder<OwocProductListUiModel.ProductUiModel>(itemView) {
 
     companion object {

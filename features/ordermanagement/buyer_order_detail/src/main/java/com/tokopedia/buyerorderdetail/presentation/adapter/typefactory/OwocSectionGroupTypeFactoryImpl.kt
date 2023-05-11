@@ -14,11 +14,10 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocTicker
 import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocShimmerUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 
 class OwocSectionGroupTypeFactoryImpl(
-    private val navigator: BuyerOrderDetailNavigator,
+    private val navigator: BuyerOrderDetailNavigator?,
     private val owocSectionGroupListener: OwocSectionGroupListener
 ): BaseAdapterTypeFactory(), OwocSectionGroupTypeFactory {
 
@@ -38,14 +37,11 @@ class OwocSectionGroupTypeFactoryImpl(
         return OwocErrorStateViewHolder.LAYOUT
     }
 
-    override fun type(owocThickDividerUiModel: OwocThickDividerUiModel): Int {
-        return OwocThickDividerViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OwocSectionGroupViewHolder.LAYOUT -> OwocSectionGroupViewHolder(parent, navigator)
             OwocErrorStateViewHolder.LAYOUT -> OwocErrorStateViewHolder(parent, owocSectionGroupListener)
+            OwocShimmerViewHolder.LAYOUT -> OwocShimmerViewHolder(parent)
             OwocTickerViewHolder.LAYOUT -> OwocTickerViewHolder(parent, navigator)
             OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)

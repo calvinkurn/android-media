@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 
 data class OwocTickerUiModel(
     val actionKey: String,
@@ -9,13 +11,13 @@ data class OwocTickerUiModel(
     val actionUrl: String,
     val description: String,
     val type: String
-) : BaseOwocVisitableUiModel {
+) : BaseOwocSectionGroupUiModel {
 
     var marginBottom: Int? = null
 
     var marginTop: Int? = null
 
-    override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
+    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 

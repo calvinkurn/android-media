@@ -1,11 +1,11 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 
-class OwocErrorUiModel(val throwable: Throwable): BaseOwocVisitableUiModel {
+class OwocErrorUiModel(val throwable: Throwable): BaseOwocSectionGroupUiModel {
 
-    override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
+    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 

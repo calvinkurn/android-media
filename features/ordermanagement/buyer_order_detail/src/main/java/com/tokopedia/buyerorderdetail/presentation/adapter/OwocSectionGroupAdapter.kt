@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
-import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -14,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFactoryImpl) :
     BaseAdapter<OwocSectionGroupTypeFactoryImpl>(typeFactory) {
 
-    fun updateItems(context: Context?, newOwocSectionGroupList: List<Visitable<OwocSectionGroupTypeFactoryImpl>>) {
+    fun updateItems(newOwocSectionGroupList: List<Visitable<OwocSectionGroupTypeFactoryImpl>>) {
         val diffCallback = OwocSectionGrouplDiffUtilCallback(
             visitables as List<Visitable<OwocSectionGroupTypeFactoryImpl>>,
             newOwocSectionGroupList,
@@ -60,5 +59,9 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }
+    }
+
+    inline fun <reified T : Visitable<*>> filterUiModel(): T? {
+        return list.filterIsInstance<T>().firstOrNull()
     }
 }

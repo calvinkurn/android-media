@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 class OwocPartialProductItemViewHolder(
     private val itemView: View?,
     partialProductItemViewStub: View?,
-    private val navigator: BuyerOrderDetailNavigator,
+    private val navigator: BuyerOrderDetailNavigator?,
     private var element: OwocProductListUiModel.ProductUiModel
 ) : View.OnClickListener {
 
@@ -49,7 +49,7 @@ class OwocPartialProductItemViewHolder(
     private fun goToProductSnapshotPage() {
         element.let {
             if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+                navigator?.goToProductSnapshotPage(it.orderId, it.orderDetailId)
                 BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
             } else {
                 showToaster(

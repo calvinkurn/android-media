@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,11 +17,14 @@ import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductListHeaderViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<OwocProductListUiModel.ProductListHeaderUiModel>(itemView), View.OnClickListener {
+    private val navigator: BuyerOrderDetailNavigator?
+) : AbstractViewHolder<OwocProductListUiModel.ProductListHeaderUiModel>(itemView),
+    View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_product_list_header
+
+        const val LABEL_TYPE = "label"
     }
 
     private val ivOwocShopTier = itemView?.findViewById<ImageView>(R.id.ivOwocShopTier)
@@ -41,11 +45,14 @@ class OwocProductListHeaderViewHolder(
             setupShopBadge(it.shopBadgeUrl)
             setupShopName(it.shopName)
             setupInvoice(it.invoiceNumber)
-            setupButtonOrLabel(it.fromShopId, it.currentShopId)
+            setupButtonOrLabel(it.owocActionButtonUiModel)
         }
     }
 
-    override fun bind(element: OwocProductListUiModel.ProductListHeaderUiModel?, payloads: MutableList<Any>) {
+    override fun bind(
+        element: OwocProductListUiModel.ProductListHeaderUiModel?,
+        payloads: MutableList<Any>
+    ) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
@@ -60,8 +67,8 @@ class OwocProductListHeaderViewHolder(
                     if (oldItem.invoiceNumber != newItem.invoiceNumber) {
                         setupInvoice(newItem.invoiceNumber)
                     }
-                    if (oldItem.fromShopId != newItem.fromShopId || oldItem.currentShopId != newItem.currentShopId) {
-                        setupButtonOrLabel(newItem.fromShopId, newItem.currentShopId)
+                    if (oldItem.owocActionButtonUiModel != newItem.owocActionButtonUiModel) {
+                        setupButtonOrLabel(newItem.owocActionButtonUiModel)
                     }
                     return
                 }
@@ -80,7 +87,7 @@ class OwocProductListHeaderViewHolder(
 
     private fun goToOtherBomDetail() {
         element?.let {
-            navigator.goToBomDetailPage(it.orderId)
+            navigator?.goToBomDetailPage(it.orderId)
         }
     }
 
@@ -88,9 +95,13 @@ class OwocProductListHeaderViewHolder(
         labelOwoc?.setOnClickListener(this@OwocProductListHeaderViewHolder)
     }
 
-    private fun setupButtonOrLabel(fromShopId: String, currentShopId: String) {
-        labelOwoc?.showWithCondition(fromShopId == currentShopId)
-        btnOwocMoreDetail?.showWithCondition(fromShopId != currentShopId)
+    private fun setupButtonOrLabel(
+        owocButtonActionButtonsUiModel:
+        OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel
+    ) {
+        val isLabelType = owocButtonActionButtonsUiModel.type == LABEL_TYPE
+        labelOwoc?.showWithCondition(isLabelType)
+        btnOwocMoreDetail?.showWithCondition(!isLabelType)
     }
 
     private fun setupShopBadge(shopBadgeUrl: String) {

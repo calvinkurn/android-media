@@ -6,6 +6,7 @@ import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductListToggleBinding
+import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 
@@ -37,21 +38,21 @@ class OwocProductListToggleViewHolder(
         rotateToggleIcon(getToggleIconRotation(collapsed), animate)
     }
 
-    private fun bindListener(collapsed: Boolean) {
+    private fun bindListener(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean) {
         binding.root.setOnClickListener {
-            if (collapsed) {
-                listener.onExpandProductList()
+            if (isExpanded) {
+                listener.onExpandProductList(expandedProducts = expandedProducts, isExpanded = isExpanded)
             } else {
-                listener.onCollapseProductList()
+                listener.onCollapseProductList(expandedProducts = expandedProducts, isExpanded = isExpanded)
             }
         }
     }
 
-    private fun getToggleIconRotation(collapsed: Boolean): Float {
-        return if (collapsed) {
-            ICON_ROTATION_COLLAPSED
-        } else {
+    private fun getToggleIconRotation(expanded: Boolean): Float {
+        return if (expanded) {
             ICON_ROTATION_EXPANDED
+        } else {
+            ICON_ROTATION_COLLAPSED
         }
     }
 
@@ -79,8 +80,8 @@ class OwocProductListToggleViewHolder(
     override fun bind(element: OwocProductListUiModel.ProductListToggleUiModel?) {
         if (element == null) return
         bindToggleText(element.text)
-        bindToggleIcon(collapsed = element.collapsed, animate = false)
-        bindListener(element.collapsed)
+        bindToggleIcon(collapsed = element.isExpanded, animate = false)
+        bindListener(element.expandProductList, element.isExpanded)
     }
 
     override fun bind(
@@ -94,9 +95,9 @@ class OwocProductListToggleViewHolder(
                     if (oldItem.text != newItem.text) {
                         bindToggleText(newItem.text)
                     }
-                    if (oldItem.collapsed != newItem.collapsed) {
-                        bindToggleIcon(newItem.collapsed, true)
-                        bindListener(newItem.collapsed)
+                    if (oldItem.isExpanded != newItem.isExpanded) {
+                        bindToggleIcon(newItem.isExpanded, true)
+                        bindListener(newItem.expandProductList, newItem.isExpanded)
                     }
                     return
                 }
@@ -105,8 +106,8 @@ class OwocProductListToggleViewHolder(
     }
 
     interface Listener {
-        fun onCollapseProductList()
-        fun onExpandProductList()
+        fun onCollapseProductList(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean)
+        fun onExpandProductList(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean)
     }
 }
 

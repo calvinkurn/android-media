@@ -21,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductBundlingViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator
+    private val navigator: BuyerOrderDetailNavigator?
 ): AbstractViewHolder<OwocProductListUiModel.ProductBundlingUiModel>(itemView), OwocProductBundlingItemAdapter.ViewHolder.Listener {
 
     companion object {
@@ -41,7 +41,6 @@ class OwocProductBundlingViewHolder(
     private var bundlingNameText: Typography? = null
     private var bundlingIconImage: ImageUnify? = null
     private var bundlingItemRecyclerView: RecyclerView? = null
-    private var bundlingPriceText: Typography? = null
 
     init {
         bindViews()
@@ -51,7 +50,6 @@ class OwocProductBundlingViewHolder(
     override fun bind(element: OwocProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
         setupBundleItems(element.bundleItemList)
-        setupBundleTotalPrice(element.totalPriceText)
     }
 
     override fun bind(
@@ -69,9 +67,6 @@ class OwocProductBundlingViewHolder(
                     if (oldItem.bundleItemList != newItem.bundleItemList) {
                         setupBundleItems(newItem.bundleItemList)
                     }
-                    if (oldItem.totalPriceText != newItem.totalPriceText) {
-                        setupBundleTotalPrice(newItem.totalPriceText)
-                    }
                     return
                 }
             }
@@ -80,7 +75,7 @@ class OwocProductBundlingViewHolder(
 
     override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
         if (orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.goToProductSnapshotPage(orderId, orderDetailId)
+            navigator?.goToProductSnapshotPage(orderId, orderDetailId)
             BuyerOrderDetailTracker.eventClickProduct(orderStatusId, orderId)
         } else {
             showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
@@ -93,7 +88,6 @@ class OwocProductBundlingViewHolder(
             bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
             bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
             bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
-            bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
         }
     }
 
@@ -118,10 +112,6 @@ class OwocProductBundlingViewHolder(
 
     private fun setupBundleItems(bundleItemList: List<OwocProductListUiModel.ProductUiModel>) {
         bundleItemAdapter.setItems(bundleItemList)
-    }
-
-    private fun setupBundleTotalPrice(price: String) {
-        bundlingPriceText?.text = price
     }
 
     private fun showToaster(message: String) {

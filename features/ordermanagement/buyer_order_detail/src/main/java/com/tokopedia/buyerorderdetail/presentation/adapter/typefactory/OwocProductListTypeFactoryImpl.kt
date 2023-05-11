@@ -7,15 +7,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocAddonsViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 
 class OwocProductListTypeFactoryImpl(
-    private val navigator: BuyerOrderDetailNavigator,
+    private val navigator: BuyerOrderDetailNavigator?,
     private val owocSectionGroupListener: OwocProductListListener
 ): BaseAdapterTypeFactory(), OwocProductListTypeFactory {
 
@@ -37,6 +41,11 @@ class OwocProductListTypeFactoryImpl(
 
     override fun type(owocAddonsListUiModel: OwocAddonsListUiModel): Int {
         return OwocAddonsViewHolder.LAYOUT
+    }
+
+
+    override fun type(owocThickDividerUiModel: OwocThickDividerUiModel): Int {
+        return OwocThickDividerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {

@@ -1,32 +1,32 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 
 data class OwocProductListUiModel(
+    val productListHeaderUiModel: ProductListHeaderUiModel,
     val productList: List<ProductListUiModel.ProductUiModel>,
     val productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>,
-    val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?,
     val productListToggleUiModel: ProductListUiModel.ProductListToggleUiModel?,
-): Visitable<OwocSectionGroupTypeFactoryImpl> {
-
-    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
-        return typeFactory.type(this)
-    }
+) {
 
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
-        val fromShopId: String,
         val currentShopId: String,
         val shopName: String,
         val invoiceNumber: String,
-        val shopType: Int,
         val orderId: String,
-        val orderStatusId: String
+        val owocActionButtonUiModel: OwocActionButtonUiModel
     ) : BaseOwocVisitableUiModel {
+
+        data class OwocActionButtonUiModel(
+            val key: String,
+            val displayName: String,
+            val variant: String,
+            val type: String,
+            val url: String
+        )
 
         override fun shouldShow(context: Context?): Boolean {
             return shopName.isNotBlank()
@@ -40,15 +40,11 @@ data class OwocProductListUiModel(
     data class ProductUiModel(
         val orderDetailId: String,
         val orderId: String,
-        val orderStatusId: String,
-        val price: Double,
         val priceText: String,
         val productId: String,
         val productName: String,
         val productThumbnailUrl: String,
         val quantity: Int,
-        val totalPrice: String,
-        val totalPriceText: String,
         val addonsListUiModel: OwocAddonsListUiModel? = null,
         val isPof: Boolean = false
     ) : BaseOwocVisitableUiModel {
@@ -66,8 +62,6 @@ data class OwocProductListUiModel(
         val bundleId: String,
         val bundleName: String,
         val bundleIconUrl: String,
-        val totalPrice: Double,
-        val totalPriceText: String,
         val bundleItemList: List<ProductUiModel>
     ) : BaseOwocVisitableUiModel {
 
@@ -81,9 +75,11 @@ data class OwocProductListUiModel(
     }
 
     data class ProductListToggleUiModel(
-        val collapsed: Boolean,
+        val isExpanded: Boolean,
         val text: StringRes,
         val shopId: String,
+        val collapsedProductList: List<BaseOwocVisitableUiModel>,
+        val expandProductList: List<BaseOwocVisitableUiModel>
     ) : BaseOwocVisitableUiModel {
 
         override fun shouldShow(context: Context?): Boolean {

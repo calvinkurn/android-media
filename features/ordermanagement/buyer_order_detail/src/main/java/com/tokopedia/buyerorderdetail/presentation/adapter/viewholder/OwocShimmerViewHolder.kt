@@ -14,6 +14,6 @@ class OwocShimmerViewHolder(
     }
 
     override fun bind(element: OwocShimmerUiModel) {
-
+        //no op
     }
 }

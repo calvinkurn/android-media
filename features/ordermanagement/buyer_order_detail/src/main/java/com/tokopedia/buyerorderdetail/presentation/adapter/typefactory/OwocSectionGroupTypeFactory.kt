@@ -8,7 +8,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 
 interface OwocSectionGroupTypeFactory {
-
     fun type(owocTickerUiModel: OwocTickerUiModel): Int
 
     fun type(owocSectionGroupUiModel: OwocSectionGroupUiModel): Int
@@ -16,6 +15,4 @@ interface OwocSectionGroupTypeFactory {
     fun type(owocShimmerUiModel: OwocShimmerUiModel): Int
 
     fun type(owocErrorUiModel: OwocErrorUiModel): Int
-
-    fun type(owocThickDividerUiModel: OwocThickDividerUiModel): Int
 }

@@ -1,11 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
+import android.content.Context
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 
-class OwocThickDividerUiModel : Visitable<OwocSectionGroupTypeFactoryImpl> {
+class OwocThickDividerUiModel : BaseOwocVisitableUiModel {
 
-    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
+    override fun shouldShow(context: Context?): Boolean {
+        return true
+    }
+
+    override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 

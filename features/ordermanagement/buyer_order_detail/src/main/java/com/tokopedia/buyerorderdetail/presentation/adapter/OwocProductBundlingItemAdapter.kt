@@ -59,7 +59,7 @@ class OwocProductBundlingItemAdapter(
                 setBundleItemThumbnail(it.productThumbnailUrl)
                 setBundleItemProductName(it.productName)
                 setBundleItemProductPriceQuantity(it.quantity, it.priceText)
-                setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
+                setItemOnClickListener(it.orderId, it.orderDetailId)
             }
         }
 
@@ -83,13 +83,11 @@ class OwocProductBundlingItemAdapter(
                         }
                         if (
                             oldItem.orderId != newItem.orderId ||
-                            oldItem.orderDetailId != newItem.orderDetailId ||
-                            oldItem.orderStatusId != newItem.orderStatusId
+                            oldItem.orderDetailId != newItem.orderDetailId
                         ) {
                             setItemOnClickListener(
                                 newItem.orderId,
-                                newItem.orderDetailId,
-                                newItem.orderStatusId
+                                newItem.orderDetailId
                             )
                         }
                         return
@@ -111,14 +109,14 @@ class OwocProductBundlingItemAdapter(
             bundleItemProductPriceQuantityText?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
         }
 
-        private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
+        private fun setItemOnClickListener(orderId: String, orderDetailId: String) {
             itemView.setOnClickListener {
-                listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
+                listener.onBundleItemClicked(orderId, orderDetailId)
             }
         }
 
         interface Listener {
-            fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
+            fun onBundleItemClicked(orderId: String, orderDetailId: String)
         }
     }
 }

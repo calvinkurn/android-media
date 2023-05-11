@@ -9,11 +9,12 @@ import com.tokopedia.buyerorderdetail.databinding.ItemOwocSectionGroupBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductListAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
-import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 
 class OwocSectionGroupViewHolder(view: View?,
-                                 navigator: BuyerOrderDetailNavigator
-): AbstractViewHolder<OwocProductListUiModel>(view), OwocProductListListener {
+                                 navigator: BuyerOrderDetailNavigator?
+): AbstractViewHolder<OwocSectionGroupUiModel>(view), OwocProductListListener {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_section_group
@@ -29,26 +30,37 @@ class OwocSectionGroupViewHolder(view: View?,
         OwocProductListAdapter(typeFactory)
     }
 
-    override fun bind(element: OwocProductListUiModel) {
+    override fun bind(element: OwocSectionGroupUiModel) {
         with(binding) {
             setupRecyclerView(element)
         }
     }
 
-    private fun ItemOwocSectionGroupBinding.setupRecyclerView(item: OwocProductListUiModel) {
+    private fun ItemOwocSectionGroupBinding.setupRecyclerView(item: OwocSectionGroupUiModel) {
         if (rvOwocProductList.adapter != owocSectionGroupAdapter) {
             rvOwocProductList.layoutManager = LinearLayoutManager(root.context)
             rvOwocProductList.adapter = owocSectionGroupAdapter
-            owocSectionGroupAdapter.updateItems(root.context, item)
+            owocSectionGroupAdapter.updateItems(item.baseOwocProductListUiModel)
         }
     }
 
-    override fun onCollapseProductList() {
-        TODO("Not yet implemented")
+    override fun onCollapseProductList(
+        expandedProducts: List<BaseOwocVisitableUiModel>,
+        isExpanded: Boolean
+    ) {
+        owocSectionGroupAdapter.collapseOwocProduct(
+            expandedProducts,
+            isExpanded
+        )
     }
 
-    override fun onExpandProductList() {
-        TODO("Not yet implemented")
+    override fun onExpandProductList(
+        expandedProducts: List<BaseOwocVisitableUiModel>,
+        isExpanded: Boolean
+    ) {
+        owocSectionGroupAdapter.expandOwocProduct(
+            expandedProducts,
+            isExpanded
+        )
     }
-
 }

@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class OwocTickerViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator,
+    private val navigator: BuyerOrderDetailNavigator?,
 ) : AbstractViewHolder<TickerUiModel>(itemView), TickerCallback {
 
     companion object {
@@ -35,7 +35,7 @@ class OwocTickerViewHolder(
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        navigator.openAppLink(linkUrl.toString(), false)
+        navigator?.openAppLink(linkUrl.toString(), false)
     }
 
     override fun onDismiss() {}
