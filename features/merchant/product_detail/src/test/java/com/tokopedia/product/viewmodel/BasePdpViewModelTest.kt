@@ -11,7 +11,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.library.subviewmodel.SubViewModelProvider
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -21,12 +20,10 @@ import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
-import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
-import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -42,7 +39,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.spyk
@@ -128,9 +124,6 @@ abstract class BasePdpViewModelTest {
     lateinit var remoteConfigInstance: FirebaseRemoteConfigImpl
 
     @RelaxedMockK
-    lateinit var getProductRecommendationUseCase: GetProductRecommendationUseCase
-
-    @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
@@ -144,9 +137,6 @@ abstract class BasePdpViewModelTest {
 
     @RelaxedMockK
     lateinit var playWidgetSubViewModel: PlayWidgetSubViewModel
-
-    @RelaxedMockK
-    lateinit var subViewModelProvider: SubViewModelProvider
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
@@ -190,35 +180,34 @@ abstract class BasePdpViewModelTest {
     }
 
     fun createViewModel(): DynamicProductDetailViewModel {
-        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
-                { getPdpLayoutUseCase },
-                { getProductInfoP2LoginUseCase },
-                { getProductInfoP2OtherUseCase },
-                { getP2DataAndMiniCartUseCase },
-                { toggleFavoriteUseCase },
-                { deleteWishlistV2UseCase },
-                { addToWishlistV2UseCase },
-                { getProductRecommendationUseCase },
-                { getRecommendationUseCase },
-                { recommendationNowAffiliate },
-                { trackAffiliateUseCase },
-                { updateCartCounterUseCase },
-                { addToCartUseCase },
-                { addToCartOcsUseCase },
-                { addToCartOccUseCase },
-                { toggleNotifyMeUseCase },
-                { discussionMostHelpfulUseCase },
-                { topAdsImageViewUseCase },
-                { miniCartListSimplifiedUseCase },
-                { updateCartUseCase },
-                { deleteCartUseCase },
-                { getTopadsIsAdsUseCase },
-                playWidgetTools,
-                remoteConfigInstance,
-                userSessionInterface,
-                { affiliateCookieHelper },
-                productRecommSubViewModel = productRecommSubViewModel,
-                playWidgetSubViewModel = playWidgetSubViewModel
+        return DynamicProductDetailViewModel(
+            dispatcher = CoroutineTestDispatchersProvider,
+            getPdpLayoutUseCase = { getPdpLayoutUseCase },
+            getProductInfoP2LoginUseCase = { getProductInfoP2LoginUseCase },
+            getProductInfoP2OtherUseCase = { getProductInfoP2OtherUseCase },
+            getP2DataAndMiniCartUseCase = { getP2DataAndMiniCartUseCase },
+            toggleFavoriteUseCase = { toggleFavoriteUseCase },
+            deleteWishlistV2UseCase = { deleteWishlistV2UseCase },
+            addToWishlistV2UseCase = { addToWishlistV2UseCase },
+            getRecommendationUseCase = { getRecommendationUseCase },
+            recommendationNowAffiliate = { recommendationNowAffiliate },
+            trackAffiliateUseCase = { trackAffiliateUseCase },
+            updateCartCounterUseCase = { updateCartCounterUseCase },
+            addToCartUseCase = { addToCartUseCase },
+            addToCartOcsUseCase = { addToCartOcsUseCase },
+            addToCartOccUseCase = { addToCartOccUseCase },
+            toggleNotifyMeUseCase = { toggleNotifyMeUseCase },
+            discussionMostHelpfulUseCase = { discussionMostHelpfulUseCase },
+            topAdsImageViewUseCase = { topAdsImageViewUseCase },
+            miniCartListSimplifiedUseCase = { miniCartListSimplifiedUseCase },
+            updateCartUseCase = { updateCartUseCase },
+            deleteCartUseCase = { deleteCartUseCase },
+            getTopadsIsAdsUseCase = { getTopadsIsAdsUseCase },
+            remoteConfig = remoteConfigInstance,
+            userSessionInterface = userSessionInterface,
+            affiliateCookieHelper = { affiliateCookieHelper },
+            productRecommSubViewModel = productRecommSubViewModel,
+            playWidgetSubViewModel = playWidgetSubViewModel
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewmodel
+package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,7 +50,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -62,6 +61,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -82,14 +82,14 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
-import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
-import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
@@ -113,7 +113,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -138,7 +137,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
     private val deleteWishlistV2UseCase: Lazy<DeleteWishlistV2UseCase>,
     private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
-    private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
     private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
     private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
@@ -285,6 +283,11 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
+
+    private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
+    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
+        get() = _productMediaRecomBottomSheetState
 
     val userId: String
         get() = userSessionInterface.userId
@@ -882,7 +885,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     fun onAtcRecomNonVariantQuantityChanged(
         recomItem: RecommendationItem,
         quantity: Int,
-        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData
     ) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
@@ -934,7 +937,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     fun atcRecomNonVariant(
         recomItem: RecommendationItem,
         quantity: Int,
-        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData
     ) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
@@ -956,7 +959,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             } else {
                 recommendationNowAffiliate.get()?.initCookieDirectATC(
                     recommendationNowAffiliateData,
-                    recomItem,
+                    recomItem
                 )
                 recomItem.cartId = result.data.cartId
                 updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
@@ -970,7 +973,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         recomItem: RecommendationItem,
         quantity: Int,
         miniCartItem: MiniCartItem.MiniCartItemProduct?,
-        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData
     ) {
         launchCatchError(block = {
             miniCartItem?.let {
@@ -990,7 +993,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 } else {
                     recommendationNowAffiliate.get()?.initCookieDirectATC(
                         recommendationNowAffiliateData,
-                        recomItem,
+                        recomItem
                     )
                     updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
