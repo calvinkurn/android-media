@@ -96,7 +96,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             childFragmentManager,
             lifecycle,
             appLinkExtras = arguments ?: Bundle.EMPTY,
-            entryPoint = getEntryPoint() ?: ""
+            entryPoint = getEntryPoint().orEmpty()
         )
     }
 

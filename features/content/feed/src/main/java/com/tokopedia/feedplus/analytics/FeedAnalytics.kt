@@ -42,22 +42,6 @@ class FeedAnalytics @Inject constructor(
         const val CLICK_ACTIVE_REMIND_ME_BUTTON = "click - pengingat aktif button"
         const val CLICK_LIKE_BUTTON = "click - like button"
         const val CLICK_DOUBLE_LIKE_BUTTON = "click - double click like"
-        const val CLICK_COMMENT_BUTTON = "click - comment button"
-        const val CLICK_CLOSE_COMMENT_BUTTON = "click - close comment bottomsheet"
-        const val CLICK_REPLY_COMMENT_BUTTON = "click - reply button"
-        const val CLICK_AUTHOR_COMMENT_NAME_BUTTON = "click - name commenter"
-        const val CLICK_AUTHOR_COMMENT_PICTURE_BUTTON = "click - profile picture commenter"
-        const val VIEW_X_REPLIES = "view - lihat x balasan"
-        const val CLICK_X_REPLIES = "click - lihat x balasan"
-        const val HIDE_COMMENT_REPLIES = "click - sembunyikan comment"
-        const val CLICK_COMMENT_TEXT_BOX = "click - text box"
-        const val CLICK_SEND_MAIN_COMMENT = "click - send main comment"
-        const val CLICK_SEND_REPLY_COMMENT = "click - send reply comment"
-        const val CLICK_LONG_PRESS_SLIDE_COMMENT = "click - long press slide comment"
-        const val CLICK_DELETE_COMMENT = "click - hapus comment"
-        const val CLICK_REPORT_COMMENT = "click - laporkan comment"
-        const val CLICK_REASON_REPORT_COMMENT = "click - reason laporkan comment"
-        const val CLICK_SUCCESS_REPORT_COMMENT = "view - success report comment"
         const val CLICK_OKE_SHARE = "click - oke share toaster"
         const val CLICK_THREE_DOTS_BUTTON = "click - three dots button"
         const val CLICK_WATCH_MODE = "click - mode nonton"
@@ -160,20 +144,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PAUSE_VIDEO,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41568"
             )
         )
@@ -187,20 +158,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_HOLD_SEEKER_BAR_VIDEO,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41569"
             )
         )
@@ -257,20 +215,7 @@ class FeedAnalytics @Inject constructor(
                 Event.SELECT_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CTA_BUTTON_CAMPAIGN,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41574"
             )
         )
@@ -295,20 +240,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_REMIND_ME_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41575"
             )
         )
@@ -322,20 +254,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_ACTIVE_REMIND_ME_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41576"
             )
         )
@@ -347,20 +266,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_LIKE_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41577"
             )
         )
@@ -374,431 +280,11 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_DOUBLE_LIKE_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41578"
             )
         )
     }
-
-    // TODO : Need to revisit all Comment Trackers after implement comment bottomsheet
-    // TODO : START COMMENT
-    fun eventClickCommentButton(
-        trackerData: FeedTrackerDataModel
-    ) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_COMMENT_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41579"
-            )
-        )
-    }
-
-    fun eventClickCloseComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_CLOSE_COMMENT_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41580"
-            )
-        )
-    }
-
-    fun eventClickReplyButton(
-        trackerData: FeedTrackerDataModel
-    ) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_REPLY_COMMENT_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41581"
-            )
-        )
-    }
-
-    fun eventClickCommentAuthorName(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_AUTHOR_COMMENT_NAME_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41582"
-            )
-        )
-    }
-
-    fun eventClickCommentAuthorPicture(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_AUTHOR_COMMENT_PICTURE_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41583"
-            )
-        )
-    }
-
-    fun eventImpressionViewXReplies(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.VIEW_CONTENT_IRIS,
-                CATEGORY_UNIFIED_FEED,
-                Action.VIEW_X_REPLIES,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41584"
-            )
-        )
-    }
-
-    fun eventClickViewXReplies(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_X_REPLIES,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41585"
-            )
-        )
-    }
-
-    fun eventClickHideReplies(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.HIDE_COMMENT_REPLIES,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41586"
-            )
-        )
-    }
-
-    fun eventClickCommentTextBox(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_COMMENT_TEXT_BOX,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41587"
-            )
-        )
-    }
-
-    fun eventClickSendMainComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_SEND_MAIN_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41588"
-            )
-        )
-    }
-
-    fun eventClickSendReplyComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_SEND_REPLY_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41589"
-            )
-        )
-    }
-
-    fun eventLongPressSlideComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_LONG_PRESS_SLIDE_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41590"
-            )
-        )
-    }
-
-    fun eventDeleteComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_DELETE_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41591"
-            )
-        )
-    }
-
-    fun eventReportComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_REPORT_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41592"
-            )
-        )
-    }
-
-    fun eventReasonReportComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_REASON_REPORT_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41593"
-            )
-        )
-    }
-
-    fun eventSuccessReportComment(trackerData: FeedTrackerDataModel) {
-        sendEventTracker(
-            generateGeneralTrackerData(
-                Event.VIEW_CONTENT_IRIS,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_SUCCESS_REPORT_COMMENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41594"
-            )
-        )
-    }
-    // TODO : END COMMENT
 
     fun eventShareCopyLinkSuccess(trackerData: FeedTrackerDataModel) {
         sendEventTracker(
@@ -806,20 +292,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_OKE_SHARE,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41597"
             )
         )
@@ -831,20 +304,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_THREE_DOTS_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41598"
             )
         )
@@ -856,20 +316,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_WATCH_MODE,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41599"
             )
         )
@@ -881,20 +328,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_REPORT_CONTENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41600"
             )
         )
@@ -906,20 +340,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_REASON_REPORT_CONTENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint} - $reportType",
+                "${getEventLabel(trackerData)} - $reportType",
                 "41601"
             )
         )
@@ -931,20 +352,7 @@ class FeedAnalytics @Inject constructor(
                 Event.VIEW_CONTENT_IRIS,
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_SUCCESS_REPORT_CONTENT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41602"
             )
         )
@@ -956,20 +364,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_TAG,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41603"
             )
         )
@@ -981,20 +376,7 @@ class FeedAnalytics @Inject constructor(
                 Event.SELECT_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_LABEL_PDP,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41604"
             )
         )
@@ -1009,20 +391,7 @@ class FeedAnalytics @Inject constructor(
                 Event.VIEW_ITEM_LIST,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_LIST_BOTTOMSHEET,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41605"
             ).also {
                 it.putString(
@@ -1091,20 +460,7 @@ class FeedAnalytics @Inject constructor(
                 Event.SELECT_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint} - $productId",
+                "${getEventLabel(trackerData)} - $productId",
                 "41608"
             ).also {
                 it.putString(
@@ -1147,43 +503,20 @@ class FeedAnalytics @Inject constructor(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUY_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint} - $productId",
+                "${getEventLabel(trackerData)} - $productId",
                 "41609"
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
-                        Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
-                            putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
-                            putString(
-                                EnhanceEcommerce.KEY_ITEM_BRAND,
-                                shopName
-                            )
-                            putString(EnhanceEcommerce.KEY_ITEM_CATEGORY, "")
-                            putString(EnhanceEcommerce.KEY_ITEM_ID, productId)
-                            putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
-                            putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
-                            putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
-                            putString(EnhanceEcommerce.KEY_QUANTITY, "1")
-                            putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
-                            putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
-                            putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
-                        }
+                        getProductTrackerBundle(
+                            index,
+                            shopName,
+                            productId,
+                            productName,
+                            productPrice,
+                            shopId
+                        )
                     ),
                 )
             }
@@ -1204,43 +537,20 @@ class FeedAnalytics @Inject constructor(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CART_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint} - $productId",
+                "${getEventLabel(trackerData)} - $productId",
                 "41610"
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
-                        Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
-                            putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
-                            putString(
-                                EnhanceEcommerce.KEY_ITEM_BRAND,
-                                shopName
-                            )
-                            putString(EnhanceEcommerce.KEY_ITEM_CATEGORY, "")
-                            putString(EnhanceEcommerce.KEY_ITEM_ID, productId)
-                            putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
-                            putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
-                            putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
-                            putString(EnhanceEcommerce.KEY_QUANTITY, "1")
-                            putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
-                            putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
-                            putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
-                        }
+                        getProductTrackerBundle(
+                            index,
+                            shopName,
+                            productId,
+                            productName,
+                            productPrice,
+                            shopId
+                        )
                     ),
                 )
             }
@@ -1253,20 +563,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CLOSE_PRODUCT_LIST,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41612"
             )
         )
@@ -1278,20 +575,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_FOLLOW_BUTTON,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41613"
             )
         )
@@ -1303,20 +587,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CREATOR_NAME,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41614"
             )
         )
@@ -1328,20 +599,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CREATOR_PROFILE_PICTURE,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41615"
             )
         )
@@ -1353,20 +611,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CONTENT_CAPTION,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41616"
             )
         )
@@ -1378,20 +623,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CONTENT_PRODUCT_LABEL,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
+                getEventLabel(trackerData),
                 "41688"
             )
         )
@@ -1403,47 +635,90 @@ class FeedAnalytics @Inject constructor(
         authorName: String,
         index: Int
     ) {
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.ADD_TO_CART,
-            generateGeneralTrackerBundleData(
-                Event.CLICK_CONTENT,
-                CATEGORY_UNIFIED_FEED,
-                Action.CLICK_LIVE_PREVIEW,
-                "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                    getPostType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.authorType,
-                        trackerData.isFollowing
-                    )
-                } - ${
-                    getContentType(
-                        trackerData.typename,
-                        trackerData.type,
-                        trackerData.mediaType
-                    )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41689"
-            ).also {
-                it.putParcelableArrayList(
-                    EnhanceEcommerce.KEY_PROMOTIONS,
-                    arrayListOf(
-                        Bundle().apply {
-                            putString(
-                                EnhanceEcommerce.KEY_CREATIVE_NAME,
-                                "live preview in feed unified"
-                            )
-                            putInt(EnhanceEcommerce.KEY_CREATIVE_SLOT, index + 1)
-                            putString(EnhanceEcommerce.KEY_ITEM_ID, productId)
-                            putString(
-                                EnhanceEcommerce.KEY_ITEM_NAME,
-                                authorName
-                            )
-                        }
-                    ),
-                )
-            }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.ADD_TO_CART, addPromotionForLivePreview(
+                generateGeneralTrackerBundleData(
+                    Event.CLICK_CONTENT,
+                    CATEGORY_UNIFIED_FEED,
+                    Action.CLICK_LIVE_PREVIEW,
+                    getEventLabel(trackerData),
+                    "41689"
+                ),
+                productId,
+                authorName,
+                index
+            )
         )
+    }
+
+    private fun addPromotionForLivePreview(
+        bundle: Bundle,
+        productId: String,
+        authorName: String,
+        index: Int
+    ): Bundle {
+        bundle.let {
+            it.putParcelableArrayList(
+                EnhanceEcommerce.KEY_PROMOTIONS,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(
+                            EnhanceEcommerce.KEY_CREATIVE_NAME,
+                            "live preview in feed unified"
+                        )
+                        putInt(EnhanceEcommerce.KEY_CREATIVE_SLOT, index + 1)
+                        putString(EnhanceEcommerce.KEY_ITEM_ID, productId)
+                        putString(
+                            EnhanceEcommerce.KEY_ITEM_NAME,
+                            authorName
+                        )
+                    }
+                ),
+            )
+        }
+        return bundle
+    }
+
+    private fun getEventLabel(trackerData: FeedTrackerDataModel) =
+        "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
+            getPostType(
+                trackerData.typename,
+                trackerData.type,
+                trackerData.authorType,
+                trackerData.isFollowing
+            )
+        } - ${
+            getContentType(
+                trackerData.typename,
+                trackerData.type,
+                trackerData.mediaType
+            )
+        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}"
+
+    private fun getProductTrackerBundle(
+        index: Int,
+        shopName: String,
+        productId: String,
+        productName: String,
+        productPrice: Double,
+        shopId: String
+    ) = Bundle().apply {
+        putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
+        putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+        putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
+        putString(
+            EnhanceEcommerce.KEY_ITEM_BRAND,
+            shopName
+        )
+        putString(EnhanceEcommerce.KEY_ITEM_CATEGORY, "")
+        putString(EnhanceEcommerce.KEY_ITEM_ID, productId)
+        putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
+        putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
+        putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
+        putString(EnhanceEcommerce.KEY_QUANTITY, "1")
+        putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
+        putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
+        putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {

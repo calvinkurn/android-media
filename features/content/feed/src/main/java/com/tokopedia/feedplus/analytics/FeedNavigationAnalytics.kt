@@ -39,11 +39,13 @@ class FeedNavigationAnalytics @Inject constructor(
         const val CLICK_PROFILE_BUTTON = "click - user profile entry point"
     }
 
+    private val userId = userSession.userId
+
     fun eventClickCreationButton(tabType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_BUTTON,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41470"
             )
         )
@@ -53,7 +55,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_VIDEO,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41471"
             )
         )
@@ -63,7 +65,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_POST,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41472"
             )
         )
@@ -73,7 +75,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_LIVE,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41473"
             )
         )
@@ -83,7 +85,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_FOR_YOU_TAB,
-                userSession.userId,
+                userId,
                 "41474"
             )
         )
@@ -93,7 +95,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.SWIPE_FOR_YOU_TAB,
-                userSession.userId,
+                userId,
                 "41475"
             )
         )
@@ -103,7 +105,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_FOLLOWING_TAB,
-                userSession.userId,
+                userId,
                 "41476"
             )
         )
@@ -113,7 +115,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.SWIPE_FOLLOWING_TAB,
-                userSession.userId,
+                userId,
                 "41477"
             )
         )
@@ -123,7 +125,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_LIVE_BUTTON,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41478"
             )
         )
@@ -133,7 +135,7 @@ class FeedNavigationAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_PROFILE_BUTTON,
-                "${userSession.userId} - ${getPrefix(tabType)}",
+                "$userId - ${getPrefix(tabType)}",
                 "41479"
             )
         )
@@ -148,7 +150,7 @@ class FeedNavigationAnalytics @Inject constructor(
         EVENT_CATEGORY to FeedAnalytics.CATEGORY_UNIFIED_FEED,
         EVENT_ACTION to eventAction,
         EVENT_LABEL to eventLabel,
-        KEY_EVENT_USER_ID to userSession.userId,
+        KEY_EVENT_USER_ID to userId,
         KEY_BUSINESS_UNIT_EVENT to BUSINESS_UNIT_CONTENT,
         KEY_CURRENT_SITE_EVENT to CURRENT_SITE_MARKETPLACE,
         KEY_TRACKER_ID to trackerId

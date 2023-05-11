@@ -51,7 +51,7 @@ class FeedPostLiveViewHolder(
                 listener.onLivePreviewClicked(
                     trackerDataModel,
                     absoluteAdapterPosition,
-                    data.products.firstOrNull()?.id ?: "",
+                    data.products.firstOrNull()?.id.orEmpty(),
                     data.author.name
                 )
                 RouteManager.route(binding.root.context, data.applink)
