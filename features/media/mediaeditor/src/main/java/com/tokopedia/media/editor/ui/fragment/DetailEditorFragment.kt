@@ -148,21 +148,24 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun saveOverlay() {
-        viewBinding?.imgPreviewOverlay?.let {
-            val overlayBitmap = it.drawable.toBitmap()
-            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)
-                ?.let { fileResult ->
-                    if (data.isToolAddLogo()) {
-                        data.addLogoValue = EditorAddLogoUiModel(
-                            Pair(overlayBitmap.width, overlayBitmap.height),
-                            fileResult.path,
-                            addLogoComponent.getLogoUrl()
-                        )
-                    } else {
-                        data.addTextValue?.textImagePath = fileResult.path
+        viewBinding?.let {
+            val drawable =
+                if (data.isToolAddLogo()) it.imgPreviewOverlay.drawable else it.imgPreviewOverlaySecondary.drawable
+            drawable?.let { overlayDrawable ->
+                val overlayBitmap = overlayDrawable.toBitmap()
+                viewModel.saveImageCache(overlayBitmap, sourcePath = PNG_KEY)
+                    ?.let { fileResult ->
+                        if (data.isToolAddLogo()) {
+                            data.addLogoValue = EditorAddLogoUiModel(
+                                Pair(overlayBitmap.width, overlayBitmap.height),
+                                fileResult.path,
+                                addLogoComponent.getLogoUrl()
+                            )
+                        } else {
+                            data.addTextValue?.textImagePath = fileResult.path
+                        }
                     }
-
-                }
+            }
         }
     }
 
@@ -1199,12 +1202,11 @@ class DetailEditorFragment @Inject constructor(
                     requestLayout()
 
                     post {
-                        if (data.isToolAddLogo()) return@post
                         if (data.addLogoValue.overlayLogoUrl.isNotEmpty()) {
                             it.imgPreviewOverlay.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
                         }
 
-                        if (!data.isToolAddText() && data.addTextValue != null) {
+                        if (data.addTextValue != null) {
                             it.imgPreviewOverlaySecondary.loadImage(data.addTextValue?.textImagePath)
                         }
                     }
@@ -1473,7 +1475,7 @@ class DetailEditorFragment @Inject constructor(
             ).let { bitmapResult ->
                 addTextComponent.updateItemActiveState(it)
 
-                viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmapResult)
+                viewBinding?.imgPreviewOverlaySecondary?.setImageBitmap(bitmapResult)
             }
         }
     }
