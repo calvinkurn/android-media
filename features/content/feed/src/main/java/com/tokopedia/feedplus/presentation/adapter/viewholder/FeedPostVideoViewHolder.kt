@@ -86,7 +86,7 @@ class FeedPostVideoViewHolder(
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
 
             with(binding) {
-                GestureDetector(root.context,
+                val postGestureDetector = GestureDetector(root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                             return true
@@ -113,6 +113,9 @@ class FeedPostVideoViewHolder(
                         override fun onLongPress(e: MotionEvent) {
                         }
                     })
+                playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
+                    postGestureDetector.onTouchEvent(motionEvent)
+                }
 
                 bindAuthor(data)
                 bindCaption(data)
@@ -288,7 +291,8 @@ class FeedPostVideoViewHolder(
             model.id,
             model.author,
             model.typename,
-            model.followers.isFollowed
+            model.followers.isFollowed,
+            absoluteAdapterPosition
         )
     }
 
