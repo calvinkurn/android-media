@@ -126,7 +126,6 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, ATC_TRACKER_ID)
-            putString(ITEM_LIST, product.asItemList())
 
             val bundlePromotion = product.asBundle(product.position + 1)
             val list = arrayListOf(bundlePromotion)

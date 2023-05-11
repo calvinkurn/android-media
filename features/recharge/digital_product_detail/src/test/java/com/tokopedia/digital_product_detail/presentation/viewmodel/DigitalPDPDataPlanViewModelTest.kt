@@ -2,12 +2,11 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -17,6 +16,9 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -36,11 +38,12 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting menuDetail should run and give success result`() {
+    fun `when getting menuDetail should run and give success result`() = runTest {
         val response = dataFactory.getMenuDetail()
         onGetMenuDetail_thenReturn(response)
 
         viewModel.getMenuDetail(MENU_ID)
+        advanceUntilIdle()
         verifyGetMenuDetailSuccess(response)
     }
 
@@ -63,7 +66,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting recommendation should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getRecommendationData()
             val mappedResponse =
                 mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
@@ -77,7 +80,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting recommendation should run and give fail result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             onGetRecommendation_thenReturn(NullPointerException())
 
             viewModel.getRecommendations(listOf(), listOf())
@@ -95,7 +98,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give success result`() {
+    fun `when getting favoriteNumber should run and give success result`() = runTest {
         val response = dataFactory.getFavoriteNumberData(true)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
         val favoriteNumberTypes = listOf(
@@ -106,6 +109,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
         viewModel.getFavoriteNumbers(listOf(), favoriteNumberTypes)
+        advanceUntilIdle()
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
@@ -114,7 +118,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() = runTest{
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
         val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
@@ -137,7 +141,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting catalogPrefixSelect should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -150,7 +154,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting catalogPrefixSelect should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             onGetPrefixOperator_thenReturn(NullPointerException())
 
             viewModel.getPrefixOperator(MENU_ID)
@@ -196,7 +200,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -211,7 +215,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -226,7 +230,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -241,7 +245,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.validateClientNumber(DataPlanDataFactory.VALID_CLIENT_NUMBER)
             viewModel.cancelValidatorJob()
             verifyValidatorJobIsCancelled()
@@ -286,7 +290,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting catalogInputMultitab should run and give success result and updated data filter`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getCatalogInputMultiTabData()
             val isRefreshedFilter = true
             val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
@@ -302,7 +306,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting catalogInputMultitab should run and give success result and empty data filter`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getCatalogInputMultiTabData()
             val isRefreshedFilter = false
             val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
@@ -352,7 +356,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given layoutType is match & other condition fulfilled when call isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -375,7 +379,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given isEligibleToBuy true & other condition fulfilled when isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -390,7 +394,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given isEligibleToBuy false & other condition fulfilled when isAutoSelectedProduct should return false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
@@ -407,7 +411,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given selectedFullProduct pos less than 0 & other condition fulfilled when isAutoSelectedProduct should return false`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & empty selectedProduct to make position < 0
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -440,27 +444,27 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
 
     @Test
-    fun `when getting addToCart should run and return notNull error from gql`(){
+    fun `when getting addToCart should run and return notNull error from gql`() {
         val error = dataFactory.getErrorAtcFromGql()
         onGetAddToCart_thenReturn(error)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", true)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test
-    fun `when getting addToCart should run and return DigitalAtcErrorException when get Error atc`(){
+    fun `when getting addToCart should run and return DigitalAtcErrorException when get Error atc`() {
         val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
         onGetAddToCart_thenReturn(error)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
@@ -472,7 +476,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -484,7 +488,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -494,7 +498,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -517,7 +521,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `when getting catalogInputMultitab should run and give error result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val errorResponse = MessageErrorException("")
             onGetCatalogInputMultitab_thenReturn(errorResponse)
 
@@ -623,7 +627,6 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
 
         verifySelectedProductSuccess(selectedDenom)
-
     }
 
     @Test
@@ -642,7 +645,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given empty clientNumberThrottleJob when calling runThrottleJob should init new job`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.clientNumberThrottleJob = null
             viewModel.runThrottleJob {
                 // Simulate nothing
@@ -653,7 +656,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given non-empty clientNumberThrottleJob when wait for DELAY_CLIENT_NUMBER_TRANSITION the job should done`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob {
                 // Simulate nothing
             }
@@ -664,7 +667,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
     @Test
     fun `given clientNumberThrottleJob running when calling another job should not create new job instance`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob { }
             val jobA = viewModel.clientNumberThrottleJob
 
@@ -674,10 +677,9 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
             verifyClientNumberThrottleJobSame(jobA, jobB)
         }
 
-
     @Test
     fun `given clientNumberThrottleJob completed when calling another job should init new job`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob {
                 // Simulate nothing
             }

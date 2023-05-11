@@ -13,11 +13,6 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -83,6 +78,7 @@ class PlayShortsSetupCoverAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
+                        mockDataStore = mockk(relaxed = true),
                     )
                 )
                 .build()

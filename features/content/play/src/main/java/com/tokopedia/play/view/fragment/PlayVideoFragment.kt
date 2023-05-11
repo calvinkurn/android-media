@@ -454,6 +454,9 @@ class PlayVideoFragment @Inject constructor(
             PlayViewerVideoState.End -> {
                 videoView.hideThumbnail()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -511,6 +514,9 @@ class PlayVideoFragment @Inject constructor(
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
             PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
             PlayViewerVideoState.Unknown -> videoLoadingView.show(source = BufferSource.Unknown)
+            else -> {
+                //no-op
+            }
         }
     }
 

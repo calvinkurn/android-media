@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
 import com.tokopedia.media.picker.utils.loadPickerImage
@@ -48,10 +46,9 @@ class MediaThumbnailWidget @JvmOverloads constructor(
 
         binding.container.show()
         binding.imgPreview.loadPickerImage(file.path, onLoaded)
-
-        binding.txtDuration.shouldShowWithAction(file.isVideo()) {
+        binding.bgVideoShadow.showWithCondition(file.isVideo())
+        binding.txtDuration.showIfWithBlock(file.isVideo()) {
             binding.txtDuration.text = element.duration.humanize()
-            binding.bgVideoShadow.show()
         }
     }
 
