@@ -52,7 +52,7 @@ sealed class CommentType {
 
     object Parent : CommentType()
 
-    data class Child(val mParentId: String) : CommentType() {
+    data class Child(private val mParentId: String) : CommentType() {
         override val parentId: String
             get() = mParentId
     }

@@ -8,7 +8,7 @@ import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -68,8 +68,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastParentCursor
                 )
                 _comments.update {
-                    val contentSame =
-                        it.list.zip(result.list).any { item -> item.first == item.second }
+                    val contentSame = it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
@@ -103,28 +102,26 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastChildCursor
                 )
                 _comments.update { curr ->
-                    val selected = curr.list
-                        .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
-                    val parent =
-                        curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
-                    val newChild = mutableListOf<CommentUiModel>().apply {
-                        addAll(
-                            curr.list.mapIndexed { index, model ->
-                                if (index == selected && model is CommentUiModel.Expandable) {
-                                    model.copy(
-                                        isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
-                                        repliesCount = if (result.hasNextPage) result.nextRepliesCount else parent?.childCount.orEmpty()
-                                    )
-                                } else {
-                                    model
-                                }
+                    //get selected expandable index
+                    val selected = curr.list.indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
+                    //build new list
+                    val newList = buildList {
+                        val transformExpand = curr.list.mapIndexed { index, model ->
+                            if (index == selected && model is CommentUiModel.Expandable) {
+                                model.copy(
+                                    isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
+                                    repliesCount = result.nextRepliesCount
+                                )
+                            } else {
+                                model
                             }
-                        )
+                        }
+                        addAll(transformExpand)
+                        addAll(selected, result.list)
                     }
-                    newChild.addAll(selected, result.list.filterNot { item -> curr.list.contains(item) })
                     curr.copy(
                         cursor = result.cursor,
-                        list = newChild
+                        list = newList
                     )
                 }
                 _query.update {
@@ -179,7 +176,7 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     private fun handleExpand(comment: CommentUiModel.Expandable) {
         fun dropChild() {
-            _comments.getAndUpdate {
+            _comments.update {
                 val newList = it.list.map { item ->
                     if (item is CommentUiModel.Expandable && item == comment) {
                         item
@@ -196,7 +193,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
 
         if (!comment.isExpanded) {
-            updateQuery(comment.commentType)
+            updateQuery(comment.commentType) // //if comment type current in query is different with from handle expand reset
         } else {
             dropChild()
         }
@@ -206,7 +203,8 @@ class ContentCommentViewModel @AssistedInject constructor(
         _query.update {
             it.copy(
                 needToRefresh = true,
-                commentType = commentType
+                commentType = commentType,
+                lastChildCursor = if (commentType != it.commentType) "" else it.lastChildCursor
             )
         }
     }
@@ -242,7 +240,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }) {
             undoComment()
             _event.emit(
-                CommentEvent.ShowErrorToaster(message = MessageErrorException(CommentException.FailedDelete.message)) {
+                CommentEvent.ShowErrorToaster(message = CommentException.createDeleteFailed()) {
                     deleteComment(isFromToaster = false)
                 }
             )
@@ -287,9 +285,9 @@ class ContentCommentViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
-                    .count() > 0 && !comment.contains(TOKPED_ESCAPE)
+                    .count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)
                 ) {
-                    throw MessageErrorException(CommentException.LinkNotAllowed.message)
+                    throw CommentException.createLinkNotAllowed()
                 }
                 val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 var index = 0
@@ -310,7 +308,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
-                        message = if (it.message?.isBlank() == true) MessageErrorException(CommentException.SendCommentFailed.message) else it,
+                        message = if (it.message?.isBlank() == true) CommentException.createSendCommentFailed() else it,
                         onClick = { sendReply(comment, commentType) }
                     )
                 )

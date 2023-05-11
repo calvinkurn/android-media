@@ -11,6 +11,6 @@ data class SubmitReportComment(
 ) {
     data class Status(
         @SerializedName("success")
-        val success: Boolean = true,
+        val success: Boolean = false,
     )
 }

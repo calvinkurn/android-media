@@ -6,7 +6,7 @@ import kotlin.math.abs
 
 class FlingGestureWrapper(
     private val swipeLeftToRight: () -> Unit,
-    private val swipeRightToLeft: () -> Unit,
+    private val swipeRightToLeft: () -> Unit
 ) : GestureDetector.OnGestureListener {
     override fun onDown(e: MotionEvent) = true
 

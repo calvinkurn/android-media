@@ -1,51 +1,37 @@
 package com.tokopedia.content.common.comment.usecase
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.isParent
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 08/02/23
  */
-@GqlQuery(GetCommentsUseCase.QUERY_NAME, GetCommentsUseCase.QUERY)
-class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
-    GraphqlUseCase<Comments>(repo) {
+class GetCommentsUseCase @Inject constructor(private val repo: GraphqlRepository, dispatchers: CoroutineDispatchers) :
+    CoroutineUseCase<CommentParam, Comments>(dispatchers.io) {
 
-    init {
-        setGraphqlQuery(GetCommentsUseCaseQuery())
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(Comments::class.java)
+    override fun graphqlQuery(): String = QUERY
+
+    override suspend fun execute(params: CommentParam): Comments {
+        return repo.request(graphqlQuery(), params.convertToMap())
     }
 
     companion object {
-        private const val PARAM_CONTENT_TYPE = "contentType"
-        private const val PARAM_ID = "contentID"
-        private const val PARAM_CURSOR = "cursor"
-        private const val PARAM_LIMIT = "limit"
-        private const val PARAM_COMMENT_ID = "commentParentID"
-        private const val PARAM_LIMIT_PARENT_VALUE = 20
-        private const val PARAM_LIMIT_CHILD_VALUE = 5
+        const val PARAM_CONTENT_TYPE = "contentType"
+        const val PARAM_ID = "contentID"
+        const val PARAM_CURSOR = "cursor"
+        const val PARAM_LIMIT = "limit"
+        const val PARAM_COMMENT_ID = "commentParentID"
+        const val PARAM_LIMIT_PARENT_VALUE = 20
+        const val PARAM_LIMIT_CHILD_VALUE = 5
 
-        fun setParam(
-            source: PageSource,
-            cursor: String,
-            commentType: CommentType,
-        ) = mapOf(
-            PARAM_ID to source.id,
-            PARAM_CONTENT_TYPE to source.type,
-            PARAM_CURSOR to cursor,
-            PARAM_LIMIT to if(commentType.isParent) PARAM_LIMIT_PARENT_VALUE else PARAM_LIMIT_CHILD_VALUE,
-            PARAM_COMMENT_ID to commentType.parentId
-        )
-
-        const val QUERY_NAME = "GetCommentsUseCaseQuery"
         const val QUERY = """
               query getComments(
                ${"$$PARAM_ID"}: String!, 
@@ -95,4 +81,26 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
                 }
         """
     }
+}
+
+data class CommentParam(
+    @SerializedName("contentID")
+    val contentId: String,
+    @SerializedName("contentType")
+    val contentType: String,
+    @SerializedName("cursor")
+    val cursor: String,
+    @SerializedName("limit")
+    val limit: Int,
+    @SerializedName("commentParentID")
+    val commentParentId: String,
+) {
+    fun convertToMap() : Map<String, Any> =
+        mapOf(
+            GetCommentsUseCase.PARAM_ID to contentId,
+            GetCommentsUseCase.PARAM_CONTENT_TYPE to contentType,
+            GetCommentsUseCase.PARAM_CURSOR to cursor,
+            GetCommentsUseCase.PARAM_LIMIT to limit,
+            GetCommentsUseCase.PARAM_COMMENT_ID to commentParentId,
+        )
 }

@@ -26,12 +26,13 @@ internal class ContentReportAdapter(private val listener: ContentReportViewHolde
     fun updateList(list: List<ContentReportItemUiModel>) {
         items.clear()
         items.addAll(list)
+        notifyDataSetChanged()
     }
 }
 
 internal class ContentReportViewHolder(
     private val binding: ItemFeedThreeDotsMenuBinding,
-    private val listener: ContentReportViewHolder.Listener
+    private val listener: Listener
 ) :
     RecyclerView.ViewHolder(binding.root) {
 

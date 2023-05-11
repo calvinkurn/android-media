@@ -46,7 +46,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -132,7 +131,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (newLength > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
-                        CommentException.SendCommentFailed.message,
+                        CommentException.createSendCommentFailed().message.orEmpty(),
                         Toaster.LENGTH_SHORT
                     )
                 }
@@ -172,12 +171,15 @@ class ContentCommentBottomSheet @Inject constructor(
 
     //to escape Emoji length
     private fun String.getGraphemeLength(): Int {
-        val it: BreakIterator = BreakIterator.getCharacterInstance()
-        it.setText(this)
         var count = 0
-        while (it.next() != BreakIterator.DONE) {
-            count++
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            val it: BreakIterator = BreakIterator.getCharacterInstance()
+             it.setText(this)
+             while (it.next() != BreakIterator.DONE) {
+                 count++
+             }
+         } else
+             count = binding.newComment?.text?.length.orZero()
         return count
     }
 
@@ -225,7 +227,7 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
         }
-        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
+        Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
         binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
             val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -245,7 +247,8 @@ class ContentCommentBottomSheet @Inject constructor(
             }
             windowInsets
         }
-        binding.newComment.setOnTouchListener { _, motionEvent ->
+        binding.newComment.setOnTouchListener { view, motionEvent ->
+            view.performClick()
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 analytics?.clickTextBox()
             }
@@ -303,12 +306,12 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (!event.message.message?.equals(CommentException.FailedDelete.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty()).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
-                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message)
+                            type = if (event.message.message?.equals(CommentException.createLinkNotAllowed().message.orEmpty())
                                 .orFalse()
                             ) {
                                 Toaster.TYPE_ERROR
@@ -489,6 +492,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
+            else -> {}
         }
     }
 
@@ -535,7 +539,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         IconUnify.WARNING,
                         MethodChecker.getColor(
                             context,
-                            R.color.Unify_RN500
+                            unifyR.color.Unify_RN500
                         )
                     ),
                     name = getString(R.string.content_common_menu_report),
@@ -551,7 +555,7 @@ class ContentCommentBottomSheet @Inject constructor(
         if (newLength > MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
-                CommentException.SendCommentFailed.message,
+                CommentException.createSendCommentFailed().message.orEmpty(),
                 Toaster.LENGTH_SHORT
             )
         } else {

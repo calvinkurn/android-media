@@ -19,7 +19,7 @@ enum class ContentReportType(val value: String) {
     Nudity("nudity"),
     HateSpeech("hateSpeech"),
     Scam("scam"),
-    IllegalGoods("ilegalGoods"),
+    IllegalGoods("illegalGoods"),
     IntellectualProperty("intellectualProperty"),
 }
 

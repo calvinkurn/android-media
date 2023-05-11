@@ -19,7 +19,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,7 +56,7 @@ class PowerMerchantSharedViewModelTest {
     }
 
     @Test
-    fun `when get pm basic info should return success`() = runBlockingTest {
+    fun `when get pm basic info should return success`() = runTest {
         val result = PowerMerchantBasicInfoUiModel(
             PMStatusUiModel(),
             PMShopInfoUiModel(),
@@ -80,7 +80,7 @@ class PowerMerchantSharedViewModelTest {
     }
 
     @Test
-    fun `when get pm basic info should return failed`() = runBlockingTest {
+    fun `when get pm basic info should return failed`() = runTest {
         val throwable = Throwable()
         val isFirstLoad = anyBoolean()
 
@@ -100,7 +100,7 @@ class PowerMerchantSharedViewModelTest {
     }
 
     @Test
-    fun `when get shop moderation status then return success`() = runBlockingTest {
+    fun `when get shop moderation status then return success`() = runTest {
         val shopId = anyLong()
 
         val result = ModerationShopStatusUiModel(3)
@@ -123,7 +123,7 @@ class PowerMerchantSharedViewModelTest {
     }
 
     @Test
-    fun `when get shop moderation status then return failed`() = runBlockingTest {
+    fun `when get shop moderation status then return failed`() = runTest {
         val shopId = anyLong()
 
         val throwable = Throwable()
