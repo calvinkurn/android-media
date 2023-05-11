@@ -250,7 +250,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun reportComment(
-        param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel
+        param: FeedComplaintSubmitReportUseCase.Param
     ) {
         viewModelScope.launchCatchError(block = {
             val result = repo.reportComment(param)

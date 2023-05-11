@@ -11,15 +11,15 @@ import javax.inject.Inject
 class FeedComplaintSubmitReportUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
-) : CoroutineUseCase<FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel, FeedComplaintSubmitReportResponse>(dispatchers.io) {
+) : CoroutineUseCase<FeedComplaintSubmitReportUseCase.Param, FeedComplaintSubmitReportResponse>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
 
-    override suspend fun execute(params: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel): FeedComplaintSubmitReportResponse {
+    override suspend fun execute(params: Param): FeedComplaintSubmitReportResponse {
         return graphqlRepository.request(graphqlQuery(), params.convertToMap())
     }
 
-    data class FeedReportRequestParamModel(
+    data class Param(
         @SerializedName("reportType")
         val reportType: String = VALUE_REPORT_TYPE_POST,
         @SerializedName("contentID")

@@ -12,11 +12,11 @@ import javax.inject.Inject
  * @author by astidhiyaa on 08/02/23
  */
 class PostCommentUseCase @Inject constructor(private val repo: GraphqlRepository, dispatchers: CoroutineDispatchers) :
-    CoroutineUseCase<PostCommentUseCase.PostCommentParam, PostComment>(dispatchers.io) {
+    CoroutineUseCase<PostCommentUseCase.Param, PostComment>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
 
-    override suspend fun execute(params: PostCommentParam): PostComment {
+    override suspend fun execute(params: Param): PostComment {
         return repo.request(graphqlQuery(), params.convertToMap())
     }
 
@@ -71,7 +71,7 @@ class PostCommentUseCase @Inject constructor(private val repo: GraphqlRepository
         SHOP(2), BUYER(3)
     }
 
-    data class PostCommentParam(
+    data class Param(
         @SerializedName("comment")
         val comment: String,
         @SerializedName("commenterType")

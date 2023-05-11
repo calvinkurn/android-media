@@ -21,7 +21,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
 
     override suspend fun deleteComment(commentId: String): Boolean =
         deleteCommentUseCase(
-            DeleteCommentUseCase.DeleteParam(commentId)
+            DeleteCommentUseCase.Param(commentId)
         ).data.status.success == DeleteCommentUseCase.SUCCESS_VALUE
 
     override suspend fun replyComment(
@@ -33,7 +33,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         val type =
             if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
         val response = postCommentUseCase(
-            PostCommentUseCase.PostCommentParam(
+            PostCommentUseCase.Param(
                 comment = comment,
                 contentID = source.id,
                 contentType = source.type,
@@ -48,7 +48,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun reportComment(
-        param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel
+        param: FeedComplaintSubmitReportUseCase.Param
     ): Boolean = submitReportCommentUseCase(param).data.success
 
     override suspend fun getComments(

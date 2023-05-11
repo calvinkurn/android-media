@@ -15,14 +15,14 @@ class GetCountCommentsUseCase @Inject constructor(
     private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) :
-    CoroutineUseCase<GetCountCommentsUseCase.CountCommentParam, CountComment>(dispatchers.io) {
+    CoroutineUseCase<GetCountCommentsUseCase.Param, CountComment>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
-    override suspend fun execute(params: CountCommentParam): CountComment {
+    override suspend fun execute(params: Param): CountComment {
         return repo.request(graphqlQuery(), params.convertToMap())
     }
 
-    data class CountCommentParam(
+    data class Param(
         @SerializedName("contentIDs")
         val sourceId: List<String>,
         @SerializedName("contentType")

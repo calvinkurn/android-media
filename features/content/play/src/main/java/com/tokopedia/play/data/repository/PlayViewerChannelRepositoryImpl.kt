@@ -89,7 +89,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     override suspend fun getCountComment(channelId: String): PlayCommentUiModel {
         val source = PageSource.Play(channelId)
         val result = getCountComment(
-            GetCountCommentsUseCase.CountCommentParam(
+            GetCountCommentsUseCase.Param(
                 sourceId = listOf(source.id),
                 sourceType = source.type
             )

@@ -21,7 +21,7 @@ interface ContentCommentRepository {
     ): CommentUiModel.Item
 
     suspend fun reportComment(
-        param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel,
+        param: FeedComplaintSubmitReportUseCase.Param,
     ): Boolean
 
     suspend fun getComments(

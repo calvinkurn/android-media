@@ -19,7 +19,7 @@ sealed interface CommentAction {
     object PermanentRemoveComment : CommentAction
 
     data class ReportComment(
-        val param: FeedComplaintSubmitReportUseCase.FeedReportRequestParamModel
+        val param: FeedComplaintSubmitReportUseCase.Param
     ) : CommentAction
 
     data class EditTextClicked(val item: CommentUiModel.Item): CommentAction
