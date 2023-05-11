@@ -595,7 +595,6 @@ class FeedFragment :
                 item.positionInFeed
             )
         }
-        //        TODO("Not yet implemented")
     }
 
     override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
@@ -643,7 +642,7 @@ class FeedFragment :
                     }
 
                     override fun onError(linkerError: LinkerError?) {
-                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+
                     }
                 }
             )
@@ -669,14 +668,6 @@ class FeedFragment :
 
         feedPostViewModel.setUnsetReminder(campaignId, setReminder)
 
-    }
-
-    override fun onTimerFinishUpcoming() {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onTimerFinishOnGoing() {
-//        TODO("Not yet implemented")
     }
 
     override fun onTopAdsImpression(
@@ -705,10 +696,16 @@ class FeedFragment :
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         trackerModel: FeedTrackerDataModel?,
+        campaignName: String,
         positionInFeed: Int
     ) {
         if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
             trackerModel?.let {
+                feedAnalytics.eventClickCampaignRibbon(
+                    it,
+                    campaignName,
+                    positionInFeed
+                )
                 openProductTagBottomSheet(
                     postId = postId,
                     author = author,
@@ -1069,13 +1066,6 @@ class FeedFragment :
                 tnTitle = shareModel.tnTitle,
                 tnImage = shareModel.tnImage
             )
-        }
-        universalShareBottomSheet.setOnDismissListener {
-            if (dissmisByGreyArea) {
-                // TODO to be used for analytics
-            } else {
-                dissmisByGreyArea = true
-            }
         }
         universalShareBottomSheet.let {
             if (!it.isAdded) {

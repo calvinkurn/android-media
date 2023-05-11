@@ -53,6 +53,7 @@ class FeedCampaignRibbonView(
     private var mAuthor: FeedAuthorModel? = null
     private var mPostType: String = ""
     private var mIsFollowing: Boolean = false
+    private var feedPosition: Int = -1
 
     fun bindData(
         modelType: String,
@@ -65,7 +66,8 @@ class FeedCampaignRibbonView(
         postId: String,
         author: FeedAuthorModel,
         postType: String,
-        isFollowing: Boolean
+        isFollowing: Boolean,
+        positionInFeed: Int
     ) {
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
@@ -78,6 +80,7 @@ class FeedCampaignRibbonView(
             mAuthor = author
             mPostType = postType
             mIsFollowing = isFollowing
+            feedPosition = positionInFeed
 
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
@@ -270,7 +273,9 @@ class FeedCampaignRibbonView(
                                         campaign,
                                         mHasVoucher,
                                         listOf(product),
-                                        trackerData
+                                        trackerData,
+                                        campaign.shortName,
+                                        feedPosition
                                     )
                                 }
                             }
