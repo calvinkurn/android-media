@@ -3416,7 +3416,15 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        goToAtcVariant()
+        if (variantOptions.isEmpty()) { // lihat semua label clicked
+            goToAtcVariant()
+        } else { // chip variant clicked
+            val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+            singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
+            val child = viewModel.getChildOfVariantSelected(singleVariant)
+            productId = child?.productId
+            goToAtcVariant()
+        }
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
