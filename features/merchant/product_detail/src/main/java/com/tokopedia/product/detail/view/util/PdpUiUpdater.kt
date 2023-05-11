@@ -1047,7 +1047,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
-                shipmentPlus
+                shipmentPlus,
+                freeOngkirData.boType
             )
         }
 
@@ -1061,7 +1062,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.freeOngkirUrl = freeOngkirData.imageURL
                 this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
                 this.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
-                    shipmentPlus
+                    shipmentPlus,
+                    freeOngkirData.boType
                 )
             }
         }

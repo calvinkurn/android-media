@@ -329,7 +329,11 @@ class ShipmentViewHolder(
                 pdpShipmentPlusLogo.loadImage(shipmentPlus.getLogoUrl(context))
                 pdpShipmentPlusText.text = HtmlLinkHelper(context, shipmentPlus.text).spannedString
                 pdpShipmentPlus.setOnClickListener {
-                    listener.onClickShipmentPlusBanner(shipmentPlus.actionLink)
+                    listener.onClickShipmentPlusBanner(
+                        link = shipmentPlus.actionLink,
+                        trackerData = shipmentPlus.trackerData,
+                        componentTrackDataModel = componentTrackDataModel
+                    )
                 }
                 pdpShipmentPlus.show()
             }

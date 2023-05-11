@@ -64,6 +64,7 @@ data class ShipmentPlusData(
     val text: String = "",
     val action: String = "",
     val actionLink: String = "",
+    val trackerData: TrackerData = TrackerData(),
     private val logoUrl: String = "",
     private val logoUrlDark: String = "",
     private val bgUrl: String = "",
@@ -76,4 +77,8 @@ data class ShipmentPlusData(
     fun getBackgroundUrl(context: Context): String {
         return if (context.isDarkMode()) bgUrlDark else bgUrl
     }
+
+    data class TrackerData(
+        val isPlus: Boolean = false
+    )
 }

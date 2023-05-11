@@ -148,7 +148,6 @@ import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
-import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -167,6 +166,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -309,7 +309,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -5814,19 +5813,26 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onClickShipmentPlusBanner(link: String) {
-        context?.let { context ->
-            val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
-                UriUtil
-                    .buildUriAppendParam(
-                        ApplinkConst.WEBVIEW,
-                        mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
-                    )
-            } else {
-                link
-            }
-            goToApplink(processedLink)
+    override fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        ShipmentTracking.sendClickShipmentPlusBanner(
+            trackerData = trackerData,
+            common = generateCommonTracker(),
+            component = componentTrackDataModel
+        )
+        val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
+            UriUtil
+                .buildUriAppendParam(
+                    ApplinkConst.WEBVIEW,
+                    mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
+                )
+        } else {
+            link
         }
+        goToApplink(processedLink)
     }
 
     override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {

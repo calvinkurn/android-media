@@ -814,7 +814,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun mapToShipmentPlusData(shipmentPlus: ShipmentPlus?): ShipmentPlusData {
+    fun mapToShipmentPlusData(shipmentPlus: ShipmentPlus?, boType: Int): ShipmentPlusData {
         return if (shipmentPlus == null) {
             ShipmentPlusData()
         } else {
@@ -826,8 +826,13 @@ object DynamicProductDetailMapper {
                 logoUrl = shipmentPlus.logoUrl,
                 logoUrlDark = shipmentPlus.logoUrlDark,
                 bgUrl = shipmentPlus.bgUrl,
-                bgUrlDark = shipmentPlus.bgUrlDark
+                bgUrlDark = shipmentPlus.bgUrlDark,
+                trackerData = ShipmentPlusData.TrackerData(isPlus = isPlus(boType))
             )
         }
+    }
+
+    private fun isPlus(boType: Int): Boolean {
+        return boType == BebasOngkirType.BO_PLUS.value || boType == BebasOngkirType.BO_PLUS_DT.value
     }
 }
