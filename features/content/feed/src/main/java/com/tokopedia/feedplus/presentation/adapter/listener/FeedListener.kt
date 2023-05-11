@@ -66,6 +66,17 @@ interface FeedListener {
         positionInFeed: Int
     )
 
+    fun onASGCGeneralClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?
+    )
+
     fun onOngoingCampaignClicked(
         postId: String,
         author: FeedAuthorModel,

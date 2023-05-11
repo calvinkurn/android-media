@@ -522,6 +522,28 @@ class FeedFragment :
         }
     }
 
+    override fun onASGCGeneralClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?,
+    ) {
+        openProductTagBottomSheet(
+            postId = postId,
+            author = author,
+            postType = postType,
+            isFollowing = isFollowing,
+            campaign = campaign,
+            hasVoucher = hasVoucher,
+            products = products,
+            trackerData = trackerModel
+        )
+    }
+
     override fun onBottomSheetThreeDotsClicked(
         item: ProductPostTagModelNew,
         context: Context,

@@ -252,7 +252,24 @@ class FeedCampaignRibbonView(
                     }
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-                    icFeedCampaignRibbonIcon.setOnClickListener { }
+                    icFeedCampaignRibbonIcon.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                mProduct?.let { product ->
+                                    listener.onASGCGeneralClicked(
+                                        mPostId,
+                                        author,
+                                        mPostType,
+                                        mIsFollowing,
+                                        campaign,
+                                        mHasVoucher,
+                                        listOf(product),
+                                        trackerData,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
