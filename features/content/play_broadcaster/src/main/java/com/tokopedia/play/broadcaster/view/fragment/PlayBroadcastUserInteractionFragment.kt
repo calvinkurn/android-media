@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
@@ -278,6 +279,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         } else {
                             0
                         }
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
                     }
                 })
 
@@ -1064,6 +1069,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             GameUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
+            }
+            else -> {
+                //no-op
             }
         }
     }

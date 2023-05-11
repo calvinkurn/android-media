@@ -105,7 +105,8 @@ class TodoWidgetViewHolder(
                     channel = element.channelModel,
                     verticalPosition = adapterPosition,
                     isCarousel = element.todoWidgetList.size > 1,
-                    todoWidgetDismissListener = this
+                    todoWidgetDismissListener = this,
+                    cardInteraction = true
                 )
             )
         }

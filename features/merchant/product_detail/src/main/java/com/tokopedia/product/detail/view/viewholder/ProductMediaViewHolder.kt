@@ -62,7 +62,8 @@ class ProductMediaViewHolder(private val view: View,
             listener = listener,
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
-            containerType = element.containerType
+            containerType = element.containerType,
+            recommendation = element.recommendation
         )
     }
 

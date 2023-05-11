@@ -234,6 +234,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
                 }
+                else -> {
+                    // no op
+                }
             }
         } else {
             when (val loginDataList = state.filteredUserList) {
@@ -242,6 +245,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
+                }
+                else -> {
+                    // no op
                 }
             }
         }
@@ -282,6 +288,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             is Fail -> {
                 handleFailure(loginToken.throwable)
             }
+            else -> {
+                // no op
+            }
         }
     }
 
@@ -296,6 +305,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             }
             is Fail -> {
                 handleFailure(profilePojo.throwable)
+            }
+            else -> {
+                // no op
             }
         }
     }

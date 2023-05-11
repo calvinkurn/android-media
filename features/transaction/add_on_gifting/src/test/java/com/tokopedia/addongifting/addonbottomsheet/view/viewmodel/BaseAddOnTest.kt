@@ -7,7 +7,9 @@ import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedS
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.view.AddOnViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.mockk
+import kotlinx.coroutines.test.TestDispatcher
 import org.junit.Before
 import org.junit.Rule
 
@@ -17,11 +19,16 @@ abstract class BaseAddOnTest {
     var getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase = mockk()
     var saveAddOnStateUseCase: SaveAddOnStateUseCase = mockk()
 
-    private var dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
+
+    private var dispatcher: CoroutineDispatchers = testCoroutineRule.dispatchers
     lateinit var viewModel: AddOnViewModel
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+
 
     @Before
     fun setUp() {

@@ -473,6 +473,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
+            else -> {}
         }
     }
 
