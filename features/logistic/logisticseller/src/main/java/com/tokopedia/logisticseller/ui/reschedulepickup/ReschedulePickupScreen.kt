@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,11 +33,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestBottomSheetShape
 import com.tokopedia.common_compose.components.NestButton
@@ -44,6 +40,7 @@ import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
+import com.tokopedia.common_compose.extensions.clickableWithoutRipple
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
@@ -251,12 +248,19 @@ private fun InputSectionSubtitle(
     onSubtitleClicked: (String) -> Unit,
     applink: String
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     NestTypography(
-        text = Subtitle(),
+        text = HtmlLinkHelper(
+            LocalContext.current,
+            stringResource(id = R.string.label_subtitle_reschedule_pick_up)
+        ).spannedString?.toAnnotatedString() ?: "",
         textStyle = NestTheme.typography.body3,
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 4.dp)
-            .clickable { onSubtitleClicked(applink) }
+            .clickableWithoutRipple(
+                interactionSource = interactionSource,
+                onClick = { onSubtitleClicked(applink) }
+            )
     )
 }
 
@@ -392,23 +396,6 @@ private fun ReschedulePickupSummary(summary: String) {
             closeButtonVisibility = false,
             type = TickerType.ANNOUNCEMENT
         )
-    }
-}
-
-@Composable
-private fun Subtitle(): AnnotatedString {
-    return buildAnnotatedString {
-        withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
-            append(stringResource(id = R.string.label_subtitle_reschedule_pick_up_annotate))
-        }
-        withStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.Bold,
-                color = NestTheme.colors.GN._500
-            )
-        ) {
-            append(stringResource(id = R.string.label_app_link_subtitle_reschedule_pick_up_annotate))
-        }
     }
 }
 
