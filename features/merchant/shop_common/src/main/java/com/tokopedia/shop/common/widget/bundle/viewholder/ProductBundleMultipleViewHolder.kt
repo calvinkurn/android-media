@@ -32,6 +32,7 @@ class ProductBundleMultipleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_product_bundle_multiple_widget
+        private val MIN_GRID_SIZE = 1
     }
 
     private var viewBinding: ItemProductBundleMultipleWidgetBinding? by viewBinding()
@@ -117,7 +118,8 @@ class ProductBundleMultipleViewHolder(
     ) {
         rvBundleProducts?.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
+            layoutManager = GridLayoutManager(context, spanSize.coerceAtLeast(MIN_GRID_SIZE),
+                GridLayoutManager.VERTICAL, false)
             adapter = ProductBundleMultipleAdapter(listener)
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
