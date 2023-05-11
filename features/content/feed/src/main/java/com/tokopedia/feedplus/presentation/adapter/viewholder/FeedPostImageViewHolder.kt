@@ -356,6 +356,15 @@ class FeedPostImageViewHolder(
     }
 
     private fun bindProductTag(model: FeedCardImageContentModel) {
+        val products =
+            if (model.media.isNotEmpty() && model.media.first().tagging.size == PRODUCT_COUNT_ONE) {
+                listOf(
+                    model.products[model.media.first().tagging.first().tagIndex]
+                )
+            } else {
+                model.products
+            }
+
         productTagView.bindData(
             postId = model.id,
             author = model.author,
@@ -363,7 +372,7 @@ class FeedPostImageViewHolder(
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
-            products = model.products,
+            products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel
         )
@@ -416,7 +425,8 @@ class FeedPostImageViewHolder(
             model.id,
             model.author,
             model.typename,
-            model.followers.isFollowed
+            model.followers.isFollowed,
+            absoluteAdapterPosition
         )
     }
 
