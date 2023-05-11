@@ -104,13 +104,15 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _comments.update { curr ->
                     //get selected expandable index
                     val selected = curr.list.indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
+                    //get parent comment
+                    val parent = curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     //build new list
                     val newList = buildList {
                         val transformExpand = curr.list.mapIndexed { index, model ->
                             if (index == selected && model is CommentUiModel.Expandable) {
                                 model.copy(
                                     isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
-                                    repliesCount = result.nextRepliesCount
+                                    repliesCount = if (result.hasNextPage) result.nextRepliesCount else parent?.childCount.orEmpty()
                                 )
                             } else {
                                 model
