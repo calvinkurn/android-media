@@ -32,7 +32,7 @@ object HomeRepurchaseMapper {
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(item.id, response, miniCartData)
-        val sortedProductList = sortRepurchaseProduct(productList, miniCartData)
+        val sortedProductList = sortRepurchaseProduct(productList)
         return item.copy(
             title = response.title,
             subtitle = response.subtitle,
@@ -42,17 +42,12 @@ object HomeRepurchaseMapper {
         )
     }
 
-    fun sortRepurchaseProduct(
-        productList: List<TokoNowRepurchaseProductUiModel>,
-        miniCartData: MiniCartSimplifiedData?
-    ): List<TokoNowRepurchaseProductUiModel> {
-        val productsInCart = productList.filter {
-            getAddToCartQuantity(it.productId, miniCartData) != DEFAULT_QUANTITY
-        }.sortedBy { it.originalPosition }
+    fun sortRepurchaseProduct(productList: List<TokoNowRepurchaseProductUiModel>): List<TokoNowRepurchaseProductUiModel> {
+        val productsInCart = productList.filter { it.orderQuantity != DEFAULT_QUANTITY }
+            .sortedBy { it.originalPosition }
 
-        val productsNotInCart = productList.filter {
-            getAddToCartQuantity(it.productId, miniCartData) == DEFAULT_QUANTITY
-        }.sortedBy { it.originalPosition }
+        val productsNotInCart = productList.filter { it.orderQuantity == DEFAULT_QUANTITY }
+            .sortedBy { it.originalPosition }
 
         val sortedProductList = (productsNotInCart + productsInCart).mapIndexed { index, item ->
             item.copy(position = index + ADDITIONAL_POSITION)

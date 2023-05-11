@@ -1032,7 +1032,7 @@ class TokoNowHomeViewModel @Inject constructor(
         quantity: Int,
         @TokoNowLayoutType type: String
     ) {
-        homeLayoutItemList.updateProductQuantity(productId, quantity, miniCartData, type)
+        homeLayoutItemList.updateProductQuantity(productId, quantity, type)
 
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),

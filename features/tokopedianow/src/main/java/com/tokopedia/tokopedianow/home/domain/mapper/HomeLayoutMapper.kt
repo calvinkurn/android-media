@@ -430,7 +430,7 @@ object HomeLayoutMapper {
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
                 val quantity = getAddToCartQuantity(productId, miniCartData)
-                updateProductQuantity(productId, quantity, miniCartData, type)
+                updateProductQuantity(productId, quantity, type)
             }
         }
     }
@@ -439,11 +439,10 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel?>.updateProductQuantity(
         productId: String,
         quantity: Int,
-        miniCartData: MiniCartSimplifiedData?,
         @TokoNowLayoutType type: String
     ) {
         when (type) {
-            REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity, miniCartData)
+            REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
             MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
         }
@@ -467,12 +466,12 @@ object HomeLayoutMapper {
                         if (model.parentId != DEFAULT_PARENT_ID) {
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY, miniCartData)
+                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
                             } else {
-                                updateRepurchaseProductQuantity(model.productId, totalQuantity, miniCartData)
+                                updateRepurchaseProductQuantity(model.productId, totalQuantity)
                             }
                         } else {
-                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY, miniCartData)
+                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
                         }
                     }
                 }
@@ -563,8 +562,7 @@ object HomeLayoutMapper {
 
     private fun MutableList<HomeLayoutItemUiModel?>.updateRepurchaseProductQuantity(
         productId: String,
-        quantity: Int,
-        miniCartData: MiniCartSimplifiedData?
+        quantity: Int
     ) {
         firstOrNull { it?.layout is TokoNowRepurchaseUiModel }?.run {
             val layoutUiModel = layout as TokoNowRepurchaseUiModel
@@ -579,7 +577,7 @@ object HomeLayoutMapper {
             }?.let {
                 updateItemById(layoutUiModel.getVisitableId()) {
                     productList[index] = it
-                    val sortedProductList = sortRepurchaseProduct(productList, miniCartData)
+                    val sortedProductList = sortRepurchaseProduct(productList)
                     copy(layout = layoutUiModel.copy(productList = sortedProductList))
                 }
             }
