@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "com.google.devtools.ksp"
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -48,7 +49,7 @@ dependencies {
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
 
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)

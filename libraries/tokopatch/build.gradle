@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "com.google.devtools.ksp"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -65,7 +66,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     testImplementation rootProject.ext.testDependencies.junit

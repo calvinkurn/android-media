@@ -1,7 +1,3 @@
-apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
-
 buildscript {
     repositories {
         google()
@@ -12,6 +8,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "com.google.devtools.ksp"
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
@@ -49,7 +50,7 @@ dependencies {
     implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
