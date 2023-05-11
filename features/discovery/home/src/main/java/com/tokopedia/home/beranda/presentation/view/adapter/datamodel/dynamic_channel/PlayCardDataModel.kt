@@ -6,12 +6,11 @@ import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
 data class PlayCardDataModel(
-        val channel: ChannelModel,
+        val channel: DynamicHomeChannel.Channels,
         val playCardHome: PlayChannel? = null
 ): HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
@@ -22,8 +21,8 @@ data class PlayCardDataModel(
         if (b is PlayCardDataModel) {
             return channel.id == b.channel.id
                     && channel.name == b.channel.name
-                    && channel.channelHeader.name == b.channel.channelHeader.name
-                    && channel.channelHeader.applink == b.channel.channelHeader.applink
+                    && channel.header.name == b.channel.header.name
+                    && channel.header.applink == b.channel.header.applink
                     && playCardHome == b.playCardHome
                     && playCardHome?.channelId == b.playCardHome?.channelId
                     && playCardHome?.coverUrl == b.playCardHome?.coverUrl
@@ -86,7 +85,7 @@ data class PlayCardDataModel(
                     "channelId", playCardHome?.channelId,
                     "eventAction", "click on play dynamic banner",
                     "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
-                    "campaignCode", channel.trackingAttributionModel.campaignCode,
+                    "campaignCode", channel.campaignCode,
                     "ecommerce", DataLayer.mapOf(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
