@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter.TokoNowRepruchaseProductAdapterTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter.TokoNowRepurchaseProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
@@ -12,13 +12,13 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseProductView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseProductViewHolder.TokoNowRepurchaseProductListener
 
 class TokoNowRepurchaseProductAdapter(
-    typeFactory: TokoNowRepruchaseProductAdapterTypeFactory,
-) : BaseTokopediaNowListAdapter<TokoNowRepurchaseProductUiModel, TokoNowRepruchaseProductAdapterTypeFactory>(
+    typeFactory: TokoNowRepurchaseProductAdapterTypeFactory,
+) : BaseTokopediaNowListAdapter<TokoNowRepurchaseProductUiModel, TokoNowRepurchaseProductAdapterTypeFactory>(
     typeFactory,
     TokoNowRepurchaseProductDiffer()
 ) {
 
-    class TokoNowRepruchaseProductAdapterTypeFactory(
+    class TokoNowRepurchaseProductAdapterTypeFactory(
         private val listener: TokoNowRepurchaseProductListener?
     ) : BaseAdapterTypeFactory(), TokoNowRepurchaseProductTypeFactory {
 
@@ -69,17 +69,6 @@ class TokoNowRepurchaseProductAdapter(
             this.oldList = oldList
             this.newList = newList
             return this
-        }
-
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
-            return if(oldItem is TokoNowRepurchaseProductUiModel && newItem is TokoNowRepurchaseProductUiModel) {
-                oldItem.getChangePayload(newItem)
-            } else {
-                super.getChangePayload(oldItemPosition, newItemPosition)
-            }
         }
     }
 

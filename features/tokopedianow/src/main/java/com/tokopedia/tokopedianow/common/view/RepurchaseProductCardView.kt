@@ -41,10 +41,6 @@ class RepurchaseProductCardView @JvmOverloads constructor(
         view.quantityEditor.onClickAddVariantListener = onClickAddVariantListener
     }
 
-    fun setQuantity(model: TokoNowRepurchaseProductUiModel) {
-        view.quantityEditor.setQuantity(model.orderQuantity)
-    }
-
     private fun LayoutRepurchaseProductCardBinding.setupProductImage(
         model: TokoNowRepurchaseProductUiModel
     ) {
@@ -73,7 +69,7 @@ class RepurchaseProductCardView @JvmOverloads constructor(
             quantityEditor.isVariant = model.isVariant
             quantityEditor.minQuantity = model.minOrder
             quantityEditor.maxQuantity = model.maxOrder
-            setQuantity(model)
+            quantityEditor.setQuantity(model.orderQuantity)
         }
     }
 

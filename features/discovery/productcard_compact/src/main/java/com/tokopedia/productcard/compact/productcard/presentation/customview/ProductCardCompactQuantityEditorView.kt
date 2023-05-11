@@ -424,7 +424,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onSetQuantityWithAnimation(quantity: Int) {
+        if (isAnimationRunning || counter == quantity) return
         counter = quantity
+
         if (quantity > DEFAULT_NUMBER) {
             setStartTransitionWithValue()
         } else {
@@ -452,8 +454,6 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     fun setQuantity(quantity: Int) {
         binding.apply {
-            if (isAnimationRunning || counter == quantity) return@apply
-
             if(enableQuantityEditor) {
                 onSetQuantityWithAnimation(quantity)
             } else {

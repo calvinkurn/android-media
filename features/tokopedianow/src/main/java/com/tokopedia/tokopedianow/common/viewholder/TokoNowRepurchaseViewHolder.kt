@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.adapter.decoration.RepurchaseProductItemDecoration
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter.TokoNowRepruchaseProductAdapterTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseProductAdapter.TokoNowRepurchaseProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowRepurchaseSubtitleColor.NN500
 import com.tokopedia.tokopedianow.common.constant.TokoNowRepurchaseSubtitleColor.YN500
@@ -42,7 +42,7 @@ class TokoNowRepurchaseViewHolder(
 
     private val adapter by lazy {
         TokoNowRepurchaseProductAdapter(
-            TokoNowRepruchaseProductAdapterTypeFactory(productCardListener)
+            TokoNowRepurchaseProductAdapterTypeFactory(productCardListener)
         )
     }
 

@@ -15,6 +15,10 @@
         motion:visibilityMode="ignore"/>
 
     <Constraint
+        android:id="@+id/image_check_mark"
+        motion:visibilityMode="ignore"/>
+
+    <Constraint
         android:id="@+id/edit_text"
         android:layout_width="30dp"
         android:layout_height="30dp"

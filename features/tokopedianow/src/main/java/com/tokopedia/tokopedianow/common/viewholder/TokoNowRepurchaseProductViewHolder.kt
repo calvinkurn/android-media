@@ -46,12 +46,6 @@ class TokoNowRepurchaseProductViewHolder(
         }
     }
 
-    override fun bind(element: TokoNowRepurchaseProductUiModel?, payloads: MutableList<Any>) {
-        if(payloads.firstOrNull() == true && element != null) {
-            binding?.productCard?.setQuantity(element)
-        }
-    }
-
     private fun goToProductDetail(data: TokoNowRepurchaseProductUiModel) {
         RouteManager.route(
             itemView.context,

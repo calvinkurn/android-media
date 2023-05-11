@@ -59,6 +59,7 @@
         android:textCursorDrawable="@drawable/product_card_compact_bg_quantity_editor_view_cursor"
         android:textSize="14sp"
         android:translationZ="1dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/quantity_editor_add_button"
         app:layout_constraintStart_toEndOf="@+id/quantity_editor_sub_button"
