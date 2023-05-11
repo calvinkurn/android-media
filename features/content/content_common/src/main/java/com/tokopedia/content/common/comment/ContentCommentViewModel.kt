@@ -196,7 +196,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
 
         if (!comment.isExpanded) {
-            updateQuery(comment.commentType)
+            updateQuery(comment.commentType) // //if comment type current in query is different with from handle expand reset
         } else {
             dropChild()
         }
@@ -206,7 +206,8 @@ class ContentCommentViewModel @AssistedInject constructor(
         _query.update {
             it.copy(
                 needToRefresh = true,
-                commentType = commentType
+                commentType = commentType,
+                lastChildCursor = if (commentType != it.commentType) "" else it.lastChildCursor
             )
         }
     }
