@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -55,6 +56,7 @@ class FeedPostImageViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
+    private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
 
     private val layoutManager =
@@ -259,6 +261,7 @@ class FeedPostImageViewHolder(
                 runAutoSwipe()
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
+                job?.cancel()
                 campaignView.resetView()
                 hideClearView()
 
@@ -461,7 +464,8 @@ class FeedPostImageViewHolder(
     }
 
     private fun runAutoSwipe() {
-        scope.launch {
+        job?.cancel()
+        job = scope.launch {
             while (isAutoSwipeOn && isActive) {
                 delay(THREE_SECONDS)
                 val index = layoutManager.findFirstVisibleItemPosition()
