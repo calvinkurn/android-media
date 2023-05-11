@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,7 +52,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_switchAccount_shop_to_ugc() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.switchAccount(mockAccountList, TYPE_SHOP)
 
             account.assertEqualTo(mockAccountList.first { it.isUser })
@@ -60,7 +61,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_switchAccount_ugc_to_shop() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.switchAccount(mockAccountList, TYPE_USER)
 
             account.assertEqualTo(mockAccountList.first { it.isShop })
@@ -69,7 +70,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_switchAccount_noCurrentSelectedAccount() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.switchAccount(mockAccountList, "")
 
             account.assertEqualTo(mockAccountList.first())
@@ -78,7 +79,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_switchAccount_accountNotFound() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.switchAccount(mockAccountList, "random_account_type")
 
             account.assertEqualTo(mockAccountList.first())
@@ -87,7 +88,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_switchAccount_onlyHas1Account() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.switchAccount(mockAccountUser, TYPE_USER)
 
             account.assertEqualTo(mockAccountUser.first())
@@ -96,7 +97,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_noAccountList() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(listOf(), preferredAccountType = "")
 
             account.assertEqualTo(ContentAccountUiModel.Empty)
@@ -105,7 +106,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyShop_eligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountShop, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountShop.first())
@@ -114,7 +115,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyShop_notEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountShopNotEligible, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountShopNotEligible.first())
@@ -123,7 +124,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyUgc_eligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountUser, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountUser.first())
@@ -132,7 +133,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyUgc_noUsername() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountUserNoUsername, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountUserNoUsername.first())
@@ -141,7 +142,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyUgc_noTnc() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountUserNoTnc, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountUserNoTnc.first())
@@ -150,7 +151,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_bothEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountList.first())
@@ -159,7 +160,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_bothNotEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountList.first { it.isShop })
@@ -168,7 +169,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_onlyShopEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountListOnlyShopEligible, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountList.first { it.isShop })
@@ -177,7 +178,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_onlyUgcEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountListOnlyUserEligible, preferredAccountType = "")
 
             account.assertEqualTo(mockAccountList.first { it.isUser })
@@ -186,7 +187,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_preferredShop() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = TYPE_SHOP)
 
             account.assertEqualTo(mockAccountList.first { it.isShop })
@@ -195,7 +196,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_preferredUgc() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = TYPE_USER)
 
             account.assertEqualTo(mockAccountList.first { it.isUser })
@@ -204,7 +205,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_preferredShop_butShopNotEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountListOnlyUserEligible, preferredAccountType = TYPE_USER)
 
             account.assertEqualTo(mockAccountListOnlyUserEligible.first { it.isUser })
@@ -213,7 +214,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyShop_preferredShop_butShopNotEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             val account = accountManager.getBestEligibleAccount(mockAccountShopNotEligible, preferredAccountType = TYPE_USER)
 
             account.assertEqualTo(mockAccountShopNotEligible.first())
@@ -222,7 +223,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_lastSelectedShop() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             coEvery { mockSharedPref.getLastSelectedAccountType() } returns TYPE_SHOP
 
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = "")
@@ -233,7 +234,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_lastSelectedUser() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             coEvery { mockSharedPref.getLastSelectedAccountType() } returns TYPE_USER
 
             val account = accountManager.getBestEligibleAccount(mockAccountList, preferredAccountType = "")
@@ -244,7 +245,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_shopAndUgc_lastSelectedShop_butShopNotEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             coEvery { mockSharedPref.getLastSelectedAccountType() } returns TYPE_SHOP
 
             val account = accountManager.getBestEligibleAccount(mockAccountListOnlyUserEligible, preferredAccountType = "")
@@ -255,7 +256,7 @@ class PlayShortsAccountManagerTest {
 
     @Test
     fun playShorts_accountManager_getBestEligibleAccount_onlyShop_lastSelectedShop_butShopNotEligible() {
-        rule.runBlockingTest {
+        runBlockingTest(testDispatcher.coroutineDispatcher) {
             coEvery { mockSharedPref.getLastSelectedAccountType() } returns TYPE_SHOP
 
             val account = accountManager.getBestEligibleAccount(mockAccountShopNotEligible, preferredAccountType = "")

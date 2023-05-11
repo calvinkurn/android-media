@@ -11,7 +11,22 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
-import com.tokopedia.product.addedit.preview.data.model.params.add.*
+import com.tokopedia.product.addedit.preview.data.model.params.add.CPLData
+import com.tokopedia.product.addedit.preview.data.model.params.add.Category
+import com.tokopedia.product.addedit.preview.data.model.params.add.Option
+import com.tokopedia.product.addedit.preview.data.model.params.add.Picture
+import com.tokopedia.product.addedit.preview.data.model.params.add.Pictures
+import com.tokopedia.product.addedit.preview.data.model.params.add.Preorder
+import com.tokopedia.product.addedit.preview.data.model.params.add.Product
+import com.tokopedia.product.addedit.preview.data.model.params.add.ProductAddParam
+import com.tokopedia.product.addedit.preview.data.model.params.add.ProductEtalase
+import com.tokopedia.product.addedit.preview.data.model.params.add.Selection
+import com.tokopedia.product.addedit.preview.data.model.params.add.ShopParam
+import com.tokopedia.product.addedit.preview.data.model.params.add.Variant
+import com.tokopedia.product.addedit.preview.data.model.params.add.Video
+import com.tokopedia.product.addedit.preview.data.model.params.add.Videos
+import com.tokopedia.product.addedit.preview.data.model.params.add.Wholesale
+import com.tokopedia.product.addedit.preview.data.model.params.add.Wholesales
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.PRICE_CURRENCY
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
@@ -21,7 +36,11 @@ import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConsta
 import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
@@ -31,43 +50,44 @@ import javax.inject.Inject
 
 class AddProductInputMapper @Inject constructor() {
 
-    fun mapInputToParam(shopId: String,
-                        uploadIdList: ArrayList<String>,
-                        detailInputModel: DetailInputModel,
-                        descriptionInputModel: DescriptionInputModel,
-                        shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: VariantInputModel): ProductAddParam {
-
+    fun mapInputToParam(
+        shopId: String,
+        uploadIdList: ArrayList<String>,
+        detailInputModel: DetailInputModel,
+        descriptionInputModel: DescriptionInputModel,
+        shipmentInputModel: ShipmentInputModel,
+        variantInputModel: VariantInputModel
+    ): ProductAddParam {
         return ProductAddParam(
-                detailInputModel.productName,
-                detailInputModel.price,
-                PRICE_CURRENCY,
-                detailInputModel.stock,
-                getActiveStatus(detailInputModel.status),
-                descriptionInputModel.productDescription,
-                detailInputModel.minOrder,
-                mapShipmentUnit(shipmentInputModel.weightUnit),
-                shipmentInputModel.weight,
-                detailInputModel.condition,
-                shipmentInputModel.isMustInsurance,
-                detailInputModel.sku,
-                ShopParam(shopId),
-                Category(detailInputModel.categoryId),
-                mapProductShowCases(detailInputModel.productShowCases),
-                mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
-                mapPreorderParam(detailInputModel.preorder),
-                mapWholesaleParam(detailInputModel.wholesaleList),
-                mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel),
-                mapCPLData(shipmentInputModel.cplModel),
-                mapSpecificationParam(detailInputModel.specifications)
+            detailInputModel.productName,
+            detailInputModel.price,
+            PRICE_CURRENCY,
+            detailInputModel.stock,
+            getActiveStatus(detailInputModel.status),
+            descriptionInputModel.productDescription,
+            detailInputModel.minOrder,
+            mapShipmentUnit(shipmentInputModel.weightUnit),
+            shipmentInputModel.weight,
+            detailInputModel.condition,
+            shipmentInputModel.isMustInsurance,
+            detailInputModel.sku,
+            ShopParam(shopId),
+            Category(detailInputModel.categoryId),
+            mapProductShowCases(detailInputModel.productShowCases),
+            mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
+            mapPreorderParam(detailInputModel.preorder),
+            mapWholesaleParam(detailInputModel.wholesaleList),
+            mapVideoParam(descriptionInputModel.videoLinkList),
+            mapVariantParam(variantInputModel),
+            mapCPLData(shipmentInputModel.cplModel),
+            mapSpecificationParam(detailInputModel.specifications)
         )
     }
 
     private fun mapProductShowCases(productShowCases: List<ShowcaseItemPicker>): List<ProductEtalase> =
-            productShowCases.map {
-                ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
-            }
+        productShowCases.map {
+            ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
+        }
 
     private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
@@ -75,54 +95,54 @@ class AddProductInputMapper @Inject constructor() {
             null
         } else {
             Variant(
-                    mapVariantSelections(variantInputModel.selections),
-                    mapVariantProducts(variantInputModel.products),
-                    mapSizeChart(variantInputModel.sizecharts)
+                mapVariantSelections(variantInputModel.selections),
+                mapVariantProducts(variantInputModel.products),
+                mapSizeChart(variantInputModel.sizecharts)
             )
         }
     }
 
     private fun mapVariantSelections(selections: List<SelectionInputModel>) = selections.map {
         Selection(
-                it.variantId,
-                it.unitID,
-                it.variantName,
-                mapVariantOptions(it.options)
+            it.variantId,
+            it.unitID,
+            it.variantName,
+            mapVariantOptions(it.options)
         )
     }
 
     private fun mapVariantOptions(options: List<OptionInputModel>) = options.map {
         Option(
-                it.value,
-                it.unitValueID,
-                it.hexCode
+            it.value,
+            it.unitValueID,
+            it.hexCode
         )
     }
 
     private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
         Product(
-                it.combination,
-                it.price,
-                it.sku,
-                it.status,
-                it.stock,
-                it.isPrimary,
-                mapPictureVariant(it.pictures),
-                it.weight.orZero(),
-                it.weightUnit
+            it.combination,
+            it.price,
+            it.sku,
+            it.status,
+            it.stock,
+            it.isPrimary,
+            mapPictureVariant(it.pictures),
+            it.weight.orZero(),
+            it.weightUnit
         )
     }
 
     private fun mapPictureVariant(pictures: List<PictureVariantInputModel>) = pictures.map {
         Picture(
-                it.description,
-                it.fileName,
-                it.filePath,
-                "",
-                it.isFromIG == "true",
-                it.width.toInt(),
-                it.height.toInt(),
-                it.uploadId
+            it.description,
+            it.fileName,
+            it.filePath,
+            "",
+            it.isFromIG == "true",
+            it.width.toInt(),
+            it.height.toInt(),
+            it.uploadId
         )
     }
 
@@ -131,14 +151,14 @@ class AddProductInputMapper @Inject constructor() {
             emptyList()
         } else {
             val sizechart = Picture(
-                    sizecharts.description,
-                    sizecharts.fileName,
-                    sizecharts.filePath,
-                    "",
-                    sizecharts.isFromIG == "true",
-                    sizecharts.width.toInt(),
-                    sizecharts.height.toInt(),
-                    sizecharts.uploadId
+                sizecharts.description,
+                sizecharts.fileName,
+                sizecharts.filePath,
+                "",
+                sizecharts.isFromIG == "true",
+                sizecharts.width.toInt(),
+                sizecharts.height.toInt(),
+                sizecharts.uploadId
             )
 
             listOf(sizechart)
@@ -150,11 +170,13 @@ class AddProductInputMapper @Inject constructor() {
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
             val price = it.price.replace(".", "")
-                    .toBigIntegerOrNull() ?: 0.toBigInteger()
+                .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
-                data.add(Wholesale(
+                data.add(
+                    Wholesale(
                         quantity,
-                        price)
+                        price
+                    )
                 )
             }
         }
@@ -185,7 +207,8 @@ class AddProductInputMapper @Inject constructor() {
         imageUrlOrPathList.forEach { urlOrPath ->
             if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
                 with(pictureList[idxPictureList++]) {
-                    data.add(Picture(
+                    data.add(
+                        Picture(
                             description,
                             fileName,
                             filePath,
@@ -193,7 +216,8 @@ class AddProductInputMapper @Inject constructor() {
                             isFromIG.contains("true"),
                             width,
                             height
-                    ))
+                        )
+                    )
                 }
             } else {
                 val uploadId = uploadIdList.getOrNull(idxUploadIdList++) ?: ""
@@ -217,5 +241,5 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =
-            specifications?.map { it.id }
+        specifications?.map { it.id }
 }

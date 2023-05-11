@@ -10,7 +10,6 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.M
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
 import javax.inject.Inject
 
 class TokofoodMerchantSearchResultMapper @Inject constructor() {

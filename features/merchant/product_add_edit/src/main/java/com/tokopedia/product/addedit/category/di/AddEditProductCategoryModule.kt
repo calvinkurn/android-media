@@ -7,8 +7,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-
-@Module(includes = [AddEditProductCategoryViewModelModule::class])
+@Module
 class AddEditProductCategoryModule {
 
     @AddEditProductCategoryScope

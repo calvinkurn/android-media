@@ -195,6 +195,9 @@ class QuizFormView : ConstraintLayout {
                     isEnabled = !quizFormState.isLoading
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

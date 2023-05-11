@@ -43,14 +43,17 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOo
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
@@ -58,6 +61,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCarouselChipsViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
@@ -76,10 +80,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
@@ -99,17 +103,16 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetVi
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSwitcherViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemShimmeringViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.HomeClaimCouponWidgetItemTracker
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.HomeClaimCouponWidgetItemListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder.HomeClaimCouponWidgetListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
-    private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
@@ -131,10 +134,12 @@ class HomeAdapterTypeFactory(
     private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
     private val claimCouponWidgetItemListener: HomeClaimCouponWidgetItemListener? = null,
     private val claimCouponWidgetItemTracker: HomeClaimCouponWidgetItemTracker? = null,
-    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null
+    private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null,
+    private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
+    TokoNowTickerTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowRepurchaseTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
@@ -150,11 +155,11 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
     // endregion
 
     // region TokoNow Home Component
     override fun type(uiModel: HomeSharingWidgetUiModel): Int = HomeSharingWidgetViewHolder.LAYOUT
-    override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
@@ -170,6 +175,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int = HomeClaimCouponWidgetItemViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetUiModel): Int = HomeClaimCouponWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int = HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT
+    override fun type(uiModel: HomeProductCarouselChipsUiModel): Int = HomeProductCarouselChipsViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -198,10 +204,10 @@ class HomeAdapterTypeFactory(
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener, productRecommendationBindOocListener)
+            TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(view)
             // endregion
 
             // region TokoNow Home Component
-            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
             HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, homeProductRecomListener, rtrListener, rtrAnalytics)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
@@ -218,6 +224,7 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetItemViewHolder.LAYOUT -> HomeClaimCouponWidgetItemViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker)
             HomeClaimCouponWidgetViewHolder.LAYOUT -> HomeClaimCouponWidgetViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker, claimCouponWidgetListener)
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
+            HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
             // endregion
 
             // region Global Home Component

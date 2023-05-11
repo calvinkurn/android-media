@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.mlp_bottomsheet.view.*
 import kotlinx.android.synthetic.main.mlp_box_layout.view.*
 import kotlinx.android.synthetic.main.mlp_row_info.view.*
 import kotlinx.android.synthetic.main.switchon_popup.view.*
+import com.tokopedia.unifyprinciples.R as principleR
 
 
 class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean, var merchantLendingFragment: MerchantLendingFragment) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
@@ -70,7 +71,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     itemView.text_title.setTextAndCheckShow(it.title)
                     if (it.logo?.length!! > 0) {
                         itemView.header_logo.show()
-                        ImageHandler.loadImage(context, itemView.header_logo, it.logo, R.color.grey_100)
+                        ImageHandler.loadImage(context, itemView.header_logo, it.logo, principleR.color.Unify_NN50)
                     } else {
                         itemView.header_logo.hide()
                     }
