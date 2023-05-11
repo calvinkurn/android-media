@@ -63,8 +63,14 @@ class VideoCompressionRepositoryImpl @Inject constructor(
             val generateVideoSize = generateVideoSize(videoOriginalInfo, resolution)
             val cacheFile = compressedVideoPath(originalPath)
 
-            // get minimum bitrate
-            val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate)
+            // get minimum bitrate and convert it from Bps into Mbps
+            val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate) / 1_000_000
+
+            val config = Configuration(
+                videoBitrateInMbps = mBitrate,
+                videoHeight = generateVideoSize.height.toDouble(),
+                videoWidth = generateVideoSize.width.toDouble()
+            )
 
             val compression = Compressor
                 .compressVideo(
@@ -73,11 +79,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                     srcUri = Uri.parse(originalPath),
                     streamableFile = null,
                     destination = cacheFile.path,
-                    configuration = Configuration(
-                        videoBitrateInMbps = mBitrate / 1_000_000,
-                        videoHeight = generateVideoSize.height.toDouble(),
-                        videoWidth = generateVideoSize.width.toDouble()
-                    ),
+                    configuration = config,
                     listener = object : CompressionProgressListener {
                         override fun onProgressCancelled(index: Int) {}
 
