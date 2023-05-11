@@ -1025,7 +1025,7 @@ private fun NestButtonWithIcon() {
             isLoading = false,
             rightLoader = false,
             loadingText = "",
-            leadingIcon = R.drawable.ic_chevron_down_8dp,
+            leadingIcon = R.drawable.iconunify_arrow_back,
             trailingIcon = null,
             onClick = {},
         )
@@ -1040,7 +1040,7 @@ private fun NestButtonWithIcon() {
             rightLoader = false,
             loadingText = "",
             leadingIcon = null,
-            trailingIcon = R.drawable.ic_chevron_down_8dp,
+            trailingIcon = R.drawable.ic_system_action_close_normal_24,
             onClick = {},
         )
     }
