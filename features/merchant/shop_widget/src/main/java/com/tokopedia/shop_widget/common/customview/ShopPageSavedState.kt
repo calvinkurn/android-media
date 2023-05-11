@@ -27,20 +27,4 @@ class ShopPageSavedState : View.BaseSavedState {
         out.writeSparseArray(childrenStates)
     }
 
-    companion object {
-        @JvmField
-        val CREATOR: ClassLoaderCreator<ShopPageSavedState> = object : ClassLoaderCreator<ShopPageSavedState> {
-            override fun createFromParcel(source: Parcel, loader: ClassLoader): ShopPageSavedState {
-                return ShopPageSavedState(source, loader)
-            }
-
-            override fun createFromParcel(source: Parcel?): ShopPageSavedState {
-                return createFromParcel(null)
-            }
-
-            override fun newArray(size: Int): Array<ShopPageSavedState?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

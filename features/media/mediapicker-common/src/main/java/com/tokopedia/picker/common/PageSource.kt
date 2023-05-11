@@ -9,6 +9,7 @@ enum class PageSource(val value: String) {
     Feed("Feed"),
     ChatBot("Chat Bot"),
     TopChat("Top Chat"),
+    TokoChat("Toko Chat"),
     Play("Play"),
     Review("Review"),
     Feedback("Feedback"),

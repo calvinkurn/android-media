@@ -13,7 +13,11 @@ import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearStaticMockk
@@ -46,13 +50,15 @@ class AffiliatePromoViewModelTest {
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
+    private val graphqlRepository: GraphqlRepository = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
             userSessionInterface,
             affiliateSearchUseCase,
             affiliateValidateUserStatus,
             affiliateAffiliateAnnouncementUseCase,
-            affiliateDiscoveryCampaignUseCase
+            affiliateDiscoveryCampaignUseCase,
+            graphqlRepository
         )
     )
 
@@ -193,5 +199,61 @@ class AffiliatePromoViewModelTest {
         } throws throwable
 
         affiliatePromoViewModel.getDiscoBanners(0, 7)
+        assertEquals(affiliatePromoViewModel.getDiscoCampaignBanners().value, null)
+    }
+
+    @Test
+    fun getTokoNowException() {
+        val generateAffiliateLinkEligibility = mockk<GenerateAffiliateLinkEligibility>()
+        val gqlResponse = mockk<GraphqlResponse>(relaxed = true)
+        val affiliateEligibilityCheckUseCase =
+            mockk<AffiliateEligibilityCheckUseCase>(relaxed = true)
+        val throwable = Throwable("Validate Data Exception")
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.apply {
+                params = any()
+            }.executeOnBackground()
+        } returns generateAffiliateLinkEligibility
+
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns gqlResponse
+
+        coEvery {
+            gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(any())
+        } throws throwable
+
+        assertEquals(affiliatePromoViewModel.getTokoNowBottomSheetData().value, null)
+    }
+
+    @Test
+    fun getTokoNowBottomSheetData() {
+        val generateAffiliateLinkEligibility = mockk<GenerateAffiliateLinkEligibility>()
+        val generateAffiliateLinkEligibilityResponse =
+            GenerateAffiliateLinkEligibility.Response(generateAffiliateLinkEligibility)
+        val gqlResponse = mockk<GraphqlResponse>(relaxed = true)
+        val affiliateEligibilityCheckUseCase =
+            mockk<AffiliateEligibilityCheckUseCase>(relaxed = true)
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.apply {
+                params = any()
+            }.executeOnBackground()
+        } returns generateAffiliateLinkEligibility
+
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns gqlResponse
+        coEvery {
+            gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(any())
+        } returns generateAffiliateLinkEligibilityResponse
+
+        affiliatePromoViewModel.getTokoNowBottomSheetInfo("11530573")
+
+        assertEquals(
+            affiliatePromoViewModel.getTokoNowBottomSheetData().value,
+            generateAffiliateLinkEligibility
+        )
     }
 }

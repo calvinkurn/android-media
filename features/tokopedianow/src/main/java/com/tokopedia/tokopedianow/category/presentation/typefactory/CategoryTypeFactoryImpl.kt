@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
@@ -41,6 +42,7 @@ class CategoryTypeFactoryImpl(
     productRecommendationOocBindListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
+    productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
     private val categoryAisleListener: CategoryAisleListener,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
@@ -56,6 +58,7 @@ class CategoryTypeFactoryImpl(
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
         feedbackWidgetListener,
+        productCardCompactListener,
         productCardCompactSimilarProductTrackerListener,
         productRecommendationOocBindListener,
         productRecommendationOocListener,

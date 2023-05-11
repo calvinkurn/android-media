@@ -46,7 +46,7 @@ class QuestionnaireViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when fetch questionnaire then return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val questionList = listOf(
                 QuestionnairePagerUiModel(),
                 QuestionnairePagerUiModel(),
@@ -69,7 +69,7 @@ class QuestionnaireViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when fetch questionnaire then return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val throwable = Throwable()
 
             coEvery {
@@ -88,7 +88,7 @@ class QuestionnaireViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when set persona then return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val personaName = anyString()
             val shopId = anyString()
             val answers = listOf(
@@ -120,7 +120,7 @@ class QuestionnaireViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when set persona then return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val throwable = Throwable()
             val personaName = anyString()
             val shopId = anyString()
