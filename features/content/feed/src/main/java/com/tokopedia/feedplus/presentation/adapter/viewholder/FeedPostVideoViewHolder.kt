@@ -373,13 +373,14 @@ class FeedPostVideoViewHolder(
             commentButton.hide()
             menuButton.hide()
             shareButton.hide()
-            productTagButton.root.hide()
-            productTagView.root.hide()
             overlayTop.root.hide()
             overlayBottom.root.hide()
             overlayRight.root.hide()
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
+
+        productTagView.showIfPossible()
+        productButtonView.showIfPossible()
     }
 
     private fun hideClearView() {

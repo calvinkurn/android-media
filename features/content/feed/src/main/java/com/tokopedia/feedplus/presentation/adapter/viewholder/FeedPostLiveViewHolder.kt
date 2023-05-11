@@ -40,6 +40,7 @@ class FeedPostLiveViewHolder(
 
             bindAuthor(data)
             bindCaption(data)
+            bindVideoPlayer(data)
 
             binding.root.setOnClickListener {
                 listener.onLivePreviewClicked(
@@ -66,11 +67,10 @@ class FeedPostLiveViewHolder(
                     absoluteAdapterPosition
                 )
 
-                bindVideoPlayer(element)
                 mVideoPlayer?.resume(shouldReset = false)
             }
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                mVideoPlayer?.stop()
+                mVideoPlayer?.pause()
             }
         }
     }

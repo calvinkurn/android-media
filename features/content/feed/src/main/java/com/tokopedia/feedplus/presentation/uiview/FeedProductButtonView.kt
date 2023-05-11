@@ -18,6 +18,8 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
+    private var products: List<FeedCardProductModel> = emptyList()
+
     fun bindData(
         postId: String,
         author: FeedAuthorModel,
@@ -29,19 +31,7 @@ class FeedProductButtonView(
         trackerData: FeedTrackerDataModel?
     ) {
         with(binding) {
-            when {
-                products.size == PRODUCT_COUNT_ZERO -> {
-                    root.hide()
-                }
-                products.size > PRODUCT_COUNT_NINETY_NINE -> {
-                    tvPlayProductCount.text = NINETY_NINE_PLUS
-                    root.show()
-                }
-                else -> {
-                    tvPlayProductCount.text = products.size.toString()
-                    root.show()
-                }
-            }
+            bind(products)
 
             icPlayProductSeeMore.setOnClickListener {
                 listener.onProductTagButtonClicked(
@@ -68,6 +58,29 @@ class FeedProductButtonView(
                 )
             }
         }
+    }
+
+    private fun bind(products: List<FeedCardProductModel>) {
+        this.products = products
+        with(binding) {
+            when {
+                products.size == PRODUCT_COUNT_ZERO -> {
+                    root.hide()
+                }
+                products.size > PRODUCT_COUNT_NINETY_NINE -> {
+                    tvPlayProductCount.text = NINETY_NINE_PLUS
+                    root.show()
+                }
+                else -> {
+                    tvPlayProductCount.text = products.size.toString()
+                    root.show()
+                }
+            }
+        }
+    }
+
+    fun showIfPossible() {
+        bind(this.products)
     }
 
     companion object {

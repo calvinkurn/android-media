@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.domain.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
@@ -184,7 +185,7 @@ object MapperFeedHome {
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
         type = author.type,
-        name = author.name,
+        name = MethodChecker.fromHtml(author.name).toString(),
         description = author.description,
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,

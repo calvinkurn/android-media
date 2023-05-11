@@ -25,6 +25,7 @@ class FeedProductTagView(
     private var hasVoucher: Boolean = false
     private var totalProducts: Int = 0
     private var trackerData: FeedTrackerDataModel? = null
+    private var products: List<FeedCardProductModel> = emptyList()
 
     fun bindData(
         postId: String,
@@ -44,6 +45,7 @@ class FeedProductTagView(
         this.campaign = campaign
         this.trackerData = trackerData
         this.totalProducts = totalProducts
+        this.products = products
 
         bindText(products)
     }
@@ -98,6 +100,10 @@ class FeedProductTagView(
 
     fun hideClearView() {
         binding.root.show()
+    }
+
+    fun showIfPossible() {
+        bindText(this.products)
     }
 
     companion object {
