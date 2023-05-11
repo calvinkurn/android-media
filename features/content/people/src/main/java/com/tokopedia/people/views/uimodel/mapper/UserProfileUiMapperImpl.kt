@@ -146,8 +146,18 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
+    override fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel> {
+        return response.data.settingsProfile.map {
+            ProfileSettingsUiModel(
+                settingID = it.settingID,
+                title = it.title,
+                isEnabled = it.enabled,
+            )
+        }
+    }
+
     private fun getReviewStats(extraStats: List<ExtraStats>): String {
-        return extraStats.firstOrNull { it.field == ProfileSettingsUiModel.KEY_REVIEWS }?.countFmt.orEmpty()
+        return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEWS }?.countFmt.orEmpty()
     }
 
     companion object {
@@ -155,5 +165,6 @@ class UserProfileUiMapperImpl @Inject constructor(
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
+        private const val EXTRA_STATS_REVIEWS = "reviews"
     }
 }

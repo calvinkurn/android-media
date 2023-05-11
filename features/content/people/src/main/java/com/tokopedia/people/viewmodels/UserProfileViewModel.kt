@@ -20,6 +20,7 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.getReviewSettings
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -32,6 +33,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -107,7 +109,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
-    private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.createReview(false))
+    private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -495,6 +497,7 @@ class UserProfileViewModel @AssistedInject constructor(
         launchCatchError(block = {
             val isSuccess = repo.setShowReview(
                 userID = profileUserID,
+                settingID = _reviewSettings.value.settingID,
                 isShow = isShow
             )
 
@@ -511,6 +514,7 @@ class UserProfileViewModel @AssistedInject constructor(
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val profileInfo = repo.getProfile(username)
+        val profileSettings = repo.getProfileSettings(profileInfo.userID)
 
         val profileType = if (userSession.isLoggedIn) {
             if (userSession.userId == profileInfo.userID) {
@@ -531,6 +535,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
         _profileType.update { profileType }
+        _reviewSettings.update { profileSettings.getReviewSettings() }
 
         if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()

@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
+import com.tokopedia.people.model.GetProfileSettingsRequest
 import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
@@ -43,6 +44,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase,
     private val updateChannelUseCase: UpdateChannelUseCase,
+    private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
     private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
 ) : UserProfileRepository {
 
@@ -142,17 +144,29 @@ class UserProfileRepositoryImpl @Inject constructor(
         updateChannelUseCase.executeOnBackground().id
     }
 
+    override suspend fun getProfileSettings(userID: String): List<ProfileSettingsUiModel> = withContext(dispatcher.io) {
+        val response = getProfileSettingsUseCase(
+            GetProfileSettingsRequest(
+                authorID = userID,
+                authorType = ContentCommonUserType.VALUE_TYPE_ID_USER,
+            )
+        )
+
+        mapper.mapProfileSettings(response)
+    }
+
     override suspend fun setShowReview(
         userID: String,
+        settingID: String,
         isShow: Boolean,
     ) = withContext(dispatcher.io) {
         setProfileSettingsUseCase(
             SetProfileSettingsRequest(
                 authorID = userID,
-                authorType = ContentCommonUserType.TYPE_USER,
+                authorType = ContentCommonUserType.VALUE_TYPE_ID_USER,
                 data = listOf(
                     SetProfileSettingsRequest.Data(
-                        settingID = ProfileSettingsUiModel.KEY_REVIEWS,
+                        settingID = settingID,
                         enable = isShow,
                     )
                 )

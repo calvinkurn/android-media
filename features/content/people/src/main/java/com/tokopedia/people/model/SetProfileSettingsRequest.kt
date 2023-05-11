@@ -10,7 +10,7 @@ data class SetProfileSettingsRequest(
     val authorID: String,
 
     @SerializedName("authorType")
-    val authorType: String,
+    val authorType: Int,
 
     @SerializedName("data")
     val data: List<Data>,

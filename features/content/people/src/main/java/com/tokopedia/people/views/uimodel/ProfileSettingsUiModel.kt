@@ -1,28 +1,35 @@
 package com.tokopedia.people.views.uimodel
 
-import androidx.annotation.StringRes
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.people.R
 
 /**
  * Created By : Jonathan Darwin on May 11, 2023
  */
 data class ProfileSettingsUiModel(
-    val key: String,
-    val icon: Int,
-    @StringRes val text: Int,
+    val settingID: String,
+    val title: String,
     val isEnabled: Boolean
 ) {
-    companion object {
-        const val KEY_REVIEWS = "reviews"
-
-        fun createReview(isEnabled: Boolean): ProfileSettingsUiModel {
-            return ProfileSettingsUiModel(
-                key = KEY_REVIEWS,
-                icon = IconUnify.STAR,
-                text = R.string.up_profile_settings_review_text,
-                isEnabled = isEnabled,
-            )
+    val icon: Int
+        get() {
+            return when (settingID) {
+                SETTING_ID_REVIEW -> IconUnify.STAR
+                else -> IconUnify.SETTING
+            }
         }
+
+    companion object {
+        const val SETTING_ID_REVIEW = "1"
+
+        val Empty: ProfileSettingsUiModel
+            get() = ProfileSettingsUiModel(
+                settingID = "",
+                title = "",
+                isEnabled = false,
+            )
     }
+}
+
+fun List<ProfileSettingsUiModel>.getReviewSettings(): ProfileSettingsUiModel {
+    return firstOrNull { it.settingID == ProfileSettingsUiModel.SETTING_ID_REVIEW } ?: ProfileSettingsUiModel.Empty
 }
