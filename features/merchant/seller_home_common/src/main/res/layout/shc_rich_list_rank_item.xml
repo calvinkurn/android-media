@@ -3,27 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRankSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawablePadding="4dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toTopOf="@+id/tvShcRankTitle"
+        app:layout_constraintEnd_toStartOf="@+id/imgShcRankTrend"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
         tools:text="Poinmu saat ini" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRankTitle"
-        android:layout_width="53dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imgShcRankTrend"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvShcRankSubTitle"
         app:typographyType="heading_4"
@@ -46,6 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_shc_rank_info"
+        android:minWidth="40dp"
+        android:minHeight="40dp"
         android:paddingStart="6dp"
         android:paddingTop="4dp"
         android:paddingEnd="6dp"

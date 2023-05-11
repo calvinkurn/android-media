@@ -1327,8 +1327,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getRichListData(widgets: List<BaseWidgetUiModel<*>>) {
         startCustomMetric(SELLER_HOME_RICH_LIST_TRACE)
         widgets.setLoading()
-        val mWidgets = widgets.filterIsInstance<RichListWidgetUiModel>()
-        sellerHomeViewModel.getLeaderboardWidgetData(mWidgets)
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        sellerHomeViewModel.getRichListWidgetData(dataKeys)
     }
 
     private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {

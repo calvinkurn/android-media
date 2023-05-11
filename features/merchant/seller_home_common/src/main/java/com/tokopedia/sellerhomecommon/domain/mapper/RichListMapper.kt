@@ -1,12 +1,17 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetRichListDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.RichListSectionItemsModel
 import com.tokopedia.sellerhomecommon.domain.model.RichListSectionModel
-import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItem
 import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.TooltipListItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -14,22 +19,26 @@ import javax.inject.Inject
  */
 
 class RichListMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface, lastUpdatedEnabled: Boolean
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetRichListDataResponse, List<RichListDataUiModel>> {
 
     companion object {
-        private const val DOWN_TREND = -1
-        private const val UP_TREND = 1
-        private const val SECTION_TYPE_RANK = 0
-        private const val SECTION_TYPE_CAPTION = 1
-        private const val SECTION_TYPE_TICKER = 2
+        private const val DOWN_TREND = "downtrend"
+        private const val UP_TREND = "uptrend"
+        private const val DISABLED_TREND = "disabled"
+        private const val SECTION_TYPE_RANK = "simpleRank"
+        private const val SECTION_TYPE_CAPTION = "tileBox"
+        private const val SECTION_TYPE_TICKER = "ticker"
+        private const val LAST_UPDATED_FORMAT = "Update terakhir %s WIB"
+        private const val START_DELIMITER_URL = "='"
+        private const val END_DELIMITER_URL = "'>"
+        private const val START_DELIMITER_CTA_TEXT = "'>"
+        private const val END_DELIMITER_CTA_TEXT = "</"
     }
 
     override fun mapRemoteDataToUiData(
-        response: GetRichListDataResponse,
-        isFromCache: Boolean
+        response: GetRichListDataResponse, isFromCache: Boolean
     ): List<RichListDataUiModel> {
         return response.data.widgetData.map { data ->
             RichListDataUiModel(
@@ -37,66 +46,87 @@ class RichListMapper @Inject constructor(
                 error = data.errorMsg,
                 showWidget = data.shouldShowWidget,
                 isFromCache = isFromCache,
-                lastUpdated = getLastUpdatedMillis(data.dataKey, isFromCache),
+                lastUpdated = getLastUpdated(data.updateInfoUnix),
                 richListData = getRichListData(data.sections)
             )
         }
     }
 
-    private fun getRichListData(sections: List<RichListSectionModel>): List<BaseRichListItemUiModel> {
+    private fun getLastUpdated(updateInfoUnix: Long): String {
+        val sdf = SimpleDateFormat(DateTimeUtil.FORMAT_DD_MMMM_YYYY, DateTimeUtil.localeID)
+        sdf.timeZone = TimeZone.getTimeZone(DateTimeUtil.TIME_ZONE)
+        val oneSecInMillis = TimeUnit.SECONDS.toMillis(Int.ONE.toLong())
+        val timeInMillis = updateInfoUnix.times(oneSecInMillis)
+        return String.format(LAST_UPDATED_FORMAT, sdf.format(Date(timeInMillis)))
+    }
+
+    private fun getRichListData(sections: List<RichListSectionModel>): List<BaseRichListItem> {
         return sections.mapNotNull { item ->
-            when (item.type) {
-                SECTION_TYPE_RANK -> getRankItems(item.items)
-                SECTION_TYPE_CAPTION -> getCaptionItems(item)
-                SECTION_TYPE_TICKER -> getTickerItems(item.items)
+            when {
+                item.type.equals(SECTION_TYPE_RANK, true) -> getRankItems(item.items)
+                item.type.equals(SECTION_TYPE_CAPTION, true) -> getCaptionItems(item)
+                item.type.equals(SECTION_TYPE_TICKER, true) -> getTickerItems(item.items)
                 else -> null
             }
         }.flatten()
     }
 
-    private fun getCaptionItems(item: RichListSectionModel): List<BaseRichListItemUiModel> {
+    private fun getCaptionItems(item: RichListSectionModel): List<BaseRichListItem> {
         return listOf(
-            BaseRichListItemUiModel.CaptionItemUiModel(
+            BaseRichListItem.CaptionItemUiModel(
                 caption = item.caption,
-                ctaList = item.items.map {
-                    BaseRichListItemUiModel.CaptionItemUiModel.CaptionCtaUiModel(
-                        title = it.title,
-                        subtitle = it.subtitle,
-                        imageUrl = it.imageUrl
-                    )
-                }
+                ctaText = getCtaText(item.caption),
+                url = getURL(item.caption)
             )
         )
     }
 
-    private fun getTickerItems(items: List<RichListSectionItemsModel>): List<BaseRichListItemUiModel> {
+    private fun getURL(caption: String): String {
+        return caption.substringAfter(START_DELIMITER_URL)
+            .substringBefore(END_DELIMITER_URL)
+    }
+
+    private fun getCtaText(caption: String): String {
+        return caption.substringAfter(START_DELIMITER_CTA_TEXT)
+            .substringBefore(END_DELIMITER_CTA_TEXT)
+    }
+
+    private fun getTickerItems(items: List<RichListSectionItemsModel>): List<BaseRichListItem> {
         return items.map {
-            BaseRichListItemUiModel.TickerItemUiModel(tickerDescription = it.subtitle)
+            BaseRichListItem.TickerItemUiModel(tickerDescription = it.subtitle)
         }
     }
 
-    private fun getRankItems(items: List<RichListSectionItemsModel>): List<BaseRichListItemUiModel> {
+    private fun getRankItems(items: List<RichListSectionItemsModel>): List<BaseRichListItem> {
         return items.map {
-            BaseRichListItemUiModel.RankItemUiModel(
+            BaseRichListItem.RankItemUiModel(
                 title = it.title,
                 subTitle = it.stateText,
-                imageUrl = it.imageUrl,
-                rankTrend = when (it.rankTrend) {
-                    DOWN_TREND -> BaseRichListItemUiModel.RankItemUiModel.RankTrend.DOWN
-                    UP_TREND -> BaseRichListItemUiModel.RankItemUiModel.RankTrend.UP
-                    else -> BaseRichListItemUiModel.RankItemUiModel.RankTrend.NONE
-                },
+                rankTrend = getTrend(it.rankTrend),
                 rankValue = it.rankValue,
                 rankNote = it.rankNote,
                 tooltip = if (it.stateTooltip.shouldShow) {
-                    TooltipListItemUiModel(
+                    TooltipUiModel(
                         title = it.stateTooltip.title,
-                        description = it.stateTooltip.description,
+                        content = it.stateTooltip.description,
+                        shouldShow = true,
+                        list = emptyList()
                     )
                 } else {
                     null
                 }
             )
+        }
+    }
+
+    private fun getTrend(trend: String): BaseRichListItem.RankItemUiModel.RankTrend {
+        return when {
+            trend.equals(DISABLED_TREND, true) -> {
+                BaseRichListItem.RankItemUiModel.RankTrend.DISABLED
+            }
+            trend.equals(DOWN_TREND, true) -> BaseRichListItem.RankItemUiModel.RankTrend.DOWN
+            trend.equals(UP_TREND, true) -> BaseRichListItem.RankItemUiModel.RankTrend.UP
+            else -> BaseRichListItem.RankItemUiModel.RankTrend.NONE
         }
     }
 }

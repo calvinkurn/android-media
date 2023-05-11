@@ -37,28 +37,22 @@ data class RichListWidgetDataModel(
 
 data class RichListSectionModel(
     @SerializedName("type")
-    val type: Int = 0,
+    val type: String = "",
     @SerializedName("caption")
     val caption: String = "",
-    @SerializedName("caption")
+    @SerializedName("items")
     val items: List<RichListSectionItemsModel> = emptyList(),
 )
 
 data class RichListSectionItemsModel(
-    @SerializedName("itemID")
-    val itemID: String = "",
     @SerializedName("title")
     val title: String = "",
     @SerializedName("subtitle")
     val subtitle: String = "",
     @SerializedName("stateText")
     val stateText: String = "",
-    @SerializedName("applink")
-    val appLink: String = "",
-    @SerializedName("imageUrl")
-    val imageUrl: String = "",
     @SerializedName("rankTrend")
-    val rankTrend: Int = 0,
+    val rankTrend: String = "",
     @SerializedName("rankValue")
     val rankValue: String = "0",
     @SerializedName("rankNote")

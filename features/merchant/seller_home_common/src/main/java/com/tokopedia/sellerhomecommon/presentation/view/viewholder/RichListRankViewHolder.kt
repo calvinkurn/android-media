@@ -9,8 +9,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcRichListRankItemBinding
-import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItem
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipListItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,8 +21,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class RichListRankViewHolder(
-    itemView: View
-) : AbstractViewHolder<BaseRichListItemUiModel.RankItemUiModel>(itemView) {
+    itemView: View,
+    private val onTooltipClicked: (TooltipUiModel) -> Unit
+) : AbstractViewHolder<BaseRichListItem.RankItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -32,11 +34,11 @@ class RichListRankViewHolder(
 
     private val binding: ShcRichListRankItemBinding? by viewBinding()
 
-    override fun bind(element: BaseRichListItemUiModel.RankItemUiModel) {
+    override fun bind(element: BaseRichListItem.RankItemUiModel) {
         setupView(element)
     }
 
-    private fun setupView(element: BaseRichListItemUiModel.RankItemUiModel) {
+    private fun setupView(element: BaseRichListItem.RankItemUiModel) {
         binding?.run {
             tvShcRankTitle.text = element.title
             tvShcRankSubTitle.text = element.subTitle
@@ -49,31 +51,34 @@ class RichListRankViewHolder(
     }
 
     private fun setupTooltip(
-        tooltip: TooltipListItemUiModel?,
-        rankTrend: BaseRichListItemUiModel.RankItemUiModel.RankTrend,
+        tooltip: TooltipUiModel?,
+        rankTrend: BaseRichListItem.RankItemUiModel.RankTrend,
     ) {
         binding?.run {
             if (tooltip == null) {
-                tvShcRankTitle.clearUnifyDrawableEnd()
+                tvShcRankSubTitle.clearUnifyDrawableEnd()
             } else {
                 val iconColor =
-                    if (rankTrend == BaseRichListItemUiModel.RankItemUiModel.RankTrend.DISABLED) {
+                    if (rankTrend == BaseRichListItem.RankItemUiModel.RankTrend.DISABLED) {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN400
                     } else {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN900
                     }
-                tvShcRankTitle.setUnifyDrawableEnd(
+                tvShcRankSubTitle.setUnifyDrawableEnd(
                     iconId = IconUnify.INFORMATION,
                     colorIcon = root.context.getResColor(iconColor)
                 )
+                tvShcRankSubTitle.setOnClickListener {
+                    onTooltipClicked(tooltip)
+                }
             }
         }
     }
 
-    private fun setupTrendView(trend: BaseRichListItemUiModel.RankItemUiModel.RankTrend) {
+    private fun setupTrendView(trend: BaseRichListItem.RankItemUiModel.RankTrend) {
         binding?.run {
             when (trend) {
-                BaseRichListItemUiModel.RankItemUiModel.RankTrend.UP -> {
+                BaseRichListItem.RankItemUiModel.RankTrend.UP -> {
                     showEnabledMode()
                     imgShcRankTrend.visible()
                     imgShcRankTrend.setImage(
@@ -82,7 +87,7 @@ class RichListRankViewHolder(
                     )
                     imgShcRankTrend.rotation = UP_TREND_ROTATION
                 }
-                BaseRichListItemUiModel.RankItemUiModel.RankTrend.DOWN -> {
+                BaseRichListItem.RankItemUiModel.RankTrend.DOWN -> {
                     showEnabledMode()
                     imgShcRankTrend.visible()
                     imgShcRankTrend.setImage(
@@ -91,11 +96,11 @@ class RichListRankViewHolder(
                     )
                     imgShcRankTrend.rotation = DOWN_TREND_ROTATION
                 }
-                BaseRichListItemUiModel.RankItemUiModel.RankTrend.NONE -> {
+                BaseRichListItem.RankItemUiModel.RankTrend.NONE -> {
                     showEnabledMode()
                     imgShcRankTrend.gone()
                 }
-                BaseRichListItemUiModel.RankItemUiModel.RankTrend.DISABLED -> {
+                BaseRichListItem.RankItemUiModel.RankTrend.DISABLED -> {
                     showDisabledMode()
                     imgShcRankTrend.gone()
                 }

@@ -27,7 +27,6 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
-import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
@@ -35,6 +34,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
@@ -46,8 +46,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
@@ -55,6 +53,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -295,8 +294,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetLineGraphDataUseCase.getRequestParams(
-                dataKey = dataKeys,
-                dynamicParam = dynamicParameter
+                dataKey = dataKeys, dynamicParam = dynamicParameter
             )
             val useCase = getLineGraphDataUseCase.get()
             useCase.params = params
@@ -385,8 +383,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetMultiLineGraphUseCase.getRequestParams(
-                dataKey = dataKeys,
-                dynamicParam = dynamicParameter
+                dataKey = dataKeys, dynamicParam = dynamicParameter
             )
             val useCase = getMultiLineGraphUseCase.get()
             useCase.params = params
@@ -451,11 +448,14 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getLeaderboardWidgetData(mWidgets: List<RichListWidgetUiModel>) {
+    fun getRichListWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val useCase = getRichListDataUseCase.get()
+            val param = GetRichListDataUseCase.createParam(dataKeys, shopId, SELLER_HOME_PAGE_NAME)
+            useCase.params = param
+            getLayoutWithLazyLoad(useCase, _richListWidgetData)
         }, onError = {
-
+            _richListWidgetData.value = Fail(it)
         })
     }
 

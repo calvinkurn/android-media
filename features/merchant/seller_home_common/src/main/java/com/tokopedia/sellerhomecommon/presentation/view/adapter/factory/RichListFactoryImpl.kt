@@ -4,8 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItem
+import com.tokopedia.sellerhomecommon.presentation.view.adapter.RichListAdapter
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListCaptionViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListErrorStateViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListLoadingStateViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListRankViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListTickerViewHolder
 
@@ -13,25 +16,45 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListTicke
  * Created by @ilhamsuaib on 17/04/23.
  */
 
-class RichListFactoryImpl : BaseAdapterTypeFactory(), RichListFactory {
+class RichListFactoryImpl(
+    private val listener: RichListAdapter.Listener
+) : BaseAdapterTypeFactory(), RichListFactory {
 
-    override fun type(model: BaseRichListItemUiModel.RankItemUiModel): Int {
+    override fun type(model: BaseRichListItem.RankItemUiModel): Int {
         return RichListRankViewHolder.RES_LAYOUT
     }
 
-    override fun type(model: BaseRichListItemUiModel.CaptionItemUiModel): Int {
+    override fun type(model: BaseRichListItem.CaptionItemUiModel): Int {
         return RichListCaptionViewHolder.RES_LAYOUT
     }
 
-    override fun type(model: BaseRichListItemUiModel.TickerItemUiModel): Int {
+    override fun type(model: BaseRichListItem.TickerItemUiModel): Int {
         return RichListTickerViewHolder.RES_LAYOUT
+    }
+
+    override fun type(model: BaseRichListItem.LoadingStateUiModel): Int {
+        return RichListLoadingStateViewHolder.RES_LAYOUT
+    }
+
+    override fun type(model: BaseRichListItem.ErrorStateUiModel): Int {
+        return RichListErrorStateViewHolder.RES_LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            RichListRankViewHolder.RES_LAYOUT -> RichListRankViewHolder(parent)
-            RichListCaptionViewHolder.RES_LAYOUT -> RichListCaptionViewHolder(parent)
-            RichListTickerViewHolder.RES_LAYOUT -> RichListTickerViewHolder(parent)
+            RichListRankViewHolder.RES_LAYOUT -> RichListRankViewHolder(parent) { tooltip ->
+                listener.setOnTooltipClicked(tooltip)
+            }
+            RichListCaptionViewHolder.RES_LAYOUT -> RichListCaptionViewHolder(parent) {
+                listener.setOnCtaClicked(it)
+            }
+            RichListTickerViewHolder.RES_LAYOUT -> RichListTickerViewHolder(parent) {
+                listener.setOnCtaClicked(it)
+            }
+            RichListLoadingStateViewHolder.RES_LAYOUT -> RichListLoadingStateViewHolder(parent)
+            RichListErrorStateViewHolder.RES_LAYOUT -> RichListErrorStateViewHolder(parent) {
+                listener.setOnReloadClicked()
+            }
             else -> super.createViewHolder(parent, type)
         }
     }

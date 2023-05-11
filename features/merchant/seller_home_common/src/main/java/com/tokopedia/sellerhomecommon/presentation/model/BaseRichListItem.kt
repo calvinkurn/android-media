@@ -8,21 +8,16 @@ import com.tokopedia.sellerhomecommon.presentation.view.adapter.factory.RichList
  * Created by @ilhamsuaib on 17/04/23.
  */
 
-sealed class BaseRichListItemUiModel(
-    open val title: String = String.EMPTY,
-    open val subTitle: String = String.EMPTY,
-    open val imageUrl: String = String.EMPTY
-) : Visitable<RichListFactory> {
+interface BaseRichListItem : Visitable<RichListFactory> {
 
     data class RankItemUiModel(
-        override val title: String = String.EMPTY,
-        override val subTitle: String = String.EMPTY,
-        override val imageUrl: String = String.EMPTY,
+        val title: String = String.EMPTY,
+        val subTitle: String = String.EMPTY,
         val rankTrend: RankTrend = RankTrend.NONE,
         val rankValue: String = String.EMPTY,
         val rankNote: String = String.EMPTY,
-        val tooltip: TooltipListItemUiModel? = null
-    ) : BaseRichListItemUiModel(title, subTitle, imageUrl) {
+        val tooltip: TooltipUiModel? = null
+    ) : BaseRichListItem {
 
         override fun type(typeFactory: RichListFactory): Int {
             return typeFactory.type(this)
@@ -35,23 +30,32 @@ sealed class BaseRichListItemUiModel(
 
     data class CaptionItemUiModel(
         val caption: String = String.EMPTY,
-        val ctaList: List<CaptionCtaUiModel> = emptyList()
-    ) : BaseRichListItemUiModel(String.EMPTY, String.EMPTY, String.EMPTY) {
+        val ctaText: String = String.EMPTY,
+        val url: String = String.EMPTY
+    ) : BaseRichListItem {
 
         override fun type(typeFactory: RichListFactory): Int {
             return typeFactory.type(this)
         }
-
-        data class CaptionCtaUiModel(
-            val title: String = String.EMPTY,
-            val subtitle: String = String.EMPTY,
-            val imageUrl: String = String.EMPTY
-        )
     }
 
     data class TickerItemUiModel(
         val tickerDescription: String = String.EMPTY
-    ) : BaseRichListItemUiModel(String.EMPTY, String.EMPTY, String.EMPTY) {
+    ) : BaseRichListItem {
+
+        override fun type(typeFactory: RichListFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    object LoadingStateUiModel : BaseRichListItem {
+
+        override fun type(typeFactory: RichListFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    object ErrorStateUiModel : BaseRichListItem {
 
         override fun type(typeFactory: RichListFactory): Int {
             return typeFactory.type(this)

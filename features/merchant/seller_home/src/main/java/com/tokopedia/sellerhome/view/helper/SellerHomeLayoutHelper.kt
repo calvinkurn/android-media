@@ -53,6 +53,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
@@ -252,7 +253,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             WidgetType.UNIFICATION,
             isFromCache
         )
-        val leaderboardDataFlow = groupedWidgets.getWidgetDataByType<RichListDataUiModel>(
+        val richListDataFlow = groupedWidgets.getWidgetDataByType<RichListDataUiModel>(
             WidgetType.RICH_LIST,
             isFromCache
         )
@@ -261,7 +262,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
             barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
-            calendarDataFlow, unificationDataFlow, leaderboardDataFlow
+            calendarDataFlow, unificationDataFlow, richListDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -300,7 +301,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.MILESTONE -> getMilestoneData(it)
                             WidgetType.CALENDAR -> getCalendarData(it)
                             WidgetType.UNIFICATION -> getUnificationData(it)
-                            WidgetType.RICH_LIST -> getLeaderboardData(it)
+                            WidgetType.RICH_LIST -> getRichListData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -593,21 +594,6 @@ class SellerHomeLayoutHelper @Inject constructor(
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 
-    private suspend fun getLeaderboardData(widgets: List<BaseWidgetUiModel<*>>): List<RichListDataUiModel> {
-        widgets.setLoading()
-        val mWidgets = widgets.filterIsInstance<RichListDataUiModel>()
-        val useCase = getRichListDataUseCase.get()
-        val shopId = userSession.get().shopId
-
-        withContext(dispatcher.main) {
-            startWidgetCustomMetricTag.value =
-                SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
-        }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
-    }
-
     private suspend fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>): List<UnificationDataUiModel> {
         widgets.setLoading()
         val mWidgets = widgets.filterIsInstance<UnificationWidgetUiModel>()
@@ -635,6 +621,23 @@ class SellerHomeLayoutHelper @Inject constructor(
         }
         val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
                 && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
+    }
+
+    private suspend fun getRichListData(widgets: List<BaseWidgetUiModel<*>>): List<RichListDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        val useCase = getRichListDataUseCase.get()
+        val shopId = userSession.get().shopId
+        useCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys, shopId = shopId, pageSource = dynamicParameter.pageSource
+        )
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
+        }
+        val shouldUseCache =
+            remoteConfig.get().isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 

@@ -7,8 +7,11 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.RichListMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetRichListDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamRichListWidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -42,6 +45,7 @@ class GetRichListDataUseCase @Inject constructor(
     }
 
     companion object {
+
         internal const val QUERY = """
             query getRichListWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchRichListWidgetData(dataKeys: ${'$'}dataKeys) {
@@ -55,7 +59,6 @@ class GetRichListDataUseCase @Inject constructor(
                     type
                     caption
                     items {
-                      itemID
                       title
                       subtitle
                       stateText
@@ -65,19 +68,37 @@ class GetRichListDataUseCase @Inject constructor(
                         description
                         iconUrl
                       }
-                      applink
-                      imageUrl
                       rankTrend
                       rankValue
                       rankNote
                     }
                   }
-                  error
                   errorMsg
                   showWidget
                 }
               }
             }
         """
+
+        private const val DATA_KEYS = "dataKeys"
+
+        fun createParam(
+            dataKeys: List<String>,
+            shopId: String,
+            pageSource: String
+        ): RequestParams {
+            return RequestParams.create().apply {
+                val dataKeyParams = dataKeys.map {
+                    DataKeyModel(
+                        key = it,
+                        jsonParams = ParamRichListWidgetModel(
+                            shopId = shopId,
+                            pageSource = pageSource
+                        ).toJsonString()
+                    )
+                }
+                putObject(DATA_KEYS, dataKeyParams)
+            }
+        }
     }
 }
