@@ -9,11 +9,9 @@ import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToU
 import com.tokopedia.manageaddress.domain.response.shareaddress.SelectShareAddressResponse
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,6 +24,7 @@ class ShareAddressConfirmationViewModelTest {
     private val shareAddressUseCase = mockk<ShareAddressToUserUseCase>(relaxed = true)
     private val selectShareAddressUseCase = mockk<SelectShareAddressUseCase>(relaxed = true)
     private val observer = mockk<Observer<ShareAddressConfirmationViewModel.Toast>>(relaxed = true)
+    private val dismissObs = mockk<Observer<Unit>>(relaxed = true)
 
     lateinit var viewModel: ShareAddressConfirmationViewModel
 
@@ -39,6 +38,9 @@ class ShareAddressConfirmationViewModelTest {
             CoroutineTestDispatchersProvider
         )
         viewModel.toastEvent.observeForever(observer)
+        viewModel.dismissEvent.observeForever(dismissObs)
+        mockkStatic(TrackApp::class)
+        justRun { TrackApp.getInstance().gtm.sendGeneralEvent(any()) }
     }
 
     @Test
@@ -61,6 +63,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
+            dismissObs.onChanged(null)
         }
     }
 
@@ -86,6 +89,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(errorMessage))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -99,6 +103,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -122,6 +127,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
+            dismissObs.onChanged(null)
         }
     }
 
@@ -147,6 +153,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(errorMessage))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -160,6 +167,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
+            dismissObs.onChanged(null)
         }
     }
 }
