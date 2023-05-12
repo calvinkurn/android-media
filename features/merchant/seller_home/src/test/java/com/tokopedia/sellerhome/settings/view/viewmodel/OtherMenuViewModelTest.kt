@@ -833,7 +833,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getIsTopAdsShopUsed is success and should set live data true`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = true))))
             onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
 
@@ -846,7 +846,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getIsTopAdsShopUsed is success and should set live data false`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = false))))
             onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
 
@@ -859,7 +859,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getIsTopAdsShopUsed is failed and should set live data false`() =
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val error = IllegalStateException()
             onGetTopAdsShopInfo_thenError(error)
 
