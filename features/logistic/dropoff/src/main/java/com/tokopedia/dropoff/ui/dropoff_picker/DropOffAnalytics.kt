@@ -6,116 +6,153 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
-class DropOffAnalytics @Inject constructor(){
+class DropOffAnalytics @Inject constructor() {
 
-    private fun sendTracker(event: String, eventCategory: String, eventAction: String,
-                            eventLabel: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel))
+    private fun sendTracker(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                event,
+                eventCategory,
+                eventAction,
+                eventLabel
+            )
+        )
     }
-
 
     private fun sendTracker(event: String, eventCategory: String, eventAction: String) {
         sendTracker(event, eventCategory, eventAction, "")
     }
 
     fun trackUserClickNantiSaja() {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_NANTI_SAJA)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_NANTI_SAJA
+        )
     }
 
     fun trackUserClickIzinkan() {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_IZINKAN)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_IZINKAN
+        )
     }
 
     fun trackClickSearchBarGpsOff(keyword: String) {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_SEARCHBAR_GPS_OFF,
-                keyword)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_SEARCHBAR_GPS_OFF,
+            keyword
+        )
     }
 
     fun trackClickActivateGps() {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_AKTIFKAN_GPS)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_AKTIFKAN_GPS
+        )
     }
 
     fun trackSelectStoreListFirst(addressTitle: String, addressValue: String, storeType: String) {
         val label = "$addressTitle - $addressValue - $storeType"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.SELECT_STORE_LIST_NEAREST,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.SELECT_STORE_LIST_NEAREST,
+            label
+        )
     }
 
     fun trackExpandList() {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.EXPAND_LIST)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.EXPAND_LIST
+        )
     }
 
     fun trackClickMap() {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_MAP)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_MAP
+        )
     }
 
     fun trackClickSearchBarGpsOn(keyword: String) {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_SEARCHBAR_GPS_ON,
-                keyword)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_SEARCHBAR_GPS_ON,
+            keyword
+        )
     }
 
     fun trackSelectStoreListAll(addressTitle: String, addressValue: String, storeType: String) {
         val label = "$addressTitle - $addressValue - $storeType"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.SELECT_STORE_LIST_ALL,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.SELECT_STORE_LIST_ALL,
+            label
+        )
     }
 
     fun trackSelectIndoMaretMap(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.SELECT_INDOMARET_MAP,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.SELECT_INDOMARET_MAP,
+            label
+        )
     }
 
     fun trackClickBatalOnDetail(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_BATAL_DETAIL,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_BATAL_DETAIL,
+            label
+        )
     }
 
     fun trackClickPilihOnDetail(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.CLICK_PILIH_DETAIL,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.CLICK_PILIH_DETAIL,
+            label
+        )
     }
 
     fun trackSearchKeyword(keyword: String) {
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.SEARCH_KEYWORD,
-                keyword)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.SEARCH_KEYWORD,
+            keyword
+        )
     }
 
     fun trackSelectLandmarkFromKeyword(keyword: String, addressTitle: String, addressValue: String) {
         val label = "$keyword - $addressTitle - $addressValue"
-        sendTracker(Event.CLICK_TRADE_IN,
-                Category.LOCATION_SELECTION,
-                Action.SELECT_LANDMARK_FROM_KEYWORD,
-                label)
+        sendTracker(
+            Event.CLICK_TRADE_IN,
+            Category.LOCATION_SELECTION,
+            Action.SELECT_LANDMARK_FROM_KEYWORD,
+            label
+        )
     }
 }
 

@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker_insta.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.imagepicker_insta.di.module.DispatcherModule
 import com.tokopedia.imagepicker_insta.di.module.ImagePickerModule
+import com.tokopedia.imagepicker_insta.fragment.FeedVideoDepreciationBottomSheet
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import dagger.Component
@@ -14,6 +15,8 @@ interface ImagePickerComponent {
     fun inject(viewModel: PickerViewModel)
 
     fun inject(fragment: ImagePickerInstaMainFragment)
+
+    fun inject(bottomSheet: FeedVideoDepreciationBottomSheet)
 }
 
 @Scope

@@ -10,6 +10,7 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,6 +21,9 @@ class PlayViewModelInsetsTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
