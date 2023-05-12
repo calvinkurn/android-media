@@ -42,6 +42,11 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
         setupView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupView() {
         val fragment = if (isUsingImmersiveFeed()) {
             FeedBaseFragment()
