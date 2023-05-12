@@ -90,7 +90,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -186,7 +185,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
 
-    private val bannerPreparationList = mutableListOf<PlayBroadcastPreparationBannerModel>()
     private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
@@ -475,16 +473,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            if (bannerPreparationList.contains(data)) return@launchCatchError
-            bannerPreparationList.add(data)
-            _bannerPreparation.update { bannerPreparationList }
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
         }, onError = {})
     }
 
     private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            bannerPreparationList.remove(data)
-            _bannerPreparation.update { bannerPreparationList }
+            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
         }, onError = {})
     }
 
