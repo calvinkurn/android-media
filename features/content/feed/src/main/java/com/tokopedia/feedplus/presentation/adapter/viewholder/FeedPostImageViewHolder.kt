@@ -390,7 +390,8 @@ class FeedPostImageViewHolder(
             hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
         productButtonView.bindData(
             postId = model.id,
@@ -400,7 +401,8 @@ class FeedPostImageViewHolder(
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
             products = model.products,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
         updateProductTagText(model)
     }

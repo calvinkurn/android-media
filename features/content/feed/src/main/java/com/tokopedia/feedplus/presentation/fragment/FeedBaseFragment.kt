@@ -434,6 +434,7 @@ class FeedBaseFragment : BaseDaggerFragment(),
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
                         }
+                        else -> {}
                     }
 
                     feedMainViewModel.consumeEvent(event)

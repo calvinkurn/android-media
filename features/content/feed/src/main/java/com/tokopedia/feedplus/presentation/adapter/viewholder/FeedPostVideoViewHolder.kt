@@ -209,7 +209,10 @@ class FeedPostVideoViewHolder(
                 bindAuthor(element)
             }
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(element, payload.payloads.toMutableList())
+                if (payload is FeedViewHolderPayloads) bind(
+                    element,
+                    payload.payloads.toMutableList()
+                )
             }
         }
     }
@@ -265,7 +268,8 @@ class FeedPostVideoViewHolder(
             hasVoucher = data.hasVoucher,
             products = data.products,
             totalProducts = data.totalProducts,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
 
         productButtonView.bindData(
@@ -276,7 +280,8 @@ class FeedPostVideoViewHolder(
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
             products = data.products,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
     }
 

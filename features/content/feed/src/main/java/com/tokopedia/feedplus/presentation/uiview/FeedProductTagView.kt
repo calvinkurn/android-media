@@ -26,6 +26,7 @@ class FeedProductTagView(
     private var totalProducts: Int = 0
     private var trackerData: FeedTrackerDataModel? = null
     private var products: List<FeedCardProductModel> = emptyList()
+    private var positionInFeed: Int = -1
 
     fun bindData(
         postId: String,
@@ -36,7 +37,8 @@ class FeedProductTagView(
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
         this.postId = postId
         this.author = author
@@ -46,6 +48,7 @@ class FeedProductTagView(
         this.trackerData = trackerData
         this.totalProducts = totalProducts
         this.products = products
+        this.positionInFeed = positionInFeed
 
         bindText(products)
     }
@@ -86,7 +89,8 @@ class FeedProductTagView(
                             hasVoucher,
                             products,
                             totalProducts,
-                            trackerData
+                            trackerData,
+                            positionInFeed
                         )
                     }
                 }
