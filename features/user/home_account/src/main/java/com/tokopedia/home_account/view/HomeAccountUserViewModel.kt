@@ -36,7 +36,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -124,9 +123,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _getOclStatus = MutableLiveData<OclStatus>()
     val getOclStatus: LiveData<OclStatus>
         get() = _getOclStatus
-
-    private val _logoutDialog = SingleLiveEvent<Boolean>()
-    val logoutDialog: LiveData<Boolean> get() = _logoutDialog
 
     fun refreshUserProfile() {
         launch {

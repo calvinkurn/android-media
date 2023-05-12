@@ -132,8 +132,16 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
 
         viewModel.navigateToSuccessPage.observe(this) {
             if(it) {
+                OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
+            }
+        }
+
+        viewModel.loginFailedResponse.observe(this) {
+            if(it.isNotEmpty()) {
+                OclTracker.sendClickOnOneClickLoginEvent("${OclTracker.LABEL_FAILED} - $it")
+                Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
 
