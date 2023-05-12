@@ -14,6 +14,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselAdapter
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselItemDecoration
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselLayoutManager
+import com.tokopedia.play.widget.ui.carousel.PlayWidgetUpcomingContentViewHolder
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetVideoContentViewHolder
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -32,9 +33,19 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
             object : PlayWidgetVideoContentViewHolder.Listener {
                 override fun onMuteButtonClicked(
                     viewHolder: PlayWidgetVideoContentViewHolder,
+                    data: PlayWidgetChannelUiModel,
                     shouldMute: Boolean
                 ) {
 
+                }
+            },
+            object : PlayWidgetUpcomingContentViewHolder.Listener {
+                override fun onReminderClicked(
+                    viewHolder: PlayWidgetUpcomingContentViewHolder,
+                    data: PlayWidgetChannelUiModel,
+                    isReminded: Boolean
+                ) {
+                    TODO("Not yet implemented")
                 }
             }
         )

@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.ext.setMute
+import com.tokopedia.play.widget.ui.model.switch
 
 /**
  * Created by kenny.hadisaputra on 05/05/23
@@ -40,12 +43,43 @@ class PlayWidgetCarouselView : ConstraintLayout {
         object : PlayWidgetVideoContentViewHolder.Listener {
             override fun onMuteButtonClicked(
                 viewHolder: PlayWidgetVideoContentViewHolder,
+                data: PlayWidgetChannelUiModel,
                 shouldMute: Boolean
             ) {
-                Toast.makeText(context, "Mute Button Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Mute Button Clicked", Toast.LENGTH_SHORT).show()
+                val items = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>()
+                val newItems = items.map {
+                    if (it.channelId == data.channelId) {
+                        it.setMute(shouldMute)
+                    } else it
+                }
+                setupChannels(mModel.copy(items = newItems))
+            }
+        },
+        object : PlayWidgetUpcomingContentViewHolder.Listener {
+            override fun onReminderClicked(
+                viewHolder: PlayWidgetUpcomingContentViewHolder,
+                data: PlayWidgetChannelUiModel,
+                isReminded: Boolean
+            ) {
+//                Toast.makeText(context, "Reminder Button Clicked", Toast.LENGTH_SHORT).show()
+                val items = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>()
+                val newItems = items.map {
+                    if (it.channelId == data.channelId) {
+                        it.copy(
+                            reminderType = if (isReminded) {
+                                PlayWidgetReminderType.Reminded
+                            } else {
+                                PlayWidgetReminderType.NotReminded
+                            }
+                        )
+                    } else it
+                }
+                setupChannels(mModel.copy(items = newItems))
             }
         }
     )
+
     private val snapHelper = PagerSnapHelper()
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
@@ -84,10 +118,11 @@ class PlayWidgetCarouselView : ConstraintLayout {
         val prevModel = mModel
         mModel = data
 
-        setupChannels(data)
+        setupChannels(data, scrollToFirstPosition = true)
     }
 
-    private fun setupChannels(data: PlayWidgetUiModel) {
+    private fun setupChannels(data: PlayWidgetUiModel, scrollToFirstPosition: Boolean = false) {
+        mModel = data
         val channels = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
         val dataWithFake = if (channels.isEmpty()) emptyList() else buildList {
             addAll(
@@ -106,7 +141,7 @@ class PlayWidgetCarouselView : ConstraintLayout {
         }
         adapter.submitList(dataWithFake) {
             if (channels.isEmpty()) return@submitList
-            binding.rvChannels.smoothScrollToPosition(FAKE_COUNT_PER_SIDE)
+            if (scrollToFirstPosition) binding.rvChannels.smoothScrollToPosition(FAKE_COUNT_PER_SIDE)
         }
     }
 
