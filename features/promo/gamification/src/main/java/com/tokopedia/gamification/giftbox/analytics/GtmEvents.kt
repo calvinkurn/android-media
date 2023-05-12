@@ -301,7 +301,7 @@ object GtmEvents {
             ""
         }
 
-        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
         map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap$loginText - rekomendasi untuk anda - $recommendationType $productToads"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,

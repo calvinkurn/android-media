@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -18,6 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyString
 
 /**
  * Created By @ilhamsuaib on 21/05/20
@@ -42,8 +42,9 @@ class GetPostDataUseCaseTest {
     }
 
     private val params = GetPostDataUseCase.getRequestParams(
-            dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = DynamicParameterModel()
+        dataKey = ArgumentMatchers.anyList(),
+        startDate = anyString(),
+        endDate = anyString()
     )
 
     @Before

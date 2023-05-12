@@ -8,7 +8,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +28,7 @@ class GiftBoxDailyUseCaseTest {
 
     @Test
     fun `check function invokation of Gql wrapper`() {
-        runBlockingTest {
+        runTest {
             val clazz = GiftBoxEntity::class.java
             val map = HashMap<String, Any>()
             coEvery { gqlWrapper.getResponse(clazz, queryString, map) } returns mockk()

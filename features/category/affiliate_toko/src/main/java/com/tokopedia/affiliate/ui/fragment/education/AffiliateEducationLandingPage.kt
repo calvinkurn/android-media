@@ -37,6 +37,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -55,6 +56,10 @@ class AffiliateEducationLandingPage :
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
+
+    @JvmField
+    @Inject
+    var userSessionInterface: UserSessionInterface? = null
 
     override fun getViewModelType(): Class<AffiliateEducationLandingViewModel> {
         return AffiliateEducationLandingViewModel::class.java
@@ -125,15 +130,15 @@ class AffiliateEducationLandingPage :
                         affiliateEducationTopicTutorialClickInterface = this,
                         educationSocialCTAClickInterface = this,
                         educationBannerClickInterface = this
-                    )
+                    ),
+                    source = AffiliateAdapter.PageSource.SOURCE_EDU_LANDING,
+                    userId = userSessionInterface?.userId.orEmpty()
                 )
             adapter.setVisitables(it)
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
         }
         if (arguments?.getBoolean(IS_HELP_APP_LINK, false) == true) {
             onBantuanClick()
-        }
-        view.findViewById<SearchBarUnify>(R.id.edukasi_navToolbar)?.run {
         }
     }
 

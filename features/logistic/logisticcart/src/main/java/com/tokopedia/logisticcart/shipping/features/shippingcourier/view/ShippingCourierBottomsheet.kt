@@ -186,17 +186,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.dismiss()
     }
 
-//    private fun isToogleYearEndPromotionOn(): Boolean {
-//        if (isOcc) {
-//            return false
-//        } else {
-//            if (activity != null) {
-//                return true
-//            }
-//            return false
-//        }
-//    }
-
     override fun showLoading() {
         llContent?.visibility = View.GONE
         llNetworkErrorView?.visibility = View.GONE

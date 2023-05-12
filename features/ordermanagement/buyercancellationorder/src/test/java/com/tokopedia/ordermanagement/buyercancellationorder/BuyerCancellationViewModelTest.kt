@@ -13,6 +13,7 @@ import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -33,6 +34,9 @@ import org.junit.runners.JUnit4
 class BuyerCancellationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val taskRule = CoroutineTestRule()
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var buyerCancellationViewModel: BuyerCancellationViewModel

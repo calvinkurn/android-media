@@ -9,7 +9,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
-import java.util.*
+import java.util.Date
 
 class ShopDiscountManageDiscountAdapter(
     typeFactory: ShopDiscountManageDiscountTypeFactoryImpl
@@ -91,7 +91,7 @@ class ShopDiscountManageDiscountAdapter(
         return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
             .count {
                 it.productStatus.errorType == ALL_ABUSIVE_ERROR ||
-                        it.productStatus.errorType == PARTIAL_ABUSIVE_ERROR
+                    it.productStatus.errorType == PARTIAL_ABUSIVE_ERROR
             }
     }
 
@@ -114,5 +114,4 @@ class ShopDiscountManageDiscountAdapter(
             Date(it)
         }
     }
-
 }

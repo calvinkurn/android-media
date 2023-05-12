@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.util.ProductCardExtension.setProductCarouselWidth
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardCompactCarouselItemViewHolder(
@@ -20,6 +21,10 @@ class ProductCardCompactCarouselItemViewHolder(
     }
 
     private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()
+
+    init {
+        binding?.productCard?.setProductCarouselWidth()
+    }
 
     override fun bind(element: ProductCardCompactCarouselItemUiModel) {
         binding?.productCard?.apply {
@@ -44,6 +49,9 @@ class ProductCardCompactCarouselItemViewHolder(
                     position = layoutPosition,
                     product = element
                 )
+            }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
             }
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
@@ -80,5 +88,6 @@ class ProductCardCompactCarouselItemViewHolder(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }
