@@ -16,10 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
-    private var mBroadcasterConfig: Broadcaster.Config = Broadcaster.Config(
-        streamAllowed = false,
-        shortVideoAllowed = false,
-    )
+    private var mBroadcasterConfig = Broadcaster.Config()
 
     private var _binding: BottomSheetShopContentCreationOptionBinding? = null
     private val binding: BottomSheetShopContentCreationOptionBinding

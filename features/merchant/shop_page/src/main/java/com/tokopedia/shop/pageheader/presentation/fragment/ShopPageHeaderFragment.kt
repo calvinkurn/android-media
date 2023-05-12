@@ -431,10 +431,7 @@ class ShopPageHeaderFragment :
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
     private var isConfettiAlreadyShown = false
-    private var mBroadcasterConfig: Broadcaster.Config = Broadcaster.Config(
-        streamAllowed = false,
-        shortVideoAllowed = false,
-    )
+    private var mBroadcasterConfig = Broadcaster.Config()
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
