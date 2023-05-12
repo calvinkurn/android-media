@@ -99,7 +99,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
-            val shopId = mTaggedProducts.first().shopId
+            val shopId = mTaggedProducts.first().shop.id
             binding.mvcTaggedProduct.setData(
                 mvcData = MvcData(info),
                 shopId = shopId,
