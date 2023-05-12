@@ -22,6 +22,7 @@ import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase;
+import com.tokopedia.pushnotif.receiver.NotifierReceiverActivity;
 import com.tokopedia.pushnotif.services.ClickedBroadcastReceiver;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
@@ -121,8 +122,14 @@ public abstract class BaseNotificationFactory {
 
     protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
 
-        Intent intent = new Intent(context, ClickedBroadcastReceiver.class);
-        intent.setAction(Constant.NotificationReceiver.ACTION_ON_NOTIFICATION_CLICK);
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intent = new Intent(context, NotifierReceiverActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        } else {
+            intent = new Intent(context, ClickedBroadcastReceiver.class);
+            intent.setAction(Constant.NotificationReceiver.ACTION_ON_NOTIFICATION_CLICK);
+        }
 
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
@@ -130,21 +137,8 @@ public abstract class BaseNotificationFactory {
         intent.putExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID, applinkNotificationModel.getTransactionId());
         intent.putExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID, applinkNotificationModel.getToUserId());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return PendingIntent.getBroadcast(
-                    context.getApplicationContext(),
-                    notificationId,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
-            );
-        } else {
-            return PendingIntent.getBroadcast(
-                    context.getApplicationContext(),
-                    notificationId,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
+        return getPendingIntent(intent, notificationId);
+
     }
 
     protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
@@ -155,10 +149,36 @@ public abstract class BaseNotificationFactory {
         intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID, applinkNotificationModel.getTransactionId());
         intent.putExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID, applinkNotificationModel.getToUserId());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        }else{
-            return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+
+        return getPendingIntent(intent, notificationId);
+    }
+
+    protected PendingIntent getPendingIntent(Intent intent, int notificationId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && intent.getComponent().getClassName().contains(
+                Constant.NotificationReceiver.ACTIVITY_NOTIFIER_RECEIVER)
+        ) {
+            return PendingIntent.getActivity(
+                    context,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !intent.getComponent().getClassName().contains(
+                Constant.NotificationReceiver.ACTIVITY_NOTIFIER_RECEIVER)
+        ) {
+            return PendingIntent.getBroadcast(
+                    context.getApplicationContext(),
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            return PendingIntent.getBroadcast(
+                    context.getApplicationContext(),
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
         }
     }
 

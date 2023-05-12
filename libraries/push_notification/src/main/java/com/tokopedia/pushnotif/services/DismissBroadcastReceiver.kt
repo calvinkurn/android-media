@@ -31,14 +31,15 @@ class DismissBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             toUserId = recipientId
         }
 
+        NotificationTracker
+            .getInstance(context)
+            .trackDeliveredNotification(
+                applinkNotificationModel,
+                TrackPushNotificationUseCase.STATUS_DISMISSED
+            )
+
         launch {
             try {
-                NotificationTracker
-                    .getInstance(context)
-                    .trackDeliveredNotification(
-                        applinkNotificationModel,
-                        TrackPushNotificationUseCase.STATUS_DISMISSED
-                    )
                 if (notificationId == 0) {
                     HistoryRepository.clearAllHistoryNotification(context, notificationType)
                 } else {

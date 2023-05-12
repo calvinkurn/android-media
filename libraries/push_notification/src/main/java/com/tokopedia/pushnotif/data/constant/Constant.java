@@ -138,5 +138,7 @@ public interface Constant {
     interface NotificationReceiver {
         String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.push_notification.ACTION_ON_NOTIFICATION_DISMISS";
         String ACTION_ON_NOTIFICATION_CLICK = "com.tokopedia.push_notification.ACTION_ON_NOTIFICATION_CLICK";
+
+       String ACTIVITY_NOTIFIER_RECEIVER = "NotifierReceiverActivity";
     }
 }
