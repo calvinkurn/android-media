@@ -26,13 +26,9 @@ class RepurchaseProductItemDecoration: RecyclerView.ItemDecoration() {
         when (itemPosition) {
             FIRST_POSITION_INDEX -> {
                 outRect.left = view.context.resources
-                    .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-            }
-            lastItemIndex -> {
-                outRect.right = view.context.resources
                     .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             }
-            else -> {
+            lastItemIndex -> {
                 outRect.right = view.context.resources
                     .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             }

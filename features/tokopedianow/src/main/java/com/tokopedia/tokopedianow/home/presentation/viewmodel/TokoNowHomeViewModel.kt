@@ -34,9 +34,9 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
@@ -393,7 +393,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 response = response,
                 widgetId = widgetId,
                 slugs = slugs,
-                state = TokoNowLayoutState.SHOW,
+                state = TokoNowLayoutState.SHOW
             )
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
