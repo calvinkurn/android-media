@@ -963,6 +963,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                         serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
                         needPinpoint = needPinpoint,
                         logisticPromoTickerMessage = null,
+                        isShowLogisticPromoTickerMessage = false,
                         isApplyLogisticPromo = true,
                         logisticPromoShipping = logisticPromoShipping
                     ),

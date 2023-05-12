@@ -641,7 +641,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, newGlobalEvent)
                     if (newShipment != null) {
                         orderShipment.value = newShipment
-                            .copy(isShowLogisticPromoTickerMessage = false)
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
