@@ -48,6 +48,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
+    //track
+    implementation projectOrAar(rootProject.ext.libraries.track)
+
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 

@@ -30,14 +30,15 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
 import com.tokopedia.scp_rewards.celebration.domain.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel
+import com.tokopedia.scp_rewards.common.constants.EASE_IN
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.AudioFactory
-import com.tokopedia.scp_rewards.common.utils.EASE_IN
 import com.tokopedia.scp_rewards.common.utils.dpToPx
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.isNullOrZero
@@ -49,7 +50,7 @@ import javax.inject.Inject
 @Suppress("UNCHECKED_CAST")
 class MedalCelebrationFragment : BaseDaggerFragment() {
 
-    companion object{
+    companion object {
         private const val ANIMATION_DURATION = 300L
         private const val ROTATION_DURATION = 5000L
         private const val ANIMATION_INITIAL_DELAY = 400L
@@ -60,20 +61,20 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         private const val FALLBACK_DELAY = 2000L
     }
 
-    //Assets
-    private var badgeImage:Drawable? = null
-    private var spotlightImage:Drawable? = null
-    private var sunburstImage:Drawable? = null
-    private var backgroundImage:Drawable? = null
-    private var celebrationLottieComposition:LottieComposition? = null
-    private var starsLottieComposition:LottieComposition? = null
+    // Assets
+    private var badgeImage: Drawable? = null
+    private var spotlightImage: Drawable? = null
+    private var sunburstImage: Drawable? = null
+    private var backgroundImage: Drawable? = null
+    private var celebrationLottieComposition: LottieComposition? = null
+    private var starsLottieComposition: LottieComposition? = null
     private var isBackgroundImageAvailable = false
     private var isBackgroundLoading = false
     private var isSoundAvailable = false
     private var isSoundLoading = false
-    private var audioManager:AudioFactory? = null
+    private var audioManager: AudioFactory? = null
 
-    //urls
+    // urls
     private var badgeUrl = ""
     private var sunflareUrl = ""
     private var spotlightUrl = ""
@@ -82,19 +83,19 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private var soundaEffectUrl = ""
     private var backgroundImageUrl = ""
 
+    private var medaliSlug = "INJECT_BADGE_1"
 
-
-    private var binding: CelebrationFragmentLayoutBinding?=null
+    private var binding: CelebrationFragmentLayoutBinding? = null
     private val handler = Handler(Looper.getMainLooper())
 
     private var assetCount = 0
 
     @Inject
     @JvmField
-    var viewModelFactory:ViewModelFactory? = null
+    var viewModelFactory: ViewModelFactory? = null
 
     private val medalCelebrationViewModel by lazy {
-        ViewModelProvider(this,viewModelFactory!!)[MedalCelebrationViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory!!)[MedalCelebrationViewModel::class.java]
     }
 
     override fun initInjector() {
@@ -108,7 +109,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = CelebrationFragmentLayoutBinding.inflate(inflater,container,false)
+        binding = CelebrationFragmentLayoutBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -118,9 +119,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         medalCelebrationViewModel.getRewards()
     }
 
-    private fun setupViewModelObservers(){
-        medalCelebrationViewModel.badgeLiveData.observe(viewLifecycleOwner){
-            when(it){
+    private fun setupViewModelObservers() {
+        medalCelebrationViewModel.badgeLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success<*> -> {
                     downloadAssets()
                 }
@@ -134,7 +135,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun downloadAssets(){
+    private fun downloadAssets() {
         setAssetUrls()
         loadSound()
         loadBadge()
@@ -145,7 +146,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         loadStarsLottie()
     }
 
-    private fun setAssetUrls(){
+    private fun setAssetUrls() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             badgeUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliIconImageURL ?: ""
             sunflareUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliEffectImageURL ?: ""
@@ -157,7 +158,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadSound(){
+    private fun loadSound() {
         isSoundLoading = true
         audioManager = AudioFactory.createAudioFromUrl(
             url = SOUND_EFFECT_URL,
@@ -174,84 +175,86 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         ).withTimeout()
     }
 
-    private fun loadBadge(){
-        loadImageFromUrl(badgeUrl ,{
+    private fun loadBadge() {
+        loadImageFromUrl(badgeUrl, {
             badgeImage = it
             incrementAssetCount()
-        }){
+        }) {
             redirectToMedaliDetail()
         }
     }
 
-    private fun loadSunflare(){
-        loadImageFromUrl(sunflareUrl,{
+    private fun loadSunflare() {
+        loadImageFromUrl(sunflareUrl, {
             sunburstImage = it
             incrementAssetCount()
-        }){
+        }) {
             redirectToMedaliDetail()
         }
     }
 
-    private fun loadSpotlight(){
-        loadImageFromUrl(spotlightUrl,{
+    private fun loadSpotlight() {
+        loadImageFromUrl(spotlightUrl, {
             spotlightImage = it
             incrementAssetCount()
-        }){
+        }) {
             redirectToMedaliDetail()
         }
     }
 
-    private fun loadBackgroundImage(){
+    private fun loadBackgroundImage() {
         isBackgroundLoading = true
-        loadImageFromUrl(backgroundImageUrl,{
+        loadImageFromUrl(backgroundImageUrl, {
             isBackgroundLoading = false
             isBackgroundImageAvailable = true
             backgroundImage = it
             incrementAssetCount(mandatory = false)
-        },{
+        }, {
             isBackgroundLoading = false
             isBackgroundImageAvailable = false
             incrementAssetCount(false)
         })
     }
 
-    private fun loadCelebrationLottie(){
-        loadLottieFromUrl(binding?.mainView?.celebrationView,celebrationLottieUrl,{
+    private fun loadCelebrationLottie() {
+        loadLottieFromUrl(binding?.mainView?.celebrationView, celebrationLottieUrl, {
             celebrationLottieComposition = it
             incrementAssetCount()
-        }){
+        }) {
             redirectToMedaliDetail()
         }
     }
 
-    private fun loadStarsLottie(){
-        loadLottieFromUrl(binding?.mainView?.lottieStars, starsLottieUrl,{
+    private fun loadStarsLottie() {
+        loadLottieFromUrl(binding?.mainView?.lottieStars, starsLottieUrl, {
             starsLottieComposition = it
             incrementAssetCount()
-        }){
+        }) {
             redirectToMedaliDetail()
         }
     }
 
-    private fun incrementAssetCount(mandatory:Boolean = true){
-        if(mandatory) assetCount++
-        if(assetCount == ASSET_TOTAL_COUNT && !isSoundLoading && !isBackgroundLoading){
+    private fun incrementAssetCount(mandatory: Boolean = true) {
+        if (mandatory) assetCount++
+        if (assetCount == ASSET_TOTAL_COUNT && !isSoundLoading && !isBackgroundLoading) {
             showMainView()
         }
     }
 
-    private fun showMainView(){
+    private fun showMainView() {
         binding?.mainFlipper?.displayedChild = 1
         initViewSetup()
         configureStatusBar()
 //        setupHeader()
-        handler.postDelayed({
-            startPageAnimation()
-        }, ANIMATION_INITIAL_DELAY
+        handler.postDelayed(
+            {
+                startPageAnimation()
+            },
+            ANIMATION_INITIAL_DELAY
         )
     }
 
-    private fun initViewSetup(){
+    private fun initViewSetup() {
         binding?.mainView?.apply {
             celebrationHeading.alpha = 0f
             badgeName.alpha = 0f
@@ -267,28 +270,27 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setAllText(){
-       binding?.mainView?.apply {
-           (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
-               celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
-               badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
-               brandTag.text = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText
-               badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
-           }
-       }
+    private fun setAllText() {
+        binding?.mainView?.apply {
+            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+                celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
+                badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
+                brandTag.text = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText
+                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
+            }
+        }
     }
 
-    private fun configureBackground(){
+    private fun configureBackground() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.mainView?.apply {
                 val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                if(!color.isNullOrBlank()){
+                if (!color.isNullOrBlank()) {
                     container.setBackgroundColor(Color.parseColor(color))
                 }
-                if(isBackgroundImageAvailable){
+                if (isBackgroundImageAvailable) {
                     backgroundImage.setImageDrawable(this@MedalCelebrationFragment.backgroundImage)
-                }
-                else{
+                } else {
                     backgroundImage.hide()
                 }
             }
@@ -301,16 +303,16 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 //        }
 //    }
 
-    private fun scaleView(view:View?,duration:Long,from:Int = 0,to:Int = 1,interpolatorType:Int,listener:Animator.AnimatorListener?=null){
+    private fun scaleView(view: View?, duration: Long, from: Int = 0, to: Int = 1, interpolatorType: Int, listener: Animator.AnimatorListener? = null) {
         view?.let { _ ->
             val scaleXPvh = getScaleXPropertyValueHolder()
             val scaleYPvh = getScaleYPropertyValueHolder()
             val opacityPvh = getOpacityPropertyValueHolder()
-            ObjectAnimator.ofPropertyValuesHolder(view,scaleXPvh,scaleYPvh,opacityPvh).apply {
+            ObjectAnimator.ofPropertyValuesHolder(view, scaleXPvh, scaleYPvh, opacityPvh).apply {
                 this.duration = duration
-                interpolator = when(interpolatorType){
+                interpolator = when (interpolatorType) {
                     EASE_IN -> AccelerateDecelerateInterpolator()
-                    else -> PathInterpolator(0.63f,0.01f,0.29f,1f)
+                    else -> PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
                 }
                 addListener()
                 listener?.let {
@@ -321,24 +323,24 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun translateView(view:View?,duration:Long,from:Int,to:Int = 0,interpolatorType:Int){
+    private fun translateView(view: View?, duration: Long, from: Int, to: Int = 0, interpolatorType: Int) {
         view?.let { _ ->
-            val translatePvh = getTranslationPropertyValueHolder(from,to)
+            val translatePvh = getTranslationPropertyValueHolder(from, to)
             val opacityPvh = getOpacityPropertyValueHolder()
-            ObjectAnimator.ofPropertyValuesHolder(view,translatePvh,opacityPvh).apply {
-                   this.duration = duration
-                   interpolator = when(interpolatorType){
-                       EASE_IN -> AccelerateDecelerateInterpolator()
-                       else -> PathInterpolator(0.63f,0.01f,0.29f,1f)
-                   }
-                   start()
+            ObjectAnimator.ofPropertyValuesHolder(view, translatePvh, opacityPvh).apply {
+                this.duration = duration
+                interpolator = when (interpolatorType) {
+                    EASE_IN -> AccelerateDecelerateInterpolator()
+                    else -> PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
+                }
+                start()
             }
         }
     }
 
-    private fun rotateSunflare(){
+    private fun rotateSunflare() {
         binding?.mainView?.sunflare?.apply {
-            ObjectAnimator.ofFloat(this,"rotation",0f,360f).apply {
+            ObjectAnimator.ofFloat(this, "rotation", 0f, 360f).apply {
                 duration = ROTATION_DURATION
                 interpolator = null
                 repeatCount = ValueAnimator.INFINITE
@@ -347,34 +349,34 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getTranslationPropertyValueHolder(from:Int,to:Int = 0) = PropertyValuesHolder.ofFloat(
+    private fun getTranslationPropertyValueHolder(from: Int, to: Int = 0) = PropertyValuesHolder.ofFloat(
         "translationY",
         from.toFloat(),
         to.toFloat()
     )
 
-    private fun getOpacityPropertyValueHolder(from:Int = 0,to:Int = 255) = PropertyValuesHolder.ofFloat(
+    private fun getOpacityPropertyValueHolder(from: Int = 0, to: Int = 255) = PropertyValuesHolder.ofFloat(
         "alpha",
         from.toFloat(),
         to.toFloat()
     )
 
-    private fun getScaleXPropertyValueHolder(from: Int = 0 ,to:Int = 1) = PropertyValuesHolder.ofFloat(
+    private fun getScaleXPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
         "scaleX",
         from.toFloat(),
         to.toFloat()
     )
 
-    private fun getScaleYPropertyValueHolder(from: Int = 0 ,to:Int = 1) = PropertyValuesHolder.ofFloat(
+    private fun getScaleYPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
         "scaleY",
         from.toFloat(),
         to.toFloat()
     )
 
-    private fun loadLottieFromUrl(view:LottieAnimationView?,url:String,success:(composition:LottieComposition) -> Unit,error:(() -> Unit)? = null){
+    private fun loadLottieFromUrl(view: LottieAnimationView?, url: String, success: (composition: LottieComposition) -> Unit, error: (() -> Unit)? = null) {
         view?.let {
-            context?.let{ it2 ->
-                val lottieCompositionTask = LottieCompositionFactory.fromUrl(it2,url)
+            context?.let { it2 ->
+                val lottieCompositionTask = LottieCompositionFactory.fromUrl(it2, url)
                 lottieCompositionTask.addListener { composition ->
                     success.invoke(composition)
                 }
@@ -385,11 +387,11 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadImageFromUrl(url:String,success:(drawable:Drawable) -> Unit,error:(() -> Unit)? = null){
+    private fun loadImageFromUrl(url: String, success: (drawable: Drawable) -> Unit, error: (() -> Unit)? = null) {
         context?.let {
             Glide.with(it)
                 .load(url)
-                .into(object : CustomTarget<Drawable>(){
+                .into(object : CustomTarget<Drawable>() {
                     override fun onResourceReady(
                         resource: Drawable,
                         transition: Transition<in Drawable>?
@@ -405,7 +407,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun startPageAnimation(){
+    private fun startPageAnimation() {
         animateBadge()
         animateSunflare()
         animateSpotlight()
@@ -413,6 +415,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         playSound()
         handler.postDelayed(
             {
+                CelebrationAnalytics.sendImpressionMedalCelebration(medaliSlug)
                 showCelebrationConfetti()
                 showStarsConfetti()
             },
@@ -420,9 +423,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun animateBadge(){
+    private fun animateBadge() {
         binding?.mainView?.badgeImage?.setImageDrawable(badgeImage)
-        val listener = object : Animator.AnimatorListener{
+        val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
                 startRedirection()
@@ -438,7 +441,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun animateSpotlight(){
+    private fun animateSpotlight() {
         binding?.mainView?.spotlight?.setImageDrawable(spotlightImage)
         scaleView(
             view = binding?.mainView?.spotlight,
@@ -447,7 +450,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun animateSunflare(){
+    private fun animateSunflare() {
         binding?.mainView?.sunflare?.setImageDrawable(sunburstImage)
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -465,38 +468,38 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun animateRest(){
+    private fun animateRest() {
         binding?.mainView?.apply {
-            context?.let{
+            context?.let {
                 translateView(
                     view = celebrationHeading,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it,-53).toInt(),
+                    from = dpToPx(it, -53).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = badgeName,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it,40).toInt(),
+                    from = dpToPx(it, 40).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = sponsorCard,
-                    duration  = ANIMATION_DURATION,
-                    from = dpToPx(it,44).toInt(),
+                    duration = ANIMATION_DURATION,
+                    from = dpToPx(it, 44).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = badgeDescription,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it,40).toInt(),
+                    from = dpToPx(it, 40).toInt(),
                     interpolatorType = EASE_IN
                 )
             }
         }
     }
 
-    private fun showCelebrationConfetti(){
+    private fun showCelebrationConfetti() {
         celebrationLottieComposition?.let {
             binding?.mainView?.celebrationView?.apply {
                 setComposition(it)
@@ -505,7 +508,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showStarsConfetti(){
+    private fun showStarsConfetti() {
         starsLottieComposition?.let {
             binding?.mainView?.lottieStars?.apply {
                 setComposition(it)
@@ -514,12 +517,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun playSound(){
-        if(isSoundAvailable)
-          audioManager?.playAudio()
+    private fun playSound() {
+        if (isSoundAvailable) {
+            audioManager?.playAudio()
+        }
     }
 
-    private fun configureStatusBar(){
+    private fun configureStatusBar() {
         activity?.let {
             it.window.apply {
                 val layoutParams = FrameLayout.LayoutParams(
@@ -527,7 +531,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 val statusBarHeight = getStatusBarHeight()
-                layoutParams.setMargins(0,statusBarHeight,0,0)
+                layoutParams.setMargins(0, statusBarHeight, 0, 0)
                 binding?.mainView?.mainViewContainer?.layoutParams = layoutParams
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 statusBarColor = Color.TRANSPARENT
@@ -536,7 +540,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     @SuppressLint("DiscouragedApi")
-    private fun getStatusBarHeight() : Int{
+    private fun getStatusBarHeight(): Int {
         var height = 0
         context?.let {
             val resId = it.resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -547,34 +551,34 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         return height
     }
 
-    private fun showErrorView(){
+    private fun showErrorView() {
         binding?.mainFlipper?.displayedChild = 2
         binding?.errorView?.apply {
             errorSecondaryAction.show()
-            if(errorSecondaryAction is UnifyButton){
+            if (errorSecondaryAction is UnifyButton) {
                 (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
             }
             errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-            errorSecondaryAction.setTextColor(ContextCompat.getColor(context,R.color.dark_grey_nav_color))
-            val buttonColor = ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
+            val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             errorSecondaryAction.setBackgroundColor(buttonColor)
             setActionClickListener { resetPage() }
             setSecondaryActionClickListener { activity?.finish() }
         }
     }
 
-    private fun resetPage(){
+    private fun resetPage() {
         binding?.mainFlipper?.displayedChild = 0
         medalCelebrationViewModel.getRewards()
     }
 
-    private fun fadeOutConfetti(){
+    private fun fadeOutConfetti() {
         binding?.mainView?.apply {
-            val opacityPvh = getOpacityPropertyValueHolder(from = 255,to = 0)
-            ObjectAnimator.ofPropertyValuesHolder(this,opacityPvh).apply {
+            val opacityPvh = getOpacityPropertyValueHolder(from = 255, to = 0)
+            ObjectAnimator.ofPropertyValuesHolder(this, opacityPvh).apply {
                 duration = ANIMATION_DURATION
                 interpolator = LinearInterpolator()
-                addListener(object : Animator.AnimatorListener{
+                addListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {}
                     override fun onAnimationEnd(animation: Animator) {
                         redirectToMedaliDetail()
@@ -587,18 +591,19 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun startRedirection(){
+    private fun startRedirection() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             val delay = scpRewardsCelebrationPage?.celebrationPage?.redirectDelayInMilliseconds.isNullOrZero(
-                FALLBACK_DELAY)
+                FALLBACK_DELAY
+            )
             handler.postDelayed({
                 fadeOutConfetti()
-            },delay)
+            }, delay)
         }
     }
 
-    private fun redirectToMedaliDetail(){
-        Toast.makeText(context,"redirecting to medali detail",Toast.LENGTH_LONG).show()
+    private fun redirectToMedaliDetail() {
+        Toast.makeText(context, "redirecting to medali detail", Toast.LENGTH_LONG).show()
         activity?.finish()
     }
 
@@ -610,5 +615,4 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
         audioManager?.releaseMediaPlayer()
     }
-
 }

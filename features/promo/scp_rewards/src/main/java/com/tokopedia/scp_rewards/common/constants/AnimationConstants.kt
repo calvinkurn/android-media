@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards.common.utils
+package com.tokopedia.scp_rewards.common.constants
 
 const val EASE_IN = 0
 const val EASE_OUT = 1
