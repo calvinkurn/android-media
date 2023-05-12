@@ -22,6 +22,7 @@ private const val SERVICE_ID = ""
 private const val CATEGORY_ID = 0
 private const val CATEGORY_ID_COUPON = -1
 private const val PAGE = 1
+private const val LIMIT = 20
 private const val INCLUDE_EXTRA_INFO = 1
 private const val API_VERSION = "2.0.0"
 private const val IS_GET_PROMO_INFO = true
@@ -94,12 +95,16 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
 
     private fun getMyCoupleBundle(dataItem: DataItem): MyCouponsRequest {
         return MyCouponsRequest(
-            serviceID = SERVICE_ID, categoryID = CATEGORY_ID, categoryIDCoupon = CATEGORY_ID_COUPON, page = PAGE,
-            limit = dataItem.limit
-                ?: 20,
-            includeExtraInfo = INCLUDE_EXTRA_INFO, apiVersion = API_VERSION, isGetPromoInfo = IS_GET_PROMO_INFO, clientID = CLIENT_ID,
-            catalogSlugs = dataItem.catalogSlug
-                ?: listOf(),
+            serviceID = SERVICE_ID,
+            categoryID = CATEGORY_ID,
+            categoryIDCoupon = CATEGORY_ID_COUPON,
+            page = PAGE,
+            limit = dataItem.limit ?: LIMIT,
+            includeExtraInfo = INCLUDE_EXTRA_INFO,
+            apiVersion = API_VERSION,
+            isGetPromoInfo = IS_GET_PROMO_INFO,
+            clientID = CLIENT_ID,
+            catalogSlugs = dataItem.catalogSlug ?: listOf(),
             source = SOURCE
         )
     }
