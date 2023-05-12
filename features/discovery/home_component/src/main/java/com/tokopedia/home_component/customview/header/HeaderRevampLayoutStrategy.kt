@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
+class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     companion object {
         private const val ROTATE_TO_DEGREES = 360f
         private const val PIVOT_X_VALUE = 0.5f
@@ -60,7 +60,8 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         var ctaButtonRevampContainer: LinearLayout? = null
         if (hasSeeMoreApplink || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
             if (stubCtaButton is ViewStub &&
-                !isViewStubHasBeenInflated(stubCtaButton)) {
+                !isViewStubHasBeenInflated(stubCtaButton)
+            ) {
                 stubCtaButton.inflate()?.apply {
                     ctaButtonRevamp = findViewById(R.id.cta_button_revamp)
                     ctaButtonRevampContainer = findViewById(R.id.cta_border_revamp)
@@ -75,7 +76,7 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
                 ctaButtonRevampContainer,
                 ctaButtonRevamp,
                 ctaMode,
-                colorMode,
+                colorMode
             )
 
             handleCtaConstraints(
@@ -86,7 +87,7 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
 
             ctaButtonRevampContainer?.show()
             ctaButtonRevamp?.setOnClickListener {
-                when(ctaMode) {
+                when (ctaMode) {
                     DynamicChannelHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channel.channelHeader.getLink())
                     DynamicChannelHeaderView.CTA_MODE_RELOAD -> {
                         it.startAnimation(rotateAnimation)
@@ -107,15 +108,15 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        val iconId = when(ctaMode) {
+        val iconId = when (ctaMode) {
             DynamicChannelHeaderView.CTA_MODE_SEE_ALL -> IconUnify.CHEVRON_RIGHT
             DynamicChannelHeaderView.CTA_MODE_RELOAD -> IconUnify.RELOAD
             DynamicChannelHeaderView.CTA_MODE_CLOSE -> IconUnify.CLOSE
             else -> IconUnify.CHEVRON_RIGHT
         }
-        when(colorMode) {
+        when (colorMode) {
             DynamicChannelHeaderView.COLOR_MODE_NORMAL -> {
-                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
                     newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
@@ -123,7 +124,7 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
                 )
             }
             DynamicChannelHeaderView.COLOR_MODE_INVERTED -> {
-                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(com.tokopedia.home_component.R.color.home_dms_header_see_all_border_inverted)
+                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(ContextCompat.getColor(context, com.tokopedia.home_component.R.color.home_dms_header_see_all_border_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
                     newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
@@ -140,9 +141,13 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         channelTitle?.setTextColor(
-            if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            else if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            } else if (channelHeader.textColor.isNotEmpty()) {
+                Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            }
         )
     }
 
@@ -153,9 +158,13 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         channelSubtitle?.setTextColor(
-            if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            else if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            } else if (channelHeader.textColor.isNotEmpty()) {
+                Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            }
         )
     }
 
@@ -168,11 +177,13 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?
     ) {
-        val bottomAnchor = if (channelHeader.subtitle.isEmpty() && !hasExpiredTime)
+        val bottomAnchor = if (channelHeader.subtitle.isEmpty() && !hasExpiredTime) {
             R.id.channel_title
-        else if(hasExpiredTime)
+        } else if (hasExpiredTime) {
             R.id.count_down
-        else R.id.channel_subtitle
+        } else {
+            R.id.channel_subtitle
+        }
         val constraintSet = ConstraintSet()
         constraintSet.clone(channelHeaderContainer)
         constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
@@ -185,7 +196,7 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
         channelHeaderContainer: ConstraintLayout?,
         resources: Resources
     ) {
-        if(hasExpiredTime) {
+        if (hasExpiredTime) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(channelHeaderContainer)
             constraintSet.connect(R.id.channel_subtitle, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
@@ -203,7 +214,7 @@ class HeaderRevampLayoutStrategy: HeaderLayoutStrategy {
     override fun setContainerPadding(
         channelHeaderContainer: ConstraintLayout,
         hasExpiredTime: Boolean,
-        resources: Resources,
+        resources: Resources
     ) {
         channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_dynamic_header_bottom_padding))
     }

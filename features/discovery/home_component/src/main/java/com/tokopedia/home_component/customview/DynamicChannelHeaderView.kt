@@ -30,9 +30,9 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-class DynamicChannelHeaderView: FrameLayout {
+class DynamicChannelHeaderView : FrameLayout {
     private val itemView: View
-    
+
     private val channelHeaderContainer: ConstraintLayout
     private var channelTitle: Typography? = null
     private var channelSubtitle: TextView? = null
@@ -56,14 +56,18 @@ class DynamicChannelHeaderView: FrameLayout {
     init {
         val view = LayoutInflater.from(context).inflate(layoutStrategy.getLayout(), this)
         this.itemView = view
-        
+
         channelHeaderContainer = view.findViewById(R.id.channel_title_container)
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-        val attributes : TypedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicChannelHeaderRevampView)
-        headerColorMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_color_mode, COLOR_MODE_NORMAL)
-        headerCtaMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_cta_mode, CTA_MODE_SEE_ALL)
+        val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicChannelHeaderRevampView)
+        try {
+            headerColorMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_cta_mode, CTA_MODE_SEE_ALL)
+        } finally {
+            attributes.recycle()
+        }
     }
 
     fun setChannel(
@@ -73,10 +77,10 @@ class DynamicChannelHeaderView: FrameLayout {
         ctaMode: Int? = null
     ) {
         this.listener = listener
-        if(this.headerColorMode == null) {
+        if (this.headerColorMode == null) {
             this.headerColorMode = colorMode ?: COLOR_MODE_NORMAL
         }
-        if(this.headerCtaMode == null) {
+        if (this.headerCtaMode == null) {
             this.headerCtaMode = ctaMode ?: CTA_MODE_SEE_ALL
         }
         handleHeaderComponent(channelModel)
@@ -118,7 +122,8 @@ class DynamicChannelHeaderView: FrameLayout {
         if (channelHeaderName?.isNotEmpty() == true) {
             channelHeaderContainer.visibility = View.VISIBLE
             channelTitle = if (stubChannelTitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelTitle)) {
+                !isViewStubHasBeenInflated(stubChannelTitle)
+            ) {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
@@ -145,7 +150,8 @@ class DynamicChannelHeaderView: FrameLayout {
          */
         if (channelSubtitleName?.isNotEmpty() == true) {
             channelSubtitle = if (stubChannelSubtitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                !isViewStubHasBeenInflated(stubChannelSubtitle)
+            ) {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
@@ -173,7 +179,8 @@ class DynamicChannelHeaderView: FrameLayout {
          */
         if (hasExpiredTime(channel)) {
             countDownView = if (stubCountDownView is ViewStub &&
-                    !isViewStubHasBeenInflated(stubCountDownView)) {
+                !isViewStubHasBeenInflated(stubCountDownView)
+            ) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
@@ -183,7 +190,7 @@ class DynamicChannelHeaderView: FrameLayout {
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
                 countDownView?.run {
-                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty() || headerColorMode == COLOR_MODE_INVERTED){
+                    timerVariant = if (channel.channelHeader.backColor.isNotEmpty() || headerColorMode == COLOR_MODE_INVERTED) {
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
@@ -202,7 +209,6 @@ class DynamicChannelHeaderView: FrameLayout {
                     onFinish = {
                         listener?.onChannelExpired(channel)
                     }
-
                 }
             }
         } else {
@@ -221,10 +227,11 @@ class DynamicChannelHeaderView: FrameLayout {
             titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
 
             titleContainer.setPadding(
-                    titleContainer.paddingLeft,
-                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
-                    titleContainer.paddingRight,
-                    titleContainer.paddingBottom)
+                titleContainer.paddingLeft,
+                convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
+                titleContainer.paddingRight,
+                titleContainer.paddingBottom
+            )
         }
     }
 
@@ -246,11 +253,11 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     private fun Int.staticIfDarkMode(context: Context?): Int {
-        return if(context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950) else this
+        return if (context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950) else this
     }
 
     private fun adjustTitleVerticalPosition(channel: ChannelModel) {
-        if(hasExpiredTime(channel) || channel.channelHeader.subtitle.isNotEmpty()) {
+        if (hasExpiredTime(channel) || channel.channelHeader.subtitle.isNotEmpty()) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(channelHeaderContainer)
             constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
