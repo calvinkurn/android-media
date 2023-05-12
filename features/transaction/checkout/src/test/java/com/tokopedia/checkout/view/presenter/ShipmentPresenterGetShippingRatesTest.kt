@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -1078,6 +1079,194 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN get shipping rates with mvc return error THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val response = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+            ErrorProductData().apply { errorMessage = "error" }
+
+        every { getRatesUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates with mvc return empty data THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        every { getRatesUseCase.execute(any()) } returns Observable.just(
+            ShippingRecommendationData()
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates with mvc failed THEN should render nothing`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        every { getRatesUseCase.execute(any()) } returns Observable.error(
+            Throwable()
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates api with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
@@ -1138,6 +1327,253 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates api with mvc return error THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val response = DataProvider.provideRatesV3apiResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().productData.error =
+            ErrorProductData().apply { errorMessage = "error" }
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates api with mvc return empty data THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            ShippingRecommendationData()
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates api with mvc return empty courier data THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            ShippingRecommendationData(shippingDurationUiModels = listOf(ShippingDurationUiModel()))
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates api with mvc failed THEN should render nothing`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc, "", emptyList()
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
         }
     }
 
