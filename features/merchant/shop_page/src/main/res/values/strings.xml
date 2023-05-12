@@ -199,8 +199,9 @@
     <!--Exlusive launch voucher list bottomsheet-->
     <string name="shop_page_exclusive_launch_voucher">Kupon Spesial Launching</string>
     <string name="shop_page_claim">Klaim</string>
+    <string name="shop_page_use">Pakai</string>
     <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp %s</string>
-    <string name="shop_page_placeholder_remaining_quota">Sisa %s</string>
+    <string name="shop_page_placeholder_remaining_quota">Sisa %d</string>
     <string name="shop_page_placeholder_benefit_name">Cashback %s s.d Rp%s</string>
 
 </resources>

@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
+import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
@@ -21,7 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
+class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
 
     companion object {
         @JvmStatic
@@ -33,7 +34,7 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
 
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
-    private var onVoucherClaimSuccess : (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherClaimSuccess : (Int) -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -63,9 +64,14 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupDependencyInjection() {
-        DaggerShopCampaignComponent.builder()
-            .build()
-            .inject(this)
+        activity?.run {
+            DaggerShopCampaignComponent
+                .builder()
+                .shopCampaignModule(ShopCampaignModule())
+                .shopComponent(ShopComponentHelper().getComponent(application, this))
+                .build()
+                .inject(this@ExclusiveLaunchVoucherListBottomSheet)
+        }
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -78,6 +84,7 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
+        viewModel.getVouchers()
     }
 
     private fun observeVouchers() {
@@ -94,8 +101,8 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun displayVouchers(data: List<ExclusiveLaunchVoucher>) {
-
+    private fun displayVouchers(vouchers: List<ExclusiveLaunchVoucher>) {
+        exclusiveLaunchAdapter.submit(vouchers)
     }
 
     private fun setupView() {
@@ -108,22 +115,28 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify() {
             adapter = exclusiveLaunchAdapter
         }
 
-        exclusiveLaunchAdapter.setOnVoucherClick { selectedVoucher ->
-            onVoucherClaimSuccess(selectedVoucher)
+        exclusiveLaunchAdapter.setOnVoucherClick { selectedVoucherPosition ->
+            onVoucherClaimSuccess(selectedVoucherPosition)
             dismiss()
         }
-        exclusiveLaunchAdapter.setOnVoucherClaimClick { selectedVoucher ->
+        exclusiveLaunchAdapter.setOnVoucherClaimClick { selectedVoucherPosition ->
+            val selectedVoucher = exclusiveLaunchAdapter.snapshot()[selectedVoucherPosition]
             showVoucherDetailBottomSheet(selectedVoucher)
+        }
+
+        exclusiveLaunchAdapter.setOnUseVoucherClick {
+
         }
     }
     
 
-    private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
 
+    private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
     }
 
-    fun setOnVoucherClaimSuccess(onVoucherClaimSuccess : (ExclusiveLaunchVoucher) -> Unit) {
+    fun setOnVoucherClaimSuccess(onVoucherClaimSuccess : (Int) -> Unit) {
         this.onVoucherClaimSuccess = onVoucherClaimSuccess
     }
+
 
 }

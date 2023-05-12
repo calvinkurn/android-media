@@ -12,5 +12,5 @@ import dagger.Component
     dependencies = [ShopComponent::class]
 )
 interface ShopCampaignComponent {
-    fun inject(exclusiveLaunchVoucherListBottomSheet: ExclusiveLaunchVoucherListBottomSheet)
+    fun inject(exclusiveLaunchVoucherListBottomSheet: ExclusiveLaunchVoucherListBottomSheet?)
 }

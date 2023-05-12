@@ -6,14 +6,12 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgFilterName"
-        android:layout_width="wrap_content"
+    <com.tokopedia.shop.campaign.view.customview.ExclusiveLaunchVoucherView
+        android:id="@+id/elVoucher"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Jakarta" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
