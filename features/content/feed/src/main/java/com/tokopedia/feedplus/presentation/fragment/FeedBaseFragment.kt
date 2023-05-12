@@ -10,6 +10,8 @@ import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -167,6 +169,16 @@ class FeedBaseFragment : BaseDaggerFragment(),
             }
         }
         super.onCreate(savedInstanceState)
+
+        lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_RESUME -> onResumeInternal()
+                    Lifecycle.Event.ON_PAUSE -> onPauseInternal()
+                    else -> {}
+                }
+            }
+        })
     }
 
     override fun onCreateView(
@@ -313,12 +325,13 @@ class FeedBaseFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        onResumeInternal()
+    private fun checkResume(): Boolean {
+        return userVisibleHint && lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
     }
 
     private fun onResumeInternal() {
+        if (!checkResume()) return
+
         feedMainViewModel.resumePage()
 
         val meta = feedMainViewModel.metaData.value
@@ -485,11 +498,6 @@ class FeedBaseFragment : BaseDaggerFragment(),
         } else {
             onResumeInternal()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        onPauseInternal()
     }
 
     private fun initMetaView(meta: MetaModel) {

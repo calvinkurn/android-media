@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -175,6 +177,18 @@ class FeedFragment :
         } ?: savedInstanceState?.let {
             data = it.getParcelable(ARGUMENT_DATA)
         }
+
+        lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_RESUME -> {
+                        if (checkResume(isOnResume = true)) resumeCurrentVideo()
+                    }
+                    Lifecycle.Event.ON_PAUSE -> pauseCurrentVideo()
+                    else -> {}
+                }
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -213,16 +227,6 @@ class FeedFragment :
         observeBuyProduct()
 
         observeEvent()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pauseCurrentVideo()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        resumeCurrentVideo()
     }
 
     override fun onDestroyView() {
@@ -850,7 +854,9 @@ class FeedFragment :
 
     private fun observeResumePage() {
         feedMainViewModel.isPageResumed.observe(viewLifecycleOwner) { isResumed ->
-            if (isResumed) {
+            if (isResumed == null) return@observe
+
+            if (isResumed && checkResume(isPageResumed = true)) {
                 resumeCurrentVideo()
             } else {
                 pauseCurrentVideo()
@@ -958,6 +964,13 @@ class FeedFragment :
 
     private fun resumeVideo(id: String) {
         videoPlayerManager.resume(id)
+    }
+
+    private fun checkResume(
+        isOnResume: Boolean = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+        isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false,
+    ): Boolean {
+        return isPageResumed && isOnResume
     }
 
     private fun onGoToLogin() {
