@@ -23,12 +23,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
@@ -97,8 +99,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-@Suppress("DEPRECATION")
-class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creator):
+class FeedFragment(private val commentAnalytics: ContentCommentAnalytics.Creator) :
     BaseDaggerFragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
@@ -143,7 +144,7 @@ class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creato
         TopAdsUrlHitter(context)
     }
 
-    private var commentEntrySource : ContentCommentBottomSheet.EntrySource? = null
+    private var commentEntrySource: ContentCommentBottomSheet.EntrySource? = null
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -335,7 +336,7 @@ class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creato
         }
     }
 
-    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+    override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         feedMainViewModel.reportContent(feedReportRequestParamModel)
         currentTrackerData?.let {
             feedAnalytics.eventClickReasonReportContent(
@@ -347,10 +348,6 @@ class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creato
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
         //add analytics(if any)
-    }
-
-    override fun disableClearView() {
-        feedMainViewModel.toggleClearView(false)
     }
 
     override fun onSharePostClicked(
@@ -1006,31 +1003,37 @@ class FeedFragment (private val commentAnalytics: ContentCommentAnalytics.Creato
         }
     }
 
-    override fun onCommentClick(model: FeedCardImageContentModel, rowNumber: Int) {
-         commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
-            override fun getPageSource(): PageSource = PageSource.Feed(model.id)
-            override fun onCommentDismissed() {
+    override fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int) {
+        trackerModel?.let {
+            currentTrackerData = trackerModel
+            commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+                override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
+                override fun onCommentDismissed() {
+                }
             }
-        }
 
-        val sheet = ContentCommentBottomSheet.getOrCreate(
-            childFragmentManager,
-            requireActivity().classLoader
-        )
-        if (!sheet.isAdded) sheet.show(childFragmentManager) else sheet.dismiss()
+            val sheet = ContentCommentBottomSheet.getOrCreate(
+                childFragmentManager,
+                requireActivity().classLoader
+            )
+            if (!sheet.isAdded) sheet.show(childFragmentManager) else sheet.dismiss()
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ContentCommentBottomSheet -> {
+                val eventLabel = currentTrackerData?.let {
+                    feedAnalytics.getEventLabel(it)
+                } ?: ""
                 childFragment.setEntrySource(commentEntrySource)
                 childFragment.setAnalytic(
                     commentAnalytics.create(
-                        PageSource.Feed(""), //PostId
+                        PageSource.Feed(currentTrackerData?.activityId.orEmpty()), //PostId
                         model = ContentCommentAnalyticsModel(
-                            eventCategory = "",
-                            eventLabel = ""
+                            eventCategory = FeedAnalytics.CATEGORY_UNIFIED_FEED,
+                            eventLabel = eventLabel
                         )
                     )
                 )

@@ -209,7 +209,7 @@ class FeedPostImageViewHolder(
                     )
                 }
                 commentButton.setOnClickListener {
-                    listener.onCommentClick(element, absoluteAdapterPosition)
+                    listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
                 }
 
                 btnDisableClearMode.setOnClickListener {

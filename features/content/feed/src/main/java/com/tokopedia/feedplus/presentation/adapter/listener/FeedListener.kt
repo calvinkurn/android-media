@@ -135,5 +135,5 @@ interface FeedListener {
         positionInFeed: Int
     )
 
-    fun onCommentClick(model: FeedCardImageContentModel, rowNumber: Int)
+    fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int)
 }

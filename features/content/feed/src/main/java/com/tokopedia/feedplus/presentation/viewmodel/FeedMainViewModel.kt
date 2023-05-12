@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
@@ -230,15 +229,10 @@ class FeedMainViewModel @Inject constructor(
             }
         } ?: ""
 
-    fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
+    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                submitReportUseCase.setRequestParams(
-                    FeedComplaintSubmitReportUseCase.createParam(
-                        feedReportRequestParamModel
-                    )
-                )
-                submitReportUseCase.executeOnBackground()
+                submitReportUseCase(feedReportRequestParamModel)
             }
             if (response.data.success.not()) {
                 throw MessageErrorException("Error in Reporting")

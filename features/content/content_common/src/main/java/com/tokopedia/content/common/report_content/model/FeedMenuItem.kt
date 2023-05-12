@@ -13,8 +13,7 @@ data class FeedContentData(
     val caption: String,
     val postId: String,
     val authorId: String,
-    val rowNumber: Int,
-    val type: FeedMenuIdentifier,
+    val rowNumber: Int
 )
 
 enum class FeedMenuIdentifier(val value: String) {
