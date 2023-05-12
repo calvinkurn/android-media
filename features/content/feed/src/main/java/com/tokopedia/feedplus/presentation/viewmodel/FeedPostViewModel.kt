@@ -40,6 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
 import javax.inject.Inject
 
 /**
@@ -154,7 +155,7 @@ class FeedPostViewModel @Inject constructor(
 
                         _shouldShowNoMoreContent =
                             _feedHome.value?.items.orEmpty().isNotEmpty() &&
-                                items.isEmpty()
+                            items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
@@ -328,7 +329,7 @@ class FeedPostViewModel @Inject constructor(
         _suspendedLikeData.value = LikeFeedDataModel(
             contentId,
             rowNumber,
-            FeedLikeAction.Like,
+            FeedLikeAction.Like
         )
     }
 
@@ -379,7 +380,6 @@ class FeedPostViewModel @Inject constructor(
                 } else {
                     throw MessageErrorException()
                 }
-
             } catch (t: Throwable) {
                 _deletePostResult.value = Fail(t)
             }
@@ -551,7 +551,7 @@ class FeedPostViewModel @Inject constructor(
             if (result == null) {
                 _merchantVoucherLiveData.value = Fail(IllegalStateException())
             } else {
-                if (result.resultStatus?.code == "200") {
+                if (result.resultStatus?.code == HttpURLConnection.HTTP_OK.toString()) {
                     _merchantVoucherLiveData.value = Success(result)
                 } else {
                     _merchantVoucherLiveData.value = Fail(
