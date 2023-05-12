@@ -341,6 +341,7 @@ class SearchBarView constructor(
     @TargetApi(Build.VERSION_CODES.M)
     private fun AnimatedVectorDrawable.stopLoopAnimation() {
         unregisterAnimationCallback(animatableAnimationCallback)
+        clearAnimationCallbacks()
         stop()
     }
 
@@ -359,6 +360,7 @@ class SearchBarView constructor(
     }
     private fun AnimatedVectorDrawableCompat.stopLoopAnimation() {
         unregisterAnimationCallback(animatableCompatAnimationCallback)
+        clearAnimationCallbacks()
         stop()
     }
 
