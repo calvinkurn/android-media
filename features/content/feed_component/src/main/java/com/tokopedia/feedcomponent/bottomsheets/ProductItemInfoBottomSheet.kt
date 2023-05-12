@@ -171,13 +171,13 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                         setAdapter(it.feedXGetActivityProductsResponse.products)
                     }
                     is FeedXProductResult.LoadingState -> {
-                        //TODO add loading state
+                        // TODO add loading state
                     }
                     is FeedXProductResult.Error -> {
-                        //TODO add error state
+                        // TODO add error state
                     }
                     FeedXProductResult.SuccessWithNoData -> {
-                        //TODO add no data state
+                        // TODO add no data state
                     }
                 }
             }
@@ -200,9 +200,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             override fun onScroll(lastVisiblePosition: Int) {
             }
 
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
             }
         }
     }
@@ -309,35 +307,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 Toaster.toasterCustomBottomHeight =
                     resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
-            if (actionText?.isEmpty() == false)
+            if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
                     .show()
-            else {
+            } else {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
-        }
-    }
-
-    fun showToastWithAction(
-        message: String,
-        type: Int,
-        actionText: String,
-        action: () -> Unit
-    ) {
-        view?.rootView?.let {
-            context?.resources?.let { resource ->
-                Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
-            }
-            Toaster.build(
-                it,
-                message,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                actionText
-            ) {
-                action()
-            }.show()
         }
     }
 
@@ -373,7 +348,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         )
 
         fun onAddToCartButtonClicked(item: ProductPostTagModelNew)
-        fun onBuyButtonClicked(item: ProductPostTagModelNew)
         fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int)
     }
 
@@ -381,5 +355,4 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val PRODUCT_TYPE = "product"
     }
-
 }

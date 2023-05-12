@@ -656,7 +656,7 @@ class FeedPlusFragment :
                             showToast(message, Toaster.TYPE_ERROR)
                         }
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -700,7 +700,7 @@ class FeedPlusFragment :
                             onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                         }
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -714,7 +714,7 @@ class FeedPlusFragment :
                             onSuccessFetchStatusCampaignReminderButton(it.data)
                         }
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -744,7 +744,7 @@ class FeedPlusFragment :
                             onSuccessAddViewVODPost(it.data.rowNumber)
                         }
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -757,7 +757,7 @@ class FeedPlusFragment :
                             onSuccessAddViewVODPost(it.data.rowNumber)
                         }
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -2585,28 +2585,28 @@ class FeedPlusFragment :
             customMvcTracker.hasVoucher = card.hasVoucher
             customMvcTracker.contentScore = (card.contentScore).firstOrNull()?.value ?: String.EMPTY
 
-            productTagBS.
-            show(
-                childFragmentManager,
-                this,
-                ProductBottomSheetData(
-                    products = products,
-                    postId = card.id,
-                    shopId = card.author.id,
-                    postType = card.typename,
-                    isFollowed = card.followers.isFollowed,
-                    positionInFeed = positionInFeed,
-                    playChannelId = card.playChannelID,
-                    shopName = card.author.name,
-                    mediaType = mediaType,
-                    saleStatus = card.campaign.status,
-                    saleType = card.campaign.name,
-                    hasVoucher = card.hasVoucher,
-                    authorType = card.author.type.toString()
-                ),
-                viewModelFactory,
-                customMvcTracker = customMvcTracker
-            )
+            productTagBS
+                .show(
+                    childFragmentManager,
+                    this,
+                    ProductBottomSheetData(
+                        products = products,
+                        postId = card.id,
+                        shopId = card.author.id,
+                        postType = card.typename,
+                        isFollowed = card.followers.isFollowed,
+                        positionInFeed = positionInFeed,
+                        playChannelId = card.playChannelID,
+                        shopName = card.author.name,
+                        mediaType = mediaType,
+                        saleStatus = card.campaign.status,
+                        saleType = card.campaign.name,
+                        hasVoucher = card.hasVoucher,
+                        authorType = card.author.type.toString()
+                    ),
+                    viewModelFactory,
+                    customMvcTracker = customMvcTracker
+                )
             productTagBS.closeClicked = {
                 val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                     if (card.followers.isFollowed) {
@@ -3944,10 +3944,6 @@ class FeedPlusFragment :
                 item
             )
         }
-    }
-
-    override fun onBuyButtonClicked(item: ProductPostTagModelNew) {
-        // do nothing
     }
 
     override fun onTaggedProductCardClicked(

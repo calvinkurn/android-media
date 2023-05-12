@@ -1782,11 +1782,7 @@ class ContentDetailFragment :
         }
     }
 
-    override fun onBuyButtonClicked(item: ProductPostTagModelNew) {
-        // do nothing
-    }
-
-        private fun onTagSheetItemBuy(
+    private fun onTagSheetItemBuy(
         activityId: String,
         positionInFeed: Int,
         postTagItem: FeedXProduct,
@@ -2004,7 +2000,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2054,7 +2050,7 @@ class ContentDetailFragment :
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2449,7 +2445,7 @@ class ContentDetailFragment :
                     onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2470,7 +2466,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2485,7 +2481,7 @@ class ContentDetailFragment :
                     onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
