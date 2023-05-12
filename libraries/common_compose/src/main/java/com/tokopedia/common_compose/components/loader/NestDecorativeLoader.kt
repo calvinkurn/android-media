@@ -47,18 +47,7 @@ internal fun NestDecorativeLoader(
     modifier: Modifier = Modifier,
     isWhite: Boolean = false
 ) {
-    // duration
-    val scaleDurationAnimate = 300
-    val moveDurationAnimate = 300
-    val iconScaleDurationAnimate = 300
-    // delay
-    val circleDelayAnimate = 300
-    val iconDelayAnimate = 300
-    // object size
-    val circleCenterSize = 18
-    val circleSideSize = 12
-    // spacing
-    val spaceBetweenCircle = 14
+
     // color
     val color = if (isWhite) NestNN.light._0 else NestTheme.colors.GN._500
 
@@ -145,39 +134,34 @@ internal fun NestDecorativeLoader(
     )
 
     var containerWidth by remember { mutableStateOf(0) }
-    var sideScaleState by remember { mutableStateOf(1.5f) }
-    var centerScaleState by remember { mutableStateOf(1.5f) }
+    var dotSideScaleState by remember { mutableStateOf(2f) }
+    var dotCenterScaleState by remember { mutableStateOf(1.33f) }
     var iconScaleState by remember { mutableStateOf(2f) }
-    var moveState by remember { mutableStateOf(0) }
-    val animatedCenterScale by animateFloatBy(
-        scale = centerScaleState,
+    var dotMovingState by remember { mutableStateOf(0) }
+    val animatedDotCenterScale by animateFloatBy(
+        scale = dotCenterScaleState,
         easing = FastOutSlowInEasing,
         delay = circleDelayAnimate
     )
-    val animatedSideScale by animateFloatBy(
-        scale = sideScaleState,
+    val animatedDotSideScale by animateFloatBy(
+        scale = dotSideScaleState,
         easing = FastOutSlowInEasing,
         delay = circleDelayAnimate
     )
-    val animatedMoveToRight by animateMoveTo(x = moveState.dp, delay = circleDelayAnimate)
-    val animatedMoveToLeft by animateMoveTo(x = -moveState.dp, delay = circleDelayAnimate)
-    val animatedIconScale by animateFloatAsState(
-        targetValue = iconScaleState,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = iconScaleDurationAnimate,
-                delayMillis = iconDelayAnimate,
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        )
+    val animatedMoveToRight by animateMoveTo(x = dotMovingState.dp, delay = circleDelayAnimate)
+    val animatedMoveToLeft by animateMoveTo(x = -dotMovingState.dp, delay = circleDelayAnimate)
+    val animatedIconScale by animateFloatBy(
+        scale = iconScaleState,
+        easing = FastOutSlowInEasing,
+        delay = iconDelayAnimate,
+        duration = iconScaleDurationAnimate
     )
 
     LaunchedEffect(key1 = Unit, block = {
-        centerScaleState = 1f
-        sideScaleState = 1f
-        iconScaleState = 1f
-        moveState = spaceBetweenCircle * 2
+        dotCenterScaleState = 1f
+        dotSideScaleState = 1f
+        iconScaleState = 0f
+        dotMovingState = spaceBetweenCircle * 2
     })
 
     Box(
@@ -197,19 +181,19 @@ internal fun NestDecorativeLoader(
             Dot(
                 modifier = Modifier
                     .offset(x = animatedMoveToLeft),
-                scale = animatedSideScale,
+                scale = animatedDotSideScale,
                 dotSize = circleSideSize.dp
             )
 
             Dot(
-                scale = animatedCenterScale,
+                scale = animatedDotCenterScale,
                 dotSize = circleCenterSize.dp
             )
 
             Dot(
                 modifier = Modifier
                     .offset(x = animatedMoveToRight),
-                scale = animatedSideScale,
+                scale = animatedDotSideScale,
                 dotSize = circleSideSize.dp
             )
 
@@ -220,6 +204,19 @@ internal fun NestDecorativeLoader(
         }
     }
 }
+
+// duration
+private const val scaleDurationAnimate = 300
+private const val moveDurationAnimate = 300
+private const val iconScaleDurationAnimate = 300
+// delay
+private const val circleDelayAnimate = 300
+private const val iconDelayAnimate = 300
+// object size
+private const val circleCenterSize = 18
+private const val circleSideSize = 12
+// spacing
+private const val spaceBetweenCircle = 14
 
 @Preview(showSystemUi = true)
 @Composable
