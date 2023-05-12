@@ -1042,56 +1042,60 @@ class ShipmentPresenter @Inject constructor(
             viewModelScope.launch(dispatchers.immediate) {
                 try {
                     val checkoutData = checkoutGqlUseCase(params)
-                    view?.setHasRunningApiCall(false)
-                    if (!checkoutData.isError) {
-                        view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
-                            checkoutData.transactionId,
-                            deviceModel,
-                            devicePrice,
-                            diagnosticId
-                        )
-                        if (isPurchaseProtectionPage) {
-                            mTrackerPurchaseProtection.eventClickOnBuy(
-                                userSessionInterface.userId,
-                                checkoutRequest.protectionAnalyticsData
+                    view?.let { v ->
+                        v.setHasRunningApiCall(false)
+                        if (!checkoutData.isError) {
+                            v.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
+                                checkoutData.transactionId,
+                                deviceModel,
+                                devicePrice,
+                                diagnosticId
                             )
-                        }
-                        var isCrossSellChecked = false
-                        for (shipmentCrossSellModel in listShipmentCrossSellModel) {
-                            if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
-                        }
-                        if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
-                        view?.renderCheckoutCartSuccess(checkoutData)
-                    } else if (checkoutData.priceValidationData.isUpdated) {
-                        view?.hideLoading()
-                        view?.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
-                    } else if (checkoutData.prompt.eligible) {
-                        view?.hideLoading()
-                        view?.renderPrompt(checkoutData.prompt)
-                    } else {
-                        analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.errorMessage)
-                        view?.hideLoading()
-                        if (checkoutData.errorMessage.isNotEmpty()) {
-                            view?.renderCheckoutCartError(checkoutData.errorMessage)
-                            view?.logOnErrorCheckout(
-                                MessageErrorException(checkoutData.errorMessage),
-                                checkoutRequest.toString()
-                            )
+                            if (isPurchaseProtectionPage) {
+                                mTrackerPurchaseProtection.eventClickOnBuy(
+                                    userSessionInterface.userId,
+                                    checkoutRequest.protectionAnalyticsData
+                                )
+                            }
+                            var isCrossSellChecked = false
+                            for (shipmentCrossSellModel in listShipmentCrossSellModel) {
+                                if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
+                            }
+                            if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
+                            v.renderCheckoutCartSuccess(checkoutData)
+                        } else if (checkoutData.priceValidationData.isUpdated) {
+                            v.hideLoading()
+                            v.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
+                        } else if (checkoutData.prompt.eligible) {
+                            v.hideLoading()
+                            v.renderPrompt(checkoutData.prompt)
                         } else {
-                            val defaultErrorMessage =
-                                view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                    ?: ""
-                            view?.renderCheckoutCartError(defaultErrorMessage)
-                            view?.logOnErrorCheckout(
-                                MessageErrorException(defaultErrorMessage),
-                                checkoutRequest.toString()
+                            analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(
+                                checkoutData.errorMessage
+                            )
+                            v.hideLoading()
+                            if (checkoutData.errorMessage.isNotEmpty()) {
+                                v.renderCheckoutCartError(checkoutData.errorMessage)
+                                v.logOnErrorCheckout(
+                                    MessageErrorException(checkoutData.errorMessage),
+                                    checkoutRequest.toString()
+                                )
+                            } else {
+                                val defaultErrorMessage =
+                                    v.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                        ?: ""
+                                v.renderCheckoutCartError(defaultErrorMessage)
+                                v.logOnErrorCheckout(
+                                    MessageErrorException(defaultErrorMessage),
+                                    checkoutRequest.toString()
+                                )
+                            }
+                            processInitialLoadCheckoutPage(
+                                isReloadData = true,
+                                skipUpdateOnboardingState = true,
+                                isReloadAfterPriceChangeHinger = false
                             )
                         }
-                        processInitialLoadCheckoutPage(
-                            isReloadData = true,
-                            skipUpdateOnboardingState = true,
-                            isReloadAfterPriceChangeHinger = false
-                        )
                     }
                 } catch (e: Throwable) {
                     view?.hideLoading()

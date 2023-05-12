@@ -15,6 +15,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.IOException
 
 class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
 
@@ -380,5 +381,59 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
             "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}",
             firstShopProductDataList.validationMetadata
         )
+    }
+
+    @Test
+    fun saveShipmentStateWithoutItem_ShouldDoNothing() {
+        // Given
+        every { view.isTradeInByDropOff } returns false
+
+        val addressId = "123"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = addressId
+        }
+
+        coEvery { saveShipmentStateGqlUseCase(any()) } returns SaveShipmentStateData()
+
+        // When
+        presenter.processSaveShipmentState()
+
+        // Then
+        coVerify(inverse = true) { saveShipmentStateGqlUseCase(any()) }
+    }
+
+    @Test
+    fun checkParamsFromInputError_ShouldDoNothing() {
+        // Given
+        every { view.isTradeInByDropOff } returns false
+
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "").apply {
+            cartItemModels = listOf(
+                CartItemModel(
+                    cartStringGroup = "",
+                    productId = 1
+                )
+            )
+            selectedShipmentDetailData = ShipmentDetailData().apply {
+                selectedCourier = CourierItemData().apply {
+                    shipperId = 1
+                    shipperProductId = 2
+                }
+            }
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        val addressId = "123"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = addressId
+        }
+
+        coEvery { saveShipmentStateGqlUseCase(any()) } throws IOException()
+
+        // When
+        presenter.processSaveShipmentState()
+
+        // Then
+        coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
     }
 }

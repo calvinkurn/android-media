@@ -378,6 +378,11 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 cartStringGroup = "1",
                 promoCode = "code",
                 iconType = -1
+            ),
+            NotEligiblePromoHolderdata(
+                cartStringGroup = "1",
+                promoCode = "code2",
+                iconType = -1
             )
         )
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
@@ -490,6 +495,32 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                     tickerMessage = "message"
                 )
             )
+
+        // When
+        presenter.cancelNotEligiblePromo(notEligilePromoList)
+
+        // Then
+        verifySequence {
+//            view.updateTickerAnnouncementMessage()
+            view.removeIneligiblePromo()
+        }
+    }
+
+    @Test
+    fun `WHEN clear non eligible promo failed THEN should render success`() {
+        // Given
+        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
+
+        val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
+            add(
+                NotEligiblePromoHolderdata(
+                    promoCode = "code",
+                    iconType = NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL
+                )
+            )
+        }
+
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
 
         // When
         presenter.cancelNotEligiblePromo(notEligilePromoList)

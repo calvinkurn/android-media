@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
@@ -1386,6 +1387,197 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
         verifyOrder {
             getRatesUseCase.execute(any())
             view.setSelectedCourier(itemPosition, any(), true, false)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates return error THEN should render failed`() {
+        // Given
+        presenter.initializePresenterData(
+            CartShipmentAddressFormData(
+                cod = CodModel(counterCod = 1),
+                groupAddress = listOf(
+                    GroupAddress()
+                )
+            )
+        )
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+            ErrorProductData().apply { errorMessage = "error" }
+        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel()
+
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
+        val itemPosition = 0
+        val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
+            code = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "1",
+            isLeasingProduct = true,
+            shopShipmentList = listOf(),
+            selectedShipmentDetailData = ShipmentDetailData(
+                shipmentCartData = ShipmentCartData(
+                    originDistrictId = "1",
+                    originPostalCode = "1",
+                    originLatitude = "1",
+                    originLongitude = "1",
+                    weight = 1.0,
+                    weightActual = 1.0
+                )
+            ),
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "1"))
+        )
+        presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInByDropOff, true)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates return empty promo THEN should render failed`() {
+        // Given
+        presenter.initializePresenterData(
+            CartShipmentAddressFormData(
+                cod = CodModel(counterCod = 1),
+                groupAddress = listOf(
+                    GroupAddress()
+                )
+            )
+        )
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.listLogisticPromo = emptyList()
+        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel()
+
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
+        val itemPosition = 0
+        val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
+            code = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "1",
+            isLeasingProduct = true,
+            shopShipmentList = listOf(),
+            selectedShipmentDetailData = ShipmentDetailData(
+                shipmentCartData = ShipmentCartData(
+                    originDistrictId = "1",
+                    originPostalCode = "1",
+                    originLatitude = "1",
+                    originLongitude = "1",
+                    weight = 1.0,
+                    weightActual = 1.0
+                )
+            ),
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "1"))
+        )
+        presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInByDropOff, true)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates return invalid promo THEN should render failed`() {
+        // Given
+        presenter.initializePresenterData(
+            CartShipmentAddressFormData(
+                cod = CodModel(counterCod = 1),
+                groupAddress = listOf(
+                    GroupAddress()
+                )
+            )
+        )
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        val listLogisticPromo = shippingRecommendationData.listLogisticPromo
+        shippingRecommendationData.listLogisticPromo = listLogisticPromo.map { it.copy(disabled = true) }
+        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel()
+
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
+        val itemPosition = 0
+        val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
+            code = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "1",
+            isLeasingProduct = true,
+            shopShipmentList = listOf(),
+            selectedShipmentDetailData = ShipmentDetailData(
+                shipmentCartData = ShipmentCartData(
+                    originDistrictId = "1",
+                    originPostalCode = "1",
+                    originLatitude = "1",
+                    originLongitude = "1",
+                    weight = 1.0,
+                    weightActual = 1.0
+                )
+            ),
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "1"))
+        )
+        presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        presenter.processBoPromoCourierRecommendationNew(
+            listOf(
+                Triple(
+                    itemPosition,
+                    voucherOrdersItemUiModel,
+                    shipmentCartItemModel
+                )
+            )
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInByDropOff, true)
         }
     }
 
