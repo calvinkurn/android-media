@@ -4,8 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.databinding.BottomSheetHeaderNewBinding
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
@@ -43,6 +46,9 @@ class BottomSheetHeader : ConstraintLayout {
         binding.iconNotifRight.setOnClickListener {
             mListener?.onIconClicked(this)
         }
+        binding.iconNotifRight.addImpressionListener(ImpressHolder()){
+            if (binding.iconNotifRight.isVisible) mListener?.impressIcon(this)
+        }
     }
 
     fun setTitle(title: String) {
@@ -78,8 +84,6 @@ class BottomSheetHeader : ConstraintLayout {
             NotificationUnify.COUNTER_TYPE,
             NotificationUnify.COLOR_PRIMARY,
         )
-
-        if (text.isNotBlank()) mListener?.impressIcon(this)
     }
 
     fun setListener(listener: Listener?) {
