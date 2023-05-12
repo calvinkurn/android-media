@@ -87,4 +87,3 @@ abstract class DigitalPDPBindModule {
     @DigitalPDPScope
     abstract fun bindRechargeCheckBalanceRepository(repo: RechargeCheckBalanceRepositoryImpl): RechargeCheckBalanceRepository
 }
-

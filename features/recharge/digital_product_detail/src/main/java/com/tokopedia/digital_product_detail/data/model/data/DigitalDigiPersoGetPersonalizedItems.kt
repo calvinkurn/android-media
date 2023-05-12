@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName
 
 data class DigitalDigiPersoGetPersonalizedItem(
     @SerializedName("digiPersoGetPersonalizedItems")
-    val recommendationData: PersoRecommendationData
+    val digitalPersoData: DigitalPersoData
 )
 
-data class PersoRecommendationData(
+data class DigitalPersoData(
     @SerializedName("title")
     val title: String,
     @SerializedName("mediaURL")
     val mediaUrl: String,
     @SerializedName("items")
-    val items: List<PersoRecommendationItem>,
+    val items: List<DigitalPersoItem>,
     @SerializedName("textLink")
     val textLink: String,
     @SerializedName("webLink")
@@ -23,7 +23,7 @@ data class PersoRecommendationData(
     val appLink: String
 )
 
-data class PersoRecommendationItem(
+data class DigitalPersoItem(
     @SerializedName("id")
     val id: String,
     @SerializedName("title")
@@ -66,7 +66,6 @@ data class PersoRecommendationItem(
     val trackingData: TrackingData,
     @SerializedName("descriptions")
     val descriptions: List<String>,
-    val trackingData: TrackingData,
     @SerializedName("campaignLabelText")
     val campaignLabelText: String,
     @SerializedName("campaignLabelTextColor")
@@ -119,4 +118,3 @@ data class TrackingData(
     @SerializedName("productID")
     val productId: String
 )
-

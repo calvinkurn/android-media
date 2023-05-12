@@ -8,6 +8,7 @@ import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalance
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 
@@ -31,7 +32,7 @@ object DigitalPDPWidgetMapper {
         }
     }
 
-    fun mapCheckBalanceOTPToWidgetModels(checkBalanceOTPModel: DigitalCheckBalanceModel): RechargeCheckBalanceOTPModel {
+    fun mapCheckBalanceOTPToWidgetModels(checkBalanceOTPModel: DigitalCheckBalanceOTPModel): RechargeCheckBalanceOTPModel {
         return RechargeCheckBalanceOTPModel(
             subtitle = checkBalanceOTPModel.subtitle,
             label = checkBalanceOTPModel.label,
@@ -70,3 +71,4 @@ object DigitalPDPWidgetMapper {
         )
     }
 }
+

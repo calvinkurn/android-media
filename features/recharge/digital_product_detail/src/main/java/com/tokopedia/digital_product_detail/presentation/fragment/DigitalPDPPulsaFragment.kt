@@ -60,6 +60,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.T
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -622,6 +623,30 @@ class DigitalPDPPulsaFragment :
 
     private fun onFailedGetRecommendations() {
         binding?.rechargePdpPulsaRecommendationWidget?.hide()
+    }
+
+    private fun onSuccessGetCheckBalanceOTP(checkBalanceData: DigitalCheckBalanceOTPModel) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            renderCheckBalanceOTPWidget(
+                DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(
+                    checkBalanceData
+                )
+            )
+            showCheckBalanceOtpWidget()
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onFailedGetCheckBalanceOTP(throwable: Throwable) {
+        // TODO: [Misael] show local load error
+        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun onLoadingGetCheckBalanceOTP() {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidget()
+        }
     }
 
     private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
@@ -1527,6 +1552,14 @@ class DigitalPDPPulsaFragment :
             loyaltyStatus,
             userSession.userId
         )
+    }
+    //endregion
+
+    //region ClientNumberCheckBalanceListener
+    override fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
+        bottomSheet.setBottomSheetModel(model)
+        bottomSheet.show(childFragmentManager)
     }
     //endregion
 

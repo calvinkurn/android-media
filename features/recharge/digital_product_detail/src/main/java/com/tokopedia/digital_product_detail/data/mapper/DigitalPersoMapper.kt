@@ -5,6 +5,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoProduct
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoWidget
 import com.tokopedia.digital_product_detail.data.model.data.RechargeSaveTelcoUserBalanceAccessToken
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPBottomSheetModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceProductModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceWidgetModel

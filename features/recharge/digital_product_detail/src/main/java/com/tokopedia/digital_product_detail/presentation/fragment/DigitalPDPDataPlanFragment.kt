@@ -1960,6 +1960,14 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberCheckBalanceListener
+    override fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
+        bottomSheet.setBottomSheetModel(model)
+        bottomSheet.show(childFragmentManager)
+    }
+    //endregion
+
+    //region ClientNumberCheckBalanceListener
     override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
         digitalPDPAnalytics.clickCheckBalanceWidget(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
