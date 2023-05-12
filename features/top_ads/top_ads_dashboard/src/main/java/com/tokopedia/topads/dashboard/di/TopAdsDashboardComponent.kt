@@ -2,9 +2,8 @@ package com.tokopedia.topads.dashboard.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFragment
-import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment
-import com.tokopedia.topads.dashboard.recommendation.fragment.SaranTabsFragment
-import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.SaranTabsFragment
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity

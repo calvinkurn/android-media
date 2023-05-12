@@ -59,7 +59,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragme
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
-import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet

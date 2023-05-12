@@ -1,0 +1,34 @@
+package com.tokopedia.topads.dashboard.recommendation.views.activities
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.GroupDetailFragment
+
+class GroupDetailActivity : BaseSimpleActivity() {
+
+    private lateinit var headerToolbar: HeaderUnify
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        headerToolbar = findViewById(R.id.headerGroupDetailsActivity)
+
+        headerToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    override fun getNewFragment(): Fragment = GroupDetailFragment.createInstance()
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_topads_group_details
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.fragment_container
+    }
+
+}

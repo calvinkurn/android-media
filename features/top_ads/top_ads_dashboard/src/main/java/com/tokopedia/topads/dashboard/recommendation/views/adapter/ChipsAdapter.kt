@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.recommendation.adapter
+package com.tokopedia.topads.dashboard.recommendation.views.adapter
 
 import android.view.LayoutInflater
 import android.view.View

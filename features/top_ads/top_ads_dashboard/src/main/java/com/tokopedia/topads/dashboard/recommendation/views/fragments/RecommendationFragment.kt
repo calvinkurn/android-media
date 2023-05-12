@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.recommendation.fragment
+package com.tokopedia.topads.dashboard.recommendation.views.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -23,7 +23,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.adapter.EmptyStatePagerAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState

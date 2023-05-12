@@ -1,5 +1,6 @@
-package com.tokopedia.topads.dashboard.recommendation.fragment
+package com.tokopedia.topads.dashboard.recommendation.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -16,17 +17,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.adapter.ChipsAdapter
-import com.tokopedia.topads.dashboard.recommendation.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState.*
-import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment.Companion.TYPE_PRODUCT
-import com.tokopedia.topads.dashboard.recommendation.fragment.RecommendationFragment.Companion.TYPE_SHOP
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_SHOP
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
+import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
@@ -34,7 +36,9 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
 
     private var chipsRecyclerView: RecyclerView? = null
     private var groupCardRecyclerView: RecyclerView? = null
-    private val insightListAdapter by lazy { InsightListAdapter() }
+    private val insightListAdapter by lazy { InsightListAdapter(){
+        this.startActivity(Intent(context, GroupDetailActivity::class.java))
+    } }
     private var chipsAdapter: ChipsAdapter? = null
     private val loadingModel = LoadingUiModel()
 
@@ -161,8 +165,6 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         viewModel.headlineInsights.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    it.data.adGroups.forEach {
-                    }
                     onSuccessProductInsight(it, TYPE_SHOP)
                 }
                 is Fail -> {
