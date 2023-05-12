@@ -82,12 +82,14 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -95,6 +97,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -127,6 +130,7 @@ class DigitalPDPDataPlanFragment :
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
+    ClientNumberCheckBalanceListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener,
     DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
@@ -863,6 +867,7 @@ class DigitalPDPDataPlanFragment :
             )
             setInputFieldType(InputFieldType.Telco)
             setListener(
+                this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment
@@ -1611,6 +1616,14 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
         RouteManager.route(context, applink)
+    }
+    //endregion
+
+    //region ClientNumberCheckBalanceListener
+    override fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
+        bottomSheet.setBottomSheetModel(model)
+        bottomSheet.show(childFragmentManager)
     }
     //endregion
 

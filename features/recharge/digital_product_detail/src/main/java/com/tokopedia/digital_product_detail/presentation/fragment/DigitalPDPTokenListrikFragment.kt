@@ -844,7 +844,8 @@ class DigitalPDPTokenListrikFragment :
             setListener(
                 this@DigitalPDPTokenListrikFragment,
                 this@DigitalPDPTokenListrikFragment,
-                this@DigitalPDPTokenListrikFragment
+                this@DigitalPDPTokenListrikFragment,
+                null
             )
         }
     }

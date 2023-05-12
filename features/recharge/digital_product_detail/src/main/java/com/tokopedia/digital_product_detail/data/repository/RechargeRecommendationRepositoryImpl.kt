@@ -26,6 +26,6 @@ class RechargeRecommendationRepositoryImpl @Inject constructor(
             createParams(clientNumbers, dgCategoryIds, dgOperatorIds, channelName)
         }.executeOnBackground()
 
-        return@withContext mapper.mapDigiPersoToRecommendation(data.recommendationData, isBigRecommendation)
+        return@withContext mapper.mapDigiPersoToRecommendation(data.digitalPersoData, isBigRecommendation)
     }
 }
