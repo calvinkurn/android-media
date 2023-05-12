@@ -69,4 +69,8 @@
     </string-array>
     <string name="up_profile_review_onboarding_see_my_review">Lihat Ulasan Saya</string>
     <string name="up_profile_review_onboarding_hide_review">Tidak mau menampilkan ulasan di profil?\nSembunyikan ulasan di Pengaturan Profil</string>
+    <string name="up_profile_self_review_hidden_title">Ulasan kamu disembunyikan</string>
+    <string name="up_profile_self_review_hidden_desc">Mau tampilkan ulasannya di sini? Ubah aja \ndi Pengaturan Profil</string>
+    <string name="up_profile_other_review_hidden_title">Ulasan disembunyikan</string>
+    <string name="up_profile_other_review_hidden_desc">Kamu bisa lihat ulasannya kalau %s nanti \nganti pengaturan profilnya, ya.</string>
 </resources>

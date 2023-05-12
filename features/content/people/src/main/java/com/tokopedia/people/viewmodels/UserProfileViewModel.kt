@@ -55,6 +55,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val displayName: String
         get() = _profileInfo.value.name
 
+    val firstName: String
+        get() = _profileInfo.value.name.trim().split(" ")[0]
+
     val profileUserID: String
         get() = _profileInfo.value.userID
 
