@@ -71,7 +71,7 @@
                 app:typographyWeight="bold"
                 tools:text="Memuaskan" />
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
