@@ -3789,17 +3789,17 @@ class ShipmentPresenter @Inject constructor(
         spId: Int,
         shippingDurationUiModel: ShippingDurationUiModel
     ): Int {
-        val currentServiceId =
-            shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.serviceId
-        return if (currentServiceId != null &&
-            currentServiceId > 0 &&
-            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
-            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
-        ) {
-            shippingDurationUiModel.serviceData.selectedShipperProductId
-        } else {
-            spId
-        }
+//        val currentServiceId =
+//            shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.serviceId
+//        return if (currentServiceId != null &&
+//            currentServiceId > 0 &&
+//            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
+//            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
+//        ) {
+//            shippingDurationUiModel.serviceData.selectedShipperProductId
+//        } else {
+        return spId
+//        }
     }
 
     private fun generateCourierItemData(
