@@ -1,8 +1,8 @@
 package com.tokopedia.home_component.viewholders
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.view.marginLeft
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
@@ -22,13 +22,15 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ProductHighlightComponentViewHolder(
-        val view: View,
-        val listener: HomeComponentListener?,
-        private val productHighlightListener: ProductHighlightListener?,
-        private val cardInteraction: Boolean = false
-): AbstractViewHolder<ProductHighlightDataModel>(view) {
+    val view: View,
+    val listener: HomeComponentListener?,
+    private val productHighlightListener: ProductHighlightListener?,
+    private val cardInteraction: Boolean = false
+) : AbstractViewHolder<ProductHighlightDataModel>(view) {
     private var binding: LayoutProductHighlightBinding? by viewBinding()
     private var isCacheData = false
     private var masterProductCardListView: ProductCardListView? = null
@@ -36,7 +38,6 @@ class ProductHighlightComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
-        private const val HEX_WHITE = "#FFFFFF"
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
@@ -78,18 +79,17 @@ class ProductHighlightComponentViewHolder(
         binding?.homeComponentHeaderView?.setChannel(
             element.channelModel,
             object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                }
-
                 override fun onChannelExpired(channelModel: ChannelModel) {
                     listener?.onChannelExpired(channelModel, channelModel.verticalPosition, element)
                 }
             },
             colorMode = element.channelModel.channelBanner.gradientColor.getColorMode()
         )
-        val topPadding = if(HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+        val topPadding = if (!HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
             view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_top_padding)
-        } else 0
+        } else {
+            0
+        }
         binding?.masterProductCardDeals?.setMargin(
             view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_horizontal_padding),
             topPadding,
@@ -98,9 +98,15 @@ class ProductHighlightComponentViewHolder(
         )
     }
 
+    @SuppressLint("ResourceType")
     private fun ArrayList<String>.getColorMode(): Int {
-        return if(isEmpty() || get(0) == HEX_WHITE) DynamicChannelHeaderView.COLOR_MODE_NORMAL
-        else DynamicChannelHeaderView.COLOR_MODE_INVERTED
+        val hexWhite = itemView.context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        // check if get empty or all white gradient color, then use mode normal
+        return if (isEmpty() || get(0).lowercase(Locale.getDefault()).take(7) == hexWhite.lowercase().take(7)) {
+            DynamicChannelHeaderView.COLOR_MODE_NORMAL
+        } else {
+            DynamicChannelHeaderView.COLOR_MODE_INVERTED
+        }
     }
 
     private fun setDealsProductGrid(channel: ChannelModel) {
@@ -122,5 +128,4 @@ class ProductHighlightComponentViewHolder(
             productHighlightListener?.onProductCardClicked(channel, grid, adapterPosition, grid.applink)
         }
     }
-
 }

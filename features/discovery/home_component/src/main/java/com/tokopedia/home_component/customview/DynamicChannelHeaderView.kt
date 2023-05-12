@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.customview
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.text.TextUtils
@@ -14,8 +13,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
@@ -25,7 +22,6 @@ import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -38,8 +34,8 @@ class DynamicChannelHeaderView : FrameLayout {
     private var channelSubtitle: TextView? = null
     private var countDownView: TimerUnifySingle? = null
 
-    private var headerColorMode: Int? = null
-    private var headerCtaMode: Int? = null
+    private var headerColorMode: Int = COLOR_MODE_NORMAL
+    private var headerCtaMode: Int = CTA_MODE_SEE_ALL
     private var listener: HeaderListener? = null
 
     private val isUsingHeaderRevamp = HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()
@@ -77,11 +73,11 @@ class DynamicChannelHeaderView : FrameLayout {
         ctaMode: Int? = null
     ) {
         this.listener = listener
-        if (this.headerColorMode == null) {
-            this.headerColorMode = colorMode ?: COLOR_MODE_NORMAL
+        colorMode?.let {
+            this.headerColorMode = it
         }
-        if (this.headerCtaMode == null) {
-            this.headerCtaMode = ctaMode ?: CTA_MODE_SEE_ALL
+        ctaMode?.let {
+            this.headerCtaMode = it
         }
         handleHeaderComponent(channelModel)
     }
@@ -235,11 +231,6 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    fun hideTitleAndSubtitle() {
-        channelTitle?.invisible()
-        channelSubtitle?.invisible()
-    }
-
     private fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
         return channel.channelHeader.getLink().isNotEmpty()
     }
@@ -252,26 +243,9 @@ class DynamicChannelHeaderView : FrameLayout {
         return viewStub?.parent == null
     }
 
-    private fun Int.staticIfDarkMode(context: Context?): Int {
-        return if (context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950) else this
-    }
-
-    private fun adjustTitleVerticalPosition(channel: ChannelModel) {
-        if (hasExpiredTime(channel) || channel.channelHeader.subtitle.isNotEmpty()) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelHeaderContainer)
-            constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
-            constraintSet.applyTo(channelHeaderContainer)
-        } else {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelHeaderContainer)
-            constraintSet.connect(R.id.channel_title, ConstraintSet.BOTTOM, channelHeaderContainer.id, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(channelHeaderContainer)
-        }
-    }
-
     companion object {
         private const val TITLE_TOP_PADDING = 15f
+
         const val COLOR_MODE_NORMAL = 0
         const val COLOR_MODE_INVERTED = 1
 
