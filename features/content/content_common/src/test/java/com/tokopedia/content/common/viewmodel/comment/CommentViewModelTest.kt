@@ -299,8 +299,8 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `send reply in non-login state, open login` () {
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+    fun `send reply in non-login state, open login`() {
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(false)
         }
         robot.use {
@@ -312,8 +312,8 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `send reply in login state, with link non-tokopedia link would return error` () {
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+    fun `send reply in login state, with link non-tokopedia link would return error`() {
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
@@ -328,7 +328,7 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `send reply in login state, with link tokopedia link would return success - parent` () {
+    fun `send reply in login state, with link tokopedia link would return success - parent`() {
         val item1 = helper.buildItemComment(id = "1")
         val item2 = helper.buildItemComment(id = "2")
         val item3 = helper.buildItemComment(id = "3")
@@ -339,7 +339,7 @@ class CommentViewModelTest {
         )
         coEvery { mockRepo.replyComment(any(), any(), any(), any()) } returns item4
 
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
@@ -357,7 +357,7 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `send reply in login state, with link tokopedia link would return success - child` () {
+    fun `send reply in login state, with link tokopedia link would return success - child`() {
         val item1 = helper.buildItemComment(id = "1")
         val item2 = helper.buildItemComment(id = "2")
         val item3 = helper.buildItemComment(id = "3")
@@ -369,7 +369,7 @@ class CommentViewModelTest {
         coEvery { mockRepo.getComments(any(), any(), any()) } returns comments
         coEvery { mockRepo.replyComment(any(), any(), any(), any()) } returns item4
 
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
@@ -377,8 +377,9 @@ class CommentViewModelTest {
                 submitAction(CommentAction.ReplyComment("www.tokopedia.com beli disni aj", CommentType.Child("2")))
             }
             event.first().assertEqualTo(CommentEvent.HideKeyboard)
-            val index = comments.list.indexOf(item4) + 1 //under parent
-            event.last().assertEqualTo(CommentEvent.ReplySuccess(index)) //child
+            val index = comments.list
+                .indexOfFirst { item -> item is CommentUiModel.Item && item.id == item4.commentType.parentId } + 1 // under parent
+            event.last().assertEqualTo(CommentEvent.ReplySuccess(index)) // child
 
             val comment = it.recordComments {
                 submitAction(CommentAction.ReplyComment("www.tokopedia.com beli disni aj", CommentType.Parent))
@@ -388,9 +389,9 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `if commenter type from gql return shop, then its creator` () {
+    fun `if commenter type from gql return shop, then its creator`() {
         coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(commenterType = UserType.Shop)
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
@@ -399,9 +400,9 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `if commenter type from gql return not shop, then it is not creator` () {
+    fun `if commenter type from gql return not shop, then it is not creator`() {
         coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(commenterType = UserType.People)
-        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo){
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
