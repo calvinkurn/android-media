@@ -412,7 +412,8 @@ object DynamicProductDetailMapper {
             defaultChild = networkData.defaultChild,
             variants = networkData.variants,
             children = networkData.children,
-            maxFinalPrice = networkData.maxFinalPrice
+            maxFinalPrice = networkData.maxFinalPrice,
+            postAtcLayout = networkData.postAtcLayout
         )
     }
 

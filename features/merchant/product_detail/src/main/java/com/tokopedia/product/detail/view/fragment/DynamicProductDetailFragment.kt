@@ -76,7 +76,6 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
@@ -148,7 +147,6 @@ import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
-import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -243,7 +241,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
@@ -1733,18 +1730,6 @@ open class DynamicProductDetailFragment :
                 componentTrackDataModel
             )
         }
-    }
-
-    override fun onThreeDotsClick(
-        recomItem: RecommendationItem,
-        adapterPosition: Int,
-        carouselPosition: Int
-    ) {
-        recomWishlistItem = recomItem
-        showProductCardOptions(
-            this,
-            recomItem.createProductCardOptionsModel(adapterPosition)
-        )
     }
 
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
@@ -3431,7 +3416,15 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        goToAtcVariant()
+        if (variantOptions.isEmpty()) { // lihat semua label clicked
+            goToAtcVariant()
+        } else { // chip variant clicked
+            val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+            singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
+            val child = viewModel.getChildOfVariantSelected(singleVariant)
+            productId = child?.productId
+            goToAtcVariant()
+        }
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
@@ -4435,7 +4428,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }

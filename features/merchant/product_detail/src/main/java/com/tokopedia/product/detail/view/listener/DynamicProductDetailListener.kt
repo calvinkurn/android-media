@@ -234,7 +234,6 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
-    fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(
