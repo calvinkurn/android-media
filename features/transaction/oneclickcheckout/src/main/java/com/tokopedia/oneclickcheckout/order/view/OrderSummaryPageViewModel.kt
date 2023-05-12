@@ -578,14 +578,13 @@ class OrderSummaryPageViewModel @Inject constructor(
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
-            clearBboIfExist().also { isBoExist ->
-                orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
-                sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
-                if (it.serviceErrorMessage.isNullOrEmpty()) {
-                    validateUsePromo(isBoExist)
-                } else {
-                    calculateTotal()
-                }
+            val isBoExist = clearBboIfExist()
+            orderShipment.value = it
+            sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
+            if (it.serviceErrorMessage.isNullOrEmpty()) {
+                validateUsePromo(isBoExist)
+            } else {
+                calculateTotal()
             }
         }
     }

@@ -899,6 +899,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 shippingRecommendationData = shippingRecommendationData,
                 logisticPromoTickerMessage = null,
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = null,
                 logisticPromoShipping = null,
                 isApplyLogisticPromo = false,
