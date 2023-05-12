@@ -84,7 +84,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -167,8 +166,6 @@ class FeedFragment :
             feedPostViewModel.processSuspendedBuyProduct()
         }
 
-    private var taggedProductBottomSheet: FeedTaggedProductBottomSheet? = null
-
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -230,10 +227,7 @@ class FeedFragment :
 
     override fun onDestroyView() {
         _binding = null
-        if (taggedProductBottomSheet != null) {
-            taggedProductBottomSheet?.dismiss()
-            taggedProductBottomSheet = null
-        }
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
@@ -866,15 +860,17 @@ class FeedFragment :
 
     private fun observeAddProductToCart() {
         feedPostViewModel.observeAddProductToCart.observe(viewLifecycleOwner) {
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (it) {
-                is Success -> taggedProductBottomSheet?.doShowToaster(
+                is Success -> productBottomSheet?.doShowToaster(
                     message = getString(feedR.string.feeds_add_to_cart_success_text),
                     actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
                     actionClickListener = {
                         goToCartPage()
                     }
                 )
-                is Fail -> taggedProductBottomSheet?.doShowToaster(
+                is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
                     type = Toaster.TYPE_ERROR
                 )
@@ -884,9 +880,11 @@ class FeedFragment :
 
     private fun observeBuyProduct() {
         feedPostViewModel.observeBuyProduct.observe(viewLifecycleOwner) {
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (it) {
                 is Success -> goToCartPage()
-                is Fail -> taggedProductBottomSheet?.doShowToaster(
+                is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
                     type = Toaster.TYPE_ERROR
                 )
@@ -896,14 +894,16 @@ class FeedFragment :
 
     private fun observeMerchantVoucher() {
         feedPostViewModel.merchantVoucherLiveData.observe(viewLifecycleOwner) { result ->
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (result) {
                 is Success -> {
-                    taggedProductBottomSheet?.showMerchantVoucherWidget(
+                    productBottomSheet?.showMerchantVoucherWidget(
                         result.data,
                         feedMvcAnalytics
                     )
                 }
-                is Fail -> taggedProductBottomSheet?.hideMerchantVoucherWidget()
+                is Fail -> productBottomSheet?.hideMerchantVoucherWidget()
             }
         }
     }
@@ -1147,8 +1147,9 @@ class FeedFragment :
     ) {
         if (products.isEmpty()) return
 
-        if (taggedProductBottomSheet == null) taggedProductBottomSheet = FeedTaggedProductBottomSheet()
-        taggedProductBottomSheet?.setCustomListener(this)
+        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
+            setCustomListener(this@FeedFragment)
+        }
 
         fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
             feedMvcAnalytics.trackerData = data
@@ -1158,7 +1159,7 @@ class FeedFragment :
                 products
             )
 
-            taggedProductBottomSheet?.setOnDismissListener {
+            productBottomSheet.setOnDismissListener {
                 feedAnalytics.eventClickCloseProductListBottomSheet(data)
             }
         }
@@ -1166,7 +1167,7 @@ class FeedFragment :
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
         val mappedProducts = products.map(MapperProductsToXProducts::transform)
-        taggedProductBottomSheet?.show(
+        productBottomSheet.show(
             taggedProducts = mappedProducts,
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
