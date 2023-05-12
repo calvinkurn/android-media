@@ -218,9 +218,11 @@ class ProductHighlightItem(
         } else if (productHighlightData.typeProductHighlightComponentCard == DOUBLESINGLEEMPTY || productHighlightData.typeProductHighlightComponentCard == TRIPLESINGLEEMPTY) {
             emptySingleBinding = EmptyStateProductHighlightSingleBinding.inflate(LayoutInflater.from(context))
             productHighlightView = emptySingleBinding?.root as CardUnify2
+            emptySingleBinding?.productHighlightCardImageContainer?.cardElevation = 0F
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLEDOUBLEEMPTY) {
             emptyDoubleBinding = EmptyStateProductHighlightDoubleBinding.inflate(LayoutInflater.from(context))
             productHighlightView = emptyDoubleBinding?.root as CardUnify2
+            emptyDoubleBinding?.productHighlightCardImageContainer?.cardElevation = 0F
         } else {
             multipleBinding = DiscoItemMultiProductHighlightBinding.inflate(LayoutInflater.from(context))
             productHighlightView = multipleBinding?.root as ConstraintLayout
