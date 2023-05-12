@@ -15,6 +15,7 @@ import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.parcel.Parcelize
+import java.util.ArrayList
 
 /**
  *
@@ -63,7 +64,7 @@ data class BaseNotificationModel(
     var appLink: String? = null,
 
     @ColumnInfo(name = "actionBtn")
-    var actionButton: List<ActionButton> = ArrayList(),
+    var actionButton: ArrayList<ActionButton> = ArrayList(),
 
     @ColumnInfo(name = "customValues")
     var customValues: String? = null,
@@ -75,7 +76,7 @@ data class BaseNotificationModel(
     var channelName: String? = null,
 
     @ColumnInfo(name = "persistButton")
-    var persistentButtonList: List<PersistentButton>? = null,
+    var persistentButtonList: ArrayList<PersistentButton>? = null,
 
     @ColumnInfo(name = "videoPush")
     var videoPushModel: String? = null,
@@ -108,13 +109,13 @@ data class BaseNotificationModel(
     var isUpdateExisting: Boolean = false,
 
     @ColumnInfo(name = "carousel")
-    var carouselList: List<Carousel> = ArrayList(),
+    var carouselList: ArrayList<Carousel> = ArrayList(),
 
     @ColumnInfo(name = "grid")
-    var gridList: List<Grid> = ArrayList(),
+    var gridList: ArrayList<Grid> = ArrayList(),
 
     @ColumnInfo(name = "productInfo")
-    var productInfoList: List<ProductInfo> = ArrayList(),
+    var productInfoList: ArrayList<ProductInfo> = ArrayList(),
 
     @ColumnInfo(name = "parentId")
     var parentId: Long = 0,

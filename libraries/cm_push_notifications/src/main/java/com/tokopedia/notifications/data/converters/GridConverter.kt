@@ -4,19 +4,20 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.notifications.model.Grid
+import java.util.ArrayList
 
 class GridConverter {
 
     @TypeConverter
-    fun toGrid(value: String?): List<Grid>? {
+    fun toGrid(value: String?): ArrayList<Grid>? {
         if (value == null)
             return null
-        val listType = object : TypeToken<List<Grid>>() {}.type
-        return Gson().fromJson<List<Grid>>(value, listType)
+        val listType = object : TypeToken<ArrayList<Grid>>() {}.type
+        return Gson().fromJson<ArrayList<Grid>>(value, listType)
     }
 
     @TypeConverter
-    fun toJson(list: List<Grid>?): String? {
+    fun toJson(list: ArrayList<Grid>?): String? {
         if (list == null)
             return null
         return Gson().toJson(list)
