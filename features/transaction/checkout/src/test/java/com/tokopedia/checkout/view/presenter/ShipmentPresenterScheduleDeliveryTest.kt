@@ -83,7 +83,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -154,6 +154,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
             cartStringGroup = "1",
             ratesValidationFlow = true
         )
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -169,7 +170,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -239,7 +240,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -330,7 +331,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -420,7 +421,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -488,7 +489,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -555,7 +556,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -622,7 +623,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -718,7 +719,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
         )
 
         // Then
@@ -800,7 +801,89 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, "", emptyList()
+        )
+
+        // Then
+        coVerify(inverse = true) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        verify { view.renderCourierStateFailed(any(), any(), any()) }
+    }
+
+    @Test
+    fun `WHEN get shipping rates schedule got error courier THEN should not hit validate use`() {
+        // Given
+        presenter.isBoUnstackEnabled = true
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+            ErrorProductData().apply {
+                errorMessage = "error"
+            }
+
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "1",
+            cartItemModels = listOf(
+                CartItemModel(cartStringGroup = "1")
+            ),
+            ratesValidationFlow = true
+        )
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
+        presenter.recipientAddressModel = RecipientAddressModel()
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, "", emptyList()
         )
 
         // Then

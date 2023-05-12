@@ -2663,7 +2663,6 @@ class ShipmentPresenter @Inject constructor(
         cartString: String?,
         isTradeInDropOff: Boolean,
         recipientAddressModel: RecipientAddressModel?,
-        skipMvc: Boolean,
         cartStringGroup: String,
         groupProducts: List<GroupProduct>
     ) {
@@ -2689,9 +2688,7 @@ class ShipmentPresenter @Inject constructor(
             .cartData(cartDataForRates)
             .warehouseId(shipmentCartItemModel.fulfillmentId.toString())
             .mvc("")
-        if (!skipMvc) {
-            ratesParamBuilder.mvc(mvc)
-        }
+        ratesParamBuilder.mvc(mvc)
         val param = ratesParamBuilder.build()
         if (isTradeInDropOff) {
             viewModelScope.launch(dispatchers.immediate) {

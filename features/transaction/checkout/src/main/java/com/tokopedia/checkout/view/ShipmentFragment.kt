@@ -2905,11 +2905,16 @@ class ShipmentFragment :
         if (shopShipmentList.isNotEmpty()) {
             shipmentDetailData.isTradein = isTradeIn
             shipmentPresenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData,
-                shipmentCartItemModel, shopShipmentList,
+                shipperId,
+                spId,
+                itemPosition,
+                shipmentDetailData,
+                shipmentCartItemModel,
+                shopShipmentList,
                 shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
-                shipmentCartItemModel.cartStringGroup, isTradeInDropOff,
-                shipmentAdapter.addressShipmentData, false,
+                shipmentCartItemModel.cartStringGroup,
+                isTradeInDropOff,
+                shipmentAdapter.addressShipmentData,
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
                 if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
                     shipmentPresenter.getGroupProductsForRatesRequest(
