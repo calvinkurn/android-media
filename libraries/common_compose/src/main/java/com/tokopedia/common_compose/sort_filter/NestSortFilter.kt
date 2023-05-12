@@ -167,7 +167,7 @@ enum class Size(val prefixHeight: Dp) { DEFAULT(32.dp), LARGE(48.dp) }
 @Preview(name = "Sort Filter")
 @Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun NestSortFilterPreview() {
+private fun NestSortFilterPreview() {
     var items by remember {
         mutableStateOf(
             listOf(

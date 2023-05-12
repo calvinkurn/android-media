@@ -90,12 +90,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE ) {
-            viewModel.getShopLocationList(userSession?.shopId.toLong())
+            viewModel.getShopLocationList(userSession.shopId.toLong())
         }
     }
 
     private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession?.shopId.toLong())
+        viewModel.getWhitelistData(userSession.shopId.toLong())
     }
 
     private fun initViews() {

@@ -13,6 +13,8 @@ import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -76,7 +78,7 @@ abstract class OtherMenuViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var mViewModel: OtherMenuViewModel
 

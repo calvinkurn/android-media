@@ -101,3 +101,12 @@ fun UGCOnboardingUiEvent.assertEvent(event: UGCOnboardingUiEvent) {
         .assertThat(this)
         .isInstanceOf(event::class.java)
 }
+inline fun <reified T> Any.assertType(
+    whenType: (T) -> Unit
+) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(T::class.java)
+
+    whenType(this as T)
+}

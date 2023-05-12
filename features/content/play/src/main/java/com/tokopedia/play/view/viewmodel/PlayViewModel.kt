@@ -998,6 +998,7 @@ class PlayViewModel @AssistedInject constructor(
             is PiPState.Requesting -> {
                 _observableEventPiPState.value = Event(PiPState.InPiP(state.pipMode))
             }
+            else -> {}
         }
     }
 
@@ -1097,6 +1098,14 @@ class PlayViewModel @AssistedInject constructor(
             }
             EmptyPageWidget -> handleEmptyExplore()
             is SelectReason -> handleSelectedReason(action.reasonId)
+            is CommentVisibilityAction -> {
+                _isBottomSheetsShown.update { action.isOpen }
+                viewModelScope.launch {
+                    _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
+                }
+                if(!action.isOpen) return
+                updateCommentConfig()
+            }
         }
     }
 
@@ -1169,6 +1178,7 @@ class PlayViewModel @AssistedInject constructor(
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         updateCartCount()
+        updateCommentConfig()
 
         sendInitialLog()
     }
@@ -1310,7 +1320,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
-            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name)
+            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name, channelType)
 
             _tagItems.update {
                 tagItem
@@ -1405,6 +1415,7 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
+            else -> {}
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -1835,7 +1846,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is ProductSection -> {
-                val mappedData = playSocketToModelMapper.mapProductSection(result)
+                val mappedData = playSocketToModelMapper.mapProductSection(result, channelType)
                 val updatedSections = repo.updateCampaignReminderStatus(
                     mappedData.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 )
@@ -2968,6 +2979,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun updateCommentConfig() {
+        if (!channelType.isVod) return
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getCountComment(channelId)
+            _channelDetail.update { it.copy(commentConfig = response) }
+        }){}
+    }
     private fun handleEmptyExplore() {
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
         val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)

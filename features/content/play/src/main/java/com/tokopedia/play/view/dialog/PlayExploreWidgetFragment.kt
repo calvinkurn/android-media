@@ -386,6 +386,9 @@ class PlayExploreWidgetFragment @Inject constructor(
                     }
                 )
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

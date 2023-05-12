@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -47,7 +47,7 @@ class CouponDetailViewModelTest {
     @Test
     fun onSwipeComplete() {
 
-        runBlockingTest {
+        runTest {
             val code = "realCode"
             val texts = "text"
             viewModel.data = mockk {
@@ -71,7 +71,7 @@ class CouponDetailViewModelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `onSwipeComplete pin not require success`() {
-        runBlockingTest {
+        runTest {
             val uniqueCode = "realCode"
             val texts = "text"
             viewModel.data = mockk {
@@ -113,7 +113,7 @@ class CouponDetailViewModelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `onSwipeComplete pin not require error`() {
-        runBlockingTest {
+        runTest {
             val uniqueCode = "realCode"
             val texts = "text"
             viewModel.data = mockk {
@@ -154,7 +154,7 @@ class CouponDetailViewModelTest {
 
     @Test
     fun `rehit coupon which conyain swipe data`() {
-        runBlockingTest {
+        runTest {
             val swipeObserver = mockk<Observer<CouponSwipeDetail>>() {
                 every { onChanged(any()) } just Runs
             }
@@ -192,7 +192,7 @@ class CouponDetailViewModelTest {
 
     @Test
     fun `rehit coupon with swipe not available case 1`() {
-        runBlockingTest {
+        runTest {
             val swipeObserver = mockk<Observer<CouponSwipeDetail>>() {
                 every { onChanged(any()) } just Runs
             }
@@ -225,7 +225,7 @@ class CouponDetailViewModelTest {
 
     @Test
     fun `rehit coupon with swipe not available case 2`() {
-        runBlockingTest {
+        runTest {
             val swipeObserver = mockk<Observer<CouponSwipeDetail>>() {
                 every { onChanged(any()) } just Runs
             }
@@ -255,7 +255,7 @@ class CouponDetailViewModelTest {
     }
     @Test
     fun `rehit coupon with swipe not available case 3`() {
-        runBlockingTest {
+        runTest {
             val swipeObserver = mockk<Observer<CouponSwipeDetail>>() {
                 every { onChanged(any()) } just Runs
             }
@@ -289,7 +289,7 @@ class CouponDetailViewModelTest {
 
     @Test
     fun reFetchRealCode() {
-        runBlockingTest {
+        runTest {
             val refetchObserver = mockk<Observer<Resources<String>>>() {
                 every { onChanged(any()) } just Runs
             }
@@ -317,7 +317,7 @@ class CouponDetailViewModelTest {
     @Test
     fun redeemCoupon() {
 
-        runBlockingTest {
+        runTest {
             val redeemCouponObserver = mockk<Observer<Resources<String>>>()
             viewModel.onRedeemCoupon.observeForever(redeemCouponObserver)
             viewModel.redeemCoupon("code", "cta")
@@ -338,7 +338,7 @@ class CouponDetailViewModelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `redeem fail`(){
-        runBlockingTest {
+        runTest {
             val redeemCouponObserver = mockk<Observer<Resources<String>>>()
             viewModel.onRedeemCoupon.observeForever(redeemCouponObserver)
             viewModel.redeemCoupon("code", "cta")
@@ -355,7 +355,7 @@ class CouponDetailViewModelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `phone verification before coupon redeem`() {
-        runBlockingTest {
+        runTest {
             val userInfoObserver = mockk<Observer<PhoneVerificationResponse>>()
             coEvery { repository.getUserPhoneVerificationInfo() } returns mockk {
                 every {
