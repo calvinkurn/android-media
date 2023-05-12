@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.mapper
 
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -74,7 +75,7 @@ object PlayWidgetUiMock {
         totalView = PlayWidgetTotalView("33.1 rb", true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
-        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", "shop"),
+        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", PartnerType.valueOf("shop")),
         video = getVideoUiModel(channelType),
         hasAction = true,
         shouldShowPerformanceDashboard = false,

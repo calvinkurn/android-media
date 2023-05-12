@@ -187,7 +187,7 @@ object FeedPlayVideoTabMapper {
                         item.configurations.promoLabels.firstOrNull()?.text ?: ""
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString(), item.partner.type),
+                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString(), PartnerType.valueOf(item.partner.type)),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
                         item.is_live,

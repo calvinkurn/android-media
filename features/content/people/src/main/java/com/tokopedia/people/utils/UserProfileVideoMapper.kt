@@ -4,6 +4,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.PostPromoLabel
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
@@ -57,7 +58,7 @@ object UserProfileVideoMapper {
                 getPromoType(item.configurations.promoLabels).text,
             ),
             reminderType = getReminderType(item.configurations.reminder.isSet),
-            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name, item.partner.type),
+            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name, PartnerType.valueOf(item.partner.type)),
             video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
             channelType = channelType,
             hasGame = mapHasGame(item.configurations.promoLabels),

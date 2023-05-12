@@ -35,6 +35,7 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -1326,7 +1327,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         PlayWidgetReminderType.NotReminded,
-                        PlayWidgetPartnerUiModel("", "", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.valueOf("")),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
@@ -1419,7 +1420,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", "", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.valueOf("")),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         true,
@@ -1490,7 +1491,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", "", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.valueOf("")),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
