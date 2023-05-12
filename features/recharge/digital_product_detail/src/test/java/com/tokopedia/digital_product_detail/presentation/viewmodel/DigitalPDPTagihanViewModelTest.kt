@@ -1,7 +1,7 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.FavoritePersoMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
@@ -18,7 +18,7 @@ class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     private val dataFactory = TagihanDataFactory()
     private val mapAtcFactory = DigitalAtcMapper()
-    private val persoMapperFactory = DigitalPersoMapper()
+    private val persoMapperFactory = FavoritePersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
