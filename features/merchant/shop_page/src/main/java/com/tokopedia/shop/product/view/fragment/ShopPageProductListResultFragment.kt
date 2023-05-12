@@ -596,6 +596,9 @@ class ShopPageProductListResultFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -606,6 +609,9 @@ class ShopPageProductListResultFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

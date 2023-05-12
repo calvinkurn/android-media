@@ -12,18 +12,20 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 700L
     }
 
     @Test
     fun `given mini cart item is null when onQuantityChanged should set miniCartAdd success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -44,7 +46,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given mini cart item is null when addToCart error should set miniCartAdd fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -65,7 +67,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given quantity is 0 when onQuantityChanged should set miniCartRemove success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 0
             val shopId = "5"
@@ -101,7 +103,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given quantity is 0 when remove cart item error should set miniCartRemove fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 0
             val shopId = "5"
@@ -138,7 +140,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given mini cart item is NOT null when onQuantityChanged should set miniCartUpdate success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -175,7 +177,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given mini cart item is NOT null when update cart item error should set miniCartUpdate fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -212,7 +214,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given product not found in miniCartItems when onQuantityChanged should add product to cart`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 2
             val shopId = "5"
@@ -249,7 +251,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given onQuantityChanged called twice when add to cart should call use case once`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 1
             val shopId = "5"
@@ -287,7 +289,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given new quantity same as mini cart quantity when onQuantityChanged should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val productId = "5"
             val newQuantity = 1
             val miniCartQuantity = 1
@@ -329,7 +331,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
     @Test
     fun `given new quantity same as current quantity when onCartQuantityChanged should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "5"
             val newQuantity = 2
             val currentQuantity = 2

@@ -165,6 +165,9 @@ class TmCreateCardFragment :
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorUiOnErrorData()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -225,6 +228,9 @@ class TmCreateCardFragment :
                 TokoLiveDataResult.STATUS.ERROR -> {
                     closeLoadingDialog()
                     view?.let { it1 -> Toaster.build(it1, "Coba Lagi", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

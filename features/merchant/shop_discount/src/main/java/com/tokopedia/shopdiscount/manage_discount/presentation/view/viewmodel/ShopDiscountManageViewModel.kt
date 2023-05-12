@@ -11,22 +11,22 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
-import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductSubmissionResponse
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
+import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
+import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductSubmissionResponse
 import com.tokopedia.shopdiscount.manage_discount.data.response.GetSlashPriceSetupProductListResponse
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceProductSubmissionUiModel
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceStopUiModel
-import com.tokopedia.shopdiscount.manage_discount.domain.GetSlashPriceSetupProductListUseCase
-import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.R2_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceProductSubmissionUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceStopUiModel
+import com.tokopedia.shopdiscount.manage_discount.domain.GetSlashPriceSetupProductListUseCase
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
@@ -40,7 +40,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -231,7 +231,7 @@ class ShopDiscountManageViewModel @Inject constructor(
             isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
                 VALUE_ERROR
             }
-            isStartDateError(setupProductUiModel, isVariant) && isProductDiscounted && setupProductUiModel.productStatus.errorType == START_DATE_ERROR ->{
+            isStartDateError(setupProductUiModel, isVariant) && isProductDiscounted && setupProductUiModel.productStatus.errorType == START_DATE_ERROR -> {
                 START_DATE_ERROR
             }
             isR2AbusiveError(setupProductUiModel, isVariant) && isProductDiscounted -> {
@@ -517,7 +517,7 @@ class ShopDiscountManageViewModel @Inject constructor(
             }
         }
         listProductToBeUpdated.filter {
-            it.listProductWarehouse.none {productWarehouse -> productWarehouse.abusiveRule }
+            it.listProductWarehouse.none { productWarehouse -> productWarehouse.abusiveRule }
         }.forEach { productToBeUpdated ->
             when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
                 DiscountStatus.DEFAULT, DiscountStatus.SCHEDULED -> {
@@ -532,7 +532,7 @@ class ShopDiscountManageViewModel @Inject constructor(
                 it.discountedPercentage = discountedPercentage
                 it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
             }
-            if(isVariant){
+            if (isVariant) {
                 productToBeUpdated.variantStatus.isVariantEnabled = true
             }
         }
@@ -650,7 +650,7 @@ class ShopDiscountManageViewModel @Inject constructor(
     fun checkStartDateError(
         listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         mode: String,
-        selectedSlashPriceStatusId: Int,
+        selectedSlashPriceStatusId: Int
     ) {
         listProductData.forEach { productParentData ->
             if (isStartDateError(productParentData, productParentData.productStatus.isVariant)) {
@@ -686,5 +686,4 @@ class ShopDiscountManageViewModel @Inject constructor(
     ): Boolean {
         return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < FIVE_MINUTES.minutesToMillis()
     }
-
 }

@@ -34,6 +34,8 @@ import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
@@ -1631,7 +1633,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when triggerEditQuantity, should emit update quantity state`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val successResponse =
                 JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
                     PURCHASE_SUCCESS_JSON

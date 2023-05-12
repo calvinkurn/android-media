@@ -11,8 +11,8 @@ import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
-import com.tokopedia.tokochat.stub.common.UserSessionStub
 import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
+import com.tokopedia.tokochat.stub.common.UserSessionStub
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,6 +49,12 @@ object TokoChatModuleStub {
         @TokoChatQualifier context: Context
     ): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideRemoteConfig(@TokoChatQualifier remoteConfig: RemoteConfig): RemoteConfig {
+        return remoteConfig
     }
 
     @Provides

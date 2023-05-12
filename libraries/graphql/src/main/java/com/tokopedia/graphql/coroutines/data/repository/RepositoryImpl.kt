@@ -13,22 +13,27 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 @Deprecated("Dont use it, will be deleted after Interactor not being used")
-open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
-                                              private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
+open class RepositoryImpl @Inject constructor(
+    private val graphqlCloudDataStore: GraphqlCloudDataStore,
+    private val graphqlCacheDataStore: GraphqlCacheDataStore
+) : GraphqlRepository {
 
-
-    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
-            : GraphqlResponse {
+    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()
         val isCachedData = mutableMapOf<Type, Boolean>()
 
-        val originalRequests = requests.toMutableList();
+        val originalRequests = requests.toMutableList()
 
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                getCloudResponse(results, refreshRequests, isCachedData,
-                        originalRequests, cacheStrategy)
+                getCloudResponse(
+                    results,
+                    refreshRequests,
+                    isCachedData,
+                    originalRequests,
+                    cacheStrategy
+                )
             }
             CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
             else -> {
@@ -36,7 +41,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     val responseCache = graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
                     val tempRequestCloud = ArrayList<GraphqlRequest>()
                     responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
-                        tempRequestCloud.add(originalRequests?.get(i))
+                        originalRequests.getOrNull(i)?.let { tempRequestCloud.add(it) }
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
@@ -48,12 +53,21 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    getCloudResponse(results, refreshRequests, isCachedData,
-                            originalRequests.toMutableList(), cacheStrategy)
+                    getCloudResponse(
+                        results,
+                        refreshRequests,
+                        isCachedData,
+                        originalRequests.toMutableList(),
+                        cacheStrategy
+                    )
                 }
             }
-        }.toGraphqlResponse(results, refreshRequests, isCachedData,
-                originalRequests)
+        }.toGraphqlResponse(
+            results,
+            refreshRequests,
+            isCachedData,
+            originalRequests
+        )
     }
 
     private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?): MutableList<GraphqlRequest> {
@@ -84,7 +98,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
-                    //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
+                    // Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
                     results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
                     isCachedData.put(typeOfT, false)
                 }
@@ -115,7 +129,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             return graphqlResponse
         }
 
-        //adding cached request.
+        // adding cached request.
         graphqlResponse.refreshRequests = refreshRequests
 
         return graphqlResponse
@@ -125,16 +139,16 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
      * Helper method to merge the partial caches response with lived response of network
      */
     private suspend fun getCloudResponse(
-            results: MutableMap<Type, Any>,
-            refreshRequests: MutableList<GraphqlRequest>,
-            isCachedData: MutableMap<Type, Boolean>,
-            requests: MutableList<GraphqlRequest>,
-            cacheStrategy: GraphqlCacheStrategy
+        results: MutableMap<Type, Any>,
+        refreshRequests: MutableList<GraphqlRequest>,
+        isCachedData: MutableMap<Type, Boolean>,
+        requests: MutableList<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponseInternal {
         var operationName = ""
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()
-            copyRequests.addAll(requests);
+            copyRequests.addAll(requests)
 
             for (i in 0 until copyRequests.size) {
                 operationName = CommonUtils.getFullOperationName(copyRequests.getOrNull(i))
@@ -145,13 +159,13 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
 
                 val cKey = copyRequests[i].cacheKey()
                 val cachesResponse = graphqlCloudDataStore.cacheManager
-                        .get(cKey)
+                    .get(cKey)
 
                 if (cachesResponse == null || cachesResponse.isEmpty()) {
                     continue
                 }
 
-                //Lookup for data
+                // Lookup for data
                 results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
@@ -168,7 +182,6 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }
