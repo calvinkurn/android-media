@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.model
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
@@ -10,6 +11,8 @@ import androidx.room.PrimaryKey
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.model.WebHookParams.Companion.getWebHookData
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -196,9 +199,9 @@ data class BaseNotificationModel(
         } ?: false
     }
 
-    fun isEnableBubbleOnSellerTopChat(): Boolean {
+    fun isEnableBubbleOnSellerTopChat(context: Context): Boolean {
         return GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-            isTopChatOn() && getShouldEnableBubbleOnTopChat()
+            isTopChatOn() && getShouldEnableBubbleOnTopChat(context)
     }
 
     fun isTopChatOn(): Boolean {
@@ -217,8 +220,9 @@ data class BaseNotificationModel(
         }
     }
 
-    private fun getShouldEnableBubbleOnTopChat(): Boolean {
-        return true
+    private fun getShouldEnableBubbleOnTopChat(context: Context): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return remoteConfig.getBoolean(RemoteConfigKey.BUBBLE_TOPCHAT_CM, true)
     }
 
     companion object {

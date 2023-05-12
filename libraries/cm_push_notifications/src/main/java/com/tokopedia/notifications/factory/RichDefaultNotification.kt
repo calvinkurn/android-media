@@ -202,7 +202,7 @@ open class RichDefaultNotification internal constructor(
     }
 
     private fun addBubbleChatAction(builder: NotificationCompat.Builder) {
-        if (baseNotificationModel.isEnableBubbleOnSellerTopChat()) {
+        if (baseNotificationModel.isEnableBubbleOnSellerTopChat(context)) {
             val bubblesFactory = BubblesFactoryImpl(context)
             val bubbleTopChatNotificationHelper = BubbleTopChatNotificationHelper(
                 CMNotificationFactory.getTopChatNotificationModelList(baseNotificationModelList),

@@ -146,7 +146,7 @@ class ReplyChatNotification(
     }
 
     private fun addBubbleChatAction(builder: NotificationCompat.Builder) {
-        if (baseNotificationModel.isEnableBubbleOnSellerTopChat()) {
+        if (baseNotificationModel.isEnableBubbleOnSellerTopChat(context)) {
             val bubblesFactory = BubblesFactoryImpl(context)
             val bubbleTopChatNotificationHelper = BubbleTopChatNotificationHelper(
                 baseNotificationTopChatList,
