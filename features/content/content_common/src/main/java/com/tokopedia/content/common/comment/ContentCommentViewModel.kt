@@ -9,6 +9,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,8 +23,8 @@ import kotlinx.coroutines.launch
 class ContentCommentViewModel @AssistedInject constructor(
     @Assisted private val source: PageSource,
     private val repo: ContentCommentRepository,
-    private val userSession: UserSessionInterface
-) : ViewModel() {
+    private val userSession: UserSessionInterface,
+    ) : ViewModel() {
 
     val comments: Flow<CommentWidgetUiModel>
         get() = _comments
@@ -102,11 +103,11 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastChildCursor
                 )
                 _comments.update { curr ->
-                    //get selected expandable index
+                    // get selected expandable index
                     val selected = curr.list.indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
-                    //get parent comment
+                    // get parent comment
                     val parent = curr.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
-                    //build new list
+                    // build new list
                     val newList = buildList {
                         val transformExpand = curr.list.mapIndexed { index, model ->
                             if (index == selected && model is CommentUiModel.Expandable) {
@@ -254,7 +255,10 @@ class ContentCommentViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launchCatchError(block = {
             val result = repo.reportComment(param)
-            if (result) _event.emit(CommentEvent.ReportSuccess)
+            if (result)
+                _event.emit(CommentEvent.ReportSuccess)
+            else
+                throw MessageErrorException()
         }) {
             _event.emit(
                 CommentEvent.ShowErrorToaster(
@@ -286,9 +290,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             val regex = LINK_REGEX.toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
-                if (regex.findAll(comment)
-                    .count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)
-                ) {
+                if (regex.findAll(comment).count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)) {
                     throw CommentException.createLinkNotAllowed()
                 }
                 val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
