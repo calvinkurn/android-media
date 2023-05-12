@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.di.module
+package com.tokopedia.home.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -13,6 +13,10 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitabl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.di.module.HomeDataSourceModule
+import com.tokopedia.home.beranda.di.module.HomeDatabaseModule
+import com.tokopedia.home.beranda.di.module.HomeMapperModule
+import com.tokopedia.home.beranda.di.module.HomeUseCaseModule
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -30,11 +34,10 @@ import dagger.Provides
         HomeDatabaseModule::class,
         HomeMapperModule::class,
         HomeUseCaseModule::class,
-        HomeRateLimiterModule::class
+        HomeRateLimiterTestModule::class
     ]
 )
-class HomeModule {
-
+class HomeTestModule {
     @HomeScope
     @Provides
     fun pagingHandler() = PagingHandler()
