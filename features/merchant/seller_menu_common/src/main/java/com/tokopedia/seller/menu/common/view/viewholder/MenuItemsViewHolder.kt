@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,6 +14,7 @@ import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListBinding
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListNoIconBinding
+import com.tokopedia.seller.menu.common.view.typefactory.CoachMarkListener
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -24,7 +26,8 @@ class MenuItemsViewHolder(
     itemView: View,
     private val userSession: UserSessionInterface?,
     private val trackingListener: SettingTrackingListener,
-    private val sellerMenuTracker: SellerMenuTracker?
+    private val sellerMenuTracker: SellerMenuTracker?,
+    private val coachMarkListener: CoachMarkListener? = null
 ) : AbstractViewHolder<MenuItemUiModel>(itemView) {
 
     companion object {
@@ -67,6 +70,9 @@ class MenuItemsViewHolder(
                 }
             }
             setupTag(element.tag)
+            addOnImpressionListener(element.impressHolder){
+                coachMarkListener?.onViewReadyForCoachMark(element.title, settingMenuIcon)
+            }
         }
     }
 

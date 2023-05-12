@@ -53,7 +53,6 @@ class OtherMenuAdapter(
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_iklan_topads).orEmpty(),
             clickApplink = if(isTopAdsShopUsed) ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL else ApplinkConstInternalTopAds.TOPADS_ONBOARDING,
-            eventActionSuffix = SettingTrackingConstant.IKLAN_TOPADS,
             iconUnify = IconUnify.SPEAKER,
         ),
         MenuItemUiModel(

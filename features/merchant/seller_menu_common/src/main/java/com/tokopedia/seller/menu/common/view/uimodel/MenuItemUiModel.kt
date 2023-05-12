@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.common.view.uimodel
 
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
@@ -51,9 +52,7 @@ open class MenuItemUiModel(
     override val clickEventName: String =
             if(isNoIcon) {
                 SettingTrackingConstant.CLICK_SHOP_SETTING
-            } else if(eventActionSuffix == SettingTrackingConstant.IKLAN_TOPADS){
-                SettingTrackingConstant.CLICK_TOPADS
-            }else {
+            } else {
                 super.clickEventName
             }
 
@@ -75,6 +74,8 @@ open class MenuItemUiModel(
         get() = iconUnify == null
 
     var clickSendTracker: () -> Unit = {}
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)

@@ -11,7 +11,6 @@ object SettingTrackingConstant {
     const val CLICK= "click"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val CLICK_SHOP_SETTING = "clickShopSetting"
-    const val CLICK_TOPADS = "clickTopAds"
     const val VIEW_NAVIGATION_IRIS = "viewNavigationIris"
     const val VIEW_SHOP_SETTING_IRIS = "viewShopSettingIris"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
@@ -41,7 +40,6 @@ object SettingTrackingConstant {
     const val ON_SALDO = "on saldo"
     const val ON_TOPADS_CREDIT = "on topads credits"
     const val SHOP_ADS_AND_PROMOTION = "shop ads and promotions"
-    const val IKLAN_TOPADS = "iklan topads"
     //temporary
     const val SHOP_PERFORMANCE = "shop performance"
     const val REVIEW = "review"
