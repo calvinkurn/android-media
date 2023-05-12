@@ -92,6 +92,7 @@ class UserProfileReviewOnboardingBottomSheet : BottomSheetUnify() {
     private fun setupListener() {
         binding.btnOpenReviewTab.setOnClickListener {
             mListener?.onClickOpenReviewTab()
+            dismiss()
         }
     }
 

@@ -350,7 +350,7 @@ class UserProfileFragment @Inject constructor(
             is UserProfileReviewOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserProfileReviewOnboardingBottomSheet.Listener {
                     override fun onClickOpenReviewTab() {
-                        /** TODO: handle this */
+                        setupAutoSelectTabIfAny(UserProfileParam.SelectedTab.Review.key)
                     }
 
                     override fun onClickOpenProfileSettingsPage() {
@@ -776,13 +776,12 @@ class UserProfileFragment @Inject constructor(
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
 
-        setupAutoSelectTabIfAny(value.tabs)
+        val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
+        setupAutoSelectTabIfAny(selectedTabKey)
     }
 
-    private fun setupAutoSelectTabIfAny(tabs: List<ProfileTabUiModel.Tab>) {
-        val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
-
-        val idx = tabs.indexOfFirst { it.key == selectedTab.key }
+    private fun setupAutoSelectTabIfAny(selectedTabKey: String) {
+        val idx = viewModel.profileTab.tabs.indexOfFirst { it.key == selectedTabKey }
         if(idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
