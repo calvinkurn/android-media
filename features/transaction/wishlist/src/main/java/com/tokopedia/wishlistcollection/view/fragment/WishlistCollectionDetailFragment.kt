@@ -231,7 +231,7 @@ class WishlistCollectionDetailFragment :
     private var _bulkModeIsAlreadyTurnedOff = false
     private var affiliateUniqueId = ""
     private var affiliateChannel = ""
-    private var affiliateUUID = ""
+    private var uuid = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -747,6 +747,12 @@ class WishlistCollectionDetailFragment :
                             StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
                         WishlistCollectionAnalytics.sendClickAddToCartOnWishlistPageEvent(collectionId, wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
+                        wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
+                            affiliateUniqueId,
+                            uuid,
+                            affiliateChannel,
+                            wishlistItemOnAtc
+                        )
                     }
                 }
                 is Fail -> {
@@ -1152,8 +1158,8 @@ class WishlistCollectionDetailFragment :
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
         affiliateChannel = arguments?.getString(EXTRA_CHANNEL) ?: ""
+        uuid = UUID.randomUUID().toString()
         paramGetCollectionItems.collectionId = collectionId
-        affiliateUUID = UUID.randomUUID().toString()
 
         var titleToolbar = ""
         if (newCollectionDetailTitle.isNotEmpty()) titleToolbar = newCollectionDetailTitle
@@ -1226,7 +1232,7 @@ class WishlistCollectionDetailFragment :
     private fun hitWishlistAffiliateCookie() {
         wishlistCollectionDetailViewModel.hitAffiliateCookie(
             affiliateUniqueId,
-            affiliateUUID,
+            uuid,
             affiliateChannel,
         )
     }
