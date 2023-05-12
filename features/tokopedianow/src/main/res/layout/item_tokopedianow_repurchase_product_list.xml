@@ -24,9 +24,9 @@
             android:layout_marginStart="12dp"
             android:inflatedId="@+id/channel_title"
             android:layout="@layout/partial_tokopedianow_view_stub_dc_title"
+            app:layout_constraintBottom_toTopOf="@id/text_subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/text_subtitle"
             tools:text="Kategori di TokoNOW!" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -35,9 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toTopOf="@id/rv_product"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/vsTitle"
-            app:layout_constraintBottom_toTopOf="@id/rv_product"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Hemat 20rb dari belanjaan sebelumnya" />
@@ -57,9 +57,8 @@
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:tint="@color/Unify_NN900"
                 app:srcCompat="@drawable/iconunify_chevron_right"
-                />
+                app:tint="@color/Unify_NN900" />
         </com.tokopedia.tokopedianow.common.view.CircularCardView>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -69,16 +68,16 @@
             android:layout_marginTop="19dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/text_subtitle"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/carousel_shimmering"
-            layout="@layout/partial_tokopedianow_product_carousel"
+            layout="@layout/layout_tokopedianow_repurchase_shimmering"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/card_view_chevron" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify2>
