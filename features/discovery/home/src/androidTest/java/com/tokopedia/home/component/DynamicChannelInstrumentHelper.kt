@@ -546,16 +546,12 @@ private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVer
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+        } catch (_: PerformException) { }
     } else if (ctaButton != null && ctaButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.cta_button_revamp, scrollVerticalBy)))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+        } catch (_: PerformException) { }
     }
 }
 
