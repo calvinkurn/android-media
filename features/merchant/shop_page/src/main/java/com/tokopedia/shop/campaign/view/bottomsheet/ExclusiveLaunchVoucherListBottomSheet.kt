@@ -119,6 +119,7 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
             onVoucherClaimSuccess(selectedVoucherPosition)
             dismiss()
         }
+        exclusiveLaunchAdapter.setUseDarkBackground(false)
         exclusiveLaunchAdapter.setOnVoucherClaimClick { selectedVoucherPosition ->
             val selectedVoucher = exclusiveLaunchAdapter.snapshot()[selectedVoucherPosition]
             showVoucherDetailBottomSheet(selectedVoucher)

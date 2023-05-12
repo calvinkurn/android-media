@@ -200,7 +200,9 @@
     <string name="shop_page_exclusive_launch_voucher">Kupon Spesial Launching</string>
     <string name="shop_page_claim">Klaim</string>
     <string name="shop_page_use">Pakai</string>
-    <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp %s</string>
+    <string name="shop_page_placeholder_minimal_purchase_million">Min. belanja Rp%s jt</string>
+    <string name="shop_page_placeholder_minimal_purchase_thousand">Min. belanja Rp%s rb</string>
+    <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp%s</string>
     <string name="shop_page_placeholder_remaining_quota">Sisa %d</string>
     <string name="shop_page_placeholder_benefit_name">Cashback %s s.d Rp%s</string>
 

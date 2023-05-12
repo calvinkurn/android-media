@@ -32,6 +32,7 @@ class ExclusiveLaunchVoucherAdapter :
     private var onVoucherClick: (Int) -> Unit = {}
     private var onVoucherClaimClick: (Int) -> Unit = {}
     private var onUseVoucherClick: (Int) -> Unit = {}
+    private var useDarkBackground = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemExclusiveLaunchVoucherBinding.inflate(
@@ -62,7 +63,10 @@ class ExclusiveLaunchVoucherAdapter :
             binding.elVoucher.apply {
                 setMinimumPurchase(voucher.minimumPurchase)
                 setRemainingQuota(voucher.remainingQuota)
-                setVoucherName(voucher.benefit, voucher.benefitMax)
+
+                val voucherBenefit = context.getString(R.string.shop_page_placeholder_benefit_name, voucher.benefit.toString(), voucher.benefitMax.toString())
+                setVoucherName(voucherBenefit)
+
                 val ctaText = if (voucher.isClaimed) binding.root.context.getString(R.string.shop_page_use) else binding.root.context.getString(R.string.shop_page_claim)
                 setPrimaryCta(ctaText, onClick = {
                     if (voucher.isClaimed) {
@@ -71,6 +75,8 @@ class ExclusiveLaunchVoucherAdapter :
                         onVoucherClaimClick(bindingAdapterPosition)
                     }
                 })
+
+                if (useDarkBackground) useDarkBackground() else useLightBackground()
             }
         }
 
@@ -90,6 +96,10 @@ class ExclusiveLaunchVoucherAdapter :
 
     fun setOnUseVoucherClick(onUseVoucherClick: (Int) -> Unit) {
         this.onUseVoucherClick = onUseVoucherClick
+    }
+
+    fun setUseDarkBackground(useDarkBackground: Boolean) {
+        this.useDarkBackground = useDarkBackground
     }
 
     fun snapshot(): List<ExclusiveLaunchVoucher> {
