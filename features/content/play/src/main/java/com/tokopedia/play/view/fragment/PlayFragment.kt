@@ -65,7 +65,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -133,8 +132,25 @@ class PlayFragment @Inject constructor(
      * Global Variant Bottom Sheet
      */
 
-    private val atcVariantViewModel by lazy {
+    private lateinit var variantSheet : AtcVariantBottomSheet
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
+    private val variantSheetObserver by lazyThreadSafetyNone {
+        object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun onResume() {
+                if (::variantSheet.isInitialized.not()) return
+
+                variantSheet.dialog?.window?.setDimAmount(0f)
+                view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
+                    variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
+                        sheetMaxHeight - insets.systemWindowInsetBottom - ivClose.top
+                }
+            }
+        }
     }
 
     override fun getScreenName(): String = "Play"
@@ -192,6 +208,7 @@ class PlayFragment @Inject constructor(
         videoScalingManager = null
 
         destroyInsets(requireView())
+        if (::variantSheet.isInitialized) variantSheet.lifecycle.removeObserver(variantSheetObserver)
         super.onDestroyView()
     }
 
@@ -283,19 +300,8 @@ class PlayFragment @Inject constructor(
         )
 
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
-            val variantSheet = AtcVariantBottomSheet()
-            variantSheet.lifecycle.addObserver(
-                object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-                    fun onResume() {
-                        variantSheet.dialog?.window?.setDimAmount(0f)
-                        view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
-                            variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
-                                sheetMaxHeight - insets.systemWindowInsetBottom - ivClose.top
-                        }
-                    }
-                }
-            )
+            variantSheet = AtcVariantBottomSheet()
+            variantSheet.lifecycle.addObserver(variantSheetObserver)
             if (forceTop) {
                 variantSheet.setOnDismissListener {
                     onBottomInsetsViewHidden()
@@ -575,6 +581,7 @@ class PlayFragment @Inject constructor(
             playViewModel.uiEvent.collect {
                 when (val event = it) {
                     is ShowVariantSheet -> openVariantBottomSheet(event.product, event.forcePushTop)
+                    else -> {}
                 }
             }
         }
