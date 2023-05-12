@@ -48,15 +48,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -162,11 +158,6 @@ class FeedBaseFragment : BaseDaggerFragment(),
             }
         }
 
-
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -190,28 +181,6 @@ class FeedBaseFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         feedMainViewModel.fetchFeedTabs()
-
-        try {
-            // check for the remote config
-            if (remoteConfig.getBoolean(REMOTE_CONFIG_KEY, true)) {
-                // check for rollence
-                if (RemoteConfigInstance.getInstance()
-                        .abTestPlatform?.getString(ROLLENCE_KEY, "")
-                        .orEmpty().isEmpty()
-                ) {
-                    parentFragmentManager.beginTransaction()
-                        .replace((view.parent as View).id, FeedPlusContainerFragment())
-                        .addToBackStack(null)
-                        .commit()
-                }
-            } else {
-                parentFragmentManager.beginTransaction()
-                    .replace((view.parent as View).id, FeedPlusContainerFragment())
-                    .addToBackStack(null)
-                    .commit()
-            }
-        } catch (t: Throwable) {
-        }
 
         setupView()
 
@@ -751,8 +720,5 @@ class FeedBaseFragment : BaseDaggerFragment(),
         private const val COACHMARK_START_DELAY_IN_SEC = 1
 
         private const val ONBOARDING_SHOW_DELAY = 500L
-
-        private const val ROLLENCE_KEY = "immersive_feed"
-        private const val REMOTE_CONFIG_KEY = "android_main_app_show_unified_feed"
     }
 }
