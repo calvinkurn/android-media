@@ -5,12 +5,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
+import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
+import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,7 +35,9 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
@@ -50,6 +55,7 @@ class AffiliatePromoViewModelTest {
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
+    private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase = mockk()
     private val graphqlRepository: GraphqlRepository = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
@@ -58,6 +64,7 @@ class AffiliatePromoViewModelTest {
             affiliateValidateUserStatus,
             affiliateAffiliateAnnouncementUseCase,
             affiliateDiscoveryCampaignUseCase,
+            affiliateSSAShopUseCase,
             graphqlRepository
         )
     )
@@ -255,5 +262,28 @@ class AffiliatePromoViewModelTest {
             affiliatePromoViewModel.getTokoNowBottomSheetData().value,
             generateAffiliateLinkEligibility
         )
+    }
+
+    @Test
+    fun `has ssa shops on success response`() {
+        val ssaShop = AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem(
+            AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem.SSAShopDetail(),
+            AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem.SSACommissionDetail()
+        )
+        val response = AffiliateSSAShopListResponse(
+            AffiliateSSAShopListResponse.Data(
+                AffiliateSSAShopListResponse.Data.SSAShop(
+                    1,
+                    AffiliateSSAShopListResponse.Data.SSAShop.PageInfo(
+                        hasNext = true
+                    ),
+                    null,
+                    listOf(ssaShop, ssaShop, ssaShop)
+                )
+            )
+        )
+        coEvery { affiliateSSAShopUseCase.getSSAShopList(any(), any()) } returns response
+        affiliatePromoViewModel.fetchSSAShopList()
+        assertFalse(affiliatePromoViewModel.getSSAShopList().value.isNullOrEmpty())
     }
 }
