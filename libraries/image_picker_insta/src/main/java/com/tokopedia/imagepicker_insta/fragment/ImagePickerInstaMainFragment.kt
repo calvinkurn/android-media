@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -82,8 +84,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var queryConfiguration: QueryConfiguration
     var maxMultiSelect: Int = BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
 
-    @Inject
-    lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+    @Inject lateinit var fragmentFactory: FragmentFactory
+
+    @Inject lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
     @Inject lateinit var feedVideoDepreciationAnalytic: FeedVideoDepreciationAnalytic
 
@@ -108,8 +111,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         )
     }
 
+    private val asBuyer: Boolean
+        get() = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFragment()
+        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
@@ -127,6 +134,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
 
                     override fun onClickClose() { }
+                })
+            }
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        viewModel.getFeedAccountList(asBuyer)
+                    }
                 })
             }
         }
@@ -215,8 +229,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val isCreatePostAsBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
-        viewModel.getFeedAccountList(isCreatePostAsBuyer)
+        viewModel.getFeedAccountList(asBuyer)
     }
 
     private fun hasReadPermission(): Boolean {
@@ -503,7 +516,15 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.contentAccountListState.collectLatest {
+            viewModel.contentAccountListState.collectLatest { accounts ->
+
+                val userAccount = accounts.firstOrNull { it.isUser }
+                if (asBuyer && userAccount != null) {
+                    if (!userAccount.hasUsername || !userAccount.hasAcceptTnc) {
+                        showTnCBottomSheet(userAccount)
+                    }
+                }
+
                 if (viewModel.isAllowChangeAccount) {
                     if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
                         Prefs.saveShouldShowCoachMarkValue(requireContext())
@@ -621,6 +642,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 imageMultiSelect.toggle(true)
             }
         }
+    }
+
+    private fun showTnCBottomSheet(userAccount: ContentAccountUiModel) {
+        val onBoardingType = when {
+            !userAccount.hasAcceptTnc -> UGCOnboardingParentFragment.OnboardingType.Tnc
+            !userAccount.hasUsername -> UGCOnboardingParentFragment.OnboardingType.Complete
+            else -> {
+                UGCOnboardingParentFragment.OnboardingType.Unknown
+            }
+        }
+
+        childFragmentManager.beginTransaction()
+            .add(
+                UGCOnboardingParentFragment::class.java,
+                UGCOnboardingParentFragment.createBundle(onBoardingType),
+                UGCOnboardingParentFragment.TAG
+            )
+            .commit()
     }
 
     private fun getZoomInfoForVideo(
@@ -908,8 +947,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         if (!viewModel.isUserFirstTimeVisit) return
 
         feedVideoDepreciationAnalytic.openVideoDepreciationBottomSheetEvent()
-
-        val asBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
         FeedVideoDepreciationBottomSheet
             .newInstance(asBuyer)
             .show(childFragmentManager, FeedVideoDepreciationBottomSheet::class.java.name)
