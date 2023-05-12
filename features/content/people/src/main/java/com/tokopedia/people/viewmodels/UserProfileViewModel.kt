@@ -14,6 +14,7 @@ import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
@@ -111,6 +112,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
+    private val _reviewContent = MutableStateFlow(UserReviewUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
     private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
@@ -158,6 +160,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.isRefresh)
+            is UserProfileAction.LoadUserReview -> handleLoadUserReview(action.isRefresh)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
@@ -253,6 +256,39 @@ class UserProfileViewModel @AssistedInject constructor(
                 _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
             }
         )
+    }
+
+    private fun handleLoadUserReview(isRefresh: Boolean) {
+        viewModelScope.launchCatchError(block = {
+            val currReviewContent = _reviewContent.value
+
+            if(!isRefresh && !currReviewContent.hasNext) return@launchCatchError
+            if(currReviewContent.isLoading) return@launchCatchError
+
+            _reviewContent.update {
+                it.copy(
+                    isLoading = true,
+                    reviewList = if(isRefresh) emptyList() else it.reviewList,
+                    page = if (isRefresh) 1 else it.page,
+                    hasNext = if (isRefresh) true else it.hasNext,
+                )
+            }
+
+            val response = repo.getUserReviewList(
+                userID = profileUserID,
+                limit = 10, /** TODO: dont harcoded this */
+                page = currReviewContent.page,
+            )
+
+            _reviewContent.update { response }
+        }) {
+            _reviewContent.update { userReview ->
+                userReview.copy(isLoading = false)
+            }
+
+            /** TODO: handle this on UserProfileReviewFragment later */
+            _uiEvent.emit(UserProfileUiEvent.ErrorLoadReview(it))
+        }
     }
 
     private fun handleBlockUser() {

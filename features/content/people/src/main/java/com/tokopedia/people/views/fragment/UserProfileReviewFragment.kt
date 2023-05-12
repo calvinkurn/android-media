@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.utils.UserProfileUiBridge
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
 
 /**
  * Created By : Jonathan Darwin on May 12, 2023
@@ -81,6 +82,8 @@ class UserProfileReviewFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupObserver()
+
+        viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
     private fun setupObserver() {

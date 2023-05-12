@@ -9,6 +9,7 @@ data class UserReviewUiModel(
     val reviewList: List<Review>,
     val page: Int,
     val hasNext: Boolean,
+    val isLoading: Boolean,
 ) {
     data class Review(
         val feedbackID: String,
@@ -44,4 +45,14 @@ data class UserReviewUiModel(
         val totalLike: Int,
         val likeStatus: Int,
     )
+
+    companion object {
+        val Empty: UserReviewUiModel
+            get() = UserReviewUiModel(
+                reviewList = emptyList(),
+                page = 1,
+                hasNext = true,
+                isLoading = false,
+            )
+    }
 }
