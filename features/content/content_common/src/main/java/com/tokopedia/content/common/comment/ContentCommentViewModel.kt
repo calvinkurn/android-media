@@ -9,6 +9,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,14 +23,11 @@ import kotlinx.coroutines.launch
 class ContentCommentViewModel @AssistedInject constructor(
     @Assisted private val source: PageSource,
     private val repo: ContentCommentRepository,
-    private val userSession: UserSessionInterface
-) : ViewModel() {
+    private val userSession: UserSessionInterface,
+    ) : ViewModel() {
 
     val comments: Flow<CommentWidgetUiModel>
         get() = _comments
-
-    val query: Flow<CommentParam>
-        get() = _query
 
     val event: Flow<CommentEvent>
         get() = _event
@@ -257,7 +255,10 @@ class ContentCommentViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launchCatchError(block = {
             val result = repo.reportComment(param)
-            if (result) _event.emit(CommentEvent.ReportSuccess)
+            if (result)
+                _event.emit(CommentEvent.ReportSuccess)
+            else
+                throw MessageErrorException()
         }) {
             _event.emit(
                 CommentEvent.ShowErrorToaster(
@@ -289,9 +290,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             val regex = LINK_REGEX.toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
-                if (regex.findAll(comment)
-                    .count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)
-                ) {
+                if (regex.findAll(comment).count().isMoreThanZero() && !comment.contains(TOKPED_ESCAPE)) {
                     throw CommentException.createLinkNotAllowed()
                 }
                 val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
