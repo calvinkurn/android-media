@@ -615,10 +615,9 @@ class OrderSummaryPageViewModel @Inject constructor(
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
         val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
-            clearBboIfExist().also { isBoExist ->
-                orderShipment.value = it.copy(isShowLogisticPromoTickerMessage = false)
-                validateUsePromo(isBoExist)
-            }
+            val isBoExist = clearBboIfExist()
+            orderShipment.value = it
+            validateUsePromo(isBoExist)
         }
     }
 
