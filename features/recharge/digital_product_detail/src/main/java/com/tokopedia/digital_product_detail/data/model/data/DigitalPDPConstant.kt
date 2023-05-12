@@ -39,6 +39,7 @@ object DigitalPDPConstant {
 
     const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
     const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
+    const val PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE = "indosat_check_balance"
     const val MCCM_CHANNEL_NAME = "recharge_pdp_mccm_new_layout"
 
     const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"

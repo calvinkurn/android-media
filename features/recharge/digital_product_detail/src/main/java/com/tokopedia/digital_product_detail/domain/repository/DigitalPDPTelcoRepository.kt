@@ -9,4 +9,5 @@ interface DigitalPDPTelcoRepository :
         RechargeAddToCartRepository,
         RechargeCatalogProductInputMultiTabRepository,
         RechargeRecommendationRepository,
+        RechargeCheckBalanceRepository,
         RechargeMCCMProductsRepository

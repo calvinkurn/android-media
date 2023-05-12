@@ -25,6 +25,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -97,6 +98,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
+
+    private val _indosatCheckBalanceOTP = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceOTPModel>>()
+    val indosatCheckBalanceOTP: LiveData<RechargeNetworkResult<DigitalCheckBalanceOTPModel>>
+        get() = _indosatCheckBalanceOTP
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -238,6 +243,27 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setRechargeCheckBalanceOTPLoading() {
+        _indosatCheckBalanceOTP
+    }
+
+    fun getRechargeCheckBalanceOTP(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>
+    ) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val persoData = repo.getRechargeCheckBalanceOTP(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE
+            )
+            _indosatCheckBalanceOTP.value = RechargeNetworkResult.Success(persoData)
+        }) {
+            _indosatCheckBalanceOTP.value = RechargeNetworkResult.Fail(it)
         }
     }
 

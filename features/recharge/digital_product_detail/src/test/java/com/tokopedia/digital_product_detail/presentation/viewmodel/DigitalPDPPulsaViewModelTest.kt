@@ -1,6 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.FavoritePersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
@@ -24,7 +24,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
-    private val persoMapperFactory = DigitalPersoMapper()
+    private val persoMapperFactory = FavoritePersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
 
     @Test

@@ -8,7 +8,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupMod
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import javax.inject.Inject
 
-class DigitalPersoMapper @Inject constructor() {
+class FavoritePersoMapper @Inject constructor() {
 
     fun mapDigiPersoFavoriteToModel(data: PersoFavNumberGroup): FavoriteGroupModel {
          return FavoriteGroupModel(

@@ -26,8 +26,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.WidgetRechargeClientNumberBinding
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -55,6 +57,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
+    private var mCheckBalanceListener: ClientNumberCheckBalanceListener? = null
 
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
@@ -365,11 +368,43 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     fun setListener(
         inputFieldListener: ClientNumberInputFieldListener?,
         autoCompleteListener: ClientNumberAutoCompleteListener?,
-        filterChipListener: ClientNumberFilterChipListener?
+        filterChipListener: ClientNumberFilterChipListener?,
+        checkBalanceListener: ClientNumberCheckBalanceListener?
     ) {
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
+        mCheckBalanceListener = checkBalanceListener
+    }
+
+    fun showCheckBalanceOtpWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.show()
+    }
+
+    fun hideCheckBalanceOtpWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.hide()
+    }
+
+    fun showCheckBalanceWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.show()
+    }
+
+    fun hideCheckBalanceWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hide()
+    }
+
+    fun renderCheckBalanceOTPWidget(checkBalanceOTPModel: RechargeCheckBalanceOTPModel) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.run {
+            setTitle(checkBalanceOTPModel.subtitle)
+            setNotificationLabel(checkBalanceOTPModel.label)
+            setOnClickListener {
+                mCheckBalanceListener?.onClickCheckBalance(checkBalanceOTPModel.bottomSheetModel)
+            }
+        }
+    }
+
+    fun renderCheckBalanceWidget() {
+
     }
 
     fun startShakeAnimation() {
