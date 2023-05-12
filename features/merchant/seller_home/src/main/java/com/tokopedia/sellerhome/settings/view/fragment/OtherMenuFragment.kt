@@ -1015,20 +1015,22 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
         view?.post{
-            showCoachMarkTopAdsMenuItem(menuName, targetView)
+            if(menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
+                showCoachMarkTopAdsMenuItem(menuName, targetView)
+            }
         }
     }
 
     private fun showCoachMarkTopAdsMenuItem(menuName: String, view: View?) {
-        val key = "$menuName+$SHARED_PREF_SUFFIX"
-        val coachMarkList = arrayListOf<CoachMark2Item>()
+        if (viewModel.isTopAdsShopUsed.value != null) {
+            val key = "$menuName+$SHARED_PREF_SUFFIX"
+            val coachMarkList = arrayListOf<CoachMark2Item>()
 
-        if (menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
             val alreadyShow = sharedPref.getBoolean(key, false)
             val title = context?.getString(R.string.menu_setting_topads_coachmark_title)
             val description = context?.getString(R.string.menu_setting_topads_coachmark_desciption)
 
-            if (!alreadyShow && viewModel.isTopAdsShopUsed.value != null) {
+            if (!alreadyShow) {
                 view?.let {
                     coachMarkList.add(
                         CoachMark2Item(

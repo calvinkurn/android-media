@@ -228,6 +228,7 @@ class OtherMenuViewModel @Inject constructor(
     private var topadsTopupToggleJob: Job? = null
 
     fun getAllOtherMenuData() {
+        getIsShowTagCentralizePromo()
         setErrorStateMapDefaultValue()
         setSuccessStateMapDefaultValue()
         resetTopadsToggleCount()
@@ -241,7 +242,6 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
-        getIsShowTagCentralizePromo()
         getShopPeriodType()
         getIsTopAdsShopUsed()
     }
