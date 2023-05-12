@@ -19,8 +19,6 @@ import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListen
 import com.tokopedia.feedcomponent.presentation.utils.FeedXProductResult
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductBottomSheetCardView
-import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -33,7 +31,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHolder.Listener {
+class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private var _binding: ItemPosttagBinding? = null
     private val binding: ItemPosttagBinding
@@ -48,7 +46,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
     private var postId: String = "0"
     private val adapter by lazy {
         listener?.let {
-            ProductInfoBottomSheetAdapter(it, this)
+            ProductInfoBottomSheetAdapter(it)
         }
     }
     private var positionInFeed: Int = 0
@@ -381,35 +379,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
     companion object {
         private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val PRODUCT_TYPE = "product"
-    }
-
-    override fun onProductClicked(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-        listener?.onTaggedProductCardClicked(
-            product.positionInFeed,
-            product.applink,
-            product.product,
-            0,
-            product.mediaType
-        )
-    }
-
-    override fun onButtonMoveToCartProduct(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-        moveToAddToCartPage()
-    }
-
-    override fun onButtonAddToCartProduct(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-        listener?.onAddToCartButtonClicked(
-            product
-        )
     }
 
 }

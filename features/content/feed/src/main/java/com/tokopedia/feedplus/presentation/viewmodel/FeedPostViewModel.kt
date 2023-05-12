@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -19,32 +21,16 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FollowShopModel
-import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
-import com.tokopedia.topads.sdk.utils.PARAM_EP
-import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.PARAM_ITEM
-import com.tokopedia.topads.sdk.utils.PARAM_PAGE
-import com.tokopedia.topads.sdk.utils.PARAM_SRC
-import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
-import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
-import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
-import com.tokopedia.topads.sdk.utils.UrlParamHelper
-import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
-import com.tokopedia.topads.sdk.utils.VALUE_EP
-import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.VALUE_ITEM
-import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +53,7 @@ class FeedPostViewModel @Inject constructor(
     private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -74,10 +61,6 @@ class FeedPostViewModel @Inject constructor(
     private val _feedHome = MutableLiveData<Result<FeedModel>>()
     val feedHome: LiveData<Result<FeedModel>>
         get() = _feedHome
-
-    private val _atcResp = MutableLiveData<FeedResult<Boolean>>()
-    val atcRespData: LiveData<FeedResult<Boolean>>
-        get() = _atcResp
 
     private val _followResult = MutableLiveData<Result<String>>()
     val followResult: LiveData<Result<String>>
@@ -168,21 +151,6 @@ class FeedPostViewModel @Inject constructor(
                     else -> feedPosts
                 }
             }
-        }
-    }
-
-    fun addToCart(
-        productId: String,
-        productName: String,
-        price: String,
-        shopId: String
-    ) {
-        _atcResp.value = FeedResult.Loading
-        viewModelScope.launchCatchError(block = {
-            val isSuccess = addToCartImplementation(productId, productName, price, shopId)
-            _atcResp.value = FeedResult.Success(isSuccess)
-        }) {
-            _atcResp.value = FeedResult.Failure(it)
         }
     }
 
@@ -411,33 +379,6 @@ class FeedPostViewModel @Inject constructor(
             action = likeAction
         )
 
-    private suspend fun addToCartImplementation(
-        productId: String,
-        productName: String,
-        price: String,
-        shopId: String
-    ): Boolean {
-        val params = AddToCartUseCase.getMinimumParams(
-            productId,
-            shopId,
-            productName = productName,
-            price = price,
-            userId = userSession.userId
-        )
-        try {
-            addToCartUseCase.setParams(params)
-            val response = addToCartUseCase.executeOnBackground()
-            if (response.isDataError()) throw MessageErrorException(response.getAtcErrorMessage())
-            return !response.isStatusError()
-        } catch (e: Throwable) {
-            if (e is ResponseErrorException) {
-                throw MessageErrorException(e.localizedMessage)
-            } else {
-                throw e
-            }
-        }
-    }
-
     private fun updateFollowStatus(id: String, isFollowing: Boolean) {
         val currentValue = feedHome.value
 
@@ -479,6 +420,112 @@ class FeedPostViewModel @Inject constructor(
             PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
             PARAM_USER_ID to userSession.userId
         )
+
+    /**
+     * Add to Cart & Buy
+     */
+    val observeAddProductToCart: LiveData<Result<AddToCartDataModel>>
+        get() = _observeAddProductToCart
+    private val _observeAddProductToCart = MutableLiveData<Result<AddToCartDataModel>>()
+
+    val observeBuyProduct: LiveData<Result<AddToCartDataModel>>
+        get() = _observeBuyProduct
+    private val _observeBuyProduct = MutableLiveData<Result<AddToCartDataModel>>()
+
+    private val _suspendedAddProductToCartData = MutableLiveData<FeedTaggedProductUiModel>()
+    private val _suspendedBuyProductData = MutableLiveData<FeedTaggedProductUiModel>()
+
+    fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
+        _suspendedAddProductToCartData.value = product
+    }
+    fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
+        _suspendedBuyProductData.value = product
+    }
+
+    fun processSuspendedAddProductToCart() {
+        _suspendedAddProductToCartData.value?.let { product ->
+            addProductToCart(product)
+        }
+    }
+
+    fun processSuspendedBuyProduct() {
+        _suspendedBuyProductData.value?.let { product ->
+            buyProduct(product)
+        }
+    }
+
+    fun addProductToCart(product: FeedTaggedProductUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val response = addToCart(product)
+            if (response.isDataError()) {
+                _observeAddProductToCart.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+            } else {
+                _observeAddProductToCart.value = Success(response)
+            }
+        }) {
+            _observeAddProductToCart.value = Fail(it)
+        }
+    }
+
+    fun buyProduct(product: FeedTaggedProductUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val response = addToCart(product)
+            if (response.isDataError()) {
+                _observeBuyProduct.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+            } else {
+                _observeBuyProduct.value = Success(response)
+            }
+        }) {
+            _observeBuyProduct.value = Fail(it)
+        }
+    }
+
+    private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+        addToCartUseCase.apply {
+            setParams(
+                AddToCartUseCase.getMinimumParams(
+                    productId = product.id,
+                    shopId = product.shopId,
+                    productName = product.title,
+                    price = when(val price = product.price) {
+                        is FeedTaggedProductUiModel.DiscountedPrice -> price.price
+                        is FeedTaggedProductUiModel.NormalPrice -> price.price
+                    },
+                    userId = userSession.userId
+                )
+            )
+        }.executeOnBackground()
+    }
+
+    /**
+     * Merchant Voucher
+     */
+    private val _merchantVoucherLiveData =
+        MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
+    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+        get() = _merchantVoucherLiveData
+
+    fun getMerchantVoucher(shopId: String) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            }
+            val result = response.data
+            if (result == null) {
+                _merchantVoucherLiveData.value = Fail(IllegalStateException())
+            } else {
+                if (result.resultStatus?.code == "200") {
+                    _merchantVoucherLiveData.value = Success(result)
+                } else {
+                    _merchantVoucherLiveData.value = Fail(
+                        ResponseErrorException(response.data?.resultStatus?.message?.firstOrNull().orEmpty())
+                    )
+                }
+            }
+        }) {
+            _merchantVoucherLiveData.value = Fail(it)
+        }
+    }
 
     private val Result<FeedModel>.cursor: String
         get() = when (this) {

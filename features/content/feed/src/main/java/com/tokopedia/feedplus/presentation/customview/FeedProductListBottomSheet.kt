@@ -8,10 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
-import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductBottomSheetCardView
-import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedplus.R
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,19 +15,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created By : Muhammad Furqan on 12/04/23
  */
-class FeedProductListBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHolder.Listener {
+class FeedProductListBottomSheet : BottomSheetUnify() {
 
     private var _binding: ItemPosttagBinding? = null
     private val binding: ItemPosttagBinding
         get() = _binding!!
 
     private var listener: ProductItemInfoBottomSheet.Listener? = null
-
-    private val adapter by lazy {
-        listener?.let {
-            ProductInfoBottomSheetAdapter(it, this)
-        }
-    }
 
     private var postId: String = "0"
     private var positionInFeed: Int = 0
@@ -65,27 +55,6 @@ class FeedProductListBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
             isNestedScrollingEnabled = false
             layoutManager = rvLayoutManager
         }
-    }
-
-    override fun onProductClicked(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onButtonMoveToCartProduct(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onButtonAddToCartProduct(
-        viewHolder: FeedTaggedProductBottomSheetCardView,
-        product: ProductPostTagModelNew
-    ) {
-//        TODO("Not yet implemented")
     }
 
 }

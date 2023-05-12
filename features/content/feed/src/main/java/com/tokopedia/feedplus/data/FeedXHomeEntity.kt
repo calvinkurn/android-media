@@ -373,9 +373,7 @@ class FeedXCampaign(
     val status: String = "",
     @SerializedName("name")
     val name: String = "",
-    @SerializedName(
-        "shortName"
-    )
+    @SerializedName("shortName")
     val shortName: String = "",
     @SerializedName("startTime")
     val startTime: String = "",
