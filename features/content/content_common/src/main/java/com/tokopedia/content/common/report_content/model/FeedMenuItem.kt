@@ -13,12 +13,13 @@ data class FeedContentData(
     val caption: String,
     val postId: String,
     val authorId: String,
-    val rowNumber: Int
+    val rowNumber: Int,
+    val type: FeedMenuIdentifier,
 )
 
 enum class FeedMenuIdentifier(val value: String) {
     EDIT("Ubah"),
     LAPORKAN("Report"),
-    MODE_NONTON("Clear Mode"),
+    MODE_NONTON("Watch Mode"),
     DELETE("Hapus")
 }
