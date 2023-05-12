@@ -89,7 +89,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
                     )
                 }
             },
-            sourceString.indexOf("Daftar"),
+            sourceString.indexOf(DAFTAR_INDEX),
             sourceString.length,
             0
         )
@@ -188,6 +188,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
     }
 
     companion object {
+        const val DAFTAR_INDEX = "Daftar"
         fun createInstance(): Fragment {
             return OclChooseAccountFragment()
         }

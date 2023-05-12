@@ -17,7 +17,12 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -338,12 +343,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableDirectBiometric = isEnableDirectBiometric()
         refreshRolloutVariant()
 
-        if(oclPreferences.getToken().isNotEmpty() &&
-            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
-            OclUtils.isOclEnabled()
-        ) {
+        if(isOclEnabled()) {
             goToOclChooseAccount()
         }
+    }
+
+    fun isOclEnabled(): Boolean {
+        return oclPreferences.getToken().isNotEmpty() &&
+                arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
+                OclUtils.isOclEnabled()
     }
 
     open fun refreshRolloutVariant() {

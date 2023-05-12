@@ -63,7 +63,16 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.LoadMoreRecommendation
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationTitleView
+import com.tokopedia.home_account.data.model.SeparatorView
+import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -118,7 +127,12 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1406,13 +1420,11 @@ open class HomeAccountUserFragment :
     private fun checkLogoutOffering() {
         if(viewModel.getOclStatus.value?.isShowing == true) {
             showOclBtmSheet()
+        } else if(isEnableBiometricOffering()) {
+            homeAccountAnalytic.trackOnClickLogoutDialog()
+            viewModel.getFingerprintStatus()
         } else {
-            if (isEnableBiometricOffering()) {
-                homeAccountAnalytic.trackOnClickLogoutDialog()
-                viewModel.getFingerprintStatus()
-            } else {
-                showDialogLogout()
-            }
+            showDialogLogout()
         }
     }
 
@@ -1469,7 +1481,7 @@ open class HomeAccountUserFragment :
                 doLogout()
                 dismiss()
             }
-        }.show(parentFragmentManager, "one_click_login")
+        }.show(parentFragmentManager, AccountConstants.LABEL_OCL_BTM_SHEET)
     }
 
     private fun doLogoutAndSaveSession() {

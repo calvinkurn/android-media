@@ -12,4 +12,4 @@ data class LoginOclParam(
     val grantType: String = "extension",
     @SerializedName("social_type")
     val socialType: String = "10"
-): GqlParam
+) : GqlParam

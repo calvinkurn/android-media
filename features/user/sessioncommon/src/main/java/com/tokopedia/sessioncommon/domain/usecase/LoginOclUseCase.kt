@@ -55,7 +55,7 @@ class LoginOclUseCase @Inject constructor(
     override suspend fun execute(params: LoginOclParam): LoginToken {
         userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
         val result: LoginTokenPojoV2 = repository.request(graphqlQuery(), params)
-        if(result.loginToken.errors.isEmpty()) {
+        if (result.loginToken.errors.isEmpty()) {
             saveAccessToken(result.loginToken)
             return result.loginToken
         } else {

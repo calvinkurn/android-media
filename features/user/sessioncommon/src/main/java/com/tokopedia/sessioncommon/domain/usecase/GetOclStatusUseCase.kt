@@ -10,10 +10,10 @@ import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.data.ocl.OclStatusResponse
 import javax.inject.Inject
 
-class GetOclStatusUseCase @Inject constructor (
+class GetOclStatusUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-): CoroutineUseCase<GetOclStatusParam, OclStatus>(dispatcher.io) {
+) : CoroutineUseCase<GetOclStatusParam, OclStatus>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         query getOclStatus(${'$'}ocl_jwt_token: String!){

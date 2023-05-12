@@ -11,15 +11,15 @@ import com.tokopedia.media.loader.loadImageCircle
 class OclAccountAdapter() : RecyclerView.Adapter<OclAccountAdapter.OclViewHolder>() {
 
     val list: MutableList<OclAccount> = mutableListOf()
-    lateinit var mListener: OclChooseAccountListener
+    var mListener: OclChooseAccountListener? = null
 
     inner class OclViewHolder internal constructor(val binding: ItemOclAccountBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: OclAccount) {
             binding.avatar.loadImageCircle(item.profilePicture)
-            binding.mainView.setOnClickListener { mListener.onAccountSelected(item) }
+            binding.mainView.setOnClickListener { mListener?.onAccountSelected(item) }
             binding.name.text = item.fullName
             binding.email.text = item.loginTypeWording
-            binding.deleteIcon.setOnClickListener { mListener.onDeleteButtonClicked(item) }
+            binding.deleteIcon.setOnClickListener { mListener?.onDeleteButtonClicked(item) }
         }
     }
 
