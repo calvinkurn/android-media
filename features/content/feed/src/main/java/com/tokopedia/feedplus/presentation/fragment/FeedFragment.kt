@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,14 +27,12 @@ import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
+import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
-import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
@@ -87,7 +84,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -102,7 +98,7 @@ class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
-    ProductItemInfoBottomSheet.Listener,
+    FeedTaggedProductBottomSheet.Listener,
     FeedFollowersOnlyBottomSheet.Listener,
     ShareBottomsheetListener {
 
@@ -160,6 +156,16 @@ class FeedFragment :
             feedPostViewModel.processSuspendedLike()
         }
 
+    private val addToCartLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.processSuspendedAddProductToCart()
+        }
+
+    private val buyLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.processSuspendedBuyProduct()
+        }
+
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -197,12 +203,14 @@ class FeedFragment :
 
         initView()
         observePostData()
-        observeAddToCart()
         observeReport()
         observeDelete()
         observeFollow()
         observeLikeContent()
         observeResumePage()
+        observeMerchantVoucher()
+        observeAddProductToCart()
+        observeBuyProduct()
 
         observeEvent()
     }
@@ -219,7 +227,7 @@ class FeedFragment :
 
     override fun onDestroyView() {
         _binding = null
-        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
@@ -281,11 +289,14 @@ class FeedFragment :
             FeedMenuIdentifier.EDIT -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-                intent.putExtra(CreatePostViewModel.TAG, CreatePostViewModel().apply {
-                    caption = feedMenuItem.contentData?.caption.orEmpty()
-                    postId = feedMenuItem.contentData?.postId.orEmpty()
-                    editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
-                })
+                intent.putExtra(
+                    CreatePostViewModel.TAG,
+                    CreatePostViewModel().apply {
+                        caption = feedMenuItem.contentData?.caption.orEmpty()
+                        postId = feedMenuItem.contentData?.postId.orEmpty()
+                        editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
+                    }
+                )
 
                 startActivity(intent)
             }
@@ -308,7 +319,6 @@ class FeedFragment :
                         }
                         show()
                     }
-
                 }
             }
 
@@ -477,14 +487,10 @@ class FeedFragment :
     ) {
         if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
             openProductTagBottomSheet(
-                postId = postId,
                 author = author,
-                postType = postType,
-                isFollowing = isFollowing,
-                campaign = campaign,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel,
+                trackerData = trackerModel
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -518,11 +524,7 @@ class FeedFragment :
                 }
             } else {
                 openProductTagBottomSheet(
-                    postId = postId,
                     author = author,
-                    postType = postType,
-                    isFollowing = isFollowing,
-                    campaign = campaign,
                     hasVoucher = hasVoucher,
                     products = products,
                     trackerData = trackerModel
@@ -539,97 +541,14 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?,
+        trackerModel: FeedTrackerDataModel?
     ) {
         openProductTagBottomSheet(
-            postId = postId,
             author = author,
-            postType = postType,
-            isFollowing = isFollowing,
-            campaign = campaign,
             hasVoucher = hasVoucher,
             products = products,
             trackerData = trackerModel
         )
-    }
-
-    override fun onBottomSheetThreeDotsClicked(
-        item: ProductPostTagModelNew,
-        context: Context,
-        shopId: String
-    ) {
-        // do nothing
-    }
-
-    override fun onTaggedProductCardImpressed(
-        activityId: String,
-        postTagItemList: List<FeedXProduct>,
-        type: String,
-        shopId: String,
-        isFollowed: Boolean,
-        mediaType: String,
-        hasVoucher: Boolean,
-        authorType: String
-    ) {
-        // do nothing
-    }
-
-    override fun onTaggedProductCardClicked(
-        positionInFeed: Int,
-        redirectUrl: String,
-        postTagItem: FeedXProduct,
-        itemPosition: Int,
-        mediaType: String
-    ) {
-        currentTrackerData?.let {
-            feedAnalytics.eventClickProductInProductListBottomSheet(
-                it,
-                postTagItem.productName,
-                postTagItem.id,
-                postTagItem.price.toDouble(),
-                postTagItem.shopName,
-                positionInFeed
-            )
-        }
-        RouteManager.route(requireContext(), redirectUrl)
-    }
-
-    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
-        currentTrackerData?.let {
-            feedAnalytics.eventClickCartButton(
-                it,
-                item.product.productName,
-                item.product.id,
-                item.product.price.toDouble(),
-                item.shopId,
-                item.shopName,
-                item.positionInFeed
-            )
-        }
-        feedPostViewModel.addToCart(
-            productId = item.product.id,
-            productName = item.product.name,
-            price = item.price,
-            shopId = item.shopId
-        )
-    }
-
-    override fun onBuyButtonClicked(item: ProductPostTagModelNew) {
-        currentTrackerData?.let {
-            feedAnalytics.eventClickBuyButton(
-                it,
-                item.product.productName,
-                item.product.id,
-                item.product.price.toDouble(),
-                item.shopId,
-                item.shopName,
-                item.positionInFeed
-            )
-        }
-    }
-
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
-        // do nothing
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -673,7 +592,6 @@ class FeedFragment :
                     }
 
                     override fun onError(linkerError: LinkerError?) {
-
                     }
                 }
             )
@@ -698,7 +616,6 @@ class FeedFragment :
         }
 
         feedPostViewModel.setUnsetReminder(campaignId, setReminder)
-
     }
 
     override fun onTopAdsImpression(
@@ -738,14 +655,10 @@ class FeedFragment :
                     positionInFeed
                 )
                 openProductTagBottomSheet(
-                    postId = postId,
                     author = author,
-                    postType = postType,
-                    isFollowing = isFollowing,
-                    campaign = campaign,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it,
+                    trackerData = it
                 )
             }
         }
@@ -776,36 +689,6 @@ class FeedFragment :
                         )
                     }
                 }
-            }
-        }
-    }
-
-    private fun observeAddToCart() {
-        feedPostViewModel.atcRespData.observe(
-            viewLifecycleOwner
-        ) {
-            val productBottomSheet =
-                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)
-            when (it) {
-                is FeedResult.Success -> {
-                    productBottomSheet?.showToastWithAction(
-                        getString(feedR.string.feeds_add_to_cart_success_text),
-                        Toaster.TYPE_NORMAL,
-                        getString(feedR.string.feeds_add_to_cart_toaster_action_text)
-                    ) {
-                        moveToAddToCartPage()
-                    }
-                }
-                is FeedResult.Failure -> {
-                    val errorMessage = it.error.message
-                    if (errorMessage != null) {
-                        productBottomSheet?.showToasterOnBottomSheetOnSuccessFollow(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
-                    }
-                }
-                else -> {}
             }
         }
     }
@@ -967,8 +850,61 @@ class FeedFragment :
 
     private fun observeResumePage() {
         feedMainViewModel.isPageResumed.observe(viewLifecycleOwner) { isResumed ->
-            if (isResumed) resumeCurrentVideo()
-            else pauseCurrentVideo()
+            if (isResumed) {
+                resumeCurrentVideo()
+            } else {
+                pauseCurrentVideo()
+            }
+        }
+    }
+
+    private fun observeAddProductToCart() {
+        feedPostViewModel.observeAddProductToCart.observe(viewLifecycleOwner) {
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
+            when (it) {
+                is Success -> productBottomSheet?.doShowToaster(
+                    message = getString(feedR.string.feeds_add_to_cart_success_text),
+                    actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
+                    actionClickListener = {
+                        goToCartPage()
+                    }
+                )
+                is Fail -> productBottomSheet?.doShowToaster(
+                    message = it.throwable.localizedMessage.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+            }
+        }
+    }
+
+    private fun observeBuyProduct() {
+        feedPostViewModel.observeBuyProduct.observe(viewLifecycleOwner) {
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
+            when (it) {
+                is Success -> goToCartPage()
+                is Fail -> productBottomSheet?.doShowToaster(
+                    message = it.throwable.localizedMessage.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+            }
+        }
+    }
+
+    private fun observeMerchantVoucher() {
+        feedPostViewModel.merchantVoucherLiveData.observe(viewLifecycleOwner) { result ->
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
+            when (result) {
+                is Success -> {
+                    productBottomSheet?.showMerchantVoucherWidget(
+                        result.data,
+                        feedMvcAnalytics
+                    )
+                }
+                is Fail -> productBottomSheet?.hideMerchantVoucherWidget()
+            }
         }
     }
 
@@ -1152,7 +1088,7 @@ class FeedFragment :
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(
                         requireContext(),
-                        IconUnify.EDIT,
+                        IconUnify.EDIT
                     ),
                     name = FeedMenuIdentifier.EDIT.value,
                     type = FeedMenuIdentifier.EDIT,
@@ -1204,61 +1140,61 @@ class FeedFragment :
     }
 
     private fun openProductTagBottomSheet(
-        postId: String,
         author: FeedAuthorModel,
-        postType: String,
-        isFollowing: Boolean,
-        campaign: FeedCardCampaignModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
         trackerData: FeedTrackerDataModel?
     ) {
-        feedMvcAnalytics.trackerData = trackerData
-        trackerData?.let {
-            currentTrackerData = it
+        if (products.isEmpty()) return
+
+        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
+            setCustomListener(this@FeedFragment)
+        }
+
+        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
+            feedMvcAnalytics.trackerData = data
+            currentTrackerData = data
             feedAnalytics.eventViewProductListBottomSheets(
-                it,
+                data,
                 products
             )
-        }
 
-        val productBottomSheet = ProductItemInfoBottomSheet()
-        productBottomSheet.closeClicked = {
-            trackerData?.let {
-                feedAnalytics.eventClickCloseProductListBottomSheet(it)
+            productBottomSheet.setOnDismissListener {
+                feedAnalytics.eventClickCloseProductListBottomSheet(data)
             }
         }
+
+        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
+
+        val mappedProducts = products.map(MapperProductsToXProducts::transform)
         productBottomSheet.show(
-            childFragmentManager,
-            this,
-            ProductBottomSheetData(
-                products = MapperProductsToXProducts.transform(products),
-                postId = postId,
-                shopId = author.id,
-                postType = postType,
-                isFollowed = isFollowing,
-                shopName = author.name,
-                saleStatus = campaign.status,
-                saleType = campaign.name,
-                hasVoucher = hasVoucher,
-                authorType = author.type.toString()
-            ),
-            viewModelFactory = viewModelFactory,
-            customMvcTracker = feedMvcAnalytics,
-            tag = TAG_FEED_PRODUCT_BOTTOMSHEET
+            taggedProducts = mappedProducts,
+            manager = childFragmentManager,
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )
+        if (hasVoucher && author.isShop) getMerchantVoucher(author.id)
     }
 
-    private fun moveToAddToCartPage() {
-        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    private fun getMerchantVoucher(shopId: String) {
+        feedPostViewModel.getMerchantVoucher(shopId)
     }
 
-    private fun showToast(message: String, type: Int, actionText: String? = null) {
-        if (actionText?.isEmpty() == false) {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
-        } else {
-            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
-        }
+    private fun showToast(
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionText: String? = null,
+        actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        if (view == null) return
+        Toaster.build(
+            requireView(),
+            message,
+            type = type,
+            duration = duration,
+            actionText = actionText.orEmpty(),
+            clickListener = actionClickListener
+        ).show()
     }
 
     private fun showLoading() {
@@ -1303,6 +1239,72 @@ class FeedFragment :
         }
     }
 
+    private fun goToCartPage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+        if (product.appLink.isEmpty()) return
+
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickProductInProductListBottomSheet(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
+        RouteManager.route(requireContext(), product.appLink)
+    }
+
+    override fun onAddToCartProductButtonClicked(
+        product: FeedTaggedProductUiModel,
+        itemPosition: Int
+    ) {
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickCartButton(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopId = product.shop.id,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
+        if (userSession.isLoggedIn) {
+            feedPostViewModel.addProductToCart(product)
+        } else {
+            feedPostViewModel.suspendAddProductToCart(product)
+            addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickBuyButton(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopId = product.shop.id,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
+        if (userSession.isLoggedIn) {
+            feedPostViewModel.buyProduct(product)
+        } else {
+            feedPostViewModel.suspendBuyProduct(product)
+            buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
@@ -1313,7 +1315,7 @@ class FeedFragment :
         private const val ONE = 1
 
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
-        private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
+        private const val TAG_FEED_PRODUCT_BOTTOM_SHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
         private const val PARAM_AUTHOR_TYPE = "author_type"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
