@@ -59,7 +59,7 @@ class FeedMainViewModel @Inject constructor(
     private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
     val metaData get() = _metaData.asStateFlow()
 
-    private val _isPageResumed = MutableLiveData<Boolean>(false)
+    private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
