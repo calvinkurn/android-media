@@ -1028,6 +1028,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             val title = context?.getString(R.string.menu_setting_topads_coachmark_title)
             val description = context?.getString(R.string.menu_setting_topads_coachmark_desciption)
 
+            // setting list is generated multiple times thus invoking multiple show callbacks, dismiss the old ones to show only the latest.
+            coachMark2?.dismiss()
             if (!alreadyShow) {
                 view?.let {
                     coachMarkList.add(
