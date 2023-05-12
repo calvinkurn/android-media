@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -27,12 +28,14 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
+import com.tokopedia.people.utils.UserProfileUiBridge
 
 /**
  * Created By : Jonathan Darwin on May 12, 2023
  */
 class UserProfileReviewFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
+    private val userProfileUiBridge: UserProfileUiBridge,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
@@ -48,7 +51,7 @@ class UserProfileReviewFragment @Inject constructor(
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
-
+            userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
         }
 
         override fun updateDrawState(ds: TextPaint) {
@@ -100,6 +103,7 @@ class UserProfileReviewFragment @Inject constructor(
             if (viewModel.isSelfProfile) {
                 binding.layoutReviewHidden.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_hidden_title)
                 binding.layoutReviewHidden.tvReviewHiddenDesc.text = getSelfHiddenReviewDesc()
+                binding.layoutReviewHidden.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 binding.layoutReviewHidden.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
                 binding.layoutReviewHidden.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)

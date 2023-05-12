@@ -61,6 +61,7 @@ import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.UserProfileSharedPref
+import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -96,6 +97,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.URLEncoder
@@ -113,6 +115,7 @@ class UserProfileFragment @Inject constructor(
     private val coachMarkManager: ContentCoachMarkManager,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
     private val userProfileSharedPref: UserProfileSharedPref,
+    private val userProfileUiBridge: UserProfileUiBridge,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -354,7 +357,7 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun onClickOpenProfileSettingsPage() {
-                        openProfileSettingsPage()
+                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
                     }
                 })
             }
@@ -429,6 +432,7 @@ class UserProfileFragment @Inject constructor(
     private fun initObserver() {
         observeUiState()
         observeUiEvent()
+        observeUiBridgeEvent()
     }
 
     private fun observeUiState() {
@@ -531,6 +535,18 @@ class UserProfileFragment @Inject constructor(
                     }
                     else -> {
                         //no-op
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeUiBridgeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            userProfileUiBridge.eventBus.subscribe().collect { event ->
+                when (event) {
+                    is UserProfileUiBridge.Event.OpenProfileSetingsPage -> {
+                        openProfileSettingsPage()
                     }
                 }
             }
@@ -688,7 +704,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                openProfileSettingsPage()
+                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
