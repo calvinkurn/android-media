@@ -267,7 +267,10 @@ class FeedPostImageViewHolder(
                 bindAuthor(element)
             }
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(element, payload.payloads.toMutableList())
+                if (payload is FeedViewHolderPayloads) bind(
+                    element,
+                    payload.payloads.toMutableList()
+                )
             }
         }
     }
@@ -474,14 +477,19 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
-            postLikeButton.root.show()
-            commentButton.show()
             menuButton.show()
             shareButton.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
+
+            mData?.let {
+                if (!it.isTopAds) {
+                    postLikeButton.root.show()
+                    commentButton.show()
+                }
+            }
         }
 
         productTagView.showIfPossible()
