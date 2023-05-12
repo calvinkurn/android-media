@@ -51,9 +51,6 @@ data class FeedCardImageContentModel(
 ) : Visitable<FeedAdapterTypeFactory> {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
-    val isTypeCardPlaceholder: Boolean
-        get() = typename == TYPE_FEED_X_CARD_PLACEHOLDER
-
     val isTypeProductHighlight: Boolean
         get() = typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 

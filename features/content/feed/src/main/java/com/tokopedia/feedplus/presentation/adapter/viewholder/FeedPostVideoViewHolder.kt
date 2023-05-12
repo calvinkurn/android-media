@@ -132,7 +132,7 @@ class FeedPostVideoViewHolder(
                         data.id,
                         data.editable,
                         data.deletable,
-                        data.reportable,
+                        data.reportable || data.isTypeProductHighlight,
                         FeedContentData(
                             data.text,
                             data.id,

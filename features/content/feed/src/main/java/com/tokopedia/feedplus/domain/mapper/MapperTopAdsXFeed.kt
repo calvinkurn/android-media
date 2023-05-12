@@ -73,7 +73,7 @@ object MapperTopAdsXFeed {
             totalProducts = productList?.size.orZero(),
             media = mediaList.orEmpty(),
             followers = followers,
-            reportable = true,
+            reportable = false,
             adViewUri = data?.cpm?.uri.orEmpty(),
             adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty()
         )
