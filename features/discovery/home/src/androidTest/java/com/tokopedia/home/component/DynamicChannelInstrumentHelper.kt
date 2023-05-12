@@ -32,6 +32,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP_CO
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -540,10 +541,18 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-    if (seeAllButton.visibility == View.VISIBLE) {
+    val ctaButton = childView.findViewById<View>(R.id.cta_button_revamp)
+    if (seeAllButton != null && seeAllButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    } else if (ctaButton != null && ctaButton.isVisible) {
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.cta_button_revamp, scrollVerticalBy)))
         } catch (e: PerformException) {
             e.printStackTrace()
         }
