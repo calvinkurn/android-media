@@ -8,12 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
 
 /**
@@ -28,17 +29,25 @@ fun NestLoader(
 ) {
     when (variant) {
         is NestLoaderType.Circular -> {
-            val drawable = getCircularDrawable(variant)
-            ImageVectorLoader(modifier = modifier.getTypeSize(size = variant.size), drawable)
+            CircularProgressIndicator(
+                modifier = modifier.getTypeSize(size = variant.size),
+                color = if (variant.isWhite) {
+                    NestNN.light._0
+                } else {
+                    NestTheme.colors.GN._500
+                }
+            )
         }
 
         is NestLoaderType.Decorative -> {
-            val drawable = getDecorativeDrawable(variant)
-            ImageVectorLoader(modifier = modifier.getTypeSize(size = variant.size), drawable)
+            NestDecorativeLoader(
+                modifier = modifier.getTypeSize(size = variant.size),
+                isWhite = variant.isWhite
+            )
         }
 
         is NestLoaderType.Shimmer -> {
-            NestShimmer(type = variant.type)
+            NestShimmer(modifier = modifier, type = variant.type)
         }
     }
 }
@@ -50,20 +59,6 @@ private fun Modifier.getTypeSize(size: NestLoaderSize) = this.then(
         this
     }
 )
-
-@Composable
-private fun getDecorativeDrawable(type: NestLoaderType.Decorative) = if (type.isWhite) {
-    R.drawable.unify_loader_decorative
-} else {
-    R.drawable.unify_loader_decorative_white
-}
-
-@Composable
-private fun getCircularDrawable(type: NestLoaderType.Circular) = if (type.isWhite) {
-    R.drawable.unify_loader
-} else {
-    R.drawable.unify_loader_bw
-}
 
 @Preview
 @Composable
