@@ -7,6 +7,7 @@ import com.tokopedia.people.views.fragment.FollowerListingFragment
 import com.tokopedia.people.views.fragment.FollowingListingFragment
 import com.tokopedia.people.views.fragment.UserProfileFeedFragment
 import com.tokopedia.people.views.fragment.UserProfileFragment
+import com.tokopedia.people.views.fragment.UserProfileReviewFragment
 import com.tokopedia.people.views.fragment.UserProfileVideoFragment
 import dagger.Binds
 import dagger.Module
@@ -32,6 +33,11 @@ abstract class UserProfileFragmentModule {
     @IntoMap
     @FragmentKey(UserProfileVideoFragment::class)
     abstract fun bindUserProfileVideoFragment(fragment: UserProfileVideoFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(UserProfileReviewFragment::class)
+    abstract fun bindUserProfileReviewFragment(fragment: UserProfileReviewFragment): Fragment
 
     @Binds
     @IntoMap

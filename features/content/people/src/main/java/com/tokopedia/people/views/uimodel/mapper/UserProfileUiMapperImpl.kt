@@ -86,7 +86,7 @@ class UserProfileUiMapperImpl @Inject constructor(
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
             val expectedTabs = tabs.filter {
-                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO)
+                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO || it.key == TAB_KEY_REVIEW)
             }
             ProfileTabUiModel(
                 showTabs = expectedTabs.size > 1,
@@ -163,6 +163,7 @@ class UserProfileUiMapperImpl @Inject constructor(
     companion object {
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
+        private const val TAB_KEY_REVIEW = "review"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
         private const val EXTRA_STATS_REVIEWS = "reviews"

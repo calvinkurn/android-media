@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.people.views.fragment.UserProfileFeedFragment
+import com.tokopedia.people.views.fragment.UserProfileReviewFragment
 import com.tokopedia.people.views.fragment.UserProfileVideoFragment
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.unifycomponents.TabsUnify
@@ -47,6 +48,8 @@ class UserProfilePagerAdapter(
 
     fun getVideoTabs() = listFragment.filter { it.key == FRAGMENT_KEY_VIDEO }
 
+    fun getReviewTabs() = listFragment.filter { it.key == FRAGMENT_KEY_REVIEW }
+
     private fun attachTab() {
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
             addNewTab(tab, position)
@@ -81,6 +84,9 @@ class UserProfilePagerAdapter(
             FRAGMENT_KEY_VIDEO -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO))
             }
+            FRAGMENT_KEY_REVIEW -> {
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR))
+            }
         }
     }
 
@@ -93,6 +99,9 @@ class UserProfilePagerAdapter(
             }
             FRAGMENT_KEY_VIDEO -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+            }
+            FRAGMENT_KEY_REVIEW -> {
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             }
         }
     }
@@ -112,6 +121,11 @@ class UserProfilePagerAdapter(
                 classLoader = fragmentActivity.classLoader,
                 bundle = Bundle(),
             )
+            FRAGMENT_KEY_REVIEW -> UserProfileReviewFragment.getFragment(
+                fragmentManager = fragmentManager,
+                classLoader = fragmentActivity.classLoader,
+                bundle = Bundle(),
+            )
             else -> Fragment()
         }
     }
@@ -119,5 +133,6 @@ class UserProfilePagerAdapter(
     companion object {
         const val FRAGMENT_KEY_FEEDS = "feeds"
         const val FRAGMENT_KEY_VIDEO = "video"
+        const val FRAGMENT_KEY_REVIEW = "review"
     }
 }
