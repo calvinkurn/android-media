@@ -14,17 +14,28 @@ import javax.inject.Inject
 class DeleteCommentUseCase @Inject constructor(
     private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<DeleteParam, DeleteComment>(dispatchers.io) {
+) : CoroutineUseCase<DeleteCommentUseCase.Param, DeleteComment>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
 
 
-    override suspend fun execute(params: DeleteParam): DeleteComment {
+    override suspend fun execute(params: Param): DeleteComment {
         return repo.request(graphqlQuery(), params.convertToMap())
     }
 
+
+    data class Param(
+        @SerializedName("commentID")
+        val commentId: String
+    ) {
+        fun convertToMap() : Map<String, Any> =
+            mapOf(
+                PARAM_COMMENT_ID to commentId
+            )
+    }
+
     companion object {
-        const val PARAM_COMMENT_ID = "commentID"
+        private const val PARAM_COMMENT_ID = "commentID"
 
         const val SUCCESS_VALUE = 1L
 
@@ -39,14 +50,4 @@ class DeleteCommentUseCase @Inject constructor(
             }
         """
     }
-}
-
-data class DeleteParam(
-    @SerializedName("commentID")
-    val commentId: String
-) {
-    fun convertToMap() : Map<String, Any> =
-        mapOf(
-            DeleteCommentUseCase.PARAM_COMMENT_ID to commentId
-        )
 }

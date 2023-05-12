@@ -2,7 +2,7 @@ package com.tokopedia.content.common.comment
 
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 
 /**
  * @author by astidhiyaa on 14/02/23
@@ -19,7 +19,7 @@ sealed interface CommentAction {
     object PermanentRemoveComment : CommentAction
 
     data class ReportComment(
-        val param: FeedReportRequestParamModel
+        val param: FeedComplaintSubmitReportUseCase.Param
     ) : CommentAction
 
     data class EditTextClicked(val item: CommentUiModel.Item): CommentAction

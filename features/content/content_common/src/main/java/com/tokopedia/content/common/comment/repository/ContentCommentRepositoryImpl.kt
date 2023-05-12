@@ -5,7 +5,6 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.comment.usecase.*
 import com.tokopedia.content.common.comment.usecase.CommentParam
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
 
     override suspend fun deleteComment(commentId: String): Boolean =
         deleteCommentUseCase(
-            DeleteParam(commentId)
+            DeleteCommentUseCase.Param(commentId)
         ).data.status.success == DeleteCommentUseCase.SUCCESS_VALUE
 
     override suspend fun replyComment(
@@ -34,7 +33,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         val type =
             if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
         val response = postCommentUseCase(
-            PostCommentParam(
+            PostCommentUseCase.Param(
                 comment = comment,
                 contentID = source.id,
                 contentType = source.type,
@@ -49,7 +48,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun reportComment(
-        param: FeedReportRequestParamModel
+        param: FeedComplaintSubmitReportUseCase.Param
     ): Boolean = submitReportCommentUseCase(param).data.success
 
     override suspend fun getComments(
