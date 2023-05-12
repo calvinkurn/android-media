@@ -25,7 +25,6 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
     private val tvCourier: TextView = itemView.findViewById(R.id.tv_courier)
     private val tvPriceOrDuration: TextView = itemView.findViewById(R.id.tv_price_or_duration)
     private val imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
-//    private val tvPromoPotency: TextView = itemView.findViewById(R.id.tv_promo_potency)
     private val separator: View = itemView.findViewById(R.id.separator)
     private val codLabel: Label = itemView.findViewById(R.id.lbl_cod_available)
     private val otdLabel: Label = itemView.findViewById(R.id.lbl_otd_available)
@@ -47,12 +46,6 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
         } else {
             separator.visibility = View.VISIBLE
         }
-//        if (isEndYearPromotion && !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
-//        ) {
-//            tvPromoPotency.visibility = View.VISIBLE
-//        } else {
-//        tvPromoPotency.visibility = View.GONE
-//        }
 
         if (shippingCourierUiModel.productData.codProductData != null) {
             /*cod label*/

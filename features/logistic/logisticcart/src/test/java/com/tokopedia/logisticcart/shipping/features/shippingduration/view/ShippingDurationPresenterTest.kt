@@ -572,7 +572,6 @@ class ShippingDurationPresenterTest {
             errorId = ERROR_PINPOINT_NEEDED
             errorMessage = "error pinpoint"
         }
-//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When
@@ -639,7 +638,6 @@ class ShippingDurationPresenterTest {
             errorId = "1"
             errorMessage = "error"
         }
-//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When
@@ -670,7 +668,6 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         selectedService.serviceData.error = null
-//        every { view.isToogleYearEndPromotionOn() } returns true
         presenter.attachView(view)
 
         // When

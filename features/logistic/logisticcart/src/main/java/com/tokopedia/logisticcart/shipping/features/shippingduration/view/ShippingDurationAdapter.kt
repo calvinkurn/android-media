@@ -21,7 +21,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     private var isDisableOrderPrioritas = false
-//    private var isToggleYearEndPromotionOn = false
 
     init {
         mData = mutableListOf()
@@ -40,10 +39,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
     }
-
-//    fun setToggleYearPromotion(active: Boolean) {
-// //        this.isToggleYearEndPromotionOn = active
-//    }
 
     override fun getItemViewType(position: Int): Int = when (mData[position]) {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT

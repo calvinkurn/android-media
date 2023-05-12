@@ -44,6 +44,7 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private val tvTextDesc: TextView = itemView.findViewById(R.id.tv_text_desc)
     private val imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
     private val rlContent: RelativeLayout = itemView.findViewById(R.id.rl_content)
+
 //    private val tvPromoPotency: TextView = itemView.findViewById(R.id.tv_promo_potency)
     private val tvOrderPrioritas: TextView = itemView.findViewById(R.id.tv_order_prioritas)
     private val tvShippingInformation: Typography = itemView.findViewById(R.id.tv_shipping_information)
@@ -60,19 +61,12 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         shippingDurationUiModel: ShippingDurationUiModel,
         shippingDurationAdapterListener: ShippingDurationAdapterListener?,
         isDisableOrderPrioritas: Boolean
-//        isYearEndPromotion: Boolean
     ) {
         if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
             tvShippingInformation.visibility = View.VISIBLE
         } else {
             tvShippingInformation.visibility = View.GONE
         }
-// always gone because serviceData.isPromo value currently only 0
-//        if (isYearEndPromotion && shippingDurationUiModel.serviceData.isPromo == 1) {
-//            tvPromoPotency.visibility = View.VISIBLE
-//        } else {
-//        tvPromoPotency.visibility = View.GONE
-//        }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
             tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, RUnify.color.Unify_N700_44))
