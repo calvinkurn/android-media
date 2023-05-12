@@ -53,8 +53,8 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                 if (shouldShowErrorState) handleErrorState()
             }
 
-            mProductHighlightViewModel?.hideShimmer?.observe(it) { shouldShowShimmer ->
-                if (shouldShowShimmer) {
+            mProductHighlightViewModel?.hideShimmer?.observe(it) { shouldHideShimmer ->
+                if (shouldHideShimmer) {
                     binding.bannerContainerLayout.removeAllViews()
                 }
             }

@@ -31,7 +31,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
 
@@ -48,10 +47,10 @@ class ProductHighlightItem(
 ) {
 
     var productHighlightView = View(context)
-    var singleBinding: DiscoItemSingleProductHighlightBinding? = null
-    var multipleBinding: DiscoItemMultiProductHighlightBinding? = null
-    var emptySingleBinding: EmptyStateProductHighlightSingleBinding? = null
-    var emptyDoubleBinding: EmptyStateProductHighlightDoubleBinding? = null
+    private var singleBinding: DiscoItemSingleProductHighlightBinding? = null
+    private var multipleBinding: DiscoItemMultiProductHighlightBinding? = null
+    private var emptySingleBinding: EmptyStateProductHighlightSingleBinding? = null
+    private var emptyDoubleBinding: EmptyStateProductHighlightDoubleBinding? = null
 
     init {
         addItemConstrains()
@@ -188,7 +187,7 @@ class ProductHighlightItem(
                     }
 
                     if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = "Terjual Habis"
+                        phImageTextBottom.text = context.getString(R.string.terjual_habis_camel)
                         val matrix = ColorMatrix().apply {
                             setSaturation(0f)
                         }
@@ -294,7 +293,7 @@ class ProductHighlightItem(
                     }
 
                     if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = "Terjual Habis"
+                        phImageTextBottom.text = context.getString(R.string.terjual_habis_camel)
                         val matrix = ColorMatrix().apply {
                             setSaturation(0f)
                         }
@@ -336,9 +335,14 @@ class ProductHighlightItem(
             }
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLE) {
             with(discoItemMultiProductHighlightBinding) {
-                guideline.setGuidelinePercent(0.38f)
+                guideline.setGuidelinePercent(0.405f)
                 phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_3)
                 phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
+                phProductDiscount.setPadding(
+                    context.resources.getDimensionPixelOffset(R.dimen.dp_4),
+                    context.resources.getDimensionPixelOffset(R.dimen.dp_2),
+                    context.resources.getDimensionPixelOffset(R.dimen.dp_4),
+                    context.resources.getDimensionPixelOffset(R.dimen.dp_2))
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
