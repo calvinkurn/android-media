@@ -1015,11 +1015,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
         view?.post{
-            showCoachMarkPromoCreationItem(menuName, targetView)
+            showCoachMarkTopAdsMenuItem(menuName, targetView)
         }
     }
 
-    private fun showCoachMarkPromoCreationItem(menuName: String, view: View?) {
+    private fun showCoachMarkTopAdsMenuItem(menuName: String, view: View?) {
         val key = "$menuName+$SHARED_PREF_SUFFIX"
         val coachMarkList = arrayListOf<CoachMark2Item>()
 
@@ -1028,9 +1028,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             val title = context?.getString(R.string.menu_setting_topads_coachmark_title)
             val description = context?.getString(R.string.menu_setting_topads_coachmark_desciption)
 
-            // setting list is generated multiple times thus invoking multiple show callbacks, dismiss the old ones to show only the latest.
-            coachMark2?.dismiss()
-            if (!alreadyShow) {
+            if (!alreadyShow && viewModel.isTopAdsShopUsed.value != null) {
                 view?.let {
                     coachMarkList.add(
                         CoachMark2Item(
@@ -1041,7 +1039,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                         )
                     )
                 }
-
 
                 coachMark2?.showCoachMark(coachMarkList, null, 0)
                 sharedPref.putBoolean(key, true)
