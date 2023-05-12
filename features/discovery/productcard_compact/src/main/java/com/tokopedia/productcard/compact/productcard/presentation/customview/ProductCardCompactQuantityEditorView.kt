@@ -242,10 +242,11 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showCheckMarkIcon() {
+        imageCheckMark.show()
         background.hide()
         editText.hide()
         subButton.hide()
-        imageCheckMark.show()
+        addButton.hide()
         addButton.alpha = MIN_ALPHA
         addToCartBtnShimmer.alpha = MIN_ALPHA
     }
@@ -445,6 +446,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
         background.show()
+        addButton.show()
         editText.hide()
         subButton.hide()
         imageCheckMark.hide()
