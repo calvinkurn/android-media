@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Success
+import com.tokopedia.iris.Iris
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
@@ -40,6 +41,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 class MPSFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val trackingQueue: TrackingQueue,
+    private val iris: Iris,
 ):
     TkpdBaseV4Fragment(),
     SearchView,
@@ -105,6 +107,7 @@ class MPSFragment @Inject constructor(
                 context,
                 viewModel,
                 trackingQueue,
+                iris,
             ),
             emptyStateListener = this,
         )

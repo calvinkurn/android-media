@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.searchbar
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.every
 import io.mockk.just
@@ -18,6 +19,7 @@ internal open class SearchBarViewModelTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected val coachMarkLocalCache: CoachMarkLocalCache = mockk()
+    protected val mpsLocalCache: MpsLocalCache = mockk()
     protected lateinit var viewModel: SearchBarViewModel
 
     @Before
@@ -28,6 +30,7 @@ internal open class SearchBarViewModelTestFixtures {
     protected open fun createSearchBarViewModel(): SearchBarViewModel {
         return SearchBarViewModel(
             coachMarkLocalCache,
+            mpsLocalCache,
             CoroutineTestDispatchersProvider,
         )
     }
@@ -47,6 +50,7 @@ internal open class SearchBarViewModelTestFixtures {
 
     protected fun `Given mps enabled and no coach mark should be displayed`() {
         `Given no coach mark should be displayed`()
+        `Given should animate icon plus`()
         `Given coach mark local cache mark displayed will just run`()
         `Given mps is enabled`()
     }
@@ -77,6 +81,14 @@ internal open class SearchBarViewModelTestFixtures {
         every { coachMarkLocalCache.shouldShowPlusIconCoachMark() } returns true
     }
 
+    protected fun `Given should animate icon plus`() {
+        every { mpsLocalCache.shouldAnimatePlusIcon() } returns true
+    }
+
+    protected fun `Given should not animate icon plus`() {
+        every { mpsLocalCache.shouldAnimatePlusIcon() } returns false
+    }
+
     protected fun `Then verify SearchBarKeyword list`(expectedKeywords: List<SearchBarKeyword>) {
         viewModel.searchBarKeywords.value shouldBe expectedKeywords
     }
@@ -87,7 +99,6 @@ internal open class SearchBarViewModelTestFixtures {
 
     protected fun `Then verify coach mark local cache is called`() {
         verify {
-            coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
             coachMarkLocalCache.shouldShowPlusIconCoachMark()
         }
     }

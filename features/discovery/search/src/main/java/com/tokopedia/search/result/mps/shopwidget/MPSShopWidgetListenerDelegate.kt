@@ -2,6 +2,7 @@ package com.tokopedia.search.result.mps.shopwidget
 
 import android.content.Context
 import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
+import com.tokopedia.iris.Iris
 import com.tokopedia.search.result.mps.MPSViewModel
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
@@ -15,6 +16,7 @@ class MPSShopWidgetListenerDelegate(
     context: Context?,
     private val mpsViewModel: MPSViewModel?,
     private val trackingQueue: TrackingQueue,
+    private val iris: Iris,
 ): MPSShopWidgetListener,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
@@ -26,7 +28,7 @@ class MPSShopWidgetListenerDelegate(
         get() = TrackApp.getInstance().gtm
 
     override fun onShopImpressed(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-        mpsShopWidgetDataView.click(analytics)
+        mpsShopWidgetDataView.impress(iris)
     }
 
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {

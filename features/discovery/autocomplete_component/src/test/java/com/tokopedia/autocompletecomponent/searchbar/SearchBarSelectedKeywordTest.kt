@@ -56,6 +56,7 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
                 isAddButtonEnabled = true,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
+                isMpsAnimationEnabled = true,
             )
         )
     }

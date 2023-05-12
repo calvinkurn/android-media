@@ -14,6 +14,7 @@ internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
     @Test
     fun `enable mps success`() {
         `Given no coach mark should be displayed`()
+        `Given should animate icon plus`()
 
         viewModel.enableMps()
 
@@ -22,6 +23,7 @@ internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
             SearchBarState(
                 isMpsEnabled = true,
                 isAddButtonEnabled = true,
+                isMpsAnimationEnabled = true,
             )
         )
     }

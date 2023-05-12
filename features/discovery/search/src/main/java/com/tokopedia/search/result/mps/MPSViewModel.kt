@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
+import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.mps.addtocart.AddToCartViewModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
@@ -39,6 +40,7 @@ class MPSViewModel @Inject constructor(
     @param:Named(GET_DYNAMIC_FILTER_SHOP_USE_CASE)
     private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
+    private val mpsLocalCache: MpsLocalCache,
 ): ViewModel(),
     SearchViewModel<MPSState>,
     QuickFilterViewModel,
@@ -80,10 +82,22 @@ class MPSViewModel @Inject constructor(
 
     private fun multiProductSearch() {
         mpsFirstPageUseCase.execute(
-            onSuccess = { mpsModel -> updateState { it.success(mpsModel) } },
+            onSuccess = { mpsModel ->
+                updateState {
+                    // should change to check response code when it become available
+                    if (mpsModel.shopList.isNotEmpty() && !mpsLocalCache.isFirstMpsSuccess()) {
+                        mpsLocalCache.markFirstMpsSuccess()
+                    }
+                    it.success(mpsModel)
+                }
+            },
             onError = { throwable -> updateState { it.error(throwable) } },
             useCaseRequestParams = mpsUseCaseRequestParams(),
         )
+    }
+
+    private fun markFirstMpsSuccess() {
+
     }
 
     private fun mpsUseCaseRequestParams(): RequestParams = RequestParams.create().apply {

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.activity
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.search.di.module.CartLocalCacheHandlerModule
+import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchFragmentModule
@@ -27,6 +28,7 @@ import dagger.Component
         SearchContextModule::class,
         TrackingQueueModule::class,
         SearchFragmentModule::class,
+        IrisModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

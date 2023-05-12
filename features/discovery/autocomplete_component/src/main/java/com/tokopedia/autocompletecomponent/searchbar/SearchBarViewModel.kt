@@ -17,6 +17,7 @@ import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.autocompletecomponent.util.setSearchQueries
 import com.tokopedia.autocompletecomponent.util.setSearchQuery
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.debounce
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 class SearchBarViewModel @Inject constructor(
     private val coachMarkLocalCache: CoachMarkLocalCache,
+    private val mpsLocalCache: MpsLocalCache,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
     private val _searchParameterLiveData: MutableLiveData<Map<String, String>> = MutableLiveData()
@@ -279,7 +281,7 @@ class SearchBarViewModel @Inject constructor(
         val allowKeyboardDismiss = searchBarKeywordSize == 0
         val shouldDisplayMpsPlaceHolder = searchBarKeywordSize != 0
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
-        val isMpsAnimationEnabled = coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
+        val isMpsAnimationEnabled = mpsLocalCache.shouldAnimatePlusIcon() && shouldEnableAddButton
         val mpsState = currentState.copy(
             isMpsAnimationEnabled = isMpsAnimationEnabled,
             shouldShowCoachMark = shouldShowMpsCoachMark,
@@ -292,9 +294,9 @@ class SearchBarViewModel @Inject constructor(
 
     fun enableMps() {
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
-        val isMpsAnimationEnabled = coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
         val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
         val shouldEnableAddButton = searchBarKeywordSize < 3
+        val isMpsAnimationEnabled = mpsLocalCache.shouldAnimatePlusIcon() && shouldEnableAddButton
         val allowKeyboardDismiss = searchBarKeywordSize == 0
         val newState = currentSearchBarState.copy(
             isMpsEnabled = true,

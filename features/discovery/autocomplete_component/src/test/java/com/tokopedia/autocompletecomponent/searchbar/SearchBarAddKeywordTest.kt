@@ -26,6 +26,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `Given coach mark local cache mark displayed will just run`()
         `Given should show added keyword coach mark`()
         `Given should not show icon plus coach mark`()
+        `Given should animate icon plus`()
         `Given mps is enabled`()
 
         val query = "samsung"

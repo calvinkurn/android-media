@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +31,6 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchListener
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewListener
-import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
@@ -41,6 +39,7 @@ import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class InitialStateFragment:
@@ -419,6 +418,7 @@ class InitialStateFragment:
     }
 
     override fun onMpsChipClicked(item: BaseItemInitialStateSearch) {
+        item.click(TrackApp.getInstance().gtm)
         viewModel?.onInitialStateItemSelected(item)
     }
 

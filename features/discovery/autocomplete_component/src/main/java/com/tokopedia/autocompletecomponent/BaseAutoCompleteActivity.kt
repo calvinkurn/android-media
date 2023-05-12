@@ -51,6 +51,7 @@ import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
+import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
 import com.tokopedia.coachmark.CoachMark2
@@ -440,6 +441,9 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         return query.ifEmpty { searchParameter[HINT] as String }
     }
+    private fun getTrackingQueryOrHint(searchParameter: Map<String, String>) : String {
+        return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter[HINT] as String }
+    }
 
     private fun createSearchResultApplink(searchParameter: Map<String, String>): String {
         val parameter = searchParameter
@@ -462,7 +466,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         searchResultApplink: String,
     ) {
         val query = searchParameter.getSearchQuery()
-        val queryOrHint = getQueryOrHint(searchParameter)
+        val queryOrHint = getTrackingQueryOrHint(searchParameter)
         val parameter = searchParameter
         val pageSource = Dimension90Utils.getDimension90(parameter)
         val isInitialState = query.isEmpty()

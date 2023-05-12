@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.iris.Iris
 import com.tokopedia.search.R
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
@@ -35,6 +36,7 @@ class MPSFragmentTest {
     private val context: Context
         get() = InstrumentationRegistry.getInstrumentation().context!!
     private val trackingQueue = mockk<TrackingQueue>(relaxed = true)
+    private val iris = mockk<Iris>(relaxed = true)
 
     private inline fun <reified F : Fragment> launchFragmentInContainer(
         crossinline instantiate: () -> F
@@ -42,7 +44,8 @@ class MPSFragmentTest {
         themeResId = R.style.DiscoveryTheme,
         instantiate = instantiate
     )
-    private fun viewModelFactory(mpsState: MPSState) : ViewModelProvider.Factory {
+
+    private fun viewModelFactory(mpsState: MPSState): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val mutableStateFlow = MutableStateFlow(mpsState)
@@ -53,11 +56,13 @@ class MPSFragmentTest {
         }
     }
 
+    private fun createMPSFragment(mpsState: MPSState) : Fragment {
+        return MPSFragment(viewModelFactory(mpsState), trackingQueue, iris)
+    }
+
     @Test
     fun loading() {
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(MPSState()), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(MPSState()) }
 
         onView(withId(R.id.mpsLoadingView)).check(matches(isDisplayed()))
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
@@ -68,9 +73,7 @@ class MPSFragmentTest {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateSuccess = MPSState().success(mpsModel)
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
         onView(withId(R.id.mpsLoadingView)).check(matches(not(isDisplayed())))
@@ -80,9 +83,7 @@ class MPSFragmentTest {
     fun failed() {
         val mpsStateError = MPSState().error(Error("test exception"))
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateError), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateError) }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
         onView(withId(R.id.mpsLoadingView)).check(matches(not(isDisplayed())))
@@ -94,9 +95,7 @@ class MPSFragmentTest {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateError = MPSState().success(mpsModel).errorLoadMore(Error("test exception"))
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateError), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateError) }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
     }
@@ -106,9 +105,7 @@ class MPSFragmentTest {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
         val mpsStateSuccess = MPSState().success(mpsModel)
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         onView(withId(R.id.mpsEmptyStateKeywordImage)).check(matches(isDisplayed()))
     }
@@ -117,13 +114,11 @@ class MPSFragmentTest {
     fun empty_state_filter() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
         val appliedFilter = mpsModel.quickFilterList.first().options.first()
-        val mpsStateSuccess = MPSState(mapOf(
-            appliedFilter.key to appliedFilter.value
-        )).success(mpsModel)
+        val mpsStateSuccess = MPSState(
+            mapOf( appliedFilter.key to appliedFilter.value )
+        ).success(mpsModel)
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         onView(withId(R.id.mpsEmptyStateFilterImage)).check(matches(isDisplayed()))
     }
@@ -133,9 +128,7 @@ class MPSFragmentTest {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateSuccess = MPSState().success(mpsModel).openBottomSheetFilter()
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess),trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         onView(withId(R.id.progressBarSortFilterBottomSheet)).check(matches(isDisplayed()))
     }
@@ -149,9 +142,7 @@ class MPSFragmentTest {
             .openBottomSheetFilter()
             .setBottomSheetFilterModel(dynamicFilterModel)
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         onView(withId(R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
     }
@@ -161,14 +152,14 @@ class MPSFragmentTest {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
         val mpsStateSuccess = MPSState()
             .success(mpsModel)
-            .successAddToCart(AddToCartDataModel(
-                status = AddToCartDataModel.STATUS_OK,
-                data = DataModel(success = 1, message = arrayListOf("Success Add to Cart")),
-            ))
+            .successAddToCart(
+                AddToCartDataModel(
+                    status = AddToCartDataModel.STATUS_OK,
+                    data = DataModel(success = 1, message = arrayListOf("Success Add to Cart")),
+                )
+            )
 
-        launchFragmentInContainer {
-            MPSFragment(viewModelFactory(mpsStateSuccess), trackingQueue)
-        }
+        launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
         Thread.sleep(3_000)
     }

@@ -23,16 +23,30 @@ internal fun Map<String, String>.hasMpsQuery() : Boolean {
 }
 
 internal fun Map<String, String>.getMpsSearchQueryString(): String {
+    return getMpsQueryString()
+}
+
+private fun Map<String, String>.getMpsQueryString(separator: String = ", ") : String {
     return if (contains(SearchApiConst.Q)) {
         get(SearchApiConst.Q)
     } else {
-        mutableListOf<String>().apply {
-            if (hasQuery1()) add(get(SearchApiConst.Q1).orEmpty())
-            if (hasQuery2()) add(get(SearchApiConst.Q2).orEmpty())
-            if (hasQuery3()) add(get(SearchApiConst.Q3).orEmpty())
-        }
-            .joinToString()
+        joinMpsQueryString(separator)
     } ?: ""
+}
+
+private fun Map<String, String>.joinMpsQueryString(
+    separator: String = ", "
+): String  {
+    return mutableListOf<String>().apply {
+        if (hasQuery1()) add(get(SearchApiConst.Q1).orEmpty())
+        if (hasQuery2()) add(get(SearchApiConst.Q2).orEmpty())
+        if (hasQuery3()) add(get(SearchApiConst.Q3).orEmpty())
+    }
+        .joinToString(separator)
+}
+
+internal fun Map<String, String>.getMpsTrackingSearchQueryString(): String {
+    return getMpsQueryString(" ^ ")
 }
 
 internal fun Map<String, String>.isMps(): Boolean {
@@ -45,6 +59,14 @@ internal fun Map<String, String>.isMps(): Boolean {
 internal fun Map<String, String>.getSearchQuery(): String {
     return when {
         isMps() -> getMpsSearchQueryString()
+        contains(SearchApiConst.Q) -> get(SearchApiConst.Q).orEmpty()
+        contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD).orEmpty()
+        else -> ""
+    }
+}
+internal fun Map<String, String>.getTrackingSearchQuery(): String {
+    return when {
+        isMps() -> getMpsTrackingSearchQueryString()
         contains(SearchApiConst.Q) -> get(SearchApiConst.Q).orEmpty()
         contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD).orEmpty()
         else -> ""
