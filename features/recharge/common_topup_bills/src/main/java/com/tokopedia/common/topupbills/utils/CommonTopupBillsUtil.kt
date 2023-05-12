@@ -7,26 +7,11 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 class CommonTopupBillsUtil {
 
     companion object {
-        const val REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER = "android_customer_enable_digital_favorite_number"
-
         const val NUMBER_CODE = "62"
         const val FORMATTED_NUMBER_CODE = "+62"
         const val NORMALIZED_NUMBER_PREFIX = "0"
         const val NUMBER_REGEX = "[^0-9]+"
         const val SYMBOL_REGEX = "[+-.:;]"
-
-        fun isFavoriteNumberRevamp(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER, true)
-        }
-
-        fun getApplinkFavoriteNumber(context: Context): String {
-            return if (isFavoriteNumberRevamp(context)) {
-                ApplinkConsInternalDigital.FAVORITE_NUMBER
-            } else {
-                ApplinkConsInternalDigital.SEARCH_NUMBER
-            }
-        }
 
         fun formatPrefixClientNumber(phoneNumber: String?): String {
             phoneNumber?.run {

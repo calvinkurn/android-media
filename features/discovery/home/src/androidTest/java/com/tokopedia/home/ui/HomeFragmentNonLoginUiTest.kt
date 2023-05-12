@@ -16,12 +16,13 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT_NON_LOGIN
+import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -34,11 +35,12 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
+@UiTest
 class HomeFragmentNonLoginUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val totalData =
-        MOCK_HEADER_COUNT_NON_LOGIN + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
+        MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
 
     @get:Rule
     var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(
@@ -97,9 +99,13 @@ class HomeFragmentNonLoginUiTest {
                 isDisplayed()
             )
         )
+        val messageCounter = HomeMockValueHelper.DEFAULT_COUNTER_INBOX_TICKET_VALUE +
+            HomeMockValueHelper.DEFAULT_COUNTER_INBOX_REVIEW_VALUE +
+            HomeMockValueHelper.DEFAULT_COUNTER_INBOX_TALK_VALUE +
+            HomeMockValueHelper.DEFAULT_COUNTER_CHAT_UNREAD_VALUE
         onView(withTagStringValue(HomeTagHelper.getNotifCounterMessage(context))).check(
             matches(
-                withText(HomeMockValueHelper.DEFAULT_COUNTER_NOTIF_VALUE)
+                withText(messageCounter.toString())
             )
         )
 
@@ -111,7 +117,7 @@ class HomeFragmentNonLoginUiTest {
         )
         onView(withTagStringValue(HomeTagHelper.getNotifCounterCart(context))).check(
             matches(
-                withText(HomeMockValueHelper.DEFAULT_COUNTER_NOTIF_VALUE)
+                withText(HomeMockValueHelper.DEFAULT_COUNTER_NOTIF_VALUE.toString())
             )
         )
 

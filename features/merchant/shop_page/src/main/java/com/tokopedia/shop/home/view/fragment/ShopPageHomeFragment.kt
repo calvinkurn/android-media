@@ -511,9 +511,6 @@ open class ShopPageHomeFragment :
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
-            context?.let { ctx ->
-                it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
-            }
         }
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
@@ -584,6 +581,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetShopHomeWidgetContentData(it.data)
                         checkShowConfetti()
                         setHomeTabBackgroundGradient()
+                        setFestivityRvDecoration()
                         setHomeTabBackgroundPattern()
                     }
                     is Fail -> {
@@ -635,6 +633,21 @@ open class ShopPageHomeFragment :
 
             viewModel?.shopHomeWidgetContentDataError?.collect {
                 shopHomeAdapter.removeShopHomeWidget(it)
+            }
+        }
+    }
+
+    private fun setFestivityRvDecoration() {
+        val anyFestivityWidget = shopHomeAdapter.getShopHomeWidgetData().any {
+            it.isFestivity
+        }
+        if (anyFestivityWidget) {
+            getRecyclerView(view)?.let {
+                if (it.itemDecorationCount == Int.ZERO) {
+                    context?.let { ctx ->
+                        it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
+                    }
+                }
             }
         }
     }
