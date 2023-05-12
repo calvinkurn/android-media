@@ -62,6 +62,8 @@
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
     <dimen name="home_todo_widget_cta_height">32dp</dimen>
 
+    <dimen name="home_todo_widget_label_discount_height">20dp</dimen>
+
     <dimen name="home_dynamic_header_cta_container">32dp</dimen>
     <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
     <dimen name="home_dynamic_header_subtitle_top_padding">6dp</dimen>
