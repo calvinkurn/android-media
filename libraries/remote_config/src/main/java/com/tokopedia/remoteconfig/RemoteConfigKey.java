@@ -37,8 +37,6 @@ public class RemoteConfigKey {
     public static final String NOTIFICATION_LOGGER = "notification_logger";
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
-    public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
-
 
 
     public static final String SHOW_REFERRAL_HELP_LINK = "app_show_apa_itu_tokocash_referral";
@@ -78,12 +76,6 @@ public class RemoteConfigKey {
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
-
-
-
-
-    public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
-
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
     public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
@@ -106,11 +98,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
 
-    public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
-
-
-    public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
-    public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
     public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
@@ -184,8 +171,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
-
-    public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
