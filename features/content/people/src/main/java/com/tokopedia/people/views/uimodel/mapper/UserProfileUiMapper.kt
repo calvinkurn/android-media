@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.*
@@ -28,4 +29,9 @@ interface UserProfileUiMapper {
     fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel
 
     fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel>
+
+    fun mapUserReviewList(
+        response: GetUserReviewListResponse,
+        currentPage: Int,
+    ): UserReviewUiModel
 }

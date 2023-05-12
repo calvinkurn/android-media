@@ -13,8 +13,10 @@ import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.GetProfileSettingsRequest
+import com.tokopedia.people.model.GetUserReviewListRequest
 import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -46,6 +48,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val updateChannelUseCase: UpdateChannelUseCase,
     private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
     private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
+    private val getUserReviewListUseCase: GetUserReviewListUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -172,6 +175,22 @@ class UserProfileRepositoryImpl @Inject constructor(
                 )
             )
         ).data.success
+    }
+
+    override suspend fun getUserReviewList(
+        userID: String,
+        limit: Int,
+        page: Int
+    ): UserReviewUiModel = withContext(dispatcher.io) {
+        val response = getUserReviewListUseCase(
+            GetUserReviewListRequest(
+                userID = userID,
+                limit = limit,
+                page = page,
+            )
+        )
+
+        mapper.mapUserReviewList(response, page)
     }
 
     companion object {

@@ -10,6 +10,7 @@ import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -155,6 +156,49 @@ class UserProfileUiMapperImpl @Inject constructor(
             )
         }
     }
+
+    override fun mapUserReviewList(
+        response: GetUserReviewListResponse,
+        currentPage: Int,
+    ): UserReviewUiModel {
+        return UserReviewUiModel(
+            reviewList = response.data.reviewList.map {
+                UserReviewUiModel.Review(
+                    feedbackID = it.feedbackID,
+                    product = UserReviewUiModel.Product(
+                        productID = it.product.productID,
+                        productName = it.product.productName,
+                        productImageURL = it.product.productImageURL,
+                        productPageURL = it.product.productPageURL,
+                        productStatus = it.product.productStatus,
+                    ),
+                    rating = it.rating,
+                    reviewText = it.reviewText,
+                    reviewTime = it.reviewTime,
+                    attachments = it.attachments.map { attachment ->
+                        UserReviewUiModel.Attachment(
+                            attachmentID = attachment.attachmentID,
+                            thumbnailURL = attachment.thumbnailURL,
+                            fullsizeURL = attachment.fullsizeURL,
+                        )
+                    },
+                    videoAttachments = it.videoAttachments.map { videoAttachment ->
+                        UserReviewUiModel.VideoAttachment(
+                            attachmentID = videoAttachment.attachmentID,
+                            videoUrl = videoAttachment.videoUrl,
+                        )
+                    },
+                    likeDislike = UserReviewUiModel.LikeDislike(
+                        totalLike = it.likeDislike.totalLike,
+                        likeStatus = it.likeDislike.likeStatus,
+                    )
+                )
+            },
+            page = currentPage + 1,
+            hasNext = response.data.hasNext,
+        )
+    }
+
 
     private fun getReviewStats(extraStats: List<ExtraStats>): String {
         return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEWS }?.countFmt.orEmpty()
