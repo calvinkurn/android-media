@@ -19,6 +19,8 @@ import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
+import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
+import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
 import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
@@ -76,16 +78,14 @@ class MediaUploaderModule {
         policyUseCase: GetVideoPolicyUseCase,
         videoCompression: SetVideoCompressionUseCase,
         simpleUploader: SimpleUploaderManager,
-        largeUploader: LargeUploaderManager,
-        cacheManager: VideoCompressionCacheManager
+        largeUploader: LargeUploaderManager
     ): VideoUploaderManager {
         return VideoUploaderManager(
             policyManager,
             policyUseCase,
             videoCompression,
             simpleUploader,
-            largeUploader,
-            cacheManager
+            largeUploader
         )
     }
 
@@ -133,12 +133,23 @@ class MediaUploaderModule {
     }
 
     @Provides
+    @MediaUploaderQualifier
+    fun provideVideoMetaDataExtractorRepository(
+        @ApplicationContext context: Context
+    ): VideoMetaDataExtractorRepository {
+        return VideoMetaDataExtractorRepositoryImpl(context)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
     fun provideVideoCompressionRepository(
         @ApplicationContext context: Context,
-        videoCompressionCacheManager: VideoCompressionCacheManager
+        videoCompressionCacheManager: VideoCompressionCacheManager,
+        videoMetaDataExtractorRepository: VideoMetaDataExtractorRepository
     ): VideoCompressionRepository {
         return VideoCompressionRepositoryImpl(
             context,
+            videoMetaDataExtractorRepository,
             videoCompressionCacheManager
         )
     }

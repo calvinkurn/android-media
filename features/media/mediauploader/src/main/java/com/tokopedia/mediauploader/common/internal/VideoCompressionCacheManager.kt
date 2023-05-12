@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import java.io.File
 import javax.inject.Inject
 
@@ -40,7 +41,9 @@ class VideoCompressionCacheManager @Inject constructor(
         val compressedVideoPath: String,
         val compressedTime: Long,
         val videoOriginalSize: String,
-        val videoCompressedSize: String
+        val videoCompressedSize: String,
+        val originalVideoMetadata: VideoInfo?,
+        val compressedVideoMetadata: VideoInfo?
     ) {
 
         fun isCompressedFileExist(): Boolean {

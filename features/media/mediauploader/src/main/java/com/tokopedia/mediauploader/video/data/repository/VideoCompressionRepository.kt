@@ -12,6 +12,7 @@ import com.tokopedia.mediauploader.common.internal.CacheCompressionModel
 import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
+import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -22,6 +23,7 @@ import kotlin.math.min
 import kotlin.math.round
 
 interface VideoCompressionRepository {
+
     suspend fun compress(
         progressUploader: ProgressUploader?,
         param: VideoCompressionParam
@@ -30,6 +32,7 @@ interface VideoCompressionRepository {
 
 class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val metadata: VideoMetaDataExtractorRepository,
     private val cacheManager: VideoCompressionCacheManager
 ) : VideoCompressionRepository {
 
@@ -48,7 +51,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         if (cache != null && cache.isCompressedFileExist()) return cache.compressedVideoPath
 
         // get the video info of originalVideoPath, return the originalPath if couldn't get the video info
-        val videoOriginalInfo = getOriginalVideoInfo(originalPath) ?: return originalPath
+        val videoOriginalInfo = metadata.extract(originalPath) ?: return originalPath
 
         // get the minimum value compare the width and height of the original video resolution
         // this minimum value will use for determine whether the compression will do or not
@@ -93,6 +96,10 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 val endCompressionTime = System.currentTimeMillis()
                 val compressedPath = compression.path ?: originalPath
 
+                // extract the metadata of compressed video file
+                val compressedMetadataInfo = metadata.extract(compressedPath)
+
+                // save the cache for tracker
                 cacheManager.set(
                     sourceId = sourceId,
                     data = CacheCompressionModel(
@@ -100,7 +107,9 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                         compressedVideoPath = compressedPath,
                         compressedTime = endCompressionTime - startBeforeCompressionTime,
                         videoOriginalSize = File(originalPath).length().toString(),
-                        videoCompressedSize = File(compressedPath).length().toString()
+                        videoCompressedSize = File(compressedPath).length().toString(),
+                        originalVideoMetadata = videoOriginalInfo,
+                        compressedVideoMetadata = compressedMetadataInfo
                     )
                 )
 
@@ -124,7 +133,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
      *
      * ```
      * val resolutionThreshold = 540 // px
-     * val info = getVideoInfo(videoPath)
+     * val info = metadata.extract(videoPath)
      * val newSize = generateVideoSize(info, resolutionThreshold)
      *
      * println(newSize.width)
@@ -151,50 +160,6 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * This method will extract out the video info based on file path. The method use the MetadataRetriever's API
-     * to gathering the video file. The method will cater the width, height, and bitrate of the video.
-     *
-     * The return value is nullable which somehow the metadataRetriever failed to extract the info.
-     *
-     * @param path
-     * @return [VideoInfo]
-     */
-    private fun getOriginalVideoInfo(path: String): VideoInfo? {
-        val retriever = MediaMetadataRetriever()
-
-        try {
-            retriever.setDataSource(context, path.toUri())
-        } catch (exception: IllegalArgumentException) {
-            Timber.d("VID-Compression: $exception")
-            return null
-        }
-
-        return VideoInfo(
-            width = getVideoWidth(retriever),
-            height = getVideoHeight(retriever),
-            bitrate = getVideoBitrate(retriever)
-        )
-    }
-
-    private fun getVideoBitrate(retriever: MediaMetadataRetriever): Int {
-        return retriever.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_BITRATE
-        )?.toInt() ?: 0
-    }
-
-    private fun getVideoWidth(retriever: MediaMetadataRetriever): Int {
-        return retriever.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH
-        )?.toInt() ?: 0
-    }
-
-    private fun getVideoHeight(retriever: MediaMetadataRetriever): Int {
-        return retriever.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT
-        )?.toInt() ?: 0
-    }
-
     private fun compressedVideoPath(originalPath: String): File {
         val currentTime = System.currentTimeMillis()
 
@@ -211,10 +176,4 @@ class VideoCompressionRepositoryImpl @Inject constructor(
             "compressed_${fileName}_${currentTime}.mp4"
         )
     }
-
-    data class VideoInfo(
-        val width: Int = 0,
-        val height: Int = 0,
-        val bitrate: Int = 0
-    )
 }

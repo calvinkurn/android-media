@@ -23,8 +23,7 @@ class VideoUploaderManager @Inject constructor(
     private val policyUseCase: GetVideoPolicyUseCase,
     private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
-    private val largeUploaderManager: LargeUploaderManager,
-    private val compressionCacheManager: VideoCompressionCacheManager
+    private val largeUploaderManager: LargeUploaderManager
 ) : UploaderManager {
 
     private var isSimpleUpload = true
@@ -42,7 +41,6 @@ class VideoUploaderManager @Inject constructor(
         val policy = policyUseCase(sourceId)
         policyManager.set(policy)
 
-        // compress video if needed
         val filePath = onVideoCompression(
             originalFile = file,
             sourceId = sourceId,
@@ -67,24 +65,14 @@ class VideoUploaderManager @Inject constructor(
                     UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
                 }
                 else -> {
-                    val startUploadTime = System.currentTimeMillis()
-                    val cacheResult = compressionCacheManager.get(sourceId, filePath.path)
-
                     isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload.mbToBytes()
+
                     setProgressUploader(loader)
 
                     if (!isSimpleUpload) {
-                        largeUploaderManager(filePath, sourceId, withTranscode).also {
-                            val endUploadTime = System.currentTimeMillis()
-                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress file-name: ${filePath.name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
-                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
-                        }
+                        largeUploaderManager(filePath, sourceId, withTranscode)
                     } else {
-                        simpleUploaderManager(filePath, sourceId, withTranscode).also {
-                            val endUploadTime = System.currentTimeMillis()
-                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress file-name: ${filePath.name} | upload time: ${TimeUnit.SECONDS.toSeconds(endUploadTime - startUploadTime)}")
-                            Timber.d("[MEDIA-UPLOADER] [${file.name}] Compress data: $cacheResult | compress time in sec: ${TimeUnit.SECONDS.toSeconds(cacheResult?.compressedTime ?: 0)}")
-                        }
+                        simpleUploaderManager(filePath, sourceId, withTranscode)
                     }
                 }
             }
