@@ -30,7 +30,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -159,7 +159,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating but intent null, view not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             presenter.onActivityResult(
                 InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -172,7 +172,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating but intent null, view null`() {
-        runBlockingTest {
+        runTest {
             presenter.onActivityResult(
                 InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
                 Activity.RESULT_OK,
@@ -184,7 +184,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating, intent not null but false data, view not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             coEvery { view.getCommentID() } returns "1"
             presenter.onActivityResult(
@@ -727,7 +727,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `check search are error and view is not null`() {
         presenter.attachView(view)
-        runBlockingTest {
+        runTest {
 
             every { view.enterSearchMode(any(), any()) } throws Exception("getting exception")
 
@@ -740,7 +740,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check search are error and view is null`() {
-        runBlockingTest {
+        runTest {
             every {
                 viewNullable?.enterSearchMode(
                     any(),
@@ -826,7 +826,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails is success and the issue is closed`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val responseData = mockk<Data>(relaxed = true)
@@ -862,7 +862,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails on getTopItem and getCommentHeader where mTicketDetail is not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -881,7 +881,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails on getTopItem and getCommentHeader where mTicketDetail is has full detail`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -903,7 +903,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is OPEN `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -925,7 +925,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is NEW `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -947,7 +947,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is CLOSED `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -969,7 +969,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when show ratting is true `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -2159,7 +2159,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = mockk<ArrayList<String>>(relaxed = true)
             val chipUploadHostConfig = mockk<ChipUploadHostConfig>(relaxed = true)
             val actiualResult =
@@ -2170,7 +2170,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase error and method return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""
@@ -2192,7 +2192,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase success but contactUsUploadImageUseCase is Empty and method return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""
@@ -2216,7 +2216,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase success but contactUsUploadImageUseCase is Not Empty and method return is not null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""

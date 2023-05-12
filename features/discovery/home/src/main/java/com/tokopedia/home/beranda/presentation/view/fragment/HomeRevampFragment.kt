@@ -143,8 +143,8 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendat
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -1406,6 +1406,9 @@ open class HomeRevampFragment :
             }
 
     private fun initAdapter() {
+        if (!this::homePrefController.isInitialized) {
+            initInjectorHome()
+        }
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
@@ -2160,6 +2163,9 @@ open class HomeRevampFragment :
                     subscriptionCoachmarkIsShowing = false
                     coachmarkSubscription?.hideCoachMark()
                 }
+            }
+            else -> {
+                //no-op
             }
         }
     }

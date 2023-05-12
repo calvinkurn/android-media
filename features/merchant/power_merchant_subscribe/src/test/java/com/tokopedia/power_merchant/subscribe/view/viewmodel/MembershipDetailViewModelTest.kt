@@ -53,7 +53,7 @@ class MembershipDetailViewModelTest {
 
     @Test
     fun `when get membership data should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val result = MembershipDetailUiModel()
 
             coEvery {
@@ -73,7 +73,7 @@ class MembershipDetailViewModelTest {
 
     @Test
     fun `when get membership data should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val exception = Throwable()
 
             coEvery {

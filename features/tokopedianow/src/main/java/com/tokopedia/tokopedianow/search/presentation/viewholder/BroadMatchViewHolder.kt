@@ -20,7 +20,7 @@ class BroadMatchViewHolder(
     itemView: View,
     private val listener: BroadMatchListener
 ): AbstractViewHolder<BroadMatchDataView>(itemView),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselBasicListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 {
     companion object {
@@ -76,7 +76,7 @@ class BroadMatchViewHolder(
     }
 
     private fun ItemTokopedianowBroadmatchBinding.setListener(
-        productCardCarouselListener: ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+        productCardCarouselListener: ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
         headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
     ) {
         productCardCarousel.setListener(
@@ -125,6 +125,8 @@ class BroadMatchViewHolder(
             appLink = seeMoreUiModel.appLink
         )
     }
+
+    override fun onProductCardAddToCartBlocked() = listener.onBroadMatchAddToCartBlocked()
 
     override fun onSeeAllClicked(headerName: String, appLink: String) {
         listener.onBroadMatchSeeAllClicked(

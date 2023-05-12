@@ -230,18 +230,27 @@ class DigitalPDPTokenListrikFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.prefillData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -249,6 +258,9 @@ class DigitalPDPTokenListrikFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
+                else -> {
+                    //no-op
+                }
             }
         })
 

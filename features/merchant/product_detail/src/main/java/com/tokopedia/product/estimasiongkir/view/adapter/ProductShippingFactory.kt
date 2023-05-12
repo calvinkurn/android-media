@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.view.adapter
 
+import com.tokopedia.product.estimasiongkir.data.model.shipping.FreeShippingDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
@@ -15,4 +16,5 @@ interface ProductShippingFactory {
     fun type(dataProduct: ProductShippingShimmerDataModel): Int
     fun type(dataProduct: ProductShippingErrorDataModel): Int
     fun type(dataProduct: ProductShippingSellyDataModel): Int
+    fun type(dataProduct: FreeShippingDataModel): Int
 }
