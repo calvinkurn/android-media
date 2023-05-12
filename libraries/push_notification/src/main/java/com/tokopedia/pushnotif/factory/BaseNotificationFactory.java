@@ -158,7 +158,7 @@ public abstract class BaseNotificationFactory {
                 Constant.NotificationReceiver.ACTIVITY_NOTIFIER_RECEIVER)
         ) {
             return PendingIntent.getActivity(
-                    context,
+                    context.getApplicationContext(),
                     notificationId,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
