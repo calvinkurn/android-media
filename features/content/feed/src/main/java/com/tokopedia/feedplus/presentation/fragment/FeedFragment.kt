@@ -27,9 +27,9 @@ import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
@@ -68,7 +68,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -231,6 +230,10 @@ class FeedFragment :
 
     override fun onDestroyView() {
         _binding = null
+        if (taggedProductBottomSheet != null) {
+            taggedProductBottomSheet?.dismiss()
+            taggedProductBottomSheet = null
+        }
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
@@ -292,11 +295,14 @@ class FeedFragment :
             FeedMenuIdentifier.EDIT -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-                intent.putExtra(CreatePostViewModel.TAG, CreatePostViewModel().apply {
-                    caption = feedMenuItem.contentData?.caption.orEmpty()
-                    postId = feedMenuItem.contentData?.postId.orEmpty()
-                    editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
-                })
+                intent.putExtra(
+                    CreatePostViewModel.TAG,
+                    CreatePostViewModel().apply {
+                        caption = feedMenuItem.contentData?.caption.orEmpty()
+                        postId = feedMenuItem.contentData?.postId.orEmpty()
+                        editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
+                    }
+                )
 
                 startActivity(intent)
             }
@@ -319,7 +325,6 @@ class FeedFragment :
                         }
                         show()
                     }
-
                 }
             }
 
@@ -491,7 +496,7 @@ class FeedFragment :
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel,
+                trackerData = trackerModel
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -542,7 +547,7 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerModel: FeedTrackerDataModel?,
+        trackerModel: FeedTrackerDataModel?
     ) {
         openProductTagBottomSheet(
             author = author,
@@ -593,7 +598,6 @@ class FeedFragment :
                     }
 
                     override fun onError(linkerError: LinkerError?) {
-
                     }
                 }
             )
@@ -618,7 +622,6 @@ class FeedFragment :
         }
 
         feedPostViewModel.setUnsetReminder(campaignId, setReminder)
-
     }
 
     override fun onTopAdsImpression(
@@ -661,7 +664,7 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it,
+                    trackerData = it
                 )
             }
         }
@@ -853,14 +856,17 @@ class FeedFragment :
 
     private fun observeResumePage() {
         feedMainViewModel.isPageResumed.observe(viewLifecycleOwner) { isResumed ->
-            if (isResumed) resumeCurrentVideo()
-            else pauseCurrentVideo()
+            if (isResumed) {
+                resumeCurrentVideo()
+            } else {
+                pauseCurrentVideo()
+            }
         }
     }
 
     private fun observeAddProductToCart() {
         feedPostViewModel.observeAddProductToCart.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Success -> taggedProductBottomSheet?.doShowToaster(
                     message = getString(feedR.string.feeds_add_to_cart_success_text),
                     actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
@@ -878,7 +884,7 @@ class FeedFragment :
 
     private fun observeBuyProduct() {
         feedPostViewModel.observeBuyProduct.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Success -> goToCartPage()
                 is Fail -> taggedProductBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
@@ -890,7 +896,7 @@ class FeedFragment :
 
     private fun observeMerchantVoucher() {
         feedPostViewModel.merchantVoucherLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     taggedProductBottomSheet?.showMerchantVoucherWidget(
                         result.data,
@@ -1082,7 +1088,7 @@ class FeedFragment :
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(
                         requireContext(),
-                        IconUnify.EDIT,
+                        IconUnify.EDIT
                     ),
                     name = FeedMenuIdentifier.EDIT.value,
                     type = FeedMenuIdentifier.EDIT,
