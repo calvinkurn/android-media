@@ -792,9 +792,9 @@ open class ProductManageFragment :
 
     override fun editMultipleProductsInActive() {
         val haveeDTProducts = itemsChecked.filter { it.isDTInbound }
-        if (haveeDTProducts.isEmpty()){
+        if (haveeDTProducts.isEmpty()) {
             showEditProductsInActiveConfirmationDialog()
-        }else{
+        } else {
             showEditDTProductsInActiveConfirmationDialog()
         }
         ProductManageTracking.eventBulkSettingsDeactive()
@@ -1760,6 +1760,7 @@ open class ProductManageFragment :
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
+
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
                 val retryLabel =
@@ -1767,7 +1768,7 @@ open class ProductManageFragment :
                 val retryMessage = getRetryMessage(context, result)
 
                 showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
-            } else {
+            } else if (result.success.isNotEmpty()) {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
 
@@ -2820,7 +2821,8 @@ open class ProductManageFragment :
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        R.string.product_manage_confirm_inactive_dt_product_title)
+                        R.string.product_manage_confirm_inactive_dt_product_title
+                    )
                 )
                 setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc))
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
