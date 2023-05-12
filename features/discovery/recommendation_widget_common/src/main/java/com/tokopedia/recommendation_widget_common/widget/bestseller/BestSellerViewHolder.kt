@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -82,25 +79,13 @@ class BestSellerViewHolder (private val view: View,
     }
 
     private fun initHeader(element: BestSellerDataModel){
-        binding?.homeComponentHeaderView?.setChannel(
-            ChannelModel(
-                id = element.channelId,
-                groupId = "",
-                channelHeader = ChannelHeader(
-                    name = element.title,
-                    subtitle = element.subtitle,
-                    applink = element.seeMoreAppLink
-                )
-            ),
-            object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
-                }
-
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                }
-            }
-        )
+        binding?.homeComponentHeaderView?.setHeader(
+            title = element.title,
+            subtitle = element.subtitle,
+            seeAllApplink = element.seeMoreAppLink
+        ) {
+            listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, absoluteAdapterPosition)
+        }
         binding?.containerBestSellerWidget?.show()
         itemView.show()
     }

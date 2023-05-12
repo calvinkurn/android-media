@@ -186,8 +186,8 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         }
         val constraintSet = ConstraintSet()
         constraintSet.clone(channelHeaderContainer)
-        constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
-        constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.BOTTOM, 0)
+        constraintSet.connect(R.id.cta_button_revamp, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.cta_button_revamp, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.BOTTOM, 0)
         constraintSet.applyTo(channelHeaderContainer)
     }
 
