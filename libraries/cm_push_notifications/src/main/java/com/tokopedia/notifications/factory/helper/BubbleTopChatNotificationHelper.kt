@@ -58,8 +58,8 @@ class BubbleTopChatNotificationHelper(
         val appLink = baseNotificationModel.appLink.orEmpty()
         val shortcutId = getMessageId(appLink)
         val notificationType = NOTIFICATION_CHAT_TYPE
-        val senderId = "" //TODO need to confirm to pak alih, what is the payload of response
-        val fullName = baseNotificationModel.title.orEmpty() //TODO need to confirm to pak alih, what is the payload of response
+        val senderId = baseNotificationModel.payloadExtra?.topchat?.senderId.orEmpty()
+        val fullName = baseNotificationModel.payloadExtra?.topchat?.fromShopName.orEmpty()
         val avatarUrl = baseNotificationModel.icon.orEmpty()
         val summary = baseNotificationModel.message.orEmpty()
         val sentTime = System.currentTimeMillis()
@@ -74,6 +74,7 @@ class BubbleTopChatNotificationHelper(
             avatarUrl = avatarUrl,
             summary = summary,
             sentTime = sentTime,
+            // actually from push notifications, this field is always false value. but when the user clicks the open bubble within the app the value will be true
             isFromUser = false
         )
     }
@@ -101,7 +102,7 @@ class BubbleTopChatNotificationHelper(
 
     private fun mapToBubbleHistoryItemModel(baseNotificationModel: BaseNotificationModel): BubbleHistoryItemModel {
         val appLink = baseNotificationModel.appLink.orEmpty()
-        val senderName = baseNotificationModel.title.orEmpty() //TODO need to confirm to pak alih, what is the payload of response
+        val senderName = baseNotificationModel.payloadExtra?.topchat?.fromShopName.orEmpty()
         val avatarUrl = baseNotificationModel.icon.orEmpty()
         val shortcutId = getMessageId(appLink)
         return BubbleHistoryItemModel(
@@ -114,7 +115,7 @@ class BubbleTopChatNotificationHelper(
 
     private fun getBubbleHistorySingleItems(baseNotificationModel: BaseNotificationModel): List<BubbleHistoryItemModel> {
         val appLink = baseNotificationModel.appLink.orEmpty()
-        val senderName = baseNotificationModel.title.orEmpty() //TODO need to confirm to pak alih, what is the payload of response
+        val senderName = baseNotificationModel.payloadExtra?.topchat?.fromShopName.orEmpty()
         val avatarUrl = baseNotificationModel.icon.orEmpty()
         val shortcutId = getMessageId(appLink)
         val historyItemModel = BubbleHistoryItemModel(

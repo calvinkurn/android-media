@@ -203,6 +203,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getThumbnail(),
                 applinkNotificationModel.getSummary(),
                 applinkNotificationModel.getSentTime(),
+                //actually from push notifications, this field is always false value. but when the user clicks the open bubble within the app the value will be true
                 false
         );
     }

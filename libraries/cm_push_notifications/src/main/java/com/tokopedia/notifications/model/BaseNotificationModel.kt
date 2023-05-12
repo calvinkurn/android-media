@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.model
 
 import android.net.Uri
+import android.os.Build
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -196,19 +197,20 @@ data class BaseNotificationModel(
     }
 
     fun isEnableBubbleOnSellerTopChat(): Boolean {
-        return GlobalConfig.isSellerApp() && isTopChatOn() && getShouldEnableBubbleOnTopChat()
+        return GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            isTopChatOn() && getShouldEnableBubbleOnTopChat()
     }
 
     fun isTopChatOn(): Boolean {
         return try {
             val uri = Uri.parse(appLink)
             when (uri.host) {
-               TOPCHAT -> {
-                   true
-               }
-               else -> {
-                   false
-               }
+                TOPCHAT -> {
+                    true
+                }
+                else -> {
+                    false
+                }
             }
         } catch (e: Exception) {
             false
