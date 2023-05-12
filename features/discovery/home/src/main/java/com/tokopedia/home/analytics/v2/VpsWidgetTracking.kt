@@ -25,26 +25,30 @@ object VpsWidgetTracking : BaseTrackerConst() {
     fun getVpsImpression(channel: ChannelModel, position: Int, userId: String): HashMap<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
-                event = PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(VPS_NAME),
-                eventLabel = channel.layout,
-                promotions = channel.channelGrids.mapIndexed { index, grid ->
+            event = PROMO_VIEW,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = Action.IMPRESSION.format(VPS_NAME),
+            eventLabel = FORMAT_3_ITEMS.format(channel.id, channel.layout, channel.channelHeader.name),
+            promotions = channel.channelGrids.mapIndexed { index, grid ->
                 Promotion(
-                        id = FORMAT_4_VALUE_UNDERSCORE.format(
-                            channel.id, grid.id,
-                            channel.trackingAttributionModel.persoType,
-                            channel.trackingAttributionModel.categoryId
-                        ),
-                        creative = grid.attribution,
-                        name = PROMOTION_NAME.format(position, VPS_NAME, channel.layout, channel.channelHeader.name),
-                        position = (index + 1).toString()
-                )})
-                .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
-                .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
-                .appendUserId(userId)
-                .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_IMPRESSION)
-                .build() as HashMap<String, Any>
+                    id = FORMAT_4_VALUE_UNDERSCORE.format(
+                        channel.id,
+                        grid.id,
+                        channel.trackingAttributionModel.persoType,
+                        channel.trackingAttributionModel.categoryId
+                    ),
+                    creative = grid.attribution,
+                    name = PROMOTION_NAME.format(position, VPS_NAME, channel.layout, channel.channelHeader.name),
+                    position = (index + 1).toString()
+                )
+            }
+        )
+            .appendChannelId(channel.id)
+            .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
+            .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
+            .appendUserId(userId)
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_IMPRESSION)
+            .build() as HashMap<String, Any>
     }
 
     private fun getVpsItemClick(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String): Bundle {
@@ -55,7 +59,9 @@ object VpsWidgetTracking : BaseTrackerConst() {
             putString(
                 Label.KEY,
                 FORMAT_3_ITEMS.format(
-                    channel.id, channel.layout, channel.channelHeader.name
+                    channel.id,
+                    channel.layout,
+                    channel.channelHeader.name
                 )
             )
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -71,7 +77,8 @@ object VpsWidgetTracking : BaseTrackerConst() {
                 putString(
                     Promotion.ITEM_ID,
                     FORMAT_4_VALUE_UNDERSCORE.format(
-                        channel.id, grid.id,
+                        channel.id,
+                        grid.id,
                         channel.trackingAttributionModel.persoType,
                         channel.trackingAttributionModel.categoryId
                     )
@@ -81,6 +88,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                     PROMOTION_NAME.format(channel.verticalPosition, VPS_NAME, channel.layout, channel.channelHeader.name)
                 )
             }
+            putString(ChannelId.KEY, channel.id)
             putString(TrackerId.KEY, TRACKER_ID_CLICK)
             putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         }
