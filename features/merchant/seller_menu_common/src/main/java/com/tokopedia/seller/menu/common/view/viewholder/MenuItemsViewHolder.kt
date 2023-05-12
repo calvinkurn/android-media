@@ -2,10 +2,10 @@ package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.view.doOnAttach
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -70,7 +70,7 @@ class MenuItemsViewHolder(
                 }
             }
             setupTag(element.tag)
-            addOnImpressionListener(element.impressHolder){
+            doOnAttach {
                 coachMarkListener?.onViewReadyForCoachMark(element.title, settingMenuIcon)
             }
         }
