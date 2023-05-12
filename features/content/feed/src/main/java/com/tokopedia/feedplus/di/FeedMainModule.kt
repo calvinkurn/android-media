@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferencesImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -25,6 +26,7 @@ class FeedMainModule(private val activityContext: Context) {
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
+
     @FeedMainScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
@@ -36,4 +38,9 @@ class FeedMainModule(private val activityContext: Context) {
     fun provideOnboardingPreferences(@ApplicationContext context: Context): OnboardingPreferences {
         return OnboardingPreferencesImpl(context)
     }
+
+    @FeedMainScope
+    @Provides
+    fun provideTrackingQueue(@ApplicationContext context: Context) =
+        TrackingQueue(context)
 }

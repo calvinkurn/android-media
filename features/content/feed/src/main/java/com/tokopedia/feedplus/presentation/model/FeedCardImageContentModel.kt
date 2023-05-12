@@ -46,7 +46,8 @@ data class FeedCardImageContentModel(
     val maxDiscountPercentageFmt: String,
     val adViewUri: String = "",  // use only for topads
     val adViewUrl: String = "",  // use only for topads
-    val isFetched: Boolean = false // use only for topads
+    val isFetched: Boolean = false, // use only for topads
+    val topAdsId: String = "", //use only for topads
 ) : Visitable<FeedAdapterTypeFactory> {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
@@ -65,6 +66,8 @@ data class FeedCardImageContentModel(
 
     val isTopAds: Boolean
         get() = type == TYPE_FEED_TOP_ADS && typename == TYPE_FEED_X_CARD_PLACEHOLDER
+
+    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 
     companion object {
         private const val AUTHOR_SGC = 2

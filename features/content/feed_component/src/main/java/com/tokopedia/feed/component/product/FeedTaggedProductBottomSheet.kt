@@ -4,29 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
-import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
-import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * todo:
@@ -65,7 +54,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
 
-    fun setListener(listener: Listener) {
+    fun setCustomListener(listener: Listener) {
         mListener = listener
     }
 
@@ -106,7 +95,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         show(manager, tag)
     }
 
-    fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary) {
+    fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary, tracker: MvcTrackerImpl) {
         setTitle(getString(R.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
@@ -115,7 +104,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 mvcData = MvcData(info),
                 shopId = shopId,
                 source = MvcSource.FEED_BOTTOM_SHEET,
-                mvcTrackerImpl = DefaultMvcTrackerImpl()
+                mvcTrackerImpl = tracker
             )
             binding.mvcTaggedProduct.show()
         } else {

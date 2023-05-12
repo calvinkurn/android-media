@@ -7,16 +7,17 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
+import com.tokopedia.logisticaddaddress.util.CustomActionUtils.nestedScrollTo
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
@@ -53,7 +54,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
             .perform(replaceText(address), closeSoftKeyboard())
-        waitForData(3000)
+        waitForData(2000)
     }
 
     fun fillReceiver(receiver: String) {
@@ -62,7 +63,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
             .perform(replaceText(receiver), closeSoftKeyboard())
-        waitForData(3000)
+        waitForData(2000)
     }
 
     fun fillPhoneNumber(phone: String) {
@@ -71,7 +72,7 @@ class AddressRevampRobot {
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(replaceText(phone), closeSoftKeyboard())
-        waitForData(3000)
+        waitForData(2000)
     }
 
     fun clickManualForm() {
@@ -112,7 +113,17 @@ class AddressRevampRobot {
 
     fun fillAddressNegative(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
-                .perform(click(), replaceText(address), closeSoftKeyboard())
+            .perform(nestedScrollTo(), click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
+            .perform(replaceText(address), closeSoftKeyboard())
+        waitForData()
+    }
+
+    fun checkTermsAndCondition() {
+        onView(allOf(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes), isDisplayed()))
+            .perform(click())
+        waitForData()
     }
 
     private fun waitForData(millis: Long = 1000) {
@@ -120,7 +131,7 @@ class AddressRevampRobot {
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        onView(withId(R.id.btn_save_address_new)).perform(scrollTo(), click())
+        onView(allOf(isDisplayed(), withId(R.id.btn_save_address_new))).perform(nestedScrollTo(), click())
         return ResultRobot().apply(func)
     }
 

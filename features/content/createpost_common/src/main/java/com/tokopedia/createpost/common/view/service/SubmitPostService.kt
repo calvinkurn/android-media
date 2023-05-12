@@ -11,15 +11,16 @@ import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
-import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
+import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,7 +28,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 
 /**
  * Revamped By : Jonathan Darwin on October 13, 2022
@@ -79,8 +79,9 @@ class SubmitPostService : JobIntentServiceX() {
 
         postUpdateProgressManager = getProgressManager(viewModel)
         postUpdateProgressManager!!.setCreatePostData(viewModel)
-        if (!viewModel.isEditState)
+        if (!viewModel.isEditState) {
             postUpdateProgressManager!!.setFirstIcon(viewModel.completeImageList.first().path)
+        }
 
         postUpdateProgressManager?.isEditPostValue(viewModel.isEditState)
         postUpdateProgressManager?.onAddProgress()
@@ -89,12 +90,12 @@ class SubmitPostService : JobIntentServiceX() {
 
         scope.launchCatchError(block = {
             submitPostUseCase.state.collectLatest { state ->
-                when(state) {
+                when (state) {
                     is SubmitPostResult.Fail -> {
                         postUpdateProgressManager?.onFailedPost(
                             com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
                                 this@SubmitPostService,
-                                state.throwable,
+                                state.throwable
                             )
                         )
                         stopService()
@@ -119,7 +120,6 @@ class SubmitPostService : JobIntentServiceX() {
                             return@collectLatest
                         }
 
-
                         withContext(dispatchers.main) {
                             postUpdateProgressManager?.onSuccessPost()
                             sendBroadcast()
@@ -128,13 +128,14 @@ class SubmitPostService : JobIntentServiceX() {
                             stopService()
                         }
                     }
+                    else -> {}
                 }
             }
         }) {
             postUpdateProgressManager?.onFailedPost(
                 com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
                     this@SubmitPostService,
-                    it,
+                    it
                 )
             )
 
@@ -146,19 +147,25 @@ class SubmitPostService : JobIntentServiceX() {
                 viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
-                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
-                else userSession.shopId,
+                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) {
+                    userSession.userId
+                } else {
+                    userSession.shopId
+                },
                 viewModel.caption,
                 viewModel.completeImageList.map {
                     getFileAbsolutePath(it.path)!! to it.type
                 },
-                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                else viewModel.productIdList, viewModel.completeImageList,
+                if (isTypeAffiliate(viewModel.authorType)) {
+                    viewModel.adIdList
+                } else {
+                    viewModel.productIdList
+                },
+                viewModel.completeImageList,
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
             )
         }
-
 
         /**
          * The code below will be used when we have migrated
@@ -215,10 +222,11 @@ class SubmitPostService : JobIntentServiceX() {
     }
 
     private fun getFileAbsolutePath(path: String): String? {
-        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://"))
+        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://")) {
             Uri.parse(path).path
-        else
+        } else {
             path
+        }
     }
 
     private fun initInjector() {

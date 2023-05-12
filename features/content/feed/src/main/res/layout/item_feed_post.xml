@@ -33,6 +33,16 @@
         app:layout_constraintHeight_percent="0.15"
         />
 
+    <View
+        android:id="@+id/view_bottom_overlay_bound"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_author_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <include
         android:id="@+id/overlay_bottom"
         layout="@layout/layout_feed_bottom_overlay"
@@ -41,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="@id/view_bottom_overlay_bound"
         />
 
     <include
@@ -52,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintWidth_percent="0.3"
         />
 
     <com.tokopedia.unifycomponents.PageControl
@@ -98,9 +108,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:ellipsize="end"
         android:layout_marginBottom="16dp"
+        android:ellipsize="end"
         android:maxLines="2"
+        android:scrollbars="vertical"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
@@ -191,9 +202,9 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="MENU_KEBAB_HORIZONTAL"
-        app:layout_constraintStart_toStartOf="@id/share_button"
         app:layout_constraintBottom_toTopOf="@id/product_tag_button"
         app:layout_constraintEnd_toEndOf="@id/share_button"
+        app:layout_constraintStart_toStartOf="@id/share_button"
         app:unify_image_type="circle"
         tools:visibility="visible" />
 

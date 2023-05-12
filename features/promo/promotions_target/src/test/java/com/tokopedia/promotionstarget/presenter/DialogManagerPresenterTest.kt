@@ -15,7 +15,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.spekframework.spek2.Spek
 
@@ -37,7 +37,7 @@ class DialogManagerPresenterTest : Spek({
 
     group("check function invoke") {
         test("getGratificationAndShowDialog") {
-            runBlockingTest {
+            runTest {
                 val gratificationData = GratificationData("pop", "page")
                 val map: HashMap<String, Any> = mockk()
                 val response: GetPopGratificationResponse = mockk()
@@ -56,7 +56,7 @@ class DialogManagerPresenterTest : Spek({
         }
 
         test("claimGratification") {
-            runBlockingTest {
+            runTest {
                 val claimPayload = ClaimPayload("campaignSlug", "page")
                 val response: ClaimPopGratificationResponse = mockk()
                 val map: HashMap<String, Any> = mockk()
@@ -117,7 +117,7 @@ class DialogManagerPresenterTest : Spek({
 
         group("getCatalogDetail function invocation") {
             test("getCatalogDetail") {
-                runBlockingTest {
+                runTest {
                     val ids: List<String> = emptyList()
                     coEvery { couponDetailUseCase.getResponse(ids) } returns mockk()
 

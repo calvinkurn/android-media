@@ -18,10 +18,10 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
 
     fun updateList(newList: List<Visitable<*>>) {
         val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(visitables, newList))
+        diffResult.dispatchUpdatesTo(this)
 
         visitables.clear()
         visitables.addAll(newList)
-        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateLikeUnlikeData(rowNumber: Int, like: FeedLikeModel) {

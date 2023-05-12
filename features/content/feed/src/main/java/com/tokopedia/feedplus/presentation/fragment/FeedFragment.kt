@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
@@ -14,20 +17,28 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
+import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
+import com.tokopedia.feedplus.analytics.FeedAnalytics
+import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
@@ -35,7 +46,18 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
@@ -44,7 +66,9 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -52,6 +76,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -60,6 +85,8 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
@@ -73,8 +100,9 @@ class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
-    ShareBottomsheetListener,
-    FeedTaggedProductBottomSheet.Listener {
+    FeedTaggedProductBottomSheet.Listener,
+    FeedFollowersOnlyBottomSheet.Listener,
+    ShareBottomsheetListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
     private val binding: FragmentFeedImmersiveBinding
@@ -84,6 +112,7 @@ class FeedFragment :
     private var adapter: FeedPostAdapter? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
+    private var currentTrackerData: FeedTrackerDataModel? = null
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
@@ -93,8 +122,22 @@ class FeedFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var feedAnalytics: FeedAnalytics
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
+
+    private val feedMvcAnalytics = FeedMVCAnalytics()
+    private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
+        MapperFeedModelToTrackerDataModel(
+            data?.type ?: "",
+            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ""
+        )
+    }
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -126,6 +169,8 @@ class FeedFragment :
         }
 
     private var taggedProductBottomSheet: FeedTaggedProductBottomSheet? = null
+
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,12 +208,15 @@ class FeedFragment :
         initView()
         observePostData()
         observeReport()
+        observeDelete()
         observeFollow()
         observeLikeContent()
         observeResumePage()
         observeMerchantVoucher()
         observeAddProductToCart()
         observeBuyProduct()
+
+        observeEvent()
     }
 
     override fun onPause() {
@@ -196,7 +244,16 @@ class FeedFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onMenuClicked(id: String) {
+    override fun onMenuClicked(
+        id: String,
+        editable: Boolean,
+        deletable: Boolean,
+        reportable: Boolean,
+        contentData: FeedContentData,
+        trackerModel: FeedTrackerDataModel
+    ) {
+        currentTrackerData = trackerModel
+        feedAnalytics.eventClickThreeDots(trackerModel)
         activity?.let {
             val feedMenuSheet =
                 ContentThreeDotsMenuBottomSheet.getFragment(
@@ -205,7 +262,7 @@ class FeedFragment :
                     TAG_FEED_MENU_BOTTOMSHEET
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), id)
+            feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
@@ -217,11 +274,53 @@ class FeedFragment :
                     onGoToLogin()
                 } else {
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked()
+
+                    currentTrackerData?.let {
+                        feedAnalytics.eventClickReportContent(it)
+                    }
                 }
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
                 adapter?.showClearView(binding.rvFeedPost.currentItem)
+                currentTrackerData?.let {
+                    feedAnalytics.eventClickWatchMode(it)
+                    currentTrackerData = null
+                }
+            }
+
+            FeedMenuIdentifier.EDIT -> {
+                val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
+                intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+                intent.putExtra(CreatePostViewModel.TAG, CreatePostViewModel().apply {
+                    caption = feedMenuItem.contentData?.caption.orEmpty()
+                    postId = feedMenuItem.contentData?.postId.orEmpty()
+                    editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
+                })
+
+                startActivity(intent)
+            }
+
+            FeedMenuIdentifier.DELETE -> {
+                context?.let {
+                    DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                        setTitle(getString(feedR.string.dialog_delete_post_title))
+                        setDescription(getString(feedR.string.dialog_delete_post_subtitle))
+                        setPrimaryCTAText(getString(feedR.string.feed_delete))
+                        setPrimaryCTAClickListener {
+                            feedPostViewModel.doDeletePost(
+                                feedMenuItem.contentData?.postId.orEmpty(),
+                                feedMenuItem.contentData?.rowNumber.orZero()
+                            )
+                        }
+                        setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+                        setSecondaryCTAClickListener {
+                            dismiss()
+                        }
+                        show()
+                    }
+
+                }
             }
 
             else -> {}
@@ -230,10 +329,16 @@ class FeedFragment :
 
     override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
         feedMainViewModel.reportContent(feedReportRequestParamModel)
+        currentTrackerData?.let {
+            feedAnalytics.eventClickReasonReportContent(
+                it,
+                feedReportRequestParamModel.reason
+            )
+        }
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
-        // implement bottomsheet close tracker
+        // do nothing
     }
 
     override fun onSharePostClicked(
@@ -275,7 +380,15 @@ class FeedFragment :
         }
     }
 
-    override fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean) {
+    override fun onFollowClicked(
+        id: String,
+        encryptedId: String,
+        isShop: Boolean,
+        trackerData: FeedTrackerDataModel?
+    ) {
+        trackerData?.let {
+            feedAnalytics.eventClickFollowButton(it)
+        }
         if (userSession.isLoggedIn) {
             feedPostViewModel.doFollow(id, encryptedId, isShop)
         } else {
@@ -303,6 +416,65 @@ class FeedFragment :
         videoPlayerManager.detach(player)
     }
 
+    override fun onPauseVideoPost(trackerModel: FeedTrackerDataModel) {
+        feedAnalytics.eventClickPauseVideo(trackerModel)
+    }
+
+    override fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel) {
+        feedAnalytics.eventHoldSeekBarVideo(trackerModel)
+    }
+
+    override fun onWatchPostVideo(trackerModel: FeedTrackerDataModel) {
+        feedAnalytics.eventWatchVideoPost()
+    }
+
+    override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {
+        feedAnalytics.eventSwipeLeftRightMultiplePost(trackerModel)
+    }
+
+    override fun onAuthorNameClicked(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let {
+            feedAnalytics.eventClickAuthorName(it)
+        }
+    }
+
+    override fun onAuthorProfilePictureClicked(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let {
+            feedAnalytics.eventClickAuthorProfilePicture(it)
+        }
+    }
+
+    override fun onCaptionClicked(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let {
+            feedAnalytics.eventClickContentCaption(it)
+        }
+    }
+
+    override fun onLivePreviewClicked(
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int,
+        productId: String,
+        authorName: String
+    ) {
+        trackerModel?.let {
+            feedAnalytics.eventClickLivePreview(it, productId, authorName, positionInFeed)
+        }
+    }
+
+    override fun onPostImpression(
+        trackerModel: FeedTrackerDataModel?,
+        activityId: String,
+        positionInFeed: Int
+    ) {
+        trackerModel?.let {
+            feedAnalytics.eventPostImpression(
+                it,
+                activityId,
+                positionInFeed
+            )
+        }
+    }
+
     override fun onProductTagButtonClicked(
         postId: String,
         author: FeedAuthorModel,
@@ -310,13 +482,21 @@ class FeedFragment :
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
-        products: List<FeedCardProductModel>
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
-        openProductTagBottomSheet(
-            author = author,
-            hasVoucher = hasVoucher,
-            products = products
-        )
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            openProductTagBottomSheet(
+                author = author,
+                hasVoucher = hasVoucher,
+                products = products,
+                trackerData = trackerModel,
+            )
+            trackerModel?.let {
+                feedAnalytics.eventClickProductTag(it)
+            }
+        }
     }
 
     override fun onProductTagViewClicked(
@@ -327,22 +507,49 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        totalProducts: Int
+        totalProducts: Int,
+        trackerModel: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
-        if (totalProducts == FeedProductTagView.PRODUCT_COUNT_ONE) {
-            val appLink = products.firstOrNull()?.applink
-            if (appLink?.isNotEmpty() == true) {
-                activity?.let {
-                    RouteManager.route(it, appLink)
-                }
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            trackerModel?.let {
+                feedAnalytics.eventClickProductLabel(it)
+                feedAnalytics.eventClickContentProductLabel(it)
             }
-        } else {
-            openProductTagBottomSheet(
-                author = author,
-                hasVoucher = hasVoucher,
-                products = products
-            )
+            if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
+                val appLink = products.firstOrNull()?.applink
+                if (appLink?.isNotEmpty() == true) {
+                    activity?.let {
+                        RouteManager.route(it, appLink)
+                    }
+                }
+            } else {
+                openProductTagBottomSheet(
+                    author = author,
+                    hasVoucher = hasVoucher,
+                    products = products,
+                    trackerData = trackerModel
+                )
+            }
         }
+    }
+
+    override fun onASGCGeneralClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?,
+    ) {
+        openProductTagBottomSheet(
+            author = author,
+            hasVoucher = hasVoucher,
+            products = products,
+            trackerData = trackerModel
+        )
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -386,7 +593,7 @@ class FeedFragment :
                     }
 
                     override fun onError(linkerError: LinkerError?) {
-                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+
                     }
                 }
             )
@@ -397,16 +604,21 @@ class FeedFragment :
         dissmisByGreyArea = false
     }
 
-    override fun onReminderClicked(campaignId: Long, setReminder: Boolean) {
+    override fun onReminderClicked(
+        campaignId: Long,
+        setReminder: Boolean,
+        trackerModel: FeedTrackerDataModel?
+    ) {
+        trackerModel?.let {
+            if (setReminder) {
+                feedAnalytics.eventClickRemindMe(it)
+            } else {
+                feedAnalytics.eventClickActiveRemindMe(it)
+            }
+        }
+
         feedPostViewModel.setUnsetReminder(campaignId, setReminder)
-    }
 
-    override fun onTimerFinishUpcoming() {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onTimerFinishOnGoing() {
-//        TODO("Not yet implemented")
     }
 
     override fun onTopAdsImpression(
@@ -417,18 +629,105 @@ class FeedFragment :
         fullEcs: String?,
         position: Int
     ) {
-//        TODO("Not yet implemented")
+        topAdsUrlHitter.hitImpressionUrl(
+            this::class.java.simpleName,
+            adViewUrl,
+            id,
+            uri,
+            fullEcs
+        )
+    }
+
+    override fun onOngoingCampaignClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerModel: FeedTrackerDataModel?,
+        campaignName: String,
+        positionInFeed: Int
+    ) {
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+            trackerModel?.let {
+                feedAnalytics.eventClickCampaignRibbon(
+                    it,
+                    campaignName,
+                    positionInFeed
+                )
+                openProductTagBottomSheet(
+                    author = author,
+                    hasVoucher = hasVoucher,
+                    products = products,
+                    trackerData = it,
+                )
+            }
+        }
+    }
+
+    override fun onFollowClickedFromFollowBottomSheet(position: Int) {
+        if (adapter?.itemCount.orZero() > position) {
+            adapter?.list?.get(position)?.let {
+                var author: FeedAuthorModel? = null
+                when (it) {
+                    is FeedCardImageContentModel -> author = it.author
+                    is FeedCardVideoContentModel -> author = it.author
+                }
+                author?.let {
+                    if (userSession.isLoggedIn) {
+                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.isShop)
+                    } else {
+                        feedPostViewModel.suspendFollow(
+                            author.id,
+                            author.encryptedUserId,
+                            author.isShop
+                        )
+                        followLoginResult.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun observeReport() {
         feedMainViewModel.reportResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    currentTrackerData?.let { trackerData ->
+                        feedAnalytics.eventViewSuccessReportContent(trackerData)
+                        currentTrackerData = null
+                    }
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.apply {
                         setFinalView()
                     }
                 }
                 is Fail -> {}
+            }
+        }
+    }
+
+    private fun observeDelete() {
+        feedPostViewModel.deletePostResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showToast(
+                        getString(feedR.string.toast_delete_post_success),
+                        Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    showToast(
+                        getString(feedR.string.toast_delete_post_failed),
+                        Toaster.TYPE_ERROR
+                    )
+                }
             }
         }
     }
@@ -440,7 +739,7 @@ class FeedFragment :
             }
 
             adapter = FeedPostAdapter(
-                FeedAdapterTypeFactory(this, binding.rvFeedPost)
+                FeedAdapterTypeFactory(this, binding.rvFeedPost, trackerModelMapper)
             )
             if (adapter!!.itemCount == 0) {
                 showLoading()
@@ -452,6 +751,12 @@ class FeedFragment :
                 override fun onPageScrollStateChanged(state: Int) {
                     if (state == SCROLL_STATE_IDLE && it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)) {
                         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+                    }
+                    if (state == SCROLL_STATE_IDLE) {
+                        feedAnalytics.eventSwipeUpDownContent(
+                            trackerModelMapper.tabType,
+                            trackerModelMapper.entryPoint
+                        )
                     }
                 }
 
@@ -476,9 +781,20 @@ class FeedFragment :
                 is Success -> {
                     hideLoading()
                     if (it.data.items.isEmpty()) {
-                        adapter?.setElements(listOf(FeedNoContentModel()))
+                        context?.let { ctx ->
+                            adapter?.setElements(
+                                listOf(
+                                    FeedNoContentModel.getNoContentInstance(ctx)
+                                )
+                            )
+                        }
                     } else {
                         adapter?.updateList(it.data.items)
+                        context?.let { ctx ->
+                            if (feedPostViewModel.shouldShowNoMoreContent) {
+                                adapter?.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
+                            }
+                        }
                         feedPostViewModel.fetchTopAdsData()
                         if (it.data.pagination.totalData == it.data.items.size) {
                             view?.post { notifyItemSelected(0) }
@@ -576,9 +892,32 @@ class FeedFragment :
         feedPostViewModel.merchantVoucherLiveData.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    taggedProductBottomSheet?.showMerchantVoucherWidget(result.data)
+                    taggedProductBottomSheet?.showMerchantVoucherWidget(
+                        result.data,
+                        feedMvcAnalytics
+                    )
                 }
                 is Fail -> taggedProductBottomSheet?.hideMerchantVoucherWidget()
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.uiEvent.collect { event ->
+                    if (event == null) return@collect
+
+                    when (event) {
+                        is FeedMainEvent.ScrollToTop -> {
+                            if (event.tabKey != data?.key) return@collect
+                            binding.rvFeedPost.setCurrentItem(0, true)
+                        }
+                        else -> {}
+                    }
+
+                    feedMainViewModel.consumeEvent(event)
+                }
             }
         }
     }
@@ -587,18 +926,32 @@ class FeedFragment :
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.pause(item.id)
+        when (item) {
+            is FeedCardVideoContentModel -> pauseVideo(item.id)
+            is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            else -> {}
+        }
     }
 
     private fun resumeCurrentVideo() {
         val currentIndex = binding.rvFeedPost.currentItem
         if (currentIndex >= (adapter?.list?.size ?: 0)) return
         val item = adapter?.list?.get(currentIndex) ?: return
-        if (item !is FeedCardVideoContentModel) return
 
-        videoPlayerManager.resume(item.id)
+        when (item) {
+            is FeedCardVideoContentModel -> resumeVideo(item.id)
+            is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            else -> {}
+        }
+    }
+
+    private fun pauseVideo(id: String) {
+        videoPlayerManager.pause(id, shouldReset = true)
+    }
+
+    private fun resumeVideo(id: String) {
+        videoPlayerManager.resume(id)
     }
 
     private fun onGoToLogin() {
@@ -608,7 +961,19 @@ class FeedFragment :
         }
     }
 
-    override fun onLikePostCLicked(id: String, isLiked: Boolean, rowNumber: Int) {
+    override fun onLikePostCLicked(
+        id: String,
+        isLiked: Boolean,
+        rowNumber: Int,
+        trackerModel: FeedTrackerDataModel,
+        isDoubleClick: Boolean
+    ) {
+        if (isDoubleClick) {
+            feedAnalytics.eventDoubleClickLikeButton(trackerModel)
+        } else {
+            feedAnalytics.eventClickLikeButton(trackerModel)
+        }
+
         if (userSession.isLoggedIn) {
             val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
             feedPostViewModel.likeContent(
@@ -697,13 +1062,6 @@ class FeedFragment :
                 tnImage = shareModel.tnImage
             )
         }
-        universalShareBottomSheet.setOnDismissListener {
-            if (dissmisByGreyArea) {
-                // TODO to be used for analytics
-            } else {
-                dissmisByGreyArea = true
-            }
-        }
         universalShareBottomSheet.let {
             if (!it.isAdded) {
                 it.show(childFragmentManager, this, null)
@@ -711,9 +1069,27 @@ class FeedFragment :
         }
     }
 
-    private fun getMenuItemData(): List<FeedMenuItem> {
+    private fun getMenuItemData(
+        editable: Boolean,
+        deletable: Boolean,
+        reportable: Boolean,
+        contentData: FeedContentData
+    ): List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
+        if (editable) {
+            items.add(
+                FeedMenuItem(
+                    drawable = getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.EDIT,
+                    ),
+                    name = FeedMenuIdentifier.EDIT.value,
+                    type = FeedMenuIdentifier.EDIT,
+                    contentData = contentData
+                )
+            )
+        }
         items.add(
             FeedMenuItem(
                 drawable = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY),
@@ -721,32 +1097,67 @@ class FeedFragment :
                 type = FeedMenuIdentifier.MODE_NONTON
             )
         )
-        items.add(
-            FeedMenuItem(
-                drawable = getIconUnifyDrawable(
-                    requireContext(),
-                    IconUnify.WARNING,
-                    MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_RN500
-                    )
-                ),
-                name = getString(feedR.string.feed_report),
-                type = FeedMenuIdentifier.LAPORKAN
+        if (reportable) {
+            items.add(
+                FeedMenuItem(
+                    drawable = getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.WARNING,
+                        MethodChecker.getColor(
+                            context,
+                            unifyR.color.Unify_RN500
+                        )
+                    ),
+                    name = getString(feedR.string.feed_report),
+                    type = FeedMenuIdentifier.LAPORKAN
+                )
             )
-        )
+        }
+        if (deletable) {
+            items.add(
+                FeedMenuItem(
+                    drawable = getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.DELETE,
+                        MethodChecker.getColor(
+                            context,
+                            unifyR.color.Unify_RN500
+                        )
+                    ),
+                    name = FeedMenuIdentifier.DELETE.value,
+                    type = FeedMenuIdentifier.DELETE
+                )
+            )
+        }
+
         return items
     }
 
     private fun openProductTagBottomSheet(
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        trackerData: FeedTrackerDataModel?
     ) {
         if (products.isEmpty()) return
 
         if (taggedProductBottomSheet == null) taggedProductBottomSheet = FeedTaggedProductBottomSheet()
-        taggedProductBottomSheet?.setListener(this)
+        taggedProductBottomSheet?.setCustomListener(this)
+
+        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
+            feedMvcAnalytics.trackerData = data
+            currentTrackerData = data
+            feedAnalytics.eventViewProductListBottomSheets(
+                data,
+                products
+            )
+
+            taggedProductBottomSheet?.setOnDismissListener {
+                feedAnalytics.eventClickCloseProductListBottomSheet(data)
+            }
+        }
+
+        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
         val mappedProducts = products.map(MapperProductsToXProducts::transform)
         taggedProductBottomSheet?.show(
@@ -797,12 +1208,48 @@ class FeedFragment :
         adapter?.notifyItemChanged(position, FEED_POST_NOT_SELECTED)
     }
 
+    private fun checkForFollowerBottomSheet(
+        positionInFeed: Int,
+        campaign: FeedCardCampaignModel
+    ): Boolean {
+        if (campaign.isExclusiveForMember) {
+            showFollowerBottomSheet(positionInFeed, campaign.status)
+        }
+        return campaign.isExclusiveForMember
+    }
+
+    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
+        feedFollowersOnlyBottomSheet =
+            FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+
+        if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false) {
+            feedFollowersOnlyBottomSheet?.show(
+                childFragmentManager,
+                this,
+                positionInFeed,
+                status = campaignStatus
+            )
+        }
+    }
+
     private fun goToCartPage() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
     override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
         if (product.appLink.isEmpty()) return
+
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickProductInProductListBottomSheet(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
         RouteManager.route(requireContext(), product.appLink)
     }
 
@@ -810,6 +1257,18 @@ class FeedFragment :
         product: FeedTaggedProductUiModel,
         itemPosition: Int
     ) {
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickCartButton(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopId = product.shop.id,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
         if (userSession.isLoggedIn) {
             feedPostViewModel.addProductToCart(product)
         } else {
@@ -819,6 +1278,18 @@ class FeedFragment :
     }
 
     override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+        currentTrackerData?.let { data ->
+            feedAnalytics.eventClickBuyButton(
+                trackerData = data,
+                productName = product.title,
+                productId = product.id,
+                productPrice = product.finalPrice,
+                shopId = product.shop.id,
+                shopName = product.shop.name,
+                index = itemPosition
+            )
+        }
+
         if (userSession.isLoggedIn) {
             feedPostViewModel.buyProduct(product)
         } else {
@@ -829,6 +1300,7 @@ class FeedFragment :
 
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
+        private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
 
         private const val MINIMUM_ENDLESS_CALL = 3
 
@@ -838,13 +1310,18 @@ class FeedFragment :
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOM_SHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
+        private const val PARAM_AUTHOR_TYPE = "author_type"
+        const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+
         fun createFeedFragment(
             data: FeedDataModel,
-            extras: Bundle
+            extras: Bundle,
+            entryPoint: String
         ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
                 putAll(extras)
+                putString(ARGUMENT_ENTRY_POINT, entryPoint)
             }
         }
     }

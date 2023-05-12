@@ -4,12 +4,10 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify
 
 /**
@@ -63,13 +61,13 @@ class FeedTaggedProductBottomSheetItemView(
                 binding.tvOriginalPrice.show()
                 binding.tvProductDiscount.text =
                     context.getString(R.string.feed_product_discount_percent, price.discount)
-                binding.tvOriginalPrice.text = price.originalPrice
-                binding.tvCurrentPrice.text = price.price
+                binding.tvOriginalPrice.text = price.originalFormattedPrice
+                binding.tvCurrentPrice.text = price.formattedPrice
             }
             is FeedTaggedProductUiModel.NormalPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.hide()
-                binding.tvCurrentPrice.text = price.price
+                binding.tvCurrentPrice.text = price.formattedPrice
             }
         }
     }

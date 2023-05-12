@@ -17,6 +17,7 @@ class FeedPagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     private val appLinkExtras: Bundle,
+    private val entryPoint: String,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private val differ = AsyncListDiffer(
@@ -42,5 +43,5 @@ class FeedPagerAdapter(
     override fun getItemCount(): Int = differ.currentList.size
 
     override fun createFragment(position: Int): Fragment =
-        FeedFragment.createFeedFragment(differ.currentList[position], appLinkExtras)
+        FeedFragment.createFeedFragment(differ.currentList[position], appLinkExtras, entryPoint)
 }

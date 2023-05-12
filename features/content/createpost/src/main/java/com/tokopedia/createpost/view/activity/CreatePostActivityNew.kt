@@ -123,14 +123,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         inflateFragment()
     }
 
-    override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
-        //DO nothing
-    }
-
-    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging) {
-        //DO nothing
-    }
-
     private fun isVideoFile(uri: Uri): Boolean {
         val mimetype = uri.getMimeType(this);
         return mimetype?.contains(MediaType.VIDEO) ?: false

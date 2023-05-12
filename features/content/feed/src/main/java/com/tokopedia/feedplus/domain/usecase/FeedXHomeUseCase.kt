@@ -109,6 +109,7 @@ class FeedXHomeUseCase @Inject constructor(
               mods
               editable
               deletable
+              reportable
               detailScore {
                 label
                 value
@@ -178,6 +179,7 @@ class FeedXHomeUseCase @Inject constructor(
               mods
               editable
               deletable
+              reportable
               detailScore {
                 label
                 value

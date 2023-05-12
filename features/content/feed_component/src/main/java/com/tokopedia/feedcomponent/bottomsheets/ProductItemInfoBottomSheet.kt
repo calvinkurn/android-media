@@ -373,6 +373,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         )
 
         fun onAddToCartButtonClicked(item: ProductPostTagModelNew)
+        fun onBuyButtonClicked(item: ProductPostTagModelNew)
         fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int)
     }
 

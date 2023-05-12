@@ -10,19 +10,24 @@ object MapperProductsToXProducts {
     fun transform(product: FeedCardProductModel): FeedTaggedProductUiModel {
         return FeedTaggedProductUiModel(
             id = product.id,
-            shopId = product.shopId,
+            shop = FeedTaggedProductUiModel.Shop(
+                id = product.shopId,
+                name = product.shopName
+            ),
             appLink = product.applink,
             title = product.name,
             imageUrl = product.coverUrl,
             price = if (product.isDiscount) {
                 FeedTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount.toInt(),
-                    originalPrice = product.priceOriginalFmt,
-                    price = product.priceFmt
+                    originalFormattedPrice = product.priceOriginalFmt,
+                    formattedPrice = product.priceFmt,
+                    price = product.price
                 )
             } else {
                 FeedTaggedProductUiModel.NormalPrice(
-                    price = product.priceFmt
+                    formattedPrice = product.priceFmt,
+                    price = product.price
                 )
             }
         )

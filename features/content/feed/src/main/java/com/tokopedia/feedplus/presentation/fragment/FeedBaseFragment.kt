@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -22,8 +23,11 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.analytics.FeedAnalytics
+import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -42,7 +46,11 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,7 +68,9 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
+class FeedBaseFragment : BaseDaggerFragment(),
+    FeedContentCreationTypeBottomSheet.Listener,
+    FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -81,13 +91,22 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     @Inject
     lateinit var router: Router
 
+    @Inject
+    lateinit var feedNavigationAnalytics: FeedNavigationAnalytics
+
     private val adapter by lazy {
         FeedPagerAdapter(
             childFragmentManager,
             lifecycle,
-            appLinkExtras = arguments ?: Bundle.EMPTY
+            appLinkExtras = arguments ?: Bundle.EMPTY,
+            entryPoint = getEntryPoint().orEmpty()
         )
     }
+
+    private val isFromPushNotif: Boolean
+        get() = activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM)
+            ?.contains(PARAM_PUSH_NOTIFICATION, true)
+            ?: false
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
@@ -143,6 +162,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -167,6 +191,28 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         super.onViewCreated(view, savedInstanceState)
         feedMainViewModel.fetchFeedTabs()
 
+        try {
+            // check for the remote config
+            if (remoteConfig.getBoolean(REMOTE_CONFIG_KEY, true)) {
+                // check for rollence
+                if (RemoteConfigInstance.getInstance()
+                        .abTestPlatform?.getString(ROLLENCE_KEY, "")
+                        .orEmpty().isEmpty()
+                ) {
+                    parentFragmentManager.beginTransaction()
+                        .replace((view.parent as View).id, FeedPlusContainerFragment())
+                        .addToBackStack(null)
+                        .commit()
+                }
+            } else {
+                parentFragmentManager.beginTransaction()
+                    .replace((view.parent as View).id, FeedPlusContainerFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        } catch (t: Throwable) {
+        }
+
         setupView()
 
         observeFeedTabData()
@@ -183,6 +229,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         super.onDestroyView()
     }
 
+    override fun onScrollToTop() {
+        feedMainViewModel.scrollCurrentTabToTop()
+    }
+
+    override fun isLightThemeStatusBar(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -192,9 +246,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
             CreateContentType.CREATE_LIVE -> {
+                feedNavigationAnalytics.eventClickCreateLive(feedMainViewModel.getCurrentTabType())
+
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
             CreateContentType.CREATE_POST -> {
+                feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
+
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                 intent.putExtra(
                     BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
@@ -217,6 +275,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
+                feedNavigationAnalytics.eventClickCreateVideo(feedMainViewModel.getCurrentTabType())
+
                 openCreateShorts.launch()
             }
             else -> {}
@@ -241,25 +301,41 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
-                            )
+            OnPageChangeCallback() {
+
+            var shouldSendSwipeTracker = false
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
                         )
-                    }
-                    onChangeTab(position)
+                    )
                 }
+                onChangeTab(position)
+
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
+                    }
+                    shouldSendSwipeTracker = false
+                }
+            }
 
             override fun onPageSelected(position: Int) {
                 appLinkTabPosition = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
             }
         })
 
@@ -275,6 +351,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun onResumeInternal() {
         feedMainViewModel.resumePage()
+
+        val meta = feedMainViewModel.metaData.value
+        if (meta is Success) showOnboarding(meta.data)
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
@@ -444,43 +523,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initMetaView(meta: MetaModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(ONBOARDING_SHOW_DELAY)
-            mOnboarding?.dismiss()
-            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-                .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
-                        binding.btnFeedCreatePost
-                    } else {
-                        null
-                    }
-                )
-                .setProfileEntryPointView(
-                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                        binding.feedUserProfileImage
-                    } else {
-                        null
-                    }
-                )
-                .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                    }
-
-                    override fun onCompleteCreateContentOnboarding() {
-                        feedMainViewModel.setHasShownCreateContent()
-                    }
-
-                    override fun onCompleteProfileEntryPointOnboarding() {
-                        feedMainViewModel.setHasShownProfileEntryPoint()
-                    }
-
-                    override fun onFinished(isForcedDismiss: Boolean) {
-                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                    }
-                }).build()
-
-            mOnboarding?.show()
-        }
+        showOnboarding(meta)
 
         if (meta.showMyProfile) {
             if (meta.profilePhotoUrl.isNotEmpty()) {
@@ -492,14 +535,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         binding.btnFeedCreatePost.setOnClickListener {
+            feedNavigationAnalytics.eventClickCreationButton(feedMainViewModel.getCurrentTabType())
             onCreatePostClicked()
         }
 
         binding.btnFeedLive.setOnClickListener {
+            feedNavigationAnalytics.eventClickLiveButton(feedMainViewModel.getCurrentTabType())
             openAppLink.launch(meta.liveApplink)
         }
 
         binding.feedUserProfileImage.setOnClickListener {
+            feedNavigationAnalytics.eventClickProfileButton(feedMainViewModel.getCurrentTabType())
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
             } else {
@@ -538,6 +584,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (firstTabData != null) {
             binding.tyFeedFirstTab.text = firstTabData.title
             binding.tyFeedFirstTab.setOnClickListener {
+                feedNavigationAnalytics.eventClickForYouTab()
                 binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
             }
             binding.tyFeedFirstTab.show()
@@ -548,6 +595,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (secondTabData != null) {
             binding.tyFeedSecondTab.text = secondTabData.title
             binding.tyFeedSecondTab.setOnClickListener {
+                feedNavigationAnalytics.eventClickFollowingTab()
                 binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
             }
             binding.tyFeedSecondTab.show()
@@ -556,6 +604,46 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         scrollToDefaultTabPosition()
+    }
+
+    private fun showOnboarding(meta: MetaModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(ONBOARDING_SHOW_DELAY)
+            mOnboarding?.dismiss()
+            mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+                .setCreateContentView(
+                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                        binding.btnFeedCreatePost
+                    } else {
+                        null
+                    }
+                )
+                .setProfileEntryPointView(
+                    if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                        binding.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setListener(object : ImmersiveFeedOnboarding.Listener {
+                    override fun onStarted() {
+                    }
+
+                    override fun onCompleteCreateContentOnboarding() {
+                        feedMainViewModel.setHasShownCreateContent()
+                    }
+
+                    override fun onCompleteProfileEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onFinished(isForcedDismiss: Boolean) {
+                        if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                    }
+                }).build()
+
+            mOnboarding?.show()
+        }
     }
 
     private fun scrollToDefaultTabPosition() {
@@ -641,6 +729,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    private fun getEntryPoint() = if (isFromPushNotif) {
+        FeedAnalytics.ENTRY_POINT_PUSH_NOTIF
+    } else if (activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT) != null)
+        activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
+    else FeedAnalytics.ENTRY_POINT_SHARE_LINK
+
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
@@ -648,8 +742,16 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
 
+        private const val EXTRAS_UTM_MEDIUM = "utm_medium"
+        private const val PARAM_PUSH_NOTIFICATION = "push"
+
+        private const val THRESHOLD_OFFSET_HALF = 0.5f
+
         private const val COACHMARK_START_DELAY_IN_SEC = 1
 
         private const val ONBOARDING_SHOW_DELAY = 500L
+
+        private const val ROLLENCE_KEY = "immersive_feed"
+        private const val REMOTE_CONFIG_KEY = "android_main_app_show_unified_feed"
     }
 }

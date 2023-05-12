@@ -18,9 +18,8 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -53,10 +52,6 @@ class FeedMainViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val uiEventManager: UiEventManager<FeedMainEvent>,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
-
-    private val _isInClearView = MutableLiveData<Boolean>(false)
-    val isInClearView: LiveData<Boolean>
-        get() = _isInClearView
 
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
@@ -114,10 +109,6 @@ class FeedMainViewModel @Inject constructor(
         _isPageResumed.value = false
     }
 
-    fun changeCurrentTabByIndex(index: Int) {
-        _currentTabIndex.value = index
-    }
-
     fun changeCurrentTabByType(type: String) {
         feedTabs.value?.let {
             if (it is Success) {
@@ -129,6 +120,28 @@ class FeedMainViewModel @Inject constructor(
             }
         }
     }
+
+    fun scrollCurrentTabToTop() {
+        viewModelScope.launch {
+            val feedTabsValue = feedTabs.value
+            if (feedTabsValue !is Success) return@launch
+            feedTabsValue.data.forEachIndexed { _, tab ->
+                if (!tab.isActive) return@forEachIndexed
+                uiEventManager.emitEvent(
+                    FeedMainEvent.ScrollToTop(tab.key)
+                )
+            }
+        }
+    }
+
+    fun getCurrentTabType() =
+        feedTabs.value?.let {
+            if (it is Success) {
+                it.data[currentTabIndex.value ?: 0].type
+            } else {
+                ""
+            }
+        } ?: ""
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {

@@ -81,6 +81,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
 
         setCloseClickListener {
             mListener?.onMenuBottomSheetCloseClick(contentId)
+            dismiss()
         }
     }
     fun showReportLayoutWhenLaporkanClicked() {

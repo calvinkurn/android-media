@@ -6,7 +6,6 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.iconunify.IconUnify
 
 /**
  * Created By : Muhammad Furqan on 08/03/23
@@ -17,16 +16,15 @@ class FeedNoContentViewHolder(
 ) : AbstractViewHolder<FeedNoContentModel>(binding.root) {
 
     override fun bind(element: FeedNoContentModel?) {
-        with(binding) {
-            iconFeedNoContent.setImage(IconUnify.IMAGE)
-            tyFeedNoContentTitle.text =
-                root.context.getString(R.string.feed_label_no_content_title)
-            tyFeedNoContentSubtitle.text =
-                root.context.getString(R.string.feed_label_no_content_subtitle)
-            btnShowOtherContent.text =
-                root.context.getString(R.string.feed_label_no_content_button)
-            btnShowOtherContent.setOnClickListener {
-                listener.changeTab()
+        element?.let {
+            with(binding) {
+                iconFeedNoContent.setImage(it.imageId)
+                tyFeedNoContentTitle.text = it.title
+                tyFeedNoContentSubtitle.text = it.subtitle
+                btnShowOtherContent.text = it.buttonText
+                btnShowOtherContent.setOnClickListener {
+                    listener.changeTab()
+                }
             }
         }
     }

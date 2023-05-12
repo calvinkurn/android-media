@@ -115,6 +115,7 @@ object DeeplinkMapperContent {
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
+
     private fun handleNavigationFeedVideo(uri: Uri): String {
         val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
         return getRegisteredNavigationHomeFeedVideo(finalDeeplink)

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.domain.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
@@ -108,7 +109,8 @@ object MapperFeedHome {
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
-            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt
+            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
+            topAdsId = if (isTopAdsPost(card)) card.id else "",
         )
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel =
@@ -159,6 +161,8 @@ object MapperFeedHome {
     private fun transformToFeedCardLivePreview(card: FeedXCard): FeedCardLivePreviewContentModel =
         FeedCardLivePreviewContentModel(
             id = card.id,
+            typename = card.typename,
+            type = card.type,
             author = transformAuthor(card.author),
             title = card.title,
             subtitle = card.subtitle,
@@ -167,13 +171,21 @@ object MapperFeedHome {
             media = card.media.map { media -> transformMedia(media) },
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
-            playChannelId = card.playChannelId
+            playChannelId = card.playChannelId,
+            followers = transformFollow(card.followers),
+            detailScore = card.detailScore.map { score -> transformDetailScore(score) },
+            hasVoucher = card.hasVoucher,
+            campaign = transformCampaign(card.campaign),
+            products = if (card.products.isNotEmpty()) card.products.map { product ->
+                transformProduct(product)
+            }
+            else card.tags.map { product -> transformProduct(product) }
         )
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
         type = author.type,
-        name = author.name,
+        name = MethodChecker.fromHtml(author.name).toString(),
         description = author.description,
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,

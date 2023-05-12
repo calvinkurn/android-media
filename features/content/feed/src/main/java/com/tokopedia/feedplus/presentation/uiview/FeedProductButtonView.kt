@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,6 +18,8 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
+    private var products: List<FeedCardProductModel> = emptyList()
+
     fun bindData(
         postId: String,
         author: FeedAuthorModel,
@@ -24,8 +27,41 @@ class FeedProductButtonView(
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
-        products: List<FeedCardProductModel>
+        products: List<FeedCardProductModel>,
+        trackerData: FeedTrackerDataModel?
     ) {
+        with(binding) {
+            bind(products)
+
+            icPlayProductSeeMore.setOnClickListener {
+                listener.onProductTagButtonClicked(
+                    postId,
+                    author,
+                    postType,
+                    isFollowing,
+                    campaign,
+                    hasVoucher,
+                    products,
+                    trackerData
+                )
+            }
+            tvPlayProductCount.setOnClickListener {
+                listener.onProductTagButtonClicked(
+                    postId,
+                    author,
+                    postType,
+                    isFollowing,
+                    campaign,
+                    hasVoucher,
+                    products,
+                    trackerData
+                )
+            }
+        }
+    }
+
+    private fun bind(products: List<FeedCardProductModel>) {
+        this.products = products
         with(binding) {
             when {
                 products.size == PRODUCT_COUNT_ZERO -> {
@@ -40,30 +76,11 @@ class FeedProductButtonView(
                     root.show()
                 }
             }
-
-            icPlayProductSeeMore.setOnClickListener {
-                listener.onProductTagButtonClicked(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products
-                )
-            }
-            tvPlayProductCount.setOnClickListener {
-                listener.onProductTagButtonClicked(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products
-                )
-            }
         }
+    }
+
+    fun showIfPossible() {
+        bind(this.products)
     }
 
     companion object {

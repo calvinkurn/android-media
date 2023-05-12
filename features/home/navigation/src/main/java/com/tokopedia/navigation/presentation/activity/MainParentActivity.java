@@ -165,7 +165,6 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
-    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
@@ -1331,6 +1330,8 @@ public class MainParentActivity extends BaseActivity implements
         } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
         } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
+            getIntent().putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT);
+
             if (isFeedClickedFortheFirstTime) {
                 isFeedClickedFortheFirstTime = false;
                 globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
@@ -1404,7 +1405,7 @@ public class MainParentActivity extends BaseActivity implements
     public void populateBottomNavigationView() {
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        if(!isOsExperiment) {
+        if (!isOsExperiment) {
             menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         }
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));

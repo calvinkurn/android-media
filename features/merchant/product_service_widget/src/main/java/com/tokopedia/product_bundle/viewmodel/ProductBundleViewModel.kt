@@ -57,7 +57,6 @@ class ProductBundleViewModel @Inject constructor(
     companion object {
         private const val ATC_BUNDLE_QUANTITY = 1
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
-        private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
     }
 
@@ -232,10 +231,6 @@ class ProductBundleViewModel @Inject constructor(
             // TODO: log error
             errorMessageLiveData.value = rscProvider.getErrorMessage(it)
         })
-    }
-
-    fun isProductBundleAvailable(bundleInfo: BundleInfo): Boolean {
-        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE
     }
 
     fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
