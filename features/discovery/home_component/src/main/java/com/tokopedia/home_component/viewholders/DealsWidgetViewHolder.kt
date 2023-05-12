@@ -91,7 +91,6 @@ class DealsWidgetViewHolder(
         val adapter = DealsWidgetAdapter(dealsWidgetListener, element.channelModel.verticalPosition, isCacheData)
         adapter.addData(element)
         recyclerView?.adapter = adapter
-        adapter.notifyDataSetChanged()
         if (recyclerView?.itemDecorationCount == 0) {
             recyclerView?.addItemDecoration(DealsWidgetSpacingItemDecoration())
         }

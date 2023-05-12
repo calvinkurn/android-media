@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,7 @@ class DealsWidgetAdapter(
         private const val DEALS_WIDGET_SIZE = 4
     }
 
-    private lateinit var dataModel: DealsDataModel
+    private var dataModel: DealsDataModel? = null
     private var itemList: MutableList<ChannelGrid> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsWidgetItemViewHolder {
@@ -33,16 +34,16 @@ class DealsWidgetAdapter(
     }
 
     override fun onBindViewHolder(holder: DealsWidgetItemViewHolder, position: Int) {
-        holder.bind(itemList[position], positionInWidget, listener, dataModel.channelModel, isCacheData)
+        dataModel?.let {
+            holder.bind(itemList[position], positionInWidget, listener, it.channelModel, isCacheData)
+        }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addData(dataModel: DealsDataModel) {
         this.dataModel = dataModel
         itemList.clear()
-        dataModel.channelModel.channelGrids.forEachIndexed { index, data ->
-            if (index < DEALS_WIDGET_SIZE) {
-                itemList.add(data)
-            }
-        }
+        itemList.addAll(dataModel.channelModel.channelGrids.take(DEALS_WIDGET_SIZE))
+        notifyDataSetChanged()
     }
 }

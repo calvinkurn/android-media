@@ -57,10 +57,10 @@
     <dimen name="home_dynamic_icon_image_size_revamp">64dp</dimen>
     <dimen name="home_dynamic_icon_title_width_revamp">64dp</dimen>
 
+    <dimen name="home_deals_outer_card_padding">4dp</dimen>
+
     <dimen name="home_todo_widget_height">98dp</dimen>
     <dimen name="home_todo_widget_image_size">44dp</dimen>
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
     <dimen name="home_todo_widget_cta_height">32dp</dimen>
-
-    <dimen name="home_deals_outer_card_padding">4dp</dimen>
 </resources>

@@ -21,6 +21,7 @@
         app:layout_constraintTop_toTopOf="@id/card_deals"
         app:layout_constraintHorizontal_chainStyle="packed"
         android:layout_marginTop="6dp"
+        android:contentDescription="@string/content_desc_deals_widget_ribbon"
         android:scaleType="fitXY"
         android:elevation="4dp"
         android:visibility="gone"
