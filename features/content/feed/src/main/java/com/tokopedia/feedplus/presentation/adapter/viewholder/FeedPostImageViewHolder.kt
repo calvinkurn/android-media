@@ -187,7 +187,7 @@ class FeedPostImageViewHolder(
                         data.id,
                         data.editable,
                         data.deletable,
-                        data.reportable,
+                        data.reportable || data.isTypeProductHighlight,
                         FeedContentData(
                             data.text,
                             data.id,
@@ -267,7 +267,10 @@ class FeedPostImageViewHolder(
                 bindAuthor(element)
             }
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(element, payload.payloads.toMutableList())
+                if (payload is FeedViewHolderPayloads) bind(
+                    element,
+                    payload.payloads.toMutableList()
+                )
             }
         }
     }
@@ -387,7 +390,8 @@ class FeedPostImageViewHolder(
             hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
         productButtonView.bindData(
             postId = model.id,
@@ -397,7 +401,8 @@ class FeedPostImageViewHolder(
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
             products = model.products,
-            trackerData = trackerDataModel
+            trackerData = trackerDataModel,
+            positionInFeed = absoluteAdapterPosition
         )
         updateProductTagText(model)
     }
@@ -474,14 +479,19 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
-            postLikeButton.root.show()
-            commentButton.show()
             menuButton.show()
             shareButton.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
+
+            mData?.let {
+                if (!it.isTopAds) {
+                    postLikeButton.root.show()
+                    commentButton.show()
+                }
+            }
         }
 
         productTagView.showIfPossible()

@@ -28,7 +28,8 @@ class FeedProductButtonView(
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        positionInFeed: Int
     ) {
         with(binding) {
             bind(products)
@@ -42,7 +43,8 @@ class FeedProductButtonView(
                     campaign,
                     hasVoucher,
                     products,
-                    trackerData
+                    trackerData,
+                    positionInFeed
                 )
             }
             tvPlayProductCount.setOnClickListener {
@@ -54,7 +56,8 @@ class FeedProductButtonView(
                     campaign,
                     hasVoucher,
                     products,
-                    trackerData
+                    trackerData,
+                    positionInFeed
                 )
             }
         }
