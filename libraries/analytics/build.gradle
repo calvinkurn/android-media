@@ -12,7 +12,6 @@ buildscript {
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "com.google.devtools.ksp"
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx

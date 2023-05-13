@@ -4,7 +4,6 @@ apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs'
-apply plugin: "com.google.devtools.ksp"
 
 buildscript {
     repositories {
