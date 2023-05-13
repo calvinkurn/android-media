@@ -6,11 +6,14 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -22,7 +25,10 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.common_compose.ui.NestGN
+import com.tokopedia.common_compose.ui.NestNN
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -33,7 +39,12 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun NestCircularLoader(
     modifier: Modifier = Modifier,
+    isWhite: Boolean
 ) {
+    var state by remember { mutableStateOf(true) }
+    val isRunning by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+    val delayAnimation = 1_500L
     val vectorPainter = rememberVectorPainter(
         defaultWidth = 500f.dp,
         defaultHeight = 500f.dp,
@@ -43,12 +54,19 @@ internal fun NestCircularLoader(
     ) { _, _ ->
         Group(name = "_R_G") {
             // circle right
-            CircleRightGroup()
+            CircleRightGroup(scope = scope, state = state, isWhite = isWhite)
 
             // circle left
-            CircleLeftGroup()
+            CircleLeftGroup(scope = scope, state = state, isWhite = isWhite)
         }
     }
+
+    LaunchedEffect(key1 = Unit, block = {
+        while (isRunning) {
+            state = !state
+            delay(delayAnimation)
+        }
+    })
 
     Image(
         modifier = modifier,
@@ -58,7 +76,7 @@ internal fun NestCircularLoader(
 }
 
 @Composable
-private fun CircleLeftGroup() {
+private fun CircleLeftGroup(scope: CoroutineScope, state: Boolean, isWhite: Boolean) {
     Group(
         name = "_R_G_L_0_G_N_1_T_0",
         translationX = 250f,
@@ -68,27 +86,40 @@ private fun CircleLeftGroup() {
             name = "_R_G_L_0_G",
             rotation = -90.806f
         ) {
-            val animatedTrimStart = remember { Animatable(0f) }
-            val animatedTrimEnd = remember { Animatable(.001f) }
+            val initialTrimStart = 0f
+            val initialTrimEnd = .001f
+            val animatedTrimStart = remember { Animatable(initialValue = initialTrimStart) }
+            val animatedTrimEnd = remember { Animatable(initialValue = initialTrimEnd) }
+            val color = if (isWhite) {
+                NestNN.light._0
+            } else {
+                NestGN.light._500
+            }
 
-            LaunchedEffect(key1 = Unit, block = {
+            LaunchedEffect(key1 = state, block = {
                 launch {
-                    animatedTrimStart.animateTo(target = 0f, duration = 526)
+                    // reset animation to initial value
+                    animatedTrimStart.animateTo(target = initialTrimStart, duration = 0) {
+                        scope.launch {
+                            // start animation
+                            animatedTrimStart.animateTo(target = .999f, duration = 790, delay = 526)
+                        }
+                    }
                 }
                 launch {
-                    animatedTrimStart.animateTo(target = .999f, duration = 790, delay = 526)
-                }
-                launch {
-                    animatedTrimEnd.animateTo(target = .001f, duration = 167)
-                }
-                launch {
-                    animatedTrimEnd.animateTo(target = 1f, duration = 970, delay = 167)
+                    // reset animation to initial value
+                    animatedTrimEnd.animateTo(target = initialTrimEnd, duration = 0) {
+                        scope.launch {
+                            // start animation
+                            animatedTrimEnd.animateTo(target = 1f, duration = 970, delay = 167)
+                        }
+                    }
                 }
             })
 
             Circle(
                 name = "_R_G_L_0_G_D_0_P_0",
-                color = NestTheme.colors.GN._500,
+                color = color,
                 trimPathStart = animatedTrimStart.value,
                 trimPathEnd = animatedTrimEnd.value
             )
@@ -97,32 +128,47 @@ private fun CircleLeftGroup() {
 }
 
 @Composable
-private fun CircleRightGroup() {
+private fun CircleRightGroup(scope: CoroutineScope, state: Boolean, isWhite: Boolean) {
     Group(
         name = "_R_G_L_1_G_N_1_T_0",
         translationX = 250f,
         translationY = 250f
     ) {
         Group(name = "_R_G_L_1_G", rotation = 90f) {
-            val animatedTrimStart = remember { Animatable(.999f) }
-            val animatedTrimEnd = remember { Animatable(1f) }
+            val initialTrimStart = .999f
+            val initialTrimEnd = 1f
+            val animatedTrimStart = remember { Animatable(initialValue = initialTrimStart) }
+            val animatedTrimEnd = remember { Animatable(initialValue = initialTrimEnd) }
+            val color = if (isWhite) {
+                NestNN.light._300
+            } else {
+                NestGN.light._300
+            }
 
-            LaunchedEffect(key1 = Unit, block = {
+            LaunchedEffect(key1 = state, block = {
                 launch {
-                    animatedTrimStart.animateTo(target = 0f, duration = 750)
+                    // reset animation to initial value
+                    animatedTrimStart.animateTo(target = initialTrimStart, duration = 0) {
+                        scope.launch {
+                            // start animation
+                            animatedTrimStart.animateTo(target = 0f, duration = 750)
+                        }
+                    }
                 }
                 launch {
-                    animatedTrimEnd.animateTo(target = 1f, duration = 433)
-                }
-
-                launch {
-                    animatedTrimEnd.animateTo(target = .001f, duration = 654, delay = 433)
+                    // reset animation to initial value
+                    animatedTrimEnd.animateTo(target = initialTrimEnd) {
+                        scope.launch {
+                            // start animation
+                            animatedTrimEnd.animateTo(target = .001f, duration = 654, delay = 433)
+                        }
+                    }
                 }
             })
 
             Circle(
                 name = "_R_G_L_1_G_D_0_P_0",
-                color = if (isSystemInDarkTheme()) NestTheme.colors.GN._700 else NestTheme.colors.GN._300,
+                color = color,
                 trimPathStart = animatedTrimStart.value,
                 trimPathEnd = animatedTrimEnd.value
             )
@@ -132,15 +178,19 @@ private fun CircleRightGroup() {
 
 private suspend fun Animatable<Float, AnimationVector1D>.animateTo(
     target: Float,
-    duration: Int,
-    delay: Int = 0
+    duration: Int = 0,
+    delay: Int = 0,
+    finish: () -> Unit = {}
 ) = this.animateTo(
     targetValue = target,
     animationSpec = tween(
         durationMillis = duration,
         easing = FastOutSlowInEasing,
         delayMillis = delay
-    )
+    ),
+    block = {
+        finish.invoke()
+    }
 )
 
 @Composable
@@ -165,6 +215,7 @@ private val CirclePath by lazy {
 @Composable
 fun NestCircularLoaderPreview() {
     NestCircularLoader(
-        modifier = Modifier.size(50.dp)
+        modifier = Modifier.size(50.dp),
+        isWhite = false
     )
 }
