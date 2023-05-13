@@ -84,8 +84,6 @@ internal fun NestDecorativeLoader(
                 name = "tokopedia",
                 pivotX = 18f,
                 pivotY = 18f
-                /*scaleX = 0f,
-                scaleY = 0f*/
             ) {
                 Path(
                     pathData = path,

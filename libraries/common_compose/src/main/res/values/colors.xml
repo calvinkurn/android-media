@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="loaderunify_primary">@color/Unify_GN500</color>
-    <color name="loaderunify_secondary">@color/Unify_GN300</color>
-    <color name="loaderunify_inverted_primary">@color/Unify_NN0</color>
-    <color name="loaderunify_inverted_secondary">@color/Unify_NN0_44</color>
-</resources>
