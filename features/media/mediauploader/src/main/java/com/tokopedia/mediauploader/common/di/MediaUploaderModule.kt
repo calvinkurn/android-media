@@ -1,22 +1,12 @@
 package com.tokopedia.mediauploader.common.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.image.ImageUploaderManager
-import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import com.tokopedia.mediauploader.video.LargeUploaderManager
-import com.tokopedia.mediauploader.video.SimpleUploaderManager
-import com.tokopedia.mediauploader.video.VideoUploaderManager
-import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
@@ -29,203 +19,116 @@ import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
-@Module(includes = [MediaUploaderNetworkModule::class])
-class MediaUploaderModule {
+@Module(includes = [
+    MediaUploaderNetworkModule::class,
+    MediaUploaderCommonModule::class
+])
+abstract class MediaUploaderModule {
 
-    @Provides
+    // -- common --
+
+    @Binds
+    abstract fun provideSourcePolicyManager(
+        impl: SourcePolicyManagerImpl
+    ): SourcePolicyManager
+
+    // -- image --
+
+    @Binds
     @MediaUploaderQualifier
-    fun provideUserSession(
-        @ApplicationContext context: Context
-    ): UserSessionInterface {
-        return UserSession(context)
-    }
+    abstract fun provideGetImagePolicyUseCase(
+        impl: GetImagePolicyUseCase
+    ): GetImagePolicyUseCase
 
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideUploaderUseCase(
-        imageUploader: ImageUploaderManager,
-        videoUploader: VideoUploaderManager
-    ): UploaderUseCase {
-        return UploaderUseCase(
-            imageUploader,
-            videoUploader
-        )
-    }
+    abstract fun provideGetImageUploaderUseCase(
+        impl: GetImageUploaderUseCase
+    ): GetImageUploaderUseCase
 
-    @Provides
-    fun provideSourcePolicyManager(
-        @ApplicationContext context: Context,
-    ): SourcePolicyManager {
-        return SourcePolicyManagerImpl(context)
-    }
-
-    @Provides
-    fun provideVideoCompressionCacheManager(
-        @ApplicationContext context: Context,
-    ): VideoCompressionCacheManager {
-        return VideoCompressionCacheManager(context)
-    }
-
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideVideoUploaderManager(
-        policyManager: SourcePolicyManager,
-        policyUseCase: GetVideoPolicyUseCase,
-        videoCompression: SetVideoCompressionUseCase,
-        simpleUploader: SimpleUploaderManager,
-        largeUploader: LargeUploaderManager
-    ): VideoUploaderManager {
-        return VideoUploaderManager(
-            policyManager,
-            policyUseCase,
-            videoCompression,
-            simpleUploader,
-            largeUploader
-        )
-    }
+    abstract fun provideGetImageSecurePolicyUseCase(
+        impl: GetImageSecurePolicyUseCase
+    ): GetImageSecurePolicyUseCase
 
-    // --- image ---
-
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideGetImagePolicyUseCase(
-        repository: GraphqlRepository
-    ): GetImagePolicyUseCase {
-        return GetImagePolicyUseCase(repository)
-    }
+    abstract fun provideImageUploaderManager(
+        impl: ImageUploaderManager
+    ): ImageUploaderManager
 
-    @Provides
+    // -- common video --
+
+    @Binds
+    abstract fun provideVideoMetaDataExtractorRepository(
+        impl: VideoMetaDataExtractorRepositoryImpl
+    ): VideoMetaDataExtractorRepository
+
+    @Binds
+    abstract fun provideVideoCompressionRepository(
+        impl: VideoCompressionRepositoryImpl
+    ): VideoCompressionRepository
+
+    @Binds
     @MediaUploaderQualifier
-    fun provideGetImageUploaderUseCase(
-        services: ImageUploadServices,
-        url: MediaUploaderUrl
-    ): GetImageUploaderUseCase {
-        return GetImageUploaderUseCase(services, url)
-    }
+    abstract fun provideVideoCompressionCacheManager(
+        impl: VideoCompressionCacheManager
+    ): VideoCompressionCacheManager
 
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideGetImageSecurePolicyUseCase(
-        repository: GraphqlRepository
-    ): GetImageSecurePolicyUseCase {
-        return GetImageSecurePolicyUseCase(repository)
-    }
+    abstract fun provideSetVideoCompressionUseCase(
+        impl: SetVideoCompressionUseCase
+    ): SetVideoCompressionUseCase
 
-    @Provides
+    // -- simple video --
+
+    @Binds
     @MediaUploaderQualifier
-    fun provideImageUploaderManager(
-        policyManager: SourcePolicyManager,
-        imagePolicyUseCase: GetImagePolicyUseCase,
-        imageUploaderUseCase: GetImageUploaderUseCase,
-        imageSecurePolicyUseCase: GetImageSecurePolicyUseCase
-    ): ImageUploaderManager {
-        return ImageUploaderManager(
-            policyManager,
-            imagePolicyUseCase,
-            imageUploaderUseCase,
-            imageSecurePolicyUseCase
-        )
-    }
+    abstract fun provideGetVideoPolicyUseCase(
+        impl: GetVideoPolicyUseCase
+    ): GetVideoPolicyUseCase
 
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideVideoMetaDataExtractorRepository(
-        @ApplicationContext context: Context
-    ): VideoMetaDataExtractorRepository {
-        return VideoMetaDataExtractorRepositoryImpl(context)
-    }
+    abstract fun provideGetSimpleUploaderUseCase(
+        impl: GetSimpleUploaderUseCase
+    ): GetSimpleUploaderUseCase
 
-    @Provides
+    // -- large video --
+
+    @Binds
     @MediaUploaderQualifier
-    fun provideVideoCompressionRepository(
-        @ApplicationContext context: Context,
-        videoCompressionCacheManager: VideoCompressionCacheManager,
-        videoMetaDataExtractorRepository: VideoMetaDataExtractorRepository
-    ): VideoCompressionRepository {
-        return VideoCompressionRepositoryImpl(
-            context,
-            videoMetaDataExtractorRepository,
-            videoCompressionCacheManager
-        )
-    }
+    abstract fun provideInitVideoUploaderUseCase(
+        impl: InitVideoUploaderUseCase
+    ): InitVideoUploaderUseCase
 
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideSetVideoCompressionUseCase(
-        repository: VideoCompressionRepository
-    ): SetVideoCompressionUseCase {
-        return SetVideoCompressionUseCase(repository)
-    }
+    abstract fun provideGetChunkCheckerUseCase(
+        impl: GetChunkCheckerUseCase
+    ): GetChunkCheckerUseCase
 
-    // --- simple video ---
-
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideGetVideoPolicyUseCase(
-        repository: GraphqlRepository
-    ): GetVideoPolicyUseCase {
-        return GetVideoPolicyUseCase(repository)
-    }
+    abstract fun provideGetChunkUploaderUseCase(
+        impl: GetChunkUploaderUseCase
+    ): GetChunkUploaderUseCase
 
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideGetSimpleVideoUploaderUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): GetSimpleUploaderUseCase {
-        return GetSimpleUploaderUseCase(services, url)
-    }
+    abstract fun provideSetCompleteUploaderUseCase(
+        impl: SetCompleteUploaderUseCase
+    ): SetCompleteUploaderUseCase
 
-    // --- large video ---
-
-    @Provides
+    @Binds
     @MediaUploaderQualifier
-    fun provideInitVideoUploaderUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): InitVideoUploaderUseCase {
-        return InitVideoUploaderUseCase(services, url)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
-    fun provideGetChunkCheckerUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): GetChunkCheckerUseCase {
-        return GetChunkCheckerUseCase(services, url)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
-    fun provideGetChunkUploaderUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): GetChunkUploaderUseCase {
-        return GetChunkUploaderUseCase(services, url)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
-    fun provideSetCompleteUploaderUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): SetCompleteUploaderUseCase {
-        return SetCompleteUploaderUseCase(services, url)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
-    fun provideSetAbortUploaderUseCase(
-        services: VideoUploadServices,
-        url: MediaUploaderUrl
-    ): SetAbortUploaderUseCase {
-        return SetAbortUploaderUseCase(services, url)
-    }
+    abstract fun provideSetAbortUploaderUseCase(
+        impl: SetAbortUploaderUseCase
+    ): SetAbortUploaderUseCase
 
 }

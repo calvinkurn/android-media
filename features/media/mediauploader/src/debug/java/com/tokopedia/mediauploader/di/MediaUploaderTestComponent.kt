@@ -2,13 +2,17 @@ package com.tokopedia.mediauploader.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mediauploader.MediaUploaderActivity
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.services.UploaderReceiver
 import com.tokopedia.mediauploader.services.UploaderWorker
 import dagger.Component
 
 @MediaUploaderTestScope
 @Component(
-    modules = [MediaUploaderTestModule::class],
+    modules = [
+        MediaUploaderModule::class,
+        MediaUploaderDebugModule::class
+    ],
     dependencies = [BaseAppComponent::class]
 )
 interface MediaUploaderTestComponent {

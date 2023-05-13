@@ -16,12 +16,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,7 +25,6 @@ import com.tokopedia.mediauploader.MediaUploaderStateManager.Companion.UploadSta
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
-import com.tokopedia.mediauploader.di.MediaUploaderTestModule
 import com.tokopedia.mediauploader.services.UploaderWorker
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_VIDEO_URL
@@ -451,7 +444,6 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun initInjector() {
         DaggerMediaUploaderTestComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .mediaUploaderTestModule(MediaUploaderTestModule(applicationContext))
             .build()
             .inject(this)
     }
