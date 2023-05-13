@@ -20,16 +20,17 @@ import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.imagepicker_insta.analytic.FeedVideoDepreciationAnalytic
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -47,7 +48,6 @@ import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -85,6 +85,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
+    @Inject lateinit var feedVideoDepreciationAnalytic: FeedVideoDepreciationAnalytic
+
     private val daggerComponent: ImagePickerComponent by lazy {
         DaggerImagePickerComponent.builder()
             .baseAppComponent(
@@ -96,10 +98,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private val onErrorLoadImage: (Boolean) -> Unit = { isFileNotFound ->
         showToast(
             message = getString(
-                if(isFileNotFound)
+                if (isFileNotFound) {
                     R.string.imagepicker_media_not_found_error
-                else
+                } else {
                     R.string.imagepicker_insta_smwr
+                }
             ),
             toasterType = Toaster.TYPE_ERROR
         )
@@ -114,7 +117,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
+        when (childFragment) {
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setAnalytic(feedAccountAnalytic)
                 childFragment.setData(viewModel.contentAccountList)
@@ -142,7 +145,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     fun onVolumeDown() {
-        //DO nothing
+        // DO nothing
     }
 
     fun onVolumeUp() {
@@ -234,7 +237,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         return noPermissionView.visibility == View.VISIBLE
     }
 
-
     fun isUiInitialized(): Boolean {
         return ::noPermissionView.isInitialized
     }
@@ -255,6 +257,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             zoomImageAdapterDataMap.clear()
             selectedMediaView.removeAsset()
             getPhotos()
+
+            showFeedVideoDepreciateBottomSheet()
         }
     }
 
@@ -287,7 +291,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         noMediaAvailableText = getString(R.string.imagepicker_insta_no_media_available)
         loadingMediaText = getString(R.string.imagepicker_insta_loading)
-
     }
 
     fun prepareDataFromActivity() {
@@ -317,15 +320,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun openFeedAccountBottomSheet(){
+    private fun openFeedAccountBottomSheet() {
         try {
             feedAccountAnalytic.clickAccountInfo()
             ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .show(childFragmentManager)
-        }
-        catch (e: Exception) {
-
+        } catch (e: Exception) {
         }
     }
 
@@ -341,13 +342,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             bottomSheet.setTitle(it.context?.getString(R.string.imagepicker_insta_pilih) ?: "")
             folderView.itemOnClick { folderData ->
 
-                //When user selects same folder
+                // When user selects same folder
                 if (folderData?.folderTitle == selectedFolderText) {
                     bottomSheet.dismiss()
                     return@itemOnClick
                 }
 
-                //When user selects same folder and folder name is AlbumUtil.RECENTS
+                // When user selects same folder and folder name is AlbumUtil.RECENTS
                 if (folderData?.folderTitle.isNullOrEmpty() && selectedFolderText == AlbumUtil.RECENTS) {
                     bottomSheet.dismiss()
                     return@itemOnClick
@@ -383,8 +384,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             imageMultiSelect.toggle()
 
             if (selectedMediaView.imageAdapterData != null) {
-
-                //Clear previous selected
+                // Clear previous selected
                 val selectedItemIndexList = imageAdapter.getListOfIndexWhichAreSelected()
                 imageAdapter.clearSelectedItems()
 
@@ -394,13 +394,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
                 }
 
-                //Add selected item
+                // Add selected item
                 imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
                 imageAdapter.getListOfIndexWhichAreSelected().forEach {
                     imageAdapter.notifyItemChanged(it)
                 }
 
-                //update zoomMap
+                // update zoomMap
                 val zoomInfo = zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!]
                 zoomImageAdapterDataMap.clear()
                 if (zoomInfo != null) {
@@ -419,7 +419,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     fun setupRv() {
-
         val columnCount = DEFAULT_COLUMN_COUNT
         val lm = GridLayoutManager(context, columnCount)
         rv.layoutManager = lm
@@ -453,7 +452,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             queryConfiguration.videoMaxDuration,
             viewModel.selectedFeedAccountId,
             TAKE_PICT_REQUEST_CODE,
-            isOpenFrom,
+            isOpenFrom
         )
     }
 
@@ -482,13 +481,15 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 getString(
                     R.string.imagepicker_max_limit_reached,
                     maxMultiSelect
-                ), Toaster.TYPE_ERROR
+                ),
+                Toaster.TYPE_ERROR
             )
             AdapterErrorType.VIDEO_DURATION -> showToast(
                 getString(
                     R.string.imagepicker_max_vid_dur,
                     queryConfiguration.videoMaxDuration
-                ), Toaster.TYPE_ERROR
+                ),
+                Toaster.TYPE_ERROR
             )
         }
     }
@@ -503,7 +504,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.contentAccountListState.collectLatest {
-                if(viewModel.isAllowChangeAccount) {
+                if (viewModel.isAllowChangeAccount) {
                     if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
                         Prefs.saveShouldShowCoachMarkValue(requireContext())
                         toolbarCommon.showCoachMarkSwitchAccount()
@@ -513,8 +514,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                         toolbarCommon.hideCoachMarkSwitchAccount()
                         openFeedAccountBottomSheet()
                     }
-                }
-                else {
+                } else {
                     toolbarCommon.setOnAccountClickListener(null)
                 }
             }
@@ -529,7 +529,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-
             viewModel.photosFlow.collect {
                 when (it.status) {
                     LiveDataResult.STATUS.LOADING -> {
@@ -558,7 +557,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
-
         imageMultiSelect.toggleCallback = { isMultiSelect ->
             if (isMultiSelect) {
                 imageFitCenter.visibility = View.GONE
@@ -572,7 +570,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner) {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    //Do nothing
+                    // Do nothing
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
@@ -590,7 +588,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         imageAdapter.itemSelectCallback =
             { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
                 if (isSelected) {
-
                     var zoomInfo: ZoomInfo? = null
                     imageAdapter.getListOfIndexWhichAreSelected()
 
@@ -610,7 +607,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
                     selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
                 } else {
-                    //DO nothing
+                    // DO nothing
                 }
             }
 
@@ -669,14 +666,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         firstSelectedMedia: ImageAdapterData,
         originalImageAdapterData: ImageAdapterData
     ): ZoomInfo {
-
         // getting original width of the new selected video
         val originalWidth =
             originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext(), onErrorLoadImage).width
         val originalHeight =
             originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
-        //TODO get selected media ki list ka first index
+        // TODO get selected media ki list ka first index
         val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
         val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
 
@@ -697,7 +693,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         * And change height according to aspect ratio
         */
 
-
         val zoomInfo = ZoomInfo()
         zoomInfo.bmpWidth = originalWidth
         if (ratio != 0.0F) {
@@ -706,7 +701,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             zoomInfo.bmpHeight = originalHeight
         }
         return zoomInfo
-
     }
 
     private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
@@ -731,14 +725,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 itemsToBeAdded += addCameraItemInEmptyList()
                 imageDataList.addAll(allImageDataList)
             }
-
         } else {
             if (mediaVmMData?.isNewItem == true) {
                 allImageDataList.addAll(0, tempImageAdapterList)
             }
 
             if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == AlbumUtil.RECENTS) {
-
                 itemsToBeAdded += addCameraItemInEmptyList()
 
                 if (mediaVmMData?.isNewItem == true) {
@@ -769,7 +761,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             imageAdapter.clearSelectedItems()
 
             if (imageAdapter.itemCount > 1 && imageAdapter.addSelectedItem(1)) {
-
                 zoomImageAdapterDataMap.clear()
 
                 val itemData = list.first()
@@ -809,13 +800,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
-
         if (!uris.isNullOrEmpty()) {
-
             val mActivity = (activity as? ImagePickerInstaActivity)
             val applink = mActivity?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
-
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
                 intent.putExtra(BundleData.KEY_IS_OPEN_FROM, mActivity.isOpenFrom)
@@ -858,7 +846,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun handleCameraSuccessResponse(data: Intent?) {
         val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
-            //Update current UI
+            // Update current UI
             val uriList = data?.extras?.getParcelableArrayList<Uri>(BundleData.URIS)
             if (!uriList.isNullOrEmpty()) {
                 viewModel.handleFileAddedEvent(uriList, queryConfiguration)
@@ -872,7 +860,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun handleCameraErrorResponse(data: Intent?) {
         val dstLink = (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         if (dstLink.isNullOrEmpty()) {
-            //DO nothing
+            // DO nothing
         } else {
             activity?.setResult(Activity.RESULT_CANCELED, data)
             activity?.finish()
@@ -902,7 +890,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if((requestCode == CREATE_POST_REQUEST_CODE || requestCode == TAKE_PICT_REQUEST_CODE) &&
+        if ((requestCode == CREATE_POST_REQUEST_CODE || requestCode == TAKE_PICT_REQUEST_CODE) &&
             resultCode == Activity.RESULT_OK
         ) {
             val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
@@ -914,6 +902,19 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onStop() {
         super.onStop()
         stopMedia()
+    }
+
+    private fun showFeedVideoDepreciateBottomSheet() {
+        if (!viewModel.isUserFirstTimeVisit) return
+
+        feedVideoDepreciationAnalytic.openVideoDepreciationBottomSheetEvent()
+
+        val asBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
+        FeedVideoDepreciationBottomSheet
+            .newInstance(asBuyer)
+            .show(childFragmentManager, FeedVideoDepreciationBottomSheet::class.java.name)
+
+        viewModel.setFirstTimeUserVisit()
     }
 
     companion object {

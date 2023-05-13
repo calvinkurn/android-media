@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -43,8 +44,9 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
-    getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     affiliateService: NowAffiliateService,
+    getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
@@ -52,6 +54,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     deleteCartUseCase,
     getMiniCartUseCase,
     affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers

@@ -6,6 +6,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -26,6 +27,7 @@ open class TokoNowRecipeSimilarProductViewModelTestFixture {
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
     private lateinit var affiliateService: NowAffiliateService
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
 
@@ -38,6 +40,7 @@ open class TokoNowRecipeSimilarProductViewModelTestFixture {
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
         affiliateService = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
@@ -47,6 +50,7 @@ open class TokoNowRecipeSimilarProductViewModelTestFixture {
             deleteCartUseCase,
             getMiniCartUseCase,
             affiliateService,
+            getTargetedTickerUseCase,
             addressData,
             userSession,
             CoroutineTestDispatchers

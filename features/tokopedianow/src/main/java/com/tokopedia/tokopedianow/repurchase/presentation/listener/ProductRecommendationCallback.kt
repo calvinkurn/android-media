@@ -71,6 +71,8 @@ class ProductRecommendationCallback(
         RouteManager.route(activity, appLink)
     }
 
+    override fun productCardAddToCartBlocked() {}
+
     override fun productCardImpressed(
         position: Int,
         product: ProductCardCompactCarouselItemUiModel,

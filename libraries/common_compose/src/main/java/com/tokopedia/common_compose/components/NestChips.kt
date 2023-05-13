@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.ImagePainter.State.Empty.painter
 import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -65,9 +66,10 @@ fun NestChips(
                 maxLines = maxLines
             )
             if (showChevron) {
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_chevron_down),
                     contentDescription = "Dropdown Icon",
                     tint = chevronColor
                 )

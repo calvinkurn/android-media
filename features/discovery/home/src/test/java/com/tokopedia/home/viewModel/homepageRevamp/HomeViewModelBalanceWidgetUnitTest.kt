@@ -66,7 +66,6 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         // On refresh
         homeViewModel.refreshWithThreeMinsRules(true)
 
@@ -94,7 +93,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(false)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
@@ -120,7 +118,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
@@ -292,7 +289,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
