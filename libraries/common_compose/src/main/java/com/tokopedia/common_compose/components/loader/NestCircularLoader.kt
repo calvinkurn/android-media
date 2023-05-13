@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,8 +24,12 @@ import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestGN
 import com.tokopedia.common_compose.ui.NestNN
 import kotlinx.coroutines.CoroutineScope
@@ -39,10 +44,11 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun NestCircularLoader(
     modifier: Modifier = Modifier,
-    isWhite: Boolean
+    isWhite: Boolean,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     var state by remember { mutableStateOf(true) }
-    val isRunning by remember { mutableStateOf(true) }
+    var isRunning by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val delayAnimation = 1_500L
     val vectorPainter = rememberVectorPainter(
@@ -61,17 +67,41 @@ internal fun NestCircularLoader(
         }
     }
 
-    LaunchedEffect(key1 = Unit, block = {
+    suspend fun runLoopingAnimation() {
         while (isRunning) {
             state = !state
             delay(delayAnimation)
+        }
+    }
+
+    DisposableEffect(key1 = Unit, effect = {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    isRunning = true
+                    scope.launch {
+                        runLoopingAnimation()
+                    }
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    isRunning = false
+                }
+                else -> {
+                    // no ops
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     })
 
     Image(
         modifier = modifier,
         painter = vectorPainter,
-        contentDescription = "circular_loader"
+        contentDescription = "nest_circular_loader"
     )
 }
 
