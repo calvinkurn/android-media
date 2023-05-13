@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -45,7 +46,7 @@ internal fun NestShimmer(
 ) {
     when (type) {
         is NestShimmerType.Rect -> {
-            NestShimmerLayout(modifier = modifier, shape = type.shape)
+            NestShimmerLayout(modifier = modifier, rounded = type.rounded)
         }
 
         else -> {
@@ -58,7 +59,7 @@ internal fun NestShimmer(
                             height.value = heightSize
                         }
                     },
-                shape = RoundedCornerShape((height.value / 2).dp)
+                rounded = (height.value / 2).dp
             )
         }
     }
@@ -67,7 +68,7 @@ internal fun NestShimmer(
 @Composable
 private fun NestShimmerLayout(
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape
+    rounded: Dp
 ) {
     val width = remember { mutableStateOf(0f) }
     val firstDuration = 899
@@ -94,7 +95,7 @@ private fun NestShimmerLayout(
 
     Box(
         modifier = modifier
-            .clip(shape)
+            .clip(RoundedCornerShape(rounded))
             .background(NestTheme.colors.NN._100)
             .onSizeChanged {
                 val widthSize = it.width.toFloat()
@@ -138,13 +139,13 @@ fun ShimmerPreview() {
         NestShimmer(
             modifier = Modifier
                 .size(100.dp, 50.dp),
-            type = NestShimmerType.Rect(shape = RoundedCornerShape(8.dp))
+            type = NestShimmerType.Rect(rounded = 8.dp)
         )
 
         NestShimmer(
             modifier = Modifier
                 .size(100.dp, 50.dp),
-            type = NestShimmerType.Rect(shape = RoundedCornerShape(16.dp))
+            type = NestShimmerType.Rect(rounded = 16.dp)
         )
 
         NestShimmer(

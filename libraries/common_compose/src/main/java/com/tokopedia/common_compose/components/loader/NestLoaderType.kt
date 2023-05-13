@@ -1,6 +1,5 @@
 package com.tokopedia.common_compose.components.loader
 
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -33,7 +32,7 @@ sealed class NestLoaderSize(val width: Dp, val height: Dp) {
 
 sealed interface NestShimmerType {
     data class Rect(
-        val shape: RoundedCornerShape = RoundedCornerShape(0)
+        val rounded: Dp = 0.dp
     ): NestShimmerType
     object Line: NestShimmerType
     object Circle: NestShimmerType
