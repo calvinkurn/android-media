@@ -49,6 +49,7 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
                     .setInputData(Data.Builder().apply {
                         putInt(MAX_ROW, conf.maxRow)
                     }.build())
+                    .keepResultsForAtLeast(1, TimeUnit.MINUTES)
                     .setInitialDelay(if (runImmediate) {
                         0
                     } else {

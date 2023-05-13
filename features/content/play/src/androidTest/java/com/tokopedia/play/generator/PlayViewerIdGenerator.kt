@@ -10,14 +10,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.factory.TestFragmentFactory
 import com.tokopedia.content.test.factory.TestViewModelFactory
@@ -40,6 +38,7 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play.BuildConfig
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
@@ -58,6 +57,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
+import com.tokopedia.play.model.UiModelBuilder
 
 /**
  * Created by kenny.hadisaputra on 17/03/22
@@ -152,11 +152,11 @@ class PlayViewerIdGenerator {
                     pipAnalytic = mockk(relaxed = true),
                     analytic = mockk(relaxed = true),
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
-                    castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
                     analyticManager = mockk(relaxed = true),
                     router = mockk(relaxed = true),
+                    commentAnalytics = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -208,10 +208,10 @@ class PlayViewerIdGenerator {
     ) + printConditions
 
     private val parentViewPrinter = ViewHierarchyPrinter(
-        parentPrintCondition, customIdPrefix = "P", packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        parentPrintCondition, customIdPrefix = "P", packageName = BuildConfig.APPLICATION_ID
     )
     private val viewPrinter = ViewHierarchyPrinter(
-        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        printConditions, packageName = BuildConfig.APPLICATION_ID
     )
     private val fileWriter = FileWriter()
 

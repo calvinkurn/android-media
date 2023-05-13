@@ -93,6 +93,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -148,6 +150,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
     private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
     private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
     private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
@@ -1032,7 +1035,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
             ?.hideFloatingButton.orFalse()
     }
 
-    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+    fun onAtcRecomNonVariantQuantityChanged(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
@@ -1041,9 +1048,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
+                atcRecomNonVariant(recomItem, quantity, recommendationNowAffiliateData)
             } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                updateRecomCartNonVariant(
+                    recomItem,
+                    quantity,
+                    miniCartItem,
+                    recommendationNowAffiliateData
+                )
             }
         }
     }
@@ -1075,7 +1087,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    fun atcRecomNonVariant(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
                 recomItem.productId.toString(),
@@ -1094,6 +1110,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     recomItem
                 )
             } else {
+                recommendationNowAffiliate.get()?.initCookieDirectATC(
+                    recommendationNowAffiliateData,
+                    recomItem,
+                )
                 recomItem.cartId = result.data.cartId
                 updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
             }
@@ -1105,7 +1125,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
     fun updateRecomCartNonVariant(
         recomItem: RecommendationItem,
         quantity: Int,
-        miniCartItem: MiniCartItem.MiniCartItemProduct?
+        miniCartItem: MiniCartItem.MiniCartItemProduct?,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
     ) {
         launchCatchError(block = {
             miniCartItem?.let {
@@ -1123,6 +1144,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                         recomItem
                     )
                 } else {
+                    recommendationNowAffiliate.get()?.initCookieDirectATC(
+                        recommendationNowAffiliateData,
+                        recomItem,
+                    )
                     updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
             }

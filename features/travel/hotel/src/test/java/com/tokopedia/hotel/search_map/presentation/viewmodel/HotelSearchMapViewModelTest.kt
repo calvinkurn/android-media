@@ -19,6 +19,7 @@ import com.tokopedia.hotel.search_map.data.model.Sort
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
 import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -213,13 +214,17 @@ class HotelSearchMapViewModelTest {
         //given
         coEvery {
             searchPropertyUseCase.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
-        } returns Fail(Throwable())
+        } throws MessageErrorException("wasdad","356")
 
         //when
         hotelSearchMapViewModel.searchProperty(0, DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelSearchMapViewModel.liveSearchResult.value is Fail)
+        val assertResult = hotelSearchMapViewModel.liveSearchResult.value as Fail
+        val asserObject = assertResult.throwable as MessageErrorException
+        assert(asserObject.errorCode.toString() == "356")
+        assert(asserObject.message == "wasdad")
     }
 
     @Test

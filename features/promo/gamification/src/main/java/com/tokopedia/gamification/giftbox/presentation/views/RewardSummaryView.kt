@@ -61,9 +61,9 @@ class RewardSummaryView : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         init(attrs)
     }
@@ -126,15 +126,15 @@ class RewardSummaryView : FrameLayout {
                                 GtmGiftTapTap.clickCheckRewards(userSession.userId)
                             }
                             RouteManager.route(it.context, rb.applink)
-
                         }
 
                         if (index == 0) {
                             (button.layoutParams as LinearLayout.LayoutParams).rightMargin = context.resources.getDimensionPixelSize(R.dimen.gami_dp_12)
                         }
 
-                        if (rb.type != null)
+                        if (rb.type != null) {
                             buttonsMap[rb.type] = button
+                        }
                     }
                 }
             }
@@ -183,7 +183,6 @@ class RewardSummaryView : FrameLayout {
             decoration.indexTillBigPrize = filteredItems.size - 1
         }
 
-
         rvAdapter.dataList.clear()
         rvAdapter.dataList.addAll(list)
         rvAdapter.notifyDataSetChanged()
@@ -231,7 +230,6 @@ class RewardSummaryView : FrameLayout {
         typography.setWeight(Typography.BOLD)
         return typography
     }
-
 }
 
 @Retention(AnnotationRetention.SOURCE)
