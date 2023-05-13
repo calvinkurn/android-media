@@ -35,7 +35,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 
-    ksp rootProject.ext.networkDependencies.glideKsp
+    kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.glideOkhttp
     implementation rootProject.ext.debugToolsDependencies.chuck
