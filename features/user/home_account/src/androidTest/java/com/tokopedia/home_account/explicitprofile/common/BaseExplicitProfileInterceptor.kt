@@ -7,7 +7,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 
-abstract class BaseExplicitProfileInterceptor: Interceptor {
+abstract class BaseExplicitProfileInterceptor : Interceptor {
 
     fun mockResponse(request: Request, mockResponse: String, networkCode: Int = 200): Response {
         return Response.Builder()

@@ -9,7 +9,7 @@ import okhttp3.Response
 
 class ExplicitProfileInterceptor constructor(
     private val context: Context
-): BaseExplicitProfileInterceptor() {
+) : BaseExplicitProfileInterceptor() {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder().build()
@@ -31,7 +31,7 @@ class ExplicitProfileInterceptor constructor(
         }
     }
 
-    private fun getRaw(raw: Int) : String {
+    private fun getRaw(raw: Int): String {
         return InstrumentationMockHelper.getRawString(context, raw)
     }
 

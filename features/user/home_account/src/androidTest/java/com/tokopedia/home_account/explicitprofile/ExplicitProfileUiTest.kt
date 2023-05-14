@@ -6,7 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home_account.explicitprofile.fakes.ExplicitProfileInterceptor
-import com.tokopedia.home_account.explicitprofile.fakes.FakeExplicitProfileActivity
+import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileActivity
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.After
 import org.junit.Before
@@ -20,7 +20,9 @@ class ExplicitProfileUiTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        FakeExplicitProfileActivity::class.java, false, false
+        ExplicitProfileActivity::class.java,
+        false,
+        false
     )
 
     @get:Rule
@@ -63,7 +65,6 @@ class ExplicitProfileUiTest {
     @Test
     fun saveShoppingPreferences() {
         activityRule.launchActivity(null)
-
 
         explicitProfileRobot {
             /**
