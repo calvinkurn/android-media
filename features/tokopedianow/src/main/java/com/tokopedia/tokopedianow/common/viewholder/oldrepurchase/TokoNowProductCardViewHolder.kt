@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -48,11 +49,12 @@ class TokoNowProductCardViewHolder(
     }
 
     private fun goToProductDetail(data: TokoNowProductCardUiModel) {
-        RouteManager.route(
-            itemView.context,
+        val uri = UriUtil.buildUri(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             data.productId
         )
+        val appLink = listener?.createAffiliateLink(uri)
+        RouteManager.route(itemView.context, appLink)
     }
 
     interface TokoNowProductCardListener {
@@ -60,5 +62,6 @@ class TokoNowProductCardViewHolder(
         fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel)
         fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel)
         fun onAddVariantClicked(data: TokoNowProductCardUiModel)
+        fun createAffiliateLink(url: String): String
     }
 }

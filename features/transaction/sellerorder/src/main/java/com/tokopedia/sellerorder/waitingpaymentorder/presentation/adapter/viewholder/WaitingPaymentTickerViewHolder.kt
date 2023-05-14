@@ -11,8 +11,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class WaitingPaymentTickerViewHolder(
-        itemView: View?,
-        private val itemClickListener: BaseListAdapter.OnAdapterInteractionListener<Visitable<WaitingPaymentOrderAdapterTypeFactory>>
+    itemView: View?,
+    private val itemClickListener: BaseListAdapter.OnAdapterInteractionListener<Visitable<WaitingPaymentOrderAdapterTypeFactory>>
 ) : AbstractViewHolder<WaitingPaymentTickerUiModel>(itemView) {
 
     companion object {
@@ -26,7 +26,7 @@ class WaitingPaymentTickerViewHolder(
                 tickerTitle = element.title
                 setHtmlDescription(element.description)
                 closeButtonVisibility = if (element.showCloseIcon) View.VISIBLE else View.GONE
-                itemView.setDescriptionClickEvent(object: TickerCallback {
+                this.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         itemClickListener.onItemClicked(element)
                     }

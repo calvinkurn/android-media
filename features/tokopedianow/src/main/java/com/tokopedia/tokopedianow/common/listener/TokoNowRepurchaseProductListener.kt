@@ -27,6 +27,8 @@ class TokoNowRepurchaseProductListener(
                 productId = data.productId,
                 quantity = quantity,
                 shopId = data.shopId,
+                stock = data.availableStock,
+                isVariant = data.isVariant,
                 type = TokoNowLayoutType.REPURCHASE_PRODUCT
             )
         } else {
