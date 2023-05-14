@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.home_account.explicitprofile.di.component.DaggerExplicitProfileComponents
+import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponents
 
 open class ActivityComponentFactory {
 
@@ -14,6 +16,14 @@ open class ActivityComponentFactory {
         return DaggerHomeAccountUserComponents.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .homeAccountUserModules(HomeAccountUserModules(context))
+            .build()
+    }
+
+    open fun createExplicitProfileComponent(
+        application: Application
+    ): ExplicitProfileComponents {
+        return DaggerExplicitProfileComponents.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
     }
 
