@@ -60,7 +60,7 @@ fun NestLoaderPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NestTheme.colors.NN._500)
+            .background(NestTheme.colors.NN._1000)
             .verticalScroll(state = rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),

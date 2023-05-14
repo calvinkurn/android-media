@@ -1,226 +1,292 @@
 package com.tokopedia.common_compose.components.loader
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.graphics.vector.Path
+import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * Created by yovi.putra on 12/05/23"
+ * Created by yovi.putra on 14/05/23"
  * Project name: android-tokopedia-core
  **/
 
 @Composable
-internal fun NestDecorativeLoader(
+fun NestDecorativeLoader(
     modifier: Modifier = Modifier,
-    isWhite: Boolean = false
+    isWhite: Boolean = false,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
-
-    // color
+    var state by remember { mutableStateOf(true) }
+    var isRunning by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+    val delayAnimation = 1333L
     val color = if (isWhite) NestNN.light._0 else NestTheme.colors.GN._500
-
-    @Composable
-    fun Dot(
-        modifier: Modifier = Modifier,
-        dotSize: Dp = circleSideSize.dp,
-        scale: Float
-    ) = Spacer(
-        modifier
-            .size(dotSize)
-            .scale(scale)
-            .background(
-                color = color,
-                shape = CircleShape
-            )
-    )
-
-    @Composable
-    fun TokopediaIcon(
-        modifier: Modifier = Modifier
-    ) {
-        val path = PathParser().parsePathString(
-            "M 22.589 10 L 24.205 10 C 25.408 10 26.002 10.597 26.002 11.797 L 26.002 19.916 C 25.975 21.536 25.311 23.084 24.156 24.224 C 23.001 25.36 21.443 26 19.821 26 L 11.77 26 C 10.581 26 10 25.419 10 24.23 L 10 11.792 C 10 10.592 10.594 10 11.792 10 L 13.411 10 C 15.98 10 17.298 11.361 17.999 12.5 C 18.7 11.361 20.022 10 22.587 10 L 22.589 10 Z"
-        ).toNodes()
-        val vectorPainter = rememberVectorPainter(
-            defaultWidth = 36f.dp,
-            defaultHeight = 36f.dp,
-            viewportWidth = 36f,
-            viewportHeight = 36f,
-            autoMirror = true
-        ) { _, _ ->
-            Group(
-                name = "tokopedia",
-                pivotX = 18f,
-                pivotY = 18f
-            ) {
-                Path(
-                    pathData = path,
-                    fill = SolidColor(color),
-                    pathFillType = PathFillType.EvenOdd
-                )
-            }
+    val vectorPainter = rememberVectorPainter(
+        defaultWidth = 36f.dp,
+        defaultHeight = 36f.dp,
+        viewportWidth = 36f,
+        viewportHeight = 36f,
+        autoMirror = false,
+        tintColor = color
+    ) { _, _ ->
+        Group(name = "_R_G") {
+            CircleLeftGroup(state = state)
+            CircleCenterGroup(state = state)
+            CircleRightGroup(state = state)
+            TokopediaGroup(state = state)
         }
-
-        Image(
-            modifier = modifier,
-            painter = vectorPainter,
-            contentDescription = "tokopedia"
-        )
     }
 
-    @Composable
-    fun animateFloatBy(
-        scale: Float,
-        duration: Int = scaleDurationAnimate,
-        delay: Int = 0,
-        easing: Easing = FastOutSlowInEasing
-    ) = animateFloatAsState(
-        targetValue = scale,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = duration,
-                delayMillis = delay,
-                easing = easing
-            ),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
+    suspend fun runLoopingAnimation() {
+        while (isRunning) {
+            state = !state
+            delay(delayAnimation)
+        }
+    }
 
-    @Composable
-    fun animateMoveTo(x: Dp, delay: Int) = animateDpAsState(
-        targetValue = x,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = moveDurationAnimate,
-                delayMillis = delay,
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
+    DisposableEffect(key1 = Unit, effect = {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    isRunning = true
+                    scope.launch {
+                        runLoopingAnimation()
+                    }
+                }
 
-    var containerWidth by remember { mutableStateOf(0) }
-    var dotSideScaleState by remember { mutableStateOf(2f) }
-    var dotCenterScaleState by remember { mutableStateOf(1.33f) }
-    var iconScaleState by remember { mutableStateOf(2f) }
-    var dotMovingState by remember { mutableStateOf(0) }
-    val animatedDotCenterScale by animateFloatBy(
-        scale = dotCenterScaleState,
-        easing = FastOutSlowInEasing,
-        delay = circleDelayAnimate
-    )
-    val animatedDotSideScale by animateFloatBy(
-        scale = dotSideScaleState,
-        easing = FastOutSlowInEasing,
-        delay = circleDelayAnimate
-    )
-    val animatedMoveToRight by animateMoveTo(x = dotMovingState.dp, delay = circleDelayAnimate)
-    val animatedMoveToLeft by animateMoveTo(x = -dotMovingState.dp, delay = circleDelayAnimate)
-    val animatedIconScale by animateFloatBy(
-        scale = iconScaleState,
-        easing = FastOutSlowInEasing,
-        delay = iconDelayAnimate,
-        duration = iconScaleDurationAnimate
-    )
+                Lifecycle.Event.ON_PAUSE -> {
+                    isRunning = false
+                }
 
-    LaunchedEffect(key1 = Unit, block = {
-        dotCenterScaleState = 1f
-        dotSideScaleState = 1f
-        iconScaleState = 0f
-        dotMovingState = spaceBetweenCircle * 2
+                else -> {
+                    // no ops
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     })
 
-    Box(
+    Image(
         modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .wrapContentSize()
-                .onGloballyPositioned {
-                    if (containerWidth != it.size.width) {
-                        containerWidth = it.size.width
-                    }
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Dot(
-                modifier = Modifier
-                    .offset(x = animatedMoveToLeft),
-                scale = animatedDotSideScale,
-                dotSize = circleSideSize.dp
-            )
+        painter = vectorPainter,
+        contentDescription = "nest_circular_loader"
+    )
+}
 
-            Dot(
-                scale = animatedDotCenterScale,
-                dotSize = circleCenterSize.dp
-            )
+@Composable
+fun CircleLeftGroup(state: Boolean) {
+    val animatedScaleX = remember { Animatable(initialValue = 1f) }
+    val animatedScaleY = remember { Animatable(initialValue = 1f) }
+    val animatedTranslateX = remember { Animatable(initialValue = 0f) }
 
-            Dot(
-                modifier = Modifier
-                    .offset(x = animatedMoveToRight),
-                scale = animatedDotSideScale,
-                dotSize = circleSideSize.dp
-            )
-
-            TokopediaIcon(
-                modifier = Modifier
-                    .scale(animatedIconScale)
-            )
+    LaunchedEffect(key1 = state, block = {
+        launch {
+            animatedScaleX.animateTo(target = 2f, duration = 300)
+            animatedScaleX.animateTo(target = 1f, duration = 1000, delay = 300)
         }
+        launch {
+            animatedScaleY.animateTo(target = 2f, duration = 300)
+            animatedScaleY.animateTo(target = 1f, duration = 1000, delay = 300)
+        }
+
+        launch {
+            animatedTranslateX.animateTo(target = 13f, duration = 300)
+            animatedTranslateX.animateTo(target = 0f, duration = 300, delay = 600)
+        }
+    })
+
+    Group(
+        name = "path_1_group",
+        pivotX = 6f,
+        pivotY = 18f,
+        scaleX = animatedScaleX.value,
+        scaleY = animatedScaleY.value,
+        translationX = animatedTranslateX.value
+    ) {
+        Circle(name = "path_1", path = CircleLeftPath)
     }
 }
 
-// duration
-private const val scaleDurationAnimate = 300
-private const val moveDurationAnimate = 300
-private const val iconScaleDurationAnimate = 300
-// delay
-private const val circleDelayAnimate = 300
-private const val iconDelayAnimate = 300
-// object size
-private const val circleCenterSize = 18
-private const val circleSideSize = 12
-// spacing
-private const val spaceBetweenCircle = 14
-
-@Preview(showSystemUi = true)
 @Composable
-fun NestDecorativeLoaderPreview() {
+private fun CircleCenterGroup(state: Boolean) {
+    val animatedScaleX = remember { Animatable(initialValue = 1f) }
+    val animatedScaleY = remember { Animatable(initialValue = 1.25f) }
+
+    LaunchedEffect(key1 = state, block = {
+        launch {
+            animatedScaleX.animateTo(target = 1.25f, duration = 300)
+            animatedScaleX.animateTo(target = 1f, duration = 1000, delay = 300)
+        }
+        launch {
+            animatedScaleY.animateTo(target = 1.25f, duration = 300)
+            animatedScaleY.animateTo(target = 1f, duration = 1000, delay = 300)
+        }
+    })
+
+    Group(
+        name = "path_2_group",
+        pivotX = 18f,
+        pivotY = 18f,
+        scaleX = animatedScaleX.value,
+        scaleY = animatedScaleY.value
+    ) {
+        Circle(name = "path_2", path = CircleCenterPath)
+    }
+}
+
+@Composable
+private fun CircleRightGroup(state: Boolean) {
+    val animatedScaleX = remember { Animatable(initialValue = 1f) }
+    val animatedScaleY = remember { Animatable(initialValue = 1f) }
+    val animatedTranslateX = remember { Animatable(initialValue = 0f) }
+
+    LaunchedEffect(key1 = state, block = {
+        launch {
+            animatedScaleX.animateTo(target = 2f, duration = 300)
+            animatedScaleX.animateTo(target = 1f, duration = 1000, delay = 300)
+        }
+        launch {
+            animatedScaleY.animateTo(target = 2f, duration = 300)
+            animatedScaleY.animateTo(target = 1f, duration = 1000, delay = 300)
+        }
+        launch {
+            animatedTranslateX.animateTo(target = -13f, duration = 300)
+            animatedTranslateX.animateTo(target = 0f, duration = 300, delay = 600)
+        }
+    })
+
+    Group(
+        name = "path_3_group",
+        pivotX = 30f,
+        pivotY = 18f,
+        scaleX = animatedScaleX.value,
+        scaleY = animatedScaleY.value,
+        translationX = animatedTranslateX.value
+    ) {
+        Circle(name = "path_3", path = CircleRightPath)
+    }
+}
+
+@Composable
+private fun TokopediaGroup(state: Boolean) {
+    val animatedScaleX = remember { Animatable(initialValue = 0f) }
+    val animatedScaleY = remember { Animatable(initialValue = 0f) }
+
+    LaunchedEffect(key1 = state, block = {
+        launch {
+            animatedScaleX.animateTo(target = 1f, duration = 300)
+            animatedScaleX.animateTo(target = 0f, duration = 1000)
+        }
+        launch {
+            animatedScaleY.animateTo(target = 1f, duration = 300)
+            animatedScaleY.animateTo(target = 0f, duration = 1000)
+        }
+    })
+    Group(
+        name = "toped_group",
+        pivotX = 18f,
+        pivotY = 18f,
+        scaleX = animatedScaleX.value,
+        scaleY = animatedScaleY.value
+    ) {
+        TokopediaIcon()
+    }
+}
+
+@Composable
+private fun TokopediaIcon() = Path(
+    name = "toped",
+    pathData = TokopediaPath,
+    fill = SolidColor(NestTheme.colors.GN._500),
+    strokeLineWidth = 1f,
+    pathFillType = PathFillType.EvenOdd
+)
+
+@Composable
+private fun Circle(name: String, path: List<PathNode>) = Path(
+    name = name,
+    pathData = path,
+    fill = SolidColor(NestTheme.colors.GN._500),
+    strokeLineWidth = 1f,
+    pathFillType = PathFillType.EvenOdd
+)
+
+private suspend fun Animatable<Float, AnimationVector1D>.animateTo(
+    target: Float,
+    duration: Int = 0,
+    delay: Int = 0,
+    easing: Easing = FastOutSlowInEasing,
+    finish: () -> Unit = {}
+) = this.animateTo(
+    targetValue = target,
+    animationSpec = FloatTweenSpec(duration, delay, easing),
+    block = {
+        finish.invoke()
+    }
+)
+
+private val TokopediaPath by lazy {
+    PathParser().parsePathString(
+        "M 22.589 10 L 24.205 10 C 25.408 10 26.002 10.597 26.002 11.797 L 26.002 19.916 C 25.975 21.536 25.311 23.084 24.156 24.224 C 23.001 25.36 21.443 26 19.821 26 L 11.77 26 C 10.581 26 10 25.419 10 24.23 L 10 11.792 C 10 10.592 10.594 10 11.792 10 L 13.411 10 C 15.98 10 17.298 11.361 17.999 12.5 C 18.7 11.361 20.022 10 22.587 10 L 22.589 10 Z"
+    ).toNodes()
+}
+
+private val CircleLeftPath by lazy {
+    PathParser().parsePathString(
+        "M 5.5 15.6 C 4.837 15.6 4.201 15.864 3.732 16.332 C 3.264 16.801 3 17.437 3 18.1 C 3 18.763 3.264 19.399 3.732 19.868 C 4.201 20.336 4.837 20.6 5.5 20.6 C 6.163 20.6 6.799 20.336 7.268 19.868 C 7.736 19.399 8 18.763 8 18.1 C 8 17.437 7.736 16.801 7.268 16.332 C 6.799 15.864 6.163 15.6 5.5 15.6 Z"
+    ).toNodes()
+}
+
+private val CircleRightPath by lazy {
+    PathParser().parsePathString(
+        "M 30.5 15.6 C 29.837 15.6 29.201 15.864 28.732 16.332 C 28.264 16.801 28 17.437 28 18.1 C 28 18.763 28.264 19.399 28.732 19.868 C 29.201 20.336 29.837 20.6 30.5 20.6 C 31.163 20.6 31.799 20.336 32.268 19.868 C 32.736 19.399 33 18.763 33 18.1 C 33 17.437 32.736 16.801 32.268 16.332 C 31.799 15.864 31.163 15.6 30.5 15.6 Z"
+    ).toNodes()
+}
+
+private val CircleCenterPath by lazy {
+    PathParser().parsePathString(
+        "M 18 14 C 16.94 14 15.921 14.422 15.172 15.172 C 14.422 15.921 14 16.94 14 18 C 14 19.06 14.422 20.079 15.172 20.828 C 15.921 21.578 16.94 22 18 22 C 19.06 22 20.079 21.578 20.828 20.828 C 21.578 20.079 22 19.06 22 18 C 22 16.94 21.578 15.921 20.828 15.172 C 20.079 14.422 19.06 14 18 14 Z"
+    ).toNodes()
+}
+
+@Preview
+@Composable
+fun NestDecorationLoader() {
     NestDecorativeLoader(
-        modifier = Modifier
-            .size(100.dp)
+        modifier = Modifier.size(50.dp),
+        isWhite = false
     )
 }
