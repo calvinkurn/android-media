@@ -50,7 +50,7 @@ internal fun NestCircularLoader(
     var state by remember { mutableStateOf(true) }
     var isRunning by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
-    val delayAnimation = 1_500L
+    val delayAnimation = 1_333L
     val vectorPainter = rememberVectorPainter(
         defaultWidth = 500f.dp,
         defaultHeight = 500f.dp,
