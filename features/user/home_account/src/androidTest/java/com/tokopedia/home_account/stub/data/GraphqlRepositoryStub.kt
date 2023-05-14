@@ -28,7 +28,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
         Timber.d("mydebug repository double for ${requests.first().query}")
-
         return when (GqlQueryParser.parse(requests).joinToString()) {
             "explicitprofileGetAllCategories" -> {
                 GqlMockUtil.createSuccessResponse<CategoriesDataModel>(
@@ -40,14 +39,24 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     R.raw.explicit_profile_get_questions
                 )
             }
+            "explicitprofileSaveMultiAnswers" -> {
+                GqlMockUtil.createSuccessResponse<ExplicitProfileSaveMultiAnswers>(
+                    EXPLICIT_PROFILE_SAVE_RESPONSE
+                )
+            }
+            "GetCentralizedUserAssetConfig" -> {
+                GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
+                    R.raw.success_get_centralized_user_asset_config
+                )
+            }
+            "midasGetSaldoWidgetBalance" -> {
+                GqlMockUtil.createSuccessResponse<SaldoBalanceDataModel>(
+                    R.raw.success_get_saldo_balance_and_point
+                )
+            }
             else -> {
                 requests.firstOrNull()?.query?.let {
                     return when {
-                        it.contains("explicitprofileSaveMultiAnswers") -> {
-                            GqlMockUtil.createSuccessResponse<ExplicitProfileSaveMultiAnswers>(
-                                EXPLICIT_PROFILE_SAVE_RESPONSE
-                            )
-                        }
                         it.contains("status") && it.contains("profile") -> GraphqlResponse(
                             mapOf(UserAccountDataModel::class.java to provideUserAccountDataModel()),
                             mapOf(),
@@ -60,16 +69,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         )
                         it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
                             mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
-                            mapOf(),
-                            false
-                        )
-                        it.contains("get_centralized_user_asset_config") -> GraphqlResponse(
-                            mapOf(CentralizedUserAssetDataModel::class.java to provideCentralizedUserAssetDataModelSuccess()),
-                            mapOf(),
-                            false
-                        )
-                        it.contains("midasGetSaldoWidgetBalance") -> GraphqlResponse(
-                            mapOf(SaldoBalanceDataModel::class.java to provideSaldoBalanceAndPointDataModelSuccess()),
                             mapOf(),
                             false
                         )
@@ -140,12 +139,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
             LinkStatusResponse::class.java
         )
 
-    private fun provideCentralizedUserAssetDataModelSuccess(): CentralizedUserAssetDataModel =
-        AndroidFileUtil.parse(
-            R.raw.success_get_centralized_user_asset_config,
-            CentralizedUserAssetDataModel::class.java
-        )
-
     private fun provideGopayBalanceAndPointDataModelSuccess(): BalanceAndPointDataModel =
         AndroidFileUtil.parse(
             R.raw.success_gopay_get_balance_and_point,
@@ -157,14 +150,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
             R.raw.success_ovo_get_balance_and_point,
             BalanceAndPointDataModel::class.java
         )
-
-    private fun provideSaldoBalanceAndPointDataModelSuccess(): SaldoBalanceDataModel {
-        val response = AndroidFileUtil.parse(
-            R.raw.success_get_saldo_balance_and_point,
-            SaldoBalanceDataModel::class.java
-        ) as SaldoBalanceDataModel
-        return response
-    }
 
     private fun provideTokopointsBalanceAndPointSuccess(): BalanceAndPointDataModel =
         AndroidFileUtil.parse(
