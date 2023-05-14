@@ -49,7 +49,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                     icon = IconUnify.GLOBE,
                     id = AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT
                 ),
-                CommonDataView(applink = ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE, title = context?.getString(R.string.menu_account_title_explicit_profile), body = context?.getString(R.string.menu_account_desc_explicit_profile), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOPPING_BAG, id = AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE)
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE, title = context.getString(R.string.menu_account_title_explicit_profile), body = context.getString(R.string.menu_account_desc_explicit_profile), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOPPING_BAG, id = AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE)
             ),
             isExpanded = true
         )
@@ -123,16 +123,16 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
         listSetting.addAll(
             mutableListOf(
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_QUALITY_SETTING, title = context?.getString(R.string.menu_account_title_quality_setting), body = context?.getString(R.string.menu_account_desc_quality_setting), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.IMAGE),
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE, title = context?.getString(R.string.menu_account_title_clear_cache), body = context?.getString(R.string.menu_account_desc_clear_cache), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BROOM)
+                CommonDataView(id = AccountConstants.SettingCode.SETTING_QUALITY_SETTING, title = context.getString(R.string.menu_account_title_quality_setting), body = context.getString(R.string.menu_account_desc_quality_setting), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.IMAGE),
+                CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE, title = context.getString(R.string.menu_account_title_clear_cache), body = context.getString(R.string.menu_account_desc_clear_cache), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BROOM)
             )
         )
         if (showScreenRecorder) {
             listSetting.add(
                 CommonDataView(
                     id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD,
-                    title = context?.getString(R.string.menu_account_title_screen_recorder),
-                    body = context?.getString(R.string.menu_account_desc_screen_recorder),
+                    title = context.getString(R.string.menu_account_title_screen_recorder),
+                    body = context.getString(R.string.menu_account_desc_screen_recorder),
                     type = CommonViewHolder.TYPE_DEFAULT,
                     icon = IconUnify.CAMERA
                 )
@@ -143,10 +143,10 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
     fun generateAboutTokopediaSettingMenu(): SettingDataView {
         val listSettingMenu = mutableListOf(
-                CommonDataView(title = context.getString(R.string.menu_account_title_about_us), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.TOPED, id = AccountConstants.SettingCode.SETTING_ABOUT_US),
-                CommonDataView(title = context.getString(R.string.menu_account_title_terms), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.CLIPBOARD, id = AccountConstants.SettingCode.SETTING_TNC_ID),
-                CommonDataView(title = context.getString(R.string.menu_account_title_intellectual_property), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.IP, id = AccountConstants.SettingCode.SETTING_IP),
-                CommonDataView(title = context.getString(R.string.menu_account_title_review), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.RATING, id = AccountConstants.SettingCode.SETTING_APP_REVIEW_ID)
+            CommonDataView(title = context.getString(R.string.menu_account_title_about_us), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.TOPED, id = AccountConstants.SettingCode.SETTING_ABOUT_US),
+            CommonDataView(title = context.getString(R.string.menu_account_title_terms), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.CLIPBOARD, id = AccountConstants.SettingCode.SETTING_TNC_ID),
+            CommonDataView(title = context.getString(R.string.menu_account_title_intellectual_property), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.IP, id = AccountConstants.SettingCode.SETTING_IP),
+            CommonDataView(title = context.getString(R.string.menu_account_title_review), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.RATING, id = AccountConstants.SettingCode.SETTING_APP_REVIEW_ID)
         )
 
         if (!isUsingPrivacyCenter()) {
