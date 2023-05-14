@@ -1,9 +1,5 @@
-[
-    {
-      "data": {
-        "explicitprofileSaveMultiAnswers": {
-          "message": "User answers have been saved"
-        }
-      }
-    }
-]
+{
+  "explicitprofileSaveMultiAnswers": {
+    "message": "User answers have been saved"
+  }
+}
