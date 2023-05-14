@@ -13,6 +13,7 @@ import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestio
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
+import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
 
 class GraphqlRepositoryStub : GraphqlRepository {
@@ -27,105 +28,101 @@ class GraphqlRepositoryStub : GraphqlRepository {
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
         Timber.d("mydebug repository double for ${requests.first().query}")
-        requests.firstOrNull()?.query?.let {
-            return when {
-                it.contains("explicitprofileGetAllCategories") -> {
-                    GqlMockUtil.createSuccessResponse(
-                        AndroidFileUtil.parse<CategoriesDataModel>(
-                            R.raw.explicit_profile_get_categories,
-                            CategoriesDataModel::class.java
-                        )
-                    )
-                }
-                it.contains("explicitprofileGetQuestion") -> {
-                    GqlMockUtil.createSuccessResponse(
-                        AndroidFileUtil.parse<ExplicitprofileGetQuestion>(
-                            R.raw.explicit_profile_get_questions,
-                            ExplicitprofileGetQuestion::class.java
-                        )
-                    )
-                }
-                it.contains("explicitprofileSaveMultiAnswers") -> {
-                    GqlMockUtil.createSuccessResponse(
-                        AndroidFileUtil.parse<ExplicitprofileGetQuestion>(
-                            R.raw.explicit_profile_save_multiple_answer,
-                            ExplicitProfileSaveMultiAnswers::class.java
-                        )
-                    )
-                }
-                it.contains("status") && it.contains("profile") -> GraphqlResponse(
-                    mapOf(UserAccountDataModel::class.java to provideUserAccountDataModel()),
-                    mapOf(),
-                    false
-                )
-                it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.NOT_LINKED -> GraphqlResponse(
-                    mapOf(LinkStatusResponse::class.java to provideNotLinkedStatus()),
-                    mapOf(),
-                    false
-                )
-                it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
-                    mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
-                    mapOf(),
-                    false
-                )
-                it.contains("get_centralized_user_asset_config") -> GraphqlResponse(
-                    mapOf(CentralizedUserAssetDataModel::class.java to provideCentralizedUserAssetDataModelSuccess()),
-                    mapOf(),
-                    false
-                )
-                it.contains("midasGetSaldoWidgetBalance") -> GraphqlResponse(
-                    mapOf(SaldoBalanceDataModel::class.java to provideSaldoBalanceAndPointDataModelSuccess()),
-                    mapOf(),
-                    false
-                )
-                it.contains("tokopointsAccountPage") -> GraphqlResponse(
-                    mapOf(
-                        BalanceAndPointDataModel::class.java to provideTokopointsBalanceAndPointSuccess()
-                    ),
-                    mapOf(),
-                    false
-                )
-                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
-                    mapOf(BalanceAndPointDataModel::class.java to provideOvoBalanceAndPointDataModelSuccess()),
-                    mapOf(),
-                    false
-                )
-                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
-                    mapOf(BalanceAndPointDataModel::class.java to provideGopayBalanceAndPointDataModelSuccess()),
-                    mapOf(),
-                    false
-                )
-                it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
-                    mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
-                    mapOf(),
-                    false
-                )
-                it.contains("offer_interrupt") -> {
-                    val response = when (mapParam[TestStateParam.ADD_VERIFY_PHONE]) {
-                        TestStateValue.ADD_PHONE -> {
-                            provideOfferInterruptResponse()
-                        }
-                        TestStateValue.VERIFY_PHONE -> {
-                            provideOfferInterruptResponse().apply {
-                                val phoneData = data.offers.find { offerList ->
-                                    offerList.name == AccountConstants.OfferInterruptionList.OFFER_PHONE
-                                }
-                                data.offers.remove(phoneData)
-                            }
-                        }
-                        else -> provideOfferInterruptResponse()
-                    }
 
-                    GraphqlResponse(
-                        mapOf(OfferInterruptResponse::class.java to response),
-                        mapOf(),
-                        false
-                    )
+        return when (GqlQueryParser.parse(requests).joinToString()) {
+            "explicitprofileGetAllCategories" -> {
+                GqlMockUtil.createSuccessResponse<CategoriesDataModel>(
+                    R.raw.explicit_profile_get_categories
+                )
+            }
+            "explicitprofileGetQuestion" -> {
+                GqlMockUtil.createSuccessResponse<ExplicitprofileGetQuestion>(
+                    R.raw.explicit_profile_get_questions
+                )
+            }
+            else -> {
+                requests.firstOrNull()?.query?.let {
+                    return when {
+                        it.contains("explicitprofileSaveMultiAnswers") -> {
+                            GqlMockUtil.createSuccessResponse<ExplicitProfileSaveMultiAnswers>(
+                                EXPLICIT_PROFILE_SAVE_RESPONSE
+                            )
+                        }
+                        it.contains("status") && it.contains("profile") -> GraphqlResponse(
+                            mapOf(UserAccountDataModel::class.java to provideUserAccountDataModel()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.NOT_LINKED -> GraphqlResponse(
+                            mapOf(LinkStatusResponse::class.java to provideNotLinkedStatus()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
+                            mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("get_centralized_user_asset_config") -> GraphqlResponse(
+                            mapOf(CentralizedUserAssetDataModel::class.java to provideCentralizedUserAssetDataModelSuccess()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("midasGetSaldoWidgetBalance") -> GraphqlResponse(
+                            mapOf(SaldoBalanceDataModel::class.java to provideSaldoBalanceAndPointDataModelSuccess()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("tokopointsAccountPage") -> GraphqlResponse(
+                            mapOf(
+                                BalanceAndPointDataModel::class.java to provideTokopointsBalanceAndPointSuccess()
+                            ),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
+                            mapOf(BalanceAndPointDataModel::class.java to provideOvoBalanceAndPointDataModelSuccess()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
+                            mapOf(BalanceAndPointDataModel::class.java to provideGopayBalanceAndPointDataModelSuccess()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
+                            mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
+                            mapOf(),
+                            false
+                        )
+                        it.contains("offer_interrupt") -> {
+                            val response = when (mapParam[TestStateParam.ADD_VERIFY_PHONE]) {
+                                TestStateValue.ADD_PHONE -> {
+                                    provideOfferInterruptResponse()
+                                }
+                                TestStateValue.VERIFY_PHONE -> {
+                                    provideOfferInterruptResponse().apply {
+                                        val phoneData = data.offers.find { offerList ->
+                                            offerList.name == AccountConstants.OfferInterruptionList.OFFER_PHONE
+                                        }
+                                        data.offers.remove(phoneData)
+                                    }
+                                }
+                                else -> provideOfferInterruptResponse()
+                            }
+
+                            GraphqlResponse(
+                                mapOf(OfferInterruptResponse::class.java to response),
+                                mapOf(),
+                                false
+                            )
+                        }
+                        else -> throw Exception("query is not exists")
+                    }
                 }
-                else -> throw Exception("query is not exists")
+                throw Exception("request empty")
             }
         }
-        throw Exception("request empty")
     }
 
     private fun provideUserAccountDataModel(): UserAccountDataModel =
@@ -194,3 +191,11 @@ class GraphqlRepositoryStub : GraphqlRepository {
             ShortcutResponse::class.java
         )
 }
+
+const val EXPLICIT_PROFILE_SAVE_RESPONSE = """
+{
+  "explicitprofileSaveMultiAnswers": {
+    "message": "User answers have been saved"
+  }
+}
+"""
