@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.addon.presentation.listener.AddOnComponentListener
+import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AddOnFragment : BaseDaggerFragment() {
+class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
 
     private var binding by autoClearedNullable<FragmentBottomsheetAddonBinding>()
 
@@ -26,6 +28,17 @@ class AddOnFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //binding?.addonWidget?.getBundleData(param)
+        binding?.addonWidget?.apply {
+            setListener(this@AddOnFragment)
+            getAddonData("2148784281", "123", false)
+        }
+    }
+
+    override fun onAddonComponentError(throwable: Throwable) {
+
+    }
+
+    override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
+        println("" + index + "---" + indexChild)
     }
 }

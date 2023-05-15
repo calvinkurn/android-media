@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.adapter.AddOnAdapter
+import com.tokopedia.addon.presentation.listener.AddOnComponentListener
+import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -19,8 +22,9 @@ class AddOnWidgetView : BaseCustomView {
 
     @Inject
     lateinit var viewModel: AddOnViewModel
-    private var addonAdapter: AddOnAdapter = AddOnAdapter()
+    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener)
     private var tfTitle: Typography? = null
+    private var listener: AddOnComponentListener? = null
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -39,12 +43,11 @@ class AddOnWidgetView : BaseCustomView {
         val lifecycleOwner = context as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.errorThrowable.observe(this) {
-
+                listener?.onAddonComponentError(it)
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
             }
-            viewModel.getAddOn("2148784281", "123", false)
         }
     }
 
@@ -84,7 +87,23 @@ class AddOnWidgetView : BaseCustomView {
         }
     }
 
+    private fun onAddonClickListener(
+        index: Int,
+        indexChild: Int,
+        addOnGroupUIModels: List<AddOnGroupUIModel>
+    ) {
+        listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
+    }
+
     fun setTitleText(text: String) {
-        tfTitle?.text = text
+        tfTitle?.setTextAndCheckShow(text)
+    }
+
+    fun setListener(listener: AddOnComponentListener) {
+        this.listener = listener
+    }
+
+    fun getAddonData(productId: String, warehouseId: String, isTokocabang: Boolean) {
+        viewModel.getAddOn(productId, warehouseId, isTokocabang)
     }
 }

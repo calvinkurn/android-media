@@ -13,17 +13,22 @@ object AddOnMapper {
 
         return addons?.map {
             val infoUrl = it.value.firstOrNull()?.basic?.metadata?.infoURL
+            val addonsUi = it.value.map {
+                AddOnUIModel(
+                    name = it.basic.name,
+                    priceFormatted = it.inventory.price.getCurrencyFormatted(),
+                    isSelected = it.basic.rules.autoSelect
+                )
+            }
+            val dummy = arrayListOf<AddOnUIModel>()
+            dummy.addAll(addonsUi)
+            dummy.addAll(addonsUi)
+            dummy.addAll(addonsUi)
             AddOnGroupUIModel(
                 title = it.key,
                 iconUrl = infoUrl?.iconURL.orEmpty(),
                 iconDarkmodeUrl = infoUrl?.iconDarkURL.orEmpty(),
-                addon = it.value.map {
-                    AddOnUIModel(
-                        name = it.basic.name,
-                        priceFormatted = it.inventory.price.getCurrencyFormatted(),
-                        isSelected = it.basic.rules.autoSelect
-                    )
-                }
+                addon = dummy
             )
         }.orEmpty()
     }

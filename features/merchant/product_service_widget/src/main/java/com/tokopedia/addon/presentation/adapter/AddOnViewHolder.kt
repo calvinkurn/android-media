@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.product_service_widget.R
@@ -13,7 +14,8 @@ import com.tokopedia.product_service_widget.databinding.ItemAddonBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class AddOnViewHolder(
-    itemView: View
+    itemView: View,
+    private val onClickListener: (index: Int, indexChild: Int, addOnUIModels: List<AddOnUIModel>) -> Unit
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -34,10 +36,14 @@ class AddOnViewHolder(
                 }
             )
             rvAddonChild.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-            rvAddonChild.adapter = AddOnChildAdapter().apply {
+            rvAddonChild.adapter = AddOnChildAdapter(::onChildClickListener).apply {
                 setItems(item.addon)
             }
         }
+    }
+
+    private fun onChildClickListener(indexChild: Int, addOnUIModels: List<AddOnUIModel>) {
+        onClickListener(bindingAdapterPosition, indexChild, addOnUIModels)
     }
 
 }

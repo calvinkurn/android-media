@@ -8,9 +8,11 @@ import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemAddonChildBinding
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class AddOnChildViewHolder(
-    itemView: View
+    itemView: View,
+    onClickListener: (index: Int, isChecked: Boolean) -> Unit
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -19,6 +21,17 @@ class AddOnChildViewHolder(
     }
 
     private val binding: ItemAddonChildBinding? by viewBinding()
+
+    init {
+        binding?.apply {
+            root.setOnClickListener {
+                cuAddon.performClick()
+            }
+            cuAddon.setOnClickListener {
+                onClickListener(bindingAdapterPosition, cuAddon.isChecked)
+            }
+        }
+    }
 
     fun bind(item: AddOnUIModel) {
         binding?.apply {
