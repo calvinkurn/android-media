@@ -46,7 +46,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockErrorGetFormResult()
             mockSuccessBadRatingCategoryResult()
-            viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
@@ -55,14 +55,14 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockSuccessGetFormResult()
             mockErrorBadRatingCategoryResult()
-            viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
     @Test
     fun `getData should execute getFormUseCase once`() = runCollectingBulkReviewPageUiState {
         doSuccessGetInitialData()
-        coVerify(exactly = 1) { getFormUseCase(Unit) }
+        coVerify(exactly = 1) { getFormUseCase(any()) }
     }
 
     @Test
@@ -1981,8 +1981,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessGetFormResult()
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState { verify(inverse = true) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2006,8 +2006,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockGetFormRequestState = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2020,8 +2020,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockGetBadRatingCategoryRequestState = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2034,8 +2034,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockSubmitBulkReviewRequestState = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2048,8 +2048,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockRemovedReviewItemsInboxID = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2062,8 +2062,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsRating = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2076,8 +2076,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsBadRatingCategory = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2090,8 +2090,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsTestimony = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2104,8 +2104,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsMediaUris = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2118,8 +2118,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadResults = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2132,8 +2132,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadBatchNumber = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2146,8 +2146,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockAnonymous = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2160,8 +2160,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockShouldSubmitReview = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
@@ -2174,8 +2174,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             doRestoreInstanceState(
                 mockActiveMediaPickerInboxID = null
             ) { verify(exactly = 1) { it.getData(
-                getInvoiceFromAppLink(),
-                getUtmSourceFromAppLink()
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
             )
             } }
         }
