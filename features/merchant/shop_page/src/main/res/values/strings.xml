@@ -204,6 +204,5 @@
     <string name="shop_page_placeholder_minimal_purchase_thousand">Min. belanja Rp%s rb</string>
     <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp%s</string>
     <string name="shop_page_placeholder_remaining_quota">Sisa %d</string>
-    <string name="shop_page_placeholder_benefit_name">Cashback %s s.d Rp%s</string>
 
 </resources>

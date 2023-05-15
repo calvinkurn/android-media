@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.databinding.ItemExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
@@ -61,15 +62,24 @@ class ExclusiveLaunchVoucherAdapter :
 
         fun bind(voucher: ExclusiveLaunchVoucher) {
             binding.elVoucher.apply {
-                setMinimumPurchase(voucher.minimumPurchase)
+                setMinimumPurchase(
+                    context.getString(
+                        R.string.shop_page_placeholder_minimal_purchase,
+                        voucher.minimumPurchase.getNumberFormatted()
+                    )
+                )
                 setRemainingQuota(voucher.remainingQuota)
+                setVoucherName(voucher.voucherName)
 
-                val voucherBenefit = context.getString(R.string.shop_page_placeholder_benefit_name, voucher.benefit.toString(), voucher.benefitMax.toString())
-                setVoucherName(voucherBenefit)
+                val isMerchantCreatedVoucher = voucher.source == ExclusiveLaunchVoucher.VoucherSource.MERCHANT_CREATED
+                val ctaText = if (isMerchantCreatedVoucher) {
+                    context.getString(R.string.shop_page_use)
+                } else {
+                    context.getString(R.string.shop_page_claim)
+                }
 
-                val ctaText = if (voucher.isClaimed) binding.root.context.getString(R.string.shop_page_use) else binding.root.context.getString(R.string.shop_page_claim)
                 setPrimaryCta(ctaText, onClick = {
-                    if (voucher.isClaimed) {
+                    if (isMerchantCreatedVoucher) {
                         onUseVoucherClick(bindingAdapterPosition)
                     } else {
                         onVoucherClaimClick(bindingAdapterPosition)

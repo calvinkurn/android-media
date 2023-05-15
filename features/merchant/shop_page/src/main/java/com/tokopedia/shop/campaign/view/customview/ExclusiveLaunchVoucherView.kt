@@ -14,11 +14,6 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val THOUSAND: Long = 1_000
-        private const val MILLION: Long = 1_000_000
-    }
-
     private var binding: CustomViewExclusiveLaunchVoucherBinding? = null
 
     init {
@@ -33,26 +28,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         binding?.tpgBenefitName?.text = voucherName
     }
 
-    fun setMinimumPurchase(minimumPurchase: Long) {
-        val formattedMinimumPurchase = if (minimumPurchase >= MILLION) {
-            val million = (minimumPurchase / MILLION).toInt()
-            context.getString(
-                R.string.shop_page_placeholder_minimal_purchase_million,
-                million.toString()
-            )
-        } else if (minimumPurchase >= THOUSAND) {
-            val thousand = (minimumPurchase / THOUSAND).toInt()
-            context.getString(
-                R.string.shop_page_placeholder_minimal_purchase_thousand,
-                thousand.toString()
-            )
-        } else {
-            context.getString(
-                R.string.shop_page_placeholder_minimal_purchase,
-                minimumPurchase.toString()
-            )
-        }
-        binding?.tpgMinPurchase?.text = formattedMinimumPurchase
+    fun setMinimumPurchase(text: String) {
+        binding?.tpgMinPurchase?.text = text
     }
 
     fun setRemainingQuota(remainingQuota: Int) {

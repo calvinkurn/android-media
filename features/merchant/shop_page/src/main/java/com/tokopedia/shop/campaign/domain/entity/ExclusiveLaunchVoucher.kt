@@ -2,9 +2,18 @@ package com.tokopedia.shop.campaign.domain.entity
 
 data class ExclusiveLaunchVoucher(
     val id: Long,
-    val benefit: Long,
+    val voucherName: String,
     val benefitMax: Long,
     val minimumPurchase: Long,
     val remainingQuota: Int,
-    val isClaimed: Boolean
-)
+    val source: VoucherSource
+) {
+    /**
+     * CATALOG = Voucher need to be claimed first before use
+     * MERCHANT_CREATED = No need to claim voucher first before use
+     */
+    enum class VoucherSource {
+        CATALOG,
+        MERCHANT_CREATED
+    }
+}

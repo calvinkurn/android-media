@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
+import com.tokopedia.shop.campaign.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
+    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _vouchers = MutableLiveData<Result<List<ExclusiveLaunchVoucher>>>()
@@ -20,12 +22,10 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
         get() = _vouchers
 
     fun getVouchers() {
-        launchCatchError(dispatchers.io,
+        launchCatchError(
+            dispatchers.io,
             block = {
-                val vouchers = mutableListOf<ExclusiveLaunchVoucher>()
-                repeat(30) {
-                    vouchers.add(ExclusiveLaunchVoucher(it.toLong(), 20, 100_000, 300_000, 5, false))
-                }
+                val vouchers = getMerchantVoucherListUseCase.execute()
                 _vouchers.postValue(Success(vouchers))
             },
             onError = { throwable ->
