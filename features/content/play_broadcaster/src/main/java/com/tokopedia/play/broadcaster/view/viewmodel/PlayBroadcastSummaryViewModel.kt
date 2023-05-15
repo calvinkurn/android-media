@@ -212,6 +212,9 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                         copy(coverUrl = croppedCover.coverImage)
                     }
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

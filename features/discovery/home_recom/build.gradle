@@ -33,7 +33,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -62,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -87,6 +87,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk

@@ -53,6 +53,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if (isEnableBubble()) {
             generateBubbleFactory(context);
         }
+        createNotificationInboxStyle();
     }
 
     @Override
@@ -67,8 +68,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
+
+        builder.setStyle(inboxStyle);
+        PendingIntent pendingContentIntent = createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId, applinkNotificationModel);
+        builder.setContentIntent(pendingContentIntent);
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId, applinkNotificationModel));
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.product.detail.R
@@ -92,7 +93,8 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
     private val variantListener: AtcVariantListener,
     private val userId: String,
-    private val playWidgetCoordinator: PlayWidgetCoordinator
+    private val playWidgetCoordinator: PlayWidgetCoordinator,
+    private val affiliateCookieHelper: AffiliateCookieHelper,
 ) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
@@ -259,7 +261,8 @@ class DynamicProductDetailAdapterFactoryImpl(
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
                 view,
-                listener
+                listener,
+                affiliateCookieHelper,
             )
             PdpRecommendationWidgetViewHolder.LAYOUT -> PdpRecommendationWidgetViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(

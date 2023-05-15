@@ -256,5 +256,9 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     ) {
         listener?.onAddToCartProductVariantClick(position, product)
     }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onAddToCartProductBlocked()
+    }
 }
 
