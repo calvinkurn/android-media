@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
 
@@ -22,6 +22,12 @@ android {
         test {
             resources.srcDirs += ['src/test/resources']
         }
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+    buildFeatures {
+        compose true
     }
 }
 
@@ -57,6 +63,14 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+
+    debugImplementation rootProject.ext.composeDependencies.composeActivity
+    debugImplementation rootProject.ext.composeDependencies.composeConstraint
+    debugImplementation rootProject.ext.composeDependencies.composeLiveData
+    debugImplementation project(rootProject.ext.libraries.commonCompose)
+
+    debugImplementation rootProject.ext.composeDependencies.composeCoil
+    debugImplementation "io.coil-kt:coil-video:$composeCoil"
 
     debugImplementation rootProject.ext.miscDependencies.workManager
     debugImplementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)

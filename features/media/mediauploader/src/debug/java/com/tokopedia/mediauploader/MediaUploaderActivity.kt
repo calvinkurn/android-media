@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
@@ -16,6 +18,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -24,6 +27,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.MediaUploaderStateManager.Companion.UploadState
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
+import com.tokopedia.mediauploader.ui.DebugScreen
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.mediauploader.services.UploaderWorker
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
@@ -61,11 +65,9 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     @Inject lateinit var uploaderUseCase: UploaderUseCase
     @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel by lazy {
-        ViewModelProvider(this)
-            .get(MediaUploaderStateManager::class.java)
-    }
+    private val viewModel: MediaUploaderStateManager by viewModels { factory }
 
     private var mediaFilePath = ""
     private var isUploadImage = false
@@ -91,12 +93,18 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_media_uploader)
         initInjector()
 
-        initViewComponent()
-        initObservable()
-        initView()
+        setContent {
+            NestTheme {
+                DebugScreen(viewModel)
+            }
+        }
+//        setContentView(R.layout.activity_media_uploader)
+//
+//        initViewComponent()
+//        initObservable()
+//        initView()
     }
 
     private fun initView() {

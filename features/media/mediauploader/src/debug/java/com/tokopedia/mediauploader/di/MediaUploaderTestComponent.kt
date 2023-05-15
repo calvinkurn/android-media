@@ -11,7 +11,8 @@ import dagger.Component
 @Component(
     modules = [
         MediaUploaderModule::class,
-        MediaUploaderDebugModule::class
+        MediaUploaderDebugModule::class,
+        MediaUploaderDebugViewModelModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
