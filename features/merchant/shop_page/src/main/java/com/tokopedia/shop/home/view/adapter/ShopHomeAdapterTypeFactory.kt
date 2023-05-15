@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
+import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -64,6 +65,8 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquarePlace
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerItemViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerItemPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -99,8 +102,9 @@ open class ShopHomeAdapterTypeFactory(
     private val singleProductBundleListener: SingleProductBundleListener,
     private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
-    private val shopHomeListener: ShopHomeListener
-) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
+    private val shopHomeListener: ShopHomeListener,
+    private val shopHomeDisplayBannerItemWidgetListener: ShopHomeDisplayBannerItemWidgetListener
+    ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
     private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
@@ -135,6 +139,9 @@ open class ShopHomeAdapterTypeFactory(
                 showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
+            BANNER_TIMER -> {
+                getShopHomeDisplayBannerItemViewHolder(baseShopHomeWidgetUiModel)
+            }
             else -> HideViewHolder.LAYOUT
         }
     }
@@ -144,6 +151,13 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
         else
             ShopHomeNplCampaignViewHolder.LAYOUT
+    }
+
+    open fun getShopHomeDisplayBannerItemViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeDisplayBannerItemPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeDisplayBannerItemViewHolder.LAYOUT
     }
 
     private fun getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -321,6 +335,9 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener)
             ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener)
             ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
+            ShopHomeDisplayBannerItemPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerItemPlaceholderViewHolder(parent)
+            ShopHomeDisplayBannerItemViewHolder.LAYOUT -> ShopHomeDisplayBannerItemViewHolder(parent, shopHomeDisplayBannerItemWidgetListener)
+
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder

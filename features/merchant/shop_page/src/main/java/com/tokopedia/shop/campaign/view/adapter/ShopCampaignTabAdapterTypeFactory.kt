@@ -49,8 +49,9 @@ class ShopCampaignTabAdapterTypeFactory(
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val widgetConfigListener: WidgetConfigListener,
     private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener,
-    private val shopHomeListener: ShopHomeListener
-) : ShopHomeAdapterTypeFactory(
+    private val shopHomeListener: ShopHomeListener,
+    private val shopHomeDisplayBannerItemWidgetListener: ShopHomeDisplayBannerItemWidgetListener
+    ) : ShopHomeAdapterTypeFactory(
     listener,
     onMerchantVoucherListWidgetListener,
     shopHomeEndlessProductListener,
@@ -68,7 +69,8 @@ class ShopCampaignTabAdapterTypeFactory(
     singleProductBundleListener,
     thematicWidgetListener,
     shopHomeProductListSellerEmptyListener,
-    shopHomeListener
+    shopHomeListener,
+    shopHomeDisplayBannerItemWidgetListener
 ) {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {

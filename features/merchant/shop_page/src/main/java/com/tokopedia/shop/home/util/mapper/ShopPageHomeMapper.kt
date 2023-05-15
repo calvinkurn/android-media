@@ -14,7 +14,11 @@ import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
+import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
@@ -23,6 +27,9 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
+import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
+import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
+import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
@@ -41,6 +48,7 @@ import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayBannerItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -408,7 +416,16 @@ object ShopPageHomeMapper {
         }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
-                mapToDisplayWidget(widgetResponse, widgetLayout)
+                when(widgetResponse.name){
+                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO -> {
+                        mapToDisplayImageWidget(widgetResponse, widgetLayout)
+                    }
+                    BANNER_TIMER -> {
+                        mapToBannerTimerWidget(widgetResponse, widgetLayout)
+                    }
+                    else -> null
+                }
+
             }
             PRODUCT.toLowerCase() -> {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct, isEnableDirectPurchase, widgetLayout)
@@ -457,6 +474,19 @@ object ShopPageHomeMapper {
             }
         }
     }
+
+    private fun mapToBannerTimerWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    )= ShopHomeDisplayBannerItemUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = mapToHeaderModel(widgetResponse.header),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        data = mapToBannerItemWidget(widgetResponse.data.firstOrNull())
+    )
 
     private fun mapToProductPersonalizationUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
@@ -752,7 +782,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToDisplayWidget(
+    private fun mapToDisplayImageWidget(
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeDisplayWidgetUiModel {
@@ -899,6 +929,26 @@ object ShopPageHomeMapper {
                 this.parentId = it.parentId
             }
         }
+    }
+
+    private fun mapToBannerItemWidget(
+        data: ShopLayoutWidget.Widget.Data?,
+    ): ShopHomeDisplayBannerItemUiModel.Data {
+        return ShopHomeDisplayBannerItemUiModel.Data(
+            appLink =  data?.appLink.orEmpty(),
+            imageUrl =  data?.imageUrl.orEmpty(),
+            linkType =  data?.linkType.orEmpty(),
+            campaignId = data?.campaignId.orEmpty(),
+            timeDescription = data?.timeInfo?.timeDescription.orEmpty(),
+            timeCounter = data?.timeInfo?.timeCounter.orZero(),
+            startDate = data?.timeInfo?.startDate.orEmpty(),
+            endDate = data?.timeInfo?.endDate.orEmpty(),
+            bgColor = data?.timeInfo?.bgColor.orEmpty(),
+            textColor = data?.timeInfo?.textColor.orEmpty(),
+            status = data?.timeInfo?.status ?: -1,
+            totalNotify = data?.totalNotify.orZero(),
+            totalNotifyWording = data?.totalNotifyWording.orEmpty()
+        )
     }
 
     private fun mapToShowcaseListItemUiModel(

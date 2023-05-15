@@ -186,7 +186,8 @@ open class ShopPageHomeFragment :
     MultipleProductBundleListener,
     SingleProductBundleListener,
     ShopHomeProductListSellerEmptyListener,
-    ShopHomeListener {
+    ShopHomeListener,
+    ShopHomeDisplayBannerItemWidgetListener{
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -330,7 +331,8 @@ open class ShopPageHomeFragment :
             singleProductBundleListener = this,
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
             shopHomeProductListSellerEmptyListener = this,
-            shopHomeListener = this
+            shopHomeListener = this,
+            shopHomeDisplayBannerItemWidgetListener = this,
         )
     }
 
@@ -4453,6 +4455,37 @@ open class ShopPageHomeFragment :
 
     private fun getRemoteConfigEnableThematicWidgetShop(): Boolean {
         return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_THEMATIC_WIDGET_SHOP, false) ?: false
+    }
+
+    override fun onDisplayBannerItemClicked(
+        position: Int,
+        uiModel: ShopHomeDisplayBannerItemUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickTncDisplayBannerItemWidget(uiModel: ShopHomeDisplayBannerItemUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickRemindMe(uiModel: ShopHomeDisplayBannerItemUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickCtaDisplayBannerItemWidget(uiModel: ShopHomeDisplayBannerItemUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onImpressionDisplayBannerItemWidget(
+        position: Int,
+        uiModel: ShopHomeDisplayBannerItemUiModel
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTimerFinished(uiModel: ShopHomeDisplayBannerItemUiModel) {
+        TODO("Not yet implemented")
     }
 
     //endregion

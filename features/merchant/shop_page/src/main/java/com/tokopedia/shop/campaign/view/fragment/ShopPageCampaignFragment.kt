@@ -126,7 +126,8 @@ class ShopPageCampaignFragment :
             shopHomeProductListSellerEmptyListener = this,
             widgetConfigListener = this,
             bundlingParentListener = this,
-            shopHomeListener = this
+            shopHomeListener = this,
+            shopHomeDisplayBannerItemWidgetListener = this
         )
     }
 

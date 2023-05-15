@@ -81,6 +81,17 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      campaignID
+                      linkType
+                      timeInfo{
+                        timeDescription
+                        timeCounter
+                        startDate
+                        endDate
+                        bgColor
+                        textColor
+                        status
+                      }                      
                     }
                     ... on EtalaseWidget {
                       imageUrl

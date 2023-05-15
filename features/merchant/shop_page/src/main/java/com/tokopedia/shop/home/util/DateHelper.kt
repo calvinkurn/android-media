@@ -24,4 +24,8 @@ object DateHelper {
     fun String.millisecondsToDays(): Long {
         return TimeUnit.MILLISECONDS.toDays(this.toLongOrZero())
     }
+
+    fun Long.millisecondsToDays(): Long {
+        return TimeUnit.MILLISECONDS.toDays(this)
+    }
 }
