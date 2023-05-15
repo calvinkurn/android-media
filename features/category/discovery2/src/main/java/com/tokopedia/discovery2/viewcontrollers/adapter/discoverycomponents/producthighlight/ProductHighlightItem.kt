@@ -10,6 +10,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
@@ -153,6 +154,7 @@ class ProductHighlightItem(
                             phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
                         } catch (e: Exception) {
                             phProductDiscount.hide()
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
                     } else {
                         phProductDiscount.hide()
@@ -175,7 +177,7 @@ class ProductHighlightItem(
                                 phProductDiscount.backgroundTintList = ColorStateList.valueOf(
                                     ContextCompat.getColor(
                                         context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_GN100
+                                        R.color.discovery2_dms_clr_C9FDE0
                                     )
                                 )
                                 phProductDiscount.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
@@ -261,6 +263,7 @@ class ProductHighlightItem(
                             phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
                         } catch (e: Exception) {
                             phProductDiscount.hide()
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
                     } else {
                         phProductDiscount.invisible()
@@ -283,7 +286,7 @@ class ProductHighlightItem(
                                 phProductDiscount.backgroundTintList = ColorStateList.valueOf(
                                     ContextCompat.getColor(
                                         context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_GN100
+                                        R.color.discovery2_dms_clr_C9FDE0
                                     )
                                 )
                                 phProductDiscount.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
@@ -337,7 +340,7 @@ class ProductHighlightItem(
             }
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLE) {
             with(discoItemMultiProductHighlightBinding) {
-                guideline.setGuidelinePercent(0.405f)
+                guideline.setGuidelinePercent(0.41f)
                 phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_3)
                 phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 phProductDiscount.setPadding(

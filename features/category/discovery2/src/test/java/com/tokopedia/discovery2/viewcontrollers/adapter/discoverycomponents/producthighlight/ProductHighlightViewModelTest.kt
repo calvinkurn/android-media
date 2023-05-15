@@ -1,8 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight
 
 import android.app.Application
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
@@ -10,19 +8,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
-import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
-import com.tokopedia.discovery2.data.push.PushStatusResponse
-import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
-import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
-import com.tokopedia.discovery2.usecase.SubScribeToUseCase
-import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.view.DarkModeUtil
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +39,7 @@ class ProductHighlightViewModelTest {
     }
 
     val list = arrayListOf<DataItem>()
-    var dataItem:DataItem = mockk()
+    var dataItem: DataItem = mockk()
     var userSession: UserSession = mockk()
     var context: Context = mockk(relaxed = true)
 
@@ -85,7 +72,7 @@ class ProductHighlightViewModelTest {
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
@@ -167,7 +154,7 @@ class ProductHighlightViewModelTest {
     fun `test for onCardClicked when data value is null`() {
         every { componentsItem.data } returns null
 
-        viewModel.onCardClicked(0,context)
+        viewModel.onCardClicked(0, context)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -179,7 +166,7 @@ class ProductHighlightViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
 
-        viewModel.onCardClicked(1,context)
+        viewModel.onCardClicked(1, context)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -188,15 +175,15 @@ class ProductHighlightViewModelTest {
     fun `test for onCardClicked when data is not null`() {
         list.clear()
         viewModel.productHighlightUseCase = productHighlightUseCase
-        coEvery { componentsItem.data} returns list
+        coEvery { componentsItem.data } returns list
         list.add(dataItem)
         every { dataItem.applinks } returns "tokopedia://xyz"
         coEvery { productHighlightUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
-        every { viewModel.navigate(context,any()) } just Runs
+        every { viewModel.navigate(context, any()) } just Runs
         viewModel.onAttachToViewHolder()
         viewModel.onCardClicked(0, context)
 
-        coVerify { viewModel.navigate(context,"tokopedia://xyz") }
+        coVerify { viewModel.navigate(context, "tokopedia://xyz") }
     }
 
     /****************************************** end of onBannerClicked() ****************************************/
@@ -219,19 +206,19 @@ class ProductHighlightViewModelTest {
     fun `test for layoutSelector`() {
         every { componentsItem.properties?.type } returns "single"
 
-        assert( viewModel.layoutSelector() == R.layout.disco_item_shimmer_single_product_highlight_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_item_shimmer_single_product_highlight_layout)
 
         every { componentsItem.properties?.type } returns "double"
 
-        assert( viewModel.layoutSelector() == R.layout.disco_item_shimmer_double_pl_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_item_shimmer_double_pl_layout)
 
         every { componentsItem.properties?.type } returns "triple"
 
-        assert( viewModel.layoutSelector() == R.layout.disco_item_shimmer_triple_pl_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_item_shimmer_triple_pl_layout)
 
         every { componentsItem.properties?.type } returns ComponentNames.BottomNavigation.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.multi_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.multi_banner_layout)
     }
 
     /**************************** test for Login *******************************************/
@@ -241,12 +228,14 @@ class ProductHighlightViewModelTest {
 
         assert(!viewModel.isUserLoggedIn())
     }
+
     @Test
     fun `isUser Logged in when isLoggedIn is true`() {
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
 
         assert(viewModel.isUserLoggedIn())
     }
+
     /**************************** end of Login *******************************************/
 
     @After
