@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.custom.interactive
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveInitBinding
 import com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -31,12 +30,7 @@ class InteractiveInitView : RoundedConstraintLayout {
 
     init {
         binding.clInteractiveInit.setBackgroundResource(R.drawable.bg_play_interactive)
-        binding.ivInteractive.setImageDrawable(
-            ContextCompat.getDrawable(
-                context,
-                R.drawable.bg_play_interactive
-            )
-        )
+        binding.ivInteractive.setImageResource(R.drawable.ic_play_interactive_gift)
         binding.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)
         }
