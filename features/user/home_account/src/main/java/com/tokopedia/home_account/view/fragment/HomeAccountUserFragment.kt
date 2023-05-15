@@ -207,9 +207,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
-        return getAbTestPlatform()
-            .getString(EXPLICIT_PROFILE_MENU_ROLLOUT)
-            .contains(EXPLICIT_PROFILE_MENU_ROLLOUT)
+        return true
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
