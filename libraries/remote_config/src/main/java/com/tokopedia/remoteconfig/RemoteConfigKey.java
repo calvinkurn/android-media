@@ -229,6 +229,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
+    public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
+
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";

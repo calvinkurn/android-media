@@ -39,6 +39,7 @@ import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -98,9 +99,12 @@ fun ReschedulePickupScreen(
 
     Scaffold(topBar = {
         NestHeader(
-            title = stringResource(id = R.string.title_reschedule_pickup_activity),
-            showBackIcon = true,
-            onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
+            type = NestHeaderType.SingleLine(
+                title = stringResource(id = R.string.title_reschedule_pickup_activity),
+                onBackClicked = {
+                    onEvent(ReschedulePickupUiEvent.PressBack)
+                }
+            )
         )
     }) {
         ModalBottomSheetLayout(

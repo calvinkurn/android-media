@@ -2,19 +2,16 @@ package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
-import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddressError
+import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrSendShareAddressData
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddressError
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse
-import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
 import com.tokopedia.manageaddress.domain.response.shareaddress.SelectShareAddressResponse
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
-import org.junit.Assert
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,11 +23,12 @@ class ShareAddressConfirmationViewModelTest {
 
     private val shareAddressUseCase = mockk<ShareAddressToUserUseCase>(relaxed = true)
     private val selectShareAddressUseCase = mockk<SelectShareAddressUseCase>(relaxed = true)
-    private val observer = mockk<Observer<ShareAddressBottomSheetState>>(relaxed = true)
+    private val observer = mockk<Observer<ShareAddressConfirmationViewModel.Toast>>(relaxed = true)
+    private val dismissObs = mockk<Observer<Unit>>(relaxed = true)
 
     lateinit var viewModel: ShareAddressConfirmationViewModel
 
-    private val mockThrowable = mockk<Throwable>(relaxed = true)
+    private val exception = Exception("error")
 
     @Before
     fun setup() {
@@ -39,7 +37,10 @@ class ShareAddressConfirmationViewModelTest {
             selectShareAddressUseCase,
             CoroutineTestDispatchersProvider
         )
-        viewModel.shareAddressResponse.observeForever(observer)
+        viewModel.toastEvent.observeForever(observer)
+        viewModel.dismissEvent.observeForever(dismissObs)
+        mockkStatic(TrackApp::class)
+        justRun { TrackApp.getInstance().gtm.sendGeneralEvent(any()) }
     }
 
     @Test
@@ -58,37 +59,11 @@ class ShareAddressConfirmationViewModelTest {
             shareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.isApprove = true
         viewModel.shareAddress(mockk())
 
-        Assert.assertTrue(viewModel.isApprove)
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Success)
-        }
-    }
-
-    @Test
-    fun `verify when not approve share address success`() {
-        val mockResponse = spyk(
-            KeroShareAddrToUserResponse().apply {
-                keroAddrSendShareAddressToUser = spyk(
-                    KeroAddrSendShareAddressData(
-                        numberOfRequest = 1
-                    )
-                )
-            }
-        )
-
-        coEvery {
-            shareAddressUseCase.invoke(any())
-        } returns mockResponse
-
-        viewModel.isApprove = false
-        viewModel.shareAddress(mockk())
-
-        Assert.assertFalse(viewModel.isApprove)
-        verify {
-            observer.onChanged(ShareAddressBottomSheetState.Success)
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
+            dismissObs.onChanged(null)
         }
     }
 
@@ -113,7 +88,8 @@ class ShareAddressConfirmationViewModelTest {
         viewModel.shareAddress(mockk())
 
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Fail(errorMessage))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(errorMessage))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -121,12 +97,13 @@ class ShareAddressConfirmationViewModelTest {
     fun `verify when share address error`() {
         coEvery {
             shareAddressUseCase.invoke(any())
-        } throws mockThrowable
-        
+        } throws exception
+
         viewModel.shareAddress(mockk())
 
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Fail(mockThrowable.message.orEmpty()))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -146,10 +123,11 @@ class ShareAddressConfirmationViewModelTest {
             selectShareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.shareAddressFromNotif(mockk())
+        viewModel.shareAddressFromNotif(SelectShareAddressParam.Param(approve = true))
 
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Success)
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
+            dismissObs.onChanged(null)
         }
     }
 
@@ -171,10 +149,11 @@ class ShareAddressConfirmationViewModelTest {
             selectShareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.shareAddressFromNotif(mockk())
+        viewModel.shareAddressFromNotif(SelectShareAddressParam.Param(approve = true))
 
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Fail(errorMessage))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(errorMessage))
+            dismissObs.onChanged(null)
         }
     }
 
@@ -182,12 +161,13 @@ class ShareAddressConfirmationViewModelTest {
     fun `verify when share address from notif error`() {
         coEvery {
             selectShareAddressUseCase.invoke(any())
-        } throws mockThrowable
+        } throws exception
 
-        viewModel.shareAddressFromNotif(mockk())
+        viewModel.shareAddressFromNotif(SelectShareAddressParam.Param())
 
         verify {
-            observer.onChanged(ShareAddressBottomSheetState.Fail(mockThrowable.message.orEmpty()))
+            observer.onChanged(ShareAddressConfirmationViewModel.Toast.Error(exception.message.orEmpty()))
+            dismissObs.onChanged(null)
         }
     }
 }
