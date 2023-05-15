@@ -12,7 +12,7 @@ data class ShopPageHeaderP1HeaderData(
     val shopAvatar: String = "",
     val shopDomain: String = "",
     val isWhitelist: Boolean = false,
-    val url: String = "",
+    val feedUrl: String = "",
     val listShopPageHeaderWidget: List<ShopPageHeaderWidgetUiModel> = listOf(),
     val listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf()
 )

@@ -211,6 +211,9 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
                 NetworkResult.Loading -> {
                     btnSet?.isLoading = true
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

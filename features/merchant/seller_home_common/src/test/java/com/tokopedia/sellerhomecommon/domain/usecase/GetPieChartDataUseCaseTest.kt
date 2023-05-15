@@ -3,7 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -42,7 +42,7 @@ class GetPieChartDataUseCaseTest {
 
     private val params = GetPieChartDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = DynamicParameterModel()
+            dynamicParameter = ParamCommonWidgetModel()
     )
 
     @Before

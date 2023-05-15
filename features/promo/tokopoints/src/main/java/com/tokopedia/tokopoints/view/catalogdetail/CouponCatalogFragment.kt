@@ -171,6 +171,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     showErrorDialog(it.data.desc, it.data.messageCode)
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     })
 
@@ -184,6 +187,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             is ValidationError<*, *> -> {
                 if (it.data is PreValidateError)
                     onPreValidateError(it.data.title, it.data.message)
+            }
+            else -> {
+                //no-op
             }
         }
     })
@@ -207,6 +213,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 populateDetail(it.data)
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
+            }
+            else -> {
+                //no-op
             }
         }
     })

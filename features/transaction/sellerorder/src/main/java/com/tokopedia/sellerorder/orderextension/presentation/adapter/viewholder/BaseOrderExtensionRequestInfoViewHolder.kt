@@ -31,7 +31,7 @@ abstract class BaseOrderExtensionRequestInfoViewHolder<T : OrderExtensionRequest
     }
 
     private fun setupSingleTapListener() {
-        return itemView?.let {
+        return itemView.let {
             SingleTapListener(it.context, ::onTap).attachListener(it)
         }
     }

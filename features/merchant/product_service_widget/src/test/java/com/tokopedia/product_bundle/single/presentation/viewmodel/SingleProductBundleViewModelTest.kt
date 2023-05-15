@@ -80,7 +80,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
     }
 
     @Test
-    fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runBlockingTest {
+    fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runTest {
         // given
         coEvery {
             userSession.userId
@@ -96,7 +96,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
     }
 
     @Test
-    fun `when user has login then isUserLoggedIn should be false`() = coroutineTestRule.runBlockingTest {
+    fun `when user has login then isUserLoggedIn should be false`() = coroutineTestRule.runTest {
         // given
         coEvery {
             userSession.userId

@@ -44,6 +44,7 @@ object ImagePickerAddEditNavigation {
                 createDefaultEditorTools()
                 withRemoveBackground()
                 withWatermark()
+                withAddLogo()
             }
         }
     }
@@ -61,6 +62,7 @@ object ImagePickerAddEditNavigation {
                 createDefaultEditorTools()
                 withRemoveBackground()
                 withWatermark()
+                withAddLogo()
             }
         }
     }

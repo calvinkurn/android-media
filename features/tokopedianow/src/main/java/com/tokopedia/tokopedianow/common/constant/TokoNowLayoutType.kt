@@ -25,6 +25,7 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.MEDIUM_PLAY_WIDGET,
     TokoNowLayoutType.SMALL_PLAY_WIDGET,
     TokoNowLayoutType.COUPON_CLAIM,
+    TokoNowLayoutType.CHIP_CAROUSEL,
     TokoNowLayoutType.PRODUCT_BUNDLING_RECOM
 )
 annotation class TokoNowLayoutType {
@@ -45,6 +46,7 @@ annotation class TokoNowLayoutType {
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
         const val COUPON_CLAIM = "coupon_claim"
-        const val PRODUCT_BUNDLING_RECOM = "product_bundling"
+        const val CHIP_CAROUSEL = "chip_carousel"
+        const val PRODUCT_BUNDLING_RECOM = "bundling_widget"
     }
 }
