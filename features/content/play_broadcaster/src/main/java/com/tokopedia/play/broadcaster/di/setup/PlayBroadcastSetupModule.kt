@@ -12,6 +12,8 @@ import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransforme
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 
@@ -35,5 +37,11 @@ class PlayBroadcastSetupModule {
     @PlayBroadcastSetupScope
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
+    }
+
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

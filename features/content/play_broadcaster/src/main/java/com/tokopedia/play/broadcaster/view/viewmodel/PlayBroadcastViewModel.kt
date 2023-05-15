@@ -84,6 +84,7 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -131,6 +132,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -1807,9 +1809,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
-        _beautificationConfig.value = beautificationConfig
+        _beautificationConfig.value = if (remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY, true)) {
+            beautificationConfig
+        } else {
+            BeautificationConfigUiModel.Empty
+        }
 
-        if (!beautificationConfig.isUnknown) {
+        if (!_beautificationConfig.value.isUnknown) {
             try {
                 downloadInitialBeautificationAsset(beautificationConfig)
                 setupOnDemandAsset(beautificationConfig)
@@ -2257,5 +2263,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
         private const val SAVE_BEAUTIFICATION_DELAY = 500L
+
+        private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_main_app_enable_beautification"
     }
 }
