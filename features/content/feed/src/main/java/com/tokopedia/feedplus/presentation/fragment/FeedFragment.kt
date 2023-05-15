@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -22,11 +24,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
+import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
@@ -95,7 +101,6 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-@Suppress("DEPRECATION")
 class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
@@ -125,6 +130,12 @@ class FeedFragment :
     @Inject
     lateinit var feedAnalytics: FeedAnalytics
 
+    @Inject
+    lateinit var commentAnalytics: ContentCommentAnalytics.Creator
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -138,6 +149,8 @@ class FeedFragment :
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
+
+    private var commentEntrySource: ContentCommentBottomSheet.EntrySource? = null
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -172,6 +185,8 @@ class FeedFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        childFragmentManager.fragmentFactory = fragmentFactory
+
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
         } ?: savedInstanceState?.let {
@@ -259,8 +274,7 @@ class FeedFragment :
             val feedMenuSheet =
                 ContentThreeDotsMenuBottomSheet.getFragment(
                     childFragmentManager,
-                    it.classLoader,
-                    TAG_FEED_MENU_BOTTOMSHEET
+                    it.classLoader
                 )
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
@@ -330,7 +344,7 @@ class FeedFragment :
         }
     }
 
-    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+    override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         feedMainViewModel.reportContent(feedReportRequestParamModel)
         currentTrackerData?.let {
             feedAnalytics.eventClickReasonReportContent(
@@ -341,7 +355,7 @@ class FeedFragment :
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
-        // do nothing
+        // add analytics(if any)
     }
 
     override fun onSharePostClicked(
@@ -1003,6 +1017,44 @@ class FeedFragment :
         } else {
             feedPostViewModel.suspendLikeContent(id, rowNumber)
             likeLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    override fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int) {
+        trackerModel?.let {
+            currentTrackerData = trackerModel
+            commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+                override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
+                override fun onCommentDismissed() {
+                }
+            }
+
+            val sheet = ContentCommentBottomSheet.getOrCreate(
+                childFragmentManager,
+                requireActivity().classLoader
+            )
+            if (!sheet.isAdded) sheet.show(childFragmentManager) else sheet.dismiss()
+        }
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ContentCommentBottomSheet -> {
+                val eventLabel = currentTrackerData?.let {
+                    feedAnalytics.getEventLabel(it)
+                } ?: ""
+                childFragment.setEntrySource(commentEntrySource)
+                childFragment.setAnalytic(
+                    commentAnalytics.create(
+                        PageSource.Feed(currentTrackerData?.activityId.orEmpty()), // PostId
+                        model = ContentCommentAnalyticsModel(
+                            eventCategory = FeedAnalytics.CATEGORY_UNIFIED_FEED,
+                            eventLabel = eventLabel
+                        )
+                    )
+                )
+            }
         }
     }
 

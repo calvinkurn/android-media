@@ -19,6 +19,6 @@ data class FeedContentData(
 enum class FeedMenuIdentifier(val value: String) {
     EDIT("Ubah"),
     LAPORKAN("Report"),
-    MODE_NONTON("Clear Mode"),
+    MODE_NONTON("Watch Mode"),
     DELETE("Hapus")
 }

@@ -689,7 +689,7 @@ class FeedAnalytics @Inject constructor(
         return bundle
     }
 
-    private fun getEventLabel(trackerData: FeedTrackerDataModel) =
+    fun getEventLabel(trackerData: FeedTrackerDataModel) =
         "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
             getPostType(
                 trackerData.typename,

@@ -208,6 +208,9 @@ class FeedPostImageViewHolder(
                         imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
                     )
                 }
+                commentButton.setOnClickListener {
+                    listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
+                }
 
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
