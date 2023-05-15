@@ -224,9 +224,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-
-    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
-
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
