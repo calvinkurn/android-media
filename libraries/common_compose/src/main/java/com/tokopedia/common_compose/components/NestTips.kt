@@ -47,7 +47,8 @@ fun NestTips(
             Icon(
                 painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_lightbulb),
                 contentDescription = "tips icon",
-                modifier = Modifier.align(Alignment.TopEnd).padding(end = 2.dp, top = 2.dp)
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .padding(end = 2.dp, top = 2.dp)
                     .height(24.dp),
                 tint = NestTheme.colors.NN._300
             )
@@ -76,7 +77,7 @@ fun NestTips(
 
 @Preview
 @Composable
-fun NestTipsPreview() {
+private fun NestTipsPreview() {
     NestTips(
         modifier = Modifier.padding(16.dp),
         title = "Title goes here",
@@ -86,7 +87,7 @@ fun NestTipsPreview() {
 
 @Preview(name = "Tips Dark Mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun NestTipsDarkPreview() {
+private fun NestTipsDarkPreview() {
     NestTheme(darkTheme = true) {
         NestTips(title = "tips title", description = "tips description")
     }
