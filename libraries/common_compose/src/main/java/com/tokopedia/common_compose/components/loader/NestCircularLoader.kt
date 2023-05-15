@@ -32,7 +32,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestGN
 import com.tokopedia.common_compose.ui.NestNN
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -60,10 +59,10 @@ internal fun NestCircularLoader(
     ) { _, _ ->
         Group(name = "_R_G") {
             // circle right
-            CircleRightGroup(scope = scope, state = state, isWhite = isWhite)
+            CircleRightGroup(state = state, isWhite = isWhite)
 
             // circle left
-            CircleLeftGroup(scope = scope, state = state, isWhite = isWhite)
+            CircleLeftGroup(state = state, isWhite = isWhite)
         }
     }
 
@@ -106,7 +105,7 @@ internal fun NestCircularLoader(
 }
 
 @Composable
-private fun CircleLeftGroup(scope: CoroutineScope, state: Boolean, isWhite: Boolean) {
+private fun CircleLeftGroup(state: Boolean, isWhite: Boolean) {
     Group(
         name = "_R_G_L_0_G_N_1_T_0",
         translationX = 250f,
@@ -128,22 +127,12 @@ private fun CircleLeftGroup(scope: CoroutineScope, state: Boolean, isWhite: Bool
 
             LaunchedEffect(key1 = state, block = {
                 launch {
-                    // reset animation to initial value
-                    animatedTrimStart.animateTo(target = initialTrimStart, duration = 0) {
-                        scope.launch {
-                            // start animation
-                            animatedTrimStart.animateTo(target = .999f, duration = 790, delay = 526)
-                        }
-                    }
+                    animatedTrimStart.animateTo(target = initialTrimStart, duration = 0)
+                    animatedTrimStart.animateTo(target = .999f, duration = 790, delay = 526)
                 }
                 launch {
-                    // reset animation to initial value
-                    animatedTrimEnd.animateTo(target = initialTrimEnd, duration = 0) {
-                        scope.launch {
-                            // start animation
-                            animatedTrimEnd.animateTo(target = 1f, duration = 970, delay = 167)
-                        }
-                    }
+                    animatedTrimEnd.animateTo(target = initialTrimEnd, duration = 0)
+                    animatedTrimEnd.animateTo(target = 1f, duration = 970, delay = 167)
                 }
             })
 
@@ -158,7 +147,7 @@ private fun CircleLeftGroup(scope: CoroutineScope, state: Boolean, isWhite: Bool
 }
 
 @Composable
-private fun CircleRightGroup(scope: CoroutineScope, state: Boolean, isWhite: Boolean) {
+private fun CircleRightGroup(state: Boolean, isWhite: Boolean) {
     Group(
         name = "_R_G_L_1_G_N_1_T_0",
         translationX = 250f,
@@ -177,22 +166,12 @@ private fun CircleRightGroup(scope: CoroutineScope, state: Boolean, isWhite: Boo
 
             LaunchedEffect(key1 = state, block = {
                 launch {
-                    // reset animation to initial value
-                    animatedTrimStart.animateTo(target = initialTrimStart, duration = 0) {
-                        scope.launch {
-                            // start animation
-                            animatedTrimStart.animateTo(target = 0f, duration = 750)
-                        }
-                    }
+                    animatedTrimStart.animateTo(target = initialTrimStart)
+                    animatedTrimStart.animateTo(target = 0f, duration = 750)
                 }
                 launch {
-                    // reset animation to initial value
-                    animatedTrimEnd.animateTo(target = initialTrimEnd) {
-                        scope.launch {
-                            // start animation
-                            animatedTrimEnd.animateTo(target = .001f, duration = 654, delay = 433)
-                        }
-                    }
+                    animatedTrimEnd.animateTo(target = initialTrimEnd)
+                    animatedTrimEnd.animateTo(target = .001f, duration = 654, delay = 433)
                 }
             })
 
@@ -209,18 +188,14 @@ private fun CircleRightGroup(scope: CoroutineScope, state: Boolean, isWhite: Boo
 private suspend fun Animatable<Float, AnimationVector1D>.animateTo(
     target: Float,
     duration: Int = 0,
-    delay: Int = 0,
-    finish: () -> Unit = {}
+    delay: Int = 0
 ) = this.animateTo(
     targetValue = target,
     animationSpec = tween(
         durationMillis = duration,
         easing = FastOutSlowInEasing,
         delayMillis = delay
-    ),
-    block = {
-        finish.invoke()
-    }
+    )
 )
 
 @Composable
