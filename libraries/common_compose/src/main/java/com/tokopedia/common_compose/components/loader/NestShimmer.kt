@@ -1,8 +1,6 @@
 package com.tokopedia.common_compose.components.loader
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,32 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.graphics.vector.PathParser
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -77,61 +66,24 @@ internal fun NestShimmer(
 private fun NestShimmerLayout(
     modifier: Modifier,
     rounded: Dp,
-    lifecycleOwner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     var state by remember { mutableStateOf(true) }
-    var isRunning by remember { mutableStateOf(true) }
-    val scope = rememberCoroutineScope()
-    val delayAnimation = 1200L
 
-    val vectorPainter = rememberVectorPainter(
-        defaultWidth = 24f.dp,
-        defaultHeight = 24f.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f,
-        autoMirror = false
-    ) { _, _ -> PathGroup(state = state) }
-
-    suspend fun runLoopingAnimation() {
-        while (isRunning) {
-            state = !state
-            delay(delayAnimation)
-        }
-    }
-
-    DisposableEffect(key1 = Unit, effect = {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    isRunning = true
-                    scope.launch {
-                        runLoopingAnimation()
-                    }
-                }
-
-                Lifecycle.Event.ON_PAUSE -> {
-                    isRunning = false
-                }
-
-                else -> {
-                    // no ops
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    })
-
-    Image(
+    NestInfiniteLoader(
         modifier = modifier
-            .clip(RoundedCornerShape(rounded))
-            .background(Color.LightGray),
-        painter = vectorPainter,
-        contentDescription = "nest_shimmer",
-        contentScale = ContentScale.FillBounds
+            .clip(RoundedCornerShape(rounded)),
+        name = "nest_shimmer",
+        totalDuration = 1200L,
+        vectorWidth = 24f,
+        vectorHeight = 24f,
+        lifecycleOwner = lifecycleOwner,
+        updateState = {
+            state = !state
+        },
+        content = { _, _ ->
+            PathGroup(state = state)
+        }
     )
 }
 

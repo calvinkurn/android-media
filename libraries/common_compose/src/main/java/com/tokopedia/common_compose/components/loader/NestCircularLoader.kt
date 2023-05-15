@@ -2,15 +2,12 @@ package com.tokopedia.common_compose.components.loader
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,17 +17,12 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.graphics.vector.PathParser
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestGN
 import com.tokopedia.common_compose.ui.NestNN
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -45,61 +37,26 @@ internal fun NestCircularLoader(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     var state by remember { mutableStateOf(true) }
-    var isRunning by remember { mutableStateOf(true) }
-    val scope = rememberCoroutineScope()
-    val delayAnimation = 1_333L
-    val vectorPainter = rememberVectorPainter(
-        defaultWidth = 500f.dp,
-        defaultHeight = 500f.dp,
-        viewportWidth = 500f,
-        viewportHeight = 500f,
-        autoMirror = false
-    ) { _, _ ->
-        Group(name = "_R_G") {
-            // circle right
-            CircleRightGroup(state = state, isWhite = isWhite)
 
-            // circle left
-            CircleLeftGroup(state = state, isWhite = isWhite)
-        }
-    }
-
-    suspend fun runLoopingAnimation() {
-        while (isRunning) {
+    NestInfiniteLoader(
+        modifier = modifier,
+        name = "nest_circular_loader",
+        totalDuration = 1_333L,
+        vectorWidth = 500f,
+        vectorHeight = 500f,
+        lifecycleOwner = lifecycleOwner,
+        updateState = {
             state = !state
-            delay(delayAnimation)
-        }
-    }
+        },
+        content = { _, _ ->
+            Group(name = "_R_G") {
+                // circle right
+                CircleRightGroup(state = state, isWhite = isWhite)
 
-    DisposableEffect(key1 = Unit, effect = {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    isRunning = true
-                    scope.launch {
-                        runLoopingAnimation()
-                    }
-                }
-                Lifecycle.Event.ON_PAUSE -> {
-                    isRunning = false
-                }
-                else -> {
-                    // no ops
-                }
+                // circle left
+                CircleLeftGroup(state = state, isWhite = isWhite)
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    })
-
-    Image(
-        modifier = modifier,
-        painter = vectorPainter,
-        contentDescription = "nest_circular_loader",
-        contentScale = ContentScale.FillBounds
     )
 }
 

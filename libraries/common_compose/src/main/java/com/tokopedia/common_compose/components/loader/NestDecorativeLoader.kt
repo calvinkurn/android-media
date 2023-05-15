@@ -5,15 +5,12 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.PathFillType
@@ -22,17 +19,12 @@ import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.graphics.vector.PathParser
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -47,64 +39,27 @@ internal fun NestDecorativeLoader(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     var state by remember { mutableStateOf(true) }
-    var isRunning by remember { mutableStateOf(true) }
-    val scope = rememberCoroutineScope()
-    val delayAnimation = 1333L
     val color = if (isWhite) NestNN.light._0 else NestTheme.colors.GN._500
-    val vectorPainter = rememberVectorPainter(
-        defaultWidth = 36f.dp,
-        defaultHeight = 36f.dp,
-        viewportWidth = 36f,
-        viewportHeight = 36f,
-        autoMirror = false,
-        tintColor = color
-    ) { _, _ ->
-        Group(name = "_R_G") {
-            CircleLeftGroup(state = state)
-            CircleCenterGroup(state = state)
-            CircleRightGroup(state = state)
-            TokopediaGroup(state = state)
-        }
-    }
 
-    suspend fun runLoopingAnimation() {
-        while (isRunning) {
+    NestInfiniteLoader(
+        modifier = modifier,
+        name = "nest_decorative_loader",
+        totalDuration = 1_333L,
+        vectorWidth = 36f,
+        vectorHeight = 36f,
+        lifecycleOwner = lifecycleOwner,
+        tintColor = color,
+        updateState = {
             state = !state
-            delay(delayAnimation)
-        }
-    }
-
-    DisposableEffect(key1 = Unit, effect = {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    isRunning = true
-                    scope.launch {
-                        runLoopingAnimation()
-                    }
-                }
-
-                Lifecycle.Event.ON_PAUSE -> {
-                    isRunning = false
-                }
-
-                else -> {
-                    // no ops
-                }
+        },
+        content = { _, _ ->
+            Group(name = "_R_G") {
+                CircleLeftGroup(state = state)
+                CircleCenterGroup(state = state)
+                CircleRightGroup(state = state)
+                TokopediaGroup(state = state)
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    })
-
-    Image(
-        modifier = modifier,
-        painter = vectorPainter,
-        contentDescription = "nest_circular_loader",
-        contentScale = ContentScale.FillBounds
     )
 }
 
