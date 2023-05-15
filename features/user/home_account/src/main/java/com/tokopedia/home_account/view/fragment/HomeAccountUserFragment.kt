@@ -207,7 +207,9 @@ open class HomeAccountUserFragment :
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
-        return true
+        return getAbTestPlatform()
+            .getString(EXPLICIT_PROFILE_MENU_ROLLOUT)
+            .contains(EXPLICIT_PROFILE_MENU_ROLLOUT)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -581,7 +583,9 @@ open class HomeAccountUserFragment :
         }
 
         handleProductCardOptionsActivityResult(
-            requestCode, resultCode, data,
+            requestCode,
+            resultCode,
+            data,
             object : ProductCardOptionsWishlistCallback {
                 override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                     handleWishlistAction(productCardOptionsModel)
@@ -1028,8 +1032,8 @@ open class HomeAccountUserFragment :
             binding?.statusBarBg?.background = ColorDrawable(
                 ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
+            binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
-        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding?.statusBarBg?.visibility = View.INVISIBLE
         } else {
