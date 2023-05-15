@@ -974,7 +974,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun  addNavigationMainMenu(parent: HeaderUnify) {
+    private fun addNavigationMainMenu(parent: HeaderUnify) {
         parent.addRightIcon(0).apply {
             clearImage()
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))

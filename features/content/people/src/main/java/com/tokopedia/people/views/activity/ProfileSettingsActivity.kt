@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 class ProfileSettingsActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var  viewModelFactoryCreator: UserProfileSettingsViewModelFactory.Creator
+    lateinit var viewModelFactoryCreator: UserProfileSettingsViewModelFactory.Creator
 
     private lateinit var binding: ActivityUserProfileSettingsBinding
 
