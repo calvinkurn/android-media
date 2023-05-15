@@ -338,7 +338,7 @@ class CommentViewModelTest {
             }
             event.last().assertEqualTo(CommentEvent.ShowSuccessToaster())
             coVerify { mockRepo.deleteComment(any()) wasNot called }
-`            val selected = it.vm
+            val selected = it.vm
                 .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
             selected.value.first.assertEqualTo(item)
             selected.value.second.assertEqualTo(listOfComment.indexOf(item))
