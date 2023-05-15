@@ -1371,21 +1371,30 @@ class CartAdapter constructor(
         return false
     }
 
-    fun setAllAvailableItemCheck(cheked: Boolean) {
+    fun setAllAvailableItemCheck(checked: Boolean) {
         val indices = ArraySet<Int>()
         getData().forEachIndexed { index, data ->
             when (data) {
                 is CartShopHolderData -> {
-                    if (data.isAllSelected != cheked) {
-                        data.isAllSelected = cheked
+                    if (!data.isError && data.isAllSelected != checked) {
+                        data.isAllSelected = checked
                         data.isPartialSelected = false
+                        if (data.isCollapsed) {
+                            data.productUiModelList.forEach { product ->
+                                if (product.isSelected != checked) {
+                                    product.isSelected = checked
+                                }
+                            }
+                        }
                         notifyItemChanged(index)
+                    } else {
+                        return@forEachIndexed
                     }
                 }
                 is CartItemHolderData -> {
                     if (!data.isError) {
-                        if (data.isSelected != cheked) {
-                            data.isSelected = cheked
+                        if (data.isSelected != checked) {
+                            data.isSelected = checked
                             notifyItemChanged(index)
                         }
                     } else {
