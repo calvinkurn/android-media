@@ -28,12 +28,17 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val merchantVouchers = async { getMerchantVoucherListUseCase.execute() }
+                val merchantVouchersDeferred = async { getMerchantVoucherListUseCase.execute() }
 
-                val param = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = listOf("FMCG523"))
-                val promoVouchers = async { getPromoVoucherListUseCase.execute(param) }
+                val promoVoucherParam = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = listOf("FMCG523"))
+                val promoVouchersDeferred = async { getPromoVoucherListUseCase.execute(promoVoucherParam) }
 
-                val exclusiveLaunchVouchers = merchantVouchers.await() + promoVouchers.await()
+                val merchantVouchers = merchantVouchersDeferred.await()
+                val promoVouchers = promoVouchersDeferred.await()
+
+                val availablePromoVouchers = promoVouchers.filter { it.remainingQuota > 0 }
+                val exclusiveLaunchVouchers = merchantVouchers + availablePromoVouchers
+
                 _vouchers.postValue(Success(exclusiveLaunchVouchers))
             },
             onError = { throwable ->

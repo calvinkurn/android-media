@@ -123,10 +123,11 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
         exclusiveLaunchAdapter.setOnVoucherClaimClick { selectedVoucherPosition ->
             val selectedVoucher = exclusiveLaunchAdapter.snapshot()[selectedVoucherPosition]
             showVoucherDetailBottomSheet(selectedVoucher)
+            dismiss()
         }
 
         exclusiveLaunchAdapter.setOnUseVoucherClick {
-
+            dismiss()
         }
     }
     
