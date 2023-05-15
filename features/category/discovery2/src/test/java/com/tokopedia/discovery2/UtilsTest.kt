@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -200,5 +203,15 @@ class UtilsTest {
         Assert.assertEquals(Utils.getValidHexCode(context, hexcodeinvalid), defaultColor)
     }
 
-
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkObject(DiscoveryDataMapper)
+        unmockkStatic(::getComponent)
+        unmockkStatic(::Utils)
+        unmockkStatic(Color::class)
+        unmockkStatic(MethodChecker::class)
+        unmockkConstructor(URLParser::class)
+    }
 }
