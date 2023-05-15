@@ -28,6 +28,12 @@ data class UserReviewUiModel(
         val productImageURL: String,
         val productPageURL: String,
         val productStatus: Int,
+        val productVariant: ProductVariant,
+    )
+
+    data class ProductVariant(
+        val variantID: String,
+        val variantName: String,
     )
 
     data class Attachment(

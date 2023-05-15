@@ -56,6 +56,10 @@ class GetUserReviewListUseCase @Inject constructor(
                         productImageURL
                         productPageURL
                         productStatus
+                        productVariant {
+                            variantID
+                            variantName
+                        }
                     }
                     rating
                     reviewText

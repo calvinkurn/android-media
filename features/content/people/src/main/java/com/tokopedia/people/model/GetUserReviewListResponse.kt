@@ -58,6 +58,17 @@ data class GetUserReviewListResponse(
 
         @SerializedName("productStatus")
         val productStatus: Int = 0,
+
+        @SerializedName("productVariant")
+        val productVariant: ProductVariant = ProductVariant()
+    )
+
+    data class ProductVariant(
+        @SerializedName("variantID")
+        val variantID: String = "",
+
+        @SerializedName("variantName")
+        val variantName: String = "",
     )
 
     data class Attachment(

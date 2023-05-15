@@ -171,6 +171,10 @@ class UserProfileUiMapperImpl @Inject constructor(
                         productImageURL = it.product.productImageURL,
                         productPageURL = it.product.productPageURL,
                         productStatus = it.product.productStatus,
+                        productVariant = UserReviewUiModel.ProductVariant(
+                            variantID = it.product.productVariant.variantID,
+                            variantName = it.product.productVariant.variantName,
+                        )
                     ),
                     rating = it.rating,
                     reviewText = it.reviewText,
