@@ -595,7 +595,7 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onRestoreInstanceState(
         saveInstanceCacheManager: CacheManager,
-        onFailedRestore: () -> Unit
+        onFailedRestoreState: () -> Unit
     ) {
         viewModelScope.launch(coroutineDispatchers.io) {
             val savedGetFormRequestState = saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
@@ -719,7 +719,7 @@ class BulkReviewViewModel @Inject constructor(
                     // noop
                 }
             } else {
-                onFailedRestore()
+                onFailedRestoreState()
             }
         }
     }

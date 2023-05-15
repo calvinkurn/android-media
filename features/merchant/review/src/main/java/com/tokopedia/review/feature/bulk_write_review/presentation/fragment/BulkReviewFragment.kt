@@ -351,9 +351,15 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
-            viewModel.onRestoreInstanceState(cacheManager) {
-                viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
-            }
+            viewModel.onRestoreInstanceState(
+                saveInstanceCacheManager = cacheManager,
+                onFailedRestoreState = {
+                    viewModel.getData(
+                        appLinkHandler.getInvoiceNumber(),
+                        appLinkHandler.getUtmSource()
+                    )
+                }
+            )
         }
     }
 
