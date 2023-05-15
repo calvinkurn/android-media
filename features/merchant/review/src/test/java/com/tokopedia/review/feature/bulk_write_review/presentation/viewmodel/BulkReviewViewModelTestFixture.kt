@@ -292,7 +292,7 @@ abstract class BulkReviewViewModelTestFixture {
     protected fun doSuccessGetInitialData() {
         mockSuccessGetFormResult()
         mockSuccessBadRatingCategoryResult()
-        viewModel.getData()
+        viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
     }
 
     protected fun doRestoreInstanceState(

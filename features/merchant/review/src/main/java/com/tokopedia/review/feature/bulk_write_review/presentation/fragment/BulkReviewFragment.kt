@@ -105,6 +105,9 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val SUBMIT_LOADER_MAX_ALPHA = 0.5f
         private const val GLOBAL_ERROR_MIN_ALPHA = 0f
         private const val GLOBAL_ERROR_MAX_ALPHA = 1f
+
+        private const val APP_LINK_PARAM_INVOICE = "invoice"
+        private const val APP_LINK_PARAM_UTM_SOURCE = "utm_source"
     }
 
     @Inject
@@ -279,7 +282,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             false
         }
         binding?.globalErrorBulkReview?.setActionClickListener {
-            viewModel.getData()
+            viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
         }
         binding?.viewOverlay?.setOnClickListener { /* noop, just to block the view behind */ }
     }
@@ -343,11 +346,13 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            viewModel.getData()
+            viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
-            viewModel.onRestoreInstanceState(cacheManager)
+            viewModel.onRestoreInstanceState(cacheManager) {
+                viewModel.getData(getInvoiceFromAppLink(), getUtmSourceFromAppLink())
+            }
         }
     }
 
@@ -769,6 +774,14 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 )
                 .startActivities()
         }
+    }
+
+    private fun getInvoiceFromAppLink(): String {
+        return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_INVOICE).orEmpty()
+    }
+
+    private fun getUtmSourceFromAppLink(): String {
+        return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_UTM_SOURCE).orEmpty()
     }
 
     private inner class ActivityResultHandler {
