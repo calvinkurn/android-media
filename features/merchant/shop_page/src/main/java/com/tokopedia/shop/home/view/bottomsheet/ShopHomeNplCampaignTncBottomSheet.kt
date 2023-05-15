@@ -187,6 +187,9 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                             showFollowButton(it.data.followButton)
                         }
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )

@@ -9,10 +9,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 
 class BuyerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     override val role: Int = RoleType.BUYER
@@ -31,10 +33,10 @@ class BuyerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
         val nameLayoutParam = name?.layoutParams as? MarginLayoutParams
         nameLayoutParam?.marginStart = startMargin
         nameLayoutParam?.setMargins(
-                startMargin,
-                nameLayoutParam.topMargin,
-                nameLayoutParam.rightMargin,
-                nameLayoutParam.bottomMargin
+            startMargin,
+            nameLayoutParam.topMargin,
+            nameLayoutParam.rightMargin,
+            nameLayoutParam.bottomMargin
         )
         name?.layoutParams = nameLayoutParam
     }

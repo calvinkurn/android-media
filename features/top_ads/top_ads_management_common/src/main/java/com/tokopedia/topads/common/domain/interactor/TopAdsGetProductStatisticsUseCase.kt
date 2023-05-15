@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
+import com.tokopedia.topads.common.domain.query.GetDashboardProductStatisticsV2
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -41,6 +42,7 @@ class TopAdsGetProductStatisticsUseCase @Inject constructor(graphqlRepository: G
             .Builder(CacheType.CLOUD_THEN_CACHE).build()
 
     fun executeQuerySafeMode(onSuccess: (ProductStatisticsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        setGraphqlQuery(GetDashboardProductStatisticsV2)
         setTypeClass(ProductStatisticsResponse::class.java)
         setCacheStrategy(cacheStrategy)
         execute({

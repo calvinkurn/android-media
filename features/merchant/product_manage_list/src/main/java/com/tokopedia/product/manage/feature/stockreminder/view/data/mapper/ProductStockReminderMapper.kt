@@ -17,6 +17,7 @@ object ProductStockReminderMapper {
                 ProductStockReminderUiModel(
                     response.productID,
                     response.productName,
+                    response.productName,
                     stockAlertCount,
                     response.stockAlertStatus,
                     response.stock,
@@ -32,6 +33,7 @@ object ProductStockReminderMapper {
                     if (it.stockAlertCount.isEmpty()) 0 else it.stockAlertCount.toIntOrZero()
                 ProductStockReminderUiModel(
                     it.productID,
+                    response.productName,
                     variantName,
                     stockAlertCount,
                     it.stockAlertStatus,
