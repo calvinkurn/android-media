@@ -5,11 +5,15 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +48,7 @@ import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.isNullOrZero
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -115,14 +120,45 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initStatusBarSetup()
+        logDeviceInfo()
         setupViewModelObservers()
         medalCelebrationViewModel.getRewards()
+    }
+
+    private fun logDeviceInfo(){
+        val height = getDeviceHeight()
+        val ydpi = Resources.getSystem().displayMetrics.ydpi
+        val xdpi = Resources.getSystem().displayMetrics.xdpi
+        val disply = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getRealMetrics(disply)
+        val height2 = disply.heightPixels
+        val ydpi2 = disply.ydpi
+        val xdpi2 = disply.xdpi
+        val deviceInfo="""
+            Device Name - ${Build.MODEL}
+            Device Height Px - $height
+            Device ydpi - $ydpi
+            Device xdpi - $xdpi
+            Device real height - ${height / ydpi}
+        """.trimIndent()
+        val deviceInfo2="""
+            Device Name - ${Build.MODEL}
+            Device Height Px - $height2
+            Device ydpi - $ydpi2
+            Device xdpi - $xdpi2
+            Device real height - ${height2 / ydpi2}
+        """.trimIndent()
+        Log.i("from medal celeb","device info 1 -> $deviceInfo")
+        Log.i("from medal celeb","device info 2 -> $deviceInfo2")
     }
 
     private fun setupViewModelObservers() {
         medalCelebrationViewModel.badgeLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success<*> -> {
+                    changeStatusBarIconsToLight()
+                    setupBackground()
                     downloadAssets()
                 }
                 is Error -> {
@@ -132,6 +168,32 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     binding?.mainFlipper?.displayedChild = 0
                 }
             }
+        }
+    }
+
+    private fun setupBackground(){
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply{
+            binding?.apply {
+                val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
+                if (!color.isNullOrBlank()) {
+                    val parsedColor = Color.parseColor(color)
+                    mainFlipper.setBackgroundColor(parsedColor)
+                    binding?.loader?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
+                }
+            }
+        }
+    }
+
+    private fun initStatusBarSetup(){
+        activity?.window?.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun changeStatusBarIconsToLight(){
+        activity?.window?.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
     }
 
@@ -161,7 +223,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun loadSound() {
         isSoundLoading = true
         audioManager = AudioFactory.createAudioFromUrl(
-            url = SOUND_EFFECT_URL,
+            url = soundaEffectUrl,
             onPrepare = {
                 isSoundAvailable = true
                 isSoundLoading = false
@@ -244,7 +306,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun showMainView() {
         binding?.mainFlipper?.displayedChild = 1
         initViewSetup()
-        configureStatusBar()
+//        configureStatusBar()
 //        setupHeader()
         handler.postDelayed(
             {
@@ -266,7 +328,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             celebrationView.setImageDrawable(null)
             lottieStars.setImageDrawable(null)
             setAllText()
-            configureBackground()
+            configureBackgroundImage()
         }
     }
 
@@ -281,13 +343,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun configureBackground() {
+    private fun configureBackgroundImage() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.mainView?.apply {
-                val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                if (!color.isNullOrBlank()) {
-                    container.setBackgroundColor(Color.parseColor(color))
-                }
                 if (isBackgroundImageAvailable) {
                     backgroundImage.setImageDrawable(this@MedalCelebrationFragment.backgroundImage)
                 } else {
@@ -428,7 +486,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-                startRedirection()
+//                startRedirection()
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
@@ -534,7 +592,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 layoutParams.setMargins(0, statusBarHeight, 0, 0)
                 binding?.mainView?.mainViewContainer?.layoutParams = layoutParams
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                statusBarColor = Color.TRANSPARENT
             }
         }
     }
@@ -552,6 +609,10 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorView() {
+        context?.let {
+            val defaultBg = ContextCompat.getColor(it,R.color.white)
+            binding?.mainFlipper?.setBackgroundColor(defaultBg)
+        }
         binding?.mainFlipper?.displayedChild = 2
         binding?.errorView?.apply {
             errorSecondaryAction.show()
@@ -605,6 +666,10 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun redirectToMedaliDetail() {
         Toast.makeText(context, "redirecting to medali detail", Toast.LENGTH_LONG).show()
         activity?.finish()
+    }
+
+    private fun getDeviceHeight() : Int{
+        return Resources.getSystem().displayMetrics.heightPixels
     }
 
     override fun onStop() {

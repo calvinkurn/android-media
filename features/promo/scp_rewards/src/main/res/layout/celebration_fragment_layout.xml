@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_flipper"
-    android:background="@color/Unify_NN0"
+    android:background="@color/white"
     >
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
@@ -15,6 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:loader_type="decorative"
         android:layout_gravity="center"
         />
     <include
