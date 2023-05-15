@@ -23,7 +23,6 @@ class PlayBroadcaster(
     private val broadcaster: Broadcaster,
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
-    configData: BroadcastingConfigUiModel,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -35,7 +34,6 @@ class PlayBroadcaster(
             handler: Handler?,
             callback: Callback,
             remoteConfig: RemoteConfig,
-            broadcastingConfigUiModel: BroadcastingConfigUiModel,
         ): PlayBroadcaster {
             return PlayBroadcaster(
                 activityContext,
@@ -43,7 +41,6 @@ class PlayBroadcaster(
                 broadcaster,
                 callback,
                 remoteConfig,
-                broadcastingConfigUiModel,
             )
         }
     }
@@ -74,11 +71,6 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        broadcaster.setConfig(
-            audioRate = configData.audioRate,
-            videoRate = configData.videoBitrate,
-            videoFps = configData.fps
-        )
         enableDebugMonitoring()
     }
 

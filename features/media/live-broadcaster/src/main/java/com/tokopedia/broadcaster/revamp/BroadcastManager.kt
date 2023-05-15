@@ -141,6 +141,8 @@ class BroadcastManager @Inject constructor(
         surfaceSize: Broadcaster.Size,
         withByteplus: Boolean,
     ) {
+        if (mAudioRate.isNullOrEmpty() && mVideoRate.isNullOrEmpty() && mVideoFps.isNullOrEmpty()) return
+
         if(mWithByteplus == withByteplus) {
             if(mWithByteplus == true && mStreamerWrapper?.pusherStreamer != null) return
             if(mWithByteplus == false && mStreamerWrapper?.displayStreamer != null) return
