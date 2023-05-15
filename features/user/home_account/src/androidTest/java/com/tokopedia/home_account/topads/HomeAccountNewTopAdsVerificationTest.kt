@@ -19,8 +19,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.stub.di.DaggerHomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.topads.FakeHomeAccountTopAdsModules

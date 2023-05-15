@@ -8,8 +8,8 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError

@@ -1,8 +1,6 @@
-package com.tokopedia.home_account.pref
+package com.tokopedia.home_account.data.pref
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.tokopedia.home_account.AccountConstants
 import javax.inject.Inject
 

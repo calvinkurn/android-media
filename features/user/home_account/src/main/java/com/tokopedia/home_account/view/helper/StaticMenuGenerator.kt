@@ -13,7 +13,7 @@ import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.SettingDataView
-import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfigInstance
