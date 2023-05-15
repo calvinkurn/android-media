@@ -163,21 +163,25 @@ class FeedFragment :
 
     private val followLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
             feedPostViewModel.processSuspendedFollow()
         }
 
     private val likeLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
             feedPostViewModel.processSuspendedLike()
         }
 
     private val addToCartLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
             feedPostViewModel.processSuspendedAddProductToCart()
         }
 
     private val buyLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
             feedPostViewModel.processSuspendedBuyProduct()
         }
 
