@@ -87,6 +87,12 @@ data class Product(
         @Expose
         @SerializedName("isTobacco")
         val isTobacco: Boolean = false,
+        @Expose
+        @SerializedName("isArchived")
+        val isArchived: Boolean = false,
+        @Expose
+        @SerializedName("isInGracePeriod")
+        val isInGracePeriod: Boolean = false,
     )
 
     fun isTopAds(): Boolean {

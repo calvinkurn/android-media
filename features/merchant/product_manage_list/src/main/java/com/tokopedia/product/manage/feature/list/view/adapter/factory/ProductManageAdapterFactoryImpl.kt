@@ -10,6 +10,7 @@ import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.Pro
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.LoadingViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductArchivalViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TobaccoViewHolder
 
@@ -19,10 +20,16 @@ class ProductManageAdapterFactoryImpl(
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
     override fun type(uiModel: ProductUiModel): Int {
-        return if (uiModel.isTobacco) {
-            TobaccoViewHolder.LAYOUT
-        } else {
-            ProductViewHolder.LAYOUT
+        return when{
+            uiModel.isTobacco ->{
+                TobaccoViewHolder.LAYOUT
+            }
+            uiModel.isInGracePeriod || uiModel.isArchived ->{
+                ProductArchivalViewHolder.LAYOUT
+            }
+            else -> {
+                ProductViewHolder.LAYOUT
+            }
         }
     }
 
@@ -38,6 +45,7 @@ class ProductManageAdapterFactoryImpl(
                 campaignListener
             )
             TobaccoViewHolder.LAYOUT -> TobaccoViewHolder(view)
+            ProductArchivalViewHolder.LAYOUT -> ProductArchivalViewHolder(view,listener)
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)

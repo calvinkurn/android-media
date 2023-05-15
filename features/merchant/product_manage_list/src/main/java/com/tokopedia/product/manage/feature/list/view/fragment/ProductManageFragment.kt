@@ -2059,6 +2059,9 @@ open class ProductManageFragment :
             product.isSuspend() -> {
                 showSuspendReasonBottomSheet(product.id)
             }
+            product.isArchived || product.isInGracePeriod  -> {
+                showSuspendReasonBottomSheet(product.id)
+            }
         }
         ProductManageTracking.eventContactCs(product.id)
     }

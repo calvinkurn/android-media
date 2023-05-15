@@ -221,4 +221,9 @@
 
     <string name="product_tobacco_message">Produk tidak dapat dilihat di aplikasi ini. Kamu bisa cek lewat desktop atau web, ya.</string>
     <string name="product_tobacco_message_not_allow_bulk_edit_all">Produk yang tidak dapat dipilih karena larangan dari Google Policy</string>
+    <string name="text_potential_archival">Berpotensi Diarsipkan</string>
+    <string name="text_archival">Diarsipkan</string>
+    <string name="product_manage_more">Selengkapnya</string>
+    <string name="text_product_have_archived_by_tokopedia">Produk telah diarsipkan oleh Tokopedia</string>
+    <string name="product_manage_text_potential_product_to_archived">Produk berpotensi diarsipkan oleh Tokopedia</string>
 </resources>
