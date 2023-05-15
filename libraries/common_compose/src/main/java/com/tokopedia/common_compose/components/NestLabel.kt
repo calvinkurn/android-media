@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -33,7 +34,6 @@ fun NestLabel(
     labelText: String,
     labelType: NestLabelType
 ) {
-
     val backgroundColor = labelType.toBackgroundColor()
     val textColor = labelType.toTextColor()
 
@@ -97,8 +97,8 @@ private fun NestLabelType.toBackgroundColor(): Color {
         NestLabelType.HIGHLIGHT_DARK_GREY -> if (isSystemInDarkTheme()) NestTheme.colors.NN._400 else NestTheme.colors.NN._600
 
         NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL -> {
-            val imageLabelColorDark = Color(0xB3E4EBF5) //NN100 70%
-            val imageLabelColorLight = Color(0xB32E3137) //NN900 70%
+            val imageLabelColorDark = Color(0xB3E4EBF5) // NN100 70%
+            val imageLabelColorLight = Color(0xB32E3137) // NN900 70%
 
             if (isSystemInDarkTheme()) {
                 imageLabelColorDark
@@ -162,7 +162,7 @@ private fun NestLabelType.toTextColor(): Color {
 private fun NestLabelPreview() {
     NestTheme {
         Column {
-            NestHeader(title = "NestLabel Preview")
+            NestHeader(type = NestHeaderType.SingleLine(title = "NestLabel Preview"))
             NestLabelList()
         }
     }
@@ -176,12 +176,11 @@ private fun NestLabelList() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
         NestTypography(text = "Highlight Variant - Light", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "Light - Green",
@@ -199,7 +198,7 @@ private fun NestLabelList() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "Light - Red",
@@ -215,14 +214,13 @@ private fun NestLabelList() {
             )
         }
 
-
         Spacer(modifier = Modifier.height(24.dp))
 
         NestTypography(text = "Highlight Variant - Dark", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "Dark - Green",
@@ -240,7 +238,7 @@ private fun NestLabelList() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "Dark - Red",
@@ -262,7 +260,7 @@ private fun NestLabelList() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "General - Orange",
@@ -280,7 +278,7 @@ private fun NestLabelList() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             NestLabel(
                 labelText = "General - Green",
@@ -302,7 +300,7 @@ private fun NestLabelList() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(
@@ -310,7 +308,7 @@ private fun NestLabelList() {
                         .size(170.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(NestTheme.colors.NN._300),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     NestTypography(text = "Sample image", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
                 }
