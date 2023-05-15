@@ -13,6 +13,11 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_PRICE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_VARIANT
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_ID
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -91,12 +96,12 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
     private fun mapRecommendationItemToDataImpressionObject(item: RecommendationItem, list: String): Map<String, Any> {
         return DataLayer.mapOf(
             DIMENSION_40, list,
-            ITEMS_PRODUCT_NAME, item.name,
-            ITEMS_PRODUCT_ID, item.productId.toString(),
-            ITEMS_PRODUCT_BRAND, VALUE_NONE_OTHER,
+            ITEM_NAME, item.name,
+            ITEM_ID, item.productId.toString(),
+            ITEM_BRAND, VALUE_NONE_OTHER,
             ITEMS_PRODUCT_PRICE, item.priceInt.toString(),
-            ITEMS_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-            ITEMS_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+            ITEM_VARIANT, VALUE_NONE_OTHER,
+            ITEM_CATEGORY, item.categoryBreadcrumbs,
             KEY_INDEX, (item.position + 1).toString()
         )
     }
@@ -161,14 +166,14 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
         }
     }
 
-    fun sendClickSeeAll(androidPageName: String, userId: String) {
+    fun sendClickSeeAll(androidPageName: String, userId: String, productAnchorId: String) {
         val isLogin = userId.isNotBlank()
         val trackerBuilder = BaseTrackerBuilder()
         trackerBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
-            eventCategory = Category.HOMEPAGE,
+            eventCategory = androidPageName,
             eventAction = EVENT_ACTION_CLICK_SEE_ALL.plus(if (isLogin) DEFAULT_VALUE else VALUE_NON_LOGIN),
-            eventLabel = Label.NONE
+            eventLabel = productAnchorId
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
