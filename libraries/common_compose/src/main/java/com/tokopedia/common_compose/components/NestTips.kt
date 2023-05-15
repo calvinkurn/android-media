@@ -28,7 +28,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestTips(
     modifier: Modifier = Modifier,
     title: String? = null,
-    description: CharSequence? = null
+    description: CharSequence? = null,
+    descriptionModifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -66,7 +67,7 @@ fun NestTips(
                 description?.run {
                     NestTypography(
                         text = this,
-                        modifier = Modifier.padding(top = 4.dp),
+                        modifier = descriptionModifier.padding(top = 4.dp),
                         textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
                     )
                 }
