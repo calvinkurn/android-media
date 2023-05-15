@@ -5,9 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getDrawable
 import com.tokopedia.content.common.R.color.Unify_Static_White
 import com.tokopedia.content.common.R.color.content_dms_white_disable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
 
 /**
@@ -21,6 +23,7 @@ class PreparationMenuView : ConstraintLayout {
         attrs,
         defStyleAttr
     )
+
     constructor(
         context: Context,
         attrs: AttributeSet?,
@@ -36,6 +39,30 @@ class PreparationMenuView : ConstraintLayout {
     private var mListener: Listener? = null
 
     init {
+        binding.icBroTitleChecked.setImageDrawable(
+            getDrawable(
+                context,
+                R.drawable.ic_play_bro_preparation_checked
+            )
+        )
+        binding.icBroCoverChecked.setImageDrawable(
+            getDrawable(
+                context,
+                R.drawable.ic_play_bro_preparation_checked
+            )
+        )
+        binding.icBroProductChecked.setImageDrawable(
+            getDrawable(
+                context,
+                R.drawable.ic_play_bro_preparation_checked
+            )
+        )
+        binding.icBroScheduleChecked.setImageDrawable(
+            getDrawable(
+                context,
+                R.drawable.ic_play_bro_preparation_checked
+            )
+        )
         binding.clBroSetTitle.setOnClickListener { mListener?.onClickSetTitle() }
     }
 
