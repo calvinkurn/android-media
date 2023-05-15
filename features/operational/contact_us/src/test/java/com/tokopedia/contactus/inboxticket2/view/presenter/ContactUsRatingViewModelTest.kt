@@ -11,7 +11,6 @@ import org.junit.Assert.assertEquals
 
 class ContactUsRatingViewModelTest {
 
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -28,11 +27,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 1`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 1
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 1L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -48,11 +47,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 2`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 2
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 2L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -68,11 +67,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 3`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 3
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 3L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -88,11 +87,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 4`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 4
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 4L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -108,11 +107,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 5`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 5
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 5L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -128,11 +127,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 0`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 0
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 0L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -148,11 +147,11 @@ class ContactUsRatingViewModelTest {
 
     @Test
     fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 6`() {
-        val inputTitle= "Hai Csat"
-        val inputCaptions= arrayListOf("as", "ad", "ac","av","ad")
-        val inputQuestions= arrayListOf("asa", "ada", "aca", "ava","ada")
-        val inputCsatOptions= createBadCsatReasonListItem()
-        val selectedPosition = 6
+        val inputTitle = "Hai Csat"
+        val inputCaptions = arrayListOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = arrayListOf("asa", "ada", "aca", "ava", "ada")
+        val inputCsatOptions = createBadCsatReasonListItem()
+        val selectedPosition = 6L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -169,13 +168,14 @@ class ContactUsRatingViewModelTest {
     private fun createBadCsatReasonListItem(): ArrayList<BadCsatReasonListItem> {
         val badCsatReasonListItem: ArrayList<BadCsatReasonListItem> = arrayListOf()
         for (i in 1..6) {
-            badCsatReasonListItem.add(BadCsatReasonListItem().apply {
-                id = i.toLong()
-                messageEn = "message-$i"
-                message = "message-$i"
-            })
+            badCsatReasonListItem.add(
+                BadCsatReasonListItem().apply {
+                    id = i.toLong()
+                    messageEn = "message-$i"
+                    message = "message-$i"
+                }
+            )
         }
         return badCsatReasonListItem
     }
-
 }
