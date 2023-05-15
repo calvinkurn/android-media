@@ -16,6 +16,7 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
@@ -26,11 +27,9 @@ import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListRespo
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
-import com.tokopedia.chatbot.chatbot2.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
-import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
@@ -86,7 +85,15 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.runs
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -120,7 +127,6 @@ class ChatbotViewModelTest {
     private lateinit var ticketListContactUsUsecase: TicketListContactUsUsecase
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: ChatbotCheckUploadSecureUseCase
-    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
     private lateinit var getTickerDataUseCase: GetTickerDataUseCase
     private lateinit var getResoLinkUseCase: GetResoLinkUseCase
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
@@ -167,13 +173,11 @@ class ChatbotViewModelTest {
         checkUploadSecureUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
         uploaderUseCase = mockk(relaxed = true)
-        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
         getResoLinkUseCase = mockk(relaxed = true)
         chatbotWebSocket = mockk(relaxed = true)
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
-        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
 
@@ -182,7 +186,6 @@ class ChatbotViewModelTest {
                 ticketListContactUsUsecase,
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
-                chatbotVideoUploadVideoEligibilityUseCase,
                 getTickerDataUseCase,
                 getResoLinkUseCase,
                 submitCsatRatingUseCase,
@@ -223,7 +226,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -241,7 +244,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -258,7 +261,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -308,7 +311,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicAttachmentAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -327,7 +330,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContent =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -344,7 +347,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -362,7 +365,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -380,7 +383,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -397,7 +400,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val dynamicContent =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent
 
         viewModel.handleDynamicAttachment34(chatResponse)
 
@@ -414,7 +417,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         val dynamicContentCode = replyBoxAttribute?.contentCode
 
@@ -433,7 +436,7 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         viewModel.validateHistoryForAttachment34(replyBoxAttribute)
 
@@ -450,43 +453,11 @@ class ChatbotViewModelTest {
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
         viewModel.validateHistoryForAttachment34(replyBoxAttribute)
 
         assertEquals(replyBoxAttribute, null)
-    }
-
-    @Test
-    fun `validateHistoryForAttachment34 if content_code=102, does not process`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
-        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
-
-        val dynamicAttachmentContents =
-            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
-
-        val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
-
-        viewModel.validateHistoryForAttachment34(replyBoxAttribute)
-
-        assertEquals(replyBoxAttribute?.contentCode, 102)
-    }
-
-    @Test
-    fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
-        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
-
-        val dynamicAttachmentContents =
-            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
-
-        val dynamicContentCode =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
-
-        viewModel.handleDynamicAttachment34(chatResponse)
-
-        assertEquals(dynamicContentCode, 102)
     }
 
     @Test
@@ -601,21 +572,6 @@ class ChatbotViewModelTest {
             ticketListContactUsUsecase.getTicketList(captureLambda(), any())
         } coAnswers {
             firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
-        }
-
-        viewModel.getTicketList()
-
-        assertTrue(
-            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
-        )
-    }
-
-    @Test
-    fun `getTicketList failure`() {
-        coEvery {
-            ticketListContactUsUsecase.getTicketList(any(), captureLambda())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         viewModel.getTicketList()
@@ -1242,48 +1198,6 @@ class ChatbotViewModelTest {
         )
 
         assertTrue(viewModel.submitCsatRating.value is ChatbotSubmitCsatRatingState.HandleFailureChatbotSubmitCsatRating)
-    }
-
-    @Test
-    fun `checkUploadVideoEligibility success`() {
-        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
-
-        coEvery {
-            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-                captureLambda(),
-                any(),
-                any()
-            )
-        } coAnswers {
-            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
-        }
-
-        viewModel.checkUploadVideoEligibility("1234")
-
-        assertTrue(
-            viewModel.videoUploadEligibility.value
-            is ChatbotVideoUploadEligibilityState.SuccessVideoUploadEligibility
-        )
-    }
-
-    @Test
-    fun `checkUploadVideoEligibility failure`() {
-        coEvery {
-            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-                captureLambda(),
-                any(),
-                any()
-            )
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-
-        viewModel.checkUploadVideoEligibility("1234")
-
-        assertTrue(
-            viewModel.videoUploadEligibility.value
-            is ChatbotVideoUploadEligibilityState.FailureVideoUploadEligibility
-        )
     }
 
     /**

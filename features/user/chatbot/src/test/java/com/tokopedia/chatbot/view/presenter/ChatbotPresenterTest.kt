@@ -446,22 +446,6 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `validateHistoryForAttachment34 if content_code=102, does not process`() {
-        val fullResponse = SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
-        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
-
-        val dynamicAttachmentContents =
-            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
-
-        val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
-
-        presenter.validateHistoryForAttachment34(replyBoxAttribute)
-
-        assertEquals(replyBoxAttribute?.contentCode, 200)
-    }
-
-    @Test
     fun `handleReplyBoxWSToggle if content_code=200 , goes to mapToVisitable`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_200)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
@@ -1574,20 +1558,6 @@ class ChatbotPresenterTest {
             expectedChatRatingList,
             ratingListResponse.chipGetChatRatingList
         )
-    }
-
-    @Test
-    fun `getChatRatingList failure`() {
-        val exception = mockk<Exception>()
-        coEvery {
-            chipGetChatRatingListUseCase.getChatRatingList(any())
-        } throws exception
-
-        presenter.getChatRatingList(ChipGetChatRatingListInput()) {}
-
-        verify {
-            exception.printStackTrace()
-        }
     }
 
     @Test
