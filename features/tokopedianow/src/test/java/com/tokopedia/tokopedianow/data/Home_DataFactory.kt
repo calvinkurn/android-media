@@ -77,7 +77,7 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
             ),
             HomeLayoutResponse(
                     id = "222332",
-                    layout = "product_bundling",
+                    layout = "bundling_widget",
                     header = Header(
                         name = "Product Bundling",
                         serverTimeUnix = 0

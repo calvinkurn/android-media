@@ -233,7 +233,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
     fun `when fetching bundle then receiving success result with empty bundle id list, expected result should return homeLayout without bundle widget`() {
         //create dummy data
         val productBundle = ProductBundleRecomResponse(TokonowBundleWidget())
-        onGetTicker_thenReturn(createTicker())
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
         onGetProductBundleRecom_thenReturn(productBundle)
 
@@ -250,7 +249,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
-                createHomeTickerDataModel(),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -280,7 +278,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
     @Test
     fun `when fetching bundle but failed then expected result should return homeLayout without bundle widget`() {
         //create dummy data
-        onGetTicker_thenReturn(createTicker())
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
         onGetProductBundleRecom_thenReturn(Exception())
 
@@ -292,7 +289,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
-                createHomeTickerDataModel(),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",
