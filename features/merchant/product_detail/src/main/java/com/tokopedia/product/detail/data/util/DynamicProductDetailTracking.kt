@@ -1717,7 +1717,8 @@ object DynamicProductDetailTracking {
             componentName: String,
             purchaseProtectionUrl: String,
             userId: String,
-            lcaWarehouseId: String
+            lcaWarehouseId: String,
+            promoId: String
         ) {
             val productId = productInfo?.basic?.productID ?: ""
             val elementName = componentName.ifEmpty { componentTrackDataModel.componentName }
@@ -1731,7 +1732,8 @@ object DynamicProductDetailTracking {
                 customCreativeName = "layout:${productInfo?.layoutName};comp:$elementName;temp:${componentTrackDataModel.componentType};",
                 customItemName = "product detail page - $productId",
                 customLabel = "",
-                customPromoCode = purchaseProtectionUrl
+                customPromoCode = purchaseProtectionUrl,
+                customPromoId = promoId
             )
 
             trackingQueue?.putEETracking(mapEvent)
