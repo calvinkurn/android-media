@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.recommendation.adapter
+package com.tokopedia.topads.dashboard.recommendation.views.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -20,13 +20,14 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
-class InsightListAdapter :
+class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -37,7 +38,7 @@ class InsightListAdapter :
         private val groupCardProgressBar: ProgressBarUnify =
             view.findViewById(R.id.groupCardProgressBar)
 
-        fun bind(item: AdGroupUiModel) {
+        fun bind(item: AdGroupUiModel, onInsightItemClick: ()->Unit) {
             groupCardTitle.text = item.adGroupName
             groupCardInsightCount.show()
             groupCardInsightCount.text = HtmlCompat.fromHtml(
@@ -48,6 +49,7 @@ class InsightListAdapter :
             )
             groupCardCountWarning.hide()
             setProgressBar(item.count)
+            view.setOnClickListener { onInsightItemClick()  }
         }
 
         private fun setProgressBar(count: Int) {
@@ -192,7 +194,7 @@ class InsightListAdapter :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is AdGroupUiModel -> {
-                (holder as? InsightListItemViewHolder)?.bind(item)
+                (holder as? InsightListItemViewHolder)?.bind(item, onInsightItemClick)
             }
             is LoadingUiModel -> {
                 (holder as? LoadingItemViewHolder)?.bind(item)
