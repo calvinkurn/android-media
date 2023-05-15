@@ -46,9 +46,8 @@ class GetHomeLayoutDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                 putInt(PARAM_NUM_OF_CHANNEL, numOfChannel)
                 putString(PARAM_LOCATION, mapLocation(localCacheModel))
             }.parameters)
-            val data = executeOnBackground().response.data.toMutableList()
-            data.add(3, HomeLayoutResponse(id = "1231", layout = "bundling_widget", name = "Beli Paket Bundling, Bebas Ongkir"))
-            executeOnBackground().response.copy(data).data
+
+            executeOnBackground().response.data
         }
     }
 }
