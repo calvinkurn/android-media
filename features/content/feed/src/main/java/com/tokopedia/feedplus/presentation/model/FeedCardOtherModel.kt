@@ -31,8 +31,11 @@ data class FeedCommentItemModel(
 )
 
 data class FeedShareModel(
-    val label: String = "",
-    val operation: String = ""
+    val contentId: String,
+    val author: FeedAuthorModel,
+    val appLink: String,
+    val webLink: String,
+    val mediaUrl: String
 )
 
 data class FeedFollowModel(

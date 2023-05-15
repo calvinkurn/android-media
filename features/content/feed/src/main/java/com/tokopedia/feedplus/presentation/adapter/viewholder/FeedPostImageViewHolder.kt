@@ -27,24 +27,14 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.abs
 
 /**
@@ -90,10 +80,12 @@ class FeedPostImageViewHolder(
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -144,7 +136,8 @@ class FeedPostImageViewHolder(
                     }
                 }
 
-                val postGestureDetector = GestureDetector(root.context,
+                val postGestureDetector = GestureDetector(
+                    root.context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                             return true
@@ -172,7 +165,8 @@ class FeedPostImageViewHolder(
 
                         override fun onLongPress(e: MotionEvent) {
                         }
-                    })
+                    }
+                )
 
                 bindAuthor(data)
                 bindCaption(data)
@@ -195,18 +189,12 @@ class FeedPostImageViewHolder(
                             absoluteAdapterPosition
                         ),
                         trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data),
+                            ?: trackerMapper.transformImageContentToTrackerModel(data)
 
-                        )
+                    )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
+                    listener.onSharePostClicked(data.share)
                 }
                 commentButton.setOnClickListener {
                     listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
@@ -270,10 +258,12 @@ class FeedPostImageViewHolder(
                 bindAuthor(element)
             }
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
