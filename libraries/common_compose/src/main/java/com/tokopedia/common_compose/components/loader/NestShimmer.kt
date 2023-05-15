@@ -1,52 +1,59 @@
 package com.tokopedia.common_compose.components.loader
 
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.Path
+import androidx.compose.ui.graphics.vector.PathParser
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common_compose.ui.NestTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * Created by yovi.putra on 31/03/23"
- * Project name: compose_skeleton
+ * Created by yovi.putra on 15/05/23"
+ * Project name: android-tokopedia-core
  **/
-
-@Composable
-fun Float.px(): Float = this / LocalDensity.current.density
 
 @Composable
 internal fun NestShimmer(
     modifier: Modifier = Modifier,
-    type: NestShimmerType
+    type: NestShimmerType,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     when (type) {
         is NestShimmerType.Rect -> {
-            NestShimmerLayout(modifier = modifier, rounded = type.rounded)
+            NestShimmerLayout(modifier = modifier, rounded = type.rounded, lifecycleOwner = lifecycleOwner)
         }
 
         else -> {
@@ -59,7 +66,8 @@ internal fun NestShimmer(
                             height.value = heightSize
                         }
                     },
-                rounded = (height.value / 2).dp
+                rounded = (height.value / 2).dp,
+                lifecycleOwner = lifecycleOwner
             )
         }
     }
@@ -67,62 +75,114 @@ internal fun NestShimmer(
 
 @Composable
 private fun NestShimmerLayout(
-    modifier: Modifier = Modifier,
-    rounded: Dp
+    modifier: Modifier,
+    rounded: Dp,
+    lifecycleOwner: LifecycleOwner
 ) {
-    val width = remember { mutableStateOf(0f) }
-    val firstDuration = 899
-    val secondaryDuration = 301
-    val firstSizing by animateDpAsState(
-        targetValue = width.value.px().dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = firstDuration,
-                delayMillis = secondaryDuration,
-                easing = LinearOutSlowInEasing
-            )
-        )
-    )
-    val secondarySizing by animateDpAsState(
-        targetValue = width.value.px().dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = secondaryDuration,
-                delayMillis = firstDuration
-            )
-        )
-    )
+    var state by remember { mutableStateOf(true) }
+    var isRunning by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+    val delayAnimation = 1200L
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(rounded))
-            .background(NestTheme.colors.NN._100)
-            .onSizeChanged {
-                val widthSize = it.width.toFloat()
-                if (width.value != widthSize) {
-                    width.value = widthSize
+    val vectorPainter = rememberVectorPainter(
+        defaultWidth = 24f.dp,
+        defaultHeight = 24f.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f,
+        autoMirror = false
+    ) { _, _ -> PathGroup(state = state) }
+
+    suspend fun runLoopingAnimation() {
+        while (isRunning) {
+            state = !state
+            delay(delayAnimation)
+        }
+    }
+
+    DisposableEffect(key1 = Unit, effect = {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    isRunning = true
+                    scope.launch {
+                        runLoopingAnimation()
+                    }
+                }
+
+                Lifecycle.Event.ON_PAUSE -> {
+                    isRunning = false
+                }
+
+                else -> {
+                    // no ops
                 }
             }
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(firstSizing)
-                .background(NestTheme.colors.NN._200)
-        )
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(secondarySizing)
-                .background(NestTheme.colors.NN._100)
-        )
-    }
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    })
+
+    Image(
+        modifier = modifier
+            .clip(RoundedCornerShape(rounded))
+            .background(Color.LightGray),
+        painter = vectorPainter,
+        contentDescription = "nest_shimmer",
+        contentScale = ContentScale.FillBounds
+    )
+}
+
+@Composable
+private fun PathGroup(state: Boolean) {
+    val trimPathStart = remember { Animatable(initialValue = 0f) }
+    val trimPathEnd = remember { Animatable(initialValue = 0f) }
+
+    LaunchedEffect(key1 = state, block = {
+        launch {
+            trimPathEnd.animateTo(target = 0f)
+            trimPathEnd.animateTo(target = 1f, duration = 899)
+        }
+
+        launch {
+            trimPathStart.animateTo(target = 0f)
+            trimPathStart.animateTo(target = 1f, duration = 301, delay = 899)
+        }
+    })
+
+    Path(
+        name = "path",
+        pathData = FirstVector,
+        fill = SolidColor(NestTheme.colors.NN._100)
+    )
+
+    Path(
+        name = "path_1",
+        pathData = SecondVector,
+        stroke = SolidColor(NestTheme.colors.NN._200),
+        strokeLineWidth = 30f,
+        trimPathStart = trimPathStart.value,
+        trimPathEnd = trimPathEnd.value
+    )
+}
+
+private val FirstVector by lazy {
+    PathParser().parsePathString(
+        "M -0.776 24.207 L -0.776 -0.052 L 26.586 -0.052 L 26.586 24.207 Z"
+    ).toNodes()
+}
+
+private val SecondVector by lazy {
+    PathParser().parsePathString(
+        "M 0 11.897 L 24 11.897"
+    ).toNodes()
 }
 
 @Preview
 @Composable
-private fun ShimmerPreview() {
+private fun NestShimmerPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize()

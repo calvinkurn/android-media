@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -97,7 +98,8 @@ internal fun NestCircularLoader(
     Image(
         modifier = modifier,
         painter = vectorPainter,
-        contentDescription = "nest_circular_loader"
+        contentDescription = "nest_circular_loader",
+        contentScale = ContentScale.FillBounds
     )
 }
 
