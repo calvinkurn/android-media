@@ -387,8 +387,9 @@ class DiscoveryFragment :
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE))
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE)) {
                     ivToTop.hide()
+                }
                 if (scrollDist > MINIMUM) {
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
@@ -440,7 +441,6 @@ class DiscoveryFragment :
             toolbarTransitionRangePixel = searchBarTransitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) {
-
                 }
 
                 override fun onSwitchToDarkToolbar() {
@@ -469,17 +469,17 @@ class DiscoveryFragment :
                 }
             }
         )
-
     }
 
-    private fun hideShowChooseAddressOnScroll(){
-        if(!hideShowChangeAvailable)
+    private fun hideShowChooseAddressOnScroll() {
+        if (!hideShowChangeAvailable) {
             return
+        }
         hideShowChangeAvailable = false
-        if(!shouldShowChooseAddressWidget) {
+        if (!shouldShowChooseAddressWidget) {
             chooseAddressWidget?.hide()
             chooseAddressWidgetDivider?.hide()
-        }else{
+        } else {
             chooseAddressWidget?.show()
             if (isLightThemeStatusBar != true) {
                 chooseAddressWidgetDivider?.show()
@@ -492,12 +492,13 @@ class DiscoveryFragment :
     private fun scrollToLastSection() {
         if (!userPressed && !autoScrollSectionID.isNullOrEmpty()) {
             scrollToSection(autoScrollSectionID!!)
-        }else if(!userPressed && isTabPresentToDoubleScroll){
+        } else if (!userPressed && isTabPresentToDoubleScroll) {
 //            isTabPresentToDoubleScroll = false
             pinnedAlreadyScrolled = false
             discoveryAdapter.currentList?.let {
-                if (it.isNotEmpty())
+                if (it.isNotEmpty()) {
                     scrollToPinnedComponent(it)
+                }
             }
         }
     }
@@ -869,7 +870,7 @@ class DiscoveryFragment :
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
             context?.let {
-                navToolbar.setIconCustomColor(getDarkIconColor(it),getLightIconColor(it))
+                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
             }
             if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
@@ -883,7 +884,6 @@ class DiscoveryFragment :
         } else {
             hasColouredHeader = false
         }
-
     }
 
     private fun setupHexBackgroundColor(color: String) {
@@ -1139,8 +1139,7 @@ class DiscoveryFragment :
                     pageInfo.share?.image ?: ""
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
-            }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+
                 if (this@DiscoveryFragment.isAffiliateInitialized) {
                     val inputShare = AffiliatePDPInput().apply {
                         pageDetail = PageDetail(
@@ -1154,10 +1153,11 @@ class DiscoveryFragment :
                         product = Product()
                         shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
                     }
-                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
-                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                    enableAffiliateCommission(inputShare)
                 }
             }
+
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -1186,7 +1186,8 @@ class DiscoveryFragment :
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString = "${pageInfoHolder?.share?.description} ${linkerShareData?.url}"
@@ -1331,8 +1332,9 @@ class DiscoveryFragment :
                 isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
                     userPressed = false
-                    if (this.isResumed)
+                    if (this.isResumed) {
                         recyclerView.smoothScrollToPosition(position, isTabPresent)
+                    }
                     isManualScroll = false
                 }
             }
@@ -1524,7 +1526,10 @@ class DiscoveryFragment :
             }
         }
         AdultManager.handleActivityResult(
-            activity, requestCode, resultCode, data,
+            activity,
+            requestCode,
+            resultCode,
+            data,
             object : AdultManager.Callback {
                 override fun onFail() {
                     activity?.finish()
@@ -1697,7 +1702,8 @@ class DiscoveryFragment :
                         sendOpenScreenAnalytics(
                             it.data.identifier,
                             it.data.additionalInfo,
-                            it.data.isAffiliate)
+                            it.data.isAffiliate
+                        )
                     }
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
@@ -1720,8 +1726,9 @@ class DiscoveryFragment :
         val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
             val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
             "$affiliateUID - $trackerID - $AFFILIATE"
-        } else
+        } else {
             ""
+        }
         if (identifier.isNullOrEmpty()) {
             getDiscoveryAnalytics().trackOpenScreen(
                 discoveryViewModel.pageIdentifier,
@@ -1843,10 +1850,11 @@ class DiscoveryFragment :
     }
 
     override fun onChangeTextColor(): Int {
-        return if (hasColouredHeader && isLightThemeStatusBar != false)
+        return if (hasColouredHeader && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        else
+        } else {
             com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
     }
 
     private fun fetchUserLatestAddressData() {
@@ -2034,8 +2042,9 @@ class DiscoveryFragment :
                     }
                 }
             smoothScroller.targetPosition = position
-            if (this.isResumed)
+            if (this.isResumed) {
                 staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            }
         } catch (e: Exception) {
         }
     }
@@ -2121,8 +2130,7 @@ class DiscoveryFragment :
         return discoveryViewModel.createAffiliateLink(applink)
     }
 
-    fun getItemCount(): Int{
+    fun getItemCount(): Int {
         return discoveryAdapter.itemCount
     }
-
 }

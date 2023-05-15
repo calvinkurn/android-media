@@ -340,7 +340,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
-                    0, linkerShareData,
+                    0,
+                    linkerShareData,
                     object : ShareCallback {
                         override fun urlCreated(linkerShareResult: LinkerShareResult) {
                             val branchEnd = System.currentTimeMillis()
@@ -360,7 +361,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                                             linkerShareResult.url
                                         )
                                     }
-
                                 } else {
                                     String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
                                 }
@@ -481,6 +481,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             UniversalShareBottomSheet.createInstance().apply {
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
+//                enableAffiliateCommission(affiliateInput)
                 setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
                 if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
                     setPersonalizedCampaign(personalizedCampaignModel)
@@ -536,11 +537,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         affiliateInput: AffiliatePDPInput,
         universalShareBottomSheet: UniversalShareBottomSheet
     ) {
-        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
-        if (affiliateInput.shop?.shopStatus == null) {
-            universalShareBottomSheet.affiliateRequestDataAwaited()
-        } else {
-            universalShareBottomSheet.affiliateRequestDataReceived(true)
+//        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
+        if (affiliateInput.shop?.shopStatus != null) {
+            universalShareBottomSheet.enableAffiliateCommission(affiliateInput)
         }
     }
     //endregion
