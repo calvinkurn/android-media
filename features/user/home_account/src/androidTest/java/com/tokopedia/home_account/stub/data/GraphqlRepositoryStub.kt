@@ -14,7 +14,6 @@ import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
-import timber.log.Timber
 
 class GraphqlRepositoryStub : GraphqlRepository {
 
@@ -27,7 +26,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        Timber.d("mydebug repository double for ${requests.first().query}")
         return when (GqlQueryParser.parse(requests).joinToString()) {
             "explicitprofileGetAllCategories" -> {
                 GqlMockUtil.createSuccessResponse<CategoriesDataModel>(
@@ -54,6 +52,11 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     R.raw.success_get_saldo_balance_and_point
                 )
             }
+            "tokopointsAccountPage" -> {
+                GqlMockUtil.createSuccessResponse<TokopointsBalanceDataModel>(
+                    R.raw.success_get_tokopoint_balance_and_point
+                )
+            }
             else -> {
                 requests.firstOrNull()?.query?.let {
                     return when {
@@ -69,13 +72,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         )
                         it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
                             mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
-                            mapOf(),
-                            false
-                        )
-                        it.contains("tokopointsAccountPage") -> GraphqlResponse(
-                            mapOf(
-                                BalanceAndPointDataModel::class.java to provideTokopointsBalanceAndPointSuccess()
-                            ),
                             mapOf(),
                             false
                         )
@@ -148,12 +144,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
     private fun provideOvoBalanceAndPointDataModelSuccess(): BalanceAndPointDataModel =
         AndroidFileUtil.parse(
             R.raw.success_ovo_get_balance_and_point,
-            BalanceAndPointDataModel::class.java
-        )
-
-    private fun provideTokopointsBalanceAndPointSuccess(): BalanceAndPointDataModel =
-        AndroidFileUtil.parse(
-            R.raw.success_get_tokopoint_balance_and_point,
             BalanceAndPointDataModel::class.java
         )
 
