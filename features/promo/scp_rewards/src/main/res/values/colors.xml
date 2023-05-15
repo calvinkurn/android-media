@@ -2,4 +2,5 @@
 <resources>
     <color name="brand_tag_color">#383838</color>
     <color name="dark_grey_nav_color">#6d7588</color>
+    <color name="white">#FFFFFF</color>
 </resources>
