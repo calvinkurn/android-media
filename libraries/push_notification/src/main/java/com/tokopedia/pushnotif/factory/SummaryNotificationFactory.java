@@ -5,13 +5,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.bubbles.factory.BubblesFactory;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.pushnotif.data.db.model.HistoryNotification;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
-import com.tokopedia.pushnotif.util.BubbleChatNotificationHelper;
 
 import java.util.List;
 
@@ -24,10 +22,6 @@ import androidx.core.app.NotificationCompat;
 public class SummaryNotificationFactory extends BaseNotificationFactory {
 
     private List<HistoryNotification> listHistoryNotification;
-
-    private BubblesFactory bubblesFactory;
-    private BubbleChatNotificationHelper bubbleChatNotificationHelper;
-
 
     public SummaryNotificationFactory(Context context) {
         super(context);
