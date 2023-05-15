@@ -16,6 +16,7 @@ import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 
@@ -228,8 +229,9 @@ class CommentViewModelTest {
     @Test
     fun `permanent remove delete comment is error from gql, undo from list`() {
         val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item)
         coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
-            list = listOf(helper.buildItemComment(), item)
+            list = listOfComment
         )
         coEvery { mockRepo.deleteComment(any()) } throws MessageErrorException()
 
@@ -249,14 +251,50 @@ class CommentViewModelTest {
                 it.contains(item).assertTrue()
             }
             coVerify { mockRepo.deleteComment(any()) }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
+        }
+    }
+
+    @Test
+    fun `delete comment from list then undo from list`() {
+        val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
+            list = listOfComment
+        )
+
+        val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
+            setLogin(true)
+        }
+        robot.use {
+            val comment = it.recordComments {
+                submitAction(
+                    CommentAction.SelectComment(item)
+                )
+                submitAction(
+                    CommentAction.DeleteComment(isFromToaster = true)
+                )
+            }
+            comment.list.assertType<List<CommentUiModel>> {
+                it.contains(item).assertTrue()
+            }
+            coVerify { mockRepo.deleteComment(any()) wasNot called }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
     @Test
     fun `delete comment, make sure it doesnt include in list - not from undo`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget()
+        val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item, helper.buildItemComment(id = "1"))
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
 
-        val item = helper.buildItemComment()
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
             setLogin(true)
         }
@@ -273,12 +311,17 @@ class CommentViewModelTest {
                 it.contains(item).assertFalse()
             }
             coVerify { mockRepo.deleteComment(any()) wasNot called }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
     @Test
-    fun `delete comment, show success toaster- not from undo`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget()
+    fun `delete comment, show success toaster - not from undo`() {
+        val listOfComment = listOf(helper.buildItemComment(), helper.buildItemComment(id = "44"), helper.buildItemComment(id = "1"))
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
 
         val item = helper.buildItemComment()
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
@@ -295,6 +338,10 @@ class CommentViewModelTest {
             }
             event.last().assertEqualTo(CommentEvent.ShowSuccessToaster())
             coVerify { mockRepo.deleteComment(any()) wasNot called }
+`            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
