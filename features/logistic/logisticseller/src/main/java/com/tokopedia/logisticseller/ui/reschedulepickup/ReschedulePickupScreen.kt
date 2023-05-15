@@ -40,6 +40,7 @@ import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -100,9 +101,12 @@ fun ReschedulePickupScreen(
 
     Scaffold(topBar = {
         NestHeader(
-            title = stringResource(id = R.string.title_reschedule_pickup_activity),
-            showBackIcon = true,
-            onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
+            type = NestHeaderType.SingleLine(
+                title = stringResource(id = R.string.title_reschedule_pickup_activity),
+                onBackClicked = {
+                    onEvent(ReschedulePickupUiEvent.PressBack)
+                }
+            )
         )
     }) { paddingValues ->
         ModalBottomSheetLayout(
@@ -311,17 +315,10 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
-        label = {
-            NestTypography(
-                text =
-                stringResource(id = R.string.label_day_reschedule_pick_up)
-            )
-        },
+        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         enabled = false,
-        placeholder = {
-            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
-        },
-        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
+        placeholder = stringResource(id = R.string.placeholder_day_reschedule_pick_up),
+        icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
     )
 }
 
@@ -338,13 +335,9 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
                 )
             },
         enabled = false,
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_time_reschedule_pick_up))
-        },
-        placeholder = {
-            NestTypography(text = stringResource(id = R.string.placeholder_time_reschedule_pick_up))
-        },
-        trailingIcon = {
+        label = stringResource(id = R.string.label_time_reschedule_pick_up),
+        placeholder = stringResource(id = R.string.placeholder_time_reschedule_pick_up),
+        icon1 = {
             DropDownIcon(onClick = {
                 onOpenBottomSheet(
                     RescheduleBottomSheetState.TIME
@@ -362,11 +355,9 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
-        },
+        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         enabled = false,
-        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
+        icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
 }
 
@@ -381,11 +372,8 @@ private fun InputCustomReason(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
-        },
+        label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
         onValueChanged = { onOtherReasonChanged(it) },
-        isError = !error.isNullOrEmpty(),
         counter = 160,
         error = error
     )
