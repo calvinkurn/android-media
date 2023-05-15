@@ -84,8 +84,7 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getVouchers()
-        viewModel.getPromoVouchers()
+        viewModel.getExclusiveLaunchVouchers()
     }
 
     private fun observeVouchers() {

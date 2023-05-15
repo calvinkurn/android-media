@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class ExclusiveLaunchVoucherListViewModel @Inject constructor(
@@ -23,12 +24,17 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     val vouchers: LiveData<Result<List<ExclusiveLaunchVoucher>>>
         get() = _vouchers
 
-    fun getVouchers() {
+    fun getExclusiveLaunchVouchers() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val vouchers = getMerchantVoucherListUseCase.execute()
-                _vouchers.postValue(Success(vouchers))
+                val merchantVouchers = async { getMerchantVoucherListUseCase.execute() }
+
+                val param = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = listOf("FMCG523"))
+                val promoVouchers = async { getPromoVoucherListUseCase.execute(param) }
+
+                val exclusiveLaunchVouchers = merchantVouchers.await() + promoVouchers.await()
+                _vouchers.postValue(Success(exclusiveLaunchVouchers))
             },
             onError = { throwable ->
                 _vouchers.postValue(Fail(throwable))
@@ -36,19 +42,6 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
         )
     }
 
-    fun getPromoVouchers() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val param = GetPromoVoucherListUseCase.Param("", emptyList())
-                val vouchers = getPromoVoucherListUseCase.execute(param)
-                _vouchers.postValue(Success(vouchers))
-            },
-            onError = { throwable ->
-                _vouchers.postValue(Fail(throwable))
-            }
-        )
-    }
 }
 
 
