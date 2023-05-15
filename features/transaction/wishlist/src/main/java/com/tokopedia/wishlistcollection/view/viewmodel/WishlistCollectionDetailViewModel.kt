@@ -387,7 +387,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 
     fun hitAffiliateCookie(
         affiliateUuid: String,
-        uuid: String,
+        affiliateTrackerId: String,
         affiliateChannel: String
     ) {
         launchCatchError(block = {
@@ -399,7 +399,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     "",
                     source = AffiliateSdkPageSource.Shop("")
                 ),
-                uuid = uuid
+                uuid = affiliateTrackerId
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK
@@ -408,7 +408,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 
     fun checkShouldCreateAffiliateCookieAtcProduct(
         affiliateUUID: String,
-        uuid: String,
+        affiliateTrackerId: String,
         affiliateChannel: String,
         wishlistItemOnAtc: WishlistV2UiModel.Item
     ) {
@@ -432,12 +432,16 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                         pageId = wishlistItemOnAtc.wishlistId,
                         source = affiliateSource
                     ),
-                    uuid = uuid
+                    uuid = affiliateTrackerId
                 )
             }, onError = {
                 // no op, expect to be handled by Affiliate SDK
             })
         }
+    }
+    
+    fun createAffiliateLink(url: String, trackerId: String): String {
+        return affiliateCookieHelper.get().createAffiliateLink(url, trackerId)
     }
 
     companion object {

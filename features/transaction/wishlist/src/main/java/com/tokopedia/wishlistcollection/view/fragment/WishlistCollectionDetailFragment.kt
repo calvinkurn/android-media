@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -231,7 +232,7 @@ class WishlistCollectionDetailFragment :
     private var _bulkModeIsAlreadyTurnedOff = false
     private var affiliateUniqueId = ""
     private var affiliateChannel = ""
-    private var uuid = ""
+    private var affiliateTrackerId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -749,7 +750,7 @@ class WishlistCollectionDetailFragment :
                         WishlistCollectionAnalytics.sendClickAddToCartOnWishlistPageEvent(collectionId, wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
                         wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
                             affiliateUniqueId,
-                            uuid,
+                            affiliateTrackerId,
                             affiliateChannel,
                             wishlistItemOnAtc
                         )
@@ -1158,7 +1159,7 @@ class WishlistCollectionDetailFragment :
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
         affiliateChannel = arguments?.getString(EXTRA_CHANNEL) ?: ""
-        uuid = UUID.randomUUID().toString()
+        affiliateTrackerId = UUID.randomUUID().toString()
         paramGetCollectionItems.collectionId = collectionId
 
         var titleToolbar = ""
@@ -1232,7 +1233,7 @@ class WishlistCollectionDetailFragment :
     private fun hitWishlistAffiliateCookie() {
         wishlistCollectionDetailViewModel.hitAffiliateCookie(
             affiliateUniqueId,
-            uuid,
+            affiliateTrackerId,
             affiliateChannel,
         )
     }
@@ -2505,16 +2506,11 @@ class WishlistCollectionDetailFragment :
         )
 
         activity?.let {
-            val intent: Intent
-            if (wishlistItem.url.isNotEmpty()) {
-                intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+            val appLink = wishlistCollectionDetailViewModel.createAffiliateLink(uri, affiliateTrackerId)
+            val intent = RouteManager.getIntent(context, appLink)
+            if (wishlistItem.url.isNotEmpty()) { 
                 intent.data = Uri.parse(wishlistItem.url)
-            } else {
-                intent = RouteManager.getIntent(
-                    it,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    wishlistItem.id
-                )
             }
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
         }
