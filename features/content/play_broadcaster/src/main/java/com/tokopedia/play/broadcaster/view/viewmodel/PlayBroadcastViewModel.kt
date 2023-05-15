@@ -1898,6 +1898,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             when (presetActive.assetStatus) {
                 BeautificationAssetStatus.Available -> updateSelectPreset(presetActive)
                 BeautificationAssetStatus.NotDownloaded -> downloadPreset(presetActive, forceSelect = true)
+                else -> {}
             }
         }
     }

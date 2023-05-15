@@ -79,6 +79,7 @@ class BeautificationTabFragment @Inject constructor(
                             BeautificationAssetStatus.Available -> {
                                 beautificationAnalytic.clickPresetMakeup(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic(), item.id)
                             }
+                            else -> {}
                         }
                     }
 

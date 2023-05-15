@@ -294,6 +294,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         analytic.clickMenuCover(viewModel.selectedAccount)
                         openSetupCoverBottomSheet()
                     }
+                    else -> {}
                 }
             }
 

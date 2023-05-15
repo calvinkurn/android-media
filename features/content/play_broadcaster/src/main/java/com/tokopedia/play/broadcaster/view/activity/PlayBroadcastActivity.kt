@@ -517,17 +517,6 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster(config: BroadcastingConfigUiModel) {
-        val handler = Handler(Looper.getMainLooper())
-        broadcaster = broadcasterFactory.create(
-            activityContext = this,
-            handler = handler,
-            callback = this,
-            remoteConfig = remoteConfig,
-            broadcastingConfigUiModel = config,
-        )
-    }
-
     private fun initView() {
         containerSetup = findViewById(R.id.fl_container)
         globalErrorView = findViewById(R.id.global_error)
@@ -939,6 +928,7 @@ class PlayBroadcastActivity : BaseActivity(),
             is BroadcastInitState.ByteplusInitializationError -> {
                 viewModel.submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
             }
+            else -> {}
         }
 
         lifecycleScope.launch(dispatcher.main) {
