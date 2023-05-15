@@ -90,6 +90,7 @@ import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
@@ -470,8 +471,13 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
+        showVoucherListBottomsheet()
     }
 
+    private fun showVoucherListBottomsheet() {
+        val bottomsheet = ExclusiveLaunchVoucherListBottomSheet()
+        bottomsheet.show(childFragmentManager, bottomsheet.tag)
+    }
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
             when (it) {
