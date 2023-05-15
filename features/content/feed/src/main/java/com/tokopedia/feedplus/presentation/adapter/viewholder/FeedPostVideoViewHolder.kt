@@ -133,6 +133,8 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -145,22 +147,18 @@ class FeedPostVideoViewHolder(
                             data.author.id,
                             absoluteAdapterPosition
                         ),
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        )
+                        trackerData
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(data.share)
+                    listener.onSharePostClicked(data.share, trackerData)
                 }
                 postLikeButton.likeButton.setOnClickListener {
                     listener.onLikePostCLicked(
                         data.id,
                         data.like.isLiked,
                         absoluteAdapterPosition,
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        ),
+                        trackerData,
                         false
                     )
                 }

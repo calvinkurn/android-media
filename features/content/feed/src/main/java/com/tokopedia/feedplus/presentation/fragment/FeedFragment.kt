@@ -344,9 +344,9 @@ class FeedFragment :
         // add analytics(if any)
     }
 
-    override fun onSharePostClicked(data: FeedShareModel) {
+    override fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel) {
         val shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(getShareListener(data))
+            init(getShareListener(data, trackerModel))
         }
         shareBottomSheet.setUtmCampaignData(
             pageName = "Feed Page",
@@ -359,6 +359,7 @@ class FeedFragment :
             tnImage = data.mediaUrl
         )
         if (!shareBottomSheet.isVisible) {
+            feedAnalytics.sendClickShareButtonEvent(trackerModel)
             shareBottomSheet.show(
                 fragmentManager = childFragmentManager,
                 fragment = this,
@@ -1253,17 +1254,26 @@ class FeedFragment :
     /**
      * Share
      */
-    private fun getShareListener(data: FeedShareModel) = object : ShareBottomsheetListener {
+    private fun getShareListener(
+        data: FeedShareModel,
+        trackerModel: FeedTrackerDataModel
+    ) = object : ShareBottomsheetListener {
         override fun onShareOptionClicked(shareModel: ShareModel) {
             dismissShareBottomSheet()
-            generateShareLinkUrl(data, shareModel)
+            feedAnalytics.sendClickSharingChannelEvent(shareModel.socialMediaName.orEmpty(), trackerModel)
+            generateShareLinkUrl(data, shareModel, trackerModel)
         }
 
         override fun onCloseOptionClicked() {
+            feedAnalytics.sendClickCloseButtonOnShareBottomSheetEvent(trackerModel)
         }
     }
 
-    private fun generateShareLinkUrl(data: FeedShareModel, shareModel: ShareModel) {
+    private fun generateShareLinkUrl(
+        data: FeedShareModel,
+        shareModel: ShareModel,
+        trackerModel: FeedTrackerDataModel
+    ) {
         val shareData = LinkerData.Builder.getLinkerBuilder()
             .setId(data.contentId)
             .setName(
@@ -1304,7 +1314,16 @@ class FeedFragment :
                             linkerShareData,
                             activity,
                             view,
-                            shareString
+                            shareString,
+                            onSuccessCopyLink = {
+                                showToast(
+                                    message = getString(feedR.string.feed_copy_link_success_message),
+                                    actionText = getString(feedR.string.feed_ok),
+                                    actionClickListener = {
+                                        feedAnalytics.sendClickOkeShareToasterEvent(trackerModel)
+                                    }
+                                )
+                            }
                         )
                         dismissShareBottomSheet()
                     }

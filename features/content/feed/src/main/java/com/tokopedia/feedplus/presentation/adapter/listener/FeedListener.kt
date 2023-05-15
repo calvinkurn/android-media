@@ -87,7 +87,7 @@ interface FeedListener {
         positionInFeed: Int
     )
 
-    fun onSharePostClicked(data: FeedShareModel)
+    fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel)
 
     fun onLikePostCLicked(
         id: String,

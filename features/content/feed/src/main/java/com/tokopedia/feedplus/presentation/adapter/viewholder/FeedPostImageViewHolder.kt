@@ -176,6 +176,8 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -188,13 +190,12 @@ class FeedPostImageViewHolder(
                             data.author.id,
                             absoluteAdapterPosition
                         ),
-                        trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data)
+                        trackerData
 
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(data.share)
+                    listener.onSharePostClicked(data.share, trackerData)
                 }
                 commentButton.setOnClickListener {
                     listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
@@ -214,10 +215,7 @@ class FeedPostImageViewHolder(
                             val deltaX = secondX - firstX
                             if (abs(deltaX) > MINIMUM_DISTANCE_SWIPE) {
                                 isAutoSwipeOn = false
-                                listener.onSwipeMultiplePost(
-                                    trackerDataModel
-                                        ?: trackerMapper.transformImageContentToTrackerModel(data)
-                                )
+                                listener.onSwipeMultiplePost(trackerData)
                             }
                         }
                     }
