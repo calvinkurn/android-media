@@ -27,7 +27,13 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.*
+import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
+import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
+import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -59,13 +65,11 @@ class FeedPostImageViewHolder(
     private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
-    private val campaignView =
-        FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
+    private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
-    private val likeAnimationView = FeedLikeAnimationComponent(
-        binding.root
-    )
+    private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+    private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
 
     private var firstX = 0f
     private var secondX = 0f
@@ -115,10 +119,10 @@ class FeedPostImageViewHolder(
             with(binding) {
                 if (data.isTopAds) {
                     postLikeButton.root.hide()
-                    commentButton.hide()
+                    commentButtonView.hide()
                 } else {
                     postLikeButton.root.show()
-                    commentButton.show()
+                    commentButtonView.show()
 
                     bindLike(data)
                     bindComments(data)
@@ -196,9 +200,6 @@ class FeedPostImageViewHolder(
                 }
                 shareButton.setOnClickListener {
                     listener.onSharePostClicked(data.share, trackerData)
-                }
-                commentButton.setOnClickListener {
-                    listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -440,10 +441,12 @@ class FeedPostImageViewHolder(
     }
 
     private fun bindComments(model: FeedCardImageContentModel) {
+        commentButtonView.bind(model.comments.countFmt, trackerDataModel, absoluteAdapterPosition)
+
         if (model.isTypeProductHighlight) {
-            binding.commentButton.hide()
+            commentButtonView.hide()
         } else {
-            binding.commentButton.show()
+            commentButtonView.show()
         }
     }
 
@@ -453,7 +456,7 @@ class FeedPostImageViewHolder(
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
             postLikeButton.root.hide()
-            commentButton.hide()
+            commentButtonView.hide()
             menuButton.hide()
             shareButton.hide()
             productTagButton.root.hide()
@@ -480,7 +483,9 @@ class FeedPostImageViewHolder(
             mData?.let {
                 if (!it.isTopAds) {
                     postLikeButton.root.show()
-                    commentButton.show()
+                }
+                if (!it.isTopAds && !it.isTypeProductHighlight) {
+                    commentButtonView.show()
                 }
             }
         }

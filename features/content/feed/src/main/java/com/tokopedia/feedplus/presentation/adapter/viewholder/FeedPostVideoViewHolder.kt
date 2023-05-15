@@ -24,6 +24,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
@@ -49,6 +50,7 @@ class FeedPostVideoViewHolder(
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+    private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
 
     private var mVideoPlayer: FeedExoPlayer? = null
     private var mData: FeedCardVideoContentModel? = null
@@ -309,10 +311,12 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindComments(model: FeedCardVideoContentModel) {
+        commentButtonView.bind(model.comments.countFmt, trackerDataModel, absoluteAdapterPosition)
+
         if (model.isTypeProductHighlight) {
-            binding.commentButton.hide()
+            commentButtonView.hide()
         } else {
-            binding.commentButton.show()
+            commentButtonView.show()
         }
     }
 
@@ -378,7 +382,7 @@ class FeedPostVideoViewHolder(
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
             postLikeButton.root.hide()
-            commentButton.hide()
+            commentButtonView.hide()
             menuButton.hide()
             shareButton.hide()
             overlayTop.root.hide()
@@ -396,7 +400,7 @@ class FeedPostVideoViewHolder(
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
             postLikeButton.root.show()
-            commentButton.show()
+            commentButtonView.show()
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
