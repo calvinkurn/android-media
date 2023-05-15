@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.utils.UserProfileUiBridge
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 
 /**
@@ -94,13 +95,25 @@ class UserProfileReviewFragment @Inject constructor(
 
         if (value.reviewSettings.isEnabled) {
             if (value.reviewContent.reviewList.isNotEmpty()) {
-                binding.layoutNoUserReview.root.gone()
+                showMainLayout(value.reviewContent)
             } else {
                 showNoReviewLayout()
             }
         } else {
             showHiddenReviewLayout()
         }
+    }
+
+    private fun showMainLayout(reviewContent: UserReviewUiModel) {
+        binding.layoutNoUserReview.root.gone()
+
+        if (reviewContent.isLoading && reviewContent.reviewList.isEmpty()) {
+            /** TODO: show shimmering */
+
+            return
+        }
+
+
     }
 
     private fun showNoReviewLayout() {
