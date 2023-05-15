@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 class BarChartMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetBarChartDataResponse, List<BarChartDataUiModel>> {
 
@@ -29,8 +31,7 @@ class BarChartMapper @Inject constructor(
     }
 
     override fun mapRemoteDataToUiData(
-        response: GetBarChartDataResponse,
-        isFromCache: Boolean
+        response: GetBarChartDataResponse, isFromCache: Boolean
     ): List<BarChartDataUiModel> {
         return response.fetchBarChartWidgetData.data.map {
             BarChartDataUiModel(
@@ -52,9 +53,9 @@ class BarChartMapper @Inject constructor(
     private fun mapBarChartSummary(summary: ChartSummaryModel): ChartSummaryUiModel {
         return ChartSummaryUiModel(
             diffPercentage = summary.diffPercentage,
-            diffPercentageFmt = summary.diffPercentageFmt,
+            diffPercentageFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.diffPercentageFmt),
             value = summary.value,
-            valueFmt = summary.valueFmt
+            valueFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.valueFmt)
         )
     }
 

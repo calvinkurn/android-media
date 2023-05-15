@@ -47,8 +47,8 @@ class CardMapper @Inject constructor(
         }
         return CardDataUiModel(
             dataKey = model.dataKey.orEmpty(),
-            description = darkModeHelper.replaceHexColorWithNest(model.description.orEmpty()),
-            secondaryDescription = darkModeHelper.replaceHexColorWithNest(model.secondaryDescription.orEmpty()),
+            description = darkModeHelper.makeHtmlDarkModeSupport(model.description.orEmpty()),
+            secondaryDescription = darkModeHelper.makeHtmlDarkModeSupport(model.secondaryDescription.orEmpty()),
             error = model.errorMsg.orEmpty(),
             state = when (model.state) {
                 STATE_GOOD -> CardDataUiModel.State.GOOD
@@ -59,7 +59,7 @@ class CardMapper @Inject constructor(
                 STATE_DANGER_PLUS -> CardDataUiModel.State.DANGER_PLUS
                 else -> CardDataUiModel.State.NORMAL
             },
-            value = darkModeHelper.replaceHexColorWithNest(cardValue),
+            value = darkModeHelper.makeHtmlDarkModeSupport(cardValue),
             isFromCache = isFromCache,
             showWidget = model.showWidget.orFalse(),
             lastUpdated = getLastUpdatedMillis(model.dataKey.orEmpty(), isFromCache),
