@@ -107,8 +107,9 @@ open class GoToKycModule {
     @Provides
     fun provideKycSdkClientConfig(): KycSdkClientConfig = KycSdkClientConfig(
         partner = KycSdkPartner.TOKOPEDIA_CORE,
-        clientId = "KycDemoApp",
-        clientAppVersion = "0.0.1"
+        clientAppId = GlobalConfig.APPLICATION_ID,
+        clientAppVersion = GlobalConfig.VERSION_NAME,
+        clientKey = GlobalConfig.PACKAGE_APPLICATION
     )
 
     @Provides
