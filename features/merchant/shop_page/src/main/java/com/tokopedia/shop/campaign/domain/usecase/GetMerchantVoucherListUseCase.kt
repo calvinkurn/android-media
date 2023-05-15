@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.campaign.data.GetMerchantVoucherListResponse
+import com.tokopedia.shop.campaign.data.response.GetMerchantVoucherListResponse
 import com.tokopedia.shop.campaign.data.mapper.GetMerchantVoucherListMapper
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.user.session.UserSessionInterface

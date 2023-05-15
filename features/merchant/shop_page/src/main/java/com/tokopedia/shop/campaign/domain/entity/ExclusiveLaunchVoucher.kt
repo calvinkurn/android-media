@@ -13,7 +13,7 @@ data class ExclusiveLaunchVoucher(
      * MERCHANT_CREATED = No need to claim voucher first before use
      */
     enum class VoucherSource {
-        CATALOG,
+        PROMO,
         MERCHANT_CREATED
     }
 }

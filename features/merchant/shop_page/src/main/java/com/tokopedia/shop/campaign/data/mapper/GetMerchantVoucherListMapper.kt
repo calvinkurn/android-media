@@ -1,7 +1,7 @@
 package com.tokopedia.shop.campaign.data.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.shop.campaign.data.GetMerchantVoucherListResponse
+import com.tokopedia.shop.campaign.data.response.GetMerchantVoucherListResponse
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import javax.inject.Inject
 
