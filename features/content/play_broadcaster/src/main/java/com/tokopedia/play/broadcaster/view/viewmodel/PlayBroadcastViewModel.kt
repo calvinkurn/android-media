@@ -2264,6 +2264,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
         private const val SAVE_BEAUTIFICATION_DELAY = 500L
 
-        private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_main_app_enable_beautification"
+        private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_enable_beautification"
     }
 }
