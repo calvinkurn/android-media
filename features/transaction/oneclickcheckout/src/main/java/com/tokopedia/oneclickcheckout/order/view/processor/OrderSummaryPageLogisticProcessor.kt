@@ -382,7 +382,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     "",
                     null,
                     null,
-                    null
+                    null,
+                    throwable = t.cause ?: t
                 )
             }
         }
@@ -1040,5 +1041,6 @@ class ResultRates(
     val autoApplyPromo: LogisticPromoUiModel? = null,
     val shippingErrorId: String? = null,
     val preselectedSpId: String? = null,
-    val overweight: Double? = null
+    val overweight: Double? = null,
+    val throwable: Throwable? = null
 )

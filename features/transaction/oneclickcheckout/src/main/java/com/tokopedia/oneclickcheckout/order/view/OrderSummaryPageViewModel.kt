@@ -359,6 +359,10 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderShop.value.shopShipment
             )
         }
+        if (result.throwable != null) {
+            globalEvent.value = OccGlobalEvent.Error(result.throwable, result.throwable.message ?: "")
+        }
+
         var hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
         if (hasOldPromoCode) {
             clearOldLogisticPromo(result.clearOldPromoCode)
