@@ -153,6 +153,9 @@ class FeedPostVideoViewHolder(
                         imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
                     )
                 }
+                commentButton.setOnClickListener {
+                    listener.onCommentClick(trackerDataModel, absoluteAdapterPosition)
+                }
                 postLikeButton.likeButton.setOnClickListener {
                     listener.onLikePostCLicked(
                         data.id,
