@@ -13,12 +13,14 @@ import android.os.Looper
 import android.provider.Telephony
 import android.text.Html
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
@@ -30,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -53,6 +56,7 @@ import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
+import com.tokopedia.universal_sharing.di.UniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.*
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
@@ -71,7 +75,7 @@ import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -92,7 +96,7 @@ import com.tokopedia.iconunify.R as unifyIconR
  * link: https://tokopedia.atlassian.net/l/cp/HNSff10B
  * @see com.tokopedia.shop.pageheader.presentation.fragment.NewShopFragment.kt
  */
-open class UniversalShareBottomSheet : BottomSheetUnify() {
+open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<UniversalShareComponent> {
 
     companion object {
         @LayoutRes
@@ -323,6 +327,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var linkProperties: LinkProperties? = null
 
     private var affiliatePDPQueryData: AffiliatePDPInput? = null
+    private var affiliatePDPInputTemp: AffiliatePDPInput? = null
 
     /**
      * if this flag is enabled, the bottomsheet will
@@ -353,14 +358,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     // Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
 
-    private val tracker: UniversalSharebottomSheetTracker by lazy {
-        UniversalSharebottomSheetTracker(userSession)
-    }
-
-    private val userSession: UserSession by lazy {
-        UserSession(LinkerManager.getInstance().context)
-    }
-
     private var onViewReadyAction: (() -> Unit)? = null
 
     private var affiliateListener: ((userType: String) -> Unit)? = null
@@ -387,7 +384,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    @Inject lateinit var userSession: UserSessionInterface
+
     @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
+
+    @Inject lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
+
+    @Inject lateinit var tracker: UniversalSharebottomSheetTracker
 
     /* boolean flag to show ticker list */
     private var isShowTickerList = false
@@ -415,10 +418,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun inject() {
-        activity?.let {
-            DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                .universalShareModule(UniversalShareModule()).build().inject(this)
-        }
+        component?.inject(this)
     }
 
     fun init(bottomSheetListener: ShareBottomsheetListener) {
@@ -469,7 +469,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      */
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataReceived(validRequest: Boolean) {
-        val userSession = UserSession(LinkerManager.getInstance().context)
         if (userSession.isLoggedIn && validRequest && isAffiliateEnabled()) {
             executeAffiliateEligibilityUseCase()
             showLoader = true
@@ -560,8 +559,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         removeHandlerTimeout()
         gqlCallJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
+                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPQueryData!!)
                 }.executeOnBackground()
                 var deeplink = ""
@@ -782,6 +780,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun initAffiliate() {
         if (isAffiliateCommissionEnabled) {
             affiliateRequestDataReceived(true)
+            affiliatePDPInputTemp?.let { affiliateInput ->
+                setAffiliateRequestHolder(affiliateInput)
+            }
+            affiliatePDPInputTemp = null
         }
     }
 
@@ -1052,14 +1054,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      */
     fun enableAffiliateCommission(affiliatePDPInput: AffiliatePDPInput) {
         isAffiliateCommissionEnabled = true
-        setAffiliateRequestHolder(affiliatePDPInput)
+        affiliatePDPInputTemp = affiliatePDPInput
     }
 
     fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
 
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput) {
-        if (UserSession(LinkerManager.getInstance().context).isLoggedIn) {
+        if (userSession.isLoggedIn) {
             this.affiliatePDPQueryData = affiliatePDPInput
         }
     }
@@ -1597,5 +1599,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             context,
             String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type")
         )
+    }
+
+
+    override fun getComponent(): UniversalShareComponent? {
+        activity?.let {
+            return DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .universalShareModule(UniversalShareModule()).build()
+        } ?: return null
     }
 }
