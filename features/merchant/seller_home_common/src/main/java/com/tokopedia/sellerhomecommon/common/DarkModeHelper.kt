@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import com.tokopedia.utils.resources.DarkModeUtils
+import com.tokopedia.utils.resources.isAppDarkMode
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -37,8 +37,7 @@ class DarkModeHelper @Inject constructor(
     }
 
     fun makeHtmlDarkModeSupport(text: String): String {
-        val isDarkMode = DarkModeUtils.isAppDarkMode()
-        if (text.isBlank() || !isDarkMode) {
+        if (text.isBlank() || !isAppDarkMode()) {
             return text
         }
 
