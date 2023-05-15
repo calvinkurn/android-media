@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.linker.LinkerUtils;
 
+import java.util.Objects;
+
 
 public class LinkerData implements Parcelable {
     public static final String TAG = LinkerData.class.getSimpleName();
@@ -242,7 +244,16 @@ public class LinkerData implements Parcelable {
     }
 
     public String getUri() {
-        return uri;
+        Uri uri = Uri.parse(this.uri);
+        if (Objects.equals(uri.getHost(), "tokopedia.com")) {
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            String path = uri.getPath();
+            String validUrl = String.format("%s://www.%s/%s", scheme, host, path);
+            return validUrl;
+        }
+
+        return this.uri;
     }
 
     public void setUri(String uri) {
