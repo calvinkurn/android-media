@@ -37,6 +37,9 @@ data class BuyerGetCancellationReasonData(
             @Expose
             val orderDetails: List<OrderDetailsCancellation> = emptyList(),
 
+            @SerializedName("grouped_orders")
+            val groupedOrders: GroupedOrders = GroupedOrders(),
+
             @SerializedName("have_product_bundle")
             @Expose
             val haveProductBundle: Boolean = false,
@@ -45,6 +48,34 @@ data class BuyerGetCancellationReasonData(
             @Expose
             val bundleDetail: BundleDetail? = BundleDetail()
         ) {
+
+            data class GroupedOrders(
+                @SerializedName("order_details")
+                val orderDetails: List<OrderDetail> = listOf(),
+                @SerializedName("ticker")
+                val ticker: TickerInfo = TickerInfo(),
+                @SerializedName("title")
+                val title: String = ""
+            ) {
+                data class OrderDetail(
+                    @SerializedName("invoice_ref_num")
+                    val invoiceRefNum: String = "",
+                    @SerializedName("product_image")
+                    val productImage: String = "",
+                    @SerializedName("product_info")
+                    val productInfo: String = "",
+                    @SerializedName("product_name")
+                    val productName: String = "",
+                    @SerializedName("product_price")
+                    val productPrice: Double = 0.0,
+                    @SerializedName("product_qty")
+                    val productQty: Int = 0,
+                    @SerializedName("shop_image")
+                    val shopImage: String = "",
+                    @SerializedName("shop_name")
+                    val shopName: String = ""
+                )
+            }
 
             data class TickerInfo(
                 @SerializedName("text")

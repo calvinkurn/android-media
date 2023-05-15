@@ -11,5 +11,9 @@ data class BuyerGetCancellationReasonParam(
 
     @Expose
     @SerializedName("order_id")
-    val orderId: String = ""
+    val orderId: String = "",
+
+    @Expose
+    @SerializedName("tx_id")
+    val txId: String = "",
 )

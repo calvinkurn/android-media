@@ -84,6 +84,26 @@ class BuyerGetCancellationReasonUseCase @Inject constructor(private val useCase:
                     bundle_id,
                     bundle_variant_id
                 }
+                grouped_orders {
+                  title
+                  group_order_details {
+                    invoice_ref_num
+                    shop_name
+                    shop_icon
+                    product_name
+                    product_image
+                    product_qty
+                    product_price
+                    product_info
+                  }
+                  ticker {
+                    text
+                    type
+                    action_key
+                    action_url
+                    action_text
+                  }
+                }
               }
             }
         """.trimIndent()

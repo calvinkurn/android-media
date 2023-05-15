@@ -93,7 +93,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
@@ -108,7 +108,7 @@ class BuyerCancellationViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Fail)
@@ -122,7 +122,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
@@ -287,7 +287,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
@@ -320,7 +320,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
@@ -341,7 +341,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
@@ -374,7 +374,7 @@ class BuyerCancellationViewModelTest {
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "")
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value

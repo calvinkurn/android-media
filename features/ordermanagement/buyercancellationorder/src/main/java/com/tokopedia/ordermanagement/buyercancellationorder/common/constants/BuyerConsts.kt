@@ -10,6 +10,7 @@ object BuyerConsts {
     const val PARAM_INVOICE = "param_invoice"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_TX_ID = "tx_id"
     const val PARAM_URI = "uri"
     const val PARAM_IS_CANCEL_ALREADY_REQUESTED = "is_cancel_already_requested"
     const val PARAM_WAIT_MSG = "wait_message"

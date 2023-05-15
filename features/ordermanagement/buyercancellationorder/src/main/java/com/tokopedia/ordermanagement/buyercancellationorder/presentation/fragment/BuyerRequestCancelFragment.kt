@@ -84,6 +84,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var shopName = ""
     private var invoiceNum = ""
     private var orderId = ""
+    private var txId = ""
     private var uri = ""
     private var isCancelAlreadyRequested : Boolean = false
     private var isWaitToCancel : Boolean = false
@@ -161,6 +162,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             shopName = arguments?.getString(BuyerConsts.PARAM_SHOP_NAME).toString()
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
+            txId = arguments?.getString(BuyerConsts.PARAM_TX_ID).orEmpty()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
             cancelRequestedTitle = arguments?.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED).toString()
@@ -453,7 +455,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun getCancelReasons() {
         userSession = UserSession(context)
         userSession?.let {
-            buyerCancellationViewModel.getCancelReasons(it.userId, orderId)
+            buyerCancellationViewModel.getCancelReasons(it.userId, orderId, txId)
         }
     }
 
