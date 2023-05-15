@@ -50,17 +50,6 @@ class UserProfileReviewFragment @Inject constructor(
         )
     }
 
-    private val clickablePolicy = object : ClickableSpan() {
-        override fun onClick(p0: View) {
-            userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
-        }
-
-        override fun updateDrawState(ds: TextPaint) {
-            super.updateDrawState(ds)
-            ds.isUnderlineText = false
-        }
-    }
-
     private val boldSpan: StyleSpan
         get() = StyleSpan(Typeface.BOLD)
 
@@ -98,33 +87,83 @@ class UserProfileReviewFragment @Inject constructor(
         prev: UserProfileUiState?,
         value: UserProfileUiState,
     ) {
-        if (prev?.reviewSettings == value.reviewSettings) return
+        if (prev?.reviewSettings == value.reviewSettings &&
+            prev.reviewContent == value.reviewContent) return
+
+        /** TODO: handle loading state here */
 
         if (value.reviewSettings.isEnabled) {
-            binding.layoutReviewHidden.root.gone()
-        } else {
-            if (viewModel.isSelfProfile) {
-                binding.layoutReviewHidden.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_hidden_title)
-                binding.layoutReviewHidden.tvReviewHiddenDesc.text = getSelfHiddenReviewDesc()
-                binding.layoutReviewHidden.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
+            if (value.reviewContent.reviewList.isNotEmpty()) {
+                binding.layoutNoUserReview.root.gone()
             } else {
-                binding.layoutReviewHidden.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
-                binding.layoutReviewHidden.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
+                showNoReviewLayout()
             }
-            binding.layoutReviewHidden.root.show()
+        } else {
+            showHiddenReviewLayout()
         }
     }
 
-    private fun getSelfHiddenReviewDesc(): CharSequence {
-        val footerText = SpannableStringBuilder()
+    private fun showNoReviewLayout() {
+        if (viewModel.isSelfProfile) {
+            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_empty_title)
+            binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
+                fullText = getString(R.string.up_profile_self_review_empty_desc),
+                highlightedText = getString(R.string.up_profile_create_review),
+                clickablePolicy = object : ClickableSpan() {
+                    override fun onClick(p0: View) {
+                        /** TODO: handle this */
+                    }
 
-        val fullText = getString(R.string.up_profile_self_review_hidden_desc)
-        val targetSpanText = getString(R.string.up_profile_settings_title)
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                    }
+                }
+            )
+            binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
+        } else {
+            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
+            binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
+        }
+        binding.layoutNoUserReview.root.show()
+    }
 
-        footerText.append(fullText)
-        footerText.setSpanOnText(targetSpanText, clickablePolicy, boldSpan, colorSpan)
+    private fun showHiddenReviewLayout() {
+        if (viewModel.isSelfProfile) {
+            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_hidden_title)
+            binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
+                fullText = getString(R.string.up_profile_self_review_hidden_desc),
+                highlightedText = getString(R.string.up_profile_settings_title),
+                clickablePolicy = object : ClickableSpan() {
+                    override fun onClick(p0: View) {
+                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                    }
 
-        return footerText
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                    }
+                }
+            )
+            binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
+        } else {
+            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
+            binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
+        }
+        binding.layoutNoUserReview.root.show()
+    }
+
+    private fun setupClickableText(
+        fullText: String,
+        highlightedText: String,
+        clickablePolicy: ClickableSpan,
+    ): CharSequence {
+        val text = SpannableStringBuilder()
+
+        text.append(fullText)
+        text.setSpanOnText(highlightedText, clickablePolicy, boldSpan, colorSpan)
+
+        return text
     }
 
     override fun onDestroyView() {

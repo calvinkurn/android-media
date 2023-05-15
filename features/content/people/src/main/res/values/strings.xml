@@ -73,4 +73,8 @@
     <string name="up_profile_self_review_hidden_desc">Mau tampilkan ulasannya di sini? Ubah aja \ndi Pengaturan Profil</string>
     <string name="up_profile_other_review_hidden_title">Ulasan disembunyikan</string>
     <string name="up_profile_other_review_hidden_desc">Kamu bisa lihat ulasannya kalau %s nanti \nganti pengaturan profilnya, ya.</string>
+    <string name="up_profile_self_review_empty_title">Kamu belum ada ulasan</string>
+    <string name="up_profile_self_review_empty_desc">Ayo Buat Ulasan dulu, supaya kamu bisa \nmenginspirasi pengguna lain!</string>
+    <string name="up_profile_other_review_empty_title">Belum ada ulasan</string>
+    <string name="up_profile_create_review">Buat Ulasan</string>
 </resources>

@@ -3,6 +3,7 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
+import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
@@ -131,11 +132,12 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileTab,
         _feedPostsContent,
         _videoPostContent,
+        _reviewContent,
         _isLoading,
         _error,
         _reviewSettings,
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
-        isLoading, error, reviewSettings ->
+        reviewContent, isLoading, error, reviewSettings ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -145,6 +147,7 @@ class UserProfileViewModel @AssistedInject constructor(
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
             videoPostsContent = videoPostContent,
+            reviewContent = reviewContent,
             isLoading = isLoading,
             error = error,
             reviewSettings = reviewSettings,
