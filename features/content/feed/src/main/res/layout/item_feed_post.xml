@@ -27,11 +27,10 @@
         layout="@layout/layout_feed_top_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.15"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view_bottom_overlay_bound"
@@ -40,19 +39,17 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         android:id="@+id/overlay_bottom"
         layout="@layout/layout_feed_bottom_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_bottom_overlay_bound"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_bottom_overlay_bound" />
 
     <include
         android:id="@+id/overlay_right"
@@ -60,10 +57,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.3"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/indicator_feed_content"
@@ -155,26 +151,22 @@
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="THUMB"
-        app:layout_constraintBottom_toTopOf="@id/comment_button"
+        app:layout_constraintBottom_toTopOf="@id/feed_comment_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
         tools:visibility="visible" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/comment_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <include
+        android:id="@+id/feed_comment_button"
+        layout="@layout/layout_feed_comment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="18dp"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="CHAT"
         app:layout_constraintBottom_toTopOf="@id/share_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
