@@ -3,6 +3,7 @@ package com.tokopedia.notifications.factory.helper
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
 import com.tokopedia.bubbles.data.model.BubbleNotificationModel
 import com.tokopedia.bubbles.factory.BubblesFactory
@@ -84,6 +85,7 @@ class BubbleTopChatNotificationHelper(
             val uri = Uri.parse(appLinks)
             uri.lastPathSegment ?: MESSAGE_ID_ZERO
         } catch (e: NullPointerException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             MESSAGE_ID_ZERO
         }
     }

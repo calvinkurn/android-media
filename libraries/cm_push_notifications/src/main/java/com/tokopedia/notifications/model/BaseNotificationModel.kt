@@ -8,6 +8,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.model.WebHookParams.Companion.getWebHookData
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
@@ -216,6 +217,7 @@ data class BaseNotificationModel(
                 }
             }
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }
