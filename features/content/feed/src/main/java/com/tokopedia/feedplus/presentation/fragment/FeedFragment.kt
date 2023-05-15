@@ -849,10 +849,6 @@ class FeedFragment :
             viewLifecycleOwner
         ) {
             when (it) {
-                FeedResult.Loading -> {}
-                is FeedResult.Success -> {
-                    onSuccessLikeResponse(it.data)
-                }
                 is FeedResult.Failure -> {
                     val error = it.error
                     val errorMessage = if (error is CustomUiMessageThrowable) {
@@ -862,6 +858,7 @@ class FeedFragment :
                     }
                     showToast(errorMessage, Toaster.TYPE_ERROR)
                 }
+                else -> {}
             }
         }
     }
@@ -996,7 +993,6 @@ class FeedFragment :
 
     override fun onLikePostCLicked(
         id: String,
-        isLiked: Boolean,
         rowNumber: Int,
         trackerModel: FeedTrackerDataModel,
         isDoubleClick: Boolean
@@ -1008,10 +1004,8 @@ class FeedFragment :
         }
 
         if (userSession.isLoggedIn) {
-            val feedLikeAction = FeedLikeAction.getLikeAction(isLiked)
             feedPostViewModel.likeContent(
                 contentId = id,
-                action = feedLikeAction,
                 rowNumber = rowNumber
             )
         } else {
@@ -1053,49 +1047,6 @@ class FeedFragment :
                             eventLabel = eventLabel
                         )
                     )
-                )
-            }
-        }
-    }
-
-    private fun onSuccessLikeResponse(data: LikeFeedDataModel) {
-        val newList = adapter?.list
-        val rowNumber = data.rowNumber
-        if ((newList?.size ?: 0) > data.rowNumber) {
-            val item = newList?.get(rowNumber)
-            if (item is FeedCardImageContentModel) {
-                if (!item.like.isLiked) {
-                    try {
-                        val likeValue = Integer.valueOf(item.like.countFmt) + 1
-                        adapter?.updateLikeUnlikeData(
-                            rowNumber,
-                            like = item.like.copy(
-                                isLiked = item.like.isLiked.not(),
-                                countFmt = likeValue.toString(),
-                                count = item.like.count + 1
-                            )
-                        )
-                    } catch (ignored: NumberFormatException) {
-                        Timber.e(ignored)
-                    }
-                } else {
-                    try {
-                        val likeValue = Integer.valueOf(item.like.countFmt) - 1
-                        adapter?.updateLikeUnlikeData(
-                            rowNumber,
-                            like = item.like.copy(
-                                isLiked = item.like.isLiked.not(),
-                                countFmt = likeValue.toString(),
-                                count = item.like.count - 1
-                            )
-                        )
-                    } catch (ignored: NumberFormatException) {
-                        Timber.e(ignored)
-                    }
-                }
-                adapter?.notifyItemChanged(
-                    rowNumber,
-                    FEED_POST_LIKED_UNLIKED
                 )
             }
         }

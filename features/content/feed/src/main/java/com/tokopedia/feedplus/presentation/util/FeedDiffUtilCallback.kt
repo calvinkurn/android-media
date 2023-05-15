@@ -55,17 +55,27 @@ class FeedDiffUtilCallback(
 
         return if (oldItem is FeedCardImageContentModel && newItem is FeedCardImageContentModel) {
             if (oldItem.isTopAds && !oldItem.isFetched && newItem.isTopAds && newItem.isFetched) null
-            else if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
-                FeedViewHolderPayloads(
-                    listOf(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
-                )
-            } else null
+            else {
+                val payloads = buildList {
+                    if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
+                        add(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
+                    }
+                    if (oldItem.like.isLiked != newItem.like.isLiked) {
+                        add(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)
+                    }
+                }
+                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
+            }
         } else if (oldItem is FeedCardVideoContentModel && newItem is FeedCardVideoContentModel) {
-            if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
-                FeedViewHolderPayloads(
-                    listOf(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
-                )
-            } else null
+            val payloads = buildList {
+                if (oldItem.followers.isFollowed != newItem.followers.isFollowed) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
+                }
+                if (oldItem.like.isLiked != newItem.like.isLiked) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)
+                }
+            }
+            if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
         } else {
             null
         }

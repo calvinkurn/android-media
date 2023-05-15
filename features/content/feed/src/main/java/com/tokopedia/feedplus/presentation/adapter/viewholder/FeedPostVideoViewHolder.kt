@@ -79,6 +79,62 @@ class FeedPostVideoViewHolder(
                 }
             }
         })
+
+        binding.postLikeButton.likeButton.setOnClickListener {
+            val data = mData ?: return@setOnClickListener
+            listener.onLikePostCLicked(
+                data.id,
+                absoluteAdapterPosition,
+                trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                    data
+                ),
+                false
+            )
+        }
+
+        val postGestureDetector = GestureDetector(binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    val videoPlayer = mVideoPlayer ?: return true
+                    val data = mData ?: return true
+
+                    videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
+
+                    if (!videoPlayer.getExoPlayer().playWhenReady) {
+                        listener.onPauseVideoPost(
+                            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                                data
+                            )
+                        )
+                    }
+                    return true
+                }
+
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    val data = mData ?: return true
+                    if (data.like.isLiked.not()) {
+                        listener.onLikePostCLicked(
+                            data.id,
+                            absoluteAdapterPosition,
+                            trackerDataModel
+                                ?: trackerMapper.transformVideoContentToTrackerModel(data),
+                            true
+                        )
+                    }
+                    return true
+                }
+
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                }
+            })
+
+        binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
+            postGestureDetector.onTouchEvent(motionEvent)
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?) {
@@ -87,36 +143,7 @@ class FeedPostVideoViewHolder(
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
 
             with(binding) {
-                val postGestureDetector = GestureDetector(root.context,
-                    object : GestureDetector.SimpleOnGestureListener() {
-                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            return true
-                        }
 
-                        override fun onDoubleTap(e: MotionEvent): Boolean {
-                            if (data.like.isLiked.not()) {
-                                listener.onLikePostCLicked(
-                                    data.id,
-                                    data.like.isLiked,
-                                    absoluteAdapterPosition,
-                                    trackerDataModel
-                                        ?: trackerMapper.transformVideoContentToTrackerModel(data),
-                                    true
-                                )
-                            }
-                            return true
-                        }
-
-                        override fun onDown(e: MotionEvent): Boolean {
-                            return true
-                        }
-
-                        override fun onLongPress(e: MotionEvent) {
-                        }
-                    })
-                playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
-                    postGestureDetector.onTouchEvent(motionEvent)
-                }
 
                 bindAuthor(data)
                 bindCaption(data)
@@ -153,17 +180,6 @@ class FeedPostVideoViewHolder(
                         imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
                     )
                 }
-                postLikeButton.likeButton.setOnClickListener {
-                    listener.onLikePostCLicked(
-                        data.id,
-                        data.like.isLiked,
-                        absoluteAdapterPosition,
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        ),
-                        false
-                    )
-                }
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
                 }
@@ -172,8 +188,8 @@ class FeedPostVideoViewHolder(
     }
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
+        mData = element
         element?.let {
-            mData = it
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(it)
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)) {
@@ -255,7 +271,7 @@ class FeedPostVideoViewHolder(
     private fun bindLike(data: FeedCardVideoContentModel) {
         val like = data.like
         binding.postLikeButton.likedText.text = like.countFmt
-        likeAnimationView.setIsLiked(like.isLiked)
+        smallLikeAnimationView.setIsLiked(like.isLiked)
     }
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
@@ -344,15 +360,15 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
         binding.playerControl.player = videoPlayer.getExoPlayer()
         binding.playerFeedVideo.videoSurfaceView?.setOnClickListener {
-            videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
-
-            if (!videoPlayer.getExoPlayer().playWhenReady) {
-                listener.onPauseVideoPost(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        element
-                    )
-                )
-            }
+//            videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
+//
+//            if (!videoPlayer.getExoPlayer().playWhenReady) {
+//                listener.onPauseVideoPost(
+//                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+//                        element
+//                    )
+//                )
+//            }
         }
 
         videoPlayer.start(
