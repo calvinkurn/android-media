@@ -7,6 +7,7 @@ import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
@@ -59,12 +60,12 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductSection(input: ProductSection): TagItemUiModel {
+    fun mapProductSection(input: ProductSection, channelType: PlayChannelType): TagItemUiModel {
         val controlTime = DateUtil.getCurrentDate()
         return TagItemUiModel(
             product = ProductUiModel(
                 productSectionList = input.sectionList.map {
-                    productTagMapper.mapSection(it, controlTime)
+                    productTagMapper.mapSection(it, controlTime, channelType)
                 },
                 canShow = input.config.showProductTag,
             ),
@@ -160,6 +161,5 @@ class PlaySocketToModelMapper @Inject constructor(
         private const val PARAM_SEND_TYPE_MULTIPLE_LIKE = "MULTIPLE_LIKE"
         private const val PARAM_SEND_CHANNEL_ID = "channel_id"
         private const val PARAM_SEND_MESSAGE = "message"
-        private const val PARAM_SEND_WAREHOUSE_ID = "warehouse_id"
     }
 }

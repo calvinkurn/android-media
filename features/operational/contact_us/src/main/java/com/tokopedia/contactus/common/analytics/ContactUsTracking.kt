@@ -1,22 +1,20 @@
 package com.tokopedia.contactus.common.analytics
 
+import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.track.builder.Tracker
 
-/**
- * Created by baghira on 16/07/18.
- */
-object ContactUsTracking {
+object ContactUsTracking : UnifyTracking() {
     fun sendGTMInboxTicket(
-        event: String?,
-        category: String?,
-        action: String?,
-        label: String?
+        event: String,
+        category: String,
+        action: String,
+        label: String
     ) {
         Tracker.Builder()
-            .setEvent(event?:return)
-            .setEventAction(action?:return)
-            .setEventCategory(category?:return)
-            .setEventLabel(label?:return)
+            .setEvent(event)
+            .setEventAction(action)
+            .setEventCategory(category)
+            .setEventLabel(label)
             .build()
             .send()
     }

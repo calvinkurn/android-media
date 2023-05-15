@@ -138,6 +138,7 @@ class DiscomBottomSheetRevamp :
         setCurrentLocationProvider()
         setViewListener()
     }
+
     fun setData(isPinpoint: Boolean = false, gmsAvailable: Boolean, isEdit: Boolean) {
         this.isPinpoint = isPinpoint
         this.isGmsAvailable = gmsAvailable

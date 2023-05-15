@@ -352,7 +352,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val id = v.id
         if (id == R.id.txt_hyper) {
             setResult(InboxBaseView.RESULT_FINISH)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.TicketClosed)
@@ -530,7 +530,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             ) { dialog: DialogInterface, i: Int -> dialog.dismiss() }
             builder.setPositiveButton(getString(R.string.inbox_exit)
             ) { _, _ ->
-                ContactUsTracking.sendGTMInboxTicket("",
+                ContactUsTracking.sendGTMInboxTicket( "",
                         InboxTicketTracking.Category.EventInboxTicket,
                         InboxTicketTracking.Action.EventAbandonReplySubmission,
                         getString(R.string.inbox_cancel))
@@ -690,7 +690,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun onTransactionDetailsClick() {
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket( "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickDetailTrasanksi,
                 "")

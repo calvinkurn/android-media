@@ -369,6 +369,7 @@ class TicketFragment :
             RouteManager.getIntent(context ?: return, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.INBOX_DETAIL_PAGE)
+        @Suppress("DEPRECATION")
         startActivityForResult(intent, REQUEST_IMAGE_PICKER)
     }
 
@@ -475,6 +476,7 @@ class TicketFragment :
             }
 
             is InboxDetailUiEffect.GetDetailInboxDetailFailed -> {
+                hideProgressBar()
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
                         activity?.getString(R.string.contact_us_something_went_wrong).orEmpty()
@@ -778,6 +780,7 @@ class TicketFragment :
     private fun onClickEmoji(emojiNumber: Int, ticketNumber: String) {
         sendGTMEventView()
         sendGTMEventClick(emojiNumber, ticketNumber)
+        @Suppress("DEPRECATION")
         startActivityForResult(
             ContactUsProvideRatingActivity.getInstance(
                 activity as Context,

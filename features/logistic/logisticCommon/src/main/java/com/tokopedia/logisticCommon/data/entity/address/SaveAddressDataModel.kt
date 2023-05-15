@@ -39,4 +39,16 @@ data class SaveAddressDataModel(
     var warehouses: List<WarehouseDataModel> = listOf(),
     var serviceType: String = "",
     var isTokonowRequest: Boolean = false
-) : Parcelable
+) : Parcelable {
+    fun hasPinpoint(): Boolean {
+        return latitude.isValidPinpoint() && longitude.isValidPinpoint()
+    }
+
+    private fun String.isValidPinpoint(): Boolean {
+        return this.isNotBlank() && this != EMPTY_COORDINATE
+    }
+
+    companion object {
+        private const val EMPTY_COORDINATE = "0.0"
+    }
+}

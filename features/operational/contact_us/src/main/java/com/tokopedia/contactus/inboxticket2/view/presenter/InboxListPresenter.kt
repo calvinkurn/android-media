@@ -209,7 +209,7 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
         ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventTicketClick,
-                originalList[index].caseNumber)
+                originalList[index].caseNumber.orEmpty())
     }
 
     override fun scrollList() {

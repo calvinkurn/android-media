@@ -7,5 +7,5 @@ import com.tokopedia.play.view.type.ScreenOrientation
  */
 interface PlayOrientationListener {
 
-    fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean)
+    fun changeOrientation(screenOrientation: ScreenOrientation, isTilting: Boolean)
 }

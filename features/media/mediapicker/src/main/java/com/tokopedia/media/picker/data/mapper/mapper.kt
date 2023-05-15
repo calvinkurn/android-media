@@ -12,7 +12,7 @@ fun mediaToUiModel(mediaList: List<Media>): List<MediaUiModel> {
             id = it.id,
             uri = it.uri,
             file = it.path.asPickerFile(),
-            videoLength = it.videoLength
+            duration = it.duration
         )
     }
 }

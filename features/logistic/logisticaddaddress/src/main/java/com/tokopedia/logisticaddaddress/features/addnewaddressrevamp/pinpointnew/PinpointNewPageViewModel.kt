@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -28,6 +29,19 @@ class PinpointNewPageViewModel @Inject constructor(
     private var saveAddressDataModel = SaveAddressDataModel()
 
     var isGmsAvailable: Boolean = true
+    var currentPlaceId: String? = ""
+
+    /*to differentiate positive flow or negative flow*/
+    var isPositiveFlow: Boolean = true
+    var showIllustrationMap: Boolean = false
+    var isFromAddressForm: Boolean = false
+    var isEdit: Boolean = false
+    var isPolygon: Boolean = false
+    var source: String? = ""
+    var isGetPinPointOnly: Boolean = false
+
+    val isEditOrGetPinPointOnly: Boolean
+        get() = isEdit || isGetPinPointOnly
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -45,11 +59,39 @@ class PinpointNewPageViewModel @Inject constructor(
     val districtCenter: LiveData<Result<DistrictCenterUiModel>>
         get() = _districtCenter
 
+    fun setDataFromArguments(
+        currentPlaceId: String?,
+        latitude: Double,
+        longitude: Double,
+        addressData: SaveAddressDataModel?,
+        isPositiveFlow: Boolean,
+        isPolygon: Boolean,
+        isFromAddressForm: Boolean,
+        isEdit: Boolean,
+        source: String,
+        isGetPinPointOnly: Boolean,
+    ) {
+        this.currentPlaceId = currentPlaceId
+        setLatLong(latitude, longitude)
+        addressData?.apply {
+            setAddress(this)
+        }
+        this.isPositiveFlow = isPositiveFlow
+        this.isPolygon = isPolygon
+        this.isFromAddressForm = isFromAddressForm
+        this.isEdit = isEdit
+        this.source = source
+        this.isGetPinPointOnly = isGetPinPointOnly
+    }
+
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(param)
+                val districtData = repo.getDistrictGeocode(
+                    latlong = param,
+                    isManageAddressFlow = true
+                )
                 _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
             } catch (e: Throwable) {
                 _autofillDistrictData.value = Fail(e)
@@ -60,7 +102,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch {
             try {
-                val districtLoc = repo.getDistrict(placeId)
+                val districtLoc = repo.getDistrict(placeId = placeId, isManageAddressFlow = true)
                 _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
             } catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
@@ -68,21 +110,22 @@ class PinpointNewPageViewModel @Inject constructor(
         }
     }
 
-    fun getDistrictBoundaries(districtId: Long) {
+    fun getDistrictBoundaries() {
         viewModelScope.launch {
             try {
-                val districtBoundary = repo.getDistrictBoundaries(districtId)
-                _districtBoundary.value = Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
+                val districtBoundary = repo.getDistrictBoundaries(saveAddressDataModel.districtId)
+                _districtBoundary.value =
+                    Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
             } catch (e: Throwable) {
                 _districtBoundary.value = Fail(e)
             }
         }
     }
 
-    fun getDistrictCenter(districtId: Long) {
+    fun getDistrictCenter() {
         viewModelScope.launch {
             try {
-                val data = repo.getDistrictCenter(districtId)
+                val data = repo.getDistrictCenter(saveAddressDataModel.districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)
@@ -105,5 +148,17 @@ class PinpointNewPageViewModel @Inject constructor(
 
     fun getAddress(): SaveAddressDataModel {
         return this.saveAddressDataModel
+    }
+
+    fun setLatLong(lat: Double, long: Double) {
+        this.saveAddressDataModel =
+            this.saveAddressDataModel.copy(latitude = lat.toString(), longitude = long.toString())
+    }
+
+    fun getLocationFromLatLong() {
+        getDistrictData(
+            saveAddressDataModel.latitude.toDoubleOrZero(),
+            saveAddressDataModel.longitude.toDoubleOrZero()
+        )
     }
 }

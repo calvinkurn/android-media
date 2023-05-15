@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.shorts.ui.model.action
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -22,21 +21,15 @@ sealed interface PlayShortsAction {
 
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
-
+    object CloseTitleForm : PlayShortsAction
     data class UploadTitle(
         val title: String
     ) : PlayShortsAction
 
-    object CloseTitleForm : PlayShortsAction
-
     /** Cover Form */
     object OpenCoverForm : PlayShortsAction
-
-    data class SetCover(
-        val cover: CoverSetupState
-    ) : PlayShortsAction
-
     object CloseCoverForm : PlayShortsAction
+    object UpdateCover : PlayShortsAction
 
     /** Product */
     data class SetProduct(
@@ -56,4 +49,10 @@ sealed interface PlayShortsAction {
 
     /** Others */
     object SetNotFirstSwitchAccount : PlayShortsAction
+    object SetShowSetupCoverCoachMark : PlayShortsAction
+    data class SetCoverUploadedSource(
+        val source: Int
+    ) : PlayShortsAction
+
+    object ResetUploadState : PlayShortsAction
 }

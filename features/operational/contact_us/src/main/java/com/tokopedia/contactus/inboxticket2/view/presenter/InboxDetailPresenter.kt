@@ -319,13 +319,13 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
     override fun onImageSelect(image: ImageUpload) {
         if (image.fileLoc?.let { getUtils().fileSizeValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError1)
         } else if (image.fileLoc?.let { getUtils().isBitmapDimenValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket( "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError2)
@@ -652,7 +652,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.attachment_required)
                 ?: "", true)
         mView?.hideSendProgress()
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket( "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventNotAttachImageRequired,
                 "")
@@ -671,7 +671,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                         }
                     }
                     if (searchIndices.size > 0) {
-                        ContactUsTracking.sendGTMInboxTicket("",
+                        ContactUsTracking.sendGTMInboxTicket( "",
                                 InboxTicketTracking.Category.EventInboxTicket,
                                 InboxTicketTracking.Action.EventClickSearchDetails,
                                 InboxTicketTracking.Label.GetResult)
@@ -710,7 +710,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
     override fun getUtils() = Utils()
 
     override fun showImagePreview(position: Int, imagesURL: List<AttachmentItem>) {
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket( "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
                 InboxTicketTracking.Label.ImageAttached)
@@ -816,7 +816,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventView,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 InboxTicketTracking.Action.EventImpressionOnCsatRating,
-                mView?.ticketID)
+                mView?.ticketID.orEmpty())
     }
 
     private fun sendGTMEventClick(number: Int) {

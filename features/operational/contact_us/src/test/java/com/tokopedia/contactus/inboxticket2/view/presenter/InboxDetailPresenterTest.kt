@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.R
+import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.*
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
@@ -29,7 +30,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -70,8 +71,6 @@ class InboxDetailPresenterTest {
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
-        mockkStatic(TrackApp::class)
-        every { TrackApp.getInstance() } returns mockk(relaxed = true)
         postMessageUseCase = mockk(relaxed = true)
         postMessageUseCase2 = mockk(relaxed = true)
         inboxOptionUseCase = mockk(relaxed = true)
@@ -82,6 +81,8 @@ class InboxDetailPresenterTest {
         chipUploadHostConfigUseCase = mockk(relaxed = true)
         secureUploadUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+        mockkStatic(TrackApp::class)
+        every { TrackApp.getInstance() } returns mockk(relaxed = true)
 
         presenter = spyk(
             InboxDetailPresenter(
@@ -158,7 +159,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating but intent null, view not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             presenter.onActivityResult(
                 InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -171,7 +172,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating but intent null, view null`() {
-        runBlockingTest {
+        runTest {
             presenter.onActivityResult(
                 InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
                 Activity.RESULT_OK,
@@ -183,7 +184,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `onActivityResult running submitCsatRating, intent not null but false data, view not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             coEvery { view.getCommentID() } returns "1"
             presenter.onActivityResult(
@@ -321,6 +322,7 @@ class InboxDetailPresenterTest {
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
 
+
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
             Activity.RESULT_OK,
@@ -349,6 +351,9 @@ class InboxDetailPresenterTest {
         every { view.getActivity().resources.getStringArray(any()) } returns returnArrayOfCsatCaptions()
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
+
+
+
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -407,6 +412,7 @@ class InboxDetailPresenterTest {
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
 
+
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
             Activity.RESULT_OK,
@@ -427,6 +433,7 @@ class InboxDetailPresenterTest {
         every { view.getActivity().resources.getStringArray(any()) } returns returnArrayOfCsatCaptions()
         coEvery { intent.extras?.getInt(any()) } returns 0
         coEvery { intent.getStringExtra(any()) } returns "0"
+
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -450,6 +457,7 @@ class InboxDetailPresenterTest {
         every { viewNullable?.getActivity()?.resources?.getStringArray(any()) } returns null
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
+
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -647,6 +655,7 @@ class InboxDetailPresenterTest {
     fun `check onSearchSubmitted`() {
         presenter.attachView(view)
 
+
         presenter.onSearchSubmitted("dummy")
 
         verify { view.showProgressBar() }
@@ -656,6 +665,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `check onSearchSubmitted when input is empty`() {
         presenter.attachView(view)
+
 
         presenter.onSearchSubmitted("")
 
@@ -708,6 +718,7 @@ class InboxDetailPresenterTest {
     fun `check invocation of enterSearchMode on invocation onSearchSubmitted`() {
         presenter.attachView(view)
 
+
         presenter.onSearchSubmitted("dummy")
 
         verify { view.enterSearchMode(any(), any()) }
@@ -716,7 +727,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `check search are error and view is not null`() {
         presenter.attachView(view)
-        runBlockingTest {
+        runTest {
 
             every { view.enterSearchMode(any(), any()) } throws Exception("getting exception")
 
@@ -729,7 +740,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check search are error and view is null`() {
-        runBlockingTest {
+        runTest {
             every {
                 viewNullable?.enterSearchMode(
                     any(),
@@ -815,7 +826,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails is success and the issue is closed`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val responseData = mockk<Data>(relaxed = true)
@@ -851,7 +862,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails on getTopItem and getCommentHeader where mTicketDetail is not null`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -870,7 +881,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getTicketDetails on getTopItem and getCommentHeader where mTicketDetail is has full detail`() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -892,7 +903,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is OPEN `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -914,7 +925,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is NEW `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -936,7 +947,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when status is CLOSED `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -958,7 +969,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check getStatus() when show ratting is true `() {
-        runBlockingTest {
+        runTest {
             presenter.attachView(view)
             val response = mockk<ChipGetInboxDetail>(relaxed = true)
             val ticketDetail = Tickets()
@@ -1891,6 +1902,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of onClickEmoji but no view`() {
+
         presenter.onClickEmoji(1)
         verify(exactly = 0) { viewNullable?.getActivity() }
         verify(exactly = 0) { viewNullable?.startActivityForResult(any(), any()) }
@@ -2147,7 +2159,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = mockk<ArrayList<String>>(relaxed = true)
             val chipUploadHostConfig = mockk<ChipUploadHostConfig>(relaxed = true)
             val actiualResult =
@@ -2158,7 +2170,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase error and method return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""
@@ -2180,7 +2192,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase success but contactUsUploadImageUseCase is Empty and method return is Null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""
@@ -2204,7 +2216,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `run and verify of getSecurelyUploadedImages with SecureUploadUseCase success but contactUsUploadImageUseCase is Not Empty and method return is not null`() {
-        runBlockingTest {
+        runTest {
             val files = arrayListOf("", "", "")
             val secureReturnGqlUseCase = SecureImageParameter(
                 mockk(relaxed = true), mockk(relaxed = true), "", ""
