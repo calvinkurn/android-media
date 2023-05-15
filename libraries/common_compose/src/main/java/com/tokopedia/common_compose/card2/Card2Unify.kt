@@ -1,7 +1,6 @@
 package com.tokopedia.common_compose.card2
 
 import android.animation.TimeInterpolator
-import android.util.Log
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Easing
@@ -9,44 +8,31 @@ import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.animation.PathInterpolatorCompat
-import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
 
@@ -59,10 +45,7 @@ private fun TimeInterpolator.toEasing() = Easing { x ->
 }
 
 private val bezierCustomInterpolator = PathInterpolatorCompat.create(
-    .2f,
-    .64f,
-    .21f,
-    1f
+    .2f, .64f, .21f, 1f
 ).toEasing()
 
 @Composable
@@ -113,6 +96,7 @@ private suspend fun PointerInputScope.configGesture(
 
 @Composable
 fun Card2Unify(
+    modifier: Modifier = Modifier,
     enableTransitionAnimation: Boolean = false,
     enableBounceAnimation: Boolean = false,
     type: Card2Border = Card2Border.NoBorder,
@@ -191,13 +175,11 @@ fun Card2Unify(
     }
 
     Card(
-        modifier = Modifier.wrapContentSize().padding(16.dp).scale(scale).pointerInput(Unit) {
+        modifier = modifier.padding(16.dp).scale(scale).pointerInput(Unit) {
             configGesture(onTouch = onTouch, onClick = {
                 onClick.invoke()
-                Log.e("click", "click")
             }, onLongPress = {
                 onLongPress.invoke()
-                Log.e("click", "long click")
             })
         },
         border = BorderStroke(
@@ -205,8 +187,8 @@ fun Card2Unify(
         ),
         backgroundColor = if (enableTransitionAnimation) animateBackgroundColor.value
         else backgroundColor,
-        elevation = if (shadow) Integer.MAX_VALUE.dp else 0.dp,
-        shape = RoundedCornerShape(16.dp)
+        elevation = if (shadow) 2.dp else 0.dp,
+        shape = RoundedCornerShape(8.dp)
     ) {
         Box {
             BoxCustomRipple(this, enableBounceAnimation, onTouch.value)
@@ -251,46 +233,17 @@ fun BoxCustomRipple(
 
 @Composable
 @Preview
-fun Card2Preview() {
+private fun Card2Preview() {
     Surface {
-        var type by remember { mutableStateOf(Card2Border.default()) }
-        Card2Unify(enableBounceAnimation = true, type = type, onClick = {
-            type = if (type == Card2Border.BorderActive) {
-                Card2Border.Border
-            } else {
-                Card2Border.BorderActive
-            }
-        }, onLongPress = {
+        val type by remember { mutableStateOf(Card2Border.default()) }
+        Card2Unify(enableBounceAnimation = true,
+            type = type,
+            onClick = {
 
-        }) {
-            var textTest by remember {
-                mutableStateOf("Click Me")
-            }
+            }, onLongPress = {
 
-            Column(
-                modifier = Modifier.wrapContentHeight().fillMaxWidth()
-            ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.png_sample),
-                    contentScale = ContentScale.FillWidth,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().height(150.dp)
-                )
-
-                Text(
-                    modifier = Modifier.padding(16.dp), text = "Open the reward"
-                )
-                Button(modifier = Modifier.wrapContentSize()
-                    .align(alignment = Alignment.CenterHorizontally).padding(bottom = 16.dp),
-                    onClick = {
-                        textTest = "Button Clicked"
-                    }) {
-                    Text(
-                        modifier = Modifier.padding(8.dp), text = textTest
-                    )
-                }
-            }
+            }) {
+            CardContentComplexExample()
         }
     }
 }
