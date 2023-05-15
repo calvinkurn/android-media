@@ -18,10 +18,12 @@ interface BitmapCreationRepository {
 class BitmapCreationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BitmapCreationRepository {
+    private val refFirebase: FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
+
     override fun isBitmapOverflow(width: Int, height: Int): Boolean {
         var multiplier = DEFAULT_MULTIPLIER
         try {
-            multiplier = FirebaseRemoteConfigImpl(context).getString(REMOTE_CONFIG_MULTIPLIER_KEY).toFloat()
+            multiplier = refFirebase.getString(REMOTE_CONFIG_MULTIPLIER_KEY).toFloat()
         } catch (_: Exception) {}
 
         val memoryUsage = (width * height * BITMAP_PIXEL_SIZE) * multiplier
