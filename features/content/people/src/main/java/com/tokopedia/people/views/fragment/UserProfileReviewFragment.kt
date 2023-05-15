@@ -16,6 +16,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -91,8 +93,6 @@ class UserProfileReviewFragment @Inject constructor(
         if (prev?.reviewSettings == value.reviewSettings &&
             prev.reviewContent == value.reviewContent) return
 
-        /** TODO: handle loading state here */
-
         if (value.reviewSettings.isEnabled) {
             if (value.reviewContent.reviewList.isNotEmpty()) {
                 showMainLayout(value.reviewContent)
@@ -124,7 +124,7 @@ class UserProfileReviewFragment @Inject constructor(
                 highlightedText = getString(R.string.up_profile_create_review),
                 clickablePolicy = object : ClickableSpan() {
                     override fun onClick(p0: View) {
-                        /** TODO: handle this */
+                        RouteManager.route(requireContext(), ApplinkConst.REPUTATION)
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
