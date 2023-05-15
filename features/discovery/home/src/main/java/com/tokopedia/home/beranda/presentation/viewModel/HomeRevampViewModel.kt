@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -46,10 +47,12 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -65,7 +68,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @FlowPreview
@@ -90,7 +92,10 @@ open class HomeRevampViewModel @Inject constructor(
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>
+    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
+    private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
+    private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
+    private val homeRateLimit: RateLimiter<String>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -143,8 +148,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
-
-    val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
     private var homeFlowStarted = false
@@ -560,6 +563,22 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun getTodoWidgetRefresh() {
+        findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
+            launch {
+                updateWidget(
+                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                    position
+                )
+                updateWidget(
+                    homeTodoWidgetUseCase.get()
+                        .onTodoWidgetRefresh(todoWidgetListDataModel),
+                    position
+                )
+            }
+        }
+    }
+
     fun getSearchHint(isFirstInstall: Boolean) {
         launch {
             _searchHint.postValue(
@@ -740,6 +759,29 @@ open class HomeRevampViewModel @Inject constructor(
             }) {
                 deleteWidget(homePayLaterWidgetDataModel, index)
             }
+        }
+    }
+
+    fun dismissTodoWidget(horizontalPosition: Int, dataSource: String, param: String) {
+        launch {
+            homeDismissTodoWidgetUseCase.get().getTodoWidgetDismissData(
+                dataSource,
+                param
+            )
+
+            try {
+                findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                    if (item.todoWidgetList.size == 1) {
+                        deleteWidget(item, verticalPosition)
+                    } else {
+                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                            removeAt(horizontalPosition)
+                        }
+                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
+                    }
+                }
+            } catch (_: Exception) { }
         }
     }
 }

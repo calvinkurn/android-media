@@ -2,11 +2,7 @@ package com.tokopedia.thankyou_native.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
-import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
-import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
-import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
-import com.tokopedia.thankyou_native.domain.model.WalletBalance
+import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.usecase.FetchWalletBalanceUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineMapperUseCase
@@ -15,9 +11,7 @@ import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCa
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
-import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
-import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
@@ -70,17 +64,14 @@ class ThankPageViewModelUnitTest {
         )
     }
 
-
     @Test
     fun successThanksPageResult() {
-
         val thankPageData = mockk<ThanksPageData>(relaxed = true)
         coEvery {
             thankPageUseCase.getThankPageData(any(), any(), "", "")
         } coAnswers {
             firstArg<(ThanksPageData) -> Unit>().invoke(thankPageData)
         }
-
 
         coEvery {
             thanksPageMapperUseCase.populateThanksPageDataFields(
@@ -97,7 +88,6 @@ class ThankPageViewModelUnitTest {
             (viewModel.thanksPageDataResultLiveData.value as Success).data,
             thankPageData
         )
-
     }
 
     @Test
@@ -124,12 +114,10 @@ class ThankPageViewModelUnitTest {
             (viewModel.thanksPageDataResultLiveData.value as Fail).throwable,
             mockThrowable
         )
-
     }
 
     @Test
     fun failThanksPageResult() {
-
         coEvery {
             thankPageUseCase.getThankPageData(any(), any(), "", "")
         } coAnswers {
@@ -140,9 +128,7 @@ class ThankPageViewModelUnitTest {
             (viewModel.thanksPageDataResultLiveData.value as Fail).throwable,
             mockThrowable
         )
-
     }
-
 
     @Test
     fun successGyroRecommendationLiveData() {
@@ -234,7 +220,6 @@ class ThankPageViewModelUnitTest {
         )
     }
 
-
     @Test
     fun failDefaultAddressLiveData() {
         coEvery {
@@ -247,9 +232,7 @@ class ThankPageViewModelUnitTest {
             (viewModel.defaultAddressLiveData.value as Fail).throwable,
             mockThrowable
         )
-
     }
-
 
     @Test
     fun successTopAdsDataLiveData() {
@@ -298,5 +281,92 @@ class ThankPageViewModelUnitTest {
         }
         viewModel.checkForGoPayActivation(thankPageData)
         Assert.assertEquals(viewModel.gyroResponseLiveData.value, featureEngineData)
+    }
+
+    @Test
+    fun `Feature engine has banner data`() {
+        val expectedTitle = "Biar belanjamu makin #PraktisAbis"
+        val expectedBannerItemSize = 2
+        val thankPageData = mockk<ThanksPageData>(relaxed = true)
+        val validateEngineResponse = ValidateEngineResponse(
+            true,
+            "",
+            "",
+            FeatureEngineData(
+                "",
+                "",
+                arrayListOf(
+                    FeatureEngineItem(
+                        id = 67,
+                        detail = "{\"type\":\"banner\",\"section_title\":\"Biar belanjamu makin #PraktisAbis\",\"banner_data\":\"[{\\\"asset_url\\\": \\\"https://images.tokopedia.net/img/cache/900/QBrNqa/2023/3/3/4f9ffabb-e2cc-4aea-b374-76d534f0f519.png\\\",\\\"url\\\": \\\"https://www.tokopedia.com/tokopedia-cobrand\\\",\\\"applink\\\": \\\"tokopedia://webview?url\u003dhttps://www.tokopedia.com/tokopedia-cobrand\\\"},{\\\"asset_url\\\": \\\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2023/3/17/b3d19a1c-678d-4ec1-8807-0213ea11f76b.jpg\\\",\\\"url\\\": \\\"https://www.tokopedia.com/discovery/serbu-official-store?source\u003dhomepage.slider_banner.0.42009\\\",\\\"applink\\\": \\\"tokopedia://buyer/payment\\\"}]\"}"
+                    )
+                )
+            )
+        )
+
+        // given
+        `check for wallet activation`()
+        coEvery {
+            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData, any(), any())
+        } coAnswers {
+            thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
+        }
+
+        // when
+        viewModel.checkForGoPayActivation(thankPageData)
+
+        // then
+        Assert.assertEquals(viewModel.bannerLiveData.value?.title, expectedTitle)
+        Assert.assertEquals(viewModel.bannerLiveData.value?.items?.size, expectedBannerItemSize)
+    }
+
+    @Test
+    fun `Feature engine has widget order data`() {
+        val thankPageData = mockk<ThanksPageData>(relaxed = true)
+        val gyroVisitable = GyroRecommendationWidgetModel(
+            mockk(relaxed = true),
+            thankPageData,
+            mockk(relaxed = true)
+        )
+        val headlineAdsVisitable = HeadlineAdsWidgetModel(
+            mockk(relaxed = true)
+        )
+        val bannerWidgetModel = BannerWidgetModel()
+        val validateEngineResponse = ValidateEngineResponse(
+            true,
+            "",
+            "",
+            FeatureEngineData(
+                "",
+                "",
+                arrayListOf(
+                    FeatureEngineItem(
+                        id = 67,
+                        detail = "{\"type\":\"config\",\"widget_order\":\"banner, dg, pg, shopads, feature\"}"
+                    )
+                )
+            )
+        )
+
+        // given
+        `check for wallet activation`()
+        coEvery {
+            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData, any(), any())
+        } coAnswers {
+            thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
+        }
+
+        // when
+        viewModel.addBottomContentWidget(bannerWidgetModel)
+        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.addBottomContentWidget(gyroVisitable)
+        viewModel.addBottomContentWidget(headlineAdsVisitable)
+
+        // assert
+        Assert.assertEquals(viewModel.widgetOrder, arrayListOf("banner", "dg", "pg", "shopads", "feature"))
+        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.size, 3)
+        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
+        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
+        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.last(), gyroVisitable)
     }
 }

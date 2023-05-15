@@ -1,0 +1,43 @@
+{
+  "readme": "Feed Content Creation - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "trackerId": "(43251|43254)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "isLoggedInStatus": "(true|false)",
+      "screenName": "/content feed post creation - upload ke short video",
+      "sessionIris":".*",
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "theme": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - ke short video",
+      "eventCategory": "content feed post creation",
+      "eventLabel":"\\d+ - (seller|user)",
+      "trackerId": "(43252|43255)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - oke close bottom sheet",
+      "eventCategory": "content feed post creation",
+      "eventLabel":"\\d+ - (seller|user)",
+      "trackerId": "(43256|43253)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*"
+    }
+  ]
+}
