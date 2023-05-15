@@ -6,8 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.URLUtil
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel

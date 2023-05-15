@@ -24,19 +24,6 @@ class DismissBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     override fun onReceive(context: Context, intent: Intent) {
         val notificationType = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_TYPE, 0)
         val notificationId = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_ID, 0)
-        val transactionId = intent.getStringExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID).orEmpty()
-        val recipientId = intent.getStringExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID).orEmpty()
-        val applinkNotificationModel = ApplinkNotificationModel().apply {
-            setTransactionId(transactionId)
-            toUserId = recipientId
-        }
-
-        NotificationTracker
-            .getInstance(context)
-            .trackDeliveredNotification(
-                applinkNotificationModel,
-                TrackPushNotificationUseCase.STATUS_DISMISSED
-            )
 
         launch {
             try {
