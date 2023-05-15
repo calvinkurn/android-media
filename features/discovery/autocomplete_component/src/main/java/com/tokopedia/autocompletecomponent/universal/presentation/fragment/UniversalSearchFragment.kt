@@ -178,6 +178,9 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
                 updateList(universalSearchState)
                 binding?.universalSearchLoader?.gone()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

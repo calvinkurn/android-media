@@ -109,6 +109,7 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
+    public static final String MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE = "android_enable_always_native_entertainment";
 
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
@@ -248,4 +249,6 @@ public class RemoteConfigKey {
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
+
+    public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
 }

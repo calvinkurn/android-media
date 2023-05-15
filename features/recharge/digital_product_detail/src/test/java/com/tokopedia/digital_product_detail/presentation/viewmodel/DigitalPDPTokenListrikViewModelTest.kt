@@ -13,6 +13,7 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -58,7 +59,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     }
 
     @Test
-    fun `when getting recommendation should run and give success result`() = testCoroutineRule.runBlockingTest {
+    fun `when getting recommendation should run and give success result`() = runTest {
         val response = dataFactory.getRecommendationData()
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
@@ -70,7 +71,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     }
 
     @Test
-    fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
+    fun `when getting recommendation should run and give fail result`() = runTest {
         onGetRecommendation_thenReturn(NullPointerException())
 
         viewModel.getRecommendations(listOf(), listOf(), listOf())
@@ -149,7 +150,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give success result and updated data filter`() = testCoroutineRule.runBlockingTest {
+    fun `when getting catalogInputMultitab should run and give success result and updated data filter`() = runTest {
         val response = dataFactory.getCatalogInputMultiTabData()
         val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
         onGetCatalogInputMultitab_thenReturn(mappedResponse)
@@ -169,7 +170,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give error result`() = testCoroutineRule.runBlockingTest {
+    fun `when getting catalogInputMultitab should run and give error result`() = runTest {
         val errorResponse = MessageErrorException("")
         onGetCatalogInputMultitab_thenReturn(errorResponse)
 
@@ -323,7 +324,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupEmptyValidation()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -337,7 +338,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroup()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -351,7 +352,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroup()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -365,7 +366,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.validateClientNumber(TokenListrikDataFactory.VALID_CLIENT_NUMBER)
             viewModel.cancelValidatorJob()
             verifyValidatorJobIsCancelled()
@@ -388,7 +389,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given layoutType is match & other condition fulfilled when call isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator to make isEligibleToBuy true
             val response = dataFactory.getOperatorSelectGroupEmptyValidation()
             onGetOperatorSelectGroup_thenReturn(response)
@@ -411,7 +412,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given isEligibleToBuy true & other condition fulfilled when isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getOperatorSelectGroupEmptyValidation()
             onGetOperatorSelectGroup_thenReturn(response)
@@ -426,7 +427,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given isEligibleToBuy false & other condition fulfilled when isAutoSelectedProduct should return false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getOperatorSelectGroup()
             onGetOperatorSelectGroup_thenReturn(response)
@@ -442,7 +443,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
 
     @Test
     fun `given selectedGridProduct pos less than 0 & other condition fulfilled when isAutoSelectedProduct should return false`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & empty selectedProduct to make position < 0
             val response = dataFactory.getOperatorSelectGroupEmptyValidation()
             onGetOperatorSelectGroup_thenReturn(response)
