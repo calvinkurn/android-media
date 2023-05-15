@@ -145,8 +145,6 @@ class FeedPostVideoViewHolder(
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
 
             with(binding) {
-
-
                 bindAuthor(data)
                 bindCaption(data)
                 bindProductTag(data)
@@ -363,17 +361,6 @@ class FeedPostVideoViewHolder(
 
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
         binding.playerControl.player = videoPlayer.getExoPlayer()
-        binding.playerFeedVideo.videoSurfaceView?.setOnClickListener {
-//            videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
-//
-//            if (!videoPlayer.getExoPlayer().playWhenReady) {
-//                listener.onPauseVideoPost(
-//                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-//                        element
-//                    )
-//                )
-//            }
-        }
 
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
