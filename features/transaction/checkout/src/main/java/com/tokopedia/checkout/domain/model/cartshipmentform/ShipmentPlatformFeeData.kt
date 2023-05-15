@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShipmentPlatformFeeData(
-        val isEnable: Boolean = false,
-        val errorWording: String = "",
-        val profileCode: String = "",
-        val additionalData: String = ""
+        var isEnable: Boolean = false,
+        var errorWording: String = "",
+        var profileCode: String = "",
+        var additionalData: String = ""
 ) : Parcelable

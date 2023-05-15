@@ -4780,7 +4780,7 @@ class ShipmentFragment :
     }
 
     override fun checkPlatformFee() {
-        if (shipmentPresenter.getShipmentPlatformFeeData()!!.isEnable) {
+        if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentPresenter.getShipmentCostModel().dynamicPlatformFee
             if (shipmentPresenter.getShipmentCostModel().totalPrice > platformFeeModel.minRange
                     && shipmentPresenter.getShipmentCostModel().totalPrice < platformFeeModel.maxRange) {

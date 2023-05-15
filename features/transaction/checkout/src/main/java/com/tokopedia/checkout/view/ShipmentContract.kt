@@ -457,6 +457,6 @@ interface ShipmentContract {
 
         fun getDynamicPaymentFee(paymentFeeCheckoutRequest: PaymentFeeCheckoutRequest?)
 
-        fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData?
+        fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData
     }
 }

@@ -661,6 +661,7 @@ class ShipmentPresenter @Inject constructor(
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
+        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
     }
 
     private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -3730,7 +3731,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData? {
+    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
         return shipmentPlatformFeeData
     }
 
