@@ -4,7 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.FloatTweenSpec
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -244,18 +244,14 @@ private fun Circle(name: String, path: List<PathNode>) = Path(
     pathFillType = PathFillType.EvenOdd
 )
 
-private suspend fun Animatable<Float, AnimationVector1D>.animateTo(
+internal suspend fun Animatable<Float, AnimationVector1D>.animateTo(
     target: Float,
     duration: Int = 0,
     delay: Int = 0,
-    easing: Easing = FastOutSlowInEasing,
-    finish: () -> Unit = {}
+    easing: Easing = FastOutSlowInEasing
 ) = this.animateTo(
     targetValue = target,
-    animationSpec = FloatTweenSpec(duration, delay, easing),
-    block = {
-        finish.invoke()
-    }
+    animationSpec = tween(duration, delay, easing)
 )
 
 private val TokopediaPath by lazy {

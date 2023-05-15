@@ -2,9 +2,6 @@ package com.tokopedia.common_compose.components.loader
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -184,19 +181,6 @@ private fun CircleRightGroup(state: Boolean, isWhite: Boolean) {
         }
     }
 }
-
-private suspend fun Animatable<Float, AnimationVector1D>.animateTo(
-    target: Float,
-    duration: Int = 0,
-    delay: Int = 0
-) = this.animateTo(
-    targetValue = target,
-    animationSpec = tween(
-        durationMillis = duration,
-        easing = FastOutSlowInEasing,
-        delayMillis = delay
-    )
-)
 
 @Composable
 private fun Circle(name: String, color: Color, trimPathStart: Float, trimPathEnd: Float) = Path(
