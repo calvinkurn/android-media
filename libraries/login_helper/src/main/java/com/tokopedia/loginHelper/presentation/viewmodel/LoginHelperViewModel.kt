@@ -257,6 +257,9 @@ class LoginHelperViewModel @Inject constructor(
                     filteredUserList = Success(LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list))
                 }
                 is Fail -> Unit
+                else -> {
+                    // no op
+                }
             }
         }
 

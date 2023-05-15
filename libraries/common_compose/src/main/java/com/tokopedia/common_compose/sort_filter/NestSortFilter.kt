@@ -1,143 +1,217 @@
 package com.tokopedia.common_compose.sort_filter
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
-import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.Color
 import com.tokopedia.common_compose.components.NestChips
-import com.tokopedia.common_compose.components.NestNotification
-import com.tokopedia.common_compose.ui.LocalNestColor
+import com.tokopedia.common_compose.components.NestChipsRight
+import com.tokopedia.common_compose.components.NestChipsSize
+import com.tokopedia.common_compose.components.NestChipsState
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
-import kotlin.math.sign
 
 @Composable
 fun NestSortFilter(
     modifier: Modifier = Modifier,
     size: Size = Size.DEFAULT,
-    items: ArrayList<SortFilter>,
+    items: List<SortFilter>,
     showClearFilterIcon: Boolean,
+    onItemClicked: (SortFilter) -> Unit,
     onClearFilter: () -> Unit
 ) {
     val chipSize = when (size) {
-        Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
-        Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
     }
     Row(modifier = modifier) {
-        if (showClearFilterIcon) PrefixFilterItem(
-            modifier = Modifier.padding(end = 12.dp),
-            size = size,
-            painterId = R.drawable.iconunify_close,
-            onClick = onClearFilter
-        )
+        val closeVisible by remember(items) {
+            derivedStateOf { showClearFilterIcon && items.any { it.isSelected } }
+        }
+        AnimatedVisibility(closeVisible) {
+            PrefixFilterItem(
+                modifier = Modifier.padding(end = 4.dp),
+                size = size,
+                iconPainter = painterResource(id = R.drawable.iconunify_close),
+                onClick = onClearFilter
+            )
+        }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(items) {
                 NestChips(
                     text = it.title,
-                    state = if (it.isSelected) NestChips.State.Selected else NestChips.State.Default,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
                     size = chipSize,
-                    rightIcon = NestChips.RightIcon.Chevron {},
-                    onClick = it.onClick
+                    rightIcon = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        NestChipsRight.None
+                    },
+                    onClick = {
+                        onItemClicked(it)
+                        it.onClick()
+                    }
                 )
             }
         }
     }
 }
 
+@Composable
+private fun LazyListState.horizontalOffset(): Int {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex == firstVisibleItemIndex && firstVisibleItemIndex == 0) {
+                firstVisibleItemScrollOffset - previousScrollOffset
+            } else {
+                if (firstVisibleItemIndex > 0) {
+                    0
+                } else if (firstVisibleItemIndex < previousIndex) {
+                    -1 * previousScrollOffset
+                } else {
+                    firstVisibleItemScrollOffset
+                }
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+
+@Composable
+fun NestSortFilterAdvanced(
+    modifier: Modifier = Modifier,
+    size: Size = Size.DEFAULT,
+    items: List<SortFilter>,
+    onPrefixClicked: () -> Unit = {},
+    onItemClicked: (SortFilter) -> Unit
+) {
+    val chipSize = when (size) {
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
+    }
+    val ld = LocalDensity.current
+    val selectedSize = items.filter { it.isSelected }.size
+    val rowState = rememberLazyListState()
+    val offset = rowState.horizontalOffset()
+    var currentTextWidth by remember { mutableStateOf<Dp?>(null) }
+    var firstWidth by remember { mutableStateOf<Dp?>(null) }
+
+    LaunchedEffect(key1 = offset, block = {
+        if (currentTextWidth == null) return@LaunchedEffect
+        val diffInDp = with(ld) { offset.toDp() }.times(1.7f)
+        currentTextWidth = (currentTextWidth!! - diffInDp).coerceIn(0.dp, firstWidth)
+    })
+
+    val paddingEnd = if (currentTextWidth == 0.dp) 0.dp else 4.dp
+    Row(modifier = modifier) {
+        PrefixFilterItem(
+            modifier = Modifier.padding(end = paddingEnd),
+            size = size,
+            text = "Filter",
+            textWidth = currentTextWidth,
+            textWidthChange = {
+                currentTextWidth = with(ld) { it.toDp() }
+                if (firstWidth == null) firstWidth = currentTextWidth
+            },
+            selectedSize = selectedSize,
+            onClick = onPrefixClicked
+        )
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            state = rowState
+        ) {
+            items(items) {
+                NestChips(
+                    text = it.title,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
+                    size = chipSize,
+                    rightIcon = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        NestChipsRight.None
+                    },
+                    onClick = {
+                        onItemClicked(it)
+                        it.onClick()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Stable
 data class SortFilter(
     val title: String,
     val isSelected: Boolean,
     val showChevron: Boolean = false,
-    val onClick: () -> Unit
+    val onClick: () -> Unit = {}
 )
 
-enum class Size { DEFAULT, LARGE }
-
-@Composable
-private fun PrefixFilterItem(
-    modifier: Modifier = Modifier,
-    size: Size = Size.DEFAULT,
-    selectedSize: Int = 0,
-    painterId: Int = R.drawable.iconunify_sort_filter,
-    text: String? = null,
-    onClick: () -> Unit = {}
-) {
-    // Implementation are specifically to cater SELECTED and NORMAL type chips only
-    val backgroundColor = NestTheme.colors.NN._0
-    val borderColor = NestTheme.colors.NN._200
-    val height = when (size) {
-        Size.DEFAULT -> 32.dp
-        Size.LARGE -> 48.dp
-    }
-    Surface(color = backgroundColor,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, borderColor),
-        modifier = modifier
-            .height(height)
-            .clickable { onClick() }) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (selectedSize > 0) {
-                NestNotification(text = selectedSize.toString(), colorType = Color.SECONDARY)
-            } else {
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    painter = painterResource(id = painterId),
-                    contentDescription = "Clear Filter Icon",
-                    tint = LocalNestColor.current.NN._500
-                )
-            }
-            if (text != null) {
-                Text(modifier = Modifier.padding(start = 4.dp), text = text)
-            }
-        }
-    }
-}
-
-@Preview(name = "Prefix Sortfilter")
-@Preview(name = "Prefix Sortfilter (Dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PrefixSortFilterPreview() {
-    NestTheme {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            PrefixFilterItem(text = "Filter")
-            PrefixFilterItem(text = "Filter", selectedSize = 3)
-            PrefixFilterItem(painterId = R.drawable.iconunify_close)
-        }
-    }
-}
+enum class Size(val prefixHeight: Dp) { DEFAULT(32.dp), LARGE(48.dp) }
 
 @Preview(name = "Sort Filter")
 @Preview(name = "Sort Filter (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun NestSortFilterPreview() {
-    val items = arrayListOf(
-        SortFilter("Terrible", true, showChevron = true, onClick = {}),
-        SortFilter("Bad", false, onClick = {}),
-        SortFilter("Medium", false, onClick = {}),
-        SortFilter("Good", false, onClick = {}),
-        SortFilter("Impressive", false, onClick = {}),
-    )
+private fun NestSortFilterPreview() {
+    var items by remember {
+        mutableStateOf(
+            listOf(
+                SortFilter("Terrible", true, showChevron = true),
+                SortFilter("Bad", false),
+                SortFilter("Medium", false),
+                SortFilter("Good", false),
+                SortFilter("Impressive", false)
+            )
+        )
+    }
+    var advItems by remember {
+        mutableStateOf(
+            listOf(
+                SortFilter("Micro", false),
+                SortFilter("Tiny", false),
+                SortFilter("Small", true),
+                SortFilter("Medium", false),
+                SortFilter("Big", false, showChevron = true),
+                SortFilter("Enormous", false),
+                SortFilter("Giant", false)
+            )
+        )
+    }
+
     var size by remember { mutableStateOf(Size.DEFAULT) }
     NestTheme {
         Surface {
@@ -148,17 +222,39 @@ fun NestSortFilterPreview() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = size == Size.DEFAULT,
-                        onCheckedChange = { size = Size.DEFAULT })
+                        onCheckedChange = { size = Size.DEFAULT }
+                    )
                     Text("S", fontWeight = FontWeight.Bold)
                     Checkbox(checked = size == Size.LARGE, onCheckedChange = { size = Size.LARGE })
                     Text("L", fontWeight = FontWeight.Bold)
                 }
-                Text(text = "Quick Filter")
+                NestTypography(text = "Quick Filter", textStyle = NestTheme.typography.heading5)
                 NestSortFilter(
                     size = size,
                     items = items,
                     showClearFilterIcon = true,
-                    onClearFilter = {})
+                    onItemClicked = { sf ->
+                        items = items.map {
+                            if (it == sf) {
+                                it.copy(isSelected = it.isSelected.not())
+                            } else {
+                                it
+                            }
+                        }
+                    },
+                    onClearFilter = { items = items.map { it.copy(isSelected = false) } }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                NestTypography(text = "Advanced Filter", textStyle = NestTheme.typography.heading5)
+                NestSortFilterAdvanced(items = advItems, size = size, onItemClicked = { sf ->
+                    advItems = advItems.map {
+                        if (it == sf) {
+                            it.copy(isSelected = it.isSelected.not())
+                        } else {
+                            it
+                        }
+                    }
+                })
             }
         }
     }

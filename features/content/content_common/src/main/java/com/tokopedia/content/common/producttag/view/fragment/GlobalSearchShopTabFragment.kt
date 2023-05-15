@@ -194,6 +194,9 @@ class GlobalSearchShopTabFragment @Inject constructor(
 
                         sortFilterBottomSheet.setResultCountText(text)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.ui.HomeMockValueHelper
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.model.ReminderEnum
@@ -58,6 +59,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark(context)
+            HomeMockValueHelper.setupAbTestRemoteConfig()
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
     }

@@ -32,6 +32,8 @@ object TrackingOtpConstant{
     object Event{
         const val EVENT_CLICK_ACTIVATION = "clickActivation"
         const val EVENT_CLICK_OTP = "clickOtp"
+        /* event for default otp method */
+        const val EVENT_CLICK_ACCOUNT = "clickAccount"
         const val EVENT_CLICK_LOGIN = "clickLogin"
         const val EVENT_CLICK_REGISTER = "clickRegister"
         const val EVENT_CLICK_BACK = "clickBack"
@@ -44,6 +46,8 @@ object TrackingOtpConstant{
     object Category{
         const val CATEGORY_ACTIVATION_PAGE = "activation page"
         const val CATEGORY_OTP_PAGE = "otp page"
+        /* category for default otp method */
+        const val CATEGORY_MAIN_OTP_PAGE = "main otp page"
         const val CATEGORY_CHOOSE_OTP_PAGE = "choose otp page"
         const val CATEGORY_INPUT_OTP_PAGE = "input otp page"
         const val CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP = "register with phone number otp"
@@ -109,6 +113,7 @@ object TrackingOtpConstant{
         const val ACION_CLICK_SILENT_VERIF = "click on masuk dengan silent verif"
         const val ACION_CLICK_TRY_AGAIN = "click on coba lagi"
         const val ACION_CLICK_CHOOSE_OTHER_METHOD = "click gunakan metode lain"
+        const val ACTION_CLICK_USE_OTP_SMS = "click kirim kode lewat sms"
 
         /*InactivePhone*/
         const val ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER = "click ajukan perubahan nomor hp"

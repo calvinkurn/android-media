@@ -23,6 +23,10 @@ sealed class PlayProductUiModel {
         val isPinned: Boolean,
         val isRilisanSpesial: Boolean,
         val buttons: List<ProductButtonUiModel>,
+        val number: String,
+        val isNumerationShown: Boolean,
+        val rating: String,
+        val soldQuantity: String,
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
@@ -44,9 +48,19 @@ sealed class PlayProductUiModel {
                     isPinned = false,
                     isRilisanSpesial = false,
                     buttons = emptyList(),
+                    number = "",
+                    isNumerationShown = false,
+                    rating = "",
+                    soldQuantity = "",
                 )
         }
     }
 
     object Placeholder : PlayProductUiModel()
 }
+
+val PlayProductUiModel.Product.isShowRating: Boolean
+    get() = this.rating.isNotBlank()
+
+val PlayProductUiModel.Product.isShowSoldQuantity: Boolean
+    get() = this.soldQuantity.isNotBlank()
