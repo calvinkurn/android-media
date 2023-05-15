@@ -26,7 +26,7 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.SMALL_PLAY_WIDGET,
     TokoNowLayoutType.COUPON_CLAIM,
     TokoNowLayoutType.CHIP_CAROUSEL,
-    TokoNowLayoutType.PRODUCT_BUNDLING_RECOM
+    TokoNowLayoutType.BUNDLING_WIDGET
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -47,6 +47,6 @@ annotation class TokoNowLayoutType {
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
         const val COUPON_CLAIM = "coupon_claim"
         const val CHIP_CAROUSEL = "chip_carousel"
-        const val PRODUCT_BUNDLING_RECOM = "bundling_widget"
+        const val BUNDLING_WIDGET = "bundling_widget"
     }
 }

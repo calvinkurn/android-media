@@ -140,7 +140,7 @@ class HomeAdapterTypeFactory(
     private val claimCouponWidgetItemListener: HomeClaimCouponWidgetItemListener? = null,
     private val claimCouponWidgetItemTracker: HomeClaimCouponWidgetItemTracker? = null,
     private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null,
-    private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null
+    private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null,
     private val productBundleWidgetListener: ProductBundleWidgetListener? = null,
     private val tokoNowBundleWidgetListener: TokoNowBundleWidgetListener? = null
 ):  BaseAdapterTypeFactory(),
