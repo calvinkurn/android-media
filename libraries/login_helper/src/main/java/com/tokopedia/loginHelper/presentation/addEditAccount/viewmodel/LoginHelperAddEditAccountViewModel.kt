@@ -43,6 +43,7 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                 handleAddUserToLocalDB(event.email, event.password)
             }
             is LoginHelperAddEditAccountEvent.AddUserToRemoteDB -> {
+                handleAddUserToRemoteDB(event.email, event.password, event.tribe)
             }
             is LoginHelperAddEditAccountEvent.ChangeEnvType -> {
                 changeEnvType(event.envType)
@@ -67,6 +68,9 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
         Log.d("FATAL", "handleAddUserToLocalDB: $savedData")
         savedData?.userDataUiModel?.add(UserDataUiModel(encryptedEmail, encryptedPassword, ""))
         saveData(cacheManager, savedData)
+    }
+
+    private fun handleAddUserToRemoteDB(email: String, password: String, tribe: String) {
     }
 
     private fun getLocalData(cacheManager: PersistentCacheManager): LocalUsersDataUiModel? {

@@ -1,10 +1,12 @@
 package com.tokopedia.loginHelper.presentation.addEditAccount.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -86,7 +88,6 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                     addGroup.show()
                     btnSaveToDb.isEnabled = false
                     setUpCheckBoxListener()
-                    setUpButtonClickListeners()
                     saveToLocalCoachmark.showReplyBubbleOnBoarding(btnSaveToLocal, context)
                 }
                 PageMode.EDIT -> {
@@ -94,13 +95,14 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                         context?.resources?.getString(R.string.login_helper_btn_edit_account)
                             .toBlankOrString()
                     )
-
+                    btnSaveToLocal.hide()
+                    btnSaveToDb.show()
                     addGroup.hide()
                     setUpTextFields()
                 }
             }
         }
-
+        binding?.setUpButtonClickListeners()
         observeUiAction()
     }
 
@@ -131,6 +133,8 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 goToAccountSettingsScreen()
             }
             is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
+                binding?.btnSaveToLocal?.isLoading = false
+                binding?.btnSaveToDb?.isLoading = false
                 showToastGoToHomePage()
             }
         }
@@ -167,11 +171,25 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
     private fun FragmentLoginHelperAddEditAccountBinding.setUpButtonClickListeners() {
         btnSaveToDb.setOnClickListener {
+            hideKeyboard()
+            val email = binding?.etUsername?.editText?.text.toString()
+            val password = binding?.etPassword?.editText?.text.toString()
+            val tribe = binding?.etTribe?.editText?.text.toString()
+            binding?.btnSaveToDb?.isLoading = true
+            viewModel.processEvent(
+                LoginHelperAddEditAccountEvent.AddUserToRemoteDB(
+                    email,
+                    password,
+                    tribe
+                )
+            )
         }
 
         btnSaveToLocal.setOnClickListener {
+            hideKeyboard()
             val email = binding?.etUsername?.editText?.text.toString()
             val password = binding?.etPassword?.editText?.text.toString()
+            binding?.btnSaveToLocal?.isLoading = true
             viewModel.processEvent(LoginHelperAddEditAccountEvent.AddUserToLocalDB(email, password))
         }
     }
@@ -180,6 +198,11 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         etUsername.editText.setText(emailText)
         etPassword.editText.setText(passwordText)
         etTribe.editText.setText(tribeText)
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding?.root?.windowToken, 0)
     }
 
     override fun getScreenName(): String {
@@ -203,7 +226,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(pageMode: PageMode, email: String? , password: String? , tribe: String?): LoginHelperAddEditAccountFragment {
+        fun newInstance(pageMode: PageMode, email: String?, password: String?, tribe: String?): LoginHelperAddEditAccountFragment {
             return LoginHelperAddEditAccountFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstants.LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE, pageMode)
