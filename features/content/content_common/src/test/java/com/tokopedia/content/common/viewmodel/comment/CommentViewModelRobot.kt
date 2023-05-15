@@ -69,19 +69,40 @@ class CommentViewModelRobot(
         return comments
     }
 
-    fun recordQuery(fn: suspend CommentViewModelRobot.() -> Unit): CommentParam {
+    fun recordQueries(fn: suspend CommentViewModelRobot.() -> Unit): List<CommentParam> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var queries: CommentParam
+        val queries = mutableListOf<CommentParam>()
         scope.launch {
             val query = vm.getPrivateField<MutableStateFlow<CommentParam>>("_query")
             query.collect {
-                queries = it
+                queries.add(it)
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return queries
+    }
+
+    fun recordQueryAndComment(fn: suspend CommentViewModelRobot.() -> Unit): Pair<CommentParam, CommentWidgetUiModel> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var query: CommentParam
+        lateinit var comment: CommentWidgetUiModel
+        scope.launch {
+            val q = vm.getPrivateField<MutableStateFlow<CommentParam>>("_query")
+            q.collect {
+                query = it
+            }
+        }
+        scope.launch {
+            vm.comments.collect {
+                comment = it
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return Pair(query, comment)
     }
 
     fun setLogin(isLoggedIn: Boolean) {

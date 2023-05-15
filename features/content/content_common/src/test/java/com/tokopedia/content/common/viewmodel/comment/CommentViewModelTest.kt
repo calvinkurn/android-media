@@ -9,6 +9,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentParam
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -449,7 +450,6 @@ class CommentViewModelTest {
             val event = it.recordEvent {
                 submitAction(CommentAction.ReplyComment("www.tokopedia.com beli disni aj", CommentType.Child("2")))
             }
-            println("hello $event")
             event.first().assertType<CommentEvent.HideKeyboard> {  }
             event.last().assertType<CommentEvent.ShowErrorToaster> {  }
         }
@@ -487,10 +487,11 @@ class CommentViewModelTest {
         }
 
         robot.use {
-            val q = it.recordQuery {}
-            q.commentType.assertEqualTo(expected.commentType)
-            q.lastParentCursor.assertEqualTo(expected.cursor)
-            q.needToRefresh.assertFalse() // after getting data make sure not to refresh unless we force to refresh / want to fetch
+            val q = it.recordQueries {}
+            q.size.assertEqualTo(1) //only called once
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.cursor)
+            q.last().needToRefresh.assertFalse() // after getting data make sure not to refresh unless we force to refresh / want to fetch
         }
     }
 
@@ -504,10 +505,11 @@ class CommentViewModelTest {
         }
 
         robot.use {
-            val q = it.recordQuery {}
-            q.commentType.assertEqualTo(expected.commentType)
-            q.lastParentCursor.assertEqualTo(expected.cursor)
-            q.needToRefresh.assertFalse()
+            val q = it.recordQueries {}
+            q.size.assertEqualTo(1) //only called once
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.cursor)
+            q.last().needToRefresh.assertFalse()
         }
     }
 
@@ -525,13 +527,13 @@ class CommentViewModelTest {
         }
 
         robot.use {
-            val q = it.recordQuery {
+            val q = it.recordQueries {
                 submitAction(CommentAction.DismissComment)
             }
-            q.commentType.assertEqualTo(expected.commentType)
-            q.lastParentCursor.assertEqualTo(expected.lastParentCursor)
-            q.lastChildCursor.assertEqualTo(expected.lastChildCursor)
-            q.needToRefresh.assertFalse() //dont refresh
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
+            q.last().lastChildCursor.assertEqualTo(expected.lastChildCursor)
+            q.last().needToRefresh.assertFalse() //dont refresh
 
             q.assertNotEqualTo(initialParam)
         }
@@ -547,13 +549,120 @@ class CommentViewModelTest {
         }
 
         robot.use {
-            val q = it.recordQuery {
+            val q = it.recordQueries {
                 submitAction(CommentAction.RefreshComment)
             }
-            q.commentType.assertEqualTo(expected.commentType)
-            q.lastParentCursor.assertEqualTo(expected.lastParentCursor)
-            q.lastChildCursor.assertEqualTo(expected.lastChildCursor)
-            q.needToRefresh.assertFalse() //after get comments
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
+            q.last().lastChildCursor.assertEqualTo(expected.lastChildCursor)
+            q.last().needToRefresh.assertFalse() //after get comments
+        }
+    }
+
+    @Test
+    fun `load next page from parent - success` () {
+        val expected = helper.buildCommentWidget(cursor = "KgBDVYB8", commentType = CommentType.Parent)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.lastParentCursor.assertEqualTo(expected.cursor)
+            result.first.lastChildCursor.assertNotEqualTo(expected.cursor)
+            result.first.needToRefresh.assertFalse()
+            result.first.commentType.assertEqualTo(expected.commentType)
+
+            result.second.assertEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `load next page from parent - failed` () {
+        val exception = MessageErrorException()
+        coEvery { mockRepo.getComments(any(), any(), any()) } throws exception
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Fail(exception))
+        }
+    }
+
+    @Test
+    fun `load next page from parent - content same with prev - use current list` () {
+        val expected = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                )
+            )
+        )
+
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Success)
+            result.second.list.size.assertEqualTo(expected.list.size)
+            result.second.list.assertEqualTo(expected.list)
+        }
+    }
+
+    @Test
+    fun `load next page from parent - content not same with prev - merge two list` () {
+        val expected = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                )
+            )
+        )
+
+        val new = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "11"), helper.buildItemComment(id = "12"), helper.buildItemComment(id = "13")
+                )
+            )
+        )
+
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                coEvery { mockRepo.getComments(any(), any(), any()) } returns new
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Success)
+            result.second.list.size.assertEqualTo(expected.list.size + new.list.size)
+            result.second.list.assertEqualTo(expected.list + new.list)
         }
     }
 }
