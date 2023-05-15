@@ -33,6 +33,8 @@ import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
 
+import androidx.core.app.NotificationCompat;
+
 /**
  * @author ricoharisin .
  */
@@ -40,6 +42,8 @@ import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
 public abstract class BaseNotificationFactory {
 
     protected Context context;
+
+    protected NotificationCompat.InboxStyle inboxStyle;
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
@@ -142,7 +146,7 @@ public abstract class BaseNotificationFactory {
     }
 
     protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
-        Intent intent = new Intent(context, DismissBroadcastReceiver.class);
+        Intent intent = new Intent(context.getApplicationContext(), DismissBroadcastReceiver.class);
         intent.setAction(Constant.NotificationReceiver.ACTION_ON_NOTIFICATION_DISMISS);
 
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
@@ -244,6 +248,23 @@ public abstract class BaseNotificationFactory {
                     getRingtoneUri(),
                     getVibratePattern()
             );
+        }
+    }
+
+    public void createNotificationInboxStyle() {
+        if (inboxStyle == null) {
+            inboxStyle = new NotificationCompat.InboxStyle();
+        }
+    }
+
+    protected static String generateSummaryText(int notificationType) {
+        switch (notificationType) {
+            case Constant.NotificationId.TALK:
+                return "Tokopedia - Diskusi";
+            case Constant.NotificationId.CHAT:
+                return "Tokopedia - Chat";
+            default:
+                return "Tokopedia - Notifikasi";
         }
     }
 

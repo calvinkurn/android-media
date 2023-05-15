@@ -5,11 +5,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.bubbles.factory.BubblesFactory;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.pushnotif.data.db.model.HistoryNotification;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.util.BubbleChatNotificationHelper;
 
 import java.util.List;
 
@@ -23,9 +25,13 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
     private List<HistoryNotification> listHistoryNotification;
 
+    private BubblesFactory bubblesFactory;
+    private BubbleChatNotificationHelper bubbleChatNotificationHelper;
+
 
     public SummaryNotificationFactory(Context context) {
         super(context);
+        createNotificationInboxStyle();
     }
 
     @Override
@@ -35,8 +41,6 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(getTitleSummary(notificationType));
         builder.setSmallIcon(getDrawableIcon());
-
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         HistoryRepository.storeNotification(
                 context,
@@ -74,17 +78,6 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         }
 
         return builder.build();
-    }
-
-    private static String generateSummaryText(int notificationType) {
-        switch (notificationType) {
-            case Constant.NotificationId.TALK:
-                return "Tokopedia - Diskusi";
-            case Constant.NotificationId.CHAT:
-                return "Tokopedia - Chat";
-            default:
-                return "Tokopedia - Notifikasi";
-        }
     }
 
     private String getGenericApplinks(int notficationType) {
