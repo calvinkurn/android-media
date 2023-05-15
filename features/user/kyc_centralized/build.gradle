@@ -29,11 +29,12 @@ android {
     }
 }
 dependencies {
-    implementation("com.gojek.android:OneKycSdk:0.1.35Pre27@aar")
+    implementation("com.gojek.android:OneKycSdk:0.1.37Pre19@aar")
+    implementation("com.gojek.android:kyc-plus-theme:0.1.37Pre19@aar")
     implementation("com.gojek.android:clickstream:2.0.1-alpha"){
         exclude(group:"com.google.protobuf")
     }
-    implementation("com.gojek.clickstream:proto-consumer:4.210.1")
+    implementation("com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1")
     implementation("com.gojek.clickstream:proto-sdk:1.18.2")
 
     implementation projectOrAar(rootProject.ext.features.medialoader)

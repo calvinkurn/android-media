@@ -103,7 +103,6 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             } else {
-                oneKycSdk.init()
                 oneKycSdk.launchKyc(launchSource = KycSdkPartner.TOKOPEDIA_CORE.name, partner = KycSdkPartner.TOKOPEDIA_CORE, activity = requireActivity())
             }
         }
