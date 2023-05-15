@@ -243,7 +243,7 @@ private val CirclePath by lazy {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NestCircularLoaderPreview() {
+private fun NestCircularLoaderPreview() {
     NestCircularLoader(
         modifier = Modifier.size(50.dp),
         isWhite = false

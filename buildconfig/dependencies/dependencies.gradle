@@ -453,7 +453,6 @@ ext {
             composeActivity     : "androidx.activity:activity-compose:$composeActivity",
             composeConstraint   : "androidx.constraintlayout:constraintlayout-compose:$composeConstraint",
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
-            composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
-            animationGraphic    : "androidx.compose.animation:animation-graphics:$composeVersion"
+            composeCoil         : "io.coil-kt:coil-compose:$composeCoil"
     ]
 }

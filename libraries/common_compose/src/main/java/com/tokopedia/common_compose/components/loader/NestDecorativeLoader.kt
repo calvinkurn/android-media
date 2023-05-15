@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
  **/
 
 @Composable
-fun NestDecorativeLoader(
+internal fun NestDecorativeLoader(
     modifier: Modifier = Modifier,
     isWhite: Boolean = false,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
@@ -107,7 +107,7 @@ fun NestDecorativeLoader(
 }
 
 @Composable
-fun CircleLeftGroup(state: Boolean) {
+private fun CircleLeftGroup(state: Boolean) {
     val animatedScaleX = remember { Animatable(initialValue = 1f) }
     val animatedScaleY = remember { Animatable(initialValue = 1f) }
     val animatedTranslateX = remember { Animatable(initialValue = 0f) }
@@ -284,7 +284,7 @@ private val CircleCenterPath by lazy {
 
 @Preview
 @Composable
-fun NestDecorationLoader() {
+private fun NestDecorationLoader() {
     NestDecorativeLoader(
         modifier = Modifier.size(50.dp),
         isWhite = false

@@ -122,7 +122,7 @@ private fun NestShimmerLayout(
 
 @Preview
 @Composable
-fun ShimmerPreview() {
+private fun ShimmerPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize()

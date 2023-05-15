@@ -56,7 +56,7 @@ private fun Modifier.getTypeSize(size: NestLoaderSize) = this.then(
 
 @Preview
 @Composable
-fun NestLoaderPreview() {
+private fun NestLoaderPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,6 +74,34 @@ fun NestLoaderPreview() {
 
         NestLoader(variant = NestLoaderType.Decorative(size = NestLoaderSize.Small, isWhite = true))
 
-        ShimmerPreview()
+        NestLoader(
+            modifier = Modifier
+                .size(100.dp, 50.dp),
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect())
+        )
+
+        NestLoader(
+            modifier = Modifier
+                .size(100.dp, 50.dp),
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(rounded = 8.dp))
+        )
+
+        NestLoader(
+            modifier = Modifier
+                .size(100.dp, 50.dp),
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
+        )
+
+        NestLoader(
+            modifier = Modifier
+                .size(100.dp, 16.dp),
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
+        )
+
+        NestLoader(
+            modifier = Modifier
+                .size(100.dp),
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Circle)
+        )
     }
 }
