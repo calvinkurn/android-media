@@ -335,16 +335,20 @@ class FeedPostViewModel @Inject constructor(
 
     fun processSuspendedLike() {
         _suspendedLikeData.value?.let {
-            likeContent(it.contentId, it.rowNumber)
+            likeContent(it.contentId, it.rowNumber, shouldLike = true)
         }
     }
 
     fun likeContent(contentId: String, rowNumber: Int) {
+        val likeStatus = getIsLikedStatus(contentId) ?: return
+        likeContent(contentId, rowNumber, shouldLike = !likeStatus)
+    }
+
+    private fun likeContent(contentId: String, rowNumber: Int, shouldLike: Boolean) {
         _likeKolResp.value = FeedResult.Loading
         viewModelScope.launch {
-            val likeStatus = getIsLikedStatus(contentId) ?: return@launch
-            val action = if (!likeStatus) FeedLikeAction.Like else FeedLikeAction.UnLike
-            updateLikeStatus(contentId, !likeStatus)
+            val action = if (shouldLike) FeedLikeAction.Like else FeedLikeAction.UnLike
+            updateLikeStatus(contentId, shouldLike)
 
             try {
                 likeContentUseCase.setRequestParams(
