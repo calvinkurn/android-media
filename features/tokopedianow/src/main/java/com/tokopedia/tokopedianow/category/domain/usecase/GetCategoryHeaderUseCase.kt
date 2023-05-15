@@ -1,19 +1,19 @@
 package com.tokopedia.tokopedianow.category.domain.usecase
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.category.domain.query.CategoryDetail
-import com.tokopedia.tokopedianow.category.domain.response.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
+import com.tokopedia.tokopedianow.category.domain.response.CategoryHeaderResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.query.GetCategoryListQuery
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GetMainCategoryFirstPageUseCase(
+class GetCategoryHeaderUseCase(
     private val graphqlUseCase: MultiRequestGraphqlUseCase,
-): UseCase<CategoryModel>() {
+): UseCase<CategoryHeaderResponse>() {
 
     internal companion object {
         private const val PARAM_CATEGORY_ID = "categoryID"
@@ -24,32 +24,40 @@ class GetMainCategoryFirstPageUseCase(
         private const val CATEGORY_LEVEL_DEPTH = 2
     }
 
-    override suspend fun executeOnBackground(): CategoryModel {
+    override suspend fun executeOnBackground(): CategoryHeaderResponse {
         val categoryId = useCaseRequestParams.parameters[PARAM_CATEGORY_ID] ?: String.EMPTY
         val warehouseId = useCaseRequestParams.parameters[PARAM_WAREHOUSE_ID] ?: String.EMPTY
 
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createCategoryDetailRequest(categoryId, warehouseId))
-        graphqlUseCase.addRequest(createCategoryNavigationRequest(warehouseId))
-        val graphqlResponse = graphqlUseCase.executeOnBackground()
+        graphqlUseCase.addRequest(
+            createCategoryDetailRequest(
+                categoryId = categoryId,
+                warehouseId = warehouseId
+            )
+        )
+        graphqlUseCase.addRequest(
+            createCategoryNavigationRequest(
+                warehouseId = warehouseId
+            )
+        )
 
-        return CategoryModel(
-            categoryDetail = getCategoryDetail(graphqlResponse),
-            categoryNavigation = getCategoryNavigation(graphqlResponse)
+        val response = graphqlUseCase.executeOnBackground()
+        val categoryDetail = getCategoryDetail(response)
+        val categoryNavigation = getCategoryNavigation(response)
+
+        return CategoryHeaderResponse(
+            categoryDetail = categoryDetail,
+            categoryNavigation = categoryNavigation
         )
     }
 
     private fun getCategoryDetail(
         graphqlResponse: GraphqlResponse
-    ): CategoryDetailResponse.CategoryDetail {
-        return graphqlResponse.getData<CategoryDetailResponse>(CategoryDetailResponse::class.java)?.categoryDetail ?: CategoryDetailResponse.CategoryDetail()
-    }
+    ): CategoryDetailResponse.CategoryDetail = graphqlResponse.getData<CategoryDetailResponse>(CategoryDetailResponse::class.java)?.categoryDetail ?: CategoryDetailResponse.CategoryDetail()
 
     private fun getCategoryNavigation(
         graphqlResponse: GraphqlResponse
-    ): GetCategoryListResponse.CategoryListResponse {
-        return graphqlResponse.getData<GetCategoryListResponse>(GetCategoryListResponse::class.java)?.response ?: GetCategoryListResponse.CategoryListResponse()
-    }
+    ): GetCategoryListResponse.CategoryListResponse = graphqlResponse.getData<GetCategoryListResponse>(GetCategoryListResponse::class.java)?.response ?: GetCategoryListResponse.CategoryListResponse()
 
     private fun createCategoryDetailRequest(
         categoryId: Any,
@@ -75,8 +83,14 @@ class GetMainCategoryFirstPageUseCase(
         )
     )
 
-    fun setParams(categoryId: String, warehouseId: String) {
-        useCaseRequestParams.parameters[PARAM_CATEGORY_ID] = categoryId
-        useCaseRequestParams.parameters[PARAM_WAREHOUSE_ID] = warehouseId
+    fun setParams(
+        categoryId: String,
+        warehouseId: String
+    ) {
+        useCaseRequestParams.apply {
+            parameters[PARAM_CATEGORY_ID] = categoryId
+            parameters[PARAM_WAREHOUSE_ID] = warehouseId
+        }
     }
+
 }

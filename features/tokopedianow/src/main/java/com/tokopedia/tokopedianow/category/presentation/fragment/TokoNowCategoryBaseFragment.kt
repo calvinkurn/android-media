@@ -14,7 +14,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.searchbar.data.HintData
@@ -24,12 +23,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
-import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapterTypeFactory
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
-import com.tokopedia.tokopedianow.common.decoration.ChipListDecoration
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
 abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
 
@@ -37,8 +32,9 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
         const val TOOLBAR_PAGE_NAME = "TokoNow Category"
     }
 
+    abstract val adapter: CategoryAdapter
+
     protected var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
-    protected var adapter by autoClearedNullable<CategoryAdapter>()
 
     protected val navToolbarHeight: Int
         get() {
@@ -194,7 +190,5 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context)
         }
     }
-
-
 
 }

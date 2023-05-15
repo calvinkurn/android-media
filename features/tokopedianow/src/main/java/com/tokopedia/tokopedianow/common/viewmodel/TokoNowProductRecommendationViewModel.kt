@@ -77,11 +77,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     val updateToolbarNotification: LiveData<Boolean>
         get() = _updateToolbarNotification
 
-    val isLogin: Boolean
-        get() = userSession.isLoggedIn
-    val userId: String
-        get() = userSession.userId
-
     private fun updateProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartSimplifiedData.miniCartItems.values.forEach { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {

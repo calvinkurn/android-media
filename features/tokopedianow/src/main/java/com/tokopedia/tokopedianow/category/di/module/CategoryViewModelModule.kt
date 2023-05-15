@@ -27,10 +27,4 @@ abstract class CategoryViewModelModule {
     @IntoMap
     @ViewModelKey(TokoNowCategoryMainViewModel::class)
     internal abstract fun categoryMainViewModel(viewModel: TokoNowCategoryMainViewModel): ViewModel
-
-    @CategoryScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(TokoNowCategoryBaseViewModel::class)
-    internal abstract fun categoryBaseViewModel(viewModel: TokoNowCategoryBaseViewModel): ViewModel
 }

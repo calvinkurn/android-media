@@ -69,6 +69,12 @@ open class BaseTokoNowViewModel(
         setMiniCartData(miniCartData)
     }
 
+    fun isLoggedIn() = userSession.isLoggedIn
+
+    fun getUserId() = userSession.userId
+
+    fun getDeviceId() = userSession.deviceId
+
     fun onCartQuantityChanged(
         productId: String,
         shopId: String,
@@ -132,6 +138,8 @@ open class BaseTokoNowViewModel(
     }
 
     fun getShopId(): Long = addressData.getShopId()
+
+    fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
     fun updateAddressData() = addressData.updateLocalData()
 

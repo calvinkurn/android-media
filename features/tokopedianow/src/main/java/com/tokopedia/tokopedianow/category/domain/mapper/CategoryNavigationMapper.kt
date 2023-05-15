@@ -1,17 +1,17 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.tokopedianow.category.domain.response.CategoryModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 
-object CategoryNavigationMapper {
-    fun CategoryModel.mapToCategoryNavigation(
+internal object CategoryNavigationMapper {
+    fun CategoryListResponse.mapToCategoryNavigation(
         categoryIdL1: String
-    ): TokoNowCategoryMenuUiModel = TokoNowCategoryMenuUiModel(
-        categoryListUiModel = categoryNavigation.data.find { it.id == categoryIdL1 }?.childList?.map {
-            TokoNowCategoryMenuItemUiModel(
+    ): CategoryNavigationUiModel = CategoryNavigationUiModel(
+        categoryListUiModel = data.find { it.id == categoryIdL1 }?.childList?.map {
+            CategoryNavigationItemUiModel(
                 id = it.id,
                 title = it.name,
                 imageUrl = it.imageUrl,

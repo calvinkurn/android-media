@@ -20,8 +20,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardClicked(
             position = position,
             product = product,
-            isLogin = viewModel.isLogin,
-            userId = viewModel.userId
+            isLogin = viewModel.isLoggedIn(),
+            userId = viewModel.getUserId()
         )
     }
 
@@ -32,8 +32,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardImpressed(
             position = position,
             product = product,
-            isLogin = viewModel.isLogin,
-            userId = viewModel.userId
+            isLogin = viewModel.isLoggedIn(),
+            userId = viewModel.getUserId()
         )
     }
 
@@ -42,7 +42,7 @@ class TokoNowProductRecommendationCallback(
         product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
-        if (!viewModel.isLogin) {
+        if (!viewModel.isLoggedIn()) {
             listener?.openLoginPage()
         } else {
             viewModel.onCartQuantityChanged(

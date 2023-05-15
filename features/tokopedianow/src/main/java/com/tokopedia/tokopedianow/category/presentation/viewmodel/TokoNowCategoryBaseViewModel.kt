@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.network.authentication.AuthHelper.Companion.getMD5Hash
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,5 +28,5 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
     userSession,
     dispatchers
 ) {
-    val warehouseId: String = addressData.getWarehouseId().toString()
+    fun getUniqueId() = if (isLoggedIn()) getMD5Hash(getUserId()) else getMD5Hash(getDeviceId())
 }
