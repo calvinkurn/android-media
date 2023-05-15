@@ -816,33 +816,15 @@ class PlayAnalytic(
             .send()
     }
 
-    /**
-     * GLobal Variant Bottom Sheet
-     */
-    fun clickActionFromVariantSheet(message: String) {
+    fun clickCommentIcon(partnerId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
-            .setEventAction("click - lihat on add to cart success toaster")
+            .setEventAction("click - comment button")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - ${mChannelType.value} - $message")
-            .setCustomProperty(KEY_TRACKER_ID, "42904")
+            .setEventLabel("$channelId - $partnerId")
+            .setCustomProperty(KEY_TRACKER_ID, "42591")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-
-    fun impressErrorToasterVariantSheet(message: String) {
-        Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
-            .setEventAction("view error when add to cart")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - ${mChannelType.value} - not success - $message")
-            .setCustomProperty(KEY_TRACKER_ID, "42905")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCurrentSite(VAL_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
