@@ -65,10 +65,10 @@ fun NestSortFilter(
                         NestChipsState.Default
                     },
                     size = chipSize,
-                    rightIcon = if (it.showChevron) {
+                    right = if (it.showChevron) {
                         NestChipsRight.Chevron {}
                     } else {
-                        NestChipsRight.None
+                        null
                     },
                     onClick = {
                         onItemClicked(it)
@@ -158,10 +158,10 @@ fun NestSortFilterAdvanced(
                         NestChipsState.Default
                     },
                     size = chipSize,
-                    rightIcon = if (it.showChevron) {
+                    right = if (it.showChevron) {
                         NestChipsRight.Chevron {}
                     } else {
-                        NestChipsRight.None
+                        null
                     },
                     onClick = {
                         onItemClicked(it)

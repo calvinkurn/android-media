@@ -1,10 +1,10 @@
 package com.tokopedia.common_compose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,21 +27,36 @@ import com.tokopedia.common_compose.principles.NestImage
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R as iconUnifyR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 enum class NestChipsState { Default, Selected, Disabled, Alternate }
 
 sealed interface NestChipsRight {
 
-    object None : NestChipsRight
     data class Chevron(val onClicked: () -> Unit) : NestChipsRight
     data class Clear(val onClicked: () -> Unit) : NestChipsRight
 }
 
-sealed interface NestChipsImage {
+sealed interface NestChipsLeft {
 
-    object None : NestChipsImage
-    data class Url(val url: String, val contentDescription: String) : NestChipsImage
-    data class Resource(@DrawableRes val resource: Int, val contentDescription: String) : NestChipsImage
+    val isCircle: Boolean
+
+    data class Color(
+        val color: androidx.compose.ui.graphics.Color,
+        override val isCircle: Boolean = false,
+    ) : NestChipsLeft
+
+    data class NetworkImage(
+        val url: String,
+        val contentDescription: String? = null,
+        override val isCircle: Boolean = false,
+    ) : NestChipsLeft
+
+    data class Painter(
+        val painter: androidx.compose.ui.graphics.painter.Painter,
+        val contentDescription: String? = null,
+        override val isCircle: Boolean = false,
+    ) : NestChipsLeft
 }
 
 enum class NestChipsSize { Small, Medium, Large }
@@ -51,8 +67,8 @@ fun NestChips(
     modifier: Modifier = Modifier,
     isDashed: Boolean = false,
     state: NestChipsState = NestChipsState.Default,
-    rightIcon: NestChipsRight = NestChipsRight.None,
-    image: NestChipsImage = NestChipsImage.None,
+    right: NestChipsRight? = null,
+    left: NestChipsLeft? = null,
     size: NestChipsSize = NestChipsSize.Small,
     onClick: () -> Unit = {}
 ) {
@@ -80,7 +96,7 @@ fun NestChips(
         NestChipsSize.Large -> 48.dp
     }
     
-    val rightIconPainter = when (rightIcon) {
+    val rightPainter = when (right) {
         is NestChipsRight.Chevron -> {
             painterResource(id = iconUnifyR.drawable.iconunify_chevron_down)
         }
@@ -90,19 +106,19 @@ fun NestChips(
         else -> null
     }
 
-    val rightIconSize = when (size) {
+    val rightSize = when (size) {
         NestChipsSize.Small, NestChipsSize.Medium -> 16.dp
         NestChipsSize.Large -> 24.dp
     }
 
-    val rightIconOnClicked = when (rightIcon) {
-        is NestChipsRight.Chevron -> rightIcon.onClicked
-        is NestChipsRight.Clear -> rightIcon.onClicked
+    val rightOnClicked = when (right) {
+        is NestChipsRight.Chevron -> right.onClicked
+        is NestChipsRight.Clear -> right.onClicked
         else -> {{}}
     }
 
     val paddingStart = when {
-        image is NestChipsImage.Url -> 4.dp
+        left is NestChipsLeft.NetworkImage -> 4.dp
         size == NestChipsSize.Large -> 12.dp
         else -> 8.dp
     }
@@ -138,21 +154,21 @@ fun NestChips(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = paddingStart, end = paddingEnd),
         ) {
-            NestChipsImage(image = image, chipsSize = size, Modifier.padding(end = 8.dp))
+            NestChipsLeft(left = left, chipsSize = size, Modifier.padding(end = 8.dp))
             NestTypography(
                 text = text,
                 textStyle = NestTheme.typography.display2.copy(color = textColor),
                 maxLines = maxLines
             )
-            if (rightIconPainter != null) {
+            if (rightPainter != null) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Icon(
-                    painter = rightIconPainter,
+                    painter = rightPainter,
                     contentDescription = "Dropdown Icon",
                     tint = chevronColor,
                     modifier = Modifier
-                        .requiredSize(rightIconSize)
-                        .clickable { rightIconOnClicked() }
+                        .requiredSize(rightSize)
+                        .clickable { rightOnClicked() }
                 )
             }
         }
@@ -160,34 +176,40 @@ fun NestChips(
 }
 
 @Composable
-private fun NestChipsImage(
-    image: NestChipsImage,
+private fun NestChipsLeft(
+    left: NestChipsLeft?,
     chipsSize: NestChipsSize,
     modifier: Modifier = Modifier
 ) {
-    val imageSize = if (chipsSize == NestChipsSize.Large && image is NestChipsImage.Url) {
+    val leftSize = if (chipsSize == NestChipsSize.Large && left is NestChipsLeft.NetworkImage) {
         40.dp
     } else {
         24.dp
     }
 
-    val imageModifier = modifier
-        .clip(RoundedCornerShape(8.dp))
-        .requiredSize(imageSize)
+    val leftModifier = modifier
+        .clip(if (left?.isCircle == true) CircleShape else RoundedCornerShape(8.dp))
+        .requiredSize(leftSize)
 
-    when (image) {
-        is NestChipsImage.Resource -> {
+    when (left) {
+        is NestChipsLeft.Painter -> {
             Image(
-                painter = painterResource(id = image.resource),
-                contentDescription = image.contentDescription,
-                modifier = imageModifier
+                painter = left.painter,
+                contentDescription = left.contentDescription,
+                modifier = leftModifier
             )
         }
-        is NestChipsImage.Url -> {
+        is NestChipsLeft.NetworkImage -> {
             NestImage(
-                imageUrl = image.url,
-                modifier = imageModifier
+                imageUrl = left.url,
+                modifier = leftModifier
             )
+        }
+        is NestChipsLeft.Color -> {
+            Surface(
+                modifier = leftModifier,
+                color = left.color,
+            ) {}
         }
         else -> {}
     }
@@ -244,32 +266,91 @@ fun PreviewChipState(
     }
 }
 
-@Preview("Right Icon Preview")
-@Preview("Right Icon (Dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Right Preview")
+@Preview("Right (Dark) Preview", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewChipRightIcon(
-    @PreviewParameter(NestChipsRightIconPreviewParameterProvider::class) rightIcon: NestChipsRight,
+fun PreviewChipRight(
+    @PreviewParameter(NestChipsRightPreviewParameterProvider::class) right: NestChipsRight,
 ) {
     NestTheme {
         Column {
             NestChips(
                 text = "Chips Small",
                 size = NestChipsSize.Small,
-                rightIcon = rightIcon,
+                right = right,
                 modifier = Modifier.padding(8.dp)
             )
 
             NestChips(
                 text = "Chips Medium",
                 size = NestChipsSize.Medium,
-                rightIcon = rightIcon,
+                right = right,
                 modifier = Modifier.padding(8.dp)
             )
 
             NestChips(
                 text = "Chips Large",
                 size = NestChipsSize.Large,
-                rightIcon = rightIcon,
+                right = right,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+}
+
+@Preview("Image Preview")
+@Preview("Image (Dark) Preview", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewChipLeft(
+    @PreviewParameter(NestChipsSizePreviewParameterProvider::class) size: NestChipsSize,
+) {
+    NestTheme {
+        Column {
+            NestChips(
+                text = "Chips Without Left",
+                size = size,
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Color",
+                size = size,
+                left = NestChipsLeft.Color(colorResource(id = unifyR.color.Unify_R400)),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Color (Circle)",
+                size = size,
+                left = NestChipsLeft.Color(colorResource(id = unifyR.color.Unify_R400), isCircle = true),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Painter",
+                size = size,
+                left = NestChipsLeft.Painter(painterResource(id = iconUnifyR.drawable.iconunify_bell_filled)),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Painter (Circle)",
+                size = size,
+                left = NestChipsLeft.Painter(painterResource(id = iconUnifyR.drawable.iconunify_bell_filled), isCircle = true),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Network Image",
+                size = size,
+                left = NestChipsLeft.NetworkImage(url = "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg"),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            NestChips(
+                text = "Chips With Network Image (Circle)",
+                size = size,
+                left = NestChipsLeft.NetworkImage(url = "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg", isCircle = true),
                 modifier = Modifier.padding(8.dp)
             )
         }
@@ -303,9 +384,13 @@ private class NestChipsStatePreviewParameterProvider : PreviewParameterProvider<
     override val values = NestChipsState.values().asSequence()
 }
 
-private class NestChipsRightIconPreviewParameterProvider : PreviewParameterProvider<NestChipsRight> {
+private class NestChipsRightPreviewParameterProvider : PreviewParameterProvider<NestChipsRight> {
     override val values = sequenceOf(
         NestChipsRight.Chevron {},
         NestChipsRight.Clear {},
     )
+}
+
+private class NestChipsSizePreviewParameterProvider : PreviewParameterProvider<NestChipsSize> {
+    override val values = NestChipsSize.values().asSequence()
 }
