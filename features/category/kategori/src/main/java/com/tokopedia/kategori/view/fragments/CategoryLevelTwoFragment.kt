@@ -1,23 +1,22 @@
 package com.tokopedia.kategori.view.fragments
 
-
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kategori.adapters.CategoryLevelTwoAdapter
-import com.tokopedia.kategori.model.CategoryChildItem
-import com.tokopedia.kategori.di.CategoryNavigationComponent
-import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
 import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.R
+import com.tokopedia.kategori.adapters.CategoryLevelTwoAdapter
+import com.tokopedia.kategori.di.CategoryNavigationComponent
+import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
+import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.kategori.view.activity.ActivityStateListener
 import com.tokopedia.kategori.viewmodel.CategoryLevelTwoViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -49,9 +48,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         fun newInstance() = CategoryLevelTwoFragment()
     }
 
-
     override fun getComponent(): CategoryNavigationComponent = DaggerCategoryNavigationComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
-
 
     override fun refreshView(id: String, categoryName: String, applink: String?) {
         currentPosition = id
@@ -60,11 +57,13 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         categoryApplink = applink
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         component.inject(this)
         return inflater.inflate(R.layout.fragment_category_level_two, container, false)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,17 +74,21 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.getLevelTwoList().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    categoryLevelTwoAdapter.pushTrackingEvents()
-                    categoryLevelTwoAdapter = CategoryLevelTwoAdapter(it.data.toMutableList(), activityStateListener?.getActivityTrackingQueue())
-                    slave_list.adapter = categoryLevelTwoAdapter
+        categoryLevelTwoViewModel.getLevelTwoList().observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        categoryLevelTwoAdapter.pushTrackingEvents()
+                        categoryLevelTwoAdapter = CategoryLevelTwoAdapter(it.data.toMutableList(), activityStateListener?.getActivityTrackingQueue())
+                        slave_list.adapter = categoryLevelTwoAdapter
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-
-        })
-
+        )
     }
 
     private fun initView() {

@@ -50,7 +50,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail then returns success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val response = ReschedulePickupTestDataProvider.getRescheduleInfo()
             coEvery { getReschedulePickupUseCase(any()) } returns ReschedulePickupTestDataProvider.getRescheduleInfo()
@@ -69,7 +69,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail Response data is empty then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val response = GetReschedulePickupResponse.Data()
             coEvery { getReschedulePickupUseCase(any()) } returns response
@@ -92,7 +92,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup order data is error then show toaster`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val response = getRescheduleInfoWithErrorOrderData()
             coEvery { getReschedulePickupUseCase(any()) } returns response
@@ -114,7 +114,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when get Reschedule Pickup Detail then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { getReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
@@ -135,7 +135,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when save reschedule pickup then returns success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
             // when
@@ -146,7 +146,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when save reschedule pickup then throws error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } throws defaultThrowable
             // when
@@ -166,7 +166,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setDay then reset time and reschedule summary`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val day = ReschedulePickupTestDataProvider.getChosenDay()
             // when
@@ -181,7 +181,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setTime then set time and reschedule summary`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val day = ReschedulePickupTestDataProvider.getChosenDay()
             val time = ReschedulePickupTestDataProvider.getChosenTime(day)
@@ -194,7 +194,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setReason then set reason`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = ReschedulePickupTestDataProvider.getChosenReason()
             // when
@@ -206,7 +206,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setReason with custom reason option then set custom reason flag to true`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = ReschedulePickupTestDataProvider.getCustomReason()
             // when
@@ -219,7 +219,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setCustomReason with reason below 15 char then show custom reason error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = REASON_BELOW_MIN
             // when
@@ -231,7 +231,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setCustomReason with reason length 15 char then dont show error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = REASON_MIN
             // when
@@ -243,7 +243,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setCustomReason with reason length 159 char then dont show error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = REASON_MAX
             // when
@@ -255,7 +255,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setCustomReason with reason length more than 160 char then dont show error`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val reason = REASON_MORE_MAX
             // when
@@ -268,7 +268,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when setDialogState then should update save model`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
             reschedulePickupViewModel.onEvent(ReschedulePickupUiEvent.SaveReschedule)
@@ -395,7 +395,7 @@ class ReschedulePickupViewModelTest {
 
     @Test
     fun `when user click dialog after success save reschedule then should close page`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             // given
             val success = true
             coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()

@@ -13,14 +13,14 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     @Test
-    fun `setVideoUri should update _videoPlayerUiState to ReviewVideoPlayerUiState#Initial`() = testCoroutineRule.runBlockingTest {
+    fun `setVideoUri should update _videoPlayerUiState to ReviewVideoPlayerUiState#Initial`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         viewModel.setVideoUri(newVideoUri)
         val currentVideoPlayerUiState = viewModel.videoPlayerUiState.first()
@@ -29,7 +29,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setVideoPlayerStateToChangingConfiguration should update _videoPlayerUiState to ReviewVideoPlayerUiState#ChangingConfiguration`() = testCoroutineRule.runBlockingTest {
+    fun `setVideoPlayerStateToChangingConfiguration should update _videoPlayerUiState to ReviewVideoPlayerUiState#ChangingConfiguration`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToChangingConfiguration()
@@ -39,7 +39,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `resetVideoPlayerState should update _videoPlayerUiState to ReviewVideoPlayerUiState#Initial`() = testCoroutineRule.runBlockingTest {
+    fun `resetVideoPlayerState should update _videoPlayerUiState to ReviewVideoPlayerUiState#Initial`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         viewModel.setVideoUri(newVideoUri)
         viewModel.resetVideoPlayerState()
@@ -49,7 +49,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setVideoPlayerStateToRestoring should update _videoPlayerUiState to ReviewVideoPlayerUiState#RestoringState`() = testCoroutineRule.runBlockingTest {
+    fun `setVideoPlayerStateToRestoring should update _videoPlayerUiState to ReviewVideoPlayerUiState#RestoringState`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToRestoring()
@@ -59,7 +59,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setVideoPlayerStateToReadyToPlay should update _videoPlayerUiState to ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setVideoPlayerStateToReadyToPlay should update _videoPlayerUiState to ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToReadyToPlay()
@@ -69,7 +69,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPlaying should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Playing when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPlaying should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Playing when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -81,7 +81,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPlaying should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPlaying should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -93,7 +93,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToBuffering should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Buffering when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToBuffering should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Buffering when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -105,7 +105,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToBuffering should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToBuffering should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -117,7 +117,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPaused should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Paused when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPaused should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Paused when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -129,7 +129,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPaused should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPaused should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -141,7 +141,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPreloading should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Preloading when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPreloading should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Preloading when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -153,7 +153,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToPreloading should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToPreloading should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -165,7 +165,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToEnded should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Ended when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToEnded should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Ended when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -177,7 +177,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToEnded should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToEnded should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -189,7 +189,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToError should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Error when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToError should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Error when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -201,7 +201,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToError should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToError should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -213,7 +213,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToInactive should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Inactive when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToInactive should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Inactive when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
@@ -225,7 +225,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `setPlaybackStateToInactive should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runBlockingTest {
+    fun `setPlaybackStateToInactive should not update _videoPlaybackUiState when current _videoPlayerUiState value is not ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
@@ -237,7 +237,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `updateVideoThumbnail should update bitmap thumbnail and retain current state type`() = testCoroutineRule.runBlockingTest {
+    fun `updateVideoThumbnail should update bitmap thumbnail and retain current state type`() = testCoroutineRule.runTest {
         val mockBitmap = mockk<Bitmap>(relaxed = true)
         viewModel.updateVideoThumbnail(mockBitmap)
         viewModel.hideVideoThumbnail()
@@ -251,7 +251,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `updateVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden when bitmap is null`() = testCoroutineRule.runBlockingTest {
+    fun `updateVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden when bitmap is null`() = testCoroutineRule.runTest {
         val mockBitmap = mockk<Bitmap>(relaxed = true)
         viewModel.updateVideoThumbnail(mockBitmap)
         viewModel.showVideoThumbnail()
@@ -284,7 +284,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `hideVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden without changing it's bitmap`() = testCoroutineRule.runBlockingTest {
+    fun `hideVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden without changing it's bitmap`() = testCoroutineRule.runTest {
         val mockBitmap = mockk<Bitmap>(relaxed = true)
         viewModel.updateVideoThumbnail(mockBitmap)
         viewModel.showVideoThumbnail()
@@ -297,19 +297,19 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `showVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Showing`() = testCoroutineRule.runBlockingTest {
+    fun `showVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Showing`() = testCoroutineRule.runTest {
         viewModel.showVideoError("")
         Assert.assertEquals(ReviewVideoErrorUiState.Showing(""), viewModel.videoErrorUiState.first())
     }
 
     @Test
-    fun `hideVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Hidden`() = testCoroutineRule.runBlockingTest {
+    fun `hideVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Hidden`() = testCoroutineRule.runTest {
         viewModel.hideVideoError()
         Assert.assertEquals(ReviewVideoErrorUiState.Hidden, viewModel.videoErrorUiState.first())
     }
 
     @Test
-    fun `saveState should save current states`() = testCoroutineRule.runBlockingTest {
+    fun `saveState should save current states`() = testCoroutineRule.runTest {
         val outState = mockk<Bundle>(relaxed = true)
         viewModel.saveUiState(outState)
         verify { outState.putParcelable(ReviewVideoPlayerViewModel.SAVED_STATE_PLAYBACK_UI_STATE, any()) }
@@ -317,7 +317,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreState should save current states`() = testCoroutineRule.runBlockingTest {
+    fun `restoreState should save current states`() = testCoroutineRule.runTest {
         val latestVideoPlaybackUiState = ReviewVideoPlaybackUiState.Playing(100L)
         val latestVideoPlayerUiState = ReviewVideoPlayerUiState.ReadyToPlay("https://tokopedia.com/patrickstarbellydancing.mp4")
         val savedState = mockk<Bundle>(relaxed = true) {
@@ -334,7 +334,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `updateWifiConnectivityStatus should make videoPlayerUiState autoplay`() = runBlockingTest {
+    fun `updateWifiConnectivityStatus should make videoPlayerUiState autoplay`() = runTest {
         viewModel.setVideoPlayerStateToRestoring()
         var videoPlayerUiState = viewModel.videoPlayerUiState.first()
         viewModel.updateWifiConnectivityStatus(true)

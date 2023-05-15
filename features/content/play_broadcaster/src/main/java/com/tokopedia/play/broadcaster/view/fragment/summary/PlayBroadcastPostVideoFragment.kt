@@ -206,6 +206,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                                     actionListener = { networkResult.onRetry() }
                                 )
                             }
+                            else -> {
+                                // no-op
+                            }
                         }
                     }
                     else -> { }
@@ -250,6 +253,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             NetworkResult.Loading -> tagListView.setPlaceholder()
             is NetworkResult.Success -> tagListView.setTags(value.data.tags.toList())
             is NetworkResult.Fail -> tagListView.setError()
+            else -> {
+                // no-op
+            }
         }
     }
 
