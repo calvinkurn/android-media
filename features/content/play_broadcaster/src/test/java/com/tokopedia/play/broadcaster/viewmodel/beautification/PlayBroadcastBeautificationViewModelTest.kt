@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -71,6 +72,7 @@ class PlayBroadcastBeautificationViewModelTest {
     private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -89,6 +91,8 @@ class PlayBroadcastBeautificationViewModelTest {
         coEvery { mockRepo.downloadModel(any()) } returns true
         coEvery { mockRepo.downloadCustomFace(any()) } returns true
         coEvery { mockRepo.downloadPresetAsset(any(), any()) } returns true
+
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
     @Test
@@ -136,6 +140,30 @@ class PlayBroadcastBeautificationViewModelTest {
 
             val allowRetryDownloadAsset = robot.getViewModelPrivateField<MutableStateFlow<Boolean>>("_allowRetryDownloadAsset")
             allowRetryDownloadAsset.value.assertTrue()
+        }
+    }
+
+    @Test
+    fun `playBroadcaster_beautification_getAllowedBeautificationConfigButGotDisabledFromRemoteConfig`() {
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+            }
+
+            state.beautificationConfig.isUnknown.assertTrue()
+            assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
         }
     }
 

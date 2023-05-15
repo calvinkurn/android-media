@@ -31,6 +31,7 @@ import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -60,6 +61,7 @@ internal class PlayBroadcastViewModelRobot(
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
 ) : Closeable {
 
     private val testDoubleModelBuilder = TestDoubleModelBuilder()
@@ -85,6 +87,7 @@ internal class PlayBroadcastViewModelRobot(
         channelRepo,
         logger,
         broadcastTimer,
+        remoteConfig,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {
