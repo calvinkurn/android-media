@@ -54,7 +54,7 @@ internal class PlayBroadcastViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true)),
     playInteractiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
     productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
@@ -117,6 +117,26 @@ internal class PlayBroadcastViewModelRobot(
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiEvents
+    }
+
+    fun recordStateAndEvents(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): Pair<PlayBroadcastUiState, List<PlayBroadcastEvent>> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val uiEvents = mutableListOf<PlayBroadcastEvent>()
+        val uiStateList = mutableListOf<PlayBroadcastUiState>()
+        scope.launch {
+            viewModel.uiState.collect {
+                uiStateList.add(it)
+            }
+        }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiStateList.last() to uiEvents
     }
 
     fun cancelRemainingTasks() {

@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.play.broadcaster.domain.model.Config
 import kotlinx.android.parcel.Parcelize
 
@@ -22,7 +21,8 @@ data class BeautificationConfigUiModel(
         get() = this == Empty
 
     val isBeautificationApplied: Boolean
-        get() = (faceFilters.any { it.isChecked } && !selectedFaceFilter?.isRemoveEffect.orFalse()) || presets.any { it.isSelected && it.value != 0.0 && !it.isRemoveEffect }
+        get() = (faceFilters.any { it.isChecked } && !selectedFaceFilter?.isRemoveEffect.orFalse()) ||
+            presets.any { it.isSelected && it.value != 0.0 && !it.isRemoveEffect }
 
     val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
         get() = faceFilters.filter { !it.isRemoveEffect }
