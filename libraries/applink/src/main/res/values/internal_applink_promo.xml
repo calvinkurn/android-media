@@ -56,4 +56,7 @@
     <!--promo checkout-->
     <string name="title_promo_checkout">Promo Checkout</string>
 
+    <!--scp-rewards-->
+    <string name="host_scp_rewards">scp-rewards</string>
+    <string name="path_scp_rewards_celebration">/celebration/.*</string>
 </resources>
