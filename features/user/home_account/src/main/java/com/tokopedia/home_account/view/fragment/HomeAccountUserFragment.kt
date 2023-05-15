@@ -1056,7 +1056,6 @@ open class HomeAccountUserFragment :
     }
 
     private fun getData() {
-        viewModel.refreshUserProfile()
         binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))
