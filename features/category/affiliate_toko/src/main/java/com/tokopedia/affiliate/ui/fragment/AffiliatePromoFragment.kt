@@ -365,7 +365,7 @@ class AffiliatePromoFragment :
                 }
             }
         }
-        affiliatePromoViewModel.getTokoNowBottomSheetData().observe(this) { eligibility ->
+        affiliatePromoViewModel.getTokoNowBottomSheetData().observe(viewLifecycleOwner) { eligibility ->
             val pageId = getTokoNowPageId().toString()
             AffiliatePromotionBottomSheet.newInstance(
                 AffiliatePromotionBottomSheetParams(

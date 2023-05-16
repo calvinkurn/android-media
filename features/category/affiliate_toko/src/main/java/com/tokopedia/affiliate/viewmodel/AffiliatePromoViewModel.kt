@@ -174,7 +174,7 @@ class AffiliatePromoViewModel @Inject constructor(
                                 )
                             }
                     } else {
-                        errorMessage.value = it.data?.error?.message
+                        errorMessage.value = it.data?.error?.message.orEmpty()
                     }
                 }
             } catch (e: IOException) {
