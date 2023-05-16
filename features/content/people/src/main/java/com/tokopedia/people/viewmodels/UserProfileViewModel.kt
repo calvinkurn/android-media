@@ -44,7 +44,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
     private val userSession: UserSessionInterface,
-    private val userProfileSharedPref: UserProfileSharedPref,
+    private val userProfileSharedPref: UserProfileSharedPref
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -134,7 +134,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _reviewContent,
         _isLoading,
         _error,
-        _reviewSettings,
+        _reviewSettings
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
         reviewContent, isLoading, error, reviewSettings ->
         UserProfileUiState(
@@ -149,7 +149,7 @@ class UserProfileViewModel @AssistedInject constructor(
             reviewContent = reviewContent,
             isLoading = isLoading,
             error = error,
-            reviewSettings = reviewSettings,
+            reviewSettings = reviewSettings
         )
     }
 
@@ -175,6 +175,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
+            is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
             else -> {}
         }
     }
@@ -230,24 +231,24 @@ class UserProfileViewModel @AssistedInject constructor(
             block = {
                 val currVideoPostModel = _videoPostContent.value
 
-                if(!isRefresh && currVideoPostModel.nextCursor.isEmpty()) return@launchCatchError
-                if(currVideoPostModel.isLoading) return@launchCatchError
+                if (!isRefresh && currVideoPostModel.nextCursor.isEmpty()) return@launchCatchError
+                if (currVideoPostModel.isLoading) return@launchCatchError
 
                 _videoPostContent.update {
                     it.copy(
                         status = UserPlayVideoUiModel.Status.Loading,
-                        items = if(isRefresh) emptyList() else it.items
+                        items = if (isRefresh) emptyList() else it.items
                     )
                 }
 
-                val cursor = if(isRefresh) "" else currVideoPostModel.nextCursor
+                val cursor = if (isRefresh) "" else currVideoPostModel.nextCursor
                 val result = repo.getPlayVideo(profileUserID, cursor, isSelfProfile)
 
                 _videoPostContent.update {
                     it.copy(
                         items = it.items + result.items,
                         nextCursor = result.nextCursor,
-                        status = UserPlayVideoUiModel.Status.Success,
+                        status = UserPlayVideoUiModel.Status.Success
                     )
                 }
             },
@@ -264,22 +265,22 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currReviewContent = _reviewContent.value
 
-            if(!isRefresh && !currReviewContent.hasNext) return@launchCatchError
-            if(currReviewContent.isLoading) return@launchCatchError
+            if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
+            if (currReviewContent.isLoading) return@launchCatchError
 
             _reviewContent.update {
                 it.copy(
                     status = UserReviewUiModel.Status.Loading,
-                    reviewList = if(isRefresh) emptyList() else it.reviewList,
+                    reviewList = if (isRefresh) emptyList() else it.reviewList,
                     page = if (isRefresh) 1 else it.page,
-                    hasNext = if (isRefresh) true else it.hasNext,
+                    hasNext = if (isRefresh) true else it.hasNext
                 )
             }
 
             val response = repo.getUserReviewList(
                 userID = profileUserID,
                 limit = DEFAULT_LIMIT,
-                page = currReviewContent.page,
+                page = currReviewContent.page
             )
 
             _reviewContent.update { response }
@@ -324,10 +325,12 @@ class UserProfileViewModel @AssistedInject constructor(
                     return@launchCatchError
                 }
 
-                when (val result = followRepo.followUser(
-                    encryptedUserId = followInfo.encryptedUserID,
-                    follow = !followInfo.status
-                )) {
+                when (
+                    val result = followRepo.followUser(
+                        encryptedUserId = followInfo.encryptedUserID,
+                        follow = !followInfo.status
+                    )
+                ) {
                     is MutationUiModel.Success -> {
                         _followInfo.update { it.copy(status = !followInfo.status) }
                         _profileInfo.update { repo.getProfile(followInfo.userID) }
@@ -497,14 +500,14 @@ class UserProfileViewModel @AssistedInject constructor(
                 updatePartialChannelInfo(channelId) { channel ->
                     channel.copy(
                         totalView = channel.totalView.copy(
-                            totalViewFmt = totalView,
+                            totalViewFmt = totalView
                         )
                     )
                 }
             } else if (isReminderSet != currIsReminderSet) {
                 updatePartialChannelInfo(channelId) { channel ->
                     channel.copy(
-                        reminderType = if(isReminderSet) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+                        reminderType = if (isReminderSet) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
                     )
                 }
             }
@@ -533,6 +536,30 @@ class UserProfileViewModel @AssistedInject constructor(
         launchCatchError(block = {
             _uiEvent.emit(UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog(channel))
         }) {}
+    }
+
+    private fun handleClickLikeReview(review: UserReviewUiModel.Review) {
+        launchCatchError(block = {
+            toggleLikeDislikeStatus(review.feedbackID)
+
+            val response = repo.setLikeStatus(
+                feedbackID = review.feedbackID,
+                likeStatus = review.likeDislike.switchLikeStatus()
+            )
+
+            val selectedReview = _reviewContent.value.reviewList.firstOrNull {
+                it.feedbackID == review.feedbackID
+            } ?: return@launchCatchError
+
+            if (response.isLike != selectedReview.likeDislike.isLike) {
+                throw Exception("Something went wrong")
+            }
+        }) { throwable ->
+            toggleLikeDislikeStatus(review.feedbackID)
+
+            /** TODO: handle this */
+            _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
+        }
     }
 
     /** Helper */
@@ -564,9 +591,11 @@ class UserProfileViewModel @AssistedInject constructor(
         if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()
             viewModelScope.launch {
-                _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
-                    MessageErrorException("User ini diblokir")
-                ))
+                _uiEvent.emit(
+                    UserProfileUiEvent.BlockingUserState(
+                        MessageErrorException("User ini diblokir")
+                    )
+                )
             }
             return
         }
@@ -644,8 +673,34 @@ class UserProfileViewModel @AssistedInject constructor(
         _videoPostContent.update {
             it.copy(
                 items = it.items.map { channel ->
-                    if(channel.channelId == channelId) fn(channel)
-                    else channel
+                    if (channel.channelId == channelId) {
+                        fn(channel)
+                    } else {
+                        channel
+                    }
+                }
+            )
+        }
+    }
+
+    private fun toggleLikeDislikeStatus(feedbackID: String) {
+        _reviewContent.update {
+            it.copy(
+                reviewList = it.reviewList.map { item ->
+                    if (item.feedbackID == feedbackID) {
+                        item.copy(
+                            likeDislike = item.likeDislike.copy(
+                                totalLike = if (item.likeDislike.isLike) {
+                                    item.likeDislike.totalLike - 1
+                                } else {
+                                    item.likeDislike.totalLike + 1
+                                },
+                                likeStatus = item.likeDislike.switchLikeStatus()
+                            )
+                        )
+                    } else {
+                        item
+                    }
                 }
             )
         }

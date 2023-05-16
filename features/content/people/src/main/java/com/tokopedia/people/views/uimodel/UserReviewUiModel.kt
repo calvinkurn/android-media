@@ -1,7 +1,5 @@
 package com.tokopedia.people.views.uimodel
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * Created By : Jonathan Darwin on May 12, 2023
  */
@@ -9,7 +7,7 @@ data class UserReviewUiModel(
     val reviewList: List<Review>,
     val page: Int,
     val hasNext: Boolean,
-    val status: Status,
+    val status: Status
 ) {
     val isLoading: Boolean
         get() = status == Status.Loading
@@ -31,29 +29,41 @@ data class UserReviewUiModel(
         val productImageURL: String,
         val productPageURL: String,
         val productStatus: Int,
-        val productVariant: ProductVariant,
+        val productVariant: ProductVariant
     )
 
     data class ProductVariant(
         val variantID: String,
-        val variantName: String,
+        val variantName: String
     )
 
     data class Attachment(
         val attachmentID: String,
         val thumbnailURL: String,
-        val fullsizeURL: String,
+        val fullsizeURL: String
     )
 
     data class VideoAttachment(
         val attachmentID: String,
-        val videoUrl: String,
+        val videoUrl: String
     )
 
     data class LikeDislike(
         val totalLike: Int,
-        val likeStatus: Int,
-    )
+        val likeStatus: Int
+    ) {
+        fun switchLikeStatus(): Int {
+            return if (likeStatus == LIKE_STATUS) RESET_STATUS else LIKE_STATUS
+        }
+
+        val isLike: Boolean
+            get() = likeStatus == LIKE_STATUS
+
+        companion object {
+            private const val LIKE_STATUS = 1
+            private const val RESET_STATUS = 3
+        }
+    }
 
     companion object {
         val Empty: UserReviewUiModel
@@ -61,7 +71,7 @@ data class UserReviewUiModel(
                 reviewList = emptyList(),
                 page = 1,
                 hasNext = true,
-                status = Status.Unknown,
+                status = Status.Unknown
             )
     }
 

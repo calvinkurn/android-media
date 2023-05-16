@@ -8,15 +8,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.people.R
 import com.tokopedia.people.databinding.ItemUserReviewBinding
 import com.tokopedia.people.databinding.UpItemUserPostLoadingBinding
-import com.tokopedia.people.views.uimodel.UserReviewUiModel
-import com.tokopedia.people.R
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -26,7 +24,7 @@ class UserReviewViewHolder private constructor() {
 
     class Review(
         private val binding: ItemUserReviewBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UserReviewUiModel.Review) {
@@ -49,14 +47,11 @@ class UserReviewViewHolder private constructor() {
                 setupStar(icStar4, item.rating >= 4)
                 setupStar(icStar5, item.rating >= 5)
 
-                setupReviewText(tvReview, item.reviewText)
+                setupReviewText(item.reviewText)
 
                 /** TODO: setup media */
 
-                tvLikeCounter.text = item.likeDislike.totalLike.toString()
-                tvLikeCounter.setOnClickListener {
-                    listener.onClickLike(item)
-                }
+                setupLike(item)
             }
         }
 
@@ -70,11 +65,11 @@ class UserReviewViewHolder private constructor() {
             icon.setImage(
                 IconUnify.STAR_FILLED,
                 newLightEnable = MethodChecker.getColor(itemView.context, color),
-                newDarkEnable = MethodChecker.getColor(itemView.context, color),
+                newDarkEnable = MethodChecker.getColor(itemView.context, color)
             )
         }
 
-        private fun setupReviewText(tvReview: Typography, reviewText: String) {
+        private fun setupReviewText(reviewText: String) {
             val result = SpannableStringBuilder()
 
             if (reviewText.length > MAX_REVIEW_CHAR) {
@@ -90,7 +85,7 @@ class UserReviewViewHolder private constructor() {
                 result.setSpanOnText(
                     highlightedText,
                     getClickableSpan {
-                        tvReview.text = reviewText
+                        binding.tvReview.text = reviewText
                     },
                     getBoldSpan(),
                     getGreenColorSpan(itemView.context)
@@ -99,7 +94,18 @@ class UserReviewViewHolder private constructor() {
                 result.append(reviewText)
             }
 
-            tvReview.text = reviewText
+            binding.tvReview.text = reviewText
+        }
+
+        private fun setupLike(item: UserReviewUiModel.Review) {
+            binding.icLike.setImage(if (item.likeDislike.isLike) IconUnify.THUMB_FILLED else IconUnify.THUMB)
+            binding.icLike.setOnClickListener {
+                listener.onClickLike(item)
+            }
+            binding.tvLikeCounter.text = item.likeDislike.totalLike.toString()
+            binding.tvLikeCounter.setOnClickListener {
+                listener.onClickLike(item)
+            }
         }
 
         companion object {
@@ -107,14 +113,14 @@ class UserReviewViewHolder private constructor() {
             private const val MAX_REVIEW_CHAR = 140
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ) = Review(
                 ItemUserReviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                listener,
+                listener
             )
         }
 
@@ -129,7 +135,7 @@ class UserReviewViewHolder private constructor() {
 
         companion object {
             fun create(
-                parent: ViewGroup,
+                parent: ViewGroup
             ) = Loading(
                 UpItemUserPostLoadingBinding.inflate(
                     LayoutInflater.from(parent.context),
