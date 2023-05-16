@@ -55,7 +55,7 @@ class VpsWidgetViewHolder(
             element.channelModel,
             object : HeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, link, adapterPosition)
                 }
 
                 override fun onChannelExpired(channelModel: ChannelModel) {

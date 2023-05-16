@@ -377,7 +377,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
         Assert.assertNotNull(data)
     }
 
@@ -396,7 +396,45 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
+        Assert.assertNull(data)
+    }
+    //endregion
+
+    //region getP2ShipmentPlusByProductId
+    @Test
+    fun `get shipment plus by product id should return non-null when exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("123"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
+        Assert.assertNotNull(data)
+    }
+
+    @Test
+    fun `get shipment plus by product id should return null when not exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("321"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
         Assert.assertNull(data)
     }
     //endregion
