@@ -148,6 +148,7 @@
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
+    <string name="title_delete_address_dialog">Hapus Alamat ini?</string>
 
 <!--    tab layout label-->
     <string name="tablayout_label_main">Semua Alamat</string>

@@ -103,9 +103,11 @@ class TodoWidgetViewHolder(
                     ctaText = todoWidget.ctaText,
                     feParam = todoWidget.feParam,
                     channel = element.channelModel,
-                    verticalPosition = adapterPosition,
+                    verticalPosition = element.channelModel.verticalPosition,
+                    cardPosition = index,
                     isCarousel = element.todoWidgetList.size > 1,
-                    todoWidgetDismissListener = this
+                    todoWidgetDismissListener = this,
+                    cardInteraction = true
                 )
             )
         }

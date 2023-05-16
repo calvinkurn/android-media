@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
 import com.tokopedia.product.detail.postatc.tracker.CommonTracker
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
+import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
@@ -41,9 +42,6 @@ import javax.inject.Inject
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
-
-        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
@@ -118,6 +116,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
+        isHideable = true
+        showKnob = true
+        showHeader = false
 
         binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
             setupView(it)
@@ -248,10 +249,17 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
+        }
         onClickProduct(productId)
     }
 
-    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {}
+    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
+        }
+    }
 
     /**
      * Listener Area - End

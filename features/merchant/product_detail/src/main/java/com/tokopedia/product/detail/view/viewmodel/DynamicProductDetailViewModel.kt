@@ -23,6 +23,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -42,7 +43,9 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -53,6 +56,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -88,6 +93,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -143,6 +150,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
     private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
     private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
     private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
@@ -279,6 +287,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
     val loadViewToView: LiveData<Result<RecommendationWidget>>
         get() = _loadViewToView
+
+    private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
+    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
+        get() = _productMediaRecomBottomSheetState
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
@@ -446,22 +459,25 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun getP2RatesEstimateByProductId(): P2RatesEstimateData? {
+    private fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: P2RatesEstimateData? = null
+        var result: P2RatesEstimate? = null
         p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it.p2RatesData
+            if (productId in it.listfProductId) result = it
         }
         return result
     }
 
+    fun getP2RatesEstimateDataByProductId(): P2RatesEstimateData? {
+        return getP2RatesEstimateByProductId()?.p2RatesData
+    }
+
+    fun getP2ShipmentPlusByProductId(): ShipmentPlus? {
+        return getP2RatesEstimateByProductId()?.shipmentPlus
+    }
+
     fun getP2RatesBottomSheetData(): ErrorBottomSheet? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: ErrorBottomSheet? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it.errorBottomSheet
-        }
-        return result
+        return getP2RatesEstimateByProductId()?.errorBottomSheet
     }
 
     fun getBebasOngkirDataByProductId(): BebasOngkirImage {
@@ -820,7 +836,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val requestParams = GetRecommendationRequestParam(
-                    pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                    pageNumber = DEFAULT_PAGE_NUMBER,
                     pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
                     queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                     productIds = arrayListOf(productId)
@@ -1019,7 +1035,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
             ?.hideFloatingButton.orFalse()
     }
 
-    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+    fun onAtcRecomNonVariantQuantityChanged(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
@@ -1028,9 +1048,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
+                atcRecomNonVariant(recomItem, quantity, recommendationNowAffiliateData)
             } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                updateRecomCartNonVariant(
+                    recomItem,
+                    quantity,
+                    miniCartItem,
+                    recommendationNowAffiliateData
+                )
             }
         }
     }
@@ -1062,7 +1087,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    fun atcRecomNonVariant(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
+    ) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
                 recomItem.productId.toString(),
@@ -1081,6 +1110,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     recomItem
                 )
             } else {
+                recommendationNowAffiliate.get()?.initCookieDirectATC(
+                    recommendationNowAffiliateData,
+                    recomItem,
+                )
                 recomItem.cartId = result.data.cartId
                 updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
             }
@@ -1092,7 +1125,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
     fun updateRecomCartNonVariant(
         recomItem: RecommendationItem,
         quantity: Int,
-        miniCartItem: MiniCartItem.MiniCartItemProduct?
+        miniCartItem: MiniCartItem.MiniCartItemProduct?,
+        recommendationNowAffiliateData: RecommendationNowAffiliateData,
     ) {
         launchCatchError(block = {
             miniCartItem?.let {
@@ -1110,6 +1144,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
                         recomItem
                     )
                 } else {
+                    recommendationNowAffiliate.get()?.initCookieDirectATC(
+                        recommendationNowAffiliateData,
+                        recomItem,
+                    )
                     updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
             }
@@ -1430,5 +1468,87 @@ open class DynamicProductDetailViewModel @Inject constructor(
                 // noop
             }
         }
+    }
+
+    fun showProductMediaRecomBottomSheet(
+        title: String,
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ) {
+        launchCatchError(dispatcher.main, block = {
+            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                if (
+                    productMediaRecomBottomSheetData?.pageName == pageName &&
+                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                ) {
+                    productMediaRecomBottomSheetData
+                } else {
+                    setProductMediaRecomBottomSheetLoading(title)
+                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                }
+            }
+            setProductMediaRecomBottomSheetData(title, data)
+        }) {
+            setProductMediaRecomBottomSheetError(title = title, error = it)
+        }
+    }
+
+    fun dismissProductMediaRecomBottomSheet() {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    private suspend fun loadProductMediaRecomBottomSheetData(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ): ProductMediaRecomBottomSheetData {
+        val requestParams = GetRecommendationRequestParam(
+            pageNumber = DEFAULT_PAGE_NUMBER,
+            pageName = pageName,
+            productIds = arrayListOf(productId),
+            isTokonow = isTokoNow
+        )
+        val response = getRecommendationUseCase
+            .get()
+            .getData(requestParams)
+            .first()
+            .copy(title = String.EMPTY)
+        return ProductMediaRecomBottomSheetData(
+            pageName = pageName,
+            recommendationWidget = response
+        ).also { _productMediaRecomBottomSheetData = it }
+    }
+
+    private fun setProductMediaRecomBottomSheetLoading(title: String) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Loading(
+            title = title
+        )
+    }
+
+    private fun setProductMediaRecomBottomSheetData(
+        title: String,
+        data: ProductMediaRecomBottomSheetData
+    ) {
+        _productMediaRecomBottomSheetState.value = if (
+            data.recommendationWidget.recommendationItemList.isEmpty()
+        ) {
+            ProductMediaRecomBottomSheetState.Dismissed
+        } else {
+            ProductMediaRecomBottomSheetState.ShowingData(
+                title = title,
+                recomWidgetData = data.recommendationWidget
+            )
+        }
+    }
+
+    private fun setProductMediaRecomBottomSheetError(
+        title: String,
+        error: Throwable
+    ) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.ShowingError(
+            title = title,
+            error = error
+        )
     }
 }

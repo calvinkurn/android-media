@@ -3,9 +3,7 @@ package com.tokopedia.logisticorder.view.pod.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.logisticCommon.data.constant.PodConstant
-import timber.log.Timber
 
 /**
  * Created by irpan on 28/04/22.
@@ -38,6 +36,4 @@ class ProofOfDeliveryActivity : BaseSimpleActivity() {
     private fun initHideActionBar() {
         supportActionBar?.hide()
     }
-
 }
-

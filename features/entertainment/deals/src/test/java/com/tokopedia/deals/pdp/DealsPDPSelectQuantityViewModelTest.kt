@@ -1,6 +1,7 @@
 package com.tokopedia.deals.pdp
 
 import com.tokopedia.common_entertainment.data.DealsVerifyResponse
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -8,9 +9,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 
 class DealsPDPSelectQuantityViewModelTest: DealsPDPSelectQuantityViewModelTestFixture() {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `when getting verify data should run and give the success result`() {
