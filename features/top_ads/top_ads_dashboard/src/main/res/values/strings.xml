@@ -533,6 +533,14 @@
     <string name="topads_dash_suggestion">Saran Topads</string>
     <string name="topads_click_saran_topads">Cek Saran TopAds</string>
     <string name="topads_read_saran_articles">Baca Artikel</string>
+    <string name="topads_insight_number_of_searches">Jumlah Pencarian</string>
+    <string name="topads_insight_show_potential">Potensi Tampil</string>
+    <string name="topads_insight_keyword_cost">Biaya Kata Kunci</string>
     <string name="topads_what_is_saran_topads_question">Apa itu Saran TopAds?</string>
+    <string name="topads_insight_current_cost">Biaya Saat Ini</string>
+    <string name="topads_insight_recommended">Disarankan</string>
+    <string name="topads_insight_current_budget">Anggaran Saat Ini</string>
+    <string name="topads_insight_daily_budget">Anggaran Harian</string>
+    <string name="topads_insight_savings_potential">Potensi Hemat</string>
 </resources>
 
