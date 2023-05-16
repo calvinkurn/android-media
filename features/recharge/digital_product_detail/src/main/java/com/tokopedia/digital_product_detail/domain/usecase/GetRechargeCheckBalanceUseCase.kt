@@ -1,7 +1,7 @@
 package com.tokopedia.digital_product_detail.domain.usecase
 
 import com.tokopedia.common.topupbills.data.requests.DigiPersoRequestParam
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
 import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeCheckBalanceUseCase.Companion.QUERY_NAME_RECHARGE_CHECK_BALANCE
 import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeCheckBalanceUseCase.Companion.QUERY_RECHARGE_CHECK_BALANCE
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -14,10 +14,10 @@ import javax.inject.Inject
 @GqlQuery(QUERY_NAME_RECHARGE_CHECK_BALANCE, QUERY_RECHARGE_CHECK_BALANCE)
 class GetRechargeCheckBalanceUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<DigitalPersoData>(graphqlRepository) {
+): GraphqlUseCase<DigitalDigiPersoGetPersonalizedItem>(graphqlRepository) {
 
     init {
-        setTypeClass(DigitalPersoData::class.java)
+        setTypeClass(DigitalDigiPersoGetPersonalizedItem::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setGraphqlQuery(RechargeCheckBalanceQuery())
     }
@@ -40,7 +40,7 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
         setRequestParams(params)
     }
 
-    override suspend fun executeOnBackground(): DigitalPersoData {
+    override suspend fun executeOnBackground(): DigitalDigiPersoGetPersonalizedItem {
         return super.executeOnBackground()
     }
 
@@ -49,27 +49,28 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
 
         const val QUERY_NAME_RECHARGE_CHECK_BALANCE = "RechargeCheckBalanceQuery"
         const val QUERY_RECHARGE_CHECK_BALANCE = """
-            query rechargeCheckBalanceOtp(${'$'}input: DigiPersoGetPersonalizedItemsRequest!) {
+            query digiPersoGetPersonalizedItems(
+              ${'$'}input: DigiPersoGetPersonalizedItemsRequest!
+            ) {
               digiPersoGetPersonalizedItems(input: ${'$'}input) {
-                items {
+                 items {
                   title
+                  subtitle
+                  iconURL
+                  mediaURL
+                  label1
+                  textLink
+                  appLink
+                  mediaURL
+                  mediaUrlType
                   campaignLabelText
                   campaignLabelTextColor
-                  iconURL
                   widgets {
                     title
                     subtitle
                     iconURL
                   }
-                  products {
-                    title
-                    subtitle
-                    subtitleColor
-                    applink
-                    weblink
-                  }
-                }
-                __typename
+                 }
               }
             }
         """

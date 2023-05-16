@@ -1,16 +1,20 @@
 package com.tokopedia.digital_product_detail.data.mapper
 
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoData
-import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoProduct
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoWidget
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPBottomSheetModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceProductModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceWidgetModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import javax.inject.Inject
 
 class DigitalPersoMapper @Inject constructor() {
 
-    fun mapDigiPersoToCheckBalanceOTPModel(data: DigitalPersoData): DigitalCheckBalanceOTPModel {
+    fun mapDigiPersoToCheckBalanceOTPModel(data: DigitalPersoData): DigitalCheckBalanceModel {
         val persoItem = data.items.getOrNull(0)
-        return DigitalCheckBalanceOTPModel(
+        return DigitalCheckBalanceModel(
             subtitle = persoItem?.subtitle.toEmptyStringIfNull(),
             label = "testing",
             bottomSheetModel = DigitalCheckBalanceOTPBottomSheetModel(
@@ -19,7 +23,39 @@ class DigitalPersoMapper @Inject constructor() {
                 description = persoItem?.label1.toEmptyStringIfNull(),
                 buttonText = persoItem?.textLink.toEmptyStringIfNull(),
                 buttonAppLink = persoItem?.appLink.toEmptyStringIfNull()
-            )
+            ),
+            campaignLabelText = persoItem?.campaignLabelText.toEmptyStringIfNull(),
+            campaignLabelTextColor = persoItem?.campaignLabelTextColor.toEmptyStringIfNull(),
+            iconUrl = persoItem?.iconUrl.toEmptyStringIfNull(),
+            widgets = mapDigiPersoWidgetToCheckBalanceWidgetModel(persoItem?.widgets),
+            products = mapDigiPersoProductToCheckBalanceProductModel(persoItem?.products),
+            widgetType = persoItem?.mediaUrlType.toEmptyStringIfNull()
         )
+    }
+
+    private fun mapDigiPersoWidgetToCheckBalanceWidgetModel(
+        widgets: List<DigitalPersoWidget>?
+    ): List<DigitalCheckBalanceWidgetModel> {
+        return widgets?.map {
+            DigitalCheckBalanceWidgetModel(
+                title = it.title,
+                subtitle = it.subtitle,
+                iconUrl = it.iconUrl
+            )
+        } ?: emptyList()
+    }
+
+    private fun mapDigiPersoProductToCheckBalanceProductModel(
+        products: List<DigitalPersoProduct>?
+    ): List<DigitalCheckBalanceProductModel> {
+        return products?.map {
+            DigitalCheckBalanceProductModel(
+                title = it.title,
+                subtitle = it.subtitle,
+                subtitleColor = it.subtitleColor,
+                applink = it.applink,
+                buttonText = it.buttonText
+            )
+        } ?: emptyList()
     }
 }

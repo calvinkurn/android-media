@@ -25,7 +25,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -99,9 +99,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
-    private val _indosatCheckBalanceOTP = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceOTPModel>>()
-    val indosatCheckBalanceOTP: LiveData<RechargeNetworkResult<DigitalCheckBalanceOTPModel>>
-        get() = _indosatCheckBalanceOTP
+    private val _indosatCheckBalance = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>()
+    val indosatCheckBalance: LiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>
+        get() = _indosatCheckBalance
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -246,24 +246,24 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeCheckBalanceOTPLoading() {
-        _indosatCheckBalanceOTP
+    fun setRechargeCheckBalanceLoading() {
+        _indosatCheckBalance.value = RechargeNetworkResult.Loading
     }
 
-    fun getRechargeCheckBalanceOTP(
+    fun getRechargeCheckBalance(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val persoData = repo.getRechargeCheckBalanceOTP(
+            val persoData = repo.getRechargeCheckBalance(
                 clientNumbers,
                 dgCategoryIds,
                 emptyList(),
                 DigitalPDPConstant.PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE
             )
-            _indosatCheckBalanceOTP.value = RechargeNetworkResult.Success(persoData)
+            _indosatCheckBalance.value = RechargeNetworkResult.Success(persoData)
         }) {
-            _indosatCheckBalanceOTP.value = RechargeNetworkResult.Fail(it)
+            _indosatCheckBalance.value = RechargeNetworkResult.Fail(it)
         }
     }
 

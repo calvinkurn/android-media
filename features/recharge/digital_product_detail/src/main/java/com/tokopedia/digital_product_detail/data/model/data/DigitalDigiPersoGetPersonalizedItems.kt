@@ -74,9 +74,9 @@ data class PersoRecommendationItem(
     @SerializedName("iconURL")
     val iconUrl: String,
     @SerializedName("widgets")
-    val widgets: DigitalPersoWidget,
+    val widgets: List<DigitalPersoWidget>,
     @SerializedName("products")
-    val products: DigitalPersoProduct
+    val products: List<DigitalPersoProduct>
 )
 
 data class DigitalPersoWidget(
@@ -96,7 +96,9 @@ data class DigitalPersoProduct(
     @SerializedName("subtitleColor")
     val subtitleColor: String,
     @SerializedName("applink")
-    val applink: String
+    val applink: String,
+    @SerializedName("buttonText")
+    val buttonText: String
 )
 
 data class TrackingData(
