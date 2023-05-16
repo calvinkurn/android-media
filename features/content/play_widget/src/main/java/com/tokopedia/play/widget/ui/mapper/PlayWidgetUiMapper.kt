@@ -110,6 +110,7 @@ class PlayWidgetUiMapper @Inject constructor(
             recommendationType = item.recommendationType,
             hasAction = shouldHaveActionMenu(widgetType, item.partner.id),
             channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = widgetType),
+            products = emptyList(), //TODO()
         )
     }
 

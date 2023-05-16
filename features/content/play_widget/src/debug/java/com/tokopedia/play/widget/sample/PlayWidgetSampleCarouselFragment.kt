@@ -18,6 +18,7 @@ import com.tokopedia.play.widget.ui.carousel.PlayWidgetUpcomingContentViewHolder
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetVideoContentViewHolder
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -38,6 +39,13 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
                 ) {
 
                 }
+
+                override fun onProductClicked(
+                    viewHolder: PlayWidgetVideoContentViewHolder,
+                    product: PlayWidgetProduct
+                ) {
+
+                }
             },
             object : PlayWidgetUpcomingContentViewHolder.Listener {
                 override fun onReminderClicked(
@@ -45,7 +53,7 @@ class PlayWidgetSampleCarouselFragment : Fragment() {
                     data: PlayWidgetChannelUiModel,
                     isReminded: Boolean
                 ) {
-                    TODO("Not yet implemented")
+
                 }
             }
         )

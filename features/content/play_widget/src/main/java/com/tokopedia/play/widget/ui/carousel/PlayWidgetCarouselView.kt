@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.setMute
@@ -54,6 +55,13 @@ class PlayWidgetCarouselView : ConstraintLayout {
                     } else it
                 }
                 setupChannels(mModel.copy(items = newItems))
+            }
+
+            override fun onProductClicked(
+                viewHolder: PlayWidgetVideoContentViewHolder,
+                product: PlayWidgetProduct
+            ) {
+
             }
         },
         object : PlayWidgetUpcomingContentViewHolder.Listener {

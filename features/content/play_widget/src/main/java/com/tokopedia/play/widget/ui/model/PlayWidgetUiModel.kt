@@ -66,6 +66,7 @@ data class PlayWidgetChannelUiModel(
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
+    val products: List<PlayWidgetProduct>,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
     val gridType: PlayGridType = PlayGridType.Unknown,
     val extras: Map<String, Any> = emptyMap(),
@@ -85,4 +86,10 @@ data class PlayWidgetTotalView(
     val isVisible: Boolean,
 )
 
-object PlayCardShimmering: PlayWidgetItemUiModel()
+data class PlayWidgetProduct(
+    val id: String,
+    val name: String,
+    val imageUrl: String,
+    val appLink: String,
+    val priceFmt: String,
+)

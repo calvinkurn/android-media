@@ -109,26 +109,37 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="8dp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/rv_products"
+        app:layout_constraintBottom_toTopOf="@id/scrollable_host_products"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_goneMarginBottom="12dp"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_products"
+    <com.tokopedia.play_common.ui.custom.NestedScrollableHost
+        android:id="@+id/scrollable_host_products"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_height="58dp"
-        />
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_play_widget_carousel_product"
+            />
+
+    </com.tokopedia.play_common.ui.custom.NestedScrollableHost>
 
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

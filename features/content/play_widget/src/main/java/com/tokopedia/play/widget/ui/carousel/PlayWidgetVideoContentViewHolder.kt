@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.databinding.ItemPlayWidgetLiveContentBinding
+import com.tokopedia.play.widget.databinding.ItemPlayWidgetVideoContentBinding
+import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductAdapter
+import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductItemDecoration
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -15,18 +18,36 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  * Created by kenny.hadisaputra on 04/05/23
  */
 class PlayWidgetVideoContentViewHolder(
-    private val binding: ItemPlayWidgetLiveContentBinding,
+    private val binding: ItemPlayWidgetVideoContentBinding,
     private val listener: Listener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    private val adapter = PlayWidgetCarouselProductAdapter(
+        object : PlayWidgetCarouselProductAdapter.ViewHolder.Listener {
+            override fun onClicked(
+                viewHolder: PlayWidgetCarouselProductAdapter.ViewHolder,
+                product: PlayWidgetProduct
+            ) {
+                listener.onProductClicked(this@PlayWidgetVideoContentViewHolder, product)
+            }
+        }
+    )
     init {
         setMuted(true)
+
+        binding.rvProducts.adapter = adapter
+        binding.rvProducts.addItemDecoration(
+            PlayWidgetCarouselProductItemDecoration(binding.rvProducts.context)
+        )
     }
+
     fun bind(data: PlayWidgetChannelUiModel) {
         binding.tvLiveBadge.showWithCondition(data.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = data.totalView.totalViewFmt
         binding.viewPlayWidgetCaption.root.text = data.title
         binding.viewPlayWidgetPartnerInfo.tvName.text = data.partner.name
+
+        adapter.submitList(data.products)
 
         setMuted(data.isMuted)
         setMutedListener(data)
@@ -72,7 +93,7 @@ class PlayWidgetVideoContentViewHolder(
 
         fun create(parent: ViewGroup, listener: Listener): PlayWidgetVideoContentViewHolder {
             return PlayWidgetVideoContentViewHolder(
-                ItemPlayWidgetLiveContentBinding.inflate(
+                ItemPlayWidgetVideoContentBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
@@ -87,6 +108,11 @@ class PlayWidgetVideoContentViewHolder(
             viewHolder: PlayWidgetVideoContentViewHolder,
             data: PlayWidgetChannelUiModel,
             shouldMute: Boolean,
+        )
+
+        fun onProductClicked(
+            viewHolder: PlayWidgetVideoContentViewHolder,
+            product: PlayWidgetProduct,
         )
     }
 }
