@@ -12,7 +12,6 @@ class GetPromoVoucherListMapper @Inject constructor() {
                 ExclusiveLaunchVoucher(
                     id = voucher.id,
                     voucherName = voucher.title,
-                    benefitMax = 1,
                     minimumPurchase = 1,
                     remainingQuota = voucher.quota,
                     source = ExclusiveLaunchVoucher.VoucherSource.PROMO

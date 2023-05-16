@@ -13,7 +13,6 @@ class GetMerchantVoucherListMapper @Inject constructor() {
                 ExclusiveLaunchVoucher(
                     id = voucher.id.toLongOrZero(),
                     voucherName = voucher.title,
-                    benefitMax = voucher.maximumBenefitAmount,
                     minimumPurchase = voucher.minimumUsageAmount,
                     remainingQuota = voucher.quotaLeft,
                     source = ExclusiveLaunchVoucher.VoucherSource.MERCHANT_CREATED
