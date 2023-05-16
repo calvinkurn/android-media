@@ -13,9 +13,10 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMockMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertTrue
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -61,6 +62,7 @@ class PlayBroadcastPreparationMenuViewModelTest {
     private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     private val menuList = listOf(
         DynamicPreparationMenu.createTitle(true),
@@ -87,6 +89,8 @@ class PlayBroadcastPreparationMenuViewModelTest {
         coEvery { mockRepo.downloadModel(any()) } returns true
         coEvery { mockRepo.downloadCustomFace(any()) } returns true
         coEvery { mockRepo.downloadPresetAsset(any(), any()) } returns true
+
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
     @Test
@@ -98,6 +102,7 @@ class PlayBroadcastPreparationMenuViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -237,5 +242,53 @@ class PlayBroadcastPreparationMenuViewModelTest {
         }
     }
 
-    /** TODO: add test for FACE_FILTER menu */
+    @Test
+    fun `playBroadcast_menu_faceFilterDisabledFromRemoteConfig`() {
+
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+            }
+
+            val faceFilter = state.menuList.firstOrNull { menu -> menu.menu == DynamicPreparationMenu.Menu.FaceFilter }
+
+            assert(faceFilter == null)
+        }
+    }
+
+    @Test
+    fun `playBroadcast_menu_faceFilterFilled`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+            }
+
+            val faceFilter = state.menuList.firstOrNull { menu -> menu.menu == DynamicPreparationMenu.Menu.FaceFilter } ?: fail("Face Filter shouldn't be null")
+
+            faceFilter.isChecked.assertTrue()
+        }
+    }
 }
