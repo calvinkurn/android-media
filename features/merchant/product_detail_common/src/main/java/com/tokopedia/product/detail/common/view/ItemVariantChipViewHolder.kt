@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
@@ -21,6 +23,9 @@ class ItemVariantChipViewHolder(val view: View,
     }
 
     private val chipVariant = view.findViewById<ChipsUnify>(R.id.atc_variant_chip)
+    private val variantPromoIcon by lazy {
+        view.findViewById<ImageView>(R.id.atc_variant_chip_promo_icon)
+    }
 
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
@@ -41,9 +46,8 @@ class ItemVariantChipViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         setViewListener(element, VariantConstant.IGNORE_STATE)
-        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
-                && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
-        renderFlashSale(shouldShowFlashSale, element.flashSale)
+
+        renderFlashSale(element = element)
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
@@ -62,10 +66,11 @@ class ItemVariantChipViewHolder(val view: View,
         }
     }
 
-    private fun renderFlashSale(shouldRender: Boolean, isCampaignActive: Boolean) {
-        chipVariant.chip_new_notification.showIfWithBlock(shouldRender && isCampaignActive){
-            text = resources.getString(R.string.atc_variant_promo)
-        }
+    private fun renderFlashSale(element: VariantOptionWithAttribute) {
+        val isCampaignActive = element.flashSale
+        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
+            && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+        variantPromoIcon.showWithCondition(shouldShowFlashSale && isCampaignActive)
     }
 
     private fun setViewListener(element: VariantOptionWithAttribute, state: Int) {
