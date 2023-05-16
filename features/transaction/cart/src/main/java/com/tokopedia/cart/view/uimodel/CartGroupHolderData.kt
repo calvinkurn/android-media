@@ -23,7 +23,7 @@ data class CartGroupHolderData(
     var isFreeShippingExtra: Boolean = false,
     var freeShippingBadgeUrl: String = "",
     var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-    var hasSeenFreeShippingBadge: BooAlean = false, // flag for tracker
+    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     var maximumWeightWording: String = "",
     var maximumShippingWeight: Double = 0.0,
     var totalWeight: Double = 0.0,
