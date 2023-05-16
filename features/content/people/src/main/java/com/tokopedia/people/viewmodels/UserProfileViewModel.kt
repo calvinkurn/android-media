@@ -280,10 +280,17 @@ class UserProfileViewModel @AssistedInject constructor(
             val response = repo.getUserReviewList(
                 userID = profileUserID,
                 limit = DEFAULT_LIMIT,
-                page = currReviewContent.page
+                page = _reviewContent.value.page
             )
 
-            _reviewContent.update { response }
+            _reviewContent.update {
+                it.copy(
+                    reviewList = it.reviewList + response.reviewList,
+                    page = response.page,
+                    hasNext = response.hasNext,
+                    status = response.status,
+                )
+            }
         }) {
             _reviewContent.update { userReview ->
                 userReview.copy(status = UserReviewUiModel.Status.Error)

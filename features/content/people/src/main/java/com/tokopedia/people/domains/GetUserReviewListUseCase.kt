@@ -78,6 +78,7 @@ class GetUserReviewListUseCase @Inject constructor(
                         likeStatus
                     }
                   }
+                  hasNext
                 }
             }
         """

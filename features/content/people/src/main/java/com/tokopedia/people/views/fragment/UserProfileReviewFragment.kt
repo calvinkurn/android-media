@@ -79,7 +79,7 @@ class UserProfileReviewFragment @Inject constructor(
                 }
             },
             onLoading = {
-                viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = false))
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = false))
             }
         )
     }
