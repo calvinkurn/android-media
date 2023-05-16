@@ -122,7 +122,11 @@ class ProductHighlightItem(
             productHighlightView = singleBinding?.root as ConstraintLayout
             with(singleBinding) {
                 if (this != null) {
-                    bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                    try {
+                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
+                    }
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
                         bgImageSupergraphic.loadImageWithoutPlaceholder(properties?.supergraphicImageUrl)
@@ -230,7 +234,11 @@ class ProductHighlightItem(
             productHighlightView = multipleBinding?.root as ConstraintLayout
             with(multipleBinding) {
                 if (this != null) {
-                    bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                    try {
+                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
+                    }
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
                         bgImageSupergraphic.loadImageWithoutPlaceholder(properties?.supergraphicImageUrl)
@@ -347,7 +355,8 @@ class ProductHighlightItem(
                     context.resources.getDimensionPixelOffset(R.dimen.dp_4),
                     context.resources.getDimensionPixelOffset(R.dimen.dp_2),
                     context.resources.getDimensionPixelOffset(R.dimen.dp_4),
-                    context.resources.getDimensionPixelOffset(R.dimen.dp_2))
+                    context.resources.getDimensionPixelOffset(R.dimen.dp_2)
+                )
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
