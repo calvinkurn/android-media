@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAG
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.result.mps.addtocart.AddToCartViewModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterViewModel
@@ -23,6 +24,7 @@ import com.tokopedia.search.utils.mvvm.SearchViewModel
 import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,6 +43,7 @@ class MPSViewModel @Inject constructor(
     private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
     private val mpsLocalCache: MpsLocalCache,
+    private val userSession: UserSessionInterface,
 ): ViewModel(),
     SearchViewModel<MPSState>,
     QuickFilterViewModel,
@@ -84,10 +87,7 @@ class MPSViewModel @Inject constructor(
         mpsFirstPageUseCase.execute(
             onSuccess = { mpsModel ->
                 updateState {
-                    // should change to check response code when it become available
-                    if (mpsModel.shopList.isNotEmpty() && !mpsLocalCache.isFirstMpsSuccess()) {
-                        mpsLocalCache.markFirstMpsSuccess()
-                    }
+                    markFirstMpsSuccess(mpsModel)
                     it.success(mpsModel)
                 }
             },
@@ -96,8 +96,11 @@ class MPSViewModel @Inject constructor(
         )
     }
 
-    private fun markFirstMpsSuccess() {
-
+    private fun markFirstMpsSuccess(mpsModel: MPSModel) {
+        // should change to check response code when it become available
+        if (mpsModel.shopList.isNotEmpty() && !mpsLocalCache.isFirstMpsSuccess()) {
+            mpsLocalCache.markFirstMpsSuccess()
+        }
     }
 
     private fun mpsUseCaseRequestParams(): RequestParams = RequestParams.create().apply {
@@ -106,8 +109,18 @@ class MPSViewModel @Inject constructor(
         putString(ROWS, DEFAULT_VALUE_OF_PARAMETER_ROWS)
     }
 
-    private fun mandatoryParams(): Map<String, String> =
-        mpsState.parameter + chooseAddressParams()
+    private fun mandatoryParams(): Map<String, String> = mpsState.parameter +
+            chooseAddressParams() +
+            uniqueIdParams()
+
+    private fun uniqueIdParams() = mapOf(
+        SearchApiConst.UNIQUE_ID to getUniqueId(),
+    )
+
+    private fun getUniqueId(): String {
+        return if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
+        else AuthHelper.getMD5Hash(userSession.deviceId)
+    }
 
     private fun chooseAddressParams() =
         chooseAddressModel?.toSearchParams() ?: mapOf()
