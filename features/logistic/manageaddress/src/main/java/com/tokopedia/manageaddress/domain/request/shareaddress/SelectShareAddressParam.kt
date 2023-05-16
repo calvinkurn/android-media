@@ -5,10 +5,10 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class SelectShareAddressParam(
     @SerializedName("param")
-    val param: SelectShareAddressData = SelectShareAddressData(),
+    val param: Param = Param()
 ) : GqlParam {
 
-    data class SelectShareAddressData(
+    data class Param(
         @SerializedName("source")
         val source: String = "",
         @SerializedName("receiver_user_id")

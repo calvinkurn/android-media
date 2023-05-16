@@ -193,4 +193,7 @@ object ProductDetailConstant {
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
     const val PDP_SOURCE_WISHLIST = "pdp"
+
+    const val HTTP_PREFIX = "http"
+    const val WEBVIEW_URL_PARAM = "url"
 }
