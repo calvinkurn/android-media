@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.WidgetRechargeCheckBalanceBinding
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.presentation.adapter.RechargeCheckBalanceUnitAdapter
@@ -43,5 +47,24 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
             )
         }
+    }
+
+    fun showWarningMessage(
+        message: String,
+        iconUrl: String,
+        onClick: () -> Unit
+    ) {
+        binding.run {
+            checkBalanceWarningContainer.show()
+            checkBalanceWarningIcon.loadImage(iconUrl)
+            checkBalanceWarningTxt.text = MethodChecker.fromHtml(message)
+            checkBalanceWarningContainer.setOnClickListener {
+                onClick.invoke()
+            }
+        }
+    }
+
+    fun hideWarningMessage() {
+        binding.checkBalanceWarningContainer.hide()
     }
 }
