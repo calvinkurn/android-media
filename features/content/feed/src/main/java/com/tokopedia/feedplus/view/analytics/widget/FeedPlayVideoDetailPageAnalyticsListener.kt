@@ -6,12 +6,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
-import java.util.*
 import javax.inject.Inject
 
 class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
     private val tracker: PlayAnalyticsTracker,
-    userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) : PlayWidgetAnalyticListener {
 
     var filterCategory: String = ""
@@ -24,9 +23,10 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
         mOnClickChannelCardListener = callback
     }
 
-    companion object {
-        const val DEFAULT_FILTER_VALUE = ""
+    companion object{
+         const val DEFAULT_FILTER_VALUE = ""
     }
+
 
     override fun onClickChannelCard(
         view: PlayWidgetLargeView,
@@ -34,16 +34,12 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
     ) {
-        val filterCategory = filterCategory.ifEmpty { DEFAULT_FILTER_VALUE }
-        tracker.clickOnContentCardsInContentListPageForLagiLive(
-            item.channelId,
-            shopId,
-            listOf(item.video.coverUrl),
-            item.channelType.toString().lowercase(Locale.getDefault()),
-            filterCategory,
-            channelPositionInList,
-            entryPoint
-        )
+        val filterCategory = if (filterCategory.isNotEmpty()) filterCategory else DEFAULT_FILTER_VALUE
+            tracker.clickOnContentCardsInContentListPageForLagiLive(
+                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelType.toString().toLowerCase(), filterCategory, channelPositionInList,
+                entryPoint
+            )
 
         mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
     }
@@ -54,17 +50,14 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
     ) {
-        val filterCategory = filterCategory.ifEmpty { DEFAULT_FILTER_VALUE }
+        val filterCategory = if (filterCategory.isNotEmpty()) filterCategory else DEFAULT_FILTER_VALUE
 
-        tracker.impressOnContentCardsInContentListPageForLagiLive(
-            item.channelId,
-            shopId,
-            listOf(item.video.coverUrl),
-            item.channelType.toString().lowercase(Locale.getDefault()),
-            filterCategory,
-            channelPositionInList,
-            entryPoint
-        )
+            tracker.impressOnContentCardsInContentListPageForLagiLive(
+                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelType.toString().toLowerCase(), filterCategory, channelPositionInList,
+                entryPoint
+            )
+
 
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import android.os.Build
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.play.broadcaster.R
@@ -13,11 +14,8 @@ import com.tokopedia.play.broadcaster.R
 /**
  * @author by furqan on 03/06/2020
  */
-class PlayRectCropImageOverlay @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : AppCompatImageView(context, attrs, defStyleAttr) {
+class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : AppCompatImageView(context, attrs, defStyleAttr) {
 
     private var mTransparentPaint: Paint = Paint()
     private var mSemiPaint: Paint
@@ -54,27 +52,39 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(
         rightPosition = right - ((right - left) / 2) + (rectWidth / 2)
         bottomPosition = rectHeight
 
-        mPath.addRoundRect(
-            leftPosition,
-            topPosition,
-            rightPosition,
-            bottomPosition,
-            CENTER_RECT_RADIUS,
-            CENTER_RECT_RADIUS,
-            Path.Direction.CW
-        )
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mPath.addRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
+                    Path.Direction.CW)
+        } else {
+            mPath.addRoundRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
+                    CENTER_RECT_RADIUS,
+                    CENTER_RECT_RADIUS,
+                    Path.Direction.CW)
+        }
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
 
         // draw transparent center rect
-        canvas.drawRoundRect(
-            leftPosition,
-            topPosition,
-            rightPosition,
-            bottomPosition,
-            CENTER_RECT_RADIUS,
-            CENTER_RECT_RADIUS,
-            mTransparentPaint
-        )
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
+                    mTransparentPaint)
+        } else {
+            canvas.drawRoundRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
+                    CENTER_RECT_RADIUS,
+                    CENTER_RECT_RADIUS,
+                    mTransparentPaint)
+        }
 
         canvas.drawPath(mPath, mSemiPaint)
         canvas.clipPath(mPath)
@@ -82,7 +92,7 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(
     }
 
     fun getCropRect(): RectF =
-        RectF(leftPosition, topPosition, rightPosition, bottomPosition)
+            RectF(leftPosition, topPosition, rightPosition, bottomPosition)
 
     companion object {
         private const val CENTER_RECT_RADIUS = 20f
