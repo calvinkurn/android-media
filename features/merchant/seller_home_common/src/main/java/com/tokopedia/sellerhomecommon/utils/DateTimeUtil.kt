@@ -15,6 +15,7 @@ object DateTimeUtil {
     private const val COUNTRY_ID = "ID"
     private const val LANGUAGE_ID = "in"
     const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
+    const val FORMAT_DD_MMM_YY = "dd MMM yy"
     const val FORMAT_HOUR_24 = "HH:00"
     const val FORMAT_DD_MMMM_YYYY = "$FORMAT_DD_MMM_YYYY, $FORMAT_HOUR_24"
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"

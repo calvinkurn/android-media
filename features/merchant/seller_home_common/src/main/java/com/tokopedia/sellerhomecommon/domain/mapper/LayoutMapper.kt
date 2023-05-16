@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DataTemplateUtils
 import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -373,7 +374,7 @@ class LayoutMapper @Inject constructor(
             id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
-            subtitle = widget.subtitle.orEmpty(),
+            subtitle = DataTemplateUtils.parseDateTemplate(widget.subtitle.orEmpty()),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
