@@ -106,6 +106,73 @@ class FeedPostImageViewHolder(
                     }
                 }
             })
+
+            postLikeButton.likeButton.setOnClickListener {
+                val data = mData ?: return@setOnClickListener
+                listener.onLikePostCLicked(
+                    data.id,
+                    absoluteAdapterPosition,
+                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
+                        data
+                    ),
+                    false
+                )
+            }
+
+            val postGestureDetector = GestureDetector(
+                    root.context,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                        return true
+                    }
+
+                    override fun onDoubleTap(e: MotionEvent): Boolean {
+                        val data = mData ?: return true
+                        if (data.like.isLiked.not() && !data.isTopAds) {
+                            listener.onLikePostCLicked(
+                                data.id,
+                                absoluteAdapterPosition,
+                                trackerDataModel
+                                    ?: trackerMapper.transformImageContentToTrackerModel(
+                                        data
+                                    ),
+                                true
+                            )
+                        }
+                        return true
+                    }
+
+                    override fun onDown(e: MotionEvent): Boolean {
+                        return true
+                    }
+
+                    override fun onLongPress(e: MotionEvent) {
+                    }
+                }
+                )
+
+            rvFeedPostImageContent.setOnTouchListener { _, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        firstX = event.x
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        secondX = event.x
+                        val deltaX = secondX - firstX
+                        if (abs(deltaX) > MINIMUM_DISTANCE_SWIPE) {
+                            isAutoSwipeOn = false
+                            val data = mData
+                            if (data != null) {
+                                listener.onSwipeMultiplePost(
+                                    trackerDataModel
+                                        ?: trackerMapper.transformImageContentToTrackerModel(data)
+                                )
+                            }
+                        }
+                    }
+                }
+                postGestureDetector.onTouchEvent(event)
+            }
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
@@ -126,51 +193,7 @@ class FeedPostImageViewHolder(
 
                     bindLike(data)
                     bindComments(data)
-
-                    postLikeButton.likeButton.setOnClickListener {
-                        listener.onLikePostCLicked(
-                            data.id,
-                            data.like.isLiked,
-                            absoluteAdapterPosition,
-                            trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(
-                                data
-                            ),
-                            false
-                        )
-                    }
                 }
-
-                val postGestureDetector = GestureDetector(
-                    root.context,
-                    object : GestureDetector.SimpleOnGestureListener() {
-                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            return true
-                        }
-
-                        override fun onDoubleTap(e: MotionEvent): Boolean {
-                            if (data.like.isLiked.not() && !data.isTopAds) {
-                                listener.onLikePostCLicked(
-                                    data.id,
-                                    data.like.isLiked,
-                                    absoluteAdapterPosition,
-                                    trackerDataModel
-                                        ?: trackerMapper.transformImageContentToTrackerModel(
-                                            data
-                                        ),
-                                    true
-                                )
-                            }
-                            return true
-                        }
-
-                        override fun onDown(e: MotionEvent): Boolean {
-                            return true
-                        }
-
-                        override fun onLongPress(e: MotionEvent) {
-                        }
-                    }
-                )
 
                 bindAuthor(data)
                 bindCaption(data)
@@ -205,29 +228,13 @@ class FeedPostImageViewHolder(
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
                 }
-
-                rvFeedPostImageContent.setOnTouchListener { _, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            firstX = event.x
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            secondX = event.x
-                            val deltaX = secondX - firstX
-                            if (abs(deltaX) > MINIMUM_DISTANCE_SWIPE) {
-                                isAutoSwipeOn = false
-                                listener.onSwipeMultiplePost(trackerData)
-                            }
-                        }
-                    }
-                    postGestureDetector.onTouchEvent(event)
-                }
             }
         }
     }
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
+        mData = element
         element?.let {
             trackerDataModel = trackerMapper.transformImageContentToTrackerModel(it)
 
@@ -409,7 +416,7 @@ class FeedPostImageViewHolder(
     private fun bindLike(feedCardModel: FeedCardImageContentModel) {
         val like = feedCardModel.like
         binding.postLikeButton.likedText.text = like.countFmt
-        likeAnimationView.setIsLiked(like.isLiked)
+        smallLikeAnimationView.setIsLiked(like.isLiked)
     }
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {

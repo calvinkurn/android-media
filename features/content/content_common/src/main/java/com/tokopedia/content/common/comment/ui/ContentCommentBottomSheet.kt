@@ -168,17 +168,18 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    //to escape Emoji length
+    // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
         var count = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val it: BreakIterator = BreakIterator.getCharacterInstance()
-             it.setText(this)
-             while (it.next() != BreakIterator.DONE) {
-                 count++
-             }
-         } else
-             count = binding.newComment?.text?.length.orZero()
+            it.setText(this)
+            while (it.next() != BreakIterator.DONE) {
+                count++
+            }
+        } else {
+            count = binding.newComment?.text?.length.orZero()
+        }
         return count
     }
 
@@ -204,6 +205,7 @@ class ContentCommentBottomSheet @Inject constructor(
         setupView()
         observeData()
         observeEvent()
+        refreshData()
     }
 
     private fun setupBottomSheet() {
@@ -240,7 +242,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, 16.toPx() + height)
+                binding.root.setPadding(0, 0, 0, keyboardHeight)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
@@ -452,7 +454,6 @@ class ContentCommentBottomSheet @Inject constructor(
         val avatar =
             if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
-        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     private fun showKeyboard(needToShow: Boolean) {
@@ -461,14 +462,12 @@ class ContentCommentBottomSheet @Inject constructor(
         if (needToShow) {
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
             binding.newComment.apply {
-                isFocusable = true
-                isFocusableInTouchMode = true
+                requestFocus()
             }
         } else {
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
             binding.newComment.apply {
-                isFocusable = false
-                isFocusableInTouchMode = false
+                clearFocus()
             }
         }
     }
@@ -601,6 +600,10 @@ class ContentCommentBottomSheet @Inject constructor(
         analytics = tracker
     }
 
+    private fun refreshData() {
+        viewModel.submitAction(CommentAction.RefreshComment)
+    }
+
     interface EntrySource {
         fun getPageSource(): PageSource
 
@@ -611,7 +614,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.35
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140

@@ -49,7 +49,7 @@ class FeedMainViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
-    private val uiEventManager: UiEventManager<FeedMainEvent>,
+    private val uiEventManager: UiEventManager<FeedMainEvent>
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
@@ -266,11 +266,11 @@ class FeedMainViewModel @Inject constructor(
             creatorList.add(it)
         }
 
-        authorShopDataList?.find {
+        authorUserdataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)
-        } ?: authorUserdataList?.find {
+        } ?: authorShopDataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)

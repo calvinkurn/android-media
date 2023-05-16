@@ -91,7 +91,6 @@ interface FeedListener {
 
     fun onLikePostCLicked(
         id: String,
-        isLiked: Boolean,
         rowNumber: Int,
         trackerModel: FeedTrackerDataModel,
         isDoubleClick: Boolean

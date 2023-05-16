@@ -38,7 +38,7 @@ enum class FeedCampaignRibbonType {
 
 class FeedCampaignRibbonView(
     private val binding: LayoutFeedCampaignRibbonMotionBinding,
-    private val listener: FeedListener,
+    private val listener: FeedListener
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -83,7 +83,7 @@ class FeedCampaignRibbonView(
             feedPosition = positionInFeed
 
             val shouldHideRibbon =
-                campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
+                campaign.shortName.isEmpty() && ctaModel.texts.isEmpty()
 
             if (!isTypeHighlight || shouldHideRibbon) {
                 root.hide()
@@ -247,8 +247,6 @@ class FeedCampaignRibbonView(
                 FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT -> {
                     if (!mCta?.texts.isNullOrEmpty()) {
                         tyFeedCampaignRibbonTitle.text = mCta?.texts!![0]
-                    } else {
-                        tyFeedCampaignRibbonTitle.text = mCta?.text
                     }
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
@@ -264,7 +262,7 @@ class FeedCampaignRibbonView(
                                         campaign,
                                         mHasVoucher,
                                         listOf(product),
-                                        trackerData,
+                                        trackerData
                                     )
                                 }
                             }

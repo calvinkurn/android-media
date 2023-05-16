@@ -15,7 +15,7 @@ import com.tokopedia.iconunify.IconUnify
  */
 object MapperFeedTabs {
     fun transform(
-        header: FeedXHeader,
+        header: FeedXHeader
     ): FeedTabsModel =
         FeedTabsModel(
             meta = MetaModel(
@@ -25,7 +25,7 @@ object MapperFeedTabs {
                 showMyProfile = header.data.userProfile.isShown,
                 isCreationActive = header.data.creation.isActive,
                 showLive = header.data.live.isActive,
-                liveApplink = header.data.live.applink,
+                liveApplink = header.data.live.applink
             ),
             data = header.data.tab.items.sortedBy { it.position }
                 .filter { it.isActive }.map {
@@ -41,11 +41,12 @@ object MapperFeedTabs {
 
     fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =
         header.data.creation.authors.map { author ->
+            val creatorType = CreatorType.values().find { it.value == author.type } ?: CreatorType.NONE
             ContentCreationItem(
                 id = author.id,
                 name = author.name,
                 image = author.image,
-                type = CreatorType.values().find { it.value == author.type } ?: CreatorType.NONE,
+                type = creatorType,
                 hasUsername = author.hasUsername,
                 hasAcceptTnC = author.hasAcceptTnC,
                 items = author.items.map {
@@ -59,7 +60,8 @@ object MapperFeedTabs {
                         drawableIconId = getDefaultDrawableForCreationOption(type = currentCreationType),
                         type = currentCreationType,
                         weblink = it.weblink,
-                        applink = it.applink
+                        applink = it.applink,
+                        creatorType = creatorType
                     )
                 }.toList()
             )

@@ -8,7 +8,8 @@ data class ContentCreationTypeItem(
     val type: CreateContentType,
     val applink: String = "",
     val weblink: String = "",
-    val imageSrc: String = ""
+    val imageSrc: String = "",
+    val creatorType: CreatorType
 )
 
 enum class CreateContentType(val value: String) {
