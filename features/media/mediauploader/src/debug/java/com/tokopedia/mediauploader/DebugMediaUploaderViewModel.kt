@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.ui.isVideo
 import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -138,7 +138,7 @@ class DebugMediaUploaderViewModel @Inject constructor(
     }
 
     private fun fileInfo(path: String): String {
-        val videoInfo = if (path.isVideo()) {
+        val videoInfo = if (path.asPickerFile().isVideo()) {
             val info = videoMetaDataExtractor.extract(path)
 
             buildString {
