@@ -18,11 +18,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetDecoration
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcWidgetMapper
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -35,8 +35,12 @@ import kotlinx.coroutines.launch
 /**
  * Created by frenzel on 27/03/23
  */
-class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<RecommendationComparisonBpcModel>, CoroutineScope,
-    ComparisonBpcAnalyticListener, LifecycleEventObserver {
+class ComparisonBpcWidgetView :
+    ConstraintLayout,
+    IRecommendationWidgetView<RecommendationComparisonBpcModel>,
+    CoroutineScope,
+    ComparisonBpcAnalyticListener,
+    LifecycleEventObserver {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -90,13 +94,20 @@ class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<Reco
                 binding?.run {
                     tvHeaderTitle.text = recommendationWidget.title
 
-                    val comparisonListModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
+                    val mappedModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
                         recommendationWidget,
                         comparisonBpcModel.trackingModel,
                         context
-                    ).toList()
+                    )
 
-                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel, comparisonBpcModel.trackingModel))
+                    val comparisonListModel = mappedModel.second.toList()
+                    val productAnchor = mappedModel.first
+
+                    if (productAnchor == null && comparisonListModel.isEmpty()) {
+                        gone()
+                        return@launch
+                    }
+                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel, trackingModel = comparisonBpcModel.trackingModel, productAnchor = productAnchor))
                 }
             }
         } catch (_: Exception) {
@@ -113,18 +124,19 @@ class ComparisonBpcWidgetView : ConstraintLayout, IRecommendationWidgetView<Reco
         }
     }
 
-    override fun onViewAllCardClicked(trackingModel: RecommendationWidgetTrackingModel) {
+    override fun onViewAllCardClicked(trackingModel: RecommendationWidgetTrackingModel, productAnchorId: String) {
         adapter.showNextPage()
-        ComparisonBpcWidgetTracking.sendClickSeeAll(trackingModel.androidPageName, userSession.userId)
+        ComparisonBpcWidgetTracking.sendClickSeeAll(trackingModel.androidPageName, userSession.userId, productAnchorId)
     }
 
-    override fun onProductCardImpressed(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String) {
+    override fun onProductCardImpressed(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String, widgetTitle: String) {
         ComparisonBpcWidgetTracking.putImpressionToQueue(
             trackingQueue = trackingQueue,
             recommendationItem = recommendationItem,
             androidPageName = trackingModel.androidPageName,
             anchorProductId = anchorProductId,
-            userId = userSession.userId
+            userId = userSession.userId,
+            widgetTitle = widgetTitle
         )
     }
 

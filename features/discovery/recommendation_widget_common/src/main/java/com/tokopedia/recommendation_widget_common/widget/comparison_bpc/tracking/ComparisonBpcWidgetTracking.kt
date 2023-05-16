@@ -7,12 +7,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_BRAND
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_CATEGORY
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_ID
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_PRICE
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_ID
@@ -51,14 +46,15 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
         androidPageName: String = "",
         userId: String = "",
         recommendationItem: RecommendationItem,
-        anchorProductId: String
+        anchorProductId: String,
+        widgetTitle: String
     ) {
         val isLogin = userId.isNotBlank()
         val data = DataLayer.mapOf(
             Event.KEY, Event.PRODUCT_VIEW,
             Category.KEY, androidPageName,
             Action.KEY, EVENT_ACTION_IMPRESSION.plus(if (isLogin) DEFAULT_VALUE else VALUE_NON_LOGIN),
-            Label.KEY, anchorProductId,
+            Label.KEY, "$anchorProductId - $widgetTitle",
             UserId.KEY, userId,
             ItemList.KEY,
             EVENT_LIST.format(
@@ -156,12 +152,12 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
     private fun mapRecommendationItemToDataClickBundle(item: RecommendationItem, list: String): Bundle {
         return Bundle().apply {
             putString(DIMENSION_40, list)
-            putString(ITEMS_PRODUCT_NAME, item.name)
-            putString(ITEMS_PRODUCT_ID, item.productId.toString())
-            putString(ITEMS_PRODUCT_BRAND, VALUE_NONE_OTHER)
+            putString(ITEM_NAME, item.name)
+            putString(ITEM_ID, item.productId.toString())
+            putString(ITEM_BRAND, VALUE_NONE_OTHER)
             putFloat(ITEMS_PRODUCT_PRICE, item.priceInt.toFloat())
-            putString(ITEMS_PRODUCT_VARIANT, VALUE_NONE_OTHER)
-            putString(ITEMS_PRODUCT_CATEGORY, item.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, VALUE_NONE_OTHER)
+            putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
             putInt(KEY_INDEX, item.position + 1)
         }
     }

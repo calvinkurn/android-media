@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcSeeMoreDataModel
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcDiffUtil
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.ComparisonBpcListModel
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util.ComparisonBpcDiffUtil
 
 /**
  * Created by Frenzel
  */
 class ComparisonBpcWidgetAdapter(
     var adapterTypeFactory: ComparisonBpcTypeFactory
-): RecyclerView.Adapter<AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>>>() {
+) : RecyclerView.Adapter<AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>>>() {
     private var comparisonBpcListModel = ComparisonBpcListModel()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -36,7 +36,7 @@ class ComparisonBpcWidgetAdapter(
         return comparisonBpcListModel.getListItemsToShow()[position].type(adapterTypeFactory)
     }
 
-    fun submitList(model: ComparisonBpcListModel){
+    fun submitList(model: ComparisonBpcListModel) {
         updateListAndCalculateDiff(model)
     }
 
@@ -49,19 +49,19 @@ class ComparisonBpcWidgetAdapter(
         updateListAndCalculateDiff(newModel)
     }
 
-    private fun List<Visitable<ComparisonBpcTypeFactory>>.countData() : Int {
+    private fun List<Visitable<ComparisonBpcTypeFactory>>.countData(): Int {
         return filterIsInstance(ComparisonBpcItemModel::class.java).size
     }
 
-    private fun List<Visitable<ComparisonBpcTypeFactory>>.appendViewAllIfNeeded(model: ComparisonBpcListModel): List<Visitable<ComparisonBpcTypeFactory>>{
+    private fun List<Visitable<ComparisonBpcTypeFactory>>.appendViewAllIfNeeded(model: ComparisonBpcListModel): List<Visitable<ComparisonBpcTypeFactory>> {
         return this.toMutableList().apply {
-            if(model.isShowViewAllCard()) {
-                add(ComparisonBpcSeeMoreDataModel(model.trackingModel))
+            if (model.isShowViewAllCard()) {
+                add(ComparisonBpcSeeMoreDataModel(model.trackingModel, model.productAnchor))
             }
         }
     }
 
-    private fun ComparisonBpcListModel.getListItemsToShow(): List<Visitable<ComparisonBpcTypeFactory>>{
+    private fun ComparisonBpcListModel.getListItemsToShow(): List<Visitable<ComparisonBpcTypeFactory>> {
         return listData.take(itemsToShow).appendViewAllIfNeeded(this)
     }
 
@@ -73,5 +73,9 @@ class ComparisonBpcWidgetAdapter(
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         comparisonBpcListModel = newModel
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    private fun getProductAnchor(model: ComparisonBpcListModel) {
+        model.listData.filterIsInstance<ComparisonBpcItemModel>()
     }
 }

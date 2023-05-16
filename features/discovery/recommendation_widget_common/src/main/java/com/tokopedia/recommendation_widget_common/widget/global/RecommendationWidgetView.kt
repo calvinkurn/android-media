@@ -28,14 +28,15 @@ class RecommendationWidgetView : LinearLayout {
         val recommendationWidget = model.widget
 
         val recommendationVisitable =
-            if (recommendationWidget.layoutType == TYPE_COMPARISON_BPC_WIDGET)
+            if (recommendationWidget.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
                 RecommendationComparisonBpcModel.from(
                     model.metadata,
                     model.trackingModel,
-                    recommendationWidget,
+                    recommendationWidget
                 )
-            else
+            } else {
                 RecommendationCarouselModel.from(model.metadata, model.trackingModel)
+            }
 
         bind(recommendationVisitable)
     }
@@ -56,7 +57,7 @@ class RecommendationWidgetView : LinearLayout {
             addView(widget)
 
             widget
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         } as? IRecommendationWidgetView<RecommendationVisitable>
     }

@@ -8,8 +8,9 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
  * Created by Frenzel
  */
 data class ComparisonBpcSeeMoreDataModel(
-    val trackingModel: RecommendationWidgetTrackingModel
-): Visitable<ComparisonBpcTypeFactory> {
+    val trackingModel: RecommendationWidgetTrackingModel,
+    val productAnchor: ComparisonBpcItemModel?
+) : Visitable<ComparisonBpcTypeFactory> {
     override fun type(typeFactory: ComparisonBpcTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -24,5 +25,4 @@ data class ComparisonBpcSeeMoreDataModel(
     override fun hashCode(): Int {
         return this.hashCode()
     }
-
 }

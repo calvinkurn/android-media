@@ -61,7 +61,7 @@ class ComparisonBpcWidgetItemViewHolder(
                         product.imageUrl
                     )
                 }
-                listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId)
+                listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
             }
         }
     }

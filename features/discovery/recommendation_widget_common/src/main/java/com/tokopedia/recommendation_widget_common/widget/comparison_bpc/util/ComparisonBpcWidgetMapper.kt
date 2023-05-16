@@ -25,7 +25,7 @@ object ComparisonBpcWidgetMapper {
         recommendationWidget: RecommendationWidget,
         recommendationTrackingModel: RecommendationWidgetTrackingModel,
         context: Context
-    ): List<Visitable<ComparisonBpcTypeFactory>> {
+    ): Pair<ComparisonBpcItemModel?, List<Visitable<ComparisonBpcTypeFactory>>> {
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
 
@@ -35,7 +35,7 @@ object ComparisonBpcWidgetMapper {
             Dispatchers.IO
         )
 
-        return recommendationItems.withIndex().map {
+        val productList = recommendationItems.withIndex().map {
             ComparisonBpcItemModel(
                 specsModel = BpcSpecsMapper.mapToSpecsListModel(
                     it.value.specs,
@@ -49,9 +49,12 @@ object ComparisonBpcWidgetMapper {
                 productCardWidth = productCardWidth,
                 recommendationItem = it.value,
                 trackingModel = recommendationTrackingModel,
-                anchorProductId = recommendationItems.getOrNull(0)?.productId.orZero().toString()
+                anchorProductId = recommendationItems.getOrNull(0)?.productId.orZero().toString(),
+                widgetTitle = recommendationWidget.title
             )
         }
+        val productAnchor = productList.firstOrNull()
+        return Pair(productAnchor, productList)
     }
 
     private fun buildSpecsConfig(recommendationItem: List<RecommendationItem>, context: Context): BpcSpecsConfig {
