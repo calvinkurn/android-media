@@ -1,8 +1,11 @@
 package com.tokopedia.play.broadcaster.view.widget
 
 import android.content.Context
-import android.graphics.*
-import android.os.Build
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.play.broadcaster.R
@@ -48,39 +51,23 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
         rightPosition = right - ((right - left) / 2) + (rectWidth / 2)
         bottomPosition = rectHeight
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(leftPosition,
-                    topPosition,
-                    rightPosition,
-                    bottomPosition,
-                    Path.Direction.CW)
-        } else {
-            mPath.addRoundRect(leftPosition,
-                    topPosition,
-                    rightPosition,
-                    bottomPosition,
-                    CENTER_RECT_RADIUS,
-                    CENTER_RECT_RADIUS,
-                    Path.Direction.CW)
-        }
+        mPath.addRoundRect(leftPosition,
+                topPosition,
+                rightPosition,
+                bottomPosition,
+                CENTER_RECT_RADIUS,
+                CENTER_RECT_RADIUS,
+                Path.Direction.CW)
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
 
         // draw transparent center rect
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(leftPosition,
-                    topPosition,
-                    rightPosition,
-                    bottomPosition,
-                    mTransparentPaint)
-        } else {
-            canvas.drawRoundRect(leftPosition,
-                    topPosition,
-                    rightPosition,
-                    bottomPosition,
-                    CENTER_RECT_RADIUS,
-                    CENTER_RECT_RADIUS,
-                    mTransparentPaint)
-        }
+        canvas.drawRoundRect(leftPosition,
+                topPosition,
+                rightPosition,
+                bottomPosition,
+                CENTER_RECT_RADIUS,
+                CENTER_RECT_RADIUS,
+                mTransparentPaint)
 
         canvas.drawPath(mPath, mSemiPaint)
         canvas.clipPath(mPath)
