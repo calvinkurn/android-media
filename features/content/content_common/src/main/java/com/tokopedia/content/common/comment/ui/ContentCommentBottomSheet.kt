@@ -461,14 +461,12 @@ class ContentCommentBottomSheet @Inject constructor(
         if (needToShow) {
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
             binding.newComment.apply {
-                isFocusable = true
-                isFocusableInTouchMode = true
+                requestFocus()
             }
         } else {
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
             binding.newComment.apply {
-                isFocusable = false
-                isFocusableInTouchMode = false
+                clearFocus()
             }
         }
     }
