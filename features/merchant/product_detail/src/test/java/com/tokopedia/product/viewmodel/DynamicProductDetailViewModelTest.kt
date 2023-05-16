@@ -65,6 +65,7 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -388,7 +389,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
         Assert.assertNotNull(data)
     }
 
@@ -407,7 +408,45 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
+        Assert.assertNull(data)
+    }
+    //endregion
+
+    //region getP2ShipmentPlusByProductId
+    @Test
+    fun `get shipment plus by product id should return non-null when exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("123"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
+        Assert.assertNotNull(data)
+    }
+
+    @Test
+    fun `get shipment plus by product id should return null when not exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("321"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
         Assert.assertNull(data)
     }
     //endregion
@@ -2483,7 +2522,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2505,7 +2544,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2521,7 +2560,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } throws Throwable()
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2542,7 +2581,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2566,7 +2605,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2586,7 +2626,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -3215,7 +3255,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { addToCartUseCase.createObservable(any()) }
     }
@@ -3235,7 +3279,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { updateCartUseCase.executeOnBackground() }
     }
@@ -3255,7 +3303,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { deleteCartUseCase.executeOnBackground() }
     }
@@ -3269,7 +3321,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns false
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
     }

@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
@@ -706,7 +707,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
                         cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                            data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -714,7 +715,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
                         cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                            data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -822,7 +823,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
                 cardModel = data.recomWidgetData?.recommendationItemList
-                    ?.toProductCardModels(hasThreeDots = true).orEmpty()
+                    ?.toProductCardModels().orEmpty()
             }
         }
     }
@@ -1033,7 +1034,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         isFullfillment: Boolean,
         isCod: Boolean,
         freeOngkirData: BebasOngkirImage,
-        userLocationLocalData: LocalCacheModel
+        userLocationLocalData: LocalCacheModel,
+        shipmentPlus: ShipmentPlus?
     ) {
         // pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
@@ -1044,6 +1046,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+            shipmentData?.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
+                shipmentPlus,
+                freeOngkirData.boType
+            )
         }
 
         updateData(ProductDetailConstant.SHIPMENT_V2) {
@@ -1055,6 +1061,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.freeOngkirType = freeOngkirData.boType
                 this.freeOngkirUrl = freeOngkirData.imageURL
                 this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+                this.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
+                    shipmentPlus,
+                    freeOngkirData.boType
+                )
             }
         }
     }

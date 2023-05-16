@@ -18,6 +18,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -52,7 +53,9 @@ class TestInfiniteRecomViewModel {
     private val miniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     private val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
     private val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
+    private val recommendationNowAffiliate = mockk<RecommendationNowAffiliate>(relaxed = true)
     private val dispatcher = RecommendationDispatcherTest()
+    protected val affiliateTrackerId = "123123"
 
     private val viewModel: InfiniteRecomViewModel = spyk(InfiniteRecomViewModel(
             userSessionInterface = userSessionInterface,
@@ -61,6 +64,7 @@ class TestInfiniteRecomViewModel {
             miniCartListSimplifiedUseCase = Lazy { miniCartListSimplifiedUseCase },
             updateCartUseCase = Lazy { updateCartUseCase },
             deleteCartUseCase = Lazy { deleteCartUseCase },
+            recommendationNowAffiliate = recommendationNowAffiliate,
             dispatcher = dispatcher
     ))
 
@@ -110,7 +114,7 @@ class TestInfiniteRecomViewModel {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId)
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -126,7 +130,7 @@ class TestInfiniteRecomViewModel {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId)
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -143,7 +147,7 @@ class TestInfiniteRecomViewModel {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } throws Throwable()
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId)
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -162,7 +166,7 @@ class TestInfiniteRecomViewModel {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, affiliateTrackerId)
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -180,7 +184,7 @@ class TestInfiniteRecomViewModel {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, affiliateTrackerId)
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -198,7 +202,7 @@ class TestInfiniteRecomViewModel {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, affiliateTrackerId)
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -281,7 +285,7 @@ class TestInfiniteRecomViewModel {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
 
         assert(viewModel.atcRecomTokonowNonLogin.value == recomItem)
     }
@@ -292,11 +296,11 @@ class TestInfiniteRecomViewModel {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
         val quantity = 0
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
 
         verify { viewModel.deleteRecomItemFromCart(recomItem, any()) }
-        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
-        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any(), affiliateTrackerId) }
     }
 
     @Test
@@ -305,11 +309,11 @@ class TestInfiniteRecomViewModel {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 0)
         val quantity = 1
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
 
         verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
-        verify { viewModel.atcRecomNonVariant(recomItem, quantity) }
-        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+        verify { viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any(), affiliateTrackerId) }
     }
 
     @Test
@@ -318,11 +322,11 @@ class TestInfiniteRecomViewModel {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 3)
         val quantity = 1
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
 
         verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
-        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
-        verify { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId) }
+        verify { viewModel.updateRecomCartNonVariant(recomItem, quantity, any(), affiliateTrackerId) }
     }
 
     @Test
@@ -331,11 +335,11 @@ class TestInfiniteRecomViewModel {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
         val quantity = 1
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
 
         verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
-        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
-        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any(), affiliateTrackerId) }
     }
 
     @Test
@@ -450,7 +454,7 @@ class TestInfiniteRecomViewModel {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, affiliateTrackerId)
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
         Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
@@ -498,5 +502,14 @@ class TestInfiniteRecomViewModel {
         assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId1 }?.productItem?.currentQuantity == miniCartQty)
         assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId2 }?.productItem?.quantity == miniCartQty)
         assert(viewModel.recommendationFirstLiveData.value?.single { it.productItem.productId == productId2 }?.productItem?.currentQuantity == miniCartQty)
+    }
+
+    @Test
+    fun `init cookie affiliate now`() {
+        viewModel.initCookieAffiliate(affiliateTrackerId)
+
+        coVerify {
+            recommendationNowAffiliate.initCookie(affiliateTrackerId)
+        }
     }
 }
