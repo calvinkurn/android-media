@@ -18,7 +18,6 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
@@ -117,15 +116,25 @@ class PickerViewModel @Inject constructor(
 
         val localFiles = uris
             .map { it.asPickerFile() }
-            .map { it.toUiModel() }
+            .map {
+                it.toUiModel().apply {
+                    includedUrl = it.absolutePath
+                }
+            }
 
         bitmapConverter.convert(urls)
             .flowOn(dispatchers.io)
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                val pickerFile = it.asPickerFile()
-                val uiModels = pickerFile.toRemovableUiModel()
+                val uiModels = it.map { listConvertedUrl ->
+                    listConvertedUrl?.let {  (localPath, originalPath) ->
+                        localPath.asPickerFile().toUiModel().apply {
+                            includedUrl = originalPath
+                        }
+                    }
+                }
+
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)

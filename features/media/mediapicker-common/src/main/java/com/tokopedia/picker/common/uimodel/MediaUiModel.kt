@@ -2,7 +2,6 @@ package com.tokopedia.picker.common.uimodel
 
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import kotlinx.parcelize.Parcelize
 
@@ -18,6 +17,7 @@ open class MediaUiModel(
     * the media file is removable.
     * */
     var isCacheFile: Boolean = false,
+    var includedUrl: String? = null
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -55,10 +55,5 @@ open class MediaUiModel(
         fun PickerFile.toRemovableUiModel() = toUiModel().also {
             it.isCacheFile = true
         }
-
-        fun List<PickerFile?>.toRemovableUiModel() = map {
-            it?.toRemovableUiModel()
-        }
     }
-
 }
