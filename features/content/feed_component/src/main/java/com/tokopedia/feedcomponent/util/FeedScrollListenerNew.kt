@@ -37,7 +37,7 @@ object FeedScrollListenerNew {
 
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (!canAutoplayVideo(recyclerView)) return
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
@@ -75,7 +75,7 @@ object FeedScrollListenerNew {
 
     fun onCDPScrolled(recyclerView: RecyclerView, list: List<FeedXCard>) {
         if (!canAutoplayVideo(recyclerView)) return
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
