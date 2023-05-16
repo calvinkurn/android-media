@@ -20,6 +20,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -38,6 +39,9 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.UiTest
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -48,12 +52,14 @@ class LoginNormalCase : LoginBase() {
     /* Go to verification page if phone exist */
     @Test
     fun gotoVerificationFragment_IfPhoneExist() {
-        val data = RegisterCheckPojo(RegisterCheckData(
-            isExist = true,
-            userID = "123456",
-            registerType = "phone",
-            view = "082242454504"
-        ))
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = true,
+                userID = "123456",
+                registerType = "phone",
+                view = "082242454504"
+            )
+        )
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
@@ -106,12 +112,14 @@ class LoginNormalCase : LoginBase() {
     /* Show not registered dialog if email not registered */
     @Test
     fun showNotRegisteredDialog_IfEmailNotRegistered() {
-        val data = RegisterCheckPojo(RegisterCheckData(
-            isExist = false,
-            userID = "0",
-            registerType = "email",
-            view = "yoris.prayogo@tokopedia.com"
-        ))
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = false,
+                userID = "0",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com"
+            )
+        )
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
@@ -124,6 +132,8 @@ class LoginNormalCase : LoginBase() {
     /* Check if RegisterInitialActivity is launching when Top Daftar button clicked */
     @Test
     fun goToRegisterInitial_Top() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
         runTest {
             clickTopRegister()
             intended(hasComponent(RegisterInitialActivity::class.java.name))
@@ -142,12 +152,14 @@ class LoginNormalCase : LoginBase() {
     /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
     @Test
     fun goToRegisterInitial_IfNotRegistered() {
-        val data = RegisterCheckPojo(RegisterCheckData(
-            isExist = false,
-            userID = "0",
-            registerType = "email",
-            view = "yoris.prayogo@tokopedia.com"
-        ))
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = false,
+                userID = "0",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com"
+            )
+        )
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
@@ -155,11 +167,13 @@ class LoginNormalCase : LoginBase() {
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent().apply {
-                        putExtras(Bundle().apply {
-                            putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                        })
+                        putExtras(
+                            Bundle().apply {
+                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                            }
+                        )
                     }
                 )
             )
@@ -171,7 +185,6 @@ class LoginNormalCase : LoginBase() {
                 .check(matches(isDisplayed()))
                 .perform(click())
 
-
             intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
@@ -179,13 +192,15 @@ class LoginNormalCase : LoginBase() {
     /* Check if activity is finished when login success */
     @Test
     fun finishActivityIfLoginSuccess() {
-        val data = RegisterCheckPojo(RegisterCheckData(
-            isExist = true,
-            userID = "123456",
-            registerType = "email",
-            view = "yoris.prayogo@tokopedia.com",
-            isPending = false
-        ))
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = true,
+                userID = "123456",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com",
+                isPending = false
+            )
+        )
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
@@ -203,13 +218,15 @@ class LoginNormalCase : LoginBase() {
 
     @Test
     fun gotoChangeNameIfLoginSuccess() {
-        val data = RegisterCheckPojo(RegisterCheckData(
-            isExist = true,
-            userID = "123456",
-            registerType = "email",
-            view = "yoris.prayogo@tokopedia.com",
-            isPending = false
-        ))
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = true,
+                userID = "123456",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com",
+                isPending = false
+            )
+        )
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
@@ -226,13 +243,18 @@ class LoginNormalCase : LoginBase() {
 
         runTest {
             intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
-                    putExtras(Bundle().apply {
-                        putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                        putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                        putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                    })
-                })
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtras(
+                            Bundle().apply {
+                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                            }
+                        )
+                    }
+                )
             )
 
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
