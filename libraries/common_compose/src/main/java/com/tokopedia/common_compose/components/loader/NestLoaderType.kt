@@ -25,9 +25,9 @@ sealed interface NestLoaderType {
 }
 
 sealed class NestLoaderSize(val width: Dp, val height: Dp) {
-    object Small: NestLoaderSize(32.dp, 32.dp)
-    object Large: NestLoaderSize(50.dp, 50.dp)
-    object Undefine: NestLoaderSize(0.dp, 0.dp)
+    object Small : NestLoaderSize(32.dp, 32.dp)
+    object Large : NestLoaderSize(50.dp, 50.dp)
+    object Undefine : NestLoaderSize(0.dp, 0.dp)
 }
 
 sealed interface NestShimmerType {
