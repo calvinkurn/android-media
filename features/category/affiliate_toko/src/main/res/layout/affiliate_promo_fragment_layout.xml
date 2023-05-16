@@ -206,7 +206,7 @@
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/affiliate_education_tutorial_card_bg"
+                                android:background="@drawable/affiliate_promo_gami_bg"
                                 android:paddingHorizontal="16dp"
                                 android:paddingVertical="12dp"
                                 android:paddingBottom="16dp">
@@ -282,6 +282,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="8dp"
+                        android:paddingHorizontal="12dp"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
