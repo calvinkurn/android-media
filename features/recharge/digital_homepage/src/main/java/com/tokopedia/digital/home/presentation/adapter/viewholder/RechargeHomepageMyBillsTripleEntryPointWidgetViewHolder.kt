@@ -31,9 +31,9 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             binding.containerContent.visible()
             binding.containerShimmer.gone()
 
-            val bottomSection = element.section.items.first()
-            val leftSection = element.section.items[SECOND]
-            val rightSection = element.section.items[THIRD]
+            val leftSection = element.section.items.first()
+            val rightSection = element.section.items[SECOND]
+            val bottomSection = element.section.items[THIRD]
 
             showBottomSection(binding, bottomSection)
             showLeftSection(binding, leftSection)
