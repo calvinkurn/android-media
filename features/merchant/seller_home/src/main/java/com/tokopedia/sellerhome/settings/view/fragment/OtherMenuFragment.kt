@@ -216,8 +216,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            val isNewSeller = (activity as? SellerHomeActivity)?.isNewSeller == true
-            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this, isNewSeller)
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
         viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
