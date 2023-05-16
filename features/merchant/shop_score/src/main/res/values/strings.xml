@@ -334,4 +334,22 @@
 
     <!-- Shop Penalty Tablet -->
     <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
+    
+    <!-- Poena -->
+    <string name="title_ticker_penalty">Perhitungan baru sistem Penalti Toko</string>
+    <string name="desc_ticker_penalty">Ada cara perhitungan baru sistem Penalti Toko yang mulai diterapkan pada 27 Juni 2023. Yuk, Pelajari Sekarang</string>
+    <string name="title_card_penalty_point">Potongan Poin Performa</string>
+    <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
+    <string name="title_filter_penalty_date">Tanggal</string>
+    <string name="title_penalty_calculation_score">Potongan Skor Performa Toko</string>
+    <string name="title_penalty_calculation_formula_ongoing">Total Poin Penalti Sedang Berlangsung</string>
+    <string name="title_penalty_calculation_formula_this_week">Total Pesanan Minggu Ini</string>
+    <string name="title_penalty_calculation_formula_x">x</string>
+    <string name="title_penalty_calculation_formula_equal_sign">=</string>
+    <string name="title_penalty_calculation_formula_hundred_percent">100%</string>
+    <string name="desc_penalty_calculation_fraction_info">(Lihat Tabel Konversi)</string>
+    <string name="title_penalty_calculation_percentage">Persentase</string>
+    <string name="title_penalty_calculation_score_deduction">Potongan Skor</string>
+    <string name="desc_penalty_calculation_information">Potongan skor performa dihitung secara langsung dari Total Poin Penalti Sedang Berlangsung karena total pesananmu minggu ini 0.</string>
+
 </resources>

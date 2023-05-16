@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.penalty.presentation.activity
+package com.tokopedia.shop.score.penalty.presentation.old.activity
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -19,7 +19,7 @@ import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
 import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
-open class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
+open class ShopPenaltyPageOldActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
     ShopPenaltyPerformanceMonitoringListener {
 
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
