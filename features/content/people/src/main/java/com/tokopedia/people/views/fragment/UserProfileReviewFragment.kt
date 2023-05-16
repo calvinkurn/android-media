@@ -104,6 +104,11 @@ class UserProfileReviewFragment @Inject constructor(
         viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupView() {
         binding.rvReview.layoutManager = linearLayoutManager
         binding.rvReview.adapter = adapter
@@ -119,15 +124,11 @@ class UserProfileReviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is UserProfileUiEvent.ErrorLoadReview -> {
+                        showError(event.throwable)
+                    }
                     is UserProfileUiEvent.ErrorLikeDislike -> {
-                        val message = when (event.throwable) {
-                            is UnknownHostException, is SocketTimeoutException -> {
-                                requireContext().getString(R.string.up_error_local_error)
-                            }
-                            else -> event.throwable.message ?: getString(R.string.up_error_unknown)
-                        }
-
-                        view?.showErrorToast(message)
+                        showError(event.throwable)
                     }
                     else -> {}
                 }
@@ -225,14 +226,25 @@ class UserProfileReviewFragment @Inject constructor(
         val text = SpannableStringBuilder()
 
         text.append(fullText)
-        text.setSpanOnText(highlightedText, clickablePolicy, getBoldSpan(), getGreenColorSpan(requireContext()))
+        text.setSpanOnText(
+            highlightedText,
+            clickablePolicy,
+            getBoldSpan(),
+            getGreenColorSpan(requireContext())
+        )
 
         return text
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun showError(throwable: Throwable) {
+        val message = when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                requireContext().getString(R.string.up_error_local_error)
+            }
+            else -> throwable.message ?: getString(R.string.up_error_unknown)
+        }
+
+        view?.showErrorToast(message)
     }
 
     companion object {

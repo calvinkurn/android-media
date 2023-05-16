@@ -289,7 +289,6 @@ class UserProfileViewModel @AssistedInject constructor(
                 userReview.copy(status = UserReviewUiModel.Status.Error)
             }
 
-            /** TODO: handle this on UserProfileReviewFragment later */
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadReview(it))
         }
     }
