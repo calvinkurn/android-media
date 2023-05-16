@@ -72,13 +72,9 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun processTagIntent(intent: Intent) {
         if (isTagNfcValid(intent)) {
-            if (!isDigitalSmartcardEnabled()) {
-                onNavigateToHome()
-            } else {
-                // nfc enabled and process Mandiri NFC as default
-                showLoading(getOperatorName(ISSUER_ID_BRIZZI))
-                processBrizzi(intent)
-            }
+            // nfc enabled and process Mandiri NFC as default
+            showLoading(getOperatorName(ISSUER_ID_BRIZZI))
+            processBrizzi(intent)
         }
     }
 

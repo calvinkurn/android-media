@@ -8,6 +8,7 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
+    const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
 
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
@@ -25,6 +26,8 @@ object RollenceKey {
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
     const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
     const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
@@ -39,9 +42,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     // Auto Complete
-    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
-    const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
-
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
@@ -79,6 +79,7 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"

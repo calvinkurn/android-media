@@ -10,7 +10,6 @@ import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 

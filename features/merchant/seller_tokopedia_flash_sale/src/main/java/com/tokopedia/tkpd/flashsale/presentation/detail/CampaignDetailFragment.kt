@@ -984,8 +984,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems =
-            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
-        val isShown = newItems[Int.ZERO].isCheckBoxShown
+            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val isShown = newItems.firstOrNull()?.isCheckBoxShown ?: false
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
 
@@ -999,6 +999,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 tpgSelectedProductCount.invisible()
                 tpgProductCount.visible()
                 btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
+                viewModel.removeAllSelectedItems()
             }
         }
         setupRegisteredButton(isShown)

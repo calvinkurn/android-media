@@ -5,12 +5,21 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.domain.response.CartListCartMetadataVariant
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 object TokoFoodMerchantUiModelMapper {
 
@@ -33,6 +42,24 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
+    // TODO: Delete later
+    fun mapCustomOrderDetailToUpdateProductParams(
+        productId: String,
+        customOrderDetail: CustomOrderDetail
+    ): UpdateProductParam {
+        val addOnUiModels = customOrderDetail.customListItems
+            .filter { it.addOnUiModel != null }
+            .map { customListItem -> customListItem.addOnUiModel ?: AddOnUiModel() }
+        return UpdateProductParam(
+            productId = productId,
+            cartId = customOrderDetail.cartId,
+            notes = customOrderDetail.orderNote,
+            quantity = customOrderDetail.qty,
+            variants = mapCustomListItemsToVariantParams(addOnUiModels)
+        )
+    }
+
+    // TODO: Delete later
     fun mapProductUiModelToUpdateProductParams(
         productUiModel: ProductUiModel,
         addOnUiModels: List<AddOnUiModel> = listOf()
@@ -69,22 +96,6 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
-    fun mapCustomOrderDetailToUpdateProductParams(
-        productId: String,
-        customOrderDetail: CustomOrderDetail
-    ): UpdateProductParam {
-        val addOnUiModels = customOrderDetail.customListItems
-            .filter { it.addOnUiModel != null }
-            .map { customListItem -> customListItem.addOnUiModel ?: AddOnUiModel() }
-        return UpdateProductParam(
-            productId = productId,
-            cartId = customOrderDetail.cartId,
-            notes = customOrderDetail.orderNote,
-            quantity = customOrderDetail.qty,
-            variants = mapCustomListItemsToVariantParams(addOnUiModels)
-        )
-    }
-
     private fun mapCustomListItemsToVariantParams(addOnUiModels: List<AddOnUiModel>): List<UpdateProductVariantParam> {
         val variantParams = mutableListOf<UpdateProductVariantParam>()
         // selected variant e.g. sugar level
@@ -104,11 +115,11 @@ object TokoFoodMerchantUiModelMapper {
         return variantParams.toList()
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartListCartGroupCart, productUiModel: ProductUiModel): CustomOrderDetail {
         val selectedCustomListItems = mapCartTokoFoodVariantsToSelectedCustomListItems(
-                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty(),
+                orderNote = cartTokoFood.metadata.notes,
                 masterData = productUiModel.customListItems,
-                selectedVariants = cartTokoFood.getMetadata()?.variants ?: listOf()
+                selectedVariants = cartTokoFood.metadata.variants ?: listOf()
         )
         val subTotal = calculateSubtotalPrice(
                 baseProductPrice = productUiModel.price,
@@ -121,6 +132,27 @@ object TokoFoodMerchantUiModelMapper {
                 subTotalFmt = subTotalFmt,
                 qty = cartTokoFood.quantity,
                 customListItems = selectedCustomListItems
+        )
+    }
+
+    // TODO: Delete later
+    fun mapCartTokoFoodToCustomOrderDetailOld(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+        val selectedCustomListItems = mapCartTokoFoodVariantsToSelectedCustomListItemsOld(
+            orderNote = cartTokoFood.getMetadata()?.notes.orEmpty(),
+            masterData = productUiModel.customListItems,
+            selectedVariants = cartTokoFood.getMetadata()?.variants ?: listOf()
+        )
+        val subTotal = calculateSubtotalPrice(
+            baseProductPrice = productUiModel.price,
+            addOnUiModels = selectedCustomListItems.map { it.addOnUiModel }
+        )
+        val subTotalFmt = subTotal.getCurrencyFormatted()
+        return CustomOrderDetail(
+            cartId = cartTokoFood.cartId,
+            subTotal = subTotal,
+            subTotalFmt = subTotalFmt,
+            qty = cartTokoFood.quantity,
+            customListItems = selectedCustomListItems
         )
     }
 
@@ -137,6 +169,30 @@ object TokoFoodMerchantUiModelMapper {
     }
 
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
+        orderNote: String,
+        masterData: List<CustomListItem>,
+        selectedVariants: List<CartListCartMetadataVariant>
+    ): List<CustomListItem> {
+        val selectedCustomListItems = deepCopyMasterData(masterData)
+        val optionMap = selectedVariants.groupBy { it.variantId }
+        optionMap.keys.forEach { variantId ->
+            val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
+            val selectedCustomListItem = selectedCustomListItems.firstOrNull { it.addOnUiModel?.id == variantId }
+            selectedCustomListItem?.addOnUiModel?.isSelected = true
+            selectedCustomListItem?.addOnUiModel?.options?.forEach {
+                if (selectedOptionIds.contains(it.id)) it.isSelected = true
+            }
+            val options = selectedCustomListItem?.addOnUiModel?.options?: listOf()
+            selectedCustomListItem?.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
+        }
+        // set order note
+        val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull { it.addOnUiModel == null }
+        customOrderWidgetUiModel?.orderNote = orderNote
+        return selectedCustomListItems.toList()
+    }
+
+    // TODO: Delete later
+    private fun mapCartTokoFoodVariantsToSelectedCustomListItemsOld(
         orderNote: String,
         masterData: List<CustomListItem>,
         selectedVariants: List<CartMetadataVariantTokoFood>
