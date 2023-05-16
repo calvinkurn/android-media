@@ -8,7 +8,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -17,10 +16,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -99,12 +99,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        stock = 5,
                         quantity = 5,
-                        product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 10)
-                        ),
+                        stock = 5,
+                        minOrder = 3,
+                        maxOrder = 10,
                         position = 1,
+                        originalPosition = 1,
                         headerName = "Kamu pernah beli"
                     )
                 ),
@@ -199,13 +199,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        stock = 5,
                         quantity = 0,
-                        product = ProductCardModel(
-                            hasAddToCartButton = true,
-                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 4)
-                        ),
+                        stock = 5,
+                        minOrder = 3,
+                        maxOrder = 4,
                         position = 1,
+                        originalPosition = 1,
                         headerName = "Kamu pernah beli"
                     )
                 ),
@@ -964,13 +963,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             val productCardUiModel = createHomeProductCardUiModel(
                 channelId = channelId,
                 productId = "2",
+                quantity = 2,
                 stock = 3,
-                quantity = 4,
-                product = ProductCardModel(
-                    hasAddToCartButton = true,
-                    nonVariant = ProductCardModel.NonVariant(0, 1, 4)
-                ),
+                minOrder = 1,
+                maxOrder = 4,
                 position = 2,
+                originalPosition = 2,
                 headerName = "Kamu pernah beli"
             )
 
@@ -1131,7 +1129,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     productId = "2",
                     price = "0",
                     usePreDraw = true,
-                    needToShowQuantityEditor = true
+                    needToShowQuantityEditor = true,
+                    orderQuantity = 2
                 ),
                 position = 0
             )
