@@ -335,7 +335,7 @@ class CartItemViewHolder constructor(
             }
         }
     }
-    
+
     private fun renderShopInfo(data: CartItemHolderData) {
         if (data.isShopShown) {
             binding.llShopHeader.visible()
@@ -352,12 +352,10 @@ class CartItemViewHolder constructor(
                 ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopHolderData.shopTypeInfo.shopBadge)
                 binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopHolderData.shopTypeInfo.title)
                 binding.imageShopBadge.show()
-            }
-            else {
+            } else {
                 binding.imageShopBadge.gone()
             }
-        }
-        else {
+        } else {
             binding.llShopHeader.gone()
         }
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -1462,13 +1461,11 @@ class ShipmentPresenter @Inject constructor(
         cartString: String?
     ) {
         if (promoQueue.isEmpty()) {
-            Log.i("qwertyuiop", "call final validate ${Exception().stackTraceToString().substringBefore("kotlin")}")
             isValidatingFinalPromo = true
             couponStateChanged = true
             updateShipmentButtonPaymentModel(loading = true)
             viewModelScope.launch(dispatchers.immediate) {
                 try {
-                    Log.i("qwertyuiop", "do final validate")
                     if (promoQueue.isNotEmpty()) {
                         // ignore if there is still a promo in queue
                         return@launch
@@ -1531,7 +1528,6 @@ class ShipmentPresenter @Inject constructor(
                         checkUnCompletedPublisher()
                         isValidatingFinalPromo = false
                         updateShipmentButtonPaymentModel(loading = false)
-                        Log.i("qwertyuiop", "done final validate")
                     }
                 } catch (e: Throwable) {
                     Timber.d(e)
@@ -1552,33 +1548,26 @@ class ShipmentPresenter @Inject constructor(
                         checkUnCompletedPublisher()
                         isValidatingFinalPromo = false
                         updateShipmentButtonPaymentModel(loading = false)
-                        Log.i("qwertyuiop", "done final validate")
                     }
                 }
             }
-        } else {
-            Log.i("qwertyuiop", "call final validate with promo quota exist")
         }
     }
 
     private suspend fun consumePromoQueue() {
-        Log.i("qwertyuiop", "consume promo queue ${Exception().stackTraceToString().substringBefore("kotlin")}")
         withContext(dispatchers.immediate) {
             var itemToProcess = promoQueue.peek()
             loopProcess@ while (isActive && itemToProcess != null) {
                 updateShipmentButtonPaymentModel(loading = true)
-                Log.i("qwertyuiop", "promo queue = $promoQueue")
                 val shipmentValidatePromoHolderData = itemToProcess
                 if (promoQueue.filter { it.cartString == shipmentValidatePromoHolderData.cartString }.size > 1) {
                     // ignore this, because there is a new one in the queue
-                    Log.i("qwertyuiop", "skip promo queue 1")
                     promoQueue.remove()
                     itemToProcess = promoQueue.peek()
                     continue@loopProcess
                 }
                 if (shipmentValidatePromoHolderData.validateUsePromoRequest != null) {
                     // do validate
-                    Log.i("qwertyuiop", "do validate promo queue")
                     try {
                         val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
                             setValidateUseBoCodeInOneOrderOwoc(shipmentValidatePromoHolderData.validateUsePromoRequest)
@@ -1589,32 +1578,26 @@ class ShipmentPresenter @Inject constructor(
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 2")
                             continue@loopProcess
                         }
                         onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
-                        Log.i("qwertyuiop", "success consume promo queue done")
                     } catch (t: Throwable) {
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 3")
                             continue@loopProcess
                         }
                         onValidatePromoError(shipmentValidatePromoHolderData, t)
-                        Log.i("qwertyuiop", "error consume promo queue done")
                     }
                 } else {
                     // do clear
-                    Log.i("qwertyuiop", "do clear promo queue")
                     val shipmentCartItem = shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
                     if ((shipmentCartItem as ShipmentCartItemModel).voucherLogisticItemUiModel?.code != shipmentValidatePromoHolderData.promoCode) {
                         // skip due to clear on non-applied promo, this is due to the queuing system
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, null)
-                        Log.i("qwertyuiop", "skip cancel due to queuing")
                         continue@loopProcess
                     }
                     try {
@@ -1635,21 +1618,17 @@ class ShipmentPresenter @Inject constructor(
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.clearPromoOrder != null }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 4")
                             continue@loopProcess
                         }
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
-                        Log.i("qwertyuiop", "success consume promo queue cancel done")
                     } catch (t: Throwable) {
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "consume promo queue 5")
                             continue@loopProcess
                         }
                         onCancelPromoError(shipmentValidatePromoHolderData)
-                        Log.i("qwertyuiop", "error consume promo queue cancel done")
                     }
                 }
                 updateShipmentButtonPaymentModel(loading = false)

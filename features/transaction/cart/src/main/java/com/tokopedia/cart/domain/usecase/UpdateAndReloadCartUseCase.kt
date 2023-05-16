@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class UpdateAndReloadCartUseCase @Inject constructor(

@@ -56,7 +56,7 @@ class GetCartRevampV4UseCase @Inject constructor(
         const val PARAM_KEY_STATE = "state"
 
         private const val PARAM_VALUE_ID = "id"
-        
+
         private const val QUERY_CART_REVAMP_V4 = "CartRevampQueryV4"
     }
 }

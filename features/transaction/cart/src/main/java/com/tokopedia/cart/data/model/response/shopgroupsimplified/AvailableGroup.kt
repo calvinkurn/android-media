@@ -35,9 +35,9 @@ data class AvailableGroup(
     val groupShopCartData: List<GroupShopCart> = emptyList()
 ) {
     fun isUsingOWOCDesign(): Boolean = uiGroupType == GROUP_TYPE_OWOC
-    
+
     fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
-    
+
     companion object {
         private const val GROUP_TYPE_OWOC = 1
     }

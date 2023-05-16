@@ -7,10 +7,10 @@ import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopG
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import io.mockk.coEvery
 import io.mockk.coVerify

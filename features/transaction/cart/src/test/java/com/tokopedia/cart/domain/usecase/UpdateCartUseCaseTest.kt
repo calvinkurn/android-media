@@ -58,7 +58,7 @@ class UpdateCartUseCaseTest {
         runBlocking {
             // When
             val updateCartData = updateCartUseCase(params)
-            
+
             // Then
             assertEquals(UpdateCartData(isSuccess = true, message = ""), updateCartData)
         }
