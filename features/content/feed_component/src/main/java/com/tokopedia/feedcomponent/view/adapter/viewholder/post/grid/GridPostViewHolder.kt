@@ -50,9 +50,9 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
             itemView.gridList.setPadding(0, 0, 0, 0)
         } else {
             itemView.gridList.setPadding(
-                this.context.resources.getDimension(R.dimen.dp_3).toInt(),
+                this.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
                 0,
-                this.context.resources.getDimension(R.dimen.dp_3).toInt(),
+                this.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
                 0
             )
         }
