@@ -351,7 +351,8 @@ class SearchBarViewModel @Inject constructor(
         val searchParameter = HashMap(activeSearchParameter)
         val currentKeywords = _searchBarKeywords.value ?: emptyList()
         val isActiveKeywordNotBlank = activeKeyword.keyword.isNotBlank()
-        val isActiveKeywordNotInKeywordList = activeKeyword !in currentKeywords
+        val cleanActiveKeywordValue = activeKeyword.keyword.trim()
+        val isActiveKeywordNotInKeywordList = currentKeywords.none { it.keyword == cleanActiveKeywordValue }
         val isKeywordListNotFull = currentKeywords.size < 3
         val isActiveKeywordNeedToBeAdded = isActiveKeywordNotBlank
             && isActiveKeywordNotInKeywordList
