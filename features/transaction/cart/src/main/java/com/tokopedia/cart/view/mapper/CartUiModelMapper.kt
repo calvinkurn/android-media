@@ -175,15 +175,12 @@ object CartUiModelMapper {
             val groupUiModel = CartGroupHolderData().apply {
                 this.productUiModelList = productUiModelList
                 cartString = availableGroup.cartString
-//                shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId ?: ""
                 groupType = availableGroup.groupType
                 uiGroupType = availableGroup.uiGroupType
                 groupName = availableGroup.groupInformation.name
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
-//                isFulfillment = availableGroup.isFulfillment
                 fulfillmentName = availableGroup.groupInformation.description
-//                fulfillmentBadgeUrl = cartData.tokoCabangInfo.badgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
                 pinCoachmarkMessage = availableGroup.pinned.coachmarkMessage
@@ -211,12 +208,11 @@ object CartUiModelMapper {
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
-//                shopTypeInfo = availableGroup.shop.shopTypeInfo
                 shopShipments = mapShopShipment(availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopShipments ?: emptyList())
-//                districtId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.districtId ?: ""
-//                postalCode = availableGroup.groupShopCartData.getOrNull(0)?.shop?.postalCode ?: ""
-//                longitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.longitude ?: ""
-//                latitude = availableGroup.groupShopCartData.getOrNull(0)?.shop?.latitude ?: ""
+                districtId = availableGroup.warehouse.districtId
+                postalCode = availableGroup.warehouse.postalCode
+                longitude = availableGroup.warehouse.longitude
+                latitude = availableGroup.warehouse.latitude
                 boMetadata = availableGroup.boMetadata
                 cartShopGroupTicker = CartShopGroupTickerData(
                     enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
@@ -226,10 +222,6 @@ object CartUiModelMapper {
                 mapAddOnData(availableGroup.giftingAddOn, availableGroup.epharmacyConsultationInfo)
                 warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
                 isPo = availableGroup.shipmentInformation.preorder.isPreorder
-//                poDuration =
-//                    availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)
-//                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
-//                        ?: "0"
                 val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
                     it.cartStringGroup == cartString && it.shippingId > 0 &&
                         it.spId > 0 && it.type == "logistic"

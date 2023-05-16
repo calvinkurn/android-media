@@ -2087,18 +2087,15 @@ class CartListPresenter @Inject constructor(
                     destinationLongitude = lca?.long
                     destinationLatitude = lca?.lat
                     destinationPostalCode = lca?.postal_code
-                    // TODO: Fix Param
-//                    originDistrictId = cartGroupHolderData.districtId
-//                    originLongitude = cartGroupHolderData.longitude
-//                    originLatitude = cartGroupHolderData.latitude
-//                    originPostalCode = cartGroupHolderData.postalCode
+                    originDistrictId = cartGroupHolderData.districtId
+                    originLongitude = cartGroupHolderData.longitude
+                    originLatitude = cartGroupHolderData.latitude
+                    originPostalCode = cartGroupHolderData.postalCode
                     weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
-                    // TODO: Fix Param
-//                    shopId = cartGroupHolderData.shopId
-//                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
-                    // TODO: replace uniqueId
+                    shopId = cartGroupHolderData.shop.shopId
+                    shopTier = cartGroupHolderData.shop.shopTypeInfo.shopTier
                     uniqueId = cartGroupHolderData.cartString
                     isFulfillment = cartGroupHolderData.isFulfillment
                     boMetadata = cartGroupHolderData.boMetadata

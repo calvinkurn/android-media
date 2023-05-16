@@ -388,8 +388,7 @@ class CartGroupViewHolder(
                         cartGroupHolderData.addOnId
                     )
                 } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
-                    // TODO: Fix Tracker
-//                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shopId, cartGroupHolderData.productUiModelList)
+                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shop.shopId, cartGroupHolderData.productUiModelList)
                 }
             }
             if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {

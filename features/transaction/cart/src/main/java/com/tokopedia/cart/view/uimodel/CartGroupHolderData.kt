@@ -7,11 +7,9 @@ data class CartGroupHolderData(
     var groupType: Int = 0,
     var uiGroupType: Int = 0,
     var cartString: String = "",
-//    var shopId: String = "",
     var groupName: String = "",
     var groupBadge: String = "",
     var groupAppLink: String = "",
-//    var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     var isFulfillment: Boolean = false,
     var fulfillmentName: String = "",
     var fulfillmentBadgeUrl: String = "",
@@ -37,10 +35,10 @@ data class CartGroupHolderData(
     var isError: Boolean = false,
     var promoCodes: List<String> = emptyList(),
     var shopShipments: List<ShopShipment> = emptyList(),
-//    var districtId: String = "",
-//    var postalCode: String = "",
-//    var latitude: String = "",
-//    var longitude: String = "",
+    var districtId: String = "",
+    var postalCode: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
     var boMetadata: BoMetadata = BoMetadata(),
     var cartShopGroupTicker: CartShopGroupTickerData = CartShopGroupTickerData(),
     var addOnText: String = "",
@@ -49,7 +47,6 @@ data class CartGroupHolderData(
     var addOnType: Int = 0,
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
-//    var poDuration: String = "",
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
@@ -62,17 +59,18 @@ data class CartGroupHolderData(
 
     val hasSelectedProduct: Boolean
         get() = isAllSelected || isPartialSelected
+    
+    val shop: CartShopHolderData
+        get() = productUiModelList.getOrNull(0)?.shopHolderData ?: CartShopHolderData()
 
     fun deepCopy(): CartGroupHolderData {
         return CartGroupHolderData(
             groupType = this.groupType,
             uiGroupType = this.uiGroupType,
             cartString = this.cartString,
-//            shopId = this.shopId,
             groupName = this.groupName,
             groupBadge = this.groupBadge,
             groupAppLink = this.groupAppLink,
-//            shopTypeInfo = this.shopTypeInfo,
             isFulfillment = this.isFulfillment,
             fulfillmentName = this.fulfillmentName,
             fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
@@ -96,10 +94,10 @@ data class CartGroupHolderData(
             isError = this.isError,
             promoCodes = this.promoCodes.toMutableList(),
             shopShipments = this.shopShipments.toMutableList(),
-//            districtId = this.districtId,
-//            postalCode = this.postalCode,
-//            latitude = this.latitude,
-//            longitude = this.longitude,
+            districtId = this.districtId,
+            postalCode = this.postalCode,
+            latitude = this.latitude,
+            longitude = this.longitude,
             boMetadata = this.boMetadata,
             cartShopGroupTicker = this.cartShopGroupTicker,
             addOnText = this.addOnText,
@@ -107,7 +105,6 @@ data class CartGroupHolderData(
             addOnId = this.addOnId,
             warehouseId = this.warehouseId,
             isPo = this.isPo,
-//            poDuration = this.poDuration,
             boCode = this.boCode
         )
     }
