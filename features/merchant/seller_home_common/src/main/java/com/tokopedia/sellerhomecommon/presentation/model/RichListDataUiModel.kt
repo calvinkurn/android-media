@@ -11,6 +11,8 @@ data class RichListDataUiModel(
     override var error: String = String.EMPTY,
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
+    val title: String = String.EMPTY,
+    val subtitle: String = String.EMPTY,
     val lastUpdated: String = String.EMPTY,
     val richListData: List<BaseRichListItem> = emptyList()
 ) : BaseDataUiModel {

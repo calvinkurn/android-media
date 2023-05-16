@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcRichListWidgetBinding
@@ -67,6 +68,21 @@ class RichListViewHolder(
         val items = element.data?.richListData.orEmpty()
         showItems(items)
         setupLastUpdated(element.data?.lastUpdated.orEmpty())
+        showTitle(
+            title = element.data?.title.orEmpty(),
+            subtitle = element.data?.subtitle.orEmpty()
+        )
+    }
+
+    private fun showTitle(title: String, subtitle: String) {
+        with(binding) {
+            if (title.isNotBlank()) {
+                tvShcRichListTitle.visible()
+                tvShcRichListSubTitle.visible()
+                tvShcRichListTitle.text = title
+                tvShcRichListSubTitle.text = subtitle.parseAsHtml()
+            }
+        }
     }
 
     private fun setupLastUpdated(lastUpdated: String) {
@@ -81,12 +97,20 @@ class RichListViewHolder(
     }
 
     private fun showErrorState() {
-        binding.tvShcRichListUpdated.gone()
+        with(binding) {
+            tvShcRichListUpdated.gone()
+            tvShcRichListTitle.gone()
+            tvShcRichListSubTitle.gone()
+        }
         showItems(listOf(BaseRichListItem.ErrorStateUiModel))
     }
 
     private fun showLoadingState() {
-        binding.tvShcRichListUpdated.gone()
+        with(binding) {
+            tvShcRichListUpdated.gone()
+            tvShcRichListTitle.gone()
+            tvShcRichListSubTitle.gone()
+        }
         showItems(listOf(BaseRichListItem.LoadingStateUiModel))
     }
 

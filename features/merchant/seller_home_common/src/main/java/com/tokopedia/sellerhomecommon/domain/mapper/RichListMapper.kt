@@ -46,6 +46,8 @@ class RichListMapper @Inject constructor(
                 error = data.errorMsg,
                 showWidget = data.shouldShowWidget,
                 isFromCache = isFromCache,
+                title = data.title,
+                subtitle = data.subtitle,
                 lastUpdated = getLastUpdated(data.updateInfoUnix),
                 richListData = getRichListData(data.sections)
             )
@@ -82,8 +84,7 @@ class RichListMapper @Inject constructor(
     }
 
     private fun getURL(caption: String): String {
-        return caption.substringAfter(START_DELIMITER_URL)
-            .substringBefore(END_DELIMITER_URL)
+        return caption.substringAfter(START_DELIMITER_URL).substringBefore(END_DELIMITER_URL)
     }
 
     private fun getCtaText(caption: String): String {

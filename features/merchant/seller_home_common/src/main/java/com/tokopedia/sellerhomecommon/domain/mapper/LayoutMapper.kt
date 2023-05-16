@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -18,7 +19,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -26,6 +26,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
@@ -55,33 +56,13 @@ class LayoutMapper @Inject constructor(
         val widgets = response.layout.widget.orEmpty()
         if (widgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-            widgets.forEach {
-                val widgetType = it.widgetType.orEmpty()
+            widgets.forEach { widget ->
+                val widgetType = widget.widgetType.orEmpty()
                 if (WidgetType.isValidWidget(widgetType)) {
-                    mappedList.add(
-                        when (widgetType) {
-                            WidgetType.CARD -> mapToCardWidget(it, isFromCache)
-                            WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
-                            WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
-                            WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
-                            WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
-                            WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
-                            WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
-                            WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
-                            WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
-                            WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(
-                                it,
-                                isFromCache
-                            )
-                            WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
-                            WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
-                            WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
-                            WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
-                            WidgetType.UNIFICATION -> mapToUnificationWidget(it, isFromCache)
-                            WidgetType.RICH_LIST -> mapToRichListWidget(it, isFromCache)
-                            else -> mapToSectionWidget(it, isFromCache)
-                        }
-                    )
+                    val mappedWidget = getWidgetByWidgetType(widgetType, widget, isFromCache)
+                    mappedWidget?.let {
+                        mappedList.add(it)
+                    }
                 }
             }
 
@@ -92,6 +73,44 @@ class LayoutMapper @Inject constructor(
             )
         } else {
             throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+        }
+    }
+
+    private fun getWidgetByWidgetType(
+        widgetType: String,
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): BaseWidgetUiModel<out BaseDataUiModel>? {
+        return when (widgetType.asLowerCase()) {
+            WidgetType.CARD.asLowerCase() -> mapToCardWidget(widget, isFromCache)
+            WidgetType.CAROUSEL.asLowerCase() -> mapToCarouselWidget(widget, isFromCache)
+            WidgetType.DESCRIPTION.asLowerCase() -> mapToDescriptionWidget(widget, isFromCache)
+            WidgetType.LINE_GRAPH.asLowerCase() -> mapToLineGraphWidget(widget, isFromCache)
+            WidgetType.POST_LIST.asLowerCase() -> mapToPostWidget(widget, isFromCache)
+            WidgetType.PROGRESS.asLowerCase() -> mapToProgressWidget(widget, isFromCache)
+            WidgetType.TABLE.asLowerCase() -> mapToTableWidget(widget, isFromCache)
+            WidgetType.PIE_CHART.asLowerCase() -> mapToPieChartWidget(widget, isFromCache)
+            WidgetType.BAR_CHART.asLowerCase() -> mapToBarChartWidget(widget, isFromCache)
+            WidgetType.MULTI_LINE_GRAPH.asLowerCase() -> {
+                mapToMultiLineGraphWidget(widget, isFromCache)
+            }
+            WidgetType.ANNOUNCEMENT.asLowerCase() -> mapToAnnouncementWidget(widget, isFromCache)
+            WidgetType.RECOMMENDATION.asLowerCase() -> mapToRecommendationWidget(
+                widget,
+                isFromCache
+            )
+            WidgetType.MILESTONE.asLowerCase() -> mapToMilestoneWidget(widget, isFromCache)
+            WidgetType.CALENDAR.asLowerCase() -> mapToCalendarWidget(widget, isFromCache)
+            WidgetType.UNIFICATION.asLowerCase() -> mapToUnificationWidget(widget, isFromCache)
+            WidgetType.RICH_LIST.asLowerCase() -> mapToRichListWidget(widget, isFromCache)
+            WidgetType.SECTION.asLowerCase() -> {
+                if (widget.title.isNullOrBlank()) {
+                    null
+                } else {
+                    mapToSectionWidget(widget, isFromCache)
+                }
+            }
+            else -> null
         }
     }
 
