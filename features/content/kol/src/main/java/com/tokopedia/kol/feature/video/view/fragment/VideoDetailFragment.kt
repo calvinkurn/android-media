@@ -451,26 +451,17 @@ class VideoDetailFragment :
 
             shareIcon.show()
             shareText.show()
-            var desc =
-                context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+            val desc = requireContext().getString(
+                com.tokopedia.feedcomponent.R.string.feed_share_default_text,
+                feedXCard.author.name
+            )
 
             shareIcon.setOnClickListener {
-                doShare(
-                    String.format(
-                        "%s",
-                        desc?.replace("%s", feedXCard.author.name),
-                    ), feedXCard.author.name + " post"
-                )
+                doShare(desc, "${feedXCard.author.name} post")
             }
             shareText.setOnClickListener {
-                doShare(
-                    String.format(
-                        "%s",
-                        desc?.replace("%s", feedXCard.author.name),
-                    ), feedXCard.author.name + " post"
-                )
+                doShare(desc, "${feedXCard.author.name} post")
             }
-
 
         }
 
@@ -556,6 +547,4 @@ class VideoDetailFragment :
             ).show()
         }
     }
-
-
 }

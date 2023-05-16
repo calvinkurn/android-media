@@ -34,80 +34,66 @@ object FeedScrollListenerNew {
     private const val CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD = 50
     private const val TYPE_VIDEO = "video"
     private const val TYPE_LONG_VIDEO = "long-video"
+
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
-        if (canAutoplayVideo(recyclerView)) {
-            val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-            val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
-            val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
-            for (i in firstPosition..lastPosition) {
-                val item = getCardViewModel(list, i)
-                val card = getFeedXCard(list, i)
-                val topadsItem = getTopadsCardViewModel(list, i)
-                card?.let {
-                    if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
-                        if (item != null) {
-                            getVideoModelScrollListener(layoutManager, recyclerView, i, item)
-                        }
-                    } else if (isImageCard(card)) {
-                        if (item != null) {
-                            getImagePostScrollListener(layoutManager, recyclerView, i, item)
-                        }
-                    } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
-                        if (item != null) {
-                            getVODModelScrollListener(layoutManager, recyclerView, i, item)
-                        }
-                    } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
-                        if (item != null) {
-                            getVODModelScrollListener(layoutManager, recyclerView, i, item)
-                        }
-                    } else if (isTopadsImageCard(list, i)) {
-                        if (topadsItem != null) {
-                            getImagePostScrollListener(
-                                layoutManager,
-                                recyclerView,
-                                i,
-                                topadsItem
-                            )
-                        }
-                    }
-                }
-                topadsItem?.let {
+        if (!canAutoplayVideo(recyclerView)) return
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(list, i)
+            val card = getFeedXCard(list, i)
+            val topadsItem = getTopadsCardViewModel(list, i)
+            card?.let {
+                if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                    if (item == null) return@let
+                    getVideoModelScrollListener(layoutManager, recyclerView, i, item)
+                } else if (isImageCard(card)) {
+                    if (item == null) return@let
+                    getImagePostScrollListener(layoutManager, recyclerView, i, item)
+                } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
+                    if (item == null) return@let
+                    getVODModelScrollListener(layoutManager, recyclerView, i, item)
+                } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                    if (item == null) return@let
+                    getVODModelScrollListener(layoutManager, recyclerView, i, item)
+                } else if (isTopadsImageCard(list, i)) {
+                    if (topadsItem == null) return@let
                     getImagePostScrollListener(
                         layoutManager,
                         recyclerView,
                         i,
                         topadsItem
                     )
-                }
+                } else return@let
+            }
+            topadsItem?.let {
+                getImagePostScrollListener(layoutManager, recyclerView, i, topadsItem)
             }
         }
     }
 
     fun onCDPScrolled(recyclerView: RecyclerView, list: List<FeedXCard>) {
-        if (canAutoplayVideo(recyclerView)) {
-            val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-            val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
-            val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
-            for (i in firstPosition..lastPosition) {
-                val card = getCDPCardViewModel(list, i)
-                val media = getFeedXCardMedia(list, i)
+        if (!canAutoplayVideo(recyclerView)) return
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val card = getCDPCardViewModel(list, i)
+            val media = getFeedXCardMedia(list, i)
 
-                if (card != null && media != null) {
-                    if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
-                        getVideoModelScrollListener(layoutManager, recyclerView, i, media, true)
-                    } else if (isImageCard(card)) {
-                        getImagePostScrollListener(layoutManager, recyclerView, i, media, true)
-                    } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
-                        getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
-                    } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
-                        getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
-                    }
-                }
-
-            }
+            if (card == null || media == null) return
+            if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                getVideoModelScrollListener(layoutManager, recyclerView, i, media, true)
+            } else if (isImageCard(card)) {
+                getImagePostScrollListener(layoutManager, recyclerView, i, media, true)
+            } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
+                getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
+            } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
+            } else return
         }
     }
-
 
     @Suppress("MagicNumber")
     private fun getImagePostScrollListener(
@@ -289,16 +275,14 @@ object FeedScrollListenerNew {
     private fun getFeedXCard(list: List<Visitable<*>>, position: Int): FeedXCard? {
         return if (list.size > position && list[position] is DynamicPostUiModel)
             (list[position] as DynamicPostUiModel).feedXCard
-        else
-            null
+        else null
     }
 
     private fun getFeedXCardMedia(list: List<FeedXCard>, position: Int): FeedXMedia? {
         return if (list.size > position) {
             val card = (list[position])
             card.media[card.lastCarouselIndex]
-        } else
-            null
+        } else null
     }
 
     private fun isVideoCard(card: FeedXCard): Boolean {

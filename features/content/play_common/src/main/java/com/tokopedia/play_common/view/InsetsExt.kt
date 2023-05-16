@@ -79,15 +79,9 @@ fun View.doOnApplyWindowInsets(f: (view: View, insets: WindowInsetsCompat, paddi
     requestApplyInsetsWhenAttached()
 }
 
-data class InitialPadding(
-    val left: Int, val top: Int,
-    val right: Int, val bottom: Int
-)
+data class InitialPadding(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
-data class InitialMargin(
-    val left: Int, val top: Int,
-    val right: Int, val bottom: Int
-)
+data class InitialMargin(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
 private fun View.recordInitialPadding() = InitialPadding(
     paddingStart,

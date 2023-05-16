@@ -36,8 +36,11 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
     ) {
         val filterCategory = filterCategory.ifEmpty { DEFAULT_FILTER_VALUE }
         tracker.clickOnContentCardsInContentListPageForLagiLive(
-            item.channelId, shopId, listOf(item.video.coverUrl),
-            item.channelType.toString().lowercase(Locale.getDefault()), filterCategory, channelPositionInList,
+            item.channelId, shopId,
+            listOf(item.video.coverUrl),
+            item.channelType.toString().lowercase(Locale.getDefault()),
+            filterCategory,
+            channelPositionInList,
             entryPoint
         )
 
@@ -50,12 +53,14 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
     ) {
-        val filterCategory =
-            if (filterCategory.isNotEmpty()) filterCategory else DEFAULT_FILTER_VALUE
+        val filterCategory = filterCategory.ifEmpty { DEFAULT_FILTER_VALUE }
 
         tracker.impressOnContentCardsInContentListPageForLagiLive(
-            item.channelId, shopId, listOf(item.video.coverUrl),
-            item.channelType.toString().lowercase(Locale.getDefault()), filterCategory, channelPositionInList,
+            item.channelId, shopId,
+            listOf(item.video.coverUrl),
+            item.channelType.toString().lowercase(Locale.getDefault()),
+            filterCategory,
+            channelPositionInList,
             entryPoint
         )
 
