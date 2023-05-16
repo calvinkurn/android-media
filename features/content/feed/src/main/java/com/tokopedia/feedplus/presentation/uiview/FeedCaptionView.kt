@@ -77,6 +77,11 @@ class FeedCaptionView(
 
                 if (textView.lineCount >= maxLine && isCollapsed) {
                     val lineEndIndex = textView.layout.getLineEnd(maxLine - 1)
+                    val endSubsequence =
+                        lineEndIndex - actionText.length - ELLIPSIS.length - ADDITIONAL_END_SUBSEQUENCE_LENGTH
+
+                    if (lineEndIndex <= 0 || endSubsequence < 0 || fullText.length < endSubsequence) return
+
                     val newText =
                         fullText.subSequence(
                             0,
