@@ -71,7 +71,8 @@
                     android:layout_width="@dimen/spacing_lvl4"
                     android:layout_height="@dimen/spacing_lvl4"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_shop_greyscale" />
+                    app:srcCompat="@drawable/ic_shop_greyscale"
+                    android:contentDescription="Image Shop" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/shop_name"

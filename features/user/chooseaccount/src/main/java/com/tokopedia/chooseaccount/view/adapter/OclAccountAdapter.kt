@@ -1,5 +1,6 @@
 package com.tokopedia.chooseaccount.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,7 @@ class OclAccountAdapter() : RecyclerView.Adapter<OclAccountAdapter.OclViewHolder
         return list.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<OclAccount>) {
         this.list.clear()
         this.list.addAll(list)
