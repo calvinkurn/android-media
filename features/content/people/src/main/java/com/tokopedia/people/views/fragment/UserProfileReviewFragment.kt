@@ -31,6 +31,9 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.utils.UserProfileUiBridge
+import com.tokopedia.people.utils.getBoldSpan
+import com.tokopedia.people.utils.getClickableSpan
+import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 
@@ -52,12 +55,6 @@ class UserProfileReviewFragment @Inject constructor(
             requireArguments().getString(UserProfileActivity.EXTRA_USERNAME) ?: "",
         )
     }
-
-    private val boldSpan: StyleSpan
-        get() = StyleSpan(Typeface.BOLD)
-
-    private val colorSpan: ForegroundColorSpan
-        get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
     override fun getScreenName(): String = TAG
 
@@ -122,15 +119,8 @@ class UserProfileReviewFragment @Inject constructor(
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
                 fullText = getString(R.string.up_profile_self_review_empty_desc),
                 highlightedText = getString(R.string.up_profile_create_review),
-                clickablePolicy = object : ClickableSpan() {
-                    override fun onClick(p0: View) {
-                        RouteManager.route(requireContext(), ApplinkConst.REPUTATION)
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                    }
+                clickablePolicy = getClickableSpan {
+                    RouteManager.route(requireContext(), ApplinkConst.REPUTATION)
                 }
             )
             binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
@@ -147,15 +137,8 @@ class UserProfileReviewFragment @Inject constructor(
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
                 fullText = getString(R.string.up_profile_self_review_hidden_desc),
                 highlightedText = getString(R.string.up_profile_settings_title),
-                clickablePolicy = object : ClickableSpan() {
-                    override fun onClick(p0: View) {
-                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                    }
+                clickablePolicy = getClickableSpan {
+                    userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
                 }
             )
             binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
@@ -174,7 +157,7 @@ class UserProfileReviewFragment @Inject constructor(
         val text = SpannableStringBuilder()
 
         text.append(fullText)
-        text.setSpanOnText(highlightedText, clickablePolicy, boldSpan, colorSpan)
+        text.setSpanOnText(highlightedText, clickablePolicy, getBoldSpan(), getGreenColorSpan(requireContext()))
 
         return text
     }
