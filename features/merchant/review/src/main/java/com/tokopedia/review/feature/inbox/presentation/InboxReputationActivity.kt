@@ -46,7 +46,6 @@ import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxRevie
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationPenaltyFragment.Companion.newInstance
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifyprinciples.R.color
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -362,7 +361,9 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         }
         window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, color.Unify_Background)
+        window.statusBarColor =
+            ContextCompat.getColor(this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     private fun clearCacheIfFromNotification() {
