@@ -204,6 +204,12 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
+    override fun mapSetLikeStatus(response: SetLikeStatusResponse): UserReviewUiModel.LikeDislike {
+        return UserReviewUiModel.LikeDislike(
+            totalLike = response.data.totalLike,
+            likeStatus = response.data.likeStatus,
+        )
+    }
 
     private fun getReviewStats(extraStats: List<ExtraStats>): String {
         return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEWS }?.countFmt.orEmpty()

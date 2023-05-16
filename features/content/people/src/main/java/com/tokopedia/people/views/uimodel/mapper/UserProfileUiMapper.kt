@@ -34,4 +34,6 @@ interface UserProfileUiMapper {
         response: GetUserReviewListResponse,
         currentPage: Int,
     ): UserReviewUiModel
+
+    fun mapSetLikeStatus(response: SetLikeStatusResponse): UserReviewUiModel.LikeDislike
 }

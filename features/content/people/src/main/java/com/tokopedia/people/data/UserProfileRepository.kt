@@ -64,10 +64,15 @@ interface UserProfileRepository {
         isShow: Boolean,
     ): Boolean
 
-
     suspend fun getUserReviewList(
         userID: String,
         limit: Int,
         page: Int
     ): UserReviewUiModel
+
+    suspend fun setLikeStatus(
+        feedbackID: String,
+        likeStatus: Int,
+    ): UserReviewUiModel.LikeDislike
+
 }

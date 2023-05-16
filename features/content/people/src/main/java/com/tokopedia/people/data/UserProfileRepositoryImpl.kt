@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.GetProfileSettingsRequest
 import com.tokopedia.people.model.GetUserReviewListRequest
+import com.tokopedia.people.model.SetLikeStatusRequest
 import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
@@ -49,6 +50,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
     private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
     private val getUserReviewListUseCase: GetUserReviewListUseCase,
+    private val setLikeStatusUseCase: SetLikeStatusUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -191,6 +193,20 @@ class UserProfileRepositoryImpl @Inject constructor(
         )
 
         mapper.mapUserReviewList(response, page)
+    }
+
+    override suspend fun setLikeStatus(
+        feedbackID: String,
+        likeStatus: Int
+    ): UserReviewUiModel.LikeDislike = withContext(dispatcher.io) {
+        val response = setLikeStatusUseCase(
+            SetLikeStatusRequest(
+                feedbackID = feedbackID,
+                likeStatus = likeStatus,
+            )
+        )
+
+        mapper.mapSetLikeStatus(response)
     }
 
     companion object {
