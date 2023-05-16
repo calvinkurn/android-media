@@ -566,7 +566,7 @@
         android:layout_below="@+id/tv_summary_add_on_label"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="4dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950"
         android:visibility="visible"
         app:typographyType="body_3"
         app:typographyWeight="reguler"

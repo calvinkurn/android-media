@@ -247,7 +247,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
                 } else {
                     mTvPlatformSlashedFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 }
 
                 if (platformFeeModel.isShowTooltip) {
