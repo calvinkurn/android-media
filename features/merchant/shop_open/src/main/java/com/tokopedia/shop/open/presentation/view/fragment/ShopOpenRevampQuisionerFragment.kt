@@ -206,98 +206,95 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun observeSurveyData() {
-        viewModel.getSurveyDataResponse.observe(
-            viewLifecycleOwner) {
-                EspressoIdlingResource.decrement()
-                when (it) {
-                    is Success -> {
-                        hideLoader()
-                        val questions = it.data.getSurveyData.result.questions
-                        if (questions.size > 0) {
-                            adapter?.updateDataQuestionsList(questions)
-                        }
-                    }
-                    is Fail -> {
-                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                        showErrorNetwork(errorMessage) {
-                            loadDataSurvey()
-                        }
-                        ShopOpenRevampErrorHandler.logMessage(
-                            title = ERROR_GET_SURVEY_QUESTIONS,
-                            userId = userSession.userId,
-                            message = it.throwable.message ?: ""
-                        )
+        viewModel.getSurveyDataResponse.observe(viewLifecycleOwner) {
+            EspressoIdlingResource.decrement()
+            when (it) {
+                is Success -> {
+                    hideLoader()
+                    val questions = it.data.getSurveyData.result.questions
+                    if (questions.size > 0) {
+                        adapter?.updateDataQuestionsList(questions)
                     }
                 }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
+                        loadDataSurvey()
+                    }
+                    ShopOpenRevampErrorHandler.logMessage(
+                        title = ERROR_GET_SURVEY_QUESTIONS,
+                        userId = userSession.userId,
+                        message = it.throwable.message ?: ""
+                    )
+                }
             }
+        }
+    }
 
     private fun observeSendSurveyResult() {
-        viewModel.sendSurveyDataResponse.observe(
-            viewLifecycleOwner) {
-                EspressoIdlingResource.decrement()
-                when (it) {
-                    is Success -> {
-                        val isSuccess = it.data.sendSurveyData.success
-                        val message = it.data.sendSurveyData.message
-                        if (isSuccess) {
-                            showLoader()
-                            gotoPickLocation()
-                        } else {
-                            showErrorResponse(message)
-                        }
-                    }
-                    is Fail -> {
-                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                        showErrorNetwork(errorMessage) {
-                            val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
-                            viewModel.sendSurveyData(dataSurveyInput)
-                        }
-                        ShopOpenRevampErrorHandler.logMessage(
-                            title = ERROR_SEND_SURVEY,
-                            userId = userSession.userId,
-                            message = errorMessage
-                        )
+        viewModel.sendSurveyDataResponse.observe(viewLifecycleOwner) {
+            EspressoIdlingResource.decrement()
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.sendSurveyData.success
+                    val message = it.data.sendSurveyData.message
+                    if (isSuccess) {
+                        showLoader()
+                        gotoPickLocation()
+                    } else {
+                        showErrorResponse(message)
                     }
                 }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
+                        val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+                        viewModel.sendSurveyData(dataSurveyInput)
+                    }
+                    ShopOpenRevampErrorHandler.logMessage(
+                        title = ERROR_SEND_SURVEY,
+                        userId = userSession.userId,
+                        message = errorMessage
+                    )
+                }
             }
-        )
+        }
     }
 
     private fun observeSaveShipmentLocationData() {
-        viewModel.saveShopShipmentLocationResponse.observe(
-            viewLifecycleOwner) {
-                EspressoIdlingResource.decrement()
-                when (it) {
-                    is Success -> {
-                        val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
-                        if (isSuccess) {
-                            showLoader()
-                            EspressoIdlingResource.increment()
-                            fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
-                        } else {
-                            showLoader()
-                            gotoPickLocation()
-                        }
-                    }
-                    is Fail -> {
-                        val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                        showErrorNetwork(errorMessage) {
-                            if (shopId != 0 && postCode != "" && courierOrigin != 0 &&
-                            addrStreet != "" && latitude != "" && longitude != ""
-
-                            ) {    saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
-                            }
-                        }
-                        ShopOpenRevampErrorHandler.logMessage(
-                            title = ERROR_SAVE_LOCATION_SHIPPING,
-                            userId = userSession.userId,
-                            message = errorMessage
-                        )
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner) {
+            EspressoIdlingResource.decrement()
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                    if (isSuccess) {
+                        showLoader()
+                        EspressoIdlingResource.increment()
+                        fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
+                    } else {
+                        showLoader()
+                        gotoPickLocation()
                     }
                 }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
+                        if (shopId != 0 && postCode != "" && courierOrigin != 0 &&
+                            addrStreet != "" && latitude != "" && longitude != ""
+
+                        ) {
+                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                        }
+                    }
+                    ShopOpenRevampErrorHandler.logMessage(
+                        title = ERROR_SAVE_LOCATION_SHIPPING,
+                        userId = userSession.userId,
+                        message = errorMessage
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
-        )
+        }
     }
 
     private fun gotoPickLocation() {
@@ -335,10 +332,9 @@ class ShopOpenRevampQuisionerFragment :
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 getString(R.string.open_shop_revamp_retry)
-                ) {
-                    retry.invoke()
-                }
-
+            ) {
+                retry.invoke()
+            }
         }
     }
 
