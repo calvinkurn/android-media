@@ -9,8 +9,11 @@ data class UserReviewUiModel(
     val reviewList: List<Review>,
     val page: Int,
     val hasNext: Boolean,
-    val isLoading: Boolean,
+    val status: Status,
 ) {
+    val isLoading: Boolean
+        get() = status == Status.Loading
+
     data class Review(
         val feedbackID: String,
         val product: Product,
@@ -58,7 +61,11 @@ data class UserReviewUiModel(
                 reviewList = emptyList(),
                 page = 1,
                 hasNext = true,
-                isLoading = false,
+                status = Status.Unknown,
             )
+    }
+
+    enum class Status {
+        Unknown, Loading, Success, Error
     }
 }

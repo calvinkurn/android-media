@@ -269,7 +269,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
             _reviewContent.update {
                 it.copy(
-                    isLoading = true,
+                    status = UserReviewUiModel.Status.Loading,
                     reviewList = if(isRefresh) emptyList() else it.reviewList,
                     page = if (isRefresh) 1 else it.page,
                     hasNext = if (isRefresh) true else it.hasNext,
@@ -278,14 +278,14 @@ class UserProfileViewModel @AssistedInject constructor(
 
             val response = repo.getUserReviewList(
                 userID = profileUserID,
-                limit = 10, /** TODO: dont harcoded this */
+                limit = DEFAULT_LIMIT,
                 page = currReviewContent.page,
             )
 
             _reviewContent.update { response }
         }) {
             _reviewContent.update { userReview ->
-                userReview.copy(isLoading = false)
+                userReview.copy(status = UserReviewUiModel.Status.Error)
             }
 
             /** TODO: handle this on UserProfileReviewFragment later */

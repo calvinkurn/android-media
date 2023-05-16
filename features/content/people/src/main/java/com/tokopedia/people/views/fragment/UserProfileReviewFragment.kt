@@ -120,37 +120,40 @@ class UserProfileReviewFragment @Inject constructor(
             prev.reviewContent == value.reviewContent) return
 
         if (value.reviewSettings.isEnabled) {
-            if (value.reviewContent.reviewList.isNotEmpty()) {
-                showMainLayout(value.reviewContent)
-            } else {
-                showNoReviewLayout()
+            when (value.reviewContent.status) {
+                UserReviewUiModel.Status.Loading -> {
+                    if (value.reviewContent.isLoading && value.reviewContent.reviewList.isEmpty()) {
+                        /** TODO: show shimmering */
+
+                        return
+                    }
+                }
+                UserReviewUiModel.Status.Success -> {
+                    if (value.reviewContent.reviewList.isEmpty()) {
+                        showNoReviewLayout()
+                        return
+                    }
+
+                    binding.layoutNoUserReview.root.hide()
+                    binding.rvReview.show()
+
+                    val mappedList = value.reviewContent.reviewList.map {
+                        UserReviewAdapter.Model.Review(it)
+                    }
+
+                    val finalList = if (value.reviewContent.hasNext) {
+                        mappedList + listOf(UserReviewAdapter.Model.Loading)
+                    } else {
+                        mappedList
+                    }
+
+                    adapter.setItemsAndAnimateChanges(finalList)
+                }
+                else -> {}
             }
         } else {
             showHiddenReviewLayout()
         }
-    }
-
-    private fun showMainLayout(reviewContent: UserReviewUiModel) {
-        binding.layoutNoUserReview.root.gone()
-        binding.rvReview.show()
-
-        if (reviewContent.isLoading && reviewContent.reviewList.isEmpty()) {
-            /** TODO: show shimmering */
-
-            return
-        }
-
-        val mappedList = reviewContent.reviewList.map {
-            UserReviewAdapter.Model.Review(it)
-        }
-
-        val finalList = if (reviewContent.hasNext) {
-            mappedList + listOf(UserReviewAdapter.Model.Loading)
-        } else {
-            mappedList
-        }
-
-        adapter.setItemsAndAnimateChanges(finalList)
     }
 
     private fun showNoReviewLayout() {

@@ -200,7 +200,7 @@ class UserProfileUiMapperImpl @Inject constructor(
             },
             page = currentPage + 1,
             hasNext = response.data.hasNext,
-            isLoading = false,
+            status = UserReviewUiModel.Status.Success,
         )
     }
 
