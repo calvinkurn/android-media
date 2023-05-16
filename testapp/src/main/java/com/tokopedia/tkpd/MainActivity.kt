@@ -33,10 +33,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
-        model.value = model.value.copy(
-            applink = "tokopedia://people/${userSession.userId}",
-            isDarkModeChecked = getDarkModeStatus()
-        )
+        model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
         setContent {
             NestTheme {
                 var modelState by remember { model }
