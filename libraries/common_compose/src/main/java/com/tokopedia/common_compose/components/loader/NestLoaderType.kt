@@ -33,7 +33,7 @@ sealed class NestLoaderSize(val width: Dp, val height: Dp) {
 sealed interface NestShimmerType {
     data class Rect(
         val rounded: Dp = 0.dp
-    ): NestShimmerType
-    object Line: NestShimmerType
-    object Circle: NestShimmerType
+    ) : NestShimmerType
+    object Line : NestShimmerType
+    object Circle : NestShimmerType
 }
