@@ -1,5 +1,7 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -14,9 +16,12 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_R
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.manageaddress.TickerDataProvider
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.*
@@ -28,8 +33,12 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddr
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,9 +47,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -60,12 +68,14 @@ class ManageAddressViewModelTest {
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
+    private val remoteConfigInstance: RemoteConfig = mockk()
     private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> =
         mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
         mockk(relaxed = true)
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase =
         mockk(relaxed = true)
+    private val tickerUseCase: GetTargetedTickerUseCase = mockk(relaxed = true)
 
     private var observerManageAddressState =
         mockk<Observer<ManageAddressState<String>>>(relaxed = true)
@@ -77,12 +87,15 @@ class ManageAddressViewModelTest {
         mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
+    private val context = mockk<Context>(relaxed = true)
+    private val sharedPrefs = mockk<SharedPreferences>(relaxed = true)
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
+        stubSharePrefs()
         manageAddressViewModel = ManageAddressViewModel(
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
@@ -91,7 +104,9 @@ class ManageAddressViewModelTest {
             chooseAddressMapper,
             eligibleForAddressUseCase,
             validateShareAddressAsReceiverUseCase,
-            validateShareAddressAsSenderUseCase
+            validateShareAddressAsSenderUseCase,
+            tickerUseCase,
+            remoteConfigInstance
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -104,6 +119,15 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.validateShareAddressState.observeForever(
             observerValidateShareAddressState
         )
+    }
+
+    @After
+    fun tearDown() {
+        TokopediaUrl.deleteInstance()
+    }
+
+    private fun stubSharePrefs() {
+        coEvery { context.getSharedPreferences(any(), any()) } returns sharedPrefs
     }
 
     @Test
@@ -197,7 +221,7 @@ class ManageAddressViewModelTest {
             SetDefaultPeopleAddressGqlResponse(
                 SetDefaultPeopleAddressResponse(
                     status = ManageAddressConstant.STATUS_OK,
-                    data = DefaultPeopleAddressData(success = 1),
+                    data = DefaultPeopleAddressData(success = 1)
                 )
             )
         )
@@ -205,7 +229,6 @@ class ManageAddressViewModelTest {
         coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } returns mockDefaultPeopleAddressGqlResponse
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
         verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Success }) }
-
     }
 
     @Test
@@ -225,14 +248,14 @@ class ManageAddressViewModelTest {
         )
 
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
     }
 
     @Test
     fun `Delete Address Fail`() {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } throws mockThrowable
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
@@ -247,7 +270,6 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.getStateChosenAddress("address")
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
-
 
     @Test
     fun `Get Chosen Address Fail`() {
@@ -268,7 +290,6 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
-
 
     @Test
     fun `Set Chosen Address Fail`() {
@@ -474,7 +495,7 @@ class ManageAddressViewModelTest {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
 
         // When
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", "")
 
         // Then
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
@@ -540,10 +561,7 @@ class ManageAddressViewModelTest {
 
         val bundle = mockk<Bundle>()
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                KEY_SHARE_ADDRESS_LOGI,
-                ""
-            )
+            remoteConfigInstance.getString(KEY_SHARE_ADDRESS_LOGI, "")
         } returns KEY_SHARE_ADDRESS_LOGI
         every { bundle.getString(ManageAddressConstant.QUERY_PARAM_RUID) } returns ruid
         every { bundle.getString(ManageAddressConstant.QUERY_PARAM_SUID) } returns suid
@@ -559,7 +577,6 @@ class ManageAddressViewModelTest {
         assertFalse(manageAddressViewModel.isFromMoneyIn)
     }
 
-
     @Test
     fun `verify when source from money in is correct`() {
         // Given
@@ -567,5 +584,232 @@ class ManageAddressViewModelTest {
 
         // Then
         assertTrue(manageAddressViewModel.isFromMoneyIn)
+    }
+
+    @Test
+    fun `WHEN setupTicker THEN return sorted TickerModel`() {
+        val response = TickerDataProvider.provideDummy()
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val tickerState = manageAddressViewModel.tickerState.value
+        assertTrue(tickerState is Success)
+        assertTrue((tickerState as Success).data.item.first().priority == 1L)
+        assertTrue(tickerState.data.item[1].priority == 2L)
+        assertTrue(tickerState.data.item[2].priority == 3L)
+    }
+
+    @Test
+    fun `WHEN setupTicker failed THEN return fail`() {
+        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        assertTrue(manageAddressViewModel.tickerState.value is Fail)
+    }
+
+    @Test
+    fun `WHEN setupTicker failed and empty first ticker content THEN return fail`() {
+        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
+
+        // when
+        manageAddressViewModel.getTargetedTicker("")
+
+        // then
+        assertTrue(manageAddressViewModel.tickerState.value is Fail)
+    }
+
+    @Test
+    fun `WHEN setupTicker failed but has first ticker content THEN return success`() {
+        // inject
+        val firstTickerContent = "tokopedia"
+
+        // given
+        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
+
+        // when
+        manageAddressViewModel.getTargetedTicker(firstTickerContent)
+
+        // then
+        assertTrue(manageAddressViewModel.tickerState.value is Success)
+    }
+
+    @Test
+    fun `WHEN setupTicker with ticker type info THEN return TickerModel with TYPE_INFORMATION`() {
+        val tickerType = TargetedTickerMapper.TICKER_INFO_TYPE
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
+    }
+
+    @Test
+    fun `WHEN setupTicker with ticker type warning THEN return TickerModel with TYPE_WARNING`() {
+        val tickerType = TargetedTickerMapper.TICKER_WARNING_TYPE
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_WARNING)
+    }
+
+    @Test
+    fun `WHEN setupTicker with ticker type error THEN return TickerModel with TYPE_ERROR`() {
+        val tickerType = TargetedTickerMapper.TICKER_ERROR_TYPE
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ERROR)
+    }
+
+    @Test
+    fun `WHEN setupTicker with ticker type announcement THEN return TickerModel with TYPE_ANNOUNCEMENT`() {
+        val tickerType = "announcement"
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
+    }
+
+    @Test
+    fun `WHEN setupTicker with action THEN return TickerModel content with hyperlink text`() {
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemWithAction = response.getTargetedTickerData.list.first()
+        val expected = "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemWithAction.id }
+        assertTrue(tickerUiModel?.content == expected)
+    }
+
+    @Test
+    fun `WHEN setupTicker without action THEN return TickerModel content without hyperlink text`() {
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemWithoutAction = response.getTargetedTickerData.list.find { it.action.label.isEmpty() }
+        val expected = "${tickerItemWithoutAction?.content}"
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemWithoutAction?.id }
+        assertTrue(tickerUiModel?.content == expected)
+    }
+
+    @Test
+    fun `WHEN setupTicker with app url THEN return TickerModel linkUrl with appUrl`() {
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemWithAppUrl = response.getTargetedTickerData.list.find { it.action.appURL.isNotEmpty() }
+        val expected = "${tickerItemWithAppUrl?.action?.appURL}"
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemWithAppUrl?.id }
+        assertTrue(tickerUiModel?.linkUrl == expected)
+    }
+
+    @Test
+    fun `WHEN setupTicker with web url THEN return TickerModel linkUrl with webUrl`() {
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemWithWebUrl = response.getTargetedTickerData.list.find { it.action.webURL.isNotEmpty() }
+        val expected = "${tickerItemWithWebUrl?.action?.webURL}"
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemWithWebUrl?.id }
+        assertTrue(tickerUiModel?.linkUrl == expected)
+    }
+
+    @Test
+    fun `WHEN setupTicker with web url and app url THEN return TickerModel linkUrl with appUrl`() {
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemWithAppAndWebUrl = response.getTargetedTickerData.list.find { it.action.appURL.isNotEmpty().and(it.action.webURL.isNotEmpty()) }
+        val expected = "${tickerItemWithAppAndWebUrl?.action?.appURL}"
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        manageAddressViewModel.getTargetedTicker()
+
+        // then
+        val result = manageAddressViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemWithAppAndWebUrl?.id }
+        assertTrue(tickerUiModel?.linkUrl == expected)
+    }
+
+    @Test
+    fun `verify get delete collection id staging is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
+
+        // When
+        TokopediaUrl.init(context)
+
+        // Then
+        assertEquals(
+            manageAddressViewModel.deleteCollectionId,
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_STAGING
+        )
+    }
+
+    @Test
+    fun `verify get delete collection id production is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
+
+        // When
+        TokopediaUrl.init(context)
+
+        // Then
+        assertEquals(
+            manageAddressViewModel.deleteCollectionId,
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_PRODUCTION
+        )
     }
 }
