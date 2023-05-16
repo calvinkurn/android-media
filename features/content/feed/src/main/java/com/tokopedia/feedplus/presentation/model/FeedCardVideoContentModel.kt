@@ -1,7 +1,8 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedplus.data.FeedXCard
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 
 /**
@@ -40,7 +41,10 @@ data class FeedCardVideoContentModel(
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val isTypeProductHighlight: Boolean
-        get() = typename == FeedXCard.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
+        get() = typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
+
+    val isPlayContent: Boolean
+        get() = typename == TYPE_FEED_X_CARD_PLAY
 
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 

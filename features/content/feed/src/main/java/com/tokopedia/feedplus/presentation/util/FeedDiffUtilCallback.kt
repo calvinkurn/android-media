@@ -63,6 +63,9 @@ class FeedDiffUtilCallback(
                     if (oldItem.like.isLiked != newItem.like.isLiked) {
                         add(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)
                     }
+                    if (oldItem.comments.countFmt != newItem.comments.countFmt) {
+                        add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
+                    }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
             }
@@ -73,6 +76,9 @@ class FeedDiffUtilCallback(
                 }
                 if (oldItem.like.isLiked != newItem.like.isLiked) {
                     add(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)
+                }
+                if (oldItem.comments.countFmt != newItem.comments.countFmt) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
                 }
             }
             if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null

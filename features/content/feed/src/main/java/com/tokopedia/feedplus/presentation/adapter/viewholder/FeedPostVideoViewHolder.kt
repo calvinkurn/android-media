@@ -12,6 +12,9 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
@@ -94,13 +97,15 @@ class FeedPostVideoViewHolder(
             )
         }
 
-        val postGestureDetector = GestureDetector(binding.root.context,
+        val postGestureDetector = GestureDetector(
+            binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
                     val data = mData ?: return true
 
-                    videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
+                    videoPlayer.getExoPlayer().playWhenReady =
+                        !videoPlayer.getExoPlayer().playWhenReady
 
                     if (!videoPlayer.getExoPlayer().playWhenReady) {
                         listener.onPauseVideoPost(
@@ -118,8 +123,9 @@ class FeedPostVideoViewHolder(
                         listener.onLikePostCLicked(
                             data.id,
                             absoluteAdapterPosition,
-                            trackerDataModel
-                                ?: trackerMapper.transformVideoContentToTrackerModel(data),
+                            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                                data
+                            ),
                             true
                         )
                     }
@@ -161,10 +167,7 @@ class FeedPostVideoViewHolder(
                         data.deletable,
                         data.reportable || data.isTypeProductHighlight,
                         FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
+                            data.text, data.id, data.author.id, absoluteAdapterPosition
                         ),
                         trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                             data
@@ -192,19 +195,23 @@ class FeedPostVideoViewHolder(
         element?.let {
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(it)
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)) {
+            if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
                 setLikeUnlike(it.like)
             }
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE)) {
+
+            if (payloads.contains(FEED_POST_CLEAR_MODE)) {
                 showClearView()
             }
+
+            if (payloads.contains(FEED_POST_COMMENT_COUNT)) {
+                bindComments(it)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                         it
-                    ),
-                    it.id,
-                    absoluteAdapterPosition
+                    ), it.id, absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
@@ -214,6 +221,7 @@ class FeedPostVideoViewHolder(
                     )
                 )
             }
+
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 mVideoPlayer?.pause()
                 mVideoPlayer?.reset()
@@ -221,13 +229,14 @@ class FeedPostVideoViewHolder(
                 campaignView.resetView()
                 hideClearView()
             }
+
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
             }
+
             payloads.forEach { payload ->
                 if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
+                    element, payload.payloads.toMutableList()
                 )
             }
         }
@@ -325,7 +334,13 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindComments(model: FeedCardVideoContentModel) {
-        commentButtonView.bind(model.comments.countFmt, trackerDataModel, absoluteAdapterPosition)
+        commentButtonView.bind(
+            if (model.isPlayContent) model.playChannelId else model.id,
+            model.isPlayContent,
+            model.comments.countFmt,
+            trackerDataModel,
+            absoluteAdapterPosition
+        )
 
         if (model.isTypeProductHighlight) {
             commentButtonView.hide()
