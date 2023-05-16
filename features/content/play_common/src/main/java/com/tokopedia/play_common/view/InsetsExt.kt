@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.Px
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 /**
  * Created by jegul on 02/07/20
@@ -63,6 +64,7 @@ fun View.invalidateInsets() {
     try {
         requestApplyInsets()
     } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         return
     }
 }
