@@ -40,11 +40,11 @@ import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.adapter.UserReviewAdapter
+import com.tokopedia.people.views.itemdecoration.UserReviewItemDecoration
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
-import kotlinx.coroutines.flow.collect
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -110,6 +110,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun setupView() {
+        binding.rvReview.addItemDecoration(UserReviewItemDecoration(requireContext()))
         binding.rvReview.layoutManager = linearLayoutManager
         binding.rvReview.adapter = adapter
     }
