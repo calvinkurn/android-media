@@ -77,6 +77,10 @@ class UserProfileReviewFragment @Inject constructor(
                 override fun onClickLike(review: UserReviewUiModel.Review) {
                     viewModel.submitAction(UserProfileAction.ClickLikeReview(review))
                 }
+
+                override fun onClickSeeMore(review: UserReviewUiModel.Review) {
+                    viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
+                }
             },
             onLoading = {
                 viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = false))

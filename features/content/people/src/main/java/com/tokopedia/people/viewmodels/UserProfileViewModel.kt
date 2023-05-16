@@ -176,6 +176,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
+            is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             else -> {}
         }
     }
@@ -565,6 +566,22 @@ class UserProfileViewModel @AssistedInject constructor(
 
             /** TODO: handle this */
             _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
+        }
+    }
+
+    private fun handleClickReviewTextSeeMore(review: UserReviewUiModel.Review) {
+        launch {
+            _reviewContent.update {
+                it.copy(
+                    reviewList = it.reviewList.map { item ->
+                        if (item.feedbackID == review.feedbackID) {
+                            item.copy(isReviewTextExpanded = true)
+                        } else {
+                            item
+                        }
+                    }
+                )
+            }
         }
     }
 

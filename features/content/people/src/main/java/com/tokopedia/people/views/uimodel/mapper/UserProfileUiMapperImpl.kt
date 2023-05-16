@@ -195,7 +195,8 @@ class UserProfileUiMapperImpl @Inject constructor(
                     likeDislike = UserReviewUiModel.LikeDislike(
                         totalLike = it.likeDislike.totalLike,
                         likeStatus = it.likeDislike.likeStatus,
-                    )
+                    ),
+                    isReviewTextExpanded = false,
                 )
             },
             page = currentPage + 1,

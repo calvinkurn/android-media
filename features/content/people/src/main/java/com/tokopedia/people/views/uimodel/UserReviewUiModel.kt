@@ -20,7 +20,8 @@ data class UserReviewUiModel(
         val reviewTime: String,
         val attachments: List<Attachment>,
         val videoAttachments: List<VideoAttachment>,
-        val likeDislike: LikeDislike
+        val likeDislike: LikeDislike,
+        val isReviewTextExpanded: Boolean,
     )
 
     data class Product(

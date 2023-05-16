@@ -49,7 +49,7 @@ class UserReviewViewHolder private constructor() {
                 setupStar(icStar4, item.rating >= 4)
                 setupStar(icStar5, item.rating >= 5)
 
-                setupReviewText(item.reviewText)
+                setupReviewText(item)
 
                 /** TODO: setup media */
 
@@ -71,29 +71,27 @@ class UserReviewViewHolder private constructor() {
             )
         }
 
-        private fun setupReviewText(reviewText: String) {
+        private fun setupReviewText(review: UserReviewUiModel.Review) {
             val formattedReviewText = SpannableStringBuilder()
 
-            if (reviewText.length > MAX_REVIEW_CHAR) {
+            if (review.isReviewTextExpanded || review.reviewText.length <= MAX_REVIEW_CHAR) {
+                formattedReviewText.append(review.reviewText)
+            } else {
                 formattedReviewText.append(
                     itemView.context.getString(
                         R.string.up_profile_user_review_text_template,
-                        reviewText.substring(0, MAX_REVIEW_CHAR)
+                        review.reviewText.substring(0, MAX_REVIEW_CHAR)
                     )
                 )
-
-                /** TODO: handle if the review is opened before, dont close it */
                 val highlightedText = itemView.context.getString(R.string.up_link_see_more)
                 formattedReviewText.setSpanOnText(
                     highlightedText,
                     getClickableSpan {
-                        binding.tvReview.text = reviewText
+                        listener.onClickSeeMore(review)
                     },
                     getBoldSpan(),
                     getGreenColorSpan(itemView.context)
                 )
-            } else {
-                formattedReviewText.append(reviewText)
             }
 
             binding.tvReview.text = formattedReviewText
@@ -129,6 +127,7 @@ class UserReviewViewHolder private constructor() {
 
         interface Listener {
             fun onClickLike(review: UserReviewUiModel.Review)
+            fun onClickSeeMore(review: UserReviewUiModel.Review)
         }
     }
 

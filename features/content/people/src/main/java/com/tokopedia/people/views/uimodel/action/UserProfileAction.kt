@@ -48,4 +48,6 @@ sealed interface UserProfileAction {
     data class ClickDeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 
     data class ClickLikeReview(val review: UserReviewUiModel.Review) : UserProfileAction
+
+    data class ClickReviewTextSeeMore(val review: UserReviewUiModel.Review) : UserProfileAction
 }
