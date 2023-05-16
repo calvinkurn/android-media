@@ -17,7 +17,7 @@ sealed interface NestLoaderType {
     data class Decorative(
         val size: NestLoaderSize = NestLoaderSize.Undefine,
         val isWhite: Boolean = false
-    ): NestLoaderType
+    ) : NestLoaderType
 
     data class Shimmer(
         val type: NestShimmerType
