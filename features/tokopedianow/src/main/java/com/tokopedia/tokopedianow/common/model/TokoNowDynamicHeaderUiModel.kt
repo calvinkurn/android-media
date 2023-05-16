@@ -7,5 +7,6 @@ data class TokoNowDynamicHeaderUiModel(
     val ctaTextLink: String = "",
     val expiredTime: String = "",
     val serverTimeOffset: Long = 0,
-    val backColor: String = ""
+    val backColor: String = "",
+    val circleSeeAll: Boolean = false
 )

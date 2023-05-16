@@ -92,5 +92,5 @@ internal object AceSearchProduct: GqlQueryInterface {
         }
     """.trimIndent()
 
-    override fun getTopOperationName(): String = "ace_search_product_v4"
+    override fun getTopOperationName(): String = "aceSearchProductV4"
 }

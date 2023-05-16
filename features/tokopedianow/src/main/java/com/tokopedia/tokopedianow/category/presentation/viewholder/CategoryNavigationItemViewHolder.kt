@@ -15,7 +15,6 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryNavigationItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class CategoryNavigationItemViewHolder(
     itemView: View,
     private val listener: CategoryNavigationItemListener? = null,
@@ -30,31 +29,48 @@ class CategoryNavigationItemViewHolder(
 
     override fun bind(data: CategoryNavigationItemUiModel) {
         binding?.apply {
-            tpCategoryTitle.text = data.title
-            ivCategoryImage.loadImage(data.imageUrl)
-            ivCategoryImage.setBackgroundColor(
-                ViewUtil.safeParseColor(
-                    color = data.color,
-                    defaultColor = ContextCompat.getColor(
-                        itemView.context,
-                        R.color.tokopedianow_card_dms_color
-                    )
+            setTitle(data)
+            setCategoryImage(data)
+            setLayout(data)
+        }
+    }
+
+    private fun ItemTokopedianowCategoryNavigationItemBinding.setTitle(
+        data: CategoryNavigationItemUiModel
+    ) {
+        tpCategoryTitle.text = data.title
+    }
+
+    private fun ItemTokopedianowCategoryNavigationItemBinding.setCategoryImage(
+        data: CategoryNavigationItemUiModel
+    ) {
+        ivCategoryImage.loadImage(data.imageUrl)
+        ivCategoryImage.setBackgroundColor(
+            ViewUtil.safeParseColor(
+                color = data.backgroundColor,
+                defaultColor = ContextCompat.getColor(
+                    itemView.context,
+                    R.color.tokopedianow_card_dms_color
                 )
             )
-            ivCategoryImage.shapeAppearanceModel = ShapeAppearanceModel()
-                .toBuilder()
-                .setAllCorners(
-                    CornerFamily.ROUNDED,
-                    root.context.resources.getDimension(R.dimen.tokopedianow_product_card_margin_end_corner)
-                )
-                .build()
+        )
+        ivCategoryImage.shapeAppearanceModel = ShapeAppearanceModel()
+            .toBuilder()
+            .setAllCorners(
+                CornerFamily.ROUNDED,
+                root.context.resources.getDimension(R.dimen.tokopedianow_category_navigation_rounded_corner)
+            )
+            .build()
+    }
 
-            root.setOnClickListener {
-                setLayoutClicked(data)
-            }
-            root.addOnImpressionListener(data) {
-                listener?.onCategoryItemImpressed(data, layoutPosition)
-            }
+    private fun ItemTokopedianowCategoryNavigationItemBinding.setLayout(
+        data: CategoryNavigationItemUiModel
+    ) {
+        root.setOnClickListener {
+            setLayoutClicked(data)
+        }
+        root.addOnImpressionListener(data) {
+            listener?.onCategoryItemImpressed(data, layoutPosition)
         }
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryShowcaseItemBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryShowcaseItemViewHolder(
@@ -16,10 +16,10 @@ class CategoryShowcaseItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_category_showcase_item
+        val LAYOUT = R.layout.item_tokopedianow_product_grid_card
     }
 
-    private var binding: ItemTokopedianowCategoryShowcaseItemBinding? by viewBinding()
+    private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
 
     override fun bind(element: CategoryShowcaseItemUiModel) {

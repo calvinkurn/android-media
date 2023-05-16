@@ -9,8 +9,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 data class CategoryNavigationUiModel(
     val id: String = String.EMPTY,
     val title: String = String.EMPTY,
-    val categoryListUiModel: List<CategoryNavigationItemUiModel>? = null,
-    @TokoNowLayoutState val state: Int
+    val categoryListUiModel: List<CategoryNavigationItemUiModel> = emptyList(),
+    @TokoNowLayoutState val state: Int = TokoNowLayoutState.LOADING
 ): Visitable<CategoryTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CategoryTypeFactory): Int = typeFactory.type(this)
 }

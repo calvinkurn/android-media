@@ -65,4 +65,15 @@
         app:typographyWeight="bold"
         tools:text="Lihat Semua" />
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_circle_see_all"
+        app:srcCompat="@drawable/iconunify_chevron_right"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:tint="@color/Unify_NN900"
+        android:elevation="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

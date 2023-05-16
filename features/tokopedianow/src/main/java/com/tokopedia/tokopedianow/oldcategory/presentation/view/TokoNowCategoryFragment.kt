@@ -261,7 +261,7 @@ class TokoNowCategoryFragment:
     override fun screenShotTaken() {
         updateShareHomeData(
             isScreenShot = true,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty()
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
         )
 
         showUniversalShareBottomSheet(shareCategoryTokonow)
@@ -349,7 +349,7 @@ class TokoNowCategoryFragment:
     override fun onNavToolbarShareClicked() {
         updateShareHomeData(
             isScreenShot = false,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty()
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty()
         )
 
         CategoryTracking.trackClickShareButtonTopNav(

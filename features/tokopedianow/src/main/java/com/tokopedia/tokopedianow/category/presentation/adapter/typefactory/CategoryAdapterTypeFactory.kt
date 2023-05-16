@@ -18,25 +18,33 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitle
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
 class CategoryAdapterTypeFactory(
+    private val categoryTitleListener: CategoryTitleListener? = null,
+    private val categoryNavigationListener: CategoryNavigationListener? = null,
     private val tokoNowView: TokoNowView? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
-    private val categoryTitleListener: CategoryTitleListener? = null,
-    private val categoryNavigationListener: CategoryNavigationListener? = null
+    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
+    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null
 ): BaseAdapterTypeFactory(),
     CategoryTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowCategoryMenuTypeFactory,
-    TokoNowProductRecommendationTypeFactory
+    TokoNowProductRecommendationTypeFactory,
+    TokoNowProgressBarTypeFactory
 {
     /* Category Component Ui Model */
     override fun type(uiModel: CategoryHeaderSpaceUiModel): Int = CategoryHeaderSpaceViewHolder.LAYOUT
@@ -48,6 +56,7 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -73,8 +82,16 @@ class CategoryAdapterTypeFactory(
                 tokoNowView = tokoNowView,
                 tokoNowChooseAddressWidgetListener = tokoNowChooseAddressWidgetListener
             )
+            TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(
+                itemView = view,
+                listener = tokoNowCategoryMenuListener
+            )
             TokoNowProductRecommendationViewHolder.LAYOUT -> TokoNowProductRecommendationViewHolder(
                 itemView = view,
+                listener = tokoNowProductRecommendationListener
+            )
+            TokoNowProgressBarViewHolder.LAYOUT -> TokoNowProgressBarViewHolder(
+                itemView = view
             )
             else -> super.createViewHolder(view, type)
         }

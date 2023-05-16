@@ -1,8 +1,7 @@
 package com.tokopedia.tokopedianow.category.domain.usecase
 
-import android.util.Log
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.OB
@@ -20,58 +19,39 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WA
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USE_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.discovery.common.utils.UrlParamUtils
-import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.category.domain.query.AceSearchProduct
-import com.tokopedia.tokopedianow.category.domain.response.CategoryModel
-import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
-class GetCategoryFirstPageUseCase(
-    private val graphqlUseCase: MultiRequestGraphqlUseCase,
-): UseCase<CategoryModel>() {
-
-    override suspend fun executeOnBackground(): CategoryModel {
-        val params = useCaseRequestParams.parameters[KEY_PARAMS] ?: String.EMPTY
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createAceSearchProductRequest(params))
-        val response = graphqlUseCase.executeOnBackground()
-        Log.d("HELLO_GUYS_INI", getSearchProduct(response).toString())
-
-        return CategoryModel(
-            searchProduct = getSearchProduct(response)
-        )
+class GetCategoryProductUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+) {
+    companion object {
+        const val USE_PAGE_VALUE = "true"
+        const val SOURCE_VALUE = "category_tokonow_directory"
+        const val PAGE_VALUE = "1"
     }
 
-    private fun getSearchProduct(
-        graphqlResponse: GraphqlResponse
-    ): AceSearchProductModel.SearchProduct = graphqlResponse.getData<AceSearchProductModel?>(AceSearchProductModel::class.java)?.searchProduct ?: AceSearchProductModel.SearchProduct()
+    private val graphql by lazy { GraphqlUseCase<AceSearchProductModel>(graphqlRepository) }
 
-    private fun createAceSearchProductRequest(
-        params: Any
-    ) = GraphqlRequest(
-        AceSearchProduct.getQuery(),
-        typeOfT = AceSearchProductModel::class.java,
-        variables = mapOf(
-            KEY_PARAMS to params
-        )
-    )
+    init {
+        graphql.apply {
+            setGraphqlQuery(AceSearchProduct)
+            setTypeClass(AceSearchProductModel::class.java)
+        }
+    }
 
-    fun setParams(
+    suspend fun execute(
         chooseAddressData: LocalCacheModel,
         uniqueId: String,
-        categoryIdL1: String
-    ) {
-        useCaseRequestParams.apply {
+        categoryIdL2: String
+    ): AceSearchProductModel {
+        return graphql.run {
             val queryParams = mutableMapOf<String?, Any>()
-
-            queryParams[DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
 
             if (chooseAddressData.city_id.isNotEmpty())
                 queryParams[USER_CITY_ID] = chooseAddressData.city_id
@@ -88,16 +68,22 @@ class GetCategoryFirstPageUseCase(
             if (chooseAddressData.warehouse_id.isNotEmpty())
                 queryParams[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
 
+            queryParams[DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
             queryParams[UNIQUE_ID] = uniqueId
-            queryParams[PAGE] = "1"
-            queryParams[USE_PAGE] = "true"
-            queryParams[OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
-            queryParams[NAVSOURCE] = "category_tokonow_directory"
-            queryParams[SOURCE] = "category_tokonow_directory"
-            queryParams[SRP_PAGE_ID] = categoryIdL1
+            queryParams[PAGE] = PAGE_VALUE
+            queryParams[USE_PAGE] = USE_PAGE_VALUE
+            queryParams[OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
+            queryParams[NAVSOURCE] = SOURCE_VALUE
+            queryParams[SOURCE] = SOURCE_VALUE
+            queryParams[SRP_PAGE_ID] = categoryIdL2
 
-            useCaseRequestParams.parameters[KEY_PARAMS] = UrlParamUtils.generateUrlParamString(queryParams)
+            setRequestParams(
+                RequestParams.create().apply {
+                    putString(KEY_PARAMS, UrlParamUtils.generateUrlParamString(queryParams))
+                }.parameters
+            )
+
+            executeOnBackground()
         }
     }
-
 }

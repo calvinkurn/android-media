@@ -45,7 +45,6 @@ class CategoryNavigationViewHolder(
             when(data.state) {
                 TokoNowLayoutState.SHOW -> showSuccessState(data)
                 TokoNowLayoutState.LOADING -> showLoadingState()
-                TokoNowLayoutState.HIDE -> showErrorState()
                 else -> { /* nothing to do */ }
             }
         }
@@ -60,7 +59,6 @@ class CategoryNavigationViewHolder(
     }
 
     private fun ItemTokopedianowCategoryNavigationBinding.showLoadingState() {
-        llCategory.hide()
         rvCategory.hide()
         categoryShimmering.categoryShimmeringLayout.show()
     }
@@ -69,7 +67,6 @@ class CategoryNavigationViewHolder(
         data: CategoryNavigationUiModel
     ) {
         categoryShimmering.categoryShimmeringLayout.hide()
-        llCategory.hide()
         rvCategory.show()
 
         showCategoryMenu(
@@ -94,25 +91,7 @@ class CategoryNavigationViewHolder(
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
 
-        adapter.submitList(data.categoryListUiModel.orEmpty())
-    }
-
-    private fun ItemTokopedianowCategoryNavigationBinding.showErrorState() {
-        binding.apply {
-            llCategory.apply {
-                show()
-                progressState = false
-                title?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_title)
-                description?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_description)
-                refreshBtn?.setOnClickListener {
-                    progressState = true
-                    listener?.onCategoryNavigationWidgetRetried()
-                }
-            }
-
-            categoryShimmering.categoryShimmeringLayout.hide()
-            rvCategory.hide()
-        }
+        adapter.submitList(data.categoryListUiModel)
     }
 
     interface CategoryNavigationListener {

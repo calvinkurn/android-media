@@ -13,9 +13,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -23,26 +26,74 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
+import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
-
+abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
+    ScreenShotListener,
+    ShareBottomsheetListener,
+    PermissionListener
+{
     private companion object {
-        const val TOOLBAR_PAGE_NAME = "TokoNow Category"
+        const val SCROLL_DOWN_DIRECTION = 1
+
+        const val PAGE_NAME = "TokoNow Category"
+        const val TOKONOW_DIRECTORY = "tokonow_directory"
+        const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = TokopediaImageUrl.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
     }
 
+    abstract val userId: String
+    abstract val categoryIdL1: String
+    abstract val categoryIdL2: String
+    abstract val categoryIdL3: String
+    abstract val currentCategoryId: String
     abstract val adapter: CategoryAdapter
 
     protected var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
-
     protected val navToolbarHeight: Int
         get() {
             val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
             return if (binding?.navToolbar?.height.isZero()) defaultHeight else binding?.navToolbar?.height ?: defaultHeight
         }
+    protected val navSource: String
+        get() = TOKONOW_DIRECTORY
+
+    private var shareCategoryTokonow: ShareTokonow? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector : ScreenshotDetector? = null
 
     override fun getScreenName(): String = String.EMPTY
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shareCategoryTokonow = createShareCategoryTokonow()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        screenshotDetector?.start()
+    }
+
+    override fun onStop() {
+        UniversalShareBottomSheet.clearState(screenshotDetector)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        UniversalShareBottomSheet.clearState(screenshotDetector)
+        super.onDestroy()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,32 +108,29 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupNavigationToolbar()
         setupRecyclerView()
+        setupScreenshotDetector()
     }
 
-    private fun setupNavigationToolbar() {
-        binding?.navToolbar?.apply {
-            bringToFront()
-            setToolbarPageName(TOOLBAR_PAGE_NAME)
-            setIcon(
-                IconBuilder()
-                    .addShare()
-                    .addCart()
-                    .addNavGlobal()
-            )
-            setupSearchbar()
-            configureToolbarBackgroundInteraction()
-        }
+    abstract fun loadMore(isAtTheBottomOfThePage: Boolean)
+
+    private fun NavToolbar.setupNavigationToolbarInteraction() {
+        activity?.let { setupToolbarWithStatusBar(activity = it) }
+        viewLifecycleOwner.lifecycle.addObserver(this)
     }
 
     private fun NavToolbar.setupSearchbar() = setupSearchbar(
         hints = getNavToolbarHint(),
         searchbarClickCallback = {
-            val autoCompleteApplink = getAutoCompleteApplink()
-            val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
-            val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +
-                UrlParamUtils.generateUrlParamString(params)
+            val params = URLParser(ApplinkConstInternalDiscovery.AUTOCOMPLETE).paramKeyValueMap
 
-            RouteManager.route(context, finalApplink)
+            params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
+            params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
+            params[SearchApiConst.PREVIOUS_KEYWORD] = String.EMPTY
+            params[SearchApiConst.NAVSOURCE] = navSource
+
+            val finalAppLink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + UrlParamUtils.generateUrlParamString(params)
+
+            RouteManager.route(context, finalAppLink)
         },
         disableDefaultGtmTracker = true,
     )
@@ -92,23 +140,175 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
         disableRouteManager = false,
         disableDefaultGtmTracker = false
     ) {
+        updateShareCategoryData(
+            isScreenShot = false,
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty()
+        )
 
+        CategoryTracking.trackClickShareButtonTopNav(
+            userId = userId,
+            categoryIdLvl1 = categoryIdL1,
+            categoryIdLvl2 = categoryIdL2,
+            categoryIdLvl3 = categoryIdL3,
+            currentCategoryId = currentCategoryId
+        )
+
+        shareClicked(shareCategoryTokonow)
+    }
+
+    private fun setupNavigationToolbar() {
+        binding?.navToolbar?.apply {
+            bringToFront()
+            setToolbarPageName(PAGE_NAME)
+            setIcon(
+                IconBuilder()
+                    .addShare()
+                    .addCart()
+                    .addNavGlobal()
+            )
+            setupSearchbar()
+            setupNavigationToolbarInteraction()
+        }
+    }
+
+    private fun createShareCategoryTokonow(): ShareTokonow = ShareTokonow(
+        thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+        ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+        linkerType = NOW_TYPE
+    )
+
+    private fun shareClicked(shareCategoryTokonow: ShareTokonow?){
+        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+            showUniversalShareBottomSheet(
+                shareCategoryTokonow = shareCategoryTokonow
+            )
+        } else {
+            LinkerManager.getInstance().executeShareRequest(
+                TokoNowUniversalShareUtil.shareRequest(
+                    context = context,
+                    shareTokonow = shareCategoryTokonow
+                )
+            )
+        }
+    }
+
+    private fun showUniversalShareBottomSheet(shareCategoryTokonow: ShareTokonow?) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@TokoNowCategoryBaseFragment)
+            setUtmCampaignData(
+                pageName = TokoNowCategoryFragment.PAGE_SHARE_NAME,
+                userId = userId.getOrDefaultZeroString(),
+                pageIdConstituents = shareCategoryTokonow?.pageIdConstituents.orEmpty(),
+                feature = TokoNowCategoryFragment.SHARE
+            )
+            setMetaData(
+                tnTitle = shareCategoryTokonow?.thumbNailTitle.orEmpty(),
+                tnImage = shareCategoryTokonow?.thumbNailImage.orEmpty(),
+            )
+            //set the Image Url of the Image that represents page
+            setOgImageUrl(imgUrl = shareCategoryTokonow?.ogImageUrl.orEmpty())
+        }
+
+        if (shareCategoryTokonow?.isScreenShot == true) {
+            CategoryTracking.trackImpressChannelShareBottomSheetScreenShot(
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        } else {
+            CategoryTracking.trackImpressChannelShareBottomSheet(
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        }
+        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
+    }
+
+    override fun screenShotTaken() {
+        updateShareCategoryData(
+            isScreenShot = true,
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
+        )
+
+        showUniversalShareBottomSheet(shareCategoryTokonow)
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        CategoryTracking.trackClickAccessMediaAndFiles(label,
+            userId = userId,
+            categoryIdLvl1 = categoryIdL1,
+            categoryIdLvl2 = categoryIdL2,
+            categoryIdLvl3 = categoryIdL3
+        )
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        if (shareCategoryTokonow?.isScreenShot == true) {
+            CategoryTracking.trackClickChannelShareBottomSheetScreenshot(
+                channel = shareModel.channel.orEmpty(),
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        } else {
+            CategoryTracking.trackClickChannelShareBottomSheet(
+                channel = shareModel.channel.orEmpty(),
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        }
+
+        TokoNowUniversalShareUtil.shareOptionRequest(
+            shareModel = shareModel,
+            shareTokoNowData = shareCategoryTokonow,
+            activity = activity,
+            view = view,
+            onSuccess = {
+                universalShareBottomSheet?.dismiss()
+            }
+        )
+    }
+    override fun onCloseOptionClicked() {
+        if (shareCategoryTokonow?.isScreenShot == true) {
+            CategoryTracking.trackClickCloseScreenShotShareBottomSheet(
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        } else {
+            CategoryTracking.trackClickCloseShareBottomSheet(
+                userId = userId,
+                categoryIdLvl1 = categoryIdL1,
+                categoryIdLvl2 = categoryIdL2,
+                categoryIdLvl3 = categoryIdL3
+            )
+        }
+    }
+
+    private fun updateShareCategoryData(isScreenShot: Boolean, thumbNailTitle: String) {
+        shareCategoryTokonow?.isScreenShot = isScreenShot
+        shareCategoryTokonow?.thumbNailTitle = thumbNailTitle
     }
 
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
         iconId = IconList.ID_NAV_GLOBAL,
         disableRouteManager = false,
         disableDefaultGtmTracker = false
-    ) {
-
-    }
+    ) { /* nothing to do */ }
 
     private fun IconBuilder.addCart(): IconBuilder = addIcon(
         iconId = IconList.ID_CART,
         disableRouteManager = false,
         disableDefaultGtmTracker = true
     ) {
-
+        CategoryTracking.sendCartClickEvent(categoryIdL1)
     }
 
     private fun getNavToolbarHint(): List<HintData> {
@@ -116,68 +316,23 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
         return listOf(HintData(hint, hint))
     }
 
-    protected open fun getAutoCompleteApplink(): String {
-        val viewModelAutoCompleteApplink = ""
-
-        return if (viewModelAutoCompleteApplink.isEmpty())
-            getBaseAutoCompleteApplink()
-        else
-            viewModelAutoCompleteApplink
-    }
-
-    protected open fun getModifiedAutoCompleteQueryParam(
-        autoCompleteApplink: String
-    ): Map<String?, String> {
-        val urlParser = URLParser(autoCompleteApplink)
-
-        val params = urlParser.paramKeyValueMap
-        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
-        params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
-
-        return params
-    }
-
-    protected open fun getBaseAutoCompleteApplink() =
-        ApplinkConstInternalDiscovery.AUTOCOMPLETE
-
-    protected open fun getKeyword() = ""
-
-    protected open fun configureToolbarBackgroundInteraction() {
-        val navToolbar = binding?.navToolbar ?: return
-
-        activity?.let {
-            navToolbar.setupToolbarWithStatusBar(activity = it)
-        }
-        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
-
-        binding?.rvCategory?.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
-    }
-
     private fun createNavRecyclerViewOnScrollListener(
         navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
-        val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
-
+        val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
         return NavRecyclerViewScrollListener(
             navToolbar = navToolbar,
-            startTransitionPixel = navToolbarHeight,
-            toolbarTransitionRangePixel = toolbarTransitionRangePixel,
+            startTransitionPixel = navToolbarHeight - transitionRange - transitionRange,
+            toolbarTransitionRangePixel = transitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                override fun onAlphaChanged(offsetAlpha: Float) {
+                override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
 
-                }
+                override fun onSwitchToLightToolbar() { /* nothing to do */ }
 
-                override fun onSwitchToLightToolbar() {
-
-                }
+                override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
 
                 override fun onSwitchToDarkToolbar() {
                     navToolbar.hideShadow()
-                }
-
-                override fun onYposChanged(yOffset: Int) {
-
                 }
             },
             fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
@@ -185,10 +340,32 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        binding?.rvCategory?.apply {
-            adapter = this@TokoNowCategoryBaseFragment.adapter
-            layoutManager = LinearLayoutManager(context)
+        binding?.apply {
+            rvCategory.adapter = this@TokoNowCategoryBaseFragment.adapter
+            rvCategory.layoutManager = LinearLayoutManager(context)
+            rvCategory.addOnScrollListener(createLoadMoreListener())
+            rvCategory.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
         }
     }
 
+    private fun setupScreenshotDetector() {
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                permissionListener = this
+            )
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+                loadMore(isAtTheBottomOfThePage)
+            }
+        }
+    }
 }
