@@ -858,4 +858,28 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmData[ExtraKey.TRACKER_ID] = if (isSelected) ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS
         sendGeneralEvent(gtmData)
     }
+
+    fun eventClickPlatformFeeInfoButton() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_INFO_BUTTON_IN_PLATFORM_FEE,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.CLICK_INFO_BUTTON_IN_PLATFORM_FEE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewPlatformFeeInCheckoutPage() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_ITEM,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE
+        sendGeneralEvent(gtmData)
+    }
 }

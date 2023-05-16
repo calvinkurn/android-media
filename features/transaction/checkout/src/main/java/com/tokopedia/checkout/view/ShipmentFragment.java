@@ -4327,6 +4327,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         bottomSheetUnify.setShowCloseIcon(true);
         bottomSheetUnify.setChild(childView);
         bottomSheetUnify.show(getChildFragmentManager(), null);
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton();
     }
 
     private void getPaymentFee() {
@@ -4356,6 +4357,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         hideLoaderTotalPayment();
         updateCost();
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage();
     }
 
     @Override
