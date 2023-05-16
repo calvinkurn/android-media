@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -76,12 +76,12 @@ class RichListViewHolder(
         showTitle(
             title = element.data?.title.orEmpty(), subtitle = element.data?.subtitle.orEmpty()
         )
-        sendImpressionTrackingEvent(element.data)
+        sendImpressionTrackingEvent(element)
     }
 
-    private fun sendImpressionTrackingEvent(data: RichListDataUiModel?) {
-        data?.let {
-            binding.root.addOneTimeGlobalLayoutListener {
+    private fun sendImpressionTrackingEvent(element: RichListWidgetUiModel) {
+        element.data?.let {
+            binding.root.addOnImpressionListener(element.impressHolder) {
                 listener.sendRichListImpressionEvent(getEventLabel(it))
             }
         }
