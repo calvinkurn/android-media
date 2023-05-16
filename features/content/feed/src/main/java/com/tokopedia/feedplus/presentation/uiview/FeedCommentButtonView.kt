@@ -15,6 +15,8 @@ class FeedCommentButtonView(
 ) {
 
     fun bind(
+        contentId: String,
+        isPlayContent: Boolean,
         commentCount: String,
         trackerDataModel: FeedTrackerDataModel?,
         positionInFeed: Int
@@ -23,7 +25,12 @@ class FeedCommentButtonView(
             commentCountText.text = commentCount
             commentButton.setOnClickListener {
                 trackerDataModel?.let {
-                    listener.onCommentClick(it, positionInFeed)
+                    listener.onCommentClick(
+                        it,
+                        contentId,
+                        isPlayContent,
+                        positionInFeed
+                    )
                 }
             }
         }

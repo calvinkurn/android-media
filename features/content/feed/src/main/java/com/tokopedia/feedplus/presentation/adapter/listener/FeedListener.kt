@@ -134,5 +134,5 @@ interface FeedListener {
         positionInFeed: Int
     )
 
-    fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int)
+    fun onCommentClick(trackerModel: FeedTrackerDataModel?, contentId: String, isPlayContent: Boolean, rowNumber: Int)
 }

@@ -50,7 +50,6 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
-import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -65,10 +64,8 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
-import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -93,7 +90,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -1018,12 +1014,18 @@ class FeedFragment :
         }
     }
 
-    override fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int) {
+    override fun onCommentClick(
+        trackerModel: FeedTrackerDataModel?,
+        contentId: String,
+        isPlayContent: Boolean,
+        rowNumber: Int
+    ) {
         trackerModel?.let {
             currentTrackerData = trackerModel
             commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
                 override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
                 override fun onCommentDismissed() {
+                    feedPostViewModel.updateCommentsCount(contentId, isPlayContent)
                 }
             }
 
