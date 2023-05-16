@@ -920,6 +920,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
     }
 
+    override fun sendRichListCtaClickEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendClickRichListWidgetCtaEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendClickRichListWidgetCtaNotEligibleEvent()
+        }
+    }
+
+    override fun sendRichListImpressionEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendImpressionRichListWidgetEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendImpressionRichListWidgetNotEligibleEvent()
+        }
+    }
+
     override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
         val tabs = element.data?.tabs.orEmpty()
 

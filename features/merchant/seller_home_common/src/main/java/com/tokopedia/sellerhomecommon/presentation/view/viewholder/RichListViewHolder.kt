@@ -5,14 +5,18 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcRichListWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.BaseRichListItem
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.RichListAdapter
@@ -28,6 +32,7 @@ class RichListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_rich_list_widget
+        private const val EVENT_LABEL_FORMAT = "%s - %s - %s"
     }
 
     private var element: RichListWidgetUiModel? = null
@@ -69,9 +74,38 @@ class RichListViewHolder(
         showItems(items)
         setupLastUpdated(element.data?.lastUpdated.orEmpty())
         showTitle(
-            title = element.data?.title.orEmpty(),
-            subtitle = element.data?.subtitle.orEmpty()
+            title = element.data?.title.orEmpty(), subtitle = element.data?.subtitle.orEmpty()
         )
+        sendImpressionTrackingEvent(element.data)
+    }
+
+    private fun sendImpressionTrackingEvent(data: RichListDataUiModel?) {
+        data?.let {
+            binding.root.addOneTimeGlobalLayoutListener {
+                listener.sendRichListImpressionEvent(getEventLabel(it))
+            }
+        }
+    }
+
+    private fun getEventLabel(data: RichListDataUiModel): String {
+        return if (getIsEligibleSeller(data)) {
+            val rank = getRank(data.richListData)
+            val ranking = rank?.rankValue.orEmpty()
+            val point = rank?.subTitle.orEmpty()
+            String.format(EVENT_LABEL_FORMAT, point, ranking, data.lastUpdated)
+        } else {
+            String.EMPTY
+        }
+    }
+
+    private fun getRank(richListData: List<BaseRichListItem>): BaseRichListItem.RankItemUiModel? {
+        return richListData.firstOrNull {
+            it is BaseRichListItem.RankItemUiModel
+        } as? BaseRichListItem.RankItemUiModel
+    }
+
+    private fun getIsEligibleSeller(data: RichListDataUiModel?): Boolean {
+        return !data?.richListData?.any { it is BaseRichListItem.TickerItemUiModel }.orFalse()
     }
 
     private fun showTitle(title: String, subtitle: String) {
@@ -126,6 +160,9 @@ class RichListViewHolder(
         return object : RichListAdapter.Listener {
             override fun setOnCtaClicked(appLink: String) {
                 RouteManager.route(itemView.context, appLink)
+                element?.data?.let {
+                    listener.sendRichListCtaClickEvent(getEventLabel(it))
+                }
             }
 
             override fun setOnTooltipClicked(tooltip: TooltipUiModel) {
@@ -140,5 +177,8 @@ class RichListViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+        fun sendRichListImpressionEvent(eventLabel: String)
+        fun sendRichListCtaClickEvent(eventLabel: String)
+    }
 }
