@@ -97,6 +97,12 @@ class UserSessionV1toV2MigrationTest {
         assertThat(userId, equalTo(empty))
     }
 
+    /*
+    * Utility method to test migration from v1 to v2
+    * First, it add the key and value to the v1 shared preference
+    * The migration process will happen when retrieving value from usersession through getAndTrimOldSting
+    * Then, we validate that key in v1 pref should already be removed
+    * */
     private fun testV1PreferenceShouldBeRemoved(KEY: String, VALUE: String, exec: (String) -> Unit) {
         val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
         val editor = sharedPrefs.edit()
