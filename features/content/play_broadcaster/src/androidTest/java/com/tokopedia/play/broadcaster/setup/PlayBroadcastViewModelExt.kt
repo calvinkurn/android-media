@@ -49,7 +49,7 @@ fun parentBroViewModel(
 ): PlayBroadcastViewModel {
     return PlayBroadcastViewModel(
         handle = handle,
-        mDataStore = dataStore,
+        dataStore = dataStore,
         hydraConfigStore = hydraConfigStore,
         sharedPref = sharedPref,
         getChannelUseCase = getChannelUseCase,

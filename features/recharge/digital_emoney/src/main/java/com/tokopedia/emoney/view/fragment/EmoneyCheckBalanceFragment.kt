@@ -110,12 +110,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun processTagIntent(intent: Intent) {
         if (isTagNfcValid(intent)) {
-            if (!isDigitalSmartcardEnabled()) {
-                onNavigateToHome()
-            } else {
-                // nfc enabled and process Mandiri NFC as default
-                executeCard(intent)
-            }
+            // nfc enabled and process Mandiri NFC as default
+            executeCard(intent)
         }
     }
 

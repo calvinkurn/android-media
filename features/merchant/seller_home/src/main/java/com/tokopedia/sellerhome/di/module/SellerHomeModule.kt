@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhome.di.module
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -36,7 +35,6 @@ import java.util.concurrent.TimeUnit
 class SellerHomeModule {
 
     companion object {
-        private const val VOUCHER_CREATION_PREF_NAME = "voucher_creation"
         private const val SSE_CLIENT_READ_TIME_OUT = 0L
     }
 
@@ -87,12 +85,6 @@ class SellerHomeModule {
     @Provides
     fun provideLastUpdatedInfoEnabled(): Boolean {
         return true
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(VOUCHER_CREATION_PREF_NAME, Context.MODE_PRIVATE)
     }
 
     @SellerHomeScope

@@ -11,7 +11,7 @@ import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.media.loader.data.MediaException
 
 class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
     EditorViewPagerAdapter.Listener {
@@ -68,7 +68,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         onImageUpdated: () -> Unit = {}
     ) {
         val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
-        val view = layout.findViewById<ImageView>(R.id.img_main_preview)
+        val view = layout?.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl) {
             listener(
                 onSuccess = { _, _ ->
@@ -80,14 +80,18 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                     errorHandler(it)
                 }
             )
+        } ?: kotlin.run {
+            errorHandler()
         }
 
-        layout.findViewById<ImageView>(R.id.img_main_overlay).apply {
+        layout?.findViewById<ImageView>(R.id.img_main_overlay)?.apply {
             if (overlayImageUrl.isNotEmpty()) {
                 loadImage(overlayImageUrl)
             } else {
                 setImageDrawable(null)
             }
+        } ?: kotlin.run { 
+            errorHandler()
         }
     }
 
@@ -99,7 +103,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         errorHandler(exception)
     }
 
-    private fun errorHandler(exception: MediaException?) {
+    private fun errorHandler(exception: MediaException? = null) {
         showErrorLoadToaster(this, exception?.message ?: "")
     }
 

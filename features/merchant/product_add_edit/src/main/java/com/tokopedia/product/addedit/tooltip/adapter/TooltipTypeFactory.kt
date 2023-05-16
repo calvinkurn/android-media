@@ -9,12 +9,8 @@ import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 
-class TooltipTypeFactory: BaseAdapterTypeFactory(){
+class TooltipTypeFactory : BaseAdapterTypeFactory() {
     private var listener: OnItemClickListener? = null
-
-    fun setOnItemClickListener(listener: OnItemClickListener){
-        this.listener = listener
-    }
 
     fun type(type: ImageTooltipModel): Int = ImageTooltipViewHolder.LAYOUT
 
@@ -23,7 +19,7 @@ class TooltipTypeFactory: BaseAdapterTypeFactory(){
     fun type(type: NumericWithDescriptionTooltipModel): Int = NumericWithDescriptionTooltipViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type){
+        return when (type) {
             NumericTooltipViewHolder.LAYOUT -> NumericTooltipViewHolder(parent, listener)
             ImageTooltipViewHolder.LAYOUT -> ImageTooltipViewHolder(parent, listener)
             NumericWithDescriptionTooltipViewHolder.LAYOUT -> NumericWithDescriptionTooltipViewHolder(parent, listener)

@@ -374,6 +374,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     /* flag to enable default share */
     private var isDefaultShareIntent = false
 
+    // Variable to set personalized campaign
+    private var personalizedMessage = ""
+
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
         object : DefaultLifecycleObserver {
@@ -518,6 +521,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             channel = shareModel.channel
             campaign = shareModel.campaign
             feature = shareModel.feature
+            type = linkProperties?.linkerType ?: ""
             isAffiliate = shareModel.isAffiliate
             ogImageUrl = shareModel.ogImgUrl
             ogTitle = linkProperties?.ogTitle
@@ -1234,6 +1238,67 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    /**
+     * this function is used to set personalized campaign message and output
+     */
+    fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        val context = LinkerManager.getInstance().context
+        when (model.getCampaignStatus()) {
+            CampaignStatus.UPCOMING -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_discount,
+                        model.getStartDateCampaign(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_without_discount,
+                        model.getStartDateCampaign(),
+                    )
+                }
+
+            }
+            CampaignStatus.ON_GOING -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_discount,
+                        model.getDiscountString(),
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                } else {
+                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                }
+
+            }
+            CampaignStatus.END_SOON -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_discount,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_without_disc,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString()
+                    )
+                }
+
+            }
+            CampaignStatus.NO_CAMPAIGN -> {
+                /* no-op */
+            }
+        }
+    }
+
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
         (imageGeneratorParam as? PdpParamModel)?.apply {
@@ -1289,6 +1354,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         if (isDefaultShareIntent) {
             shareChannelClicked(shareModel)
         }
+        if (personalizedMessage.isNotEmpty()) {
+            shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
+        }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
@@ -1301,6 +1369,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         shareModel.savedImageFilePath = savedImagePath
         if (isDefaultShareIntent) {
             shareChannelClicked(shareModel)
+        }
+        if (personalizedMessage.isNotEmpty()) {
+            shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }

@@ -59,12 +59,13 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
                 var indexDataRegistered = 0
 
-                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
+                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { idx, getHomeBalanceItem ->
                     when (getHomeBalanceItem.type) {
                         BALANCE_TYPE_GOPAY -> {
                             val placeHolderGopay = BalanceDrawerItemModel(
                                 drawerItemType = TYPE_WALLET_APP_LINKED,
-                                headerTitle = getHomeBalanceItem.title
+                                headerTitle = getHomeBalanceItem.title,
+                                position = idx
                             )
                             homeBalanceModel.balanceDrawerItemModels.add(placeHolderGopay)
                             indexDataRegistered++
@@ -72,7 +73,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                         BALANCE_TYPE_REWARDS -> {
                             val placeHolderRewards = BalanceDrawerItemModel(
                                 drawerItemType = TYPE_REWARDS,
-                                headerTitle = getHomeBalanceItem.title
+                                headerTitle = getHomeBalanceItem.title,
+                                position = idx
                             )
                             homeBalanceModel.balanceDrawerItemModels.add(placeHolderRewards)
                             indexDataRegistered++
@@ -81,7 +83,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                             homeBalanceModel = getSubscriptionsData(
                                 homeBalanceModel,
                                 getHomeBalanceItem.title,
-                                getHomeBalanceItem.data
+                                getHomeBalanceItem.data,
+                                position = idx
                             )
                             homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
                             indexDataRegistered++
@@ -216,11 +219,12 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     private fun getSubscriptionsData(
         homeBalanceModel: HomeBalanceModel,
         headerTitle: String,
-        subscriptions: String
+        subscriptions: String,
+        position: Int
     ): HomeBalanceModel {
         try {
             val subscriptionsData = Gson().fromJson(subscriptions, SubscriptionsData::class.java)
-            homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle)
+            homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle, position = position)
         } catch (e: Exception) {
             HomeServerLogger.logWarning(
                 type = HomeServerLogger.TYPE_SUBSCRIPTION_ERROR,

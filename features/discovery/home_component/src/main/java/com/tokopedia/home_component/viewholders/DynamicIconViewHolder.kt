@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +33,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by Lukas on 1/8/21.
  */
-class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconComponentListener) :
+class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) :
     AbstractViewHolder<DynamicIconComponentDataModel>(itemView), CoroutineScope {
 
     private var binding: HomeComponentDynamicIconBinding? by viewBinding()
@@ -43,15 +44,20 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         val LAYOUT = R.layout.home_component_dynamic_icon
         const val SCROLLABLE_ITEM = 5
         const val SCROLLABLE_ITEM_MACRO = 6
+        const val SCROLLABLE_ITEM_MACRO_REVAMP = 3
         private const val MARGIN_TOP_MACRO = 6
-        private const val MARGIN_BOTTOM_MACRO = 4
+        private const val MARGIN_BOTTOM_MACRO = 8
         private const val MARGIN_VERTICAL_DEFAULT = 12
+        private const val MARGIN_TOP_REVAMP = 8
+        private const val MARGIN_BOTTOM_REVAMP = 16
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
+        private const val PADDING_HORIZONTAL_REVAMP = 8
+        private const val PADDING_HORIZONTAL_OLD = 12
     }
 
     private val adapter = DynamicIconAdapter(listener)
-    private val adapterMacro = DynamicIconMacroAdapter(listener)
+    private val adapterMacro = DynamicIconMacroAdapter(listener, isRevamp)
     private var iconRecyclerView: RecyclerView? = null
     private val masterJob = SupervisorJob()
 
@@ -67,28 +73,55 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     private fun setupDynamicIcon(element: DynamicIconComponentDataModel) {
         val icons = element.dynamicIconComponent.dynamicIcon
         iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
+        if (isRevamp) {
+            iconRecyclerView?.setPadding(PADDING_HORIZONTAL_REVAMP.toPx(), Int.ZERO, PADDING_HORIZONTAL_REVAMP.toPx(), Int.ZERO)
+        } else {
+            iconRecyclerView?.setPadding(PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO, PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO)
+        }
         if (icons.isNotEmpty()) {
-            if (isUsingMacroInteraction) {
+            if (isUsingMacroInteraction || isRevamp) {
                 adapterMacro.updatePosition(absoluteAdapterPosition)
                 adapterMacro.setType(element.type)
                 setRecyclerView(icons)
                 launch {
                     val maximalTitleHeight =
-                        DynamicIconsMacroUtil.findMaxDynamicIconsMacro(icons, itemView.context)
-                    val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                        if (isRevamp) {
+                            DynamicIconsMacroUtil.findMaxDynamicIconsMacroRevamp(
+                                icons,
+                                itemView.context
+                            )
+                        } else {
+                            DynamicIconsMacroUtil.findMaxDynamicIconsMacro(
+                                icons,
+                                itemView.context
+                            )
+                        }
+                    val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.height = maximalTitleHeight
                     iconRecyclerView?.layoutParams = layoutParams
                 }
                 adapterMacro.submitList(element)
-                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)
+                val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
+                if (isRevamp) {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_TOP_REVAMP.toPx(),
+                        Int.ZERO,
+                        MARGIN_BOTTOM_REVAMP.toPx()
+                    )
+                } else {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_TOP_MACRO.toPx(),
+                        Int.ZERO,
+                        MARGIN_BOTTOM_MACRO.toPx()
+                    )
+                }
                 iconRecyclerView?.layoutParams = layoutParams
 
                 if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                     iconRecyclerView?.addItemDecoration(
-                        CommonSpacingDecoration(
-                            MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
-                        )
+                        CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx())
                     )
                 }
                 iconRecyclerView?.adapter = adapterMacro
@@ -96,13 +129,16 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 adapter.submitList(element)
                 adapter.updatePosition(absoluteAdapterPosition)
                 adapter.setType(element.type)
-                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                layoutParams.setMargins(Int.ZERO, MARGIN_VERTICAL_DEFAULT, Int.ZERO, MARGIN_VERTICAL_DEFAULT)
+                val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.setMargins(
+                    Int.ZERO,
+                    MARGIN_VERTICAL_DEFAULT.toPx(),
+                    Int.ZERO,
+                    MARGIN_VERTICAL_DEFAULT.toPx()
+                )
                 iconRecyclerView?.layoutParams = layoutParams
                 iconRecyclerView?.addItemDecoration(
-                    CommonSpacingDecoration(
-                        MARGIN_HORIZONTAL_BETWEEN_CARD.toPx()
-                    )
+                    CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD.toPx())
                 )
                 iconRecyclerView?.adapter = adapter
                 setRecyclerView(icons)
@@ -111,8 +147,16 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     }
 
     private fun setRecyclerView(icons: List<DynamicIconComponent.DynamicIcon>) {
+        val isScrollItem =
+            icons.size > if (isRevamp) {
+                SCROLLABLE_ITEM_MACRO_REVAMP
+            } else if (isUsingMacroInteraction) {
+                SCROLLABLE_ITEM_MACRO
+            } else {
+                SCROLLABLE_ITEM
+            }
         setupLayoutManager(
-            isScrollItem = icons.size > if (isUsingMacroInteraction) SCROLLABLE_ITEM_MACRO else SCROLLABLE_ITEM,
+            isScrollItem = isScrollItem,
             spanCount = icons.size
         )
         iconRecyclerView?.clearOnScrollListeners()
@@ -152,11 +196,8 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             viewType: Int
         ): DynamicIconItemViewHolder {
             return DynamicIconItemViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    DynamicIconItemViewHolder.LAYOUT,
-                    parent,
-                    false
-                ),
+                LayoutInflater.from(parent.context)
+                    .inflate(DynamicIconItemViewHolder.LAYOUT, parent, false),
                 listener
             )
         }
@@ -220,6 +261,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
 
             iconTvName?.text = item.name
             iconImageView?.setImageUrl(item.imageUrl)
+            listener.onSuccessLoadImage()
             iconContainer?.layoutParams = ViewGroup.LayoutParams(
                 if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
