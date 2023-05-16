@@ -27,7 +27,11 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -189,7 +193,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
     private fun showToasterError(err: Throwable) {
         if (toasterBottomMargin == 0) {
             val offset8 =
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = btnSet?.height.orZero() + offset8
         }
 
