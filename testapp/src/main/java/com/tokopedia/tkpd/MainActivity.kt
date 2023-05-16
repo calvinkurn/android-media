@@ -15,8 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.scp_rewards.presentation.TestActivity
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity
+import com.tokopedia.scp_rewards.detail.presentation.ui.MedalDetailActivity
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -154,7 +153,7 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
 //        startActivity(Intent(this,TestActivity::class.java))
-        startActivity(Intent(this,TestActivity::class.java))
+        startActivity(Intent(this, MedalDetailActivity::class.java))
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {
@@ -183,5 +182,4 @@ class MainActivity : AppCompatActivity() {
         object DEVELOPER_OPTION : HomeDestination
         object APPLINK : HomeDestination
     }
-
 }
