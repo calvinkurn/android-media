@@ -1,11 +1,8 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
-import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
@@ -18,37 +15,28 @@ import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.clearStaticMockk
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
-@ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.P])
+@OptIn(ExperimentalCoroutinesApi::class)
 class AffiliatePromoViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateSearchUseCase: AffiliateSearchUseCase = mockk()
@@ -79,15 +67,13 @@ class AffiliatePromoViewModelTest {
         coEvery { userSessionInterface.email } returns ""
 
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        mockkStatic(RemoteConfigInstance::class)
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
-        clearStaticMockk(RemoteConfigInstance::class)
     }
 
     /**************************** getSearch() *******************************************/
@@ -168,18 +154,6 @@ class AffiliatePromoViewModelTest {
         val state = ON_REGISTERED
         affiliatePromoViewModel.setValidateUserType(state)
         assertEquals(affiliatePromoViewModel.getValidateUserType().value, state)
-    }
-
-    @Test
-    fun isSSAEnabled() {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AFFILIATE_SSA_SHOP,
-                ""
-            )
-        } returns AFFILIATE_SSA_SHOP
-
-        assertEquals(affiliatePromoViewModel.isAffiliateSSAShopEnabled(), true)
     }
 
     @Test
@@ -265,7 +239,7 @@ class AffiliatePromoViewModelTest {
     }
 
     @Test
-    fun `has ssa shops on success response`() {
+    fun `should have ssa shops on success response`() {
         val ssaShop = AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem(
             AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem.SSAShopDetail(),
             AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem.SSACommissionDetail()
@@ -285,5 +259,33 @@ class AffiliatePromoViewModelTest {
         coEvery { affiliateSSAShopUseCase.getSSAShopList(any(), any()) } returns response
         affiliatePromoViewModel.fetchSSAShopList()
         assertFalse(affiliatePromoViewModel.getSSAShopList().value.isNullOrEmpty())
+    }
+
+    @Test
+    fun `should have proper error message on error response`() {
+        val emptyShopErrorMessage = "No Shops Found"
+        val response = AffiliateSSAShopListResponse(
+            AffiliateSSAShopListResponse.Data(
+                AffiliateSSAShopListResponse.Data.SSAShop(
+                    0,
+                    null,
+                    AffiliateSSAShopListResponse.Data.SSAShop.Error(
+                        "No Shops Found"
+                    )
+                )
+            )
+        )
+        coEvery { affiliateSSAShopUseCase.getSSAShopList(any(), any()) } returns response
+        affiliatePromoViewModel.fetchSSAShopList()
+        assertTrue(affiliatePromoViewModel.getSSAShopList().value.isNullOrEmpty())
+        assertEquals(affiliatePromoViewModel.getErrorMessage().value, emptyShopErrorMessage)
+    }
+
+    @Test
+    fun `should throw exception any error`() {
+        val throwable = Throwable("Validate Data Exception")
+        coEvery { affiliateSSAShopUseCase.getSSAShopList(any(), any()) } throws throwable
+        affiliatePromoViewModel.fetchSSAShopList()
+        assertTrue(affiliatePromoViewModel.getSSAShopList().value.isNullOrEmpty())
     }
 }

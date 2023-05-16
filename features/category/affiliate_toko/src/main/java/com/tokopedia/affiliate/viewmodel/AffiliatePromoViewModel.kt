@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
@@ -20,9 +19,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
@@ -58,12 +55,6 @@ class AffiliatePromoViewModel @Inject constructor(
         private const val SUCCESS = 1
         private const val DEFAULT_SSA_PAGE_SIZE = 7
     }
-
-    fun isAffiliateSSAShopEnabled() =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_SSA_SHOP,
-            ""
-        ) == AFFILIATE_SSA_SHOP
 
     fun getSearch(productLink: String) {
         progressBar.value = true
