@@ -240,4 +240,5 @@ public class RemoteConfigKey {
 
     public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
 
+    public static final String FEED_NEW_ICON = "FeedNewIcon";
 }
