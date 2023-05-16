@@ -204,6 +204,7 @@ class ContentCommentBottomSheet @Inject constructor(
         setupView()
         observeData()
         observeEvent()
+        refreshData()
     }
 
     private fun setupBottomSheet() {
@@ -452,7 +453,6 @@ class ContentCommentBottomSheet @Inject constructor(
         val avatar =
             if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
-        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     private fun showKeyboard(needToShow: Boolean) {
@@ -597,6 +597,10 @@ class ContentCommentBottomSheet @Inject constructor(
 
     fun setAnalytic(tracker: IContentCommentAnalytics) {
         analytics = tracker
+    }
+
+    private fun refreshData() {
+        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     interface EntrySource {
