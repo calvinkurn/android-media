@@ -54,18 +54,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
@@ -345,7 +334,7 @@ class FeedFragment :
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        feedMainViewModel.reportContent(feedReportRequestParamModel)
+        feedPostViewModel.reportContent(feedReportRequestParamModel)
         currentTrackerData?.let {
             feedAnalytics.eventClickReasonReportContent(
                 it,
@@ -712,7 +701,7 @@ class FeedFragment :
     }
 
     private fun observeReport() {
-        feedMainViewModel.reportResponse.observe(viewLifecycleOwner) {
+        feedPostViewModel.reportResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     currentTrackerData?.let { trackerData ->
@@ -982,7 +971,7 @@ class FeedFragment :
 
     private fun checkResume(
         isOnResume: Boolean = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-        isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false,
+        isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false
     ): Boolean {
         return isPageResumed && isOnResume
     }

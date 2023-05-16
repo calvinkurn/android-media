@@ -5,35 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
-import com.tokopedia.feedplus.presentation.model.ContentCreationItem
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.CreatorType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.MetaModel
-import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
@@ -44,12 +28,11 @@ import javax.inject.Inject
  */
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
-    private val uiEventManager: UiEventManager<FeedMainEvent>,
+    private val uiEventManager: UiEventManager<FeedMainEvent>
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
@@ -60,10 +43,6 @@ class FeedMainViewModel @Inject constructor(
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
-
-    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
-    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
-        get() = _reportResponse
 
     private val _feedCreateContentBottomSheetData =
         MutableLiveData<Result<List<ContentCreationTypeItem>>>()
@@ -228,21 +207,6 @@ class FeedMainViewModel @Inject constructor(
                 ""
             }
         } ?: ""
-
-    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                submitReportUseCase(feedReportRequestParamModel)
-            }
-            if (response.data.success.not()) {
-                throw MessageErrorException("Error in Reporting")
-            } else {
-                _reportResponse.value = Success(response)
-            }
-        }) {
-            _reportResponse.value = Fail(it)
-        }
-    }
 
     /**
      * Creation Button Position is Static :
