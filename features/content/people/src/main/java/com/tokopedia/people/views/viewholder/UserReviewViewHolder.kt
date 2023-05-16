@@ -39,7 +39,7 @@ class UserReviewViewHolder private constructor() {
                     )
                 }
 
-                /** TODO: setup datetime */
+                tvTime.text = item.reviewTime
 
                 setupStar(icStar1, item.rating >= 1)
                 setupStar(icStar2, item.rating >= 2)
