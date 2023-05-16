@@ -3,11 +3,14 @@ package com.tokopedia.feedcomponent.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.animation.AnimationUtils
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_create_post_fab.view.*
@@ -27,6 +30,11 @@ class CreatePostFabView @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.layout_create_post_fab, this)
+        fab_feed_shop.setImageDrawable(getIconUnifyDrawable(
+            context,
+            IconUnify.SHOP,
+            com.tokopedia.unifyprinciples.R.color.Unify_N200
+        ))
         hideAllFab(true)
     }
 
