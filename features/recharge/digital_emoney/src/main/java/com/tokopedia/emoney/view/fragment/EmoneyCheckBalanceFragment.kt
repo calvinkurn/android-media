@@ -202,7 +202,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        emoneyBalanceViewModel.issuerId.observe(this, Observer {
+        emoneyBalanceViewModel.issuerId.observe(viewLifecycleOwner, Observer {
             tapETollCardView.setIssuerId(it)
         })
 

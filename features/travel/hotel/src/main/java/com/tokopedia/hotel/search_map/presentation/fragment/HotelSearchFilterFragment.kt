@@ -133,7 +133,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
                 val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
 
                 when {
-                    item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
+                    item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format(FORMAT_STEP, item.toFloat())
                     else -> stepView.findViewById<TextView>(R.id.title_step).text = context.resources.getString(R.string.hotel_search_filter_rating_all)
                 }
 
@@ -185,6 +185,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     companion object {
         const val TAG = "Filter"
         const val PAYMENT_TYPE_PAY_AT_HOTEL = 1
+        const val FORMAT_STEP = "  %.1f   "
 
         fun createInstance(filterCacheId: String) = HotelSearchFilterFragment().also {
             it.arguments = Bundle().apply {
