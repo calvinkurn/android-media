@@ -29,6 +29,7 @@ private const val MPS_GQL_QUERY = """
           name
           city
           location
+          subtitle
           applink
           image_url
           component_id

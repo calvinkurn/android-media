@@ -57,6 +57,10 @@ data class MPSModel(
             @Expose
             val location: String = "",
 
+            @SerializedName("subtitle")
+            @Expose
+            val subtitle: String = "",
+
             @SerializedName("applink")
             @Expose
             val applink: String = "",
