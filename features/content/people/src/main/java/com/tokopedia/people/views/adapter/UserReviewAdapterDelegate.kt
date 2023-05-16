@@ -33,6 +33,22 @@ class UserReviewAdapterDelegate private constructor() {
         }
     }
 
+    class Shimmer : TypedAdapterDelegate<UserReviewAdapter.Model.Shimmer, UserReviewAdapter.Model, UserReviewViewHolder.Shimmer>
+        (contentCommonR.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: UserReviewAdapter.Model.Shimmer,
+            holder: UserReviewViewHolder.Shimmer
+        ) {}
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): UserReviewViewHolder.Shimmer {
+            return UserReviewViewHolder.Shimmer.create(parent)
+        }
+    }
+
     class Loading : TypedAdapterDelegate<UserReviewAdapter.Model.Loading, UserReviewAdapter.Model, UserReviewViewHolder.Loading>
         (contentCommonR.layout.view_cc_empty) {
 

@@ -16,6 +16,7 @@ class UserReviewAdapter(
     init {
         delegatesManager
             .addDelegate(UserReviewAdapterDelegate.Review(listener))
+            .addDelegate(UserReviewAdapterDelegate.Shimmer())
             .addDelegate(UserReviewAdapterDelegate.Loading())
     }
 
@@ -31,6 +32,7 @@ class UserReviewAdapter(
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return when {
             oldItem is Model.Loading && newItem is Model.Loading -> false
+            oldItem is Model.Shimmer && newItem is Model.Shimmer -> false
             oldItem is Model.Review && newItem is Model.Review -> oldItem.data.feedbackID == newItem.data.feedbackID
             else -> oldItem == newItem
         }
@@ -43,5 +45,6 @@ class UserReviewAdapter(
     sealed interface Model {
         data class Review(val data: UserReviewUiModel.Review) : Model
         object Loading : Model
+        object Shimmer : Model
     }
 }

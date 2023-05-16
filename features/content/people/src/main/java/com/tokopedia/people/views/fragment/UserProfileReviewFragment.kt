@@ -148,9 +148,9 @@ class UserProfileReviewFragment @Inject constructor(
             when (value.reviewContent.status) {
                 UserReviewUiModel.Status.Loading -> {
                     if (value.reviewContent.isLoading && value.reviewContent.reviewList.isEmpty()) {
-                        /** TODO: show shimmering */
-
-                        return
+                        adapter.setItemsAndAnimateChanges(
+                            List(USER_REVIEW_SHIMMER_COUNT) { UserReviewAdapter.Model.Shimmer }
+                        )
                     }
                 }
                 UserReviewUiModel.Status.Success -> {
@@ -250,6 +250,8 @@ class UserProfileReviewFragment @Inject constructor(
 
     companion object {
         private const val TAG = "UserProfileReviewFragment"
+
+        private const val USER_REVIEW_SHIMMER_COUNT = 2
 
         fun getFragment(
             fragmentManager: FragmentManager,

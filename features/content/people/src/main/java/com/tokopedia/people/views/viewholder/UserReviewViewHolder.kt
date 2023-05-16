@@ -10,6 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.people.R
 import com.tokopedia.people.databinding.ItemUserReviewBinding
+import com.tokopedia.people.databinding.ItemUserReviewShimmerBinding
 import com.tokopedia.people.databinding.UpItemUserPostLoadingBinding
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
@@ -126,6 +127,22 @@ class UserReviewViewHolder private constructor() {
 
         interface Listener {
             fun onClickLike(review: UserReviewUiModel.Review)
+        }
+    }
+
+    class Shimmer(
+        binding: ItemUserReviewShimmerBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        companion object {
+            fun create(
+                parent: ViewGroup
+            ) = Shimmer(
+                ItemUserReviewShimmerBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
         }
     }
 
