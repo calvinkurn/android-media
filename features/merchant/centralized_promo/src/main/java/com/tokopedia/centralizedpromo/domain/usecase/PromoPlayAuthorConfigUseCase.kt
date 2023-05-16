@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
+import timber.log.Timber
 import javax.inject.Inject
 
 private const val QUERY = """
@@ -38,6 +39,7 @@ class PromoPlayAuthorConfigUseCase @Inject constructor(
             )
             executeOnBackground().authorConfig.hasContent
         } catch (ex: Exception) {
+            Timber.e(ex)
             false
         }
     }
