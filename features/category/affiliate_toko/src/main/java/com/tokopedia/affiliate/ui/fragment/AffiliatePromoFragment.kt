@@ -19,6 +19,7 @@ import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
+import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_BANNER
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
 import com.tokopedia.affiliate.AffiliateAnalytics
@@ -111,6 +112,12 @@ class AffiliatePromoFragment :
     private fun isAffiliateGamificationEnabled() =
         remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
 
+    private fun isAffiliateSSAShopEnabled() =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_SSA_SHOP,
+            ""
+        ) == AFFILIATE_SSA_SHOP
+
     private fun affiliateRedirection() =
         remoteConfig?.getString(
             AFFILIATE_GAMIFICATION_REDIRECTION,
@@ -161,7 +168,7 @@ class AffiliatePromoFragment :
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
 
-        affiliatePromoViewModel.isAffiliateSSAShopEnabled().let {
+        isAffiliateSSAShopEnabled().let {
             affiliatePromoViewModel.fetchSSAShopList()
         }
 
