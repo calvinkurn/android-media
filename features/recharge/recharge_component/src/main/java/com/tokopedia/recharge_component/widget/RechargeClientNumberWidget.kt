@@ -30,6 +30,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListene
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -403,8 +404,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun renderCheckBalanceWidget() {
-
+    fun renderCheckBalanceWidget(balanceInfo: List<RechargeCheckBalanceUnitModel>) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.setBalanceInfo(balanceInfo)
     }
 
     fun startShakeAnimation() {

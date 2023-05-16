@@ -58,7 +58,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.T
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
@@ -210,6 +210,9 @@ class DigitalPDPPulsaFragment :
 
     private fun renderProduct() {
         binding?.run {
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
+
             val selectedClientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -388,11 +391,11 @@ class DigitalPDPPulsaFragment :
             }
         }
 
-        viewModel.indosatCheckBalanceOTP.observe(viewLifecycleOwner) { checkBalanceData ->
+        viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
             when (checkBalanceData) {
-                is RechargeNetworkResult.Success -> onSuccessGetCheckBalanceOTP(checkBalanceData.data)
-                is RechargeNetworkResult.Fail -> onFailedGetCheckBalanceOTP(checkBalanceData.error)
-                is RechargeNetworkResult.Loading -> onLoadingGetCheckBalanceOTP()
+                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
+                is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
+                is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
             }
         }
 
@@ -459,8 +462,8 @@ class DigitalPDPPulsaFragment :
     private fun getIndosatCheckBalance() {
         val clientNumbers =
             listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
-        viewModel.setRechargeCheckBalanceOTPLoading()
-        viewModel.getRechargeCheckBalanceOTP(clientNumbers, listOf(categoryId))
+        viewModel.setRechargeCheckBalanceLoading()
+        viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
@@ -591,24 +594,49 @@ class DigitalPDPPulsaFragment :
         binding?.rechargePdpPulsaRecommendationWidget?.hide()
     }
 
-    private fun onSuccessGetCheckBalanceOTP(checkBalanceData: DigitalCheckBalanceOTPModel) {
+    private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            renderCheckBalanceOTPWidget(
-                DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(
-                    checkBalanceData
+            // TODO: [Misael] Remove this line later
+            if (checkBalanceData.iconUrl.isEmpty()) return
+
+            if (checkBalanceData.widgets.isEmpty()) {
+                renderCheckBalanceOTPWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
                 )
-            )
-            showCheckBalanceOtpWidget()
+                showCheckBalanceOtpWidget()
+            } else {
+                renderCheckBalanceWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+                )
+                showCheckBalanceWidget()
+            }
+
+//            when (checkBalanceData.widgetType.lowercase()) {
+//                "otp" -> {
+//                    renderCheckBalanceOTPWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceOtpWidget()
+//                }
+//                "widget" -> {
+//                    renderCheckBalanceWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceWidget()
+//                }
+//                else -> return
+//            }
+//
             setupDynamicScrollViewPadding()
         }
     }
 
-    private fun onFailedGetCheckBalanceOTP(throwable: Throwable) {
+    private fun onFailedGetCheckBalance(throwable: Throwable) {
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
-    private fun onLoadingGetCheckBalanceOTP() {
+    private fun onLoadingGetCheckBalance() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWidget()
