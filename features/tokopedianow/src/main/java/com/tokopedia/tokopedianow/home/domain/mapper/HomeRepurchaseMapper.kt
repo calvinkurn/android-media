@@ -44,7 +44,6 @@ object HomeRepurchaseMapper {
 
     fun sortRepurchaseProduct(productList: List<TokoNowRepurchaseProductUiModel>): List<TokoNowRepurchaseProductUiModel> {
         val productsInCart = productList.filter { it.orderQuantity != DEFAULT_QUANTITY }
-            .sortedBy { it.originalPosition }
 
         val productsNotInCart = productList.filter { it.orderQuantity == DEFAULT_QUANTITY }
             .sortedBy { it.originalPosition }
