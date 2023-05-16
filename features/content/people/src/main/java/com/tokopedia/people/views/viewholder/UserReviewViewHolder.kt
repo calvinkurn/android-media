@@ -1,6 +1,7 @@
 package com.tokopedia.people.views.viewholder
 
 import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -71,10 +72,10 @@ class UserReviewViewHolder private constructor() {
         }
 
         private fun setupReviewText(reviewText: String) {
-            val result = SpannableStringBuilder()
+            val formattedReviewText = SpannableStringBuilder()
 
             if (reviewText.length > MAX_REVIEW_CHAR) {
-                result.append(
+                formattedReviewText.append(
                     itemView.context.getString(
                         R.string.up_profile_user_review_text_template,
                         reviewText.substring(0, MAX_REVIEW_CHAR)
@@ -83,7 +84,7 @@ class UserReviewViewHolder private constructor() {
 
                 /** TODO: handle if the review is opened before, dont close it */
                 val highlightedText = itemView.context.getString(R.string.up_link_see_more)
-                result.setSpanOnText(
+                formattedReviewText.setSpanOnText(
                     highlightedText,
                     getClickableSpan {
                         binding.tvReview.text = reviewText
@@ -92,10 +93,11 @@ class UserReviewViewHolder private constructor() {
                     getGreenColorSpan(itemView.context)
                 )
             } else {
-                result.append(reviewText)
+                formattedReviewText.append(reviewText)
             }
 
-            binding.tvReview.text = reviewText
+            binding.tvReview.text = formattedReviewText
+            binding.tvReview.movementMethod = LinkMovementMethod.getInstance()
         }
 
         private fun setupLike(item: UserReviewUiModel.Review) {

@@ -78,5 +78,5 @@
     <string name="up_profile_other_review_empty_title">Belum ada ulasan</string>
     <string name="up_profile_create_review">Buat Ulasan</string>
     <string name="up_profile_user_review_product_variant_template">Varian: $s</string>
-    <string name="up_profile_user_review_text_template">$s... Selengkapnya</string>
+    <string name="up_profile_user_review_text_template">%s... Selengkapnya</string>
 </resources>
