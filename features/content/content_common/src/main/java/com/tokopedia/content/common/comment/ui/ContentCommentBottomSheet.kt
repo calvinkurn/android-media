@@ -168,17 +168,18 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    //to escape Emoji length
+    // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
         var count = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val it: BreakIterator = BreakIterator.getCharacterInstance()
-             it.setText(this)
-             while (it.next() != BreakIterator.DONE) {
-                 count++
-             }
-         } else
-             count = binding.newComment?.text?.length.orZero()
+            it.setText(this)
+            while (it.next() != BreakIterator.DONE) {
+                count++
+            }
+        } else {
+            count = binding.newComment?.text?.length.orZero()
+        }
         return count
     }
 
@@ -613,7 +614,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.35
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
