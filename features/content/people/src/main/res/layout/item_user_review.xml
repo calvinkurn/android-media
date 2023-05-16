@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@id/tv_variant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_product"
@@ -31,6 +32,8 @@
         android:id="@+id/tv_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/img_product"
         app:layout_constraintEnd_toEndOf="@id/tv_product"
@@ -52,36 +55,31 @@
             android:id="@+id/ic_star_1"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:icon_name="STAR_FILLED"
-            />
+            app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_star_2"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:icon_name="STAR_FILLED"
-            />
+            app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_star_3"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:icon_name="STAR_FILLED"
-            />
+            app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_star_4"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:icon_name="STAR_FILLED"
-            />
+            app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_star_5"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:icon_name="STAR_FILLED"
-            />
+            app:icon_name="STAR_FILLED" />
 
     </LinearLayout>
 
@@ -89,12 +87,12 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/ll_star"
         app:layout_constraintStart_toEndOf="@id/ll_star"
         app:layout_constraintTop_toTopOf="@id/ll_star"
         app:typographyType="display_3"
-        android:layout_marginStart="4dp"
         tools:text="Hari ini" />
 
     <com.tokopedia.unifyprinciples.Typography
