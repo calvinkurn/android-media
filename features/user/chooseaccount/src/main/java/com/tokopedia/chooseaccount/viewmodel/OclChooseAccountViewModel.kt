@@ -94,7 +94,9 @@ class OclChooseAccountViewModel @Inject constructor(
                 if(newItem?.isEmpty() == true) {
                     _navigateToNormalLogin.value = true
                 } else {
-                    _oclAccounts.value = newItem
+                    newItem?.let {
+                        _oclAccounts.value = newItem
+                    }
                 }
             } catch (e: Exception) {
                 _toasterError.value = e.message

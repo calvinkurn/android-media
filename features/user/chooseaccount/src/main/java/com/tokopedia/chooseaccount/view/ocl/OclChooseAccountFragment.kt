@@ -101,7 +101,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         super.onViewCreated(view, savedInstanceState)
 
         setupSpannableText()
-        viewModel.mainLoader.observe(this) {
+        viewModel.mainLoader.observe(viewLifecycleOwner) {
             if(it) {
                 binding?.mainView?.hide()
                 binding?.chooseAccountLoader?.show()
@@ -111,13 +111,13 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
             }
         }
 
-        viewModel.toasterError.observe(this) {
+        viewModel.toasterError.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
 
-        viewModel.navigateToNormalLogin.observe(this) {
+        viewModel.navigateToNormalLogin.observe(viewLifecycleOwner) {
             if(it) {
                 val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
                 intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
@@ -126,11 +126,11 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
             }
         }
 
-        viewModel.oclAccounts.observe(this) {
+        viewModel.oclAccounts.observe(viewLifecycleOwner) {
             adapter?.setList(it)
         }
 
-        viewModel.navigateToSuccessPage.observe(this) {
+        viewModel.navigateToSuccessPage.observe(viewLifecycleOwner) {
             if(it) {
                 OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
                 activity?.setResult(Activity.RESULT_OK)
@@ -138,7 +138,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
             }
         }
 
-        viewModel.loginFailedResponse.observe(this) {
+        viewModel.loginFailedResponse.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 OclTracker.sendClickOnOneClickLoginEvent("${OclTracker.LABEL_FAILED} - $it")
                 Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
