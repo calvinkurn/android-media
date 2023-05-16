@@ -606,7 +606,9 @@ open class HomeAccountUserFragment :
         }
 
         handleProductCardOptionsActivityResult(
-            requestCode, resultCode, data,
+            requestCode,
+            resultCode,
+            data,
             object : ProductCardOptionsWishlistCallback {
                 override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                     handleWishlistAction(productCardOptionsModel)
@@ -1086,7 +1088,7 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if(OclUtils.isOclEnabled()) {
+        if (OclUtils.isOclEnabled()) {
             viewModel.getOclStatus()
         }
     }
@@ -1418,9 +1420,9 @@ open class HomeAccountUserFragment :
     }
 
     private fun checkLogoutOffering() {
-        if(viewModel.getOclStatus.value?.isShowing == true) {
+        if (viewModel.getOclStatus.value?.isShowing == true) {
             showOclBtmSheet()
-        } else if(isEnableBiometricOffering()) {
+        } else if (isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {
@@ -1473,7 +1475,7 @@ open class HomeAccountUserFragment :
         }
         child.oclSubtitleText.movementMethod = LinkMovementMethod.getInstance()
         child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
-        child.imageUnify.loadImage(R.drawable.img_ocl_header)
+        child.imageUnify.loadImage(URL_IMG_OCL_HEADER)
         BottomSheetUnify().apply {
             setChild(child.root)
             setCloseClickListener {
@@ -1846,6 +1848,7 @@ open class HomeAccountUserFragment :
         private const val FPM_BUYER = "mp_account_buyer"
         private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
             "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
+        private const val URL_IMG_OCL_HEADER = "https://images.tokopedia.net/img/user/home_account/img_ocl_header.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
@@ -1865,7 +1868,6 @@ open class HomeAccountUserFragment :
         private const val COACHMARK_DELAY_MS = 1000L
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
-
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

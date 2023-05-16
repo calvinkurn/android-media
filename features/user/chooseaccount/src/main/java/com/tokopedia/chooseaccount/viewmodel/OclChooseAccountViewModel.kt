@@ -23,8 +23,8 @@ class OclChooseAccountViewModel @Inject constructor(
     val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     val deleteOclAccountUseCase: DeleteOclAccountUseCase,
     val oclPreference: OclPreference,
-    dispatcher: CoroutineDispatchers,
-): BaseViewModel(dispatcher.main) {
+    dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _mainLoader = SingleLiveEvent<Boolean>()
     val mainLoader: LiveData<Boolean> = _mainLoader
@@ -50,10 +50,10 @@ class OclChooseAccountViewModel @Inject constructor(
             try {
                 val param = GetOclAccountParam(oclPreference.getToken())
                 val result = getOclAccountUseCase(param)
-                if(result.token.isNotEmpty()) {
+                if (result.token.isNotEmpty()) {
                     oclPreference.storeToken(result.token)
                 }
-                if(result.users.isNotEmpty()) {
+                if (result.users.isNotEmpty()) {
                     _oclAccounts.value = result.users
                     _mainLoader.value = false
                 } else {
@@ -71,7 +71,7 @@ class OclChooseAccountViewModel @Inject constructor(
             try {
                 val param = LoginOclParam(oclToken = oclPreference.getToken(), accountToken = token)
                 val result = loginOclUseCase(param)
-                if(result.accessToken.isNotEmpty()) {
+                if (result.accessToken.isNotEmpty()) {
                     getUserInfoAndSaveSessionUseCase(Unit)
                 }
                 _navigateToSuccessPage.value = true
@@ -86,15 +86,17 @@ class OclChooseAccountViewModel @Inject constructor(
             try {
                 val param = DeleteOclParam(token = oclPreference.getToken(), userToken = user.token)
                 val result = deleteOclAccountUseCase(param)
-                if(result.token.isNotEmpty()) {
+                if (result.token.isNotEmpty()) {
                     oclPreference.storeToken(result.token)
                 }
                 val newItem = _oclAccounts.value
                 newItem?.remove(user)
-                if(newItem?.isEmpty() == true) {
+                if (newItem?.isEmpty() == true) {
                     _navigateToNormalLogin.value = true
                 } else {
-                    _oclAccounts.value = newItem
+                    newItem?.let {
+                        _oclAccounts.value = it
+                    }
                 }
             } catch (e: Exception) {
                 _toasterError.value = e.message
