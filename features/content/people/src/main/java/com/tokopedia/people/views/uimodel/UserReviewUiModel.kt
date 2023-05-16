@@ -19,7 +19,6 @@ data class UserReviewUiModel(
         val reviewText: String,
         val reviewTime: String,
         val attachments: List<Attachment>,
-        val videoAttachments: List<VideoAttachment>,
         val likeDislike: LikeDislike,
         val isReviewTextExpanded: Boolean,
     )
@@ -40,14 +39,13 @@ data class UserReviewUiModel(
 
     data class Attachment(
         val attachmentID: String,
-        val thumbnailURL: String,
-        val fullsizeURL: String
-    )
-
-    data class VideoAttachment(
-        val attachmentID: String,
-        val videoUrl: String
-    )
+        val mediaUrl: String,
+        val type: Type,
+    ) {
+        enum class Type {
+            Video, Image,
+        }
+    }
 
     data class LikeDislike(
         val totalLike: Int,

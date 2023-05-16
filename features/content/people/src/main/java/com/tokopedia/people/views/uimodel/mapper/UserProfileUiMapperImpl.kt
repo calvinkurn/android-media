@@ -179,17 +179,17 @@ class UserProfileUiMapperImpl @Inject constructor(
                     rating = it.rating,
                     reviewText = it.reviewText,
                     reviewTime = it.reviewTime,
-                    attachments = it.attachments.map { attachment ->
+                    attachments = it.videoAttachments.map { attachment ->
                         UserReviewUiModel.Attachment(
                             attachmentID = attachment.attachmentID,
-                            thumbnailURL = attachment.thumbnailURL,
-                            fullsizeURL = attachment.fullsizeURL,
+                            mediaUrl = attachment.videoUrl,
+                            type = UserReviewUiModel.Attachment.Type.Video,
                         )
-                    },
-                    videoAttachments = it.videoAttachments.map { videoAttachment ->
-                        UserReviewUiModel.VideoAttachment(
-                            attachmentID = videoAttachment.attachmentID,
-                            videoUrl = videoAttachment.videoUrl,
+                    } + it.attachments.map { attachment ->
+                        UserReviewUiModel.Attachment(
+                            attachmentID = attachment.attachmentID,
+                            mediaUrl = attachment.thumbnailURL,
+                            type = UserReviewUiModel.Attachment.Type.Image,
                         )
                     },
                     likeDislike = UserReviewUiModel.LikeDislike(
