@@ -672,9 +672,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 pslCode = data.pslCode,
                 shippingDurationBottomsheetListener = getShippingDurationListener(),
                 cartData = data.cartData,
-                warehouseId = data.warehouseId,
-                cartStringGroup = "",
-                groupProducts = emptyList()
+                warehouseId = data.warehouseId
             )
         }
     }

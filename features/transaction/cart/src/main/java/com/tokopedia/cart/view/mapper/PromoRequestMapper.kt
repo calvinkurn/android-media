@@ -31,8 +31,9 @@ object PromoRequestMapper {
                 ).values
             val cartStringGroupSet = mutableSetOf<String>()
             selectedPromoHolderDataList.forEach { cartPromoHolderData ->
-                if (!cartPromoHolderData.hasSelectedProduct)
+                if (!cartPromoHolderData.hasSelectedProduct) {
                     return@forEach
+                }
                 val ordersItem = OrdersItem().apply {
                     val tmpProductDetails = mutableListOf<ProductDetailsItem>()
                     cartPromoHolderData.productUiModelList.forEach { cartItemHolderData ->
@@ -66,7 +67,6 @@ object PromoRequestMapper {
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
                             etaText = boShipmentData.etaText
-                            shippingMetadata = boShipmentData.shippingMetadata
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
@@ -84,7 +84,6 @@ object PromoRequestMapper {
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
                             etaText = boShipmentData.etaText
-                            shippingMetadata = boShipmentData.shippingMetadata
                         }
                     }
                     shopId = cartPromoHolderData.shopId.toLongOrZero()
@@ -199,7 +198,7 @@ object PromoRequestMapper {
 
     private fun getShippingFromLastApplyByUniqueId(
         lastApplyPromo: LastApplyPromo,
-        cartPromoHolderData: CartPromoHolderData,
+        cartPromoHolderData: CartPromoHolderData
     ): PromoRequestBoShipmentData {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartPromoHolderData.cartStringOrder &&
@@ -214,8 +213,7 @@ object PromoRequestMapper {
                     voucherOrder.shippingSubsidy,
                     voucherOrder.benefitClass,
                     voucherOrder.shippingPrice,
-                    voucherOrder.etaText,
-                    voucherOrder.shippingMetadata
+                    voucherOrder.etaText
                 )
             }
         }
@@ -244,8 +242,7 @@ object PromoRequestMapper {
                         validateOrderRequest.shippingSubsidy,
                         validateOrderRequest.benefitClass,
                         validateOrderRequest.shippingPrice,
-                        validateOrderRequest.etaText,
-                        validateOrderRequest.shippingMetadata
+                        validateOrderRequest.etaText
                     )
                 }
             }
@@ -297,7 +294,7 @@ object PromoRequestMapper {
                 product_details = listProductDetail,
                 codes = cartPromoHolderData.promoCodes.toMutableList(),
                 isChecked = hasCheckedItem,
-                cartStringGroup = cartPromoHolderData.cartStringGroup,
+                cartStringGroup = cartPromoHolderData.cartStringGroup
             )
             orders.add(order)
         }
@@ -324,13 +321,6 @@ object PromoRequestMapper {
                         if (order.spId <= 0) {
                             order.spId = voucherOrder.spId
                         }
-                        val validateOrderRequest =
-                            lastValidateUsePromoRequest?.orders?.firstOrNull {
-                                it.uniqueId == order.uniqueId
-                            }
-                        validateOrderRequest?.let {
-                            order.shippingMetadata = it.shippingMetadata
-                        }
                     }
                 }
             }
@@ -353,7 +343,6 @@ object PromoRequestMapper {
                         if (order.spId <= 0) {
                             order.spId = voucherOrders.spId
                         }
-                        order.shippingMetadata = voucherOrders.shippingMetadata
                     }
                 }
             }
@@ -453,6 +442,5 @@ private class PromoRequestBoShipmentData(
     val shippingSubsidy: Long = 0,
     val benefitClass: String = "",
     val shippingPrice: Double = 0.0,
-    val etaText: String = "",
-    val shippingMetadata: String = ""
+    val etaText: String = ""
 )

@@ -38,6 +38,5 @@ class ShippingParam(
     var shopTier: Int = 0,
     var boMetadata: BoMetadata? = null,
     // new owoc
-    var cartStringGroup: String = "",
-    var groupProducts: List<GroupProduct> = emptyList()
+    var groupType: Int = 0
 ) : Parcelable

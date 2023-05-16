@@ -17,7 +17,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
-import com.tokopedia.logisticcart.shipping.model.GroupProduct
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
@@ -84,9 +83,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         mvc: String = "",
         cartData: String,
         isOcc: Boolean,
-        warehouseId: String,
-        cartStringGroup: String,
-        groupProducts: List<GroupProduct>
+        warehouseId: String
     ) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
@@ -94,7 +91,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
             cartPosition, codHistory, isLeasing, pslCode, products, cartString,
             isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
-            warehouseId, cartStringGroup, groupProducts
+            warehouseId
         )
         initBottomSheet(activity)
         initView(activity)
@@ -141,9 +138,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         preOrderTime: Int,
         mvc: String,
         cartData: String,
-        warehouseId: String,
-        cartStringGroup: String,
-        groupProducts: List<GroupProduct>
+        warehouseId: String
     ) {
         bundle = Bundle().apply {
             putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
@@ -163,8 +158,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             putString(ARGUMENT_MVC, mvc)
             putString(ARGUMENT_CART_DATA, cartData)
             putString(ARGUMENT_WAREHOUSE_ID, warehouseId)
-            putString(ARGUMENT_CART_STRING_GROUP, cartStringGroup)
-            putParcelableArrayList(ARGUMENT_GROUP_PRODUCTS, ArrayList(groupProducts))
         }
     }
 
@@ -215,8 +208,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
             val cartData = it.getString(ARGUMENT_CART_DATA, "")
             val warehouseId = it.getString(ARGUMENT_WAREHOUSE_ID, "")
-            val cartStringGroup = it.getString(ARGUMENT_CART_STRING_GROUP, "")
-            val groupProducts: ArrayList<GroupProduct> = it.getParcelableArrayList(ARGUMENT_GROUP_PRODUCTS)!!
 
             presenter?.loadCourierRecommendation(
                 shipmentDetailData = shipmentDetailData,
@@ -236,9 +227,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 cartData = cartData,
                 isOcc = isOcc,
                 isDisableCourierPromo = isDisableCourierPromo,
-                warehouseId = warehouseId,
-                cartStringGroup = cartStringGroup,
-                groupProducts = groupProducts
+                warehouseId = warehouseId
             )
         }
     }
@@ -401,8 +390,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         private const val ARGUMENT_IS_FULFILLMENT = "ARGUMENT_IS_FULFILLMENT"
         private const val ARGUMENT_PO_TIME = "ARGUMENT_PO_TIME"
         private const val ARGUMENT_WAREHOUSE_ID = "ARGUMENT_WAREHOUSE_ID"
-        private const val ARGUMENT_CART_STRING_GROUP = "ARGUMENT_CART_STRING_GROUP"
-        private const val ARGUMENT_GROUP_PRODUCTS = "ARGUMENT_GROUP_PRODUCTS"
         private const val CHOOSE_COURIER_TRACE = "mp_choose_courier"
     }
 }

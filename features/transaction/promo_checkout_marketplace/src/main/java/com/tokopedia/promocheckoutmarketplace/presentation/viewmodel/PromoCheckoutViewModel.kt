@@ -877,7 +877,6 @@ class PromoCheckoutViewModel @Inject constructor(
                 val boData =
                     promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 if (boData != null) {
-                    val shippingMetadata = boData.shippingMetadata.firstOrNull { order.uniqueId == it.uniqueId }
                     order.let {
                         if (!it.codes.contains(boData.code)) {
                             // if code is not already in request param, then add bo additional data
@@ -897,7 +896,6 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.shippingPrice = boData.shippingPrice
                         it.shippingSubsidy = boData.shippingSubsidy
                         it.etaText = boData.etaText
-                        it.shippingMetadata = shippingMetadata?.jsonString ?: ""
                     }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&

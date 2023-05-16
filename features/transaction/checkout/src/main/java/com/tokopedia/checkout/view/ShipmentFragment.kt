@@ -51,7 +51,6 @@ import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBo
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBottomSheetProductLevelData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
@@ -2789,15 +2788,7 @@ class ShipmentFragment :
                     ),
                     shipmentPresenter.cartDataForRates,
                     false,
-                    shipmentCartItemModel.fulfillmentId.toString(),
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                        shipmentPresenter.getGroupProductsForRatesRequest(
-                            shipmentCartItemModel
-                        )
-                    } else {
-                        emptyList()
-                    }
+                    shipmentCartItemModel.fulfillmentId.toString()
                 )
             }
         }
@@ -2861,15 +2852,7 @@ class ShipmentFragment :
                     shipmentCartItemModel.cartStringGroup,
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
-                    skipMvc,
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                        shipmentPresenter.getGroupProductsForRatesRequest(
-                            shipmentCartItemModel
-                        )
-                    } else {
-                        emptyList()
-                    }
+                    skipMvc
                 )
             }
         }
@@ -2914,15 +2897,7 @@ class ShipmentFragment :
                 shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                 shipmentCartItemModel.cartStringGroup,
                 isTradeInDropOff,
-                shipmentAdapter.addressShipmentData,
-                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                    shipmentPresenter.getGroupProductsForRatesRequest(
-                        shipmentCartItemModel
-                    )
-                } else {
-                    emptyList()
-                }
+                shipmentAdapter.addressShipmentData
             )
         }
     }

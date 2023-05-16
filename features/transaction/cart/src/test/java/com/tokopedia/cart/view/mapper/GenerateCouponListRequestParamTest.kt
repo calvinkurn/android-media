@@ -126,7 +126,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "",
                         boType = 1
                     ),
                     Order(
@@ -142,7 +141,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "",
                         boType = 1
                     )
                 )
@@ -168,7 +166,6 @@ class GenerateCouponListRequestParamTest {
                         benefitClass = "",
                         shippingPrice = 20000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -182,7 +179,6 @@ class GenerateCouponListRequestParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -283,7 +279,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         boType = 1
                     ),
                     Order(
@@ -299,7 +294,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         boType = 1
                     )
                 )
@@ -325,7 +319,6 @@ class GenerateCouponListRequestParamTest {
                         benefitClass = "",
                         shippingPrice = 20000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -339,7 +332,6 @@ class GenerateCouponListRequestParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -353,7 +345,6 @@ class GenerateCouponListRequestParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                     )
                 )
@@ -492,7 +483,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         boType = 1
                     ),
                     Order(
@@ -508,7 +498,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         boType = 1
                     ),
                     Order(
@@ -524,7 +513,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         boType = 1
                     )
                 )
@@ -564,7 +552,6 @@ class GenerateCouponListRequestParamTest {
                     benefitClass = "",
                     shippingPrice = 20000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":20000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -574,7 +561,6 @@ class GenerateCouponListRequestParamTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -675,7 +661,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         boType = 1
                     ),
                     Order(
@@ -691,7 +676,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         boType = 1
                     )
                 )
@@ -739,7 +723,6 @@ class GenerateCouponListRequestParamTest {
                     benefitClass = "",
                     shippingPrice = 20000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":20000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -749,7 +732,6 @@ class GenerateCouponListRequestParamTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -759,7 +741,6 @@ class GenerateCouponListRequestParamTest {
                     benefitClass = "",
                     shippingPrice = 18000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":18000}",
                     uniqueId = "333333-KEY",
                     cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                 )
@@ -898,7 +879,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         boType = 1
                     ),
                     Order(
@@ -914,7 +894,6 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":20000}",
                         boType = 1
                     ),
                     Order(
@@ -930,9 +909,8 @@ class GenerateCouponListRequestParamTest {
                         freeShippingMetadata = "",
                         validationMetadata = "",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
-                        shippingMetadata = "{\"order_shipping_price\":18000}",
                         boType = 1
-                    ),
+                    )
                 )
             ),
             promoRequest

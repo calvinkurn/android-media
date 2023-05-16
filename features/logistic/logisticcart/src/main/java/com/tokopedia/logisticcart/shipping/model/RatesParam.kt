@@ -48,8 +48,7 @@ data class RatesParam(
     var cart_data: String = "",
     var warehouse_id: String = "",
     // new owoc
-    val cartStringGroup: String = "",
-    val groupProducts: String = ""
+    val group_type: Int = 0
 ) {
 
     private constructor(builder: Builder) : this(
@@ -83,8 +82,7 @@ data class RatesParam(
         cart_data = builder.cartData,
         occ = builder.occ,
         warehouse_id = builder.warehouseId,
-        cartStringGroup = builder.cartStringGroup,
-        groupProducts = builder.groupProducts
+        group_type = builder.groupType
     )
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -120,8 +118,7 @@ data class RatesParam(
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
         "warehouse_id" to warehouse_id,
-        "cart_string_group" to cartStringGroup,
-        "group_products" to groupProducts
+        "group_type" to group_type
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -226,9 +223,7 @@ data class RatesParam(
             private set
         var warehouseId: String = ""
             private set
-        var cartStringGroup: String = shipping.cartStringGroup
-            private set
-        var groupProducts: String = RatesParamHelper.generateGroupProducts(shipping)
+        var groupType: Int = shipping.groupType
             private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
