@@ -58,13 +58,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             labelWidget.shouldShowWithAction(bottomSection.subtitle.isNotEmpty()) {
                 labelWidget.text = bottomSection.subtitle
             }
-            tvLeftTitle.setOnClickListener {
-                clickedSection(bottomSection)
-            }
-            tvSubtitle.setOnClickListener {
-                clickedSection(bottomSection)
-            }
-            ivProductIcon.setOnClickListener {
+            containerBottom.setOnClickListener {
                 clickedSection(bottomSection)
             }
         }
@@ -77,13 +71,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             tvLeftSubtitle.text = leftSection.attributes.soldValue
             imgLeft.loadImage(leftSection.mediaUrl)
 
-            tvLeftTitle.setOnClickListener {
-                clickedSection(leftSection)
-            }
-            tvLeftSubtitle.setOnClickListener {
-                clickedSection(leftSection)
-            }
-            imgLeft.setOnClickListener {
+            containerLeft.setOnClickListener {
                 clickedSection(leftSection)
             }
         }
@@ -96,13 +84,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             tvRightSubtitle.text = rightSection.attributes.soldValue
             imgRight.loadImage(rightSection.mediaUrl)
 
-            tvRightTitle.setOnClickListener {
-                clickedSection(rightSection)
-            }
-            tvRightSubtitle.setOnClickListener {
-                clickedSection(rightSection)
-            }
-            imgRight.setOnClickListener {
+            containerRight.setOnClickListener {
                 clickedSection(rightSection)
             }
         }
