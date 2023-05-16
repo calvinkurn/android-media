@@ -696,7 +696,7 @@ class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepag
     override fun visitableId(): String = section.id
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageMyBillsEntryPointModel) {
+        return if (b is RechargeHomepageMyBillsTripleEntryPointsModel) {
             section == b.section
         } else false
     }
