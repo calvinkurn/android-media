@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -95,7 +94,7 @@ class ShopOpenRevampQuisionerFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+            shopOpenRevampTracking = ShopOpenRevampTracking()
         }
     }
 
@@ -135,7 +134,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     override fun onUncheckedCheckbox(questionId: Int, choiceId: Int) {
-        questionsAndAnswersId?.let {
+        questionsAndAnswersId.let {
             if (it.containsKey(questionId)) {
                 it[questionId]?.remove(choiceId)
                 if (it.get(questionId)?.isEmpty() == true) {
@@ -153,7 +152,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     override fun initInjector() {
-        component?.inject(this)
+        component.inject(this)
     }
 
     override fun onDestroy() {
@@ -208,8 +207,7 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun observeSurveyData() {
         viewModel.getSurveyDataResponse.observe(
-            viewLifecycleOwner,
-            Observer {
+            viewLifecycleOwner) {
                 EspressoIdlingResource.decrement()
                 when (it) {
                     is Success -> {
@@ -232,13 +230,10 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
             }
-        )
-    }
 
     private fun observeSendSurveyResult() {
         viewModel.sendSurveyDataResponse.observe(
-            viewLifecycleOwner,
-            Observer {
+            viewLifecycleOwner) {
                 EspressoIdlingResource.decrement()
                 when (it) {
                     is Success -> {
@@ -270,8 +265,7 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun observeSaveShipmentLocationData() {
         viewModel.saveShopShipmentLocationResponse.observe(
-            viewLifecycleOwner,
-            Observer {
+            viewLifecycleOwner) {
                 EspressoIdlingResource.decrement()
                 when (it) {
                     is Success -> {
@@ -289,9 +283,9 @@ class ShopOpenRevampQuisionerFragment :
                         val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                         showErrorNetwork(errorMessage) {
                             if (shopId != 0 && postCode != "" && courierOrigin != 0 &&
-                                addrStreet != "" && latitude != "" && longitude != ""
-                            ) {
-                                saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                            addrStreet != "" && latitude != "" && longitude != ""
+
+                            ) {    saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                             }
                         }
                         ShopOpenRevampErrorHandler.logMessage(
@@ -340,11 +334,11 @@ class ShopOpenRevampQuisionerFragment :
                 it,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
-                getString(R.string.open_shop_revamp_retry),
-                View.OnClickListener {
+                getString(R.string.open_shop_revamp_retry)
+                ) {
                     retry.invoke()
                 }
-            )
+
         }
     }
 
@@ -421,16 +415,16 @@ class ShopOpenRevampQuisionerFragment :
                             ?: it.getParcelableExtra<SaveAddressDataModel>(
                                 AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
                             )
-                    var _latitudeString: String = ""
-                    var _longitudeString: String = ""
-                    var _postalCode: String = ""
+                    var _latitudeString = ""
+                    var _longitudeString = ""
+                    var _postalCode = ""
                     var _districtId: Long = 0
-                    var _formattedAddress: String = ""
+                    var _formattedAddress = ""
 
                     saveAddressDataModel?.let {
-                        _latitudeString = if (it.latitude != null) it.latitude.toString() else ""
-                        _longitudeString = if (it.longitude != null) it.longitude.toString() else ""
-                        _postalCode = if (it.postalCode != null) it.postalCode.toString() else ""
+                        _latitudeString = if (it.latitude != null) it.latitude else ""
+                        _longitudeString = if (it.longitude != null) it.longitude else ""
+                        _postalCode = if (it.postalCode != null) it.postalCode else ""
                         _districtId = if (it.districtId != null) it.districtId else 0
                         _formattedAddress = if (it.formattedAddress != null) it.formattedAddress else ""
                     }

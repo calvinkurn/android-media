@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
+import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
@@ -90,6 +90,8 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
+    @SerializedName("postATCLayout")
+    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
@@ -193,13 +195,15 @@ data class ComponentData(
     }
 
     fun getImagePath(): ArrayList<String> {
-        return ArrayList(media.map {
-            if (it.type == PRODUCT_IMAGE_TYPE) {
-                it.uRLOriginal
-            } else {
-                it.uRLThumbnail
+        return ArrayList(
+            media.map {
+                if (it.type == PRODUCT_IMAGE_TYPE) {
+                    it.uRLOriginal
+                } else {
+                    it.uRLThumbnail
+                }
             }
-        })
+        )
     }
 
     fun getGalleryItems(): List<ProductDetailGallery.Item> {

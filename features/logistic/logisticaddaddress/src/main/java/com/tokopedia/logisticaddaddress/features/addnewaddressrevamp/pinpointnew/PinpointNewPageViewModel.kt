@@ -114,7 +114,10 @@ class PinpointNewPageViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(param)
+                val districtData = repo.getDistrictGeocode(
+                    latlong = param,
+                    isManageAddressFlow = true
+                )
                 _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
             } catch (e: Throwable) {
                 _autofillDistrictData.value = Fail(e)
@@ -125,7 +128,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch {
             try {
-                val districtLoc = repo.getDistrict(placeId)
+                val districtLoc = repo.getDistrict(placeId = placeId, isManageAddressFlow = true)
                 _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
             } catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
