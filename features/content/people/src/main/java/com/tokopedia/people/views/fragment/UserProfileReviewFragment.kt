@@ -38,10 +38,15 @@ import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
+import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.adapter.UserReviewAdapter
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
+import kotlinx.coroutines.flow.collect
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * Created By : Jonathan Darwin on May 12, 2023
@@ -108,6 +113,24 @@ class UserProfileReviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderMainLayout(it.prevValue, it.value)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is UserProfileUiEvent.ErrorLikeDislike -> {
+                        val message = when (event.throwable) {
+                            is UnknownHostException, is SocketTimeoutException -> {
+                                requireContext().getString(R.string.up_error_local_error)
+                            }
+                            else -> event.throwable.message ?: getString(R.string.up_error_unknown)
+                        }
+
+                        view?.showErrorToast(message)
+                    }
+                    else -> {}
+                }
             }
         }
     }

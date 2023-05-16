@@ -552,7 +552,7 @@ class UserProfileViewModel @AssistedInject constructor(
             } ?: return@launchCatchError
 
             if (response.isLike != selectedReview.likeDislike.isLike) {
-                throw Exception("Something went wrong")
+                throw Exception()
             }
         }) { throwable ->
             toggleLikeDislikeStatus(review.feedbackID)
