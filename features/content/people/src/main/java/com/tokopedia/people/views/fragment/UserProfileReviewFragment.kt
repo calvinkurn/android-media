@@ -14,13 +14,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.databinding.FragmentUserProfileReviewBinding
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
@@ -34,8 +38,10 @@ import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
+import com.tokopedia.people.views.adapter.UserReviewAdapter
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.viewholder.UserReviewViewHolder
 
 /**
  * Created By : Jonathan Darwin on May 12, 2023
@@ -56,6 +62,23 @@ class UserProfileReviewFragment @Inject constructor(
         )
     }
 
+    private val linearLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(activity)
+    }
+
+    private val adapter: UserReviewAdapter by lazyThreadSafetyNone {
+        UserReviewAdapter(
+            listener = object : UserReviewViewHolder.Review.Listener {
+                override fun onClickLike(review: UserReviewUiModel.Review) {
+                    viewModel.submitAction(UserProfileAction.ClickLikeReview(review))
+                }
+            },
+            onLoading = {
+                viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = false))
+            }
+        )
+    }
+
     override fun getScreenName(): String = TAG
 
     override fun onCreateView(
@@ -70,9 +93,15 @@ class UserProfileReviewFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
         setupObserver()
 
         viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+    }
+
+    private fun setupView() {
+        binding.rvReview.layoutManager = linearLayoutManager
+        binding.rvReview.adapter = adapter
     }
 
     private fun setupObserver() {
@@ -103,6 +132,7 @@ class UserProfileReviewFragment @Inject constructor(
 
     private fun showMainLayout(reviewContent: UserReviewUiModel) {
         binding.layoutNoUserReview.root.gone()
+        binding.rvReview.show()
 
         if (reviewContent.isLoading && reviewContent.reviewList.isEmpty()) {
             /** TODO: show shimmering */
@@ -110,7 +140,17 @@ class UserProfileReviewFragment @Inject constructor(
             return
         }
 
+        val mappedList = reviewContent.reviewList.map {
+            UserReviewAdapter.Model.Review(it)
+        }
 
+        val finalList = if (reviewContent.hasNext) {
+            mappedList + listOf(UserReviewAdapter.Model.Loading)
+        } else {
+            mappedList
+        }
+
+        adapter.setItemsAndAnimateChanges(finalList)
     }
 
     private fun showNoReviewLayout() {
@@ -129,6 +169,7 @@ class UserProfileReviewFragment @Inject constructor(
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
         }
         binding.layoutNoUserReview.root.show()
+        binding.rvReview.hide()
     }
 
     private fun showHiddenReviewLayout() {
@@ -147,6 +188,7 @@ class UserProfileReviewFragment @Inject constructor(
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
         }
         binding.layoutNoUserReview.root.show()
+        binding.rvReview.hide()
     }
 
     private fun setupClickableText(

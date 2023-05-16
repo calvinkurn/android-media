@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.people.databinding.ItemUserReviewBinding
 import com.tokopedia.people.databinding.UpItemUserPostLoadingBinding
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
@@ -32,12 +34,14 @@ class UserReviewViewHolder private constructor() {
                 imgProduct.setImageUrl(item.product.productImageURL)
                 tvProduct.text = item.product.productName
 
-                if(item.product.productVariant.variantName.isNotEmpty()) {
+                tvVariant.shouldShowWithAction(item.product.productVariant.variantName.isNotEmpty()) {
                     tvVariant.text = itemView.context.getString(
                         R.string.up_profile_user_review_product_variant_template,
                         item.product.productVariant.variantName
                     )
                 }
+
+                /** TODO: setup datetime */
 
                 setupStar(icStar1, item.rating >= 1)
                 setupStar(icStar2, item.rating >= 2)
@@ -47,7 +51,12 @@ class UserReviewViewHolder private constructor() {
 
                 setupReviewText(tvReview, item.reviewText)
 
+                /** TODO: setup media */
+
                 tvLikeCounter.text = item.likeDislike.totalLike.toString()
+                tvLikeCounter.setOnClickListener {
+                    listener.onClickLike(item)
+                }
             }
         }
 
@@ -59,7 +68,7 @@ class UserReviewViewHolder private constructor() {
             }
 
             icon.setImage(
-                IconUnify.STAR,
+                IconUnify.STAR_FILLED,
                 newLightEnable = MethodChecker.getColor(itemView.context, color),
                 newDarkEnable = MethodChecker.getColor(itemView.context, color),
             )
@@ -110,7 +119,7 @@ class UserReviewViewHolder private constructor() {
         }
 
         interface Listener {
-
+            fun onClickLike(review: UserReviewUiModel.Review)
         }
     }
 

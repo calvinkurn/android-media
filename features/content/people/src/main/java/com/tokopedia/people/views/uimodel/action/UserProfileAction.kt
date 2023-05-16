@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.action
 
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -45,4 +46,6 @@ sealed interface UserProfileAction {
     data class ClickSeePerformancePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 
     data class ClickDeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
+
+    data class ClickLikeReview(val review: UserReviewUiModel.Review) : UserProfileAction
 }
