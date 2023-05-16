@@ -470,6 +470,16 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         )
     }
 
+    fun showCheckBalanceWarning(message: String, iconUrl: String, onClick: () -> Unit) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showWarningMessage(
+            message, iconUrl, onClick
+        )
+    }
+
+    fun hideCheckBalanceWarning() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideWarningMessage()
+    }
+
     fun startShakeAnimation() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
             AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim)

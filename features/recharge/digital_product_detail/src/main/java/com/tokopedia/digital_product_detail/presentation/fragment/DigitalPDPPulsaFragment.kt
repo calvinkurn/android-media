@@ -667,6 +667,13 @@ class DigitalPDPPulsaFragment :
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
+    private fun hideCheckBalanceWidget() {
+        binding?.run {
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
+        }
+    }
+
     private fun onLoadingGetCheckBalance() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
