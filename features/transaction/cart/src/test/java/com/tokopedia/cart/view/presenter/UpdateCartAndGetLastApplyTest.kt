@@ -65,10 +65,8 @@ class UpdateCartAndGetLastApplyTest : BaseCartTest() {
             cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
             code = "NEWBOCODE"
         )
-        
-        every { view.getAllGroupDataList() } returns listOf(cartGroupHolderData) 
 
-        val updateAndGetLastApplyData = UpdateAndGetLastApplyData().apply {
+        every { view.getAllGroupDataList() } returns listOf(cartGroupHolderData) val updateAndGetLastApplyData = UpdateAndGetLastApplyData().apply {
             updateCartData = UpdateCartData().apply {
                 isSuccess = true
             }
@@ -87,7 +85,7 @@ class UpdateCartAndGetLastApplyTest : BaseCartTest() {
         verify {
             view.updatePromoCheckoutStickyButton(updateAndGetLastApplyData.promoUiModel!!)
         }
-        
+
         assertEquals(promoCheckoutVoucherOrdersItemUiModel.code, cartGroupHolderData.boCode)
     }
 

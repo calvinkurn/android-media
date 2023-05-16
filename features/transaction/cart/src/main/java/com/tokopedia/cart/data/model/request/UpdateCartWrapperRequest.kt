@@ -7,7 +7,7 @@ data class UpdateCartWrapperRequest(
     val source: String = "",
     val getLastApplyPromoRequest: ValidateUsePromoRequest = ValidateUsePromoRequest(),
     val cartId: String = "",
-    val getCartState: Int = 0,
+    val getCartState: Int = 0
 ) {
     fun getUpdateCartRequest(): List<UpdateCartRequest> {
         return updateCartRequestList.map {

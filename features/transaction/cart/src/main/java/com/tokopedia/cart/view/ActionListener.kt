@@ -2,11 +2,11 @@ package com.tokopedia.cart.view
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -21,7 +21,7 @@ interface ActionListener {
     fun onClickShopNow()
 
     fun getDefaultCartErrorMessage(): String
-    
+
     fun onCartGroupNameClicked(appLink: String)
 
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)

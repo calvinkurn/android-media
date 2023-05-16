@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import io.mockk.every
 import io.mockk.verify
 import io.mockk.verifyOrder

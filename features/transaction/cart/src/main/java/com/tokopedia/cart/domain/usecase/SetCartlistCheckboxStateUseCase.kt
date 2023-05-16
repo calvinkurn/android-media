@@ -19,7 +19,7 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(
 
     companion object {
         private const val PARAM = "params"
-        
+
         const val QUERY_SET_CARTLIST_CHECKBOX_STATE = "SetCartlistCheckboxStateQuery"
     }
 

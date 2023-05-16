@@ -5,9 +5,9 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.viewholder.CartChooseAddressViewHolder
+import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
-import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder

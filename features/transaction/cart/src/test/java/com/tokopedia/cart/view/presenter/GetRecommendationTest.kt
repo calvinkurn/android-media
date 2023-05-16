@@ -27,7 +27,7 @@ class GetRecommendationTest : BaseCartTest() {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
         }
-        
+
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN

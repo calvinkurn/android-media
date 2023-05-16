@@ -78,7 +78,7 @@ class AddCartToWishlistTest : BaseCartTest() {
             success = 0
             message = "failed"
         }
-        
+
         coEvery { addCartToWishlistUseCase(any()) } returns addToCartWishlistData
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
@@ -106,7 +106,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         val source = "source"
         val forceExpandCollapsedUnavailableItems = false
         val exception = ResponseErrorException("Error")
-        
+
         coEvery { addCartToWishlistUseCase(any()) } throws exception
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 

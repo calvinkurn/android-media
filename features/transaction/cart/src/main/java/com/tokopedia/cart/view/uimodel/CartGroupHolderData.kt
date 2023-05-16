@@ -111,9 +111,9 @@ data class CartGroupHolderData(
             boCode = this.boCode
         )
     }
-    
+
     fun isUsingOWOCDesign(): Boolean = uiGroupType == GROUP_TYPE_OWOC
-    
+
     fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
 
     companion object {
@@ -121,7 +121,7 @@ data class CartGroupHolderData(
 
         const val ADD_ON_GIFTING = 1
         const val ADD_ON_EPHARMACY = 2
-        
+
         private const val GROUP_TYPE_OWOC = 1
     }
 }
