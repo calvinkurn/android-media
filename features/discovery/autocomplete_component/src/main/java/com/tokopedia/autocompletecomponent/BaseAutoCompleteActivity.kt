@@ -17,6 +17,7 @@ import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -297,6 +298,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
                     container,
                     getString(R.string.searchbar_duplicate_keyword_error_message),
                     type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.searchbar_duplicate_keyword_error_action),
+                    clickListener = {
+                        (it.parent as? Snackbar)?.dismiss()
+                    }
                 )
                     .show()
             }
