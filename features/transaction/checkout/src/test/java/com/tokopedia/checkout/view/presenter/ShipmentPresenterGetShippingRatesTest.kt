@@ -77,7 +77,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -133,7 +133,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -192,7 +192,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -251,7 +251,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -323,7 +323,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -413,7 +413,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -501,7 +501,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -589,7 +589,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -663,7 +663,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -736,7 +736,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -804,7 +804,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -870,7 +870,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -934,7 +934,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -1005,7 +1005,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -1069,7 +1069,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1135,7 +1135,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1196,7 +1196,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1257,7 +1257,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1321,7 +1321,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1387,7 +1387,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1448,7 +1448,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1509,7 +1509,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1568,7 +1568,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1635,7 +1635,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1704,9 +1704,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            "",
-            emptyList()
+            recipientAddressModel
         )
 
         itemPosition++
@@ -1722,9 +1720,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            "",
-            emptyList()
+            recipientAddressModel
         )
 
         // Then

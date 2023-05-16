@@ -83,7 +83,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -170,7 +170,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -240,7 +240,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -331,7 +331,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -421,7 +421,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -489,7 +489,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -556,7 +556,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -623,7 +623,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -719,7 +719,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -801,7 +801,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -883,7 +883,7 @@ class ShipmentPresenterScheduleDeliveryTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
