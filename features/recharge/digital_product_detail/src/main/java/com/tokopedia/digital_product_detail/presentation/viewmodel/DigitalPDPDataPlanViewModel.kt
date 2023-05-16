@@ -27,6 +27,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.V
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -99,6 +100,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
+
+    private val _indosatCheckBalance = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>()
+    val indosatCheckBalance: LiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>
+        get() = _indosatCheckBalance
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -261,6 +266,27 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setRechargeCheckBalanceLoading() {
+        _indosatCheckBalance.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRechargeCheckBalance(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>
+    ) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val persoData = repo.getRechargeCheckBalance(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE
+            )
+            _indosatCheckBalance.value = RechargeNetworkResult.Success(persoData)
+        }) {
+            _indosatCheckBalance.value = RechargeNetworkResult.Fail(it)
         }
     }
 

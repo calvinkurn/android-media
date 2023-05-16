@@ -210,9 +210,7 @@ class DigitalPDPPulsaFragment :
 
     private fun renderProduct() {
         binding?.run {
-            rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
-            rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
-
+            hideCheckBalanceWidget()
             val selectedClientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -634,6 +632,13 @@ class DigitalPDPPulsaFragment :
     private fun onFailedGetCheckBalance(throwable: Throwable) {
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun hideCheckBalanceWidget() {
+        binding?.run {
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
+        }
     }
 
     private fun onLoadingGetCheckBalance() {

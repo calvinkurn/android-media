@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -61,6 +62,7 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.data.model.data.TelcoOtherComponent
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -266,6 +268,7 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderProduct() {
         binding?.run {
+            hideCheckBalanceWidget()
             val selectedClientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -304,6 +307,7 @@ class DigitalPDPDataPlanFragment :
                     }
                     hideEmptyState()
                     onHideBuyWidget()
+                    getIndosatCheckBalance()
                     getRecommendations()
                     getMCCMProducts()
                     getCatalogProductInputMultiTab(
@@ -492,6 +496,14 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
+            when (checkBalanceData) {
+                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
+                is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
+                is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
+            }
+        }
+
         viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
@@ -611,6 +623,13 @@ class DigitalPDPDataPlanFragment :
             listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
         viewModel.cancelMCCMProductsJob()
         viewModel.getMCCMProducts(clientNumbers, listOf(categoryId))
+    }
+
+    private fun getIndosatCheckBalance() {
+        val clientNumbers =
+            listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setRechargeCheckBalanceLoading()
+        viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
     }
 
     private fun getCatalogMenuDetail() {
@@ -735,6 +754,75 @@ class DigitalPDPDataPlanFragment :
 
     private fun onFailedGetRecommendations() {
         binding?.rechargePdpPaketDataRecommendationWidget?.hide()
+    }
+
+    private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            // TODO: [Misael] Remove this line later
+            if (checkBalanceData.iconUrl.isEmpty()) return
+
+            if (checkBalanceData.widgets.isEmpty()) {
+                renderCheckBalanceOTPWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+                )
+                showCheckBalanceOtpWidget()
+            } else {
+                renderCheckBalanceWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+                )
+                showCheckBalanceWidget()
+            }
+
+//            when (checkBalanceData.widgetType.lowercase()) {
+//                "otp" -> {
+//                    renderCheckBalanceOTPWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceOtpWidget()
+//                }
+//                "widget" -> {
+//                    renderCheckBalanceWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceWidget()
+//                }
+//                else -> return
+//            }
+//
+
+            // =======
+            if (checkBalanceData.campaignLabelText.isNotEmpty()) {
+                showCheckBalanceWarning(
+                    checkBalanceData.campaignLabelText,
+                    checkBalanceData.iconUrl
+                ) {
+                    // TODO: [Misael] show bottom sheet, ini cuma di paket data ya
+                }
+            } else {
+                hideCheckBalanceWarning()
+            }
+
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onFailedGetCheckBalance(throwable: Throwable) {
+        // TODO: [Misael] show local load error
+        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun hideCheckBalanceWidget() {
+        binding?.run {
+            rechargePdpPaketDataClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPaketDataClientNumberWidget.hideCheckBalanceOtpWidget()
+        }
+    }
+
+    private fun onLoadingGetCheckBalance() {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidget()
+        }
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0) {
