@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.media.loader.data.MEDIA_QUALITY_PREF
 
-class MediaSettingPreferences constructor(
+internal class MediaSettingPreferences constructor(
     context: Context?
 ) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
