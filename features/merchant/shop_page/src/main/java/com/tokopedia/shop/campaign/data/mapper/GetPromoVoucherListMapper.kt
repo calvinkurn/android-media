@@ -1,5 +1,7 @@
 package com.tokopedia.shop.campaign.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.campaign.data.response.GetPromoVoucherListMapperResponse
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import javax.inject.Inject
@@ -12,7 +14,7 @@ class GetPromoVoucherListMapper @Inject constructor() {
                 ExclusiveLaunchVoucher(
                     id = voucher.id,
                     voucherName = voucher.title,
-                    minimumPurchase = 1,
+                    minimumPurchase = voucher.minimumUsage.digitsOnly(),
                     remainingQuota = voucher.quota,
                     source = ExclusiveLaunchVoucher.VoucherSource.PROMO
                 )
@@ -20,4 +22,8 @@ class GetPromoVoucherListMapper @Inject constructor() {
         }
     }
 
+
+    private fun String.digitsOnly() : Long {
+        return this.getDigits()?.toLong().orZero()
+    }
 }
