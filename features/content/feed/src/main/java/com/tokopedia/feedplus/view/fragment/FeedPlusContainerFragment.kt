@@ -52,7 +52,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -295,10 +299,7 @@ class FeedPlusContainerFragment :
             Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
             else -> View.INVISIBLE
         }
-        status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
-            else -> View.INVISIBLE
-        }
+        status_bar_bg2.visibility = View.INVISIBLE
         toolbarParent.removeAllViews()
         initNewToolBar()
         toolbarParent.addView(feedToolbar)
