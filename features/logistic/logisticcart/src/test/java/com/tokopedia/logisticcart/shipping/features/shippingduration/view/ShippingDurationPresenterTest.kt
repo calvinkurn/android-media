@@ -263,7 +263,7 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When load courier recommendation return error error id Then view shows error page`() {
+    fun `When load courier recommendation return error id Then view shows error page`() {
         val err = Throwable("Unexpected error")
         presenter.attachView(view)
 
@@ -715,6 +715,7 @@ class ShippingDurationPresenterTest {
     OnChooseDuration
      */
 
+    // checkout
     @Test
     fun `When in checkout and service is pinpoint error Then set pinpoint error flag`() {
         // Given
@@ -782,7 +783,7 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When year end promotion toggle is on and service is error Then pinpoint error flag is false`() {
+    fun `When in checkout and service is error Then pinpoint error flag is false`() {
         // Given
         // selected shipping duration ui model
         val selectedService =
@@ -815,7 +816,7 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When year end promotion toggle is on and service not error Then pinpoint error flag is false`() {
+    fun `When in checkout and service not error Then pinpoint error flag is false`() {
         // Given
         // selected shipping duration ui model
         val selectedService =
@@ -844,10 +845,8 @@ class ShippingDurationPresenterTest {
         }
     }
 
-    // todo this is failed because toggle null but in checkout
-    // toggle always true in checkout
     @Test
-    fun `When select duration and there is recommended courier Then select the recommended courier`() {
+    fun `When in checkout select duration and there is recommended courier Then select the recommended courier`() {
         // Given
         // selected shipping duration ui model
         val selectedService =
@@ -878,7 +877,7 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When select duration and there is recommended courier but is hidden Then dont select the recommended courier`() {
+    fun `When in checkout select duration and there is recommended courier but is hidden Then dont select the recommended courier`() {
         // Given
         // selected shipping duration ui model
         val selectedService =
@@ -897,13 +896,20 @@ class ShippingDurationPresenterTest {
         )
 
         // Then
-        assert(recommendedCourier?.isSelected == false)
+        verify(exactly = 0) {
+            view.onShippingDurationAndRecommendCourierChosen(
+                selectedService.shippingCourierViewModelList,
+                recommendedCourier,
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
-    // todo this is failed because toggle null but in checkout
-    // toggle always true in checkout
     @Test
-    fun `When select duration and there is selected shipper product Id Then select the selected shipper product`() {
+    fun `When in checkout select duration and there is selected shipper product Id Then select the selected shipper product`() {
         // Given
         // selected shipping duration ui model
         val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
@@ -934,8 +940,6 @@ class ShippingDurationPresenterTest {
         }
     }
 
-    // todo this is failed because toggle null but in checkout
-    // toggle always true in checkout
     @Test
     fun `When select duration and there is selected shipper product Id but no shipper product with the recommended id Then select the recommended product`() {
         // Given
@@ -969,8 +973,6 @@ class ShippingDurationPresenterTest {
         }
     }
 
-    // todo this is failed because toggle false but in checkout
-    // but toggle always true in checkout
     @Test
     fun `When select duration and there are recommended courier and selected shipper product Id Then select the selected shipper product`() {
         // Given
@@ -1099,10 +1101,8 @@ class ShippingDurationPresenterTest {
         assert(selectedShipper.isSelected)
     }
 
-    // todo this is failed because toggle false but in checkout
-    // toggle always true in checkout
     @Test
-    fun `When select duration and get selected courier and courier is pinpoint error Then set pinpoint error flag`() {
+    fun `When select duration in checkout but service is pinpoint error Then set pinpoint error flag`() {
         // Given
         // selected shipping duration ui model
         val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
@@ -1134,10 +1134,8 @@ class ShippingDurationPresenterTest {
         }
     }
 
-    // todo this is failed because toggle false but in checkout
-    // toggle always true in checkout
     @Test
-    fun `When select duration and get selected courier and courier is pinpoint error Then set range price to error message`() {
+    fun `When select duration and get selected courier and courier is pinpoint error Then set pinpoint flag to true`() {
         // Given
         // selected shipping duration ui model
         val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
@@ -1158,11 +1156,20 @@ class ShippingDurationPresenterTest {
         )
 
         // Then
-        // todo then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(
+                selectedService.shippingCourierViewModelList,
+                any(),
+                any(),
+                selectedService.serviceData.serviceId,
+                selectedService.serviceData,
+                true
+            )
+        }
     }
 
     @Test
-    fun `When select duration and get selected courier and courier is error Then pinpoint error flag is false`() {
+    fun `When select duration and get selected courier and courier is error but not pinpoint error Then pinpoint error flag is false`() {
         // Given
         // selected shipping duration ui model
         val selectedService =
