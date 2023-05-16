@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder

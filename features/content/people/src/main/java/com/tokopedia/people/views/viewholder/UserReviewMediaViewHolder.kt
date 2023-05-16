@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.people.databinding.ItemUserReviewBinding
 import com.tokopedia.people.databinding.ItemUserReviewMediaBinding
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 

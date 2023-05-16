@@ -4,11 +4,13 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.R
 import com.tokopedia.people.databinding.ItemUserReviewBinding
 import com.tokopedia.people.databinding.ItemUserReviewShimmerBinding
@@ -16,6 +18,8 @@ import com.tokopedia.people.databinding.UpItemUserPostLoadingBinding
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
+import com.tokopedia.people.views.adapter.UserReviewMediaAdapter
+import com.tokopedia.people.views.itemdecoration.UserReviewMediaItemDecoration
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -28,6 +32,25 @@ class UserReviewViewHolder private constructor() {
         private val binding: ItemUserReviewBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private val adapter by lazyThreadSafetyNone {
+            UserReviewMediaAdapter(
+                listener = object : UserReviewMediaViewHolder.Media.Listener {
+                    override fun onMediaClick(
+                        feedbackID: String,
+                        attachment: UserReviewUiModel.Attachment
+                    ) {
+
+                    }
+                }
+            )
+        }
+        init {
+            if (binding.rvMedia.itemDecorationCount == 0)
+                binding.rvMedia.addItemDecoration(UserReviewMediaItemDecoration(itemView.context))
+            binding.rvMedia.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            binding.rvMedia.adapter = adapter
+        }
 
         fun bind(item: UserReviewUiModel.Review) {
             binding.apply {
@@ -51,7 +74,7 @@ class UserReviewViewHolder private constructor() {
 
                 setupReviewText(item)
 
-                /** TODO: setup media */
+                setupMedia(item)
 
                 setupLike(item)
             }
@@ -96,6 +119,17 @@ class UserReviewViewHolder private constructor() {
 
             binding.tvReview.text = formattedReviewText
             binding.tvReview.movementMethod = LinkMovementMethod.getInstance()
+        }
+
+        private fun setupMedia(item: UserReviewUiModel.Review) {
+            adapter.setItemsAndAnimateChanges(
+                item.attachments.map { attachment ->
+                    UserReviewMediaAdapter.Model.Media(
+                        feedbackID = item.feedbackID,
+                        attachment = attachment,
+                    )
+                }
+            )
         }
 
         private fun setupLike(item: UserReviewUiModel.Review) {

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.R
 import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
-import com.tokopedia.people.views.viewholder.UserReviewViewHolder
 
 /**
  * Created By : Jonathan Darwin on May 16, 2023
