@@ -1120,9 +1120,14 @@ class DiscoveryFragment :
         return linkerShareData
     }
 
-    private fun showUniversalShareBottomSheet(data: PageInfo?) {
+    private fun showUniversalShareBottomSheet(data: PageInfo?, screenshotPath: String? = null) {
         data?.let { pageInfo ->
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                screenshotPath?.let { path ->
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
+                setFeatureFlagRemoteConfigKey()
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
                     this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
@@ -1224,7 +1229,7 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         showUniversalShareBottomSheet(pageInfoHolder)
     }
 

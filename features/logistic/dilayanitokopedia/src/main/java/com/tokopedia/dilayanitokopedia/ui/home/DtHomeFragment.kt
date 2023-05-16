@@ -392,6 +392,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalUiModel?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
             init(this@DtHomeFragment)
             setUtmCampaignData(
                 pageName = SHARE_LINK_PAGE_NAME,

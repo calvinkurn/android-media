@@ -1,7 +1,5 @@
 package com.tokopedia.universal_sharing.view.bottomsheet
 
-
-
 import android.Manifest
 import android.content.ContentResolver
 import android.content.Context
@@ -28,8 +26,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import java.lang.Exception
 
-class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?,
-                         private val permissionListener: PermissionListener? = null) {
+class ScreenshotDetector(
+    internal val context: Context,
+    internal var screenShotListener: ScreenShotListener?,
+    private val permissionListener: PermissionListener? = null
+) {
 
     private var contentObserver: ContentObserver? = null
     private val pendingRegex = ".pending"
@@ -37,7 +38,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
     private val labelAllow = "allow"
     private val labelDeny = "deny"
     private val readingDelayTime = 1100L
-    private val screenShotDelayTime = 500L;
+    private val screenShotDelayTime = 500L
     private var ssUriPath = ""
 
     fun start() {
@@ -85,7 +86,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                     }
                 }
             }
-        }catch (exception:Exception){
+        } catch (exception: Exception) {
             logError(exception.localizedMessage)
         }
     }
@@ -123,16 +124,14 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                     }
                 }
             }
-        }catch (exception:Exception){
+        } catch (exception: Exception) {
             logError(exception.localizedMessage)
         }
     }
 
-    private fun notifyScreenShotTaken(path:String){
+    private fun notifyScreenShotTaken(path: String) {
         Handler(Looper.getMainLooper()).postDelayed({
-            UniversalShareBottomSheet.setImageOnlySharingOption(true)
-            UniversalShareBottomSheet.setScreenShotImagePath(path)
-            screenShotListener?.screenShotTaken()
+            screenShotListener?.screenShotTaken(path)
         }, screenShotDelayTime)
     }
 
@@ -153,9 +152,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         context.let {
             ContextCompat.checkSelfPermission(
                 it,
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     Manifest.permission.READ_MEDIA_IMAGES
-                }else{
+                } else {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 }
             )
@@ -164,9 +163,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
     fun requestPermission(fragment: Fragment) {
         if (!haveStoragePermission()) {
             val permissions = arrayOf(
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     Manifest.permission.READ_MEDIA_IMAGES
-                }else{
+                } else {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 }
             )
@@ -174,17 +173,21 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    fun detectScreenshots(fragment: Fragment,  display:(() -> Unit)? = null, requestPermission:Boolean = false,
-                          toastView: View? = null) {
+    fun detectScreenshots(
+        fragment: Fragment,
+        display: (() -> Unit)? = null,
+        requestPermission: Boolean = false,
+        toastView: View? = null
+    ) {
         if (haveStoragePermission()) {
             start()
             display?.invoke()
         } else {
-            if(requestPermission) {
+            if (requestPermission) {
                 fragment.context?.let {
-                    if(isValidPermissionAskingAttempt(it)){
+                    if (isValidPermissionAskingAttempt(it)) {
                         showCustomPermissionDialog(fragment, toastView, display)
-                    }else{
+                    } else {
                         display?.invoke()
                     }
                 }
@@ -192,12 +195,15 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?, display:(() -> Unit)?){
-        var permissionDialogCustom = DialogUnify(fragment.requireContext(), DialogUnify.VERTICAL_ACTION,
-            DialogUnify.WITH_ILLUSTRATION).apply {
+    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?, display: (() -> Unit)?) {
+        var permissionDialogCustom = DialogUnify(
+            fragment.requireContext(),
+            DialogUnify.VERTICAL_ACTION,
+            DialogUnify.WITH_ILLUSTRATION
+        ).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
             setPrimaryCTAClickListener {
-                this.setOnDismissListener {  }
+                this.setOnDismissListener { }
                 display?.invoke()
                 requestPermission(fragment)
                 dismiss()
@@ -205,7 +211,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
-                this.setOnDismissListener {  }
+                this.setOnDismissListener { }
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -224,7 +230,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             setTitle(fragment.getString(R.string.permission_dialog_title))
             setDescription(fragment.getString(R.string.permission_dialog_description))
             setImageDrawable(R.drawable.permission_dialog_image)
-            }
+        }
         permissionDialogCustom.show()
     }
 
@@ -238,15 +244,16 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     start()
                     permissionListener?.permissionAction(actionPermissionDialog, labelAllow)
-                }else{
+                } else {
                     permissionListener?.permissionAction(actionPermissionDialog, labelDeny)
-                    if(!fragment.shouldShowRequestPermissionRationale(
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    if (!fragment.shouldShowRequestPermissionRationale(
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 Manifest.permission.READ_MEDIA_IMAGES
-                            }else{
+                            } else {
                                 Manifest.permission.READ_EXTERNAL_STORAGE
                             }
-                        )){
+                        )
+                    ) {
                         goToDeviceSetting(fragment)
                     }
                 }
@@ -255,9 +262,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    private fun logError(exceptionMessage:String?){
+    private fun logError(exceptionMessage: String?) {
         exceptionMessage?.let {
-            if(!TextUtils.isEmpty(exceptionMessage)) {
+            if (!TextUtils.isEmpty(exceptionMessage)) {
                 val messageMap: Map<String, String> =
                     mapOf(
                         LABEL_TYPE to LABEL_ERROR,
@@ -275,25 +282,25 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         fragment.activity?.startActivityForResult(intent, READ_EXTERNAL_STORAGE_REQUEST)
     }
 
-    private fun isValidPermissionAskingAttempt(context: Context):Boolean{
+    private fun isValidPermissionAskingAttempt(context: Context): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val mSharedPrefs = context.getSharedPreferences(
             SCREENSHOT_PREFERENCE,
             Context.MODE_PRIVATE
         )
         val attemptCounter = remoteConfig.getLong(PERMISSION_ATTEMPT_COUNTER_FLAG)
-        return if(remoteConfig.getBoolean(PERMISSION_ATTEMPT_RESET_FLAG)){
-            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, attemptCounter-1).apply()
+        return if (remoteConfig.getBoolean(PERMISSION_ATTEMPT_RESET_FLAG)) {
+            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, attemptCounter - 1).apply()
             attemptCounter > 0
-        }else{
+        } else {
             val remainingAttempts = mSharedPrefs.getLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, attemptCounter)
-            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, remainingAttempts-1).apply()
+            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, remainingAttempts - 1).apply()
             remainingAttempts > 0
         }
     }
 
     companion object {
-        //permission request code
+        // permission request code
         const val screenShotRegex = "screenshot"
         const val READ_EXTERNAL_STORAGE_REQUEST = 500
         const val TAG_SS_ERR = "SCREENSHOT_ERROR"

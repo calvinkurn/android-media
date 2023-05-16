@@ -1041,6 +1041,7 @@ class TokoFoodHomeFragmentOld :
     private fun showUniversalShareBottomSheet(imageSaved: String) {
         if (isAdded) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
                 init(this@TokoFoodHomeFragmentOld)
                 setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,

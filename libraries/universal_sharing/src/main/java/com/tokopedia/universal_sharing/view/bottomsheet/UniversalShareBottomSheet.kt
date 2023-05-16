@@ -13,14 +13,12 @@ import android.os.Looper
 import android.provider.Telephony
 import android.text.Html
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
@@ -63,6 +61,8 @@ import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
+import com.tokopedia.universal_sharing.util.MimeType
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
@@ -102,61 +102,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         @LayoutRes
         private val LAYOUT = R.layout.universal_share_bottomsheet
         private val TAG = UniversalShareBottomSheet::class.java.simpleName
-        private const val TYPE_TEXT = "text/plain"
-        private const val TYPE_IMAGE = "image/*"
-        private const val TYPE_ALL = "*/*"
-        private const val PACKAGE_NAME_INSTAGRAM = "com.instagram.android"
-        private const val PACKAGE_NAME_FACEBOOK = "com.facebook.katana"
-        private const val FACEBOOK_FEED_ACTIVITY = "com.facebook.composer.shareintent.AddToStoryAlias"
-        private const val FACEBOOK_STORY_INTENT_ACTION = "com.facebook.stories.ADD_TO_STORY"
-        private const val PACKAGE_NAME_WHATSAPP = "com.whatsapp"
-        private const val PACKAGE_NAME_LINE = "jp.naver.line.android"
-        private const val PACKAGE_NAME_TWITTER = "com.twitter.android"
-        private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
-        private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
-
-        // remote config Social media ordering keys
-        private const val KEY_IG_FEED = "IG_Feed"
-        private const val KEY_IG_STORY = "IG_Story"
-        private const val KEY_IG_DM = "IG_DM"
-        private const val KEY_FB_FEED = "FB_Feed"
-        private const val KEY_FB_STORY = "FB_Story"
-        private const val KEY_WHATSAPP = "WhatsApp"
-        private const val KEY_LINE = "Line"
-        private const val KEY_TWITTER = "Twitter"
-        private const val KEY_TELEGRAM = "Telegram"
-
-        // add remote config handling
-        private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
-        private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
-        private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
-        private const val GLOBAL_ENABLE_OG_IMAGE_TRANSFORM = "android_enable_og_image_transformation"
-        private var featureFlagRemoteConfigKey: String = ""
-        private const val SOCIAL_MEDIA_ORDERING = "android_universal_sharing_order"
-
-        // Optons Flag
-        private var isImageOnlySharing: Boolean = false
-        private var screenShotImagePath: String = ""
 
         private const val DELAY_TIME_MILLISECOND = 500L
         private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
-        const val PREVIEW_IMG_SCREENSHOT_HEIGHT = 600
-        const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
-        const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
-        const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
         // for affiliate and general user distinction
         private const val KEY_GENERAL_USER = "general"
         private const val KEY_AFFILIATE_USER = "affiliate"
-        private var isAffiliateUser: String = KEY_GENERAL_USER
-
-        // Image Type
-        const val KEY_NO_IMAGE = "no_image"
-        const val KEY_IMAGE_DEFAULT = "default"
-        const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
         const val KEY_PRODUCT_ID = "productId"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
@@ -169,27 +124,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             this.fragmentView = fragmentView
         }
 
-        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean {
+        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean {
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
-            featureFlagRemoteConfigKey = remoteConfigKey
             return isEnabled
-        }
-
-        fun setImageOnlySharingOption(imageOnly: Boolean) {
-            isImageOnlySharing = imageOnly
-        }
-
-        fun setScreenShotImagePath(imgPath: String) {
-            screenShotImagePath = imgPath
         }
 
         fun createAndStartScreenShotDetector(
             context: Context,
             screenShotListener: ScreenShotListener,
             fragment: Fragment,
-            remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+            remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
             addFragmentLifecycleObserver: Boolean = false,
             permissionListener: PermissionListener? = null
         ): ScreenshotDetector? {
@@ -207,7 +153,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             return screenshotDetector
         }
 
-        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment, screenshotDetector: ScreenshotDetector?) {
+        private fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment, screenshotDetector: ScreenshotDetector?) {
             fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
@@ -229,22 +175,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
         // Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
         // This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
-        fun getShareBottomSheetType(): Int {
-            var shareSheetType = CUSTOM_SHARE_SHEET
-            if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
-                shareSheetType = SCREENSHOT_SHARE_SHEET
-            }
-            return shareSheetType
-        }
-
-        fun clearData() {
-            isImageOnlySharing = false
-            screenShotImagePath = ""
-        }
 
         fun clearState(screenshotDetector: ScreenshotDetector?) {
             screenshotDetector?.stop()
-            clearData()
         }
 
         fun removePreviousSavedImage(previousSavedImagePath: String, newSavedImagePath: String) {
@@ -267,18 +200,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }
-
-        fun getUserType(): String {
-            return isAffiliateUser
-        }
     }
 
-    enum class MimeType(val type: String) {
-        TEXT(TYPE_TEXT),
-        IMAGE(TYPE_IMAGE),
-        ALL(TYPE_ALL)
-    }
-
+    // View
     private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
     private var rvSocialMediaList: RecyclerView? = null
@@ -292,6 +216,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliateRegisterIcon: ImageView? = null
     private var affiliateRegisterContainer: CardUnify? = null
     private var rvTicker: RecyclerView? = null
+
+    // Optons Flag
+    private var featureFlagRemoteConfigKey: String = ""
+    private var isImageOnlySharing: Boolean = false
+    private var screenShotImagePath: String = ""
 
     // Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -329,6 +258,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliatePDPQueryData: AffiliatePDPInput? = null
     private var affiliatePDPInputTemp: AffiliatePDPInput? = null
 
+    private var isAffiliateUser: String = KEY_GENERAL_USER
+
     /**
      * if this flag is enabled, the bottomsheet will
      */
@@ -357,8 +288,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     // Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
-
-    private var onViewReadyAction: (() -> Unit)? = null
 
     private var affiliateListener: ((userType: String) -> Unit)? = null
 
@@ -414,7 +343,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         initRecyclerView()
         initImageOptionsRecyclerView()
         initAffiliate()
-        onViewReadyAction?.invoke()
     }
 
     private fun inject() {
@@ -446,11 +374,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         } catch (ex: Exception) {
             logExceptionToRemote(ex)
         }
-    }
-
-    fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null, safeViewAction: () -> Unit = {}) {
-        onViewReadyAction = safeViewAction
-        show(fragmentManager, fragment, screenshotDetector)
     }
 
     // call this method before show method if the request data is awaited
@@ -538,7 +461,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private fun isAffiliateEnabled(): Boolean {
         if (LinkerManager.getInstance().context != null) {
             val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
-            return remoteConfig.getBoolean(GLOBAL_AFFILIATE_FEATURE_FLAG, true)
+            return remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_AFFILIATE_FEATURE_FLAG, true)
         } else {
             return false
         }
@@ -779,10 +702,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private fun initAffiliate() {
         if (isAffiliateCommissionEnabled) {
-            affiliateRequestDataReceived(true)
             affiliatePDPInputTemp?.let { affiliateInput ->
                 setAffiliateRequestHolder(affiliateInput)
             }
+            affiliateRequestDataReceived(true)
             affiliatePDPInputTemp = null
         }
     }
@@ -810,11 +733,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         val socialMediaList: MutableList<ShareModel> = mutableListOf()
         socialMediaList.add(
             ShareModel.Whatsapp().apply {
-                packageName = PACKAGE_NAME_WHATSAPP
+                packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_WHATSAPP
                 socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
                 feature = channelStr
                 campaign = campaignStr
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_WHATSAPP)
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_WHATSAPP)
                 channel = SharingUtil.labelWhatsapp
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
                 shareOnlyLink = isImageOnlySharing
@@ -824,13 +747,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         )
         socialMediaList.add(
             ShareModel.Facebook().apply {
-                packageName = PACKAGE_NAME_FACEBOOK
+                packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_FACEBOOK
                 socialMediaName = context?.resources?.getString(R.string.label_facebook)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelFbfeed
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_FEED
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_FEED)
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_FB_FEED)
                 shareOnlyLink = isImageOnlySharing
                 if (isImageOnlySharing) {
                     appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -838,8 +761,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     appIntent = getAppIntent(MimeType.TEXT, packageName)
                 }
                 appIntent?.component = ComponentName(
-                    PACKAGE_NAME_FACEBOOK,
-                    FACEBOOK_FEED_ACTIVITY
+                    UniversalShareConst.PackageChannel.PACKAGE_NAME_FACEBOOK,
+                    UniversalShareConst.PackageChannel.FACEBOOK_FEED_ACTIVITY
                 )
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook) }
             }
@@ -847,28 +770,28 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         if (!TextUtils.isEmpty(savedImagePath)) {
             socialMediaList.add(
                 ShareModel.Facebook().apply {
-                    packageName = PACKAGE_NAME_FACEBOOK
+                    packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_FACEBOOK
                     // facebook story can share only the images
                     socialMediaName = context?.resources?.getString(R.string.label_facebook_story)
                     feature = channelStr
                     campaign = campaignStr
                     channel = SharingUtil.labelFbstory
-                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_STORY)
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_FB_STORY)
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
                     shareOnlyLink = true
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = UniversalShareConst.PackageChannel.FACEBOOK_STORY_INTENT_ACTION)
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook_story) }
                 }
             )
             socialMediaList.add(
                 ShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
+                    packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_INSTAGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_instagram_feed)
                     feature = channelStr
                     campaign = campaignStr
                     channel = SharingUtil.labelIgfeed
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
-                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_FEED)
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_IG_FEED)
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram) }
@@ -876,12 +799,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             )
             socialMediaList.add(
                 ShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
+                    packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_INSTAGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
                     feature = channelStr
                     campaign = campaignStr
                     channel = SharingUtil.labelIgstory
-                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_STORY)
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_IG_STORY)
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
@@ -891,13 +814,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         } else {
             socialMediaList.add(
                 ShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
+                    packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_INSTAGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
                     feature = channelStr
                     campaign = campaignStr
                     channel = SharingUtil.labelIgMessage
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
-                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_DM)
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_IG_DM)
                     shareOnlyLink = false
                     appIntent = getAppIntent(MimeType.TEXT, packageName)
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_dm) }
@@ -906,13 +829,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         }
         socialMediaList.add(
             ShareModel.Line().apply {
-                packageName = PACKAGE_NAME_LINE
+                packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_LINE
                 socialMediaName = context?.resources?.getString(R.string.label_line)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelLine
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.LINE
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_LINE)
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_LINE)
                 shareOnlyLink = isImageOnlySharing
                 if (isImageOnlySharing) {
                     appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -924,13 +847,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         )
         socialMediaList.add(
             ShareModel.Twitter().apply {
-                packageName = PACKAGE_NAME_TWITTER
+                packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_TWITTER
                 socialMediaName = context?.resources?.getString(R.string.label_twitter)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelTwitter
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TWITTER
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TWITTER)
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_TWITTER)
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_twitter) }
@@ -938,13 +861,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         )
         socialMediaList.add(
             ShareModel.Telegram().apply {
-                packageName = PACKAGE_NAME_TELEGRAM
+                packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_TELEGRAM
                 socialMediaName = context?.resources?.getString(R.string.label_telegram)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelTelegram
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TELEGRAM
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TELEGRAM)
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_TELEGRAM)
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_telegram) }
@@ -998,7 +921,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         }
 
         val emailShareModel = ShareModel.Email().apply {
-            packageName = PACKAGE_NAME_GMAIL
+            packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_GMAIL
             socialMediaName = context?.resources?.getString(R.string.share_email)
             feature = channelStr
             campaign = campaignStr
@@ -1078,15 +1001,27 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         bottomSheetTitleRemoteConfKey = key
     }
 
+    fun setFeatureFlagRemoteConfigKey(remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_CUSTOM_SHARING_FEATURE_FLAG) {
+        featureFlagRemoteConfigKey = remoteConfigKey
+    }
+
     private fun setUserVisualData() {
         thumbNailTitleTxTv?.text = thumbNailTitle
         if (isImageOnlySharing) {
             try {
                 context?.let {
                     thumbNailImage?.let { imgView ->
-                        Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
-                            imgView
-                        )
+                        Glide.with(it)
+                            .load(thumbNailImageUrl)
+                            .override(
+                                UniversalShareConst
+                                    .SizeScreenShoot
+                                    .THUMBNAIL_IMG_SCREENSHOT_WIDTH,
+                                UniversalShareConst.SizeScreenShoot.THUMBNAIL_IMG_SCREENSHOT_HEIGHT
+                            )
+                            .into(
+                                imgView
+                            )
                     }
                 }
             } catch (ex: Exception) {
@@ -1104,7 +1039,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 try {
                     context?.let {
                         previewImage?.let { imgView ->
-                            Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
+                            Glide.with(it).load(previewImageUrl).override(UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_WIDTH, UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
                                 imgView
                             )
                         }
@@ -1174,11 +1109,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private fun getImageTypeForUTM(): String {
         return if (getImageFromMedia) {
-            KEY_CONTEXTUAL_IMAGE
+            UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE
         } else if (!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)) {
-            KEY_IMAGE_DEFAULT
+            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
         } else {
-            KEY_NO_IMAGE
+            UniversalShareConst.ImageType.KEY_NO_IMAGE
         }
     }
 
@@ -1257,10 +1192,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 } else {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_upcoming_without_discount,
-                        model.getStartDateCampaign(),
+                        model.getStartDateCampaign()
                     )
                 }
-
             }
             CampaignStatus.ON_GOING -> {
                 if (model.discountPercentage != 0F) {
@@ -1271,12 +1205,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         model.getEndDateCampaign()
                     )
                 } else {
-                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
                         model.price,
                         model.getEndDateCampaign()
                     )
                 }
-
             }
             CampaignStatus.END_SOON -> {
                 if (model.discountPercentage != 0F) {
@@ -1293,7 +1227,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         model.getDiscountString()
                     )
                 }
-
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
@@ -1389,7 +1322,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private fun transformOgImageURL(imageURL: String): String {
         if (context != null) {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
+            val ogImageTransformationEnabled = remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
             if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
                 if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp") ||
                     imageURL.endsWith(".jpeg.webp")
@@ -1399,10 +1332,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             }
         }
         return imageURL
-    }
-
-    fun setFeatureFlagRemoteConfigKey(key: String) {
-        featureFlagRemoteConfigKey = key
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
@@ -1444,10 +1373,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     override fun dismiss() {
         try {
-            onViewReadyAction = null
             affiliateListener = null
             imageThumbnailListener = null
-            clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
                 gqlCallJob?.cancel()
@@ -1463,10 +1390,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     override fun onDismiss(dialog: DialogInterface) {
         try {
-            onViewReadyAction = null
             affiliateListener = null
             imageThumbnailListener = null
-            clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
                 gqlCallJob?.cancel()
@@ -1527,7 +1452,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      */
     private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
         if (getImageFromMedia) {
-            shareModel.campaign = shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
+            shareModel.campaign = shareModel.campaign?.replace(UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE, sourceId)
         }
     }
 
@@ -1559,6 +1484,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         )
     }
 
+    fun getUserType(): String {
+        return isAffiliateUser
+    }
+
+    fun setImageOnlySharingOption(imageOnly: Boolean) {
+        isImageOnlySharing = imageOnly
+    }
+
+    fun setScreenShotImagePath(imgPath: String) {
+        screenShotImagePath = imgPath
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.clear()
@@ -1566,7 +1503,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private fun generateRemoteConfigSocialMediaOrdering() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val socialMediaOrderingArray: String? = remoteConfig.getString(SOCIAL_MEDIA_ORDERING)
+        val socialMediaOrderingArray: String? = remoteConfig.getString(UniversalShareConst.RemoteConfigKey.SOCIAL_MEDIA_ORDERING)
         if (!TextUtils.isEmpty(socialMediaOrderingArray)) {
             val socialMediaJsonArray: JSONArray? = JSONArray(socialMediaOrderingArray)
             if (socialMediaJsonArray != null) {
@@ -1600,7 +1537,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type")
         )
     }
-
 
     override fun getComponent(): UniversalShareComponent? {
         activity?.let {

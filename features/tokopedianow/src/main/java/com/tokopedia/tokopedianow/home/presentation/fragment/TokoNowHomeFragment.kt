@@ -1846,6 +1846,7 @@ class TokoNowHomeFragment :
 
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
             val shareInput = viewModelTokoNow.getAffiliateShareInput()
 
             init(this@TokoNowHomeFragment)

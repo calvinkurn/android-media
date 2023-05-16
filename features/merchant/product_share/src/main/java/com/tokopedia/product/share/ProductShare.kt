@@ -479,9 +479,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             screenshotDetector = screenshotDetector
         ) {
             UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
-//                enableAffiliateCommission(affiliateInput)
                 setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
                 if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
                     setPersonalizedCampaign(personalizedCampaignModel)
@@ -537,7 +537,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         affiliateInput: AffiliatePDPInput,
         universalShareBottomSheet: UniversalShareBottomSheet
     ) {
-//        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
         if (affiliateInput.shop?.shopStatus != null) {
             universalShareBottomSheet.enableAffiliateCommission(affiliateInput)
         }
