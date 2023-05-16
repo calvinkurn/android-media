@@ -21,7 +21,7 @@ sealed interface NestLoaderType {
 
     data class Shimmer(
         val type: NestShimmerType
-    ): NestLoaderType
+    ) : NestLoaderType
 }
 
 sealed class NestLoaderSize(val width: Dp, val height: Dp) {
