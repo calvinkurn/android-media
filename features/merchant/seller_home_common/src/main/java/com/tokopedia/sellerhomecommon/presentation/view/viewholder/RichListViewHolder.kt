@@ -178,7 +178,7 @@ class RichListViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun sendRichListImpressionEvent(eventLabel: String)
-        fun sendRichListCtaClickEvent(eventLabel: String)
+        fun sendRichListImpressionEvent(eventLabel: String) {}
+        fun sendRichListCtaClickEvent(eventLabel: String) {}
     }
 }
