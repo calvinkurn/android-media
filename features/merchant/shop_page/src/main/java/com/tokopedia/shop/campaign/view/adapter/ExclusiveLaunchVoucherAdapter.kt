@@ -32,7 +32,7 @@ class ExclusiveLaunchVoucherAdapter :
     private val differ = AsyncListDiffer(this, differCallback)
     private var onVoucherClick: (Int) -> Unit = {}
     private var onVoucherClaimClick: (Int) -> Unit = {}
-    private var onUseVoucherClick: (Int) -> Unit = {}
+    private var onVoucherUseClick: (Int) -> Unit = {}
     private var useDarkBackground = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -80,7 +80,7 @@ class ExclusiveLaunchVoucherAdapter :
 
                 setPrimaryCta(ctaText, onClick = {
                     if (isMerchantCreatedVoucher) {
-                        onUseVoucherClick(bindingAdapterPosition)
+                        onVoucherUseClick(bindingAdapterPosition)
                     } else {
                         onVoucherClaimClick(bindingAdapterPosition)
                     }
@@ -104,15 +104,23 @@ class ExclusiveLaunchVoucherAdapter :
         this.onVoucherClaimClick = onVoucherClaimClick
     }
 
-    fun setOnUseVoucherClick(onUseVoucherClick: (Int) -> Unit) {
-        this.onUseVoucherClick = onUseVoucherClick
+    fun setOnVoucherUseClick(onVoucherUseClick: (Int) -> Unit) {
+        this.onVoucherUseClick = onVoucherUseClick
     }
 
     fun setUseDarkBackground(useDarkBackground: Boolean) {
         this.useDarkBackground = useDarkBackground
     }
 
-    fun snapshot(): List<ExclusiveLaunchVoucher> {
+    fun getItemAtOrNull(position: Int): ExclusiveLaunchVoucher? {
+        return try {
+            snapshot()[position]
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun snapshot(): List<ExclusiveLaunchVoucher> {
         return differ.currentList
     }
 }

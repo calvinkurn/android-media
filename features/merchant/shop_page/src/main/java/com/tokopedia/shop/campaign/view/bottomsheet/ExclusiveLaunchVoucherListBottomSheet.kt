@@ -15,6 +15,7 @@ import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
+import com.tokopedia.shop.common.extension.applyPaddingToLastItem
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -34,7 +35,9 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
 
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
-    private var onVoucherClaimSuccess : (Int) -> Unit = {}
+    private var onVoucherClaim : (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherUse: (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherClick: (ExclusiveLaunchVoucher) -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -113,31 +116,41 @@ class ExclusiveLaunchVoucherListBottomSheet: BottomSheetUnify(){
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = exclusiveLaunchAdapter
+            applyPaddingToLastItem()
         }
 
-        exclusiveLaunchAdapter.setOnVoucherClick { selectedVoucherPosition ->
-            onVoucherClaimSuccess(selectedVoucherPosition)
-            dismiss()
-        }
-        exclusiveLaunchAdapter.setUseDarkBackground(false)
-        exclusiveLaunchAdapter.setOnVoucherClaimClick { selectedVoucherPosition ->
-            val selectedVoucher = exclusiveLaunchAdapter.snapshot()[selectedVoucherPosition]
-            showVoucherDetailBottomSheet(selectedVoucher)
-            dismiss()
-        }
+        exclusiveLaunchAdapter.apply {
+            setUseDarkBackground(false)
+            setOnVoucherClick { selectedVoucherPosition ->
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)?: return@setOnVoucherClick
+                onVoucherClick(selectedVoucher)
 
-        exclusiveLaunchAdapter.setOnUseVoucherClick {
-            dismiss()
+                dismiss()
+            }
+            setOnVoucherClaimClick { selectedVoucherPosition ->
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)?: return@setOnVoucherClaimClick
+                showVoucherDetailBottomSheet(selectedVoucher)
+                onVoucherClaim(selectedVoucher)
+
+                dismiss()
+            }
+            setOnVoucherUseClick { selectedVoucherPosition ->
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherUseClick
+                onVoucherUse(selectedVoucher)
+
+                dismiss()
+            }
         }
     }
-    
-
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
     }
 
-    fun setOnVoucherClaimSuccess(onVoucherClaimSuccess : (Int) -> Unit) {
-        this.onVoucherClaimSuccess = onVoucherClaimSuccess
+    fun setOnVoucherUse(onVoucherUse :(ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherUse = onVoucherUse
+    }
+    fun setOnVoucherClaim(onVoucherClaim : (ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherClaim = onVoucherClaim
     }
 
 
