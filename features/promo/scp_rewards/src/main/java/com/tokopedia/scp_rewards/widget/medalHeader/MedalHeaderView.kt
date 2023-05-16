@@ -47,7 +47,6 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) : Cons
             })
 
             loadBackground(data.background, data.backgroundColor)
-            //loadPodium(data.podiumUrl)
         }
     }
 
@@ -108,8 +107,8 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) : Cons
         lottieView.loadLottieFromUrl(
             url = data.lottieUrl,
             onLottieLoaded = {
-                coachMarkTime = it.markers.find { marker -> marker.matchesName(LottieMarker.CoachMarkAppear.markerString) }?.startFrame
-                    ?: (0f / it.duration)
+                coachMarkTime = (it.markers.find { marker -> marker.matchesName(LottieMarker.CoachMarkAppear.markerString) }?.startFrame
+                    ?: 0f) / (it.duration)
                 lottieView.apply {
                     map.forEach { (key, bitmap) -> this.updateBitmap(key, bitmap) }
                     setMaxFrame(LottieMarker.CoachMarkAppear.markerString)

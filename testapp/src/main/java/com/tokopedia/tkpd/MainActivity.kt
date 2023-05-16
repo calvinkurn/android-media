@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.scp_rewards.detail.presentation.ui.MedalDetailActivity
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -151,6 +152,8 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+//        startActivity(Intent(this,TestActivity::class.java))
+        startActivity(Intent(this, MedalDetailActivity::class.java))
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {
