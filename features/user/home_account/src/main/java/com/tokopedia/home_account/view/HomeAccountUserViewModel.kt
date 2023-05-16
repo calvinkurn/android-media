@@ -321,6 +321,9 @@ class HomeAccountUserViewModel @Inject constructor(
             AccountConstants.WALLET.GOPAYLATER -> {
                 getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
             }
+            AccountConstants.WALLET.GOPAYLATERCICIL -> {
+                getBalanceAndPointUseCase(GOPAYLATERCICIL_PARTNER_CODE)
+            }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
             }
