@@ -24,23 +24,6 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
         visitables.addAll(newList)
     }
 
-    fun updateLikeUnlikeData(rowNumber: Int, like: FeedLikeModel) {
-        if (visitables.size > rowNumber) {
-            when (val item = visitables[rowNumber]) {
-                is FeedCardImageContentModel -> {
-                    visitables[rowNumber] = item.copy(like = like)
-                }
-                is FeedCardVideoContentModel -> {
-                    visitables[rowNumber] = item.copy(like = like)
-                }
-            }
-        }
-        notifyItemChanged(
-            rowNumber,
-            FEED_POST_LIKED_UNLIKED
-        )
-    }
-
     fun showClearView(position: Int) {
         if ((list?.size ?: 0) > position) {
             notifyItemChanged(position, FEED_POST_CLEAR_MODE)

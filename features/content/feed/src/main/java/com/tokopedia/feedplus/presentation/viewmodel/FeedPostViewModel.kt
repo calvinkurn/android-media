@@ -335,13 +335,21 @@ class FeedPostViewModel @Inject constructor(
 
     fun processSuspendedLike() {
         _suspendedLikeData.value?.let {
-            likeContent(it.contentId, it.action, it.rowNumber)
+            likeContent(it.contentId, it.rowNumber, shouldLike = true)
         }
     }
 
-    fun likeContent(contentId: String, action: FeedLikeAction, rowNumber: Int) {
+    fun likeContent(contentId: String, rowNumber: Int) {
+        val likeStatus = getIsLikedStatus(contentId) ?: return
+        likeContent(contentId, rowNumber, shouldLike = !likeStatus)
+    }
+
+    private fun likeContent(contentId: String, rowNumber: Int, shouldLike: Boolean) {
         _likeKolResp.value = FeedResult.Loading
         viewModelScope.launch {
+            val action = if (shouldLike) FeedLikeAction.Like else FeedLikeAction.UnLike
+            updateLikeStatus(contentId, shouldLike)
+
             try {
                 likeContentUseCase.setRequestParams(
                     SubmitLikeContentUseCase.createParam(contentId, action.value)
@@ -421,6 +429,75 @@ class FeedPostViewModel @Inject constructor(
         )
 
     private fun updateFollowStatus(id: String, isFollowing: Boolean) {
+        updateItems { item ->
+            when {
+                item is FeedCardImageContentModel && item.author.id == id -> item.copy(
+                    followers = item.followers.copy(
+                        isFollowed = isFollowing
+                    )
+                )
+                item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
+                    followers = item.followers.copy(
+                        isFollowed = isFollowing
+                    )
+                )
+                else -> item
+            }
+        }
+    }
+
+    private fun updateLikeStatus(id: String, isLiked: Boolean) {
+
+        val newLike: (FeedLikeModel) -> FeedLikeModel = { like ->
+            val newCount = if (isLiked) like.count + 1 else (like.count - 1).coerceAtLeast(0)
+            like.copy(
+                isLiked = isLiked,
+                count = newCount,
+                countFmt = if (like.countFmt.contains(Regex("[a-zA-Z]"))) {
+                    like.countFmt
+                } else {
+                    newCount.toString()
+                }
+            )
+        }
+
+        updateItems { item ->
+            when {
+                item is FeedCardImageContentModel && item.id == id -> item.copy(
+                    like = newLike(item.like)
+                )
+                item is FeedCardVideoContentModel && item.id == id -> item.copy(
+                    like = newLike(item.like)
+                )
+                else -> item
+            }
+        }
+    }
+
+    private fun getIsLikedStatus(id: String): Boolean? {
+        val item = getItemById(id) ?: return null
+        return when (item) {
+            is FeedCardImageContentModel -> item.like.isLiked
+            is FeedCardVideoContentModel -> item.like.isLiked
+            else -> null
+        }
+    }
+
+    private fun getItemById(id: String): Visitable<FeedAdapterTypeFactory>? {
+        val currentValue = feedHome.value ?: return null
+        if (currentValue !is Success) return null
+        return currentValue.items.firstOrNull {
+            when (it) {
+                is FeedCardImageContentModel -> it.id == id
+                is FeedCardVideoContentModel -> it.id == id
+                else -> false
+            }
+        }
+    }
+
+    private fun updateItems(
+        onUpdate: (Visitable<FeedAdapterTypeFactory>) -> Visitable<FeedAdapterTypeFactory>
+    ) {
         val currentValue = feedHome.value
 
         currentValue?.let {
@@ -429,19 +506,7 @@ class FeedPostViewModel @Inject constructor(
                     _feedHome.value = Success(
                         it.data.copy(
                             items = it.data.items.map { item ->
-                                when {
-                                    item is FeedCardImageContentModel && item.author.id == id -> item.copy(
-                                        followers = item.followers.copy(
-                                            isFollowed = isFollowing
-                                        )
-                                    )
-                                    item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
-                                        followers = item.followers.copy(
-                                            isFollowed = isFollowing
-                                        )
-                                    )
-                                    else -> item
-                                }
+                                onUpdate(item)
                             }
                         )
                     )
