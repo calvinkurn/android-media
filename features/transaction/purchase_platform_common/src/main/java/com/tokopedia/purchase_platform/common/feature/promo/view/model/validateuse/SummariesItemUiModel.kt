@@ -5,11 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SummariesItemUiModel(
-        var amount: Int = -1,
-        var sectionName: String = "",
-        var description: String = "",
-        var details: List<DetailsItemUiModel> = listOf(),
-        var sectionDescription: String = "",
-        var type: String = "",
-        var amountStr: String = ""
+    var amount: Int = -1,
+    var sectionName: String = "",
+    var description: String = "",
+    var details: List<DetailsItemUiModel> = listOf(),
+    var sectionDescription: String = "",
+    var type: String = "",
+    var amountStr: String = ""
 ) : Parcelable

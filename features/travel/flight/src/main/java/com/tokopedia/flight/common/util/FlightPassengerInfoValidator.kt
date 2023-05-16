@@ -1,9 +1,11 @@
 package com.tokopedia.flight.common.util
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.removeTime
 import com.tokopedia.utils.date.toDate
+import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 
@@ -45,7 +47,13 @@ class FlightPassengerInfoValidator @Inject constructor() {
     }
 
     fun validateDateMoreThan(dateDefaultViewFormat: String, secondDate: Date): Boolean {
-        return dateDefaultViewFormat.toDate(DateUtil.DEFAULT_VIEW_FORMAT).removeTime() > secondDate.removeTime()
+        try {
+            return dateDefaultViewFormat.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+                .removeTime() > secondDate.removeTime()
+        } catch (parseException: ParseException) {
+            FirebaseCrashlytics.getInstance().recordException(parseException)
+            return false
+        }
     }
 
     fun validateDateLessThan(dateDefaultViewFormat: String, secondDate: Date): Boolean {

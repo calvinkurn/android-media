@@ -15,6 +15,6 @@ data class CPLParam(
         @SerializedName("product_cpls")
         val productCpls: String? = null,
         @SerializedName("source")
-        val source: String = "android",
+        val source: String = "android"
     ) : GqlParam
 }

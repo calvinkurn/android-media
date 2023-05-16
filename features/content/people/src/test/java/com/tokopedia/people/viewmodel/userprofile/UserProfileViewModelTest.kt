@@ -10,6 +10,7 @@ import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.andThen
+import com.tokopedia.people.util.assertTrue
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -125,6 +126,28 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
                 profileWhitelist equalTo mockHasAcceptTnc
+            }
+        }
+    }
+
+    @Test
+    fun `when user load own data and already whitelisted, isWhitelist should be true`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                robot.viewModel.isWhitelist.assertTrue()
             }
         }
     }

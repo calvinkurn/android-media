@@ -7,6 +7,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 
@@ -55,6 +56,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var stock: Int = 0
     var listChildId: List<String> = listOf()
     var parentId: String = ""
+    var averageRating: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when (typeFactory) {
@@ -62,6 +64,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
                 typeFactory.type(this)
             }
             is ShopCampaignCarouselProductAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopHomeCarouselProductAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
             else -> {

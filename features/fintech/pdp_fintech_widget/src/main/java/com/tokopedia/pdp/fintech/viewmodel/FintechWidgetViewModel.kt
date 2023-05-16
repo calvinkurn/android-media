@@ -27,11 +27,16 @@ class FintechWidgetViewModel @Inject constructor
 
 
     fun getWidgetData(
-        productCategory: String, listOfAmountandUrls: HashMap<String, FintechPriceDataModel>,
-        ) {
+        productCategory: String,
+        listOfAmountandUrls: HashMap<String, FintechPriceDataModel>,
+        shopId: String,
+    ) {
         fintchWidgetUseCase.getWidgetData(
             ::onSuccessWidgetData,
-            ::onFailWidgetData, productCategory, listOfAmountandUrls
+            ::onFailWidgetData,
+            productCategory,
+            listOfAmountandUrls,
+            shopId,
         )
     }
 

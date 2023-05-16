@@ -36,7 +36,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
@@ -470,17 +472,23 @@ class SmartBillsFragment :
 
             binding?.run {
                 context?.let { context ->
-                    // Setup ticker
-                    tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
-                    tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            smartBillsAnalytics.clickSubscription()
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
-                        }
+                    if (sbmTransitionStatus()) {
+                        tickerSmartBills.show()
+                        tickerSmartBills.tickerTitle = getString(R.string.smart_bills_ticker_title)
+                        tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
+                        tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                smartBillsAnalytics.clickSubscription()
+                                RouteManager.route(context, linkUrl.toString())
+                            }
 
-                        override fun onDismiss() {
-                        }
-                    })
+                            override fun onDismiss() {
+                                setHeightSpace(true, true)
+                            }
+                        })
+                    } else {
+                        tickerSmartBills.hide()
+                    }
 
                     tvSbmAddBills.apply {
                         show()
@@ -508,6 +516,7 @@ class SmartBillsFragment :
                     updateCheckoutView()
 
                     loadInitialData()
+                    setHeightSpace(true)
                 }
             }
         }
@@ -651,12 +660,8 @@ class SmartBillsFragment :
     }
 
     private fun getCatalogData() {
-        if (getRemoteConfigAddBillsEnabler()) {
-            showProgressBar()
-            viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
-        } else {
-            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
-        }
+        showProgressBar()
+        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
@@ -917,10 +922,6 @@ class SmartBillsFragment :
         }
     }
 
-    private fun getRemoteConfigAddBillsEnabler(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true)
-    }
-
     private fun showProgressBar() {
         binding?.sbmProgressBar?.show()
     }
@@ -942,12 +943,13 @@ class SmartBillsFragment :
         binding?.highlightCategory?.hideHighlightCategory()
     }
 
-    private fun setHeightSpace(isLowHeight: Boolean) {
+    private fun setHeightSpace(isLowHeight: Boolean, isTickerClosed: Boolean = false) {
         binding?.run {
-            val resource = if (isLowHeight) {
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
-            } else {
-                R.dimen.smart_bills_view_separator
+            val isTickerShown = tickerSmartBills.visibility == View.VISIBLE
+            val resource = when {
+                isTickerShown && !isTickerClosed -> R.dimen.smart_bills_view_separator_ticker
+                isLowHeight ->  com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+                else -> R.dimen.smart_bills_view_separator
             }
             val params: ViewGroup.LayoutParams = viewSpacerSbm.layoutParams
             params.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -975,6 +977,13 @@ class SmartBillsFragment :
             val intent = RouteManager.getIntent(it, uiModel.applink)
             startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
         }
+    }
+
+    private fun sbmTransitionStatus(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.KEY_SBM_TRANSITION,
+            ""
+        ) == RollenceKey.KEY_SBM_TRANSITION
     }
 
     companion object {
@@ -1006,7 +1015,7 @@ class SmartBillsFragment :
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
         const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
 
-        const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+        const val LANGGANAN_URL = "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
 
         fun newInstance(sourceType: String = "", message: String = "", category: String = ""): SmartBillsFragment {

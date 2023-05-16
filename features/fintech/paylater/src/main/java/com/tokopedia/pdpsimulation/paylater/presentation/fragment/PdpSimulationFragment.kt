@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+@SuppressLint("PII Data Exposure")
 class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
@@ -79,14 +81,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
     private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PayLaterSimulationTenureAdapter { payLaterList, position ->
-            sendTenureCLick(position, payLaterList)
+        PayLaterSimulationTenureAdapter { payLaterList, position, promoName ->
+            sendTenureCLick(position, payLaterList, promoName)
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
         }
     }
 
-    private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
+    private fun sendTenureCLick(
+        tenure: Int,
+        payLaterList: ArrayList<BasePayLaterWidgetUiModel>,
+        promoName: String,
+    ) {
         val allStatusOfPartner = extractDetailFromList(payLaterList)
         sendEvent(PayLaterTenureClick().apply {
             productId = payLaterArgsDescriptor.productId
@@ -95,6 +101,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             productPrice = payLaterViewModel.finalProductPrice.toString()
             tenureOption = tenure
             payLaterPartnerName = allStatusOfPartner?.third.toString()
+            this.promoName = promoName
         })
     }
 
@@ -319,15 +326,17 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendDataToViewModel(data: GetProductV3) {
-        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0) {
+        if ((data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO) != DOUBLE_ZERO) {
             payLaterViewModel.getPayLaterAvailableDetail(
-                data.campaingnDetail?.discountedPrice
-                    ?: 0.0, payLaterArgsDescriptor.productId
+                data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO,
+                payLaterArgsDescriptor.productId,
+                data.shopDetail?.shopId,
             )
         } else {
             payLaterViewModel.getPayLaterAvailableDetail(
-                data.price
-                    ?: 0.0, payLaterArgsDescriptor.productId
+                data.price ?: DOUBLE_ZERO,
+                payLaterArgsDescriptor.productId,
+                data.shopDetail?.shopId,
             )
         }
     }
@@ -349,12 +358,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getProductPrice(data: GetProductV3) =
-        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0)
+        if ((data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO) != DOUBLE_ZERO)
             PayLaterHelper.convertPriceValueToIdrFormat(
-                data.campaingnDetail?.discountedPrice ?: 0.0, false
+                data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO, false
             )
         else
-            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: DOUBLE_ZERO, false)
 
     /**
      * THis method set data for the product variant
@@ -387,6 +396,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     companion object {
 
         const val TYPE_APP_LINK_OCC = 5
+        const val DOUBLE_ZERO = 0.0
 
         @JvmStatic
         fun newInstance(bundle: Bundle): PdpSimulationFragment {

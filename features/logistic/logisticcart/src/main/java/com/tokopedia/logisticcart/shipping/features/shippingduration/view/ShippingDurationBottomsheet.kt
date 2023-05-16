@@ -24,8 +24,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
@@ -84,14 +82,16 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         preOrderTime: Int = -1,
         mvc: String = "",
         cartData: String,
-        isOcc: Boolean
+        isOcc: Boolean,
+        warehouseId: String
     ) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
         initData(
             shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
             cartPosition, codHistory, isLeasing, pslCode, products, cartString,
-            isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData
+            isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
+            warehouseId
         )
         initBottomSheet(activity)
         initView(activity)
@@ -137,7 +137,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         isFulFillment: Boolean,
         preOrderTime: Int,
         mvc: String,
-        cartData: String
+        cartData: String,
+        warehouseId: String
     ) {
         bundle = Bundle().apply {
             putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
@@ -156,6 +157,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             putInt(ARGUMENT_PO_TIME, preOrderTime)
             putString(ARGUMENT_MVC, mvc)
             putString(ARGUMENT_CART_DATA, cartData)
+            putString(ARGUMENT_WAREHOUSE_ID, warehouseId)
         }
     }
 
@@ -205,6 +207,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val isFulfillment = it.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
             val cartData = it.getString(ARGUMENT_CART_DATA, "")
+            val warehouseId = it.getString(ARGUMENT_WAREHOUSE_ID, "")
 
             presenter?.loadCourierRecommendation(
                 shipmentDetailData = shipmentDetailData,
@@ -223,7 +226,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 mvc = mvc,
                 cartData = cartData,
                 isOcc = isOcc,
-                isDisableCourierPromo = isDisableCourierPromo
+                isDisableCourierPromo = isDisableCourierPromo,
+                warehouseId = warehouseId
             )
         }
     }
@@ -243,7 +247,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     /*
     Section: Shipping Duration View
-    */
+     */
 
     override fun showLoading() {
         llContent?.visibility = View.GONE
@@ -298,15 +302,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
-            }
-            return false
-        }
+        return !isOcc
     }
 
     override fun onShippingDurationAndRecommendCourierChosen(
@@ -361,7 +357,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     /*
     Section: Adapter Listener
-    */
+     */
 
     override fun onShippingDurationChoosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
@@ -393,6 +389,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         private const val ARGUMENT_CART_DATA = "ARGUMENT_CART_DATA"
         private const val ARGUMENT_IS_FULFILLMENT = "ARGUMENT_IS_FULFILLMENT"
         private const val ARGUMENT_PO_TIME = "ARGUMENT_PO_TIME"
+        private const val ARGUMENT_WAREHOUSE_ID = "ARGUMENT_WAREHOUSE_ID"
         private const val CHOOSE_COURIER_TRACE = "mp_choose_courier"
     }
 }

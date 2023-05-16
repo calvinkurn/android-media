@@ -3,7 +3,8 @@ package com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
-import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
+import com.tokopedia.topchat.chattemplate.domain.usecase.RearrangeTemplateUseCase
+import com.tokopedia.topchat.chattemplate.domain.usecase.ToggleTemplateUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -15,12 +16,15 @@ abstract class BaseChatTemplateViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    //UseCases
+    // UseCases
     @RelaxedMockK
     lateinit var getTemplateUseCase: GetTemplateUseCase
 
     @RelaxedMockK
-    lateinit var setAvailabilityTemplateUseCase: SetAvailabilityTemplateUseCase
+    lateinit var toggleTemplateUseCase: ToggleTemplateUseCase
+
+    @RelaxedMockK
+    lateinit var rearrangeTemplateUseCase: RearrangeTemplateUseCase
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -33,7 +37,8 @@ abstract class BaseChatTemplateViewModelTest {
         MockKAnnotations.init(this)
         viewModel = ChatTemplateViewModel(
             getTemplateUseCase,
-            setAvailabilityTemplateUseCase,
+            toggleTemplateUseCase,
+            rearrangeTemplateUseCase,
             dispatchers
         )
     }

@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
-import com.tokopedia.product.manage.common.feature.variant.data.query.GetProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.query.ProductUpdateV3
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

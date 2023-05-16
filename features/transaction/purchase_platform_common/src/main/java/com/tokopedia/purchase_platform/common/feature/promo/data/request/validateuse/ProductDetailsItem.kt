@@ -8,13 +8,13 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProductDetailsItem(
 
-        @field:SerializedName("quantity")
-        var quantity: Int = -1,
+    @field:SerializedName("quantity")
+    var quantity: Int = -1,
 
-        @SuppressLint("Invalid Data Type")
-        @field:SerializedName("product_id")
-        var productId: Long = -1,
+    @SuppressLint("Invalid Data Type")
+    @field:SerializedName("product_id")
+    var productId: Long = -1,
 
-        @SerializedName("bundle_id")
-        var bundleId: Long = 0
+    @SerializedName("bundle_id")
+    var bundleId: Long = 0
 ) : Parcelable

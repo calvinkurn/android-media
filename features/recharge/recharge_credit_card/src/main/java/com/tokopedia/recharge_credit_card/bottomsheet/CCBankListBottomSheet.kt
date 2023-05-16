@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_credit_card.R
+import com.tokopedia.recharge_credit_card.RechargeCCRecommendationFragment
 import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
@@ -19,13 +20,15 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
+class CCBankListBottomSheet : BottomSheetUnify() {
 
     private lateinit var adapter: CreditCardBankAdapter
     private lateinit var childView: View
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var descBankList: TextView
+
+    private var categoryId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -36,7 +39,9 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        arguments?.let {
+            categoryId = it.getString(EXTRA_CATEGORY_ID, "")
+        }
         initInjector()
         initViewModel()
         initBottomSheet()
@@ -93,6 +98,14 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
     }
 
     companion object {
+        private const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
         private const val CATEGORY_ID = 26
+        fun newBottomSheet(categoryId: String): BottomSheetUnify {
+            val bottomSheet = CCBankListBottomSheet()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_CATEGORY_ID, categoryId)
+            bottomSheet.arguments = bundle
+            return bottomSheet
+        }
     }
 }

@@ -12,20 +12,14 @@ import com.tokopedia.chatbot.databinding.ActivityChatbotOnboardingBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
-import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
-import com.tokopedia.chatbot.view.util.OnboardingDismissListener
+import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
 import javax.inject.Inject
 
 
-class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListener {
+class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingReplayDismissListener {
 
-    @Inject
-    lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
-
-    var replyBubbleOnboardingDismissed: Boolean = true
-    var videoBubbleOnBoardingDismissed: Boolean = true
 
     private var _viewBinding: ActivityChatbotOnboardingBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -39,6 +33,10 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         val ratioY = calculateRatiosForGuideline()
         setUpReplyBubbleGuideline(ratioY)
         checkReplyBubbleOnboardingStatus()
+        getBindingView().parentLayout.isClickable = true
+        getBindingView().parentLayout.setOnClickListener {
+            replyBubbleOnBoarding.dismiss()
+        }
         window.statusBarColor = Color.TRANSPARENT
     }
 
@@ -59,38 +57,18 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     private fun setUpReplyBubbleGuideline(ratioY: Float) {
         if (ratioY == ZERO_RATIO)
             return
-        val params = getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
+        val params =
+            getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
         getBindingView().guidelineReplyBubble.layoutParams = params
     }
 
-    private fun setUpListeners(){
-        videoUploadOnBoarding.onboardingDismissListener = this
+    private fun setUpListeners() {
         replyBubbleOnBoarding.onboardingDismissListener = this
     }
 
-    private fun checkVideoUploadOnboardingStatus() {
-        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
-        videoBubbleOnBoardingDismissed = hasBeenShown
-        if (!hasBeenShown) {
-            videoUploadOnBoarding.showVideoBubbleOnBoarding(
-                getBindingView().containerView,
-                this
-            )
-        }
-    }
-
     private fun checkReplyBubbleOnboardingStatus() {
-        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
-        replyBubbleOnboardingDismissed = hasBeenShown
-        if (!hasBeenShown) {
-            replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                getBindingView().replyBubbleHolder,
-                this
-            )
-        } else {
-            checkVideoUploadOnboardingStatus()
-        }
+        replyBubbleOnBoarding.showReplyBubbleOnBoarding(getBindingView().replyBubbleHolder, this)
     }
 
     private fun initInjector() {
@@ -103,31 +81,20 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         chatbotComponent.inject(this)
     }
 
-    private fun checkToCloseOnboardingActivity() {
-        if (replyBubbleOnboardingDismissed && videoBubbleOnBoardingDismissed) {
-            val intent = Intent(this, ChatbotActivity::class.java)
-            startActivity(intent)
-            setResult(RESULT_OK)
-            finish()
-        }
-    }
-
     override fun dismissReplyBubbleOnBoarding() {
-        replyBubbleOnboardingDismissed = true
-        checkVideoUploadOnboardingStatus()
-        checkToCloseOnboardingActivity()
+        closeOnboardingActivity()
     }
 
-    override fun dismissVideoUploadOnBoarding() {
-        videoBubbleOnBoardingDismissed = true
-        checkToCloseOnboardingActivity()
+    private fun closeOnboardingActivity() {
+        val intent = Intent(this, ChatbotActivity::class.java)
+        startActivity(intent)
+        setResult(RESULT_OK)
+        finish()
     }
 
-    /**
-     * Back Button is disabled as the coachmarks needs to be closed only with the dismiss button
-     * on the coachmarks
-     * */
-    override fun onBackPressed() = Unit
+    override fun onBackPressed() {
+        replyBubbleOnBoarding.dismiss()
+    }
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -137,7 +104,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         super.onDestroy()
         _viewBinding = null
         replyBubbleOnBoarding.flush()
-        videoUploadOnBoarding.flush()
     }
 
     /**

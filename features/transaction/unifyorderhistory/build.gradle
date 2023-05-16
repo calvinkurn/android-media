@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -42,6 +36,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.applink)

@@ -15,7 +15,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistV2", GQL_WISHLIST_V2)
-class GetWishlistV2UseCase @Inject constructor(private val graphqlRepository: GraphqlRepository):
+class GetWishlistV2UseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) :
     UseCase<Result<GetWishlistV2Response.Data.WishlistV2>>() {
     private var params: Map<String, Any?>? = null
     override suspend fun executeOnBackground(): Result<GetWishlistV2Response.Data.WishlistV2> {

@@ -84,6 +84,10 @@ class FeedOnboardingCoachmark @Inject constructor(
             addShortVideoCoachmarkItem(coachMarkItem)
         }
 
+        if (coachMarkItem.isEmpty()) {
+            mListener?.onCoachmarkFinish()
+        }
+
         coachMark.showCoachMark(coachMarkItem)
     }
     private fun shouldNotShowAnyCoachMark(

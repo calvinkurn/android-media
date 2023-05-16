@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
@@ -182,6 +183,13 @@ data class RecommendationItem(
     fun onFailedUpdateCart() {
         currentQuantity = quantity
     }
+
+    fun toAffiliateSdkProductInfo(): AffiliateSdkProductInfo =
+        AffiliateSdkProductInfo(
+            categoryID = "",
+            isVariant = isProductHasParentID(),
+            stockQty = currentQuantity,
+        )
 }
 
 data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")

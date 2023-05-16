@@ -6,7 +6,6 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 //import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
@@ -16,6 +15,7 @@ import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
 import com.tokopedia.sellerapp.data.datasource.local.dao.SummaryDao
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.data.repository.WearCacheActionImpl
+import com.tokopedia.sellerapp.presentation.viewmodel.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

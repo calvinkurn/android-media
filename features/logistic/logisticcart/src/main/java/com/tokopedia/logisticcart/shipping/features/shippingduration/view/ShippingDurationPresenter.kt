@@ -68,7 +68,8 @@ class ShippingDurationPresenter @Inject constructor(
         mvc: String,
         cartData: String,
         isOcc: Boolean,
-        isDisableCourierPromo: Boolean
+        isDisableCourierPromo: Boolean,
+        warehouseId: String
     ) {
         view?.let {
             it.showLoading()
@@ -96,7 +97,8 @@ class ShippingDurationPresenter @Inject constructor(
                 mvc = mvc,
                 cartData = cartData,
                 isOcc = isOcc,
-                disableCourierPromo = isDisableCourierPromo
+                disableCourierPromo = isDisableCourierPromo,
+                warehouseId = warehouseId
             )
         }
     }
@@ -114,7 +116,8 @@ class ShippingDurationPresenter @Inject constructor(
         mvc: String,
         cartData: String,
         isOcc: Boolean,
-        disableCourierPromo: Boolean
+        disableCourierPromo: Boolean,
+        warehouseId: String
     ) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
             .isCorner(isCorner)
@@ -124,6 +127,7 @@ class ShippingDurationPresenter @Inject constructor(
             .mvc(mvc)
             .isOcc(isOcc)
             .cartData(cartData)
+            .warehouseId(warehouseId)
             .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(param)

@@ -4,5 +4,9 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedM
 
 interface ActivationListner {
     fun checkIsDisablePartner(): Boolean
-    fun selectedTenure(tenureSelectedModel: TenureSelectedModel, newPositionToSelect: Int)
+    fun selectedTenure(
+        tenureSelectedModel: TenureSelectedModel,
+        newPositionToSelect: Int,
+        promoName: String,
+    )
 }

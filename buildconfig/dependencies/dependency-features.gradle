@@ -2,6 +2,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			sellerPersona		: ":features:merchant:seller_persona",
+			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
 			shopDiscount		: ":features:merchant:shop_discount",
 			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
@@ -16,13 +18,14 @@ ext {
             internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
+            catalogLibrary                  : ":features:category:catalog_library",
             commonTradein                   : ":features:category:common_tradein",
-            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
+            affiliateSDK                    : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
-            affiliateToko                  : ":features:category:affiliate_toko",
+            affiliateToko                   : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
             commonEPharmacy                 : ":features:category:common_epharmacy",
             tradeIn                         : ":features:category:tradein",
@@ -84,11 +87,11 @@ ext {
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
             homeNav                         : ":features:discovery:home_nav",
-            recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             productCard                     : ":features:discovery:productcard",
             productCardOptions              : ":features:discovery:productcard_options",
+            productCardCompact              : ":features:discovery:productcard_compact",
             carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
             similarSearch                   : ":features:discovery:similarsearch",
@@ -119,6 +122,7 @@ ext {
 
             logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dilayanitokopedia               : ":features:logistic:dilayanitokopedia",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticseller		          : ":features:logistic:logisticseller",
@@ -130,7 +134,6 @@ ext {
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
 
             mediauploader                   : ":features:media:mediauploader",
-            mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
             mediaeditor		                : ":features:media:mediaeditor",
@@ -159,6 +162,7 @@ ext {
             cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
+			centralizedPromo				: ":features:merchant:centralized_promo",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewCommon                    : ":features:merchant:review_common",
@@ -186,7 +190,6 @@ ext {
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
-            voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
@@ -305,6 +308,7 @@ ext {
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
             watch                           : ":features:watch",
-            tokofood                        : ":features:tokofood"
+            tokofood                        : ":features:tokofood",
+            samples                         : ":features:samples",
     ]
 }

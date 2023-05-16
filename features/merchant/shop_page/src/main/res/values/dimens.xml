@@ -25,10 +25,8 @@
     <dimen name="sp_8">8sp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
-    <dimen name="play_widget_seller_action_divider_height">0.5dp</dimen>
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>
     <dimen name="play_sgc_btn_start_live_height">36dp</dimen>
-    <dimen name="play_widget_seller_action_height">56dp</dimen>
     <dimen name="play_content_creation_icon_width">12dp</dimen>
     <dimen name="play_content_creation_icon_height">10dp</dimen>
     <dimen name="header_button_shop_note_width">24dp</dimen>

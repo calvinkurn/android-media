@@ -40,8 +40,6 @@ interface UserProfileTracker {
         self: Boolean,
         live: Boolean,
         activityId: String,
-        imageUrl: String,
-        videoPosition: Int
     )
 
     fun clickFeedTab(userId: String, self: Boolean)
@@ -59,8 +57,6 @@ interface UserProfileTracker {
         userId: String,
         self: Boolean,
         activityId: String,
-        imageUrl: String,
-        postPosition: Int,
         mediaType: String
     )
 
@@ -93,8 +89,6 @@ interface UserProfileTracker {
     fun clickProfileRecommendation(
         userId: String,
         item: ShopRecomUiModelItem,
-        imageUrl: String,
-        postPosition: Int
     )
 
     fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem)

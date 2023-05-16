@@ -60,10 +60,11 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         analytics.eventClickTickBoxChatBottomSheet(isChecked)
     }
 
-    fun show(context: Context?,
-             fragmentManager: FragmentManager,
-             lifecycleOwner: LifecycleOwner,
-             viewModel: MiniCartChatListViewModel,
+    fun show(
+        context: Context?,
+        fragmentManager: FragmentManager,
+        lifecycleOwner: LifecycleOwner,
+        viewModel: MiniCartChatListViewModel
     ) {
         context?.let {
             mContext = context
@@ -220,8 +221,13 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
                     analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
-            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height +
-                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics))
+            viewBinding.rvMiniCartChatList.setPadding(
+                0,
+                0,
+                0,
+                viewBinding.cardView.height +
+                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics)
+            )
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.utils.ShipmentRollenceUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -35,6 +36,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
@@ -170,7 +172,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         } else if (item instanceof ShipmentNewUpsellModel) {
-            return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
+            if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
+                return ShipmentNewUpsellImprovementViewHolder.LAYOUT;
+            } else {
+                return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
+            }
         }
 
         return super.getItemViewType(position);
@@ -219,6 +225,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
+            return new ShipmentNewUpsellImprovementViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -260,6 +268,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
+        } else if (viewType == ShipmentNewUpsellImprovementViewHolder.LAYOUT) {
+            ((ShipmentNewUpsellImprovementViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
 
@@ -385,14 +395,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean validateLoadingItem(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.isStateLoadingCourierState();
+    }
+
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
             int cartItemErrorCounter = 0;
+            boolean hasLoadingItem = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
+                        if (!hasLoadingItem) {
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel);
+                        }
                         cartItemCounter++;
                     }
                 }
@@ -403,7 +421,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
             }
@@ -1100,13 +1118,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnOrderLevelPosition() {
+    public int getAddOnOrderLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                    if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                        return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                        if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                            return i;
+                        }
                     }
                 }
             }
@@ -1114,15 +1134,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnProductLevelPosition() {
+    public int getAddOnProductLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
-                    for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                        if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
-                            if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                                return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
+                        for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
+                            if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
+                                if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                                    return i;
+                                }
                             }
                         }
                     }

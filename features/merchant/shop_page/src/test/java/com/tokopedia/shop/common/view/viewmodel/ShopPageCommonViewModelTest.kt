@@ -136,6 +136,12 @@ class ShopPageCommonViewModelTest {
     }
 
     @Test
+    fun `When change isFulfillmentFilterActive is set to true, then isFulfillmentFilterActive should be true`() {
+        shopProductFilterParameterSharedViewModel.isFulfillmentFilterActive = true
+        Assert.assertEquals(shopProductFilterParameterSharedViewModel.isFulfillmentFilterActive, true)
+    }
+
+    @Test
     fun `Trigger shop feed tab clear cache should be success`() {
         shopPageFeedTabSharedViewModel.clearCache()
         shopPageFeedTabSharedViewModel.feedTabClearCache.observeAwaitValue()

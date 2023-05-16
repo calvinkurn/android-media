@@ -69,7 +69,8 @@ interface ShippingDurationContract {
             mvc: String,
             cartData: String,
             isOcc: Boolean,
-            isDisableCourierPromo: Boolean
+            isDisableCourierPromo: Boolean,
+            warehouseId: String
         )
 
         fun getCourierItemDataById(

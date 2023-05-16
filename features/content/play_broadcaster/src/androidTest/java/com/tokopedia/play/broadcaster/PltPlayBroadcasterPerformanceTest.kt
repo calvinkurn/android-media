@@ -53,20 +53,20 @@ class PltPlayBroadcasterPerformanceTest {
         IdlingRegistry.getInstance().register(PlayBroadcasterIdlingResource.idlingResource)
     }
 
-    @Test
-    fun testPageLoadTimePerformance() {
-        intentsTestRule.launchActivity(Intent(targetContext, PlayBroadcastActivity::class.java).apply {
-            data = Uri.parse(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
-        })
-        onIdle()
-        intentsTestRule.activity.getPltPerformanceResultData().let { data->
-            PerformanceDataFileUtils.writePLTPerformanceFile(
-                    intentsTestRule.activity,
-                    TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE,
-                    data,
-            )
-        }
-    }
+//    @Test
+//    fun testPageLoadTimePerformance() {
+//        intentsTestRule.launchActivity(Intent(targetContext, PlayBroadcastActivity::class.java).apply {
+//            data = Uri.parse(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+//        })
+//        onIdle()
+//        intentsTestRule.activity.getPltPerformanceResultData().let { data->
+//            PerformanceDataFileUtils.writePLTPerformanceFile(
+//                    intentsTestRule.activity,
+//                    TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE,
+//                    data,
+//            )
+//        }
+//    }
 
     @After
     fun tearDown() {

@@ -79,6 +79,7 @@ class SearchApiConst {
         const val USER_POST_CODE = "user_postCode"
         const val USER_WAREHOUSE_ID = "user_warehouseId"
         const val USER_WAREHOUSE_IDs = "warehouse_ids"
+        const val WAREHOUSES = "warehouses"
         const val IDENTIFIER = "identifier"
         const val BASE_SRP_APPLINK = "baseSRPApplink"
         const val USE_PAGE = "use_page"
@@ -93,6 +94,8 @@ class SearchApiConst {
         const val PRODUCT_ID = "product_id"
         const val SHOW_ADULT = "show_adult"
         const val SHOW_ADULT_ENABLED = "true"
+        const val MANUAL_FILTER = "manual_filter"
+
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
         const val MPS = "mps"
 

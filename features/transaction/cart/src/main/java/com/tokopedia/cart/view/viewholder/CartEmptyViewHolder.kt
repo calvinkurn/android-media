@@ -10,7 +10,7 @@ import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartEmptyViewHolder(private val binding: ItemEmptyCartBinding, val listener: ActionListener?): RecyclerView.ViewHolder(binding.root) {
+class CartEmptyViewHolder(private val binding: ItemEmptyCartBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_empty_cart
@@ -25,5 +25,4 @@ class CartEmptyViewHolder(private val binding: ItemEmptyCartBinding, val listene
             setPrimaryCTAClickListener { listener?.onClickShopNow() }
         }
     }
-
 }

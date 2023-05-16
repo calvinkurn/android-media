@@ -100,6 +100,7 @@ data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : 
 object OpenKebabAction: PlayViewerNewAction()
 object OpenUserReport: PlayViewerNewAction()
 data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
+data class SelectReason(val reasonId: Int) : PlayViewerNewAction()
 
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
 
@@ -118,3 +119,5 @@ object RefreshWidget : PlayViewerNewAction()
 data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
 object DismissExploreWidget : PlayViewerNewAction()
 object EmptyPageWidget : PlayViewerNewAction()
+
+data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()

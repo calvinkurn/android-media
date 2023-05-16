@@ -7,22 +7,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 
 
 class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-
-    fun bind(templateData: TemplateData?) {
+    fun bind() {
         val context = view.context
-        val ticker = view.findViewById<Ticker>(R.id.tickerCatatan)
-        templateData?.let {
-            ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
-            ticker.setHtmlDescription(templateData.template)
-            ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text = fromHtml(templateData.template)
-        } ?: ticker.gone()
+        val title = view.findViewById<Typography>(R.id.tvBankNoteTitle)
+        val description = view.findViewById<Typography>(R.id.tvBankNoteDescription)
+
+        title.text = context?.getString(R.string.sbank_catatan_title)
+        description.text = context?.getString(R.string.sbank_catatan_description)
     }
 
     companion object {

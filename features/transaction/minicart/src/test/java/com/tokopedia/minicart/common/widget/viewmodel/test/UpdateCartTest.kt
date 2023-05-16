@@ -18,7 +18,11 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -60,9 +64,10 @@ class UpdateCartTest {
             userSession
         )
     }
+
     @Test
     fun `WHEN update cart for save state success THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
@@ -74,16 +79,16 @@ class UpdateCartTest {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN update cart for save state error THEN global event state should not be changed`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.initializeGlobalState()
@@ -95,16 +100,16 @@ class UpdateCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN update bundle cart for save state success THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAvailableAndUnavailable()
@@ -116,10 +121,10 @@ class UpdateCartTest {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 }

@@ -17,7 +17,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +55,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on success get recomm without filter`() {
-        runBlockingTest {
+        runTest {
             val mockResponse = RecommendationWidget(
                     tid = "1",
                     recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
@@ -98,7 +98,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on success get recomm with filter`() {
-        runBlockingTest {
+        runTest {
             val mockResponse = RecommendationWidget(
                     tid = "1",
                     recommendationItemList = listOf(
@@ -157,7 +157,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on success get recomm without filter tokonow`() {
-        runBlockingTest {
+        runTest {
             val mockResponse = RecommendationWidget(
                     tid = "1",
                     layoutType = "horizontal-atc",
@@ -233,7 +233,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on success get recomm with empty list`() {
-        runBlockingTest {
+        runTest {
             val mockResponse = RecommendationWidget(
                     tid = "1",
                     recommendationItemList = emptyList()
@@ -265,7 +265,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on success get recomm throwable filter`() {
-        runBlockingTest {
+        runTest {
             val mockResponse = RecommendationWidget(
                     tid = "1",
                     recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
@@ -308,7 +308,7 @@ class GetProductRecommendationUseCaseTest {
 
     @Test
     fun `on error get recomm throwable`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 getRecommendationUseCase.getData(any())
             } throws Throwable()

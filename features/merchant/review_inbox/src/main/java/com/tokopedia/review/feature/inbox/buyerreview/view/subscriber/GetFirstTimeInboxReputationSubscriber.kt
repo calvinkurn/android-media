@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
@@ -66,8 +65,7 @@ open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewL
             buyerBadge.reputationScore,
             buyerBadge.score,
             buyerBadge.minBadgeScore,
-            buyerBadge.reputationBadgeUrl,
-            Int.ZERO
+            buyerBadge.reputationBadgeUrl
         )
     }
 

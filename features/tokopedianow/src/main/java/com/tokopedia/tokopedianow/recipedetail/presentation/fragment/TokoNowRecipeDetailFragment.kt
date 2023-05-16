@@ -121,9 +121,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         setRecipeData()
         setupToolbarHeader()
         setupRecyclerView()
-        updateAddressData()
         observeLiveData()
-        checkAddressData()
+        onViewCreated()
     }
 
     override fun onAttach(context: Context) {
@@ -149,29 +148,25 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.getMiniCart()
+        getMiniCart()
     }
 
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onCartQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(userSession.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
     }
 
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        if(userSession.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
+    override fun createAffiliateLink(url: String): String {
+        return viewModel.createAffiliateLink(url)
     }
 
     override fun showChooseAddressBottomSheet() {
@@ -515,7 +510,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     private fun onSuccessAddBookmark(data: BookmarkUiModel) {
         showToaster(
             message = getString(
-                R.string.tokopedianow_recipe_success_add_bookmark,
+                R.string.tokopedianow_recipe_toaster_description_success_adding_bookmark,
                 data.recipeTitle
             ),
             actionText = getString(R.string.tokopedianow_toaster_see),
@@ -526,7 +521,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onFailedAddBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_failed_add_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_adding_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.addRecipeBookmark()
@@ -534,14 +529,16 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onSuccessRemoveBookmark(data: BookmarkUiModel) {
-        showToaster(getString(
-            R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe,
-            data.recipeTitle
-        ))
+        showToaster(
+            message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, data.recipeTitle),
+            actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel)
+        ) {
+            viewModel.addRecipeBookmark()
+        }
     }
 
     private fun onFailedRemoveBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_failed_remove_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_removing_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.removeRecipeBookmark()
@@ -552,8 +549,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         analytics.trackClickSeeAddToCartToaster()
     }
 
-    private fun checkAddressData() {
-        viewModel.checkAddressData()
+    private fun onViewCreated() {
+        viewModel.onViewCreated()
     }
 
     private fun showLoading() {

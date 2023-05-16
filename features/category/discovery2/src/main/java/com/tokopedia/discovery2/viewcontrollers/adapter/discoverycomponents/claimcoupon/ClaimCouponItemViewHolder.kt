@@ -11,7 +11,8 @@ import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.KLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -24,6 +25,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
+    private var componentItem: ComponentsItem? = null
     private lateinit var claimCouponItemViewModel: ClaimCouponItemViewModel
     private val claimCouponImage: ImageView = itemView.findViewById(R.id.appCompatImageView)
     private val claimCouponImageDouble: ImageView = itemView.findViewById(R.id.appCompatImageViewDouble)
@@ -33,25 +35,29 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         claimCouponItemViewModel = discoveryBaseViewModel as ClaimCouponItemViewModel
         getSubComponent().inject(claimCouponItemViewModel)
         claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-            setData(it, claimCouponItemViewModel.getIsDouble())
+            this.componentItem = it
+            setData(claimCouponItemViewModel.getClaimCouponData(), claimCouponItemViewModel.getIsDouble())
         })
     }
 
-    private fun setData(dataItem: DataItem?, isDouble: Boolean) {
+    private fun setData(claimCouponItem: CatalogWithCouponList?, isDouble: Boolean) {
         if (isDouble) {
             claimCouponImageDouble.show()
             claimCouponImage.hide()
-            claimCouponImageDouble.loadImage(dataItem?.smallImageUrlMobile ?: "")
+            claimCouponImageDouble.loadImage(claimCouponItem?.smallImageURLMobile ?: "")
         } else {
             claimCouponImageDouble.hide()
             claimCouponImage.show()
-            claimCouponImage.loadImage(dataItem?.imageUrlMobile ?: "")
+            claimCouponImage.loadImage(claimCouponItem?.imageURLMobile ?: "")
         }
 
-        setBtn(dataItem?.status,isDouble)
+        setBtn(claimCouponItem?.status,isDouble)
         itemView.setOnClickListener {
-            claimCouponItemViewModel.setClick(itemView.context, dataItem?.status)
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickCoupon(dataItem, adapterPosition, isDouble)
+            claimCouponItemViewModel.setClick(itemView.context, claimCouponItem?.status)
+            componentItem?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventClickCoupon(it, adapterPosition, isDouble)
+            }
         }
 
         claimBtn.setOnClickListener {
@@ -78,7 +84,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                     e.printStackTrace()
                 }
             })
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(claimCouponItem?.title, claimCouponItem?.baseCode)
         }
     }
 

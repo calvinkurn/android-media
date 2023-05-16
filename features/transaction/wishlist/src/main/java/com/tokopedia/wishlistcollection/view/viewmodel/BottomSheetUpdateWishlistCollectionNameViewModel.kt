@@ -39,8 +39,8 @@ class BottomSheetUpdateWishlistCollectionNameViewModel @Inject constructor(
                 _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.value = Fail(it)
-        })
+                _collectionNames.value = Fail(it)
+            })
     }
 
     fun updateWishlistCollectionName(param: UpdateWishlistCollectionNameParams) {
@@ -52,7 +52,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModel @Inject constructor(
                 _updateWishlistCollectionNameResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionNameResult.value = Fail(it)
-        })
+                _updateWishlistCollectionNameResult.value = Fail(it)
+            })
     }
 }

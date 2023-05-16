@@ -8,4 +8,4 @@ data class ResetPinV2Param(
     val pinToken: String = "",
     @SerializedName("validate_token")
     val validateToken: String = ""
-): GqlParam
+) : GqlParam

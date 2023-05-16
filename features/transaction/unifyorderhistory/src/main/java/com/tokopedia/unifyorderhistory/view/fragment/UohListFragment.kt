@@ -1,5 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -122,7 +124,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_EXISTING
 import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_REDIRECTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
@@ -136,6 +137,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_EXTEND
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_OCC
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_POF
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRAIN_EMAIL
@@ -316,8 +318,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             }
         }
 
-        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
-        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
+        const val URL_IMG_EMPTY_SEARCH_LIST = TokopediaImageUrl.URL_IMG_EMPTY_SEARCH_LIST
+        const val URL_IMG_EMPTY_ORDER_LIST = TokopediaImageUrl.URL_IMG_EMPTY_ORDER_LIST
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_MESSAGE = "create_review_message"
         const val CREATE_REVIEW_REQUEST_CODE = 200
@@ -340,6 +342,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
+        const val POF_REQUEST_CODE = 600
     }
 
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
@@ -465,6 +468,22 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             if (!toasterMessage.isNullOrBlank()) {
                 val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
                 showToaster(toasterMessage, toasterType)
+            }
+        } else if (requestCode == POF_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                loadOrderHistoryList(orderIdNeedUpdated)
+            } else {
+                resetFilter()
+                currIndexNeedUpdate = -1
+                orderIdNeedUpdated = ""
+                refreshHandler?.startRefresh()
+                scrollRecommendationListener.resetState()
+            }
+
+            val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
+            if (!toasterMessage.isNullOrBlank()) {
+                showToaster(toasterMessage, Toaster.TYPE_NORMAL)
             }
         } else if (requestCode == OPEN_ORDER_REQUEST_CODE) {
             if (currIndexNeedUpdate > -1 && orderIdNeedUpdated.isNotEmpty()) {
@@ -711,6 +730,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -743,6 +763,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
                 is Fail -> {
+                    refreshHandler?.finishRefresh()
                     val errorType = when (it.throwable) {
                         is MessageErrorException -> null
                         is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
@@ -885,13 +906,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                     arrayListProducts,
                                     _atcVerticalCategory,
                                     result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
-                                )
-                                UohAnalytics.sendClickBeliLagiButtonEvent(
-                                    EVENT_LABEL_CART_EXISTING,
-                                    arrayListProducts,
-                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
-                                    userSession.userId,
-                                    _atcVerticalCategory
                                 )
                             } else if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
                                 UohAnalytics.sendClickBeliLagiButtonEvent(
@@ -1775,8 +1789,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun renderOrderList() {
-        refreshHandler?.finishRefresh()
-
         val listOrder = arrayListOf<UohTypeData>()
 
         if (!onLoadMore && orderList.tickers.isNotEmpty()) {
@@ -2062,6 +2074,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
                                 goToOrderExtension(order, index)
                             }
+                            dotMenu.actionType.equals(GQL_MP_POF, true) -> {
+                                goToPartialOrderFulfillment(order, index)
+                            }
                         }
                     }
                     userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
@@ -2109,49 +2124,53 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
         try {
             val detailUrl = order.metadata.detailURL
-            var intent = Intent()
-            if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
-            } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
-            }
-
-            currIndexNeedUpdate = index
-            orderIdNeedUpdated = order.orderUUID
-
-            // analytics
-            var jsonArray = JsonArray()
-            if (order.metadata.listProducts.isNotEmpty()) {
-                jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
-            }
-            val arrayListProducts = arrayListOf<ECommerceClick.Products>()
-            var i = 0
-            order.metadata.products.forEach {
-                var eeProductId = ""
-                var eeProductPrice = ""
-                if (order.metadata.listProducts.isNotEmpty()) {
-                    val objProduct = jsonArray.get(i).asJsonObject
-                    eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                    eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+            if (detailUrl.appURL.isEmpty()) {
+                return
+            } else {
+                var intent = Intent()
+                if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+                } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
-                arrayListProducts.add(
-                    ECommerceClick.Products(
-                        name = it.title,
-                        id = eeProductId,
-                        price = eeProductPrice,
-                        list = "/order list - ${order.verticalCategory}",
-                        position = index.toString()
+
+                currIndexNeedUpdate = index
+                orderIdNeedUpdated = order.orderUUID
+
+                // analytics
+                var jsonArray = JsonArray()
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+                }
+                val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+                var i = 0
+                order.metadata.products.forEach {
+                    var eeProductId = ""
+                    var eeProductPrice = ""
+                    if (order.metadata.listProducts.isNotEmpty()) {
+                        val objProduct = jsonArray.get(i).asJsonObject
+                        eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                        eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                    }
+                    arrayListProducts.add(
+                        ECommerceClick.Products(
+                            name = it.title,
+                            id = eeProductId,
+                            price = eeProductPrice,
+                            list = "/order list - ${order.verticalCategory}",
+                            position = index.toString()
+                        )
                     )
-                )
-                i++
+                    i++
+                }
+
+                userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+                // requested as old flow (from old order list)
+                UohAnalytics.orderDetailOpenScreenEvent()
+
+                startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
             }
-
-            userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
-
-            // requested as old flow (from old order list)
-            UohAnalytics.orderDetailOpenScreenEvent()
-
-            startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -2217,6 +2236,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                         button.actionType.equals(GQL_MP_EXTEND, true) -> {
                             goToOrderExtension(order, index)
+                        }
+                        button.actionType.equals(GQL_MP_POF, true) -> {
+                            goToPartialOrderFulfillment(order, index)
                         }
                     }
                 }
@@ -2474,6 +2496,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
+    }
+
+    private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
+        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            params
+        )
+        val intent = RouteManager.getIntentNoFallback(context, appLink) ?: return
+        orderIdNeedUpdated = order.orderUUID
+        currIndexNeedUpdate = index
+        startActivityForResult(intent, POF_REQUEST_CODE)
     }
 
     override fun onPause() {

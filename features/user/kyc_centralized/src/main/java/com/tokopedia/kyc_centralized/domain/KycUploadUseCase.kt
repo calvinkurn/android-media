@@ -27,7 +27,7 @@ class KycUploadUseCase @Inject constructor(private val livenessUploadImagesRepos
         val params = KYC_PARAMS.toRequestBody(TEXT.toMediaTypeOrNull())
 
         return livenessUploadImagesRepository.uploadImages(
-            projectId, params, ktpImage, faceImage, tkpdProjectId
+            projectId, params, ktpImage, faceImage
         )
     }
 

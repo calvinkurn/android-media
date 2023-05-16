@@ -13,10 +13,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_PDP
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
-import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
-import com.tokopedia.product_bundle.common.data.model.response.BundleItem
-import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
-import com.tokopedia.product_bundle.common.data.model.response.Selection
+import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
@@ -35,7 +32,7 @@ import org.junit.Test
 class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
     @Test
-    fun `when BundleInfo type is invalid then isSingleProductBundle should be false`() = coroutineTestRule.runBlockingTest {
+    fun `when BundleInfo type is invalid then isSingleProductBundle should be false`() = coroutineTestRule.runTest {
         // given, when
         val resultEmpty = viewModel.isSingleProductBundle(emptyList())
         val resultMultiple = viewModel.isSingleProductBundle(
@@ -50,7 +47,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when BundleInfo type is single then isSingleProductBundle should be true`() = coroutineTestRule.runBlockingTest {
+    fun `when BundleInfo type is single then isSingleProductBundle should be true`() = coroutineTestRule.runTest {
         // given, when
         val resultSingle = viewModel.isSingleProductBundle(
             listOf(BundleInfo(
@@ -63,42 +60,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when BundleInfo is active then isProductBundleAvailable should be true`() = coroutineTestRule.runBlockingTest {
-        // given, when
-        val resultAvailable = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "1",
-                quota = 1
-            )
-        )
-        val resultInactive = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "-1",
-                quota = 1
-            )
-        )
-        val resultInactive2 = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "1",
-                quota = 0
-            )
-        )
-        val resultInactive3 = viewModel.isProductBundleAvailable(
-            BundleInfo(
-                status = "-1",
-                quota = 0
-            )
-        )
-
-        // then
-        assertEquals(true, resultAvailable)
-        assertEquals(false, resultInactive)
-        assertEquals(true, resultInactive2)
-        assertEquals(false, resultInactive3)
-    }
-
-    @Test
-    fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runBlockingTest {
+    fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runTest {
         // given
         coEvery {
             userSession.userId
@@ -114,7 +76,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when user has login then isUserLoggedIn should be false`() = coroutineTestRule.runBlockingTest {
+    fun `when user has login then isUserLoggedIn should be false`() = coroutineTestRule.runTest {
         // given
         coEvery {
             userSession.userId
@@ -130,7 +92,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when calculate total price should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when calculate total price should return correct value`() = coroutineTestRule.runTest {
         // given
         val originalPrice = 1000.toDouble()
         val bundlePrice = 500.toDouble()
@@ -161,7 +123,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when preorder data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when preorder data provided then should return correct value`() = coroutineTestRule.runTest {
         // given
         val activeStatus = "ACTIVE"
         val inactiveStatus = "INACTIVE"
@@ -199,7 +161,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when ProductBundleMasters data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when ProductBundleMasters data provided then should return correct value`() = coroutineTestRule.runTest {
         val testProductBundleMasters = listOf(
             ProductBundleMaster(bundleId = 124),
             ProductBundleMaster(bundleId = 123)
@@ -215,7 +177,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when getSelectedProductIds data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when getSelectedProductIds data provided then should return correct value`() = coroutineTestRule.runTest {
         val testProductBundleDetail = listOf(
             ProductBundleDetail(productId = 123)
         )
@@ -226,7 +188,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when getVariantLevel then should return expected size`() = coroutineTestRule.runBlockingTest {
+    fun `when getVariantLevel then should return expected size`() = coroutineTestRule.runTest {
         val expectedSize = 2
         val variantLevelSize = viewModel.getVariantLevel(ProductVariant(
             variants = List(expectedSize) { Variant() }
@@ -236,7 +198,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when getVariantTitle then should return expected title`() = coroutineTestRule.runBlockingTest {
+    fun `when getVariantTitle then should return expected title`() = coroutineTestRule.runTest {
         val expectedTitle = "merah, hitam, "
         val variantTitle = viewModel.getVariantTitle(ProductVariant(
             variants = listOf(
@@ -250,7 +212,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when ProductBundleDetail data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when ProductBundleDetail data provided then should return correct value`() = coroutineTestRule.runTest {
         val productBundleDetail = ProductBundleDetail(
             selectedVariantId = "123"
         )
@@ -267,7 +229,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when mapBundleDetailsToProductDetails data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when mapBundleDetailsToProductDetails data provided then should return correct value`() = coroutineTestRule.runTest {
         viewModel.parentProductID = 123
         val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(productId = 222)
@@ -282,7 +244,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when mapBundleItemsToBundleDetails data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when mapBundleItemsToBundleDetails data provided then should return correct value`() = coroutineTestRule.runTest {
         val nonVariant = viewModel.mapBundleItemsToBundleDetails(
             "",
             listOf(BundleItem())
@@ -300,7 +262,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when setSelectedVariants data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when setSelectedVariants data provided then should return correct value`() = coroutineTestRule.runTest {
         viewModel.setSelectedVariants(listOf(), ProductBundleMaster())
         viewModel.setSelectedVariants(listOf(""), ProductBundleMaster())
 
@@ -321,7 +283,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when validateAddToCartInput data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when validateAddToCartInput data provided then should return correct value`() = coroutineTestRule.runTest {
         // variantProductNotChanged test
         viewModel.pageSource = PAGE_SOURCE_CART
         viewModel.selectedBundleId = 1000L
@@ -406,7 +368,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when getBundleInfo expect return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when getBundleInfo expect return correct value`() = coroutineTestRule.runTest {
         // negative case
         viewModel.getBundleInfo(123, "1")
         val pageStateError = viewModel.pageState.getOrAwaitValue()
@@ -429,7 +391,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when addProductBundleToCart expect return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when addProductBundleToCart expect return correct value`() = coroutineTestRule.runTest {
         // error local case
         coEvery {
             resourceProvider.getErrorMessage(any())
@@ -508,30 +470,31 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when resetBundleMap expect empty getProductBundleMasters`() = coroutineTestRule.runBlockingTest {
+    fun `when resetBundleMap expect empty getProductBundleMasters`() = coroutineTestRule.runTest {
         viewModel.resetBundleMap()
         assert(viewModel.getProductBundleMasters().isEmpty())
     }
 
     @Test
-    fun `when updateProductBundleMap expect filled getProductBundleMasters`() = coroutineTestRule.runBlockingTest {
+    fun `when updateProductBundleMap expect filled getProductBundleMasters`() = coroutineTestRule.runTest {
         viewModel.updateProductBundleMap(ProductBundleMaster(), listOf(ProductBundleDetail()))
         assert(viewModel.getProductBundleMasters().isNotEmpty())
     }
 
     @Test
-    fun `when getBundleInfo using 0 product id expect setParams with list of Bundle`() = coroutineTestRule.runBlockingTest {
+    fun `when getBundleInfo using 0 product id expect setParams with list of Bundle`() = coroutineTestRule.runTest {
         viewModel.getBundleInfo(0, "1")
         coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0", WarehouseID = "1"))) }
     }
 
     @Test
-    fun `when ProductBundleMaster data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `when ProductBundleMaster data provided then should return correct value`() = coroutineTestRule.runTest {
         val observer = mockk<Observer<ProductBundleMaster>>(relaxed = true)
         nonSpykViewModel2.selectedProductBundleMaster.observeForever(observer)
         // given
         val bundleInfo = BundleInfo(
-            bundleID = 123L
+            bundleID = 123L,
+            bundleStats = BundleStats("2")
         )
         val bundleMaster = nonSpykViewModel2.mapBundleInfoToBundleMaster(bundleInfo)
 
@@ -548,10 +511,11 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         assertEquals(listOf<ProductBundleDetail>(), selectedBundleEmptyList)
         assertEquals(123L, bundleMasterNew.bundleId)
         assertEquals(123, selectedBundleList.first().productId)
+        assertEquals(2,bundleMaster.totalSold)
     }
 
     @Test
-    fun `updateProductBundleDetail should return correct value`() = coroutineTestRule.runBlockingTest {
+    fun `updateProductBundleDetail should return correct value`() = coroutineTestRule.runTest {
         // given
         viewModel.updateProductBundleMap(ProductBundleMaster(), listOf(
             ProductBundleDetail(productId = 123L),

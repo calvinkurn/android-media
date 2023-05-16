@@ -20,27 +20,7 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity"
-            android:label="@string/title_receipt_shipement_barcode_scanner"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name="com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity"
-            android:exported="false"
-            android:label="@string/title_confirm_shipment_logistic_module"
-            android:theme="@style/Theme.WhiteUnify">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_logistic"
-                    android:pathPattern="@string/path_shipping_confirmation"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".view.pod.ui.ProofOfDeliveryActivity"
             android:exported="false"

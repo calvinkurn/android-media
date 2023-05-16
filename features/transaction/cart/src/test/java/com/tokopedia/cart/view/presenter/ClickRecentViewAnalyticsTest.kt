@@ -1,7 +1,11 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import org.junit.Assert
 import org.junit.Test
 
@@ -33,7 +37,6 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
         val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
         val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
         Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
-
     }
 
     @Test
@@ -48,7 +51,6 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
         val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
         val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
         Assert.assertEquals(1, productList.size)
-
     }
 
     @Test
@@ -64,5 +66,4 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
         val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
         Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
     }
-
 }

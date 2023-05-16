@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
  * Created by fwidjaja on 09/03/20.
  */
 data class ErrorDefault(
-        @SerializedName("title")
-        val title: String = "",
-        @SerializedName("description")
-        val description: String = ""
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("description")
+    val description: String = ""
 )

@@ -7,14 +7,14 @@ data class DeleteWishlistProgressResponse(
     val deleteWishlistProgress: DeleteWishlistProgress = DeleteWishlistProgress()
 ) {
     data class DeleteWishlistProgress(
-    @SerializedName("error_message")
-    val errorMessage: List<String> = emptyList(),
+        @SerializedName("error_message")
+        val errorMessage: List<String> = emptyList(),
 
-    @SerializedName("status")
-    val status: String = "",
+        @SerializedName("status")
+        val status: String = "",
 
-    @SerializedName("data")
-    val data: DataDeleteWishlistProgress = DataDeleteWishlistProgress()
+        @SerializedName("data")
+        val data: DataDeleteWishlistProgress = DataDeleteWishlistProgress()
     ) {
         data class DataDeleteWishlistProgress(
             @SerializedName("total_items")

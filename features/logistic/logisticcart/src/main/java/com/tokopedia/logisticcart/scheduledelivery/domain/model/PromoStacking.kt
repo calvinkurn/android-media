@@ -21,5 +21,5 @@ class PromoStacking(
     @SerializedName("free_shipping_metadata")
     val freeShippingMetadata: FreeShippingMetadata = FreeShippingMetadata(),
     @SerializedName("disabled")
-    val disabled: Boolean = false,
+    val disabled: Boolean = false
 ) : Parcelable

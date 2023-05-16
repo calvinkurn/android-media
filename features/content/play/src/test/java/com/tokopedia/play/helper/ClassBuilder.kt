@@ -37,10 +37,12 @@ class ClassBuilder {
     )
 
     fun getPlayChannelDetailsRecomMapper(
+        userSession: UserSessionInterface = mockk(relaxed = true),
         htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer(),
         realTimeNotificationMapper: PlayRealTimeNotificationMapper = getPlayRealTimeNotificationMapper(),
         multipleLikesMapper: PlayMultipleLikesMapper = getPlayMultipleLikesMapper(),
     ) = PlayChannelDetailsWithRecomMapper(
+        userSession = userSession,
         htmlTextTransformer = htmlTextTransformer,
         realTimeNotificationMapper = realTimeNotificationMapper,
         multipleLikesMapper = multipleLikesMapper,

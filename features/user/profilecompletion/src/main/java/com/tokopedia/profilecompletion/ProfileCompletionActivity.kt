@@ -19,21 +19,21 @@ class ProfileCompletionActivity : BaseSimpleActivity(),
 
 
     override fun getNewFragment(): Fragment {
-	val bundle = Bundle()
-	if (intent.extras != null) {
-	    bundle.putAll(intent.extras)
-	}
-	return ChangeGenderFragment.createInstance(bundle)
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        return ChangeGenderFragment.createInstance(bundle)
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-	return DaggerProfileCompletionSettingComponent.builder()
-	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-	    .build()
+        return DaggerProfileCompletionSettingComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+            .build()
     }
 
     companion object {
-	val MODE_GENDER = "start_gender"
+        val MODE_GENDER = "start_gender"
     }
 }

@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.databinding.ItemPromoRedStateBinding
-import com.tokopedia.utils.image.ImageUtils
 
 class PromoNotEligibleViewHolder(private val binding: ItemPromoRedStateBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -42,5 +41,4 @@ class PromoNotEligibleViewHolder(private val binding: ItemPromoRedStateBinding) 
             binding.labelPromoErrorMessage.gone()
         }
     }
-
 }

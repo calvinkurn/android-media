@@ -36,8 +36,7 @@ class ShoppingSummaryHeaderViewHolder(private val viewBinding: ItemShoppingSumma
             if (element.description.isNotBlank()) {
                 tpDescription.text = element.description
                 tpDescription.show()
-            }
-            else {
+            } else {
                 tpDescription.gone()
             }
         }

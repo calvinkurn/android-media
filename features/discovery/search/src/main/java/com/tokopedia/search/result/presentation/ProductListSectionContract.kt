@@ -61,6 +61,8 @@ interface ProductListSectionContract {
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
         fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String)
         fun initFilterController(quickFilterList: List<Filter>)
+        fun setAutoFilterToggle(autoFilterParameter: String)
+        fun setSortFilterIndicatorCounter()
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
@@ -73,7 +75,6 @@ interface ProductListSectionContract {
         fun refreshItemAtIndex(index: Int)
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
-        fun trackEventClickDropdownQuickFilter(filterTitle: String)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
     }

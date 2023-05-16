@@ -16,15 +16,25 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
-import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.junit.Assert
@@ -77,28 +87,46 @@ class AddEditProductDescriptionViewModelTest {
     private val youtubeSuccessData = YoutubeVideoDetailModel()
     private val youtubeRestResponse = RestResponse(youtubeSuccessData, 200, false)
     private val youtubeSuccessRestResponseMap = mapOf<Type, RestResponse>(
-            YoutubeVideoDetailModel::class.java to youtubeRestResponse
+        YoutubeVideoDetailModel::class.java to youtubeRestResponse
     )
 
     private fun getTestProductInputModel(): ProductInputModel {
         return ProductInputModel(
-                detailInputModel = DetailInputModel(categoryId = "56"),
-                descriptionInputModel = DescriptionInputModel("ini deskripsi"),
-                variantInputModel= VariantInputModel(
-                        products= listOf(
-                                ProductVariantInputModel(combination= listOf(0, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
-                                ProductVariantInputModel(combination= listOf(0, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
-                                ProductVariantInputModel(combination= listOf(1, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
-                                ProductVariantInputModel(combination= listOf(1, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false)),
-                        selections= listOf(
-                                SelectionInputModel(variantId="1", variantName="Warna", unitID="0", identifier="colour", options= listOf(
-                                        OptionInputModel(unitValueID="9", value="Merah"),
-                                        OptionInputModel(unitValueID="6", value="Biru Muda"))),
-                                SelectionInputModel(variantId="29", variantName="Ukuran", unitID="27", unitName="Default", identifier="size", options= listOf(
-                                        OptionInputModel(unitValueID="449", value="8"),
-                                        OptionInputModel(unitValueID="450", value="10")))),
-                        sizecharts= PictureVariantInputModel(),
-                        isRemoteDataHasVariant=true)
+            detailInputModel = DetailInputModel(categoryId = "56"),
+            descriptionInputModel = DescriptionInputModel("ini deskripsi"),
+            variantInputModel = VariantInputModel(
+                products = listOf(
+                    ProductVariantInputModel(combination = listOf(0, 0), price = 9999.toBigInteger(), status = "ACTIVE", stock = 1, isPrimary = false),
+                    ProductVariantInputModel(combination = listOf(0, 1), price = 9999.toBigInteger(), status = "ACTIVE", stock = 1, isPrimary = false),
+                    ProductVariantInputModel(combination = listOf(1, 0), price = 9999.toBigInteger(), status = "ACTIVE", stock = 1, isPrimary = false),
+                    ProductVariantInputModel(combination = listOf(1, 1), price = 9999.toBigInteger(), status = "ACTIVE", stock = 1, isPrimary = false)
+                ),
+                selections = listOf(
+                    SelectionInputModel(
+                        variantId = "1",
+                        variantName = "Warna",
+                        unitID = "0",
+                        identifier = "colour",
+                        options = listOf(
+                            OptionInputModel(unitValueID = "9", value = "Merah"),
+                            OptionInputModel(unitValueID = "6", value = "Biru Muda")
+                        )
+                    ),
+                    SelectionInputModel(
+                        variantId = "29",
+                        variantName = "Ukuran",
+                        unitID = "27",
+                        unitName = "Default",
+                        identifier = "size",
+                        options = listOf(
+                            OptionInputModel(unitValueID = "449", value = "8"),
+                            OptionInputModel(unitValueID = "450", value = "10")
+                        )
+                    )
+                ),
+                sizecharts = PictureVariantInputModel(),
+                isRemoteDataHasVariant = true
+            )
         )
     }
 
@@ -109,10 +137,14 @@ class AddEditProductDescriptionViewModelTest {
             Uri.parse(any())
         } answers {
             if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp ||
-                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
-                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsiteWithoutWww ||
-                    usedYoutubeVideoUrl == unknownYoutubeUrl) videoUri
-            else throw NullPointerException()
+                usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
+                usedYoutubeVideoUrl == youtubeVideoUrlFromWebsiteWithoutWww ||
+                usedYoutubeVideoUrl == unknownYoutubeUrl
+            ) {
+                videoUri
+            } else {
+                throw NullPointerException()
+            }
         }
 
         every {
@@ -137,7 +169,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runTest {
         mockkObject(ValidateProductDescriptionUseCase)
         var message = ""
         val validateProductDescriptionResponse = ValidateProductDescriptionResponse().apply {
@@ -160,7 +192,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runTest {
         mockkObject(AddEditProductErrorHandler)
         every { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) } returns mockk(relaxed = true)
         coEvery {
@@ -175,7 +207,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -192,7 +224,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -209,7 +241,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -226,7 +258,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url with unknown host expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url with unknown host expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         usedYoutubeVideoUrl = unknownYoutubeUrl
 
@@ -237,7 +269,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url host is null expect failed get youtube video data`()= coroutineTestRule.runBlockingTest {
+    fun `When the url host is null expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         every {
             videoUri.host
@@ -251,7 +283,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url lastPathSegment is null expect failed get youtube video data`()= coroutineTestRule.runBlockingTest {
+    fun `When the url lastPathSegment is null expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         every {
             videoUri.host
@@ -268,7 +300,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockkStatic(Uri::class)
         every {
             Uri.parse(any())
@@ -283,7 +315,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -302,18 +334,18 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `When there are 2 or more same video url expect produce duplicate video error message`() {
         val addedVideoUrls = mutableListOf(
-                VideoLinkModel("https://youtu.be/$videoId"),
-                VideoLinkModel("https://youtu.be/$videoId")
+            VideoLinkModel("https://youtu.be/$videoId"),
+            VideoLinkModel("https://youtu.be/$videoId")
         )
         val newVideoUrl = "https://youtu.be/$videoId"
 
-        every { resourceProvider.getDuplicateProductVideoErrorMessage() }  returns "Link video tidak boleh sama"
+        every { resourceProvider.getDuplicateProductVideoErrorMessage() } returns "Link video tidak boleh sama"
 
         val result = viewModel.validateDuplicateVideo(addedVideoUrls, newVideoUrl)
         assert(result == "Link video tidak boleh sama")
 
         // test empty resource message
-        every { resourceProvider.getDuplicateProductVideoErrorMessage() }  returns null
+        every { resourceProvider.getDuplicateProductVideoErrorMessage() } returns null
 
         val resultEmpty = viewModel.validateDuplicateVideo(addedVideoUrls, newVideoUrl)
         assert(resultEmpty.isEmpty())
@@ -322,7 +354,7 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `When every video url is unique expect produce empty error message`() {
         val addedVideoUrls = mutableListOf(
-                VideoLinkModel("https://youtu.be/d1kf1887aKl")
+            VideoLinkModel("https://youtu.be/d1kf1887aKl")
         )
         val newVideoUrl = "https://youtu.be/$videoId"
 
@@ -332,7 +364,7 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `When there are one or more video link model with error message expect return false on validate video input`() {
         val videoUrls = mutableListOf(
-                VideoLinkModel(errorMessage = "Pastikan link Youtube kamu benar")
+            VideoLinkModel(errorMessage = "Pastikan link Youtube kamu benar")
         )
 
         assert(!viewModel.validateInputVideo(videoUrls))
@@ -341,7 +373,7 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `When every video link model is not containing an error message expect return true on validate video input`() {
         val videoUrls = mutableListOf(
-                VideoLinkModel("https://youtu.be/$videoId")
+            VideoLinkModel("https://youtu.be/$videoId")
         )
 
         assert(viewModel.validateInputVideo(videoUrls))
@@ -349,8 +381,8 @@ class AddEditProductDescriptionViewModelTest {
 
     @Test
     fun `When getVariantSelectedMessage Expect return valid message`() {
-        every { resourceProvider.getVariantAddedMessage() }  returns "added message"
-        every { resourceProvider.getVariantEmptyMessage() }  returns "empty message"
+        every { resourceProvider.getVariantAddedMessage() } returns "added message"
+        every { resourceProvider.getVariantEmptyMessage() } returns "empty message"
 
         viewModel.updateProductInputModel(getTestProductInputModel())
         Assert.assertEquals(viewModel.getVariantSelectedMessage(), "added message")
@@ -361,8 +393,8 @@ class AddEditProductDescriptionViewModelTest {
 
     @Test
     fun `When get message is null and getVariantSelectedMessage Expect return empty message`() {
-        every { resourceProvider.getVariantAddedMessage() }  returns null
-        every { resourceProvider.getVariantEmptyMessage() }  returns null
+        every { resourceProvider.getVariantAddedMessage() } returns null
+        every { resourceProvider.getVariantEmptyMessage() } returns null
 
         viewModel.updateProductInputModel(getTestProductInputModel())
         Assert.assertTrue(viewModel.getVariantSelectedMessage().isEmpty())
@@ -395,12 +427,12 @@ class AddEditProductDescriptionViewModelTest {
 
     @Test
     fun `When getVariantCountMessage Expect return variant count message`() {
-        every { resourceProvider.getVariantCountSuffix() }  returns "suffix"
+        every { resourceProvider.getVariantCountSuffix() } returns "suffix"
         val productInput = getTestProductInputModel()
 
         viewModel.updateProductInputModel(productInput)
         var isValid = viewModel.getVariantCountMessage(0) ==
-                productInput.variantInputModel.selections[0].options.size.toString() + " suffix"
+            productInput.variantInputModel.selections[0].options.size.toString() + " suffix"
         assert(isValid)
 
         viewModel.updateProductInputModel(productInput)
@@ -415,7 +447,7 @@ class AddEditProductDescriptionViewModelTest {
 
         viewModel.updateProductInputModel(productInput)
         val isValid = viewModel.getVariantCountMessage(0) ==
-                productInput.variantInputModel.selections[0].options.size.toString() + " "
+            productInput.variantInputModel.selections[0].options.size.toString() + " "
         assert(isValid)
     }
 

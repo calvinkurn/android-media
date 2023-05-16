@@ -12,7 +12,7 @@
         android:id="@+id/img_action"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/iconunify_video"
+        app:srcCompat="@drawable/iconunify_video"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/txt_title"
         app:layout_constraintHorizontal_chainStyle="packed"

@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.onboarding
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +65,6 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        const val IMAGE_HEADER = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_onboarding.png"
+        const val IMAGE_HEADER = TokopediaImageUrl.IMAGE_HEADER
     }
 }

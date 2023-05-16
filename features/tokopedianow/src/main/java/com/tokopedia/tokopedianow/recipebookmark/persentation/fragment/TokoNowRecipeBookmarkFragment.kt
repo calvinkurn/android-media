@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,7 +47,7 @@ import javax.inject.Inject
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
-        private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
+        private const val NO_DATA_IMAGE = TokopediaImageUrl.TOKO_NOW_NO_DATA_IMAGE
 
         const val DEFAULT_PAGE = 1
         const val DEFAULT_PER_PAGE = 10
@@ -159,6 +160,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showGlobalError(state.throwable, state.errorCode)
                 is UiState.Success -> showPage(state.data)
                 is UiState.Loading -> showLoadingState()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -169,6 +173,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showFailToaster(state.throwable, state.data)
                 is UiState.Success -> showSuccessToaster(state.data)
                 is UiState.Loading -> showRecipeItemLoading(state.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -179,6 +186,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> { /* nothing to do */ }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -238,7 +248,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private fun showSuccessToaster(data: ToasterUiModel?) {
         data?.model?.apply {
             setupToaster(
-                message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
+                message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, title),
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                 clickListener = {
@@ -253,7 +263,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private fun showFailToaster(throwable: Throwable?, data: ToasterUiModel?) {
         data?.model?.apply {
             setupToaster(
-                message = if (throwable == null) message else getString(if (data.isRemoving) R.string.tokopedianow_recipe_failed_remove_bookmark else R.string.tokopedianow_recipe_failed_add_bookmark),
+                message = if (throwable == null) message else getString(if (data.isRemoving) R.string.tokopedianow_recipe_toaster_description_failed_removing_bookmark else R.string.tokopedianow_recipe_toaster_description_failed_adding_bookmark),
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                 clickListener = {

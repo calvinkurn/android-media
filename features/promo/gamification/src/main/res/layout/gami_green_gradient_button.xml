@@ -8,9 +8,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cta"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="@integer/gami_green_gradient_btn_typography"
         tools:text="Cek Hadiah Yang Bisa Didapat" />

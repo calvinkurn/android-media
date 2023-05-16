@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -27,10 +29,10 @@ class HomeSharingWidgetViewHolder(
 ) : AbstractViewHolder<HomeSharingWidgetUiModel>(itemView) {
 
     companion object {
-        private const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
-        private const val LOTTIE_REFERRAL = "https://assets.tokopedia.net/asts/lottie/android/tokonow/tokonow_animation_referral.json"
-        private const val IMG_SHARING_REFERRAL_BG_BTM = "https://images.tokopedia.net/img/tokonow/tokonow/bg_referral_btm/Fill.png"
-        private const val IMG_SHARING_REFERRAL_BG_TOP = "https://images.tokopedia.net/img/tokonow/tokonow_bg_referral_top/Line.png"
+        private const val IMG_SHARING_EDUCATION = TokopediaImageUrl.IMG_SHARING_EDUCATION
+        private const val LOTTIE_REFERRAL = TokopediaImageUrl.LOTTIE_REFERRAL
+        private const val IMG_SHARING_REFERRAL_BG_BTM = TokopediaImageUrl.IMG_SHARING_REFERRAL_BG_BTM
+        private const val IMG_SHARING_REFERRAL_BG_TOP = TokopediaImageUrl.IMG_SHARING_REFERRAL_BG_TOP
         private const val ANIMATION_REPEAT_COUNT = 1
 
         @LayoutRes

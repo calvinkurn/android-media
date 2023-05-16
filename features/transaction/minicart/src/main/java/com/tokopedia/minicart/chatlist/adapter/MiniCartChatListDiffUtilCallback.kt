@@ -4,8 +4,10 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 
-class MiniCartChatListDiffUtilCallback(private val oldList: List<Any>,
-                                       private val newList: List<Any>) : DiffUtil.Callback() {
+class MiniCartChatListDiffUtilCallback(
+    private val oldList: List<Any>,
+    private val newList: List<Any>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -29,5 +31,4 @@ class MiniCartChatListDiffUtilCallback(private val oldList: List<Any>,
             else -> false
         }
     }
-
 }

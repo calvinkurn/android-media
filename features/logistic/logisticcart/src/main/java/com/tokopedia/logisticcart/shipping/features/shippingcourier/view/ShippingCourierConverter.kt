@@ -119,7 +119,7 @@ class ShippingCourierConverter @Inject constructor() {
         /*Schedule Delivery*/
         courierItemData.setScheduleDeliveryUiModel(
             scheduleDeliveryData = shippingRecommendationData?.scheduleDeliveryData,
-            validationMetadata = shipmentCartItemModel?.validationMetadata,
+            validationMetadata = shipmentCartItemModel?.validationMetadata
         )
 
         return courierItemData
@@ -170,9 +170,9 @@ class ShippingCourierConverter @Inject constructor() {
             notice = notice,
             deliveryServices = deliveryServices
         ).apply {
-             setScheduleDateAndTimeslotId(
-                 validationMetadata = validationMetadata
-             )
+            setScheduleDateAndTimeslotId(
+                validationMetadata = validationMetadata
+            )
         }
     }
 }

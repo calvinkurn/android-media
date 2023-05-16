@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfPeriodTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smvc_voucherlist_period_title"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfPeriodDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfPeriodTitle"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tool:text="16 Okt 2022 - 26 Okt 2022" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfMultiPeriodMore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iconMenu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tool:text="+5 Jadwal Lain" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconMenu"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        app:icon_name="CHEVRON_RIGHT"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

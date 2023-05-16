@@ -66,5 +66,4 @@ class CheckoutPromoAnalyticsTest {
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
     }
-
 }

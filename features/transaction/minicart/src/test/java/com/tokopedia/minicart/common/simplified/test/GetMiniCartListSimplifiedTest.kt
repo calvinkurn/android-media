@@ -36,17 +36,17 @@ class GetMiniCartListSimplifiedTest {
 
     @Test
     fun `WHEN set current shop id, promo id, promo code THEN should set current shop id, promo id, promo code`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
 
-        //when
+        // when
         viewModel.currentShopIds = shopId
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //then
+        // then
         assert(viewModel.currentShopIds == shopId)
         assert(viewModel.currentPromoId == promoId)
         assert(viewModel.currentPromoCode == promoCode)
@@ -54,16 +54,16 @@ class GetMiniCartListSimplifiedTest {
 
     @Test
     fun `WHEN fetch last widget state without set shopId THEN should return default data`() {
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value == MiniCartSimplifiedData())
     }
 
     @Test
     fun `WHEN fetch last widget state with current data and without set shopId THEN should not return default data`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -79,17 +79,17 @@ class GetMiniCartListSimplifiedTest {
 
         viewModel.getLatestWidgetState()
 
-        //when
+        // when
         viewModel.currentShopIds = emptyList()
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value != MiniCartSimplifiedData())
     }
 
     @Test
     fun `WHEN set current shop id, promo id, promo code THEN should fetch with current shop id, promo id, promo code`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -103,17 +103,17 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         verify { getMiniCartListSimplifiedUseCase.setParams(shopId, promoId, promoCode, any()) }
         coVerify { getMiniCartListSimplifiedUseCase.execute(any(), any()) }
     }
 
     @Test
     fun `WHEN fetch latest widget failed THEN should set default data`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -127,16 +127,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value == MiniCartSimplifiedData())
     }
 
     @Test
     fun `WHEN fetch latest widget failed with current data available THEN should not set default data`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -159,16 +159,16 @@ class GetMiniCartListSimplifiedTest {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value != MiniCartSimplifiedData())
     }
 
     @Test
     fun `WHEN fetch latest widget failed THEN should set error state`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -182,16 +182,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_MINICART, throwable = exception))
     }
 
     @Test
     fun `WHEN fetch latest data success with empty cart THEN should not validate mvc`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -205,16 +205,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         coVerify(inverse = true) { validateUseMvcUseCase.setParam(any()).execute(any(), any()) }
     }
 
     @Test
     fun `WHEN fetch latest data success with empty cart THEN should set state failed validate mvc`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -228,16 +228,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE))
     }
 
     @Test
     fun `WHEN fetch latest data success with all unavailable cart THEN should not validate mvc`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -251,16 +251,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         coVerify(inverse = true) { validateUseMvcUseCase.setParam(any()).execute(any(), any()) }
     }
 
     @Test
     fun `WHEN fetch latest data success with all unavailable cart THEN should set state failed validate mvc`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -274,16 +274,16 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE))
     }
 
     @Test
     fun `WHEN fetch latest data success with available cart THEN should validate mvc with only available products`() {
-        //given
+        // given
         val shopId = listOf("123")
         val promoId = "promoId"
         val promoCode = "promoCode"
@@ -297,10 +297,10 @@ class GetMiniCartListSimplifiedTest {
         viewModel.currentPromoId = promoId
         viewModel.currentPromoCode = promoCode
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         coVerify { validateUseMvcUseCase.setParam(match { it.orders[0].productDetails.size == 3 }).execute(any(), any()) }
     }
 }

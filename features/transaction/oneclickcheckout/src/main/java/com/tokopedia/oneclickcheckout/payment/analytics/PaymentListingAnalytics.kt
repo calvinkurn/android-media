@@ -10,9 +10,9 @@ class PaymentListingAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickBackArrowInPilihPembayaran() {
         sendGeneralEvent(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.PURCHASE_SETTING,
-                EventAction.CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.PURCHASE_SETTING,
+            EventAction.CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT
         )
     }
 }

@@ -5,5 +5,4 @@ interface CartToolbarListener {
     fun onBackPressed()
 
     fun onWishlistClicked()
-
 }

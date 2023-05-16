@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 
-class ShipmentTickerAnnouncementViewHolder(itemView: View, actionListener: TickerAnnouncementActionListener?): TickerAnnouncementViewHolder(itemView, actionListener) {
+class ShipmentTickerAnnouncementViewHolder(itemView: View, actionListener: TickerAnnouncementActionListener?) : TickerAnnouncementViewHolder(itemView, actionListener) {
 
     internal var data: TickerAnnouncementHolderData = TickerAnnouncementHolderData()
 

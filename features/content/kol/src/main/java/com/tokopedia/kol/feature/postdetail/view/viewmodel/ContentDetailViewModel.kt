@@ -240,7 +240,10 @@ class ContentDetailViewModel @Inject constructor(
                         ContentDetailUiModel(
                             postList = userProfileFeedCurrentPostList.map {
                                 it.copy(
-                                    followers = FeedXFollowers(isFollowed = !isFollow)
+                                    followers = FeedXFollowers(
+                                        isFollowed = !isFollow,
+                                        transitionFollow = true
+                                    )
                                 )
                             },
                             cursor = currentCursor

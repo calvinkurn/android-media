@@ -8,39 +8,41 @@ import javax.inject.Inject
 
 interface MediaFileRepository {
     operator fun invoke(bucketId: Long, start: Int): Flow<List<Media>>
+    fun maxLimitSize(): Int
 }
 
 class MediaFileRepositoryImpl @Inject constructor(
-   source: MediaQueryDataSource
+    source: MediaQueryDataSource
 ) : MediaFileRepository, MediaQueryDataSource by source {
 
+    override fun maxLimitSize(): Int {
+        return LIMIT_MEDIA_SIZE
+    }
+
     override operator fun invoke(bucketId: Long, start: Int): Flow<List<Media>> {
-        val cursor = setupMediaQuery(bucketId, LIMIT_MEDIA_OFFSET)
+        val cursor = setupMediaQuery(bucketId, start, maxLimitSize())
         val result = mutableListOf<Media>()
-        var index = start
 
         return flow {
-            while (cursor?.moveToPosition(index) == true) {
-                val media = createMedia(cursor)?: continue
-                if (media.file.exists().not()) continue
+            if (cursor?.moveToFirst() == true) {
+                do {
+                    val media = createMedia(cursor) ?: continue
+                    if (media.file.exists().not()) continue
 
-                if (media.file.isVideo()) {
-                    media.videoLength = getVideoDuration(media.file)
-                }
+                    if (media.file.isVideo()) {
+                        media.duration = getVideoDuration(media.file)
+                    }
 
-                result.add(media)
-                index++
-
-                if (result.size == LIMIT_MEDIA_OFFSET) break
+                    result.add(media)
+                } while (cursor.moveToNext())
             }
 
-            cursor?.close()
-
             emit(result)
+            cursor?.close()
         }
     }
 
     companion object {
-        private const val LIMIT_MEDIA_OFFSET = 100
+        const val LIMIT_MEDIA_SIZE = 100
     }
 }

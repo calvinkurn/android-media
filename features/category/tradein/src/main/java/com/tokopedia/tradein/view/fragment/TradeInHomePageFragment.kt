@@ -1,5 +1,7 @@
 package com.tokopedia.tradein.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.Gravity
@@ -601,8 +603,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     companion object {
         const val CACHE_ID = "Trade in cache id"
-        const val LAKU6_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_sdk_error.png"
-        const val FRAUD_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_fraud.png"
+        const val LAKU6_ERROR_IMAGE = TokopediaImageUrl.LAKU6_ERROR_IMAGE
+        const val FRAUD_ERROR_IMAGE = TokopediaImageUrl.FRAUD_ERROR_IMAGE
 
         fun getFragmentInstance(cacheId: String): Fragment {
             val bundle = Bundle().apply {

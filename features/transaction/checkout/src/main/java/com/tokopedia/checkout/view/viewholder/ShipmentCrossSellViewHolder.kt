@@ -64,5 +64,4 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
         @JvmField
         val ITEM_VIEW_CROSS_SELL = R.layout.item_cross_sell
     }
-
 }

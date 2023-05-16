@@ -52,7 +52,9 @@ class TokoChatBabbleCourierImpl @Inject constructor(
     }
 
     override fun init(chatProfileId: String?) {
-        courierConnection.init(SOURCE_APP_INIT)
+        if (!remoteConfig.getBoolean(COURIER_CONVERSATION_INIT)) {
+            courierConnection.init(SOURCE_APP_INIT)
+        }
     }
 
     override fun getUniqueClientId(profileId: String): String {
@@ -62,5 +64,6 @@ class TokoChatBabbleCourierImpl @Inject constructor(
 
     companion object {
         const val SOURCE_APP_INIT = "App Init"
+        const val COURIER_CONVERSATION_INIT = "android_courier_conversation_init"
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,10 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     individualTenureItemContainer.isClickable = false
                     radioSelector.isClickable = false
                 }
+                try {
+                    radioSelector.skipAnimation()
+                } catch (e: Exception) {}
+
             }
         }?:run{
             itemView.gone()
@@ -41,27 +46,34 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun View.setTenureEnableLogic(
         tenureDetail: TenureDetail,
         tenureSelectedModel: TenureSelectedModel,
         currentPosition: Int
     ) {
         if (tenureDetail.isSelectedTenure && !tenureDetail.tenureDisable) {
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN100)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioSelector.isChecked = true
         } else {
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
             radioSelector.isChecked = false
         }
         individualTenureItemContainer.isClickable = true
         radioSelector.isClickable = true
         individualTenureItemContainer.setOnClickListener {
-            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+            tenureSelectListener.selectedTenure(
+                tenureSelectedModel,
+                currentPosition,
+                tenureDetail.promoName.orEmpty(),
+            )
         }
         radioSelector.setOnClickListener {
-            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+            tenureSelectListener.selectedTenure(
+                tenureSelectedModel,
+                currentPosition,
+                tenureDetail.promoName.orEmpty(),
+            )
         }
     }
 

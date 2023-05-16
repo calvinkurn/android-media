@@ -73,7 +73,8 @@ class GetCourierRecommendationSubscriber(
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException(
                                                     shippingCourierUiModel.productData.error?.errorMessage
-                                                ), itemPosition,
+                                                ),
+                                                itemPosition,
                                                 boPromoCode
                                             )
                                             logisticDonePublisher?.onCompleted()
@@ -135,7 +136,9 @@ class GetCourierRecommendationSubscriber(
                                         if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                             // courier should only be used with BO, but no BO code found
                                             view.renderCourierStateFailed(
-                                                itemPosition, isTradeInDropOff, false
+                                                itemPosition,
+                                                isTradeInDropOff,
+                                                false
                                             )
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException("rates ui hidden but no promo"),
@@ -176,7 +179,8 @@ class GetCourierRecommendationSubscriber(
                                 shippingCourier.isSelected = true
                                 view.renderCourierStateSuccess(
                                     generateCourierItemData(
-                                        shippingCourier, shippingRecommendationData
+                                        shippingCourier,
+                                        shippingRecommendationData
                                     ),
                                     itemPosition,
                                     isTradeInDropOff,
@@ -191,7 +195,9 @@ class GetCourierRecommendationSubscriber(
                 errorReason = "rates empty data"
             }
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
-            view.logOnErrorLoadCourier(MessageErrorException(errorReason), itemPosition,
+            view.logOnErrorLoadCourier(
+                MessageErrorException(errorReason),
+                itemPosition,
                 boPromoCode
             )
         } else {

@@ -16,12 +16,13 @@ import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBo
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 
-class WishlistCollectionHostBottomSheetFragment: Fragment(),
+class WishlistCollectionHostBottomSheetFragment :
+    Fragment(),
     BottomSheetWishlistCollectionAdapter.ActionListener,
     BottomSheetAddCollectionWishlist.ActionListener,
     ActionListenerFromPdp {
@@ -107,7 +108,6 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, data.dataItem.success)
             intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.dataItem.message)
             intent.putExtra(STRING_EXTRA_COLLECTION_ID, data.dataItem.collectionId)
-
         } else {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
             val errorMessage = if (data.errorMessage.isNotEmpty()) {

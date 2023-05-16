@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightBookingV3PassengerBinding
 import com.tokopedia.flight.detail.view.model.SimpleModel
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
+import java.text.ParseException
 
 /**
  * @author by jessica on 2019-11-04
@@ -66,8 +68,17 @@ class FlightBookingPassengerAdapter : RecyclerView.Adapter<FlightBookingPassenge
                 //initiate passenger detail like passport num, birthdate, luggage and amenities, identification number
                 val simpleViewModels = listOf<SimpleModel>().toMutableList()
                 if (passenger.passengerBirthdate.isNotEmpty()) {
-                    simpleViewModels.add(SimpleModel(itemView.context.getString(R.string.flight_booking_list_passenger_birthdate_label) + " | ",
-                            passenger.passengerBirthdate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)))
+                    try {
+                        simpleViewModels.add(
+                            SimpleModel(
+                                itemView.context.getString(R.string.flight_booking_list_passenger_birthdate_label) + " | ",
+                                passenger.passengerBirthdate.toDate(DateUtil.YYYY_MM_DD)
+                                    .toString(DateUtil.DEFAULT_VIEW_FORMAT)
+                            )
+                        )
+                    } catch (parseException: ParseException) {
+                        FirebaseCrashlytics.getInstance().recordException(parseException)
+                    }
                 }
                 if(passenger.identificationNumber.isNotEmpty()){
                     simpleViewModels.add(

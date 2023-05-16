@@ -6,11 +6,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.T
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_CURATED
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_GUIDED
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_RELATED
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 
 interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, VerticalSeparable {
@@ -18,13 +17,12 @@ interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, Vertica
     val data: InspirationWidgetDataView
 
     companion object {
-        private val showInspirationCardType = listOf(
+        private val showInspirationCardLayout = listOf(
             TYPE_ANNOTATION,
             TYPE_CATEGORY,
             TYPE_GUIDED,
             TYPE_CURATED,
             TYPE_RELATED,
-            TYPE_SIZE_PERSO,
         )
 
         fun create(
@@ -32,18 +30,14 @@ interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, Vertica
             keyword: String,
             dimension90: String,
         ): List<InspirationWidgetVisitable> {
-            val validWidgetList = searchInspirationWidget.data
-                .filter { showInspirationCardType.contains(it.type) }
-
-            val inspirationCardList = validWidgetList
-                .filter { it.type != TYPE_SIZE_PERSO }
+            val inspirationCardList = searchInspirationWidget.data
+                .filter { showInspirationCardLayout.contains(it.layout) }
                 .map { data -> InspirationCardDataView.create(data) }
 
-            val inspirationSizeList = validWidgetList
-                .filter { it.type == TYPE_SIZE_PERSO }
-                .map { data -> InspirationSizeDataView.create(data, keyword, dimension90) }
+            val inspirationFilterList = searchInspirationWidget.filterWidgetList()
+                .map { data -> InspirationFilterDataView.create(data, keyword, dimension90) }
 
-            return inspirationCardList + inspirationSizeList
+            return inspirationCardList + inspirationFilterList
         }
     }
 }

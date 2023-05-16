@@ -18,11 +18,13 @@ class UpdateCartForPromoTest : BaseCartTest() {
     fun `WHEN update cart for promo success THEN should navigate to promo page`() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
@@ -48,11 +50,13 @@ class UpdateCartForPromoTest : BaseCartTest() {
         val exception = ResponseErrorException("error message")
 
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
-            add(CartItemHolderData().apply {
-                isCod = true
-                productPrice = 1000.0
-                quantity = 10
-            })
+            add(
+                CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000.0
+                    quantity = 10
+                }
+            )
         }
 
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
@@ -97,5 +101,4 @@ class UpdateCartForPromoTest : BaseCartTest() {
             view.navigateToPromoRecommendation()
         }
     }
-
 }

@@ -5,9 +5,9 @@ object TopAdsDashboardConstant {
     const val PARAM_START_DATE = "startDate"
     const val PARAM_END_DATE = "endDate"
     const val PARAM_INSIGHT = "insight"
-    const val PARAM_PRODUCT_AD =  "product_ad"
+    const val PARAM_PRODUCT_AD = "product_ad"
     const val PARAM_SHOP_AD = "shop_ad"
-    const val PARAM_DAILY_BUDGET ="daily_budget"
+    const val PARAM_DAILY_BUDGET = "daily_budget"
     const val PARAM_KEYWORD = "keyword"
     const val PARAM_PRODUCT = "product"
     const val PARAM_CURRENT_TAB = "currentTab"
@@ -30,7 +30,6 @@ object TopAdsDashboardConstant {
     const val REQUEST_CODE_ADD_CREDIT = 99
     const val REQUEST_CODE_TOP_UP_CREDIT = 1919
     const val ACTIVE_STATUS = "1"
-
 
     const val ACTIVE = "Aktif"
     const val TIDAK_TAMPIL = "Tidak Tampil"
@@ -74,7 +73,7 @@ object TopAdsDashboardConstant {
     const val TANPA_GRUP = "Tanpa Grup"
     const val DIHAPUS = "Dihapus"
     const val IKLAN_TOKO = "Iklan Toko"
-    const val TOASTER_DURATION :Long = 2000
+    const val TOASTER_DURATION: Long = 2000
     const val EXPIRE = "expiryDate"
     const val IS_CHANGED = "isChanged"
     const val EDIT_HEADLINE_REQUEST_CODE = 46
@@ -128,18 +127,11 @@ object TopAdsDashboardConstant {
     const val CONST_EFECTIVITAS_IKLAN = 5
     const val DATE_PICKER_DEFAULT_INDEX = 2
 
-    object TopAdsCreditTopUpConstant{
+    object TopAdsCreditTopUpConstant {
         const val TOP_UP_FREQUENCY_FOUR = 4
         const val DEFAULT_TOP_UP_FREQUENCY = 6
         const val TOP_UP_FREQUENCY_EIGHT = 8
         const val INVALID_NOMINAL_INDEX = -1
-        const val RM = 0
-        const val PM = 1
-        const val OS = 2
-        const val PM_PRO = 3
-        const val PM_PRO_ADVANCED = 24
-        const val PM_PRO_EXPERT = 26
-        const val PM_PRO_ULTIMATE = 28
         const val IS_EDIT_TOP_UP = "editAutoTopUp"
         const val IS_TOP_UP_CREDIT_NEW_UI = "variant1_auto_topup_design"
         const val IS_SHOW_OLD_FLOW = "is_show_old_flow"
@@ -154,6 +146,6 @@ object TopAdsDashboardConstant {
         const val OTHER_GOLD_OS_VALUE = "other-goldos"
         const val TOP_ADS_DASHBOARD_VALUE = "top_ads_dashboard"
         const val IS_BONUS_ZERO = "Bonus Rp0"
-        const val TIME_DURATION_FOR_INTERRUPT_SHEET  = 30
+        const val TIME_DURATION_FOR_INTERRUPT_SHEET = 30
     }
 }

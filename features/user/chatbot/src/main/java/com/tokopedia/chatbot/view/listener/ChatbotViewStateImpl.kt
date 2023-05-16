@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListUiModel
@@ -152,6 +153,20 @@ class ChatbotViewStateImpl(
 
     override fun hideQuickReplyOnClick() {
         hideQuickReply()
+    }
+
+    override fun removeDynamicStickyButton() {
+        var item: DynamicStickyButtonUiModel? = null
+        for (it in adapter.list) {
+            if (it is DynamicStickyButtonUiModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
+        }
     }
 
     override fun loadAvatar(avatarUrl: String) {
