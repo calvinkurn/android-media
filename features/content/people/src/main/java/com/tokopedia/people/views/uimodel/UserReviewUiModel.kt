@@ -42,6 +42,9 @@ data class UserReviewUiModel(
         val mediaUrl: String,
         val type: Type,
     ) {
+        val isVideo: Boolean
+            get() = type == Type.Video
+
         enum class Type {
             Video, Image,
         }
