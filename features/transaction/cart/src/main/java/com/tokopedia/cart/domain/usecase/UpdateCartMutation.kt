@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
 const val UPDATE_CART_V2_QUERY = """
-    mutation update_cart_v2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String, ${'$'}chosen_address: ChosenAddressParam, ${'$'}source: String) {
+    mutation updateCartV2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String, ${'$'}chosen_address: ChosenAddressParam, ${'$'}source: String) {
         update_cart_v2(carts: ${'$'}carts, lang: ${'$'}lang, chosen_address: ${'$'}chosen_address, source: ${'$'}source) {
             error_message
             status

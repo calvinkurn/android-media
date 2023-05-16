@@ -1880,25 +1880,35 @@ class CartListPresenter @Inject constructor(
                             getLastApplyPromoRequest = promoRequest
                         )
                         val updateCartDataResponse = updateCartAndGetLastApplyUseCase(updateCartWrapperRequest)
-                        updateCartDataResponse.updateCartData?.let { updateCartData ->
-                            if (updateCartData.isSuccess) {
-                                updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                    syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
-                                    setLastApplyNotValid()
-                                    setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                    setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
-                                    view?.updatePromoCheckoutStickyButton(promoUiModel)
+                        withContext(dispatchers.main) {
+                            updateCartDataResponse.updateCartData?.let { updateCartData ->
+                                if (updateCartData.isSuccess) {
+                                    updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                        syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
+                                        setLastApplyNotValid()
+                                        setValidateUseLastResponse(
+                                            ValidateUsePromoRevampUiModel(
+                                                promoUiModel = promoUiModel
+                                            )
+                                        )
+                                        setUpdateCartAndGetLastApplyLastResponse(
+                                            updateCartDataResponse
+                                        )
+                                        view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                    }
                                 }
                             }
                         }
                     } catch (t: Throwable) {
-                        if (t is AkamaiErrorException) {
-                            doClearAllPromo()
-                            if (!promoTicker.enable) {
-                                view?.showToastMessageRed(t)
+                        withContext(dispatchers.main) {
+                            if (t is AkamaiErrorException) {
+                                doClearAllPromo()
+                                if (!promoTicker.enable) {
+                                    view?.showToastMessageRed(t)
+                                }
                             }
+                            view?.renderPromoCheckoutButtonActiveDefault(emptyList())
                         }
-                        view?.renderPromoCheckoutButtonActiveDefault(emptyList())
                     }
                 }
             } else {
