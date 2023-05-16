@@ -625,24 +625,49 @@ class DigitalPDPPulsaFragment :
         binding?.rechargePdpPulsaRecommendationWidget?.hide()
     }
 
-    private fun onSuccessGetCheckBalanceOTP(checkBalanceData: DigitalCheckBalanceOTPModel) {
+    private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            renderCheckBalanceOTPWidget(
-                DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(
-                    checkBalanceData
+            // TODO: [Misael] Remove this line later
+            if (checkBalanceData.iconUrl.isEmpty()) return
+
+            if (checkBalanceData.widgets.isEmpty()) {
+                renderCheckBalanceOTPWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
                 )
-            )
-            showCheckBalanceOtpWidget()
+                showCheckBalanceOtpWidget()
+            } else {
+                renderCheckBalanceWidget(
+                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+                )
+                showCheckBalanceWidget()
+            }
+
+//            when (checkBalanceData.widgetType.lowercase()) {
+//                "otp" -> {
+//                    renderCheckBalanceOTPWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceOtpWidget()
+//                }
+//                "widget" -> {
+//                    renderCheckBalanceWidget(
+//                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+//                    )
+//                    showCheckBalanceWidget()
+//                }
+//                else -> return
+//            }
+//
             setupDynamicScrollViewPadding()
         }
     }
 
-    private fun onFailedGetCheckBalanceOTP(throwable: Throwable) {
+    private fun onFailedGetCheckBalance(throwable: Throwable) {
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
-    private fun onLoadingGetCheckBalanceOTP() {
+    private fun onLoadingGetCheckBalance() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWidget()
