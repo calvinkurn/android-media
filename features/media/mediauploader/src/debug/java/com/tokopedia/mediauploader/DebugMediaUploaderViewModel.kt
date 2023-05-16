@@ -13,11 +13,11 @@ import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /*
@@ -25,21 +25,14 @@ import javax.inject.Inject
 * because the jacoco detects it and must be not part of
 * unit test coverage for this module.
 * */
-class MediaUploaderStateManager @Inject constructor(
+class DebugMediaUploaderViewModel @Inject constructor(
     private val videoMetaDataExtractor: VideoMetaDataExtractorRepository,
     private val compressionCacheManager: VideoCompressionCacheManager,
     private val uploaderUseCase: UploaderUseCase
-) : ViewModel() {
-
-    private val _uploading = MutableLiveData<UploadState>()
-    val uploading: LiveData<UploadState> get() = _uploading
-
-    fun setUploadingStatus(uploading: UploadState) {
-        _uploading.value = uploading
-    }
+) : ViewModel(), DebugMediaUploaderViewModelContract {
 
     private val _state = MutableStateFlow(DebugMediaLoaderState())
-    val state: StateFlow<DebugMediaLoaderState> get() = _state
+    override val state: StateFlow<DebugMediaLoaderState> get() = _state
 
     private val _event = MutableSharedFlow<DebugMediaLoaderEvent>(replay = 50)
 
@@ -47,36 +40,11 @@ class MediaUploaderStateManager @Inject constructor(
         viewModelScope.launch {
             _event.collect { event ->
                 when(event) {
-                    is DebugMediaLoaderEvent.FileResult -> {
+                    is DebugMediaLoaderEvent.FileChosen -> {
                         val filePaths = event.filePaths
 
                         _state.value = state.value.copy(filePaths = filePaths).also {
                             it.addLog(LogType.FileInfo, fileInfo(filePaths.first()))
-                        }
-                    }
-                    is DebugMediaLoaderEvent.Succeed -> {
-                        _state.value = state.value.copy().also {
-                            val result = buildString {
-                                if (event.videoUrl.isNotEmpty()) {
-                                    append("\n")
-                                    append("videoUrl: ${event.videoUrl}")
-                                }
-
-                                if (event.fileUrl.isNotEmpty()) {
-                                    append("\n")
-                                    append("fileUrl: ${event.fileUrl}")
-                                }
-
-                                append("\n")
-                                append("uploadId: ${event.uploadId}")
-                            }
-
-                            it.addLog(LogType.UploadResult, result)
-                        }
-                    }
-                    is DebugMediaLoaderEvent.Failed -> {
-                        _state.value = state.value.copy().also {
-                            it.addLog(LogType.UploadResult, "Upload gagal: ${event.message}")
                         }
                     }
                     is DebugMediaLoaderEvent.Upload -> {
@@ -88,7 +56,7 @@ class MediaUploaderStateManager @Inject constructor(
         }
     }
 
-    fun setAction(event: DebugMediaLoaderEvent) {
+    override fun setAction(event: DebugMediaLoaderEvent) {
         _event.tryEmit(event)
     }
 
@@ -112,11 +80,13 @@ class MediaUploaderStateManager @Inject constructor(
                         val cache = compressionCacheManager.get("exwbZW", path)
 
                         append("\n")
-                        append("compressed: ${cache?.compressedVideoPath}")
+                        append("${cache?.compressedVideoPath}")
                         append("\n")
                         append("bitrate: ${cache?.compressedVideoMetadata?.bitrate} bps")
                         append("\n")
                         append("resolution: ${cache?.compressedVideoMetadata?.width} x ${cache?.compressedVideoMetadata?.height} px")
+                        append("\n")
+                        append("compression time: ${TimeUnit.MILLISECONDS.toSeconds(cache?.compressedTime ?: 0)} sec.")
                         append("\n")
                         append("size: ${
                             try {
@@ -128,18 +98,7 @@ class MediaUploaderStateManager @Inject constructor(
                     })
                 }
 
-                it.addOrUpdateProgress(
-                    LogType.Progress(
-                        if (type == ProgressType.Compression) {
-                            "Compression"
-                        } else {
-                            "Upload"
-                        }
-                    ), buildString {
-                        append("\n")
-                        append("$i%")
-                    }
-                )
+                it.updateProgress(type, i)
             }
         }
 
@@ -149,16 +108,29 @@ class MediaUploaderStateManager @Inject constructor(
             withContext(Dispatchers.Main) {
                 when (uploader) {
                     is UploadResult.Success -> {
-                        setAction(DebugMediaLoaderEvent.Succeed(
-                            uploadId = uploader.uploadId,
-                            fileUrl = uploader.fileUrl,
-                            videoUrl = uploader.videoUrl
-                        ))
+                        _state.value = state.value.copy().also {
+                            val result = buildString {
+                                if (uploader.videoUrl.isNotEmpty()) {
+                                    append("\n")
+                                    append(uploader.videoUrl)
+                                }
+
+                                if (uploader.fileUrl.isNotEmpty()) {
+                                    append("\n")
+                                    append(uploader.fileUrl)
+                                }
+
+                                append("\n")
+                                append("uploadId: ${uploader.uploadId}")
+                            }
+
+                            it.addLog(LogType.UploadResult, result)
+                        }
                     }
                     is UploadResult.Error -> {
-                        setAction(DebugMediaLoaderEvent.Failed(
-                            uploader.message
-                        ))
+                        _state.value = state.value.copy().also {
+                            it.addLog(LogType.UploadResult, "Upload gagal: ${uploader.message}")
+                        }
                     }
                 }
             }
@@ -180,13 +152,21 @@ class MediaUploaderStateManager @Inject constructor(
 
         return buildString {
             append("\n")
-            append("path: $path")
+            append(path)
             append("\n")
             append("size: ${File(path).length().formattedToMB()} MB")
             append("\n")
             append(videoInfo)
         }
     }
+
+    private val _uploading = MutableLiveData<UploadState>()
+    val uploading: LiveData<UploadState> get() = _uploading
+
+    fun setUploadingStatus(uploading: UploadState) {
+        _uploading.value = uploading
+    }
+
 
     companion object {
         sealed class UploadState {
@@ -201,4 +181,10 @@ class MediaUploaderStateManager @Inject constructor(
             ): UploadState()
         }
     }
+}
+
+interface DebugMediaUploaderViewModelContract {
+    val state: StateFlow<DebugMediaLoaderState>
+
+    fun setAction(event: DebugMediaLoaderEvent)
 }
