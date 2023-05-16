@@ -40,7 +40,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
                         "",
                         "",
                         true,
-                            0L
+                        0L
                     )
                 }
             }
@@ -74,7 +74,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         if (!isPlaying) {
             itemView.frame_video.visibility = View.INVISIBLE
             if (URLUtil.isValidUrl(url))
-            itemView.layout_video.setVideoURI(Uri.parse(url))
+                itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
