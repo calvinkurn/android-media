@@ -646,8 +646,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun showTnCBottomSheet(userAccount: ContentAccountUiModel) {
         val onBoardingType = when {
-            !userAccount.hasAcceptTnc -> UGCOnboardingParentFragment.OnboardingType.Tnc
             !userAccount.hasUsername -> UGCOnboardingParentFragment.OnboardingType.Complete
+            !userAccount.hasAcceptTnc -> UGCOnboardingParentFragment.OnboardingType.Tnc
             else -> {
                 UGCOnboardingParentFragment.OnboardingType.Unknown
             }
