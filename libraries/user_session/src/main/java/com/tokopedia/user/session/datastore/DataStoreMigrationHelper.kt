@@ -1,10 +1,8 @@
 package com.tokopedia.user.session.datastore
 
-import android.content.Context
 import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.first
@@ -45,7 +43,8 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
             } catch (e: Exception) {
                 ServerLogger.log(
-                    Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+                    Priority.P2,
+                    DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
                     mapOf(
                         "method" to "migrateToDataStore_exception",
                         "error" to Log.getStackTraceString(e)
@@ -55,11 +54,11 @@ object DataStoreMigrationHelper {
         }
     }
 
-    suspend fun checkDataSync(applicationContext: Context): List<String> {
+    suspend fun checkDataSync(
+        dataStore: UserSessionDataStore,
+        userSession: UserSessionInterface
+    ): List<String> {
         val result = mutableListOf<String>()
-        val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
-        val userSession = UserSession(applicationContext)
-
         if (dataStore.getName().first().trim() != userSession.name.trim()) {
             result.add("name")
         }
