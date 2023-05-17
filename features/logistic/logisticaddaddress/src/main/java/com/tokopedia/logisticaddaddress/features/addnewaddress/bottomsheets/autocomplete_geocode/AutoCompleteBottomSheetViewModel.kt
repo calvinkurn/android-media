@@ -15,19 +15,23 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AutoCompleteBottomSheetViewModel @Inject constructor(private val repo: KeroRepository,
-                                                           private val mapper: AutoCompleteMapper) : ViewModel() {
+class AutoCompleteBottomSheetViewModel @Inject constructor(
+    private val repo: KeroRepository,
+    private val mapper: AutoCompleteMapper
+) : ViewModel() {
 
     private val _autoCompleteList = MutableLiveData<Result<Place>>()
     val autoCompleteList: LiveData<Result<Place>>
         get() = _autoCompleteList
 
-
     fun getAutoCompleteList(keyword: String) {
         SimpleIdlingResource.increment()
         viewModelScope.launch(onErrorAutoComplete) {
             SimpleIdlingResource.decrement()
-            val autoComplete = repo.getAutoComplete(keyword, "")
+            val autoComplete = repo.getAutoComplete(
+                keyword = keyword,
+                latlng = ""
+            )
             _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }

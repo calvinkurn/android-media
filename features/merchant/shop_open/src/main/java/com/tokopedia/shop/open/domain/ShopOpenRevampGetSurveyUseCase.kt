@@ -8,8 +8,8 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class ShopOpenRevampGetSurveyUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
-): UseCase<GetSurveyData>() {
+    private val graphqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<GetSurveyData>() {
 
     override suspend fun executeOnBackground(): GetSurveyData {
         val surveyDataRequest = GraphqlRequest(QUERY, GetSurveyData::class.java)
@@ -19,33 +19,35 @@ class ShopOpenRevampGetSurveyUseCase @Inject constructor(
         val error = gqlResponse.getError(GetSurveyData::class.java) ?: listOf()
         if (error == null || error.isEmpty()) {
             return gqlResponse.run {
-                getData<GetSurveyData>(GetSurveyData::class.java)
+                getData(GetSurveyData::class.java)
             }
         } else {
-            throw  MessageErrorException(error.mapNotNull {
-                it.message
-            }.joinToString(separator = ", "))
+            throw MessageErrorException(
+                error.mapNotNull {
+                    it.message
+                }.joinToString(separator = ", ")
+            )
         }
     }
 
     companion object {
         private const val QUERY = "query {\n" +
-                "  getSurveyData(id:1){\n" +
-                "    result{\n" +
-                "      questions{\n" +
-                "        ID\n" +
-                "        type\n" +
-                "        question\n" +
-                "        choices{\n" +
-                "          ID\n" +
-                "          choice\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "    error{\n" +
-                "      message\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
+            "  getSurveyData(id:1){\n" +
+            "    result{\n" +
+            "      questions{\n" +
+            "        ID\n" +
+            "        type\n" +
+            "        question\n" +
+            "        choices{\n" +
+            "          ID\n" +
+            "          choice\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "    error{\n" +
+            "      message\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.applink.merchant
 
-import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -10,8 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -415,14 +412,23 @@ object DeeplinkMapperMerchant {
     }
 
     fun isSellerTokopediaFlashSaleApplink(deeplink: String): Boolean {
-        val path = Uri.parse(deeplink).path.orEmpty()
-        val pathSegmentSize = Uri.parse(deeplink).pathSegments.size
-        val removedPathLink = if (path.isEmpty()) {
-            deeplink // already removed
-        } else {
-            deeplink.split(path).firstOrNull()
-        }
-        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE && pathSegmentSize <= FLASH_SALE_TOKOPEDIA_LIST_SEGMENT_SIZE
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE)
+    }
+
+    fun isSellerTokopediaUpcomingFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING)
+    }
+
+    fun isSellerTokopediaRegisteredFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED)
+    }
+
+    fun isSellerTokopediaOngoingFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING)
+    }
+
+    fun isSellerTokopediaFinishedFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED)
     }
 
     fun isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink: String): Boolean {
@@ -469,7 +475,23 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationForSellerTokopediaFlashSale(): String {
-        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleRegistered(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleOngoing(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleFinished(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED
     }
 
     fun getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink: String): String {

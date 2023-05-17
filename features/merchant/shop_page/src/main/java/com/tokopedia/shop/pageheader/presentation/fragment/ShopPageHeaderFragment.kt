@@ -50,6 +50,7 @@ import com.tokopedia.applink.FragmentConst.SHOP_REVIEW_FRAGMENT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -58,6 +59,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.iconunify.IconUnify
@@ -325,6 +327,10 @@ class ShopPageHeaderFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
+
+    @Inject
+    lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
+
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -425,6 +431,7 @@ class ShopPageHeaderFragment :
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
     private var isConfettiAlreadyShown = false
+    private var mBroadcasterConfig = Broadcaster.Config()
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -490,13 +497,21 @@ class ShopPageHeaderFragment :
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ShopPageHeaderContentCreationOptionBottomSheet -> {
+                childFragment.setData(mBroadcasterConfig)
                 childFragment.setListener(object : ShopPageHeaderContentCreationOptionBottomSheet.Listener {
+                    override fun onShortsCreationClicked() {
+                        goToShortsCreation()
+                    }
+
                     override fun onBroadcastCreationClicked() {
                         goToBroadcaster()
                     }
 
-                    override fun onShortsCreationClicked() {
-                        goToShortsCreation()
+                    override fun onPerformanceDashboardEntryClicked() {
+                        playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
+                            shopHeaderViewModel?.userShopId.orEmpty()
+                        )
+                        goToPerformanceDashboard()
                     }
                 })
             }
@@ -1639,13 +1654,17 @@ class ShopPageHeaderFragment :
             .show(childFragmentManager)
     }
 
+    private fun goToShortsCreation() {
+        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    }
+
     private fun goToBroadcaster() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
     }
 
-    private fun goToShortsCreation() {
-        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    private fun goToPerformanceDashboard() {
+        RouteManager.route(context, PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
@@ -2543,20 +2562,14 @@ class ShopPageHeaderFragment :
         broadcasterConfig: Broadcaster.Config
     ) {
         val valueDisplayed = componentModel.label
+        mBroadcasterConfig = broadcasterConfig
         sendClickShopHeaderComponentTracking(
             shopPageHeaderWidgetUiModel,
             componentModel,
             valueDisplayed
         )
 
-        if (broadcasterConfig.streamAllowed && broadcasterConfig.shortVideoAllowed) {
-            showContentCreationOptionBottomSheet()
-        } else {
-            when {
-                broadcasterConfig.streamAllowed -> goToBroadcaster()
-                broadcasterConfig.shortVideoAllowed -> goToShortsCreation()
-            }
-        }
+        showContentCreationOptionBottomSheet()
     }
 
     override fun onImpressionPlayWidgetComponent(componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel, shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel) {
