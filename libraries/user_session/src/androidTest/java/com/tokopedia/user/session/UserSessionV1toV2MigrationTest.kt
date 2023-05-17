@@ -2,8 +2,7 @@ package com.tokopedia.user.session
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.tokopedia.user.session.Constants.EMAIL
-import com.tokopedia.user.session.Constants.LOGIN_METHOD
+import com.tokopedia.user.session.Constants.*
 import com.tokopedia.utils.MockTimber
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -40,6 +39,37 @@ class UserSessionV1toV2MigrationTest {
         testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "google") {
             assertEquals(it, sut.loginMethod)
         }
+    }
+
+    @Test
+    @Ignore("boolean value will not be migrated if value is default value, will resolve later")
+    fun whenGettingIsShopOwner_oldPreferenceShouldBeRemoved() {
+        val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putBoolean(IS_SHOP_OWNER, false)
+        editor.apply()
+
+        // when
+        assertEquals(false, sut.isShopOwner)
+
+        // old value should be removed by now
+        val oldValue = sharedPrefs.getString(IS_SHOP_OWNER, "none")
+        assertEquals("none", oldValue)
+    }
+
+    @Test
+    fun whenGettingFcmTimestamp_oldPreferenceShouldBeRemoved() {
+        val sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putLong(GCM_ID_TIMESTAMP, 1000L)
+        editor.apply()
+
+        // when
+        assertEquals(1000L, sut.fcmTimestamp)
+
+        // old value should be removed by now
+        val oldValue = sharedPrefs.getString(GCM_ID_TIMESTAMP, "none")
+        assertEquals("none", oldValue)
     }
 
     @Test

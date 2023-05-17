@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.utils.RawAccessPreference
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
@@ -47,7 +48,6 @@ class UserSessionTest {
 
     @Test
     fun basicGetAndSet_stringValue() {
-        val context = InstrumentationRegistry.getInstrumentation().context
         val userSession = UserSession(context)
         assertEquals(userSession.email, "")
         var email = "noiz354@gmail.com"
@@ -73,6 +73,24 @@ class UserSessionTest {
         // still return same value
         givenEmail = userSession.email
         assertEquals(givenEmail, email)
+    }
+
+    @Test
+    fun basecSetAndGet_boolValue() {
+        val userSession = UserSession(context)
+        assertEquals(false, userSession.isShopOwner)
+
+        userSession.setIsShopOwner(true)
+        assertEquals(true, userSession.isShopOwner)
+    }
+
+    @Test
+    fun basicSetAndGet_longValue() {
+        val userSession = UserSession(context)
+        assertEquals(0, userSession.fcmTimestamp)
+
+        userSession.setFcmTimestamp()
+        assertTrue((System.currentTimeMillis() - userSession.fcmTimestamp) < 100)
     }
 
     @Test
