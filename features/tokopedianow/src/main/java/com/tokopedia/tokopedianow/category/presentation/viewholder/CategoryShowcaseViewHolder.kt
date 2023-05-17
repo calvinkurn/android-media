@@ -47,7 +47,9 @@ class CategoryShowcaseViewHolder(
     }
 
     private fun ItemTokopedianowCategoryShowcaseBinding.showLoading() {
+        dhvHeader.hide()
         rvCategory.hide()
+        divider.hide()
         showcaseShimmering.categoryShimmeringLayout.show()
     }
 
@@ -73,7 +75,9 @@ class CategoryShowcaseViewHolder(
     private fun ItemTokopedianowCategoryShowcaseBinding.setDataToRecyclerView(
         element: CategoryShowcaseUiModel
     ) {
+        dhvHeader.show()
         rvCategory.show()
+        divider.show()
         showcaseShimmering.categoryShimmeringLayout.hide()
         adapter?.submitList(element.categoryListUiModel.orEmpty())
     }

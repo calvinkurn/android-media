@@ -35,10 +35,9 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_category" />
 
     <include
-        layout="@layout/partial_tokopedianow_category_menu_shimmering"
+        layout="@layout/partial_tokopedianow_category_showcase_shimmering"
         android:id="@+id/showcase_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
