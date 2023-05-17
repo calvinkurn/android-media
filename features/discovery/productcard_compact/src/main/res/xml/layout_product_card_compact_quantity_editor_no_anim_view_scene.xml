@@ -107,6 +107,7 @@
             android:layout_height="46dp"
             android:translationZ="3dp"
             android:visibility="invisible"
+            android:alpha="0"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent" />
