@@ -25,12 +25,14 @@ object VisitableMapper {
 
     fun MutableList<Visitable<SearchTypeFactory>>.addBroadMatchDataView(
         related: AceSearchProductModel.Related?,
-        cartService: CartService
+        cartService: CartService,
+        hasBlockedAddToCart: Boolean
     ) {
         related?.otherRelatedList?.forEach { otherRelated ->
             val broadMatchDataView = SearchBroadMatchMapper.createBroadMatchDataView(
                 otherRelated = otherRelated,
-                cartService = cartService
+                cartService = cartService,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
             add(broadMatchDataView)
         }

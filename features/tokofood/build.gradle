@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 android {
@@ -41,6 +40,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
@@ -121,6 +121,10 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

@@ -210,6 +210,23 @@ class TopAdsAutoTopUpViewModelTest {
     }
 
     @Test
+    fun `test success in getWhiteListedUser when credit performance is not IS_TOP_UP_CREDIT_NEW_UI`() {
+        val actual = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature(
+            listOf(
+                WhiteListUserResponse.TopAdsGetShopWhitelistedFeature.Data()
+            )
+        )
+        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
+                actual
+            )
+        }
+        viewModel.getWhiteListedUser()
+
+        Assert.assertFalse((viewModel.isUserWhitelisted.value as Success).data)
+    }
+
+    @Test
     fun `test Fail in getWhiteListedUser `() {
         val actual = Throwable("my exception")
         every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {

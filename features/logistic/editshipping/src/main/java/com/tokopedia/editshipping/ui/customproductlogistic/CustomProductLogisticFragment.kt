@@ -36,7 +36,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -61,7 +61,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private var whitelabelCoachmark: CoachMark2? = null
 
-    private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
+    private var binding by autoClearedNullable<FragmentCustomProductLogisticBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -91,9 +91,9 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentCustomProductLogisticBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,7 +118,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun getWhitelabelView(): View? {
         val whitelabelServiceIndex = cplItemOnDemandAdapter.getWhitelabelServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
-            binding.rvOnDemandCpl.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
+            binding?.rvOnDemandCpl?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
         } else {
             null
         }
@@ -127,7 +127,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun getNormalServiceView(): View? {
         val normalServiceIndex = cplItemOnDemandAdapter.getFirstNormalServicePosition()
         return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            binding.rvOnDemandCpl.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
+            binding?.rvOnDemandCpl?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
         } else {
             null
         }
@@ -140,7 +140,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             context?.let {
                 val normalServiceView = getNormalServiceView()
 
-                val coachMarkItems = generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems =
+                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
                 whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
@@ -157,13 +158,15 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     ): ArrayList<CoachMark2Item> {
         val coachMarkItems = ArrayList<CoachMark2Item>()
         // dummy only
-        coachMarkItems.add(
-            CoachMark2Item(
-                binding.tvAntarCpl,
-                context.getString(R.string.whitelabel_instan_title_coachmark),
-                context.getString(R.string.whitelabel_instan_description_coachmark)
+        binding?.tvAntarCpl?.apply {
+            coachMarkItems.add(
+                CoachMark2Item(
+                    this,
+                    context.getString(R.string.whitelabel_instan_title_coachmark),
+                    context.getString(R.string.whitelabel_instan_description_coachmark)
+                )
             )
-        )
+        }
 
         normalService?.let { view ->
             coachMarkItems.add(
@@ -189,7 +192,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         return coachMarkItems
     }
 
-    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>, data: CustomProductLogisticModel) {
+    private fun CoachMark2.setOnBoardingListener(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        data: CustomProductLogisticModel
+    ) {
         this.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if (currentIndex < 1) {
@@ -203,9 +209,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         })
     }
 
-    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 1) {
+    private fun CoachMark2.manualScroll(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        currentIndex: Int = 1
+    ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
-            binding.svShippingEditor.smoothScrollTo(0, rv.top)
+            binding?.svShippingEditor?.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)
         }
     }
@@ -217,7 +226,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun initAdapter() {
-        binding.apply {
+        binding?.apply {
             rvOnDemandCpl.adapter = cplItemOnDemandAdapter
             rvOnDemandCpl.layoutManager = LinearLayoutManager(context)
             rvConventionalCpl.adapter = cplItemConventionalAdapter
@@ -226,13 +235,13 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun initObserver() {
-        viewModel.cplState.observe(viewLifecycleOwner, {
+        viewModel.cplState.observe(viewLifecycleOwner) {
             when (it) {
                 is CPLState.FirstLoad -> {
                     populateView(it.data)
                 }
                 is CPLState.Failed -> {
-                    binding.swipeRefresh.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
@@ -245,27 +254,31 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     }
                 }
                 is CPLState.Loading -> {
-                    binding.swipeRefresh.isRefreshing = true
-                    binding.shippingEditorLayoutOndemand.gone()
-                    binding.shippingEditorLayoutConventional.gone()
-                    binding.btnSaveShipper.gone()
+                    binding?.apply {
+                        swipeRefresh.isRefreshing = true
+                        shippingEditorLayoutOndemand.gone()
+                        shippingEditorLayoutConventional.gone()
+                        btnSaveShipper.gone()
+                    }
                 }
             }
-        })
+        }
     }
 
     private fun populateView(data: CustomProductLogisticModel) {
         updateShipperData(data)
-        binding.swipeRefresh.isRefreshing = false
-        binding.svShippingEditor.visible()
-        binding.btnSaveShipper.visible()
-        binding.globalError.gone()
+        binding?.apply {
+            swipeRefresh.isRefreshing = false
+            svShippingEditor.visible()
+            btnSaveShipper.visible()
+            globalError.gone()
+            btnSaveShipper.setOnClickListener { validateSaveButton() }
+        }
         if (data.shouldShowOnBoarding) {
             Handler(Looper.getMainLooper()).postDelayed({
                 showOnBoardingCoachmark(data)
             }, COACHMARK_ON_BOARDING_DELAY)
         }
-        binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
@@ -286,17 +299,17 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         when (shipperCase) {
             SHIPPER_ON_DEMAND -> {
                 if (data.isEmpty()) {
-                    binding.shippingEditorLayoutOndemand.gone()
+                    binding?.shippingEditorLayoutOndemand?.gone()
                 } else {
-                    binding.shippingEditorLayoutOndemand.visible()
+                    binding?.shippingEditorLayoutOndemand?.visible()
                     cplItemOnDemandAdapter.addData(data)
                 }
             }
             SHIPPER_CONVENTIONAL -> {
                 if (data.isEmpty()) {
-                    binding.shippingEditorLayoutConventional.gone()
+                    binding?.shippingEditorLayoutConventional?.gone()
                 } else {
-                    binding.shippingEditorLayoutConventional.visible()
+                    binding?.shippingEditorLayoutConventional?.visible()
                     cplItemConventionalAdapter.addData(data)
                 }
             }
@@ -312,7 +325,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_ERROR
             ).show()
-            binding.btnSaveShipper.isEnabled = false
+            binding?.btnSaveShipper?.isEnabled = false
         } else {
             finishActivity(activatedSpIds)
         }
@@ -374,13 +387,15 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun showGlobalError(type: Int) {
-        binding.globalError.setType(type)
-        binding.globalError.setActionClickListener {
-            initData()
+        binding?.apply {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                initData()
+            }
+            globalError.visible()
+            svShippingEditor.gone()
+            btnSaveShipper.gone()
         }
-        binding.globalError.visible()
-        binding.svShippingEditor.gone()
-        binding.btnSaveShipper.gone()
     }
 
     companion object {
@@ -409,17 +424,17 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     override fun onShipperCheckboxClicked(shipperId: Long, check: Boolean) {
-        binding.btnSaveShipper.isEnabled = true
+        binding?.btnSaveShipper?.isEnabled = true
         viewModel.setAllShipperServiceState(check, shipperId)
     }
 
     override fun onShipperProductCheckboxClicked(spId: Long, check: Boolean) {
-        binding.btnSaveShipper.isEnabled = true
+        binding?.btnSaveShipper?.isEnabled = true
         viewModel.setShipperServiceState(check, spId)
     }
 
     override fun onWhitelabelServiceCheckboxClicked(spIds: List<Long>, check: Boolean) {
-        binding.btnSaveShipper.isEnabled = true
+        binding?.btnSaveShipper?.isEnabled = true
         viewModel.setWhitelabelServiceState(spIds, check)
     }
 }

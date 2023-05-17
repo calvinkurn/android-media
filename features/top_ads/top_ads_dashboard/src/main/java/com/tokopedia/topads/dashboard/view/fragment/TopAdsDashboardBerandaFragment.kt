@@ -41,6 +41,8 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickBalanceEvent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -189,9 +191,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun initializeListener() {
         binding.tambahKreditLayout.root.setOnClickListener {
+            sendClickBalanceEvent()
             goToCreditHistory(false)
         }
         binding.tambahKreditLayout.addCredit.setOnClickListener {
+            TopadsTopupTracker.sendClickTambahKreditEvent()
             if (showAutoTopUpOldFlow) {
                 openOldAutoTopUpBottomSheet()
             } else {

@@ -106,7 +106,7 @@ class BaseTokoFoodOrderTrackingFragment :
             DaggerTokoFoodOrderTrackingComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }
@@ -197,7 +197,7 @@ class BaseTokoFoodOrderTrackingFragment :
     override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
         tracking.clickChatIcon(
             orderStatus = viewModel.getOrderStatus(),
-            orderId = viewModel.getOrderId(),
+            orderId = orderId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
             unReadChatCounter = unReadChatCounter
@@ -374,6 +374,9 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.INIT_MUTATION_PROFILE_ERROR,
                         TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

@@ -206,6 +206,15 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                         }
                     }
                 }
+                is CoverSetupState.GeneratedCover -> {
+                    if (croppedCover.coverImage.isEmpty()) return@launch
+                    _channelSummary.setValue {
+                        copy(coverUrl = croppedCover.coverImage)
+                    }
+                }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -294,8 +303,8 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                 }
                 addAll(
                     playBroadcastMapper.mapToLiveTrafficUiMetrics(
-                        hydraConfigStore.getAuthorType(),
-                        reportChannelSummary.channel.metrics
+                        authorType = hydraConfigStore.getAuthorType(),
+                        metrics = reportChannelSummary
                     )
                 )
             }.toList()

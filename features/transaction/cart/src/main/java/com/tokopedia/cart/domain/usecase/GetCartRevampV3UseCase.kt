@@ -12,19 +12,21 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CartData>() {
+class GetCartRevampV3UseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<CartData>() {
 
     private var params: Map<String, Any>? = null
 
     fun setParams(cartId: String, state: Int) {
         params = mapOf(
-                PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_SELECTED_CART_ID to cartId,
-                PARAM_KEY_ADDITIONAL to mapOf(
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        PARAM_KEY_STATE to state
-                )
+            PARAM_KEY_LANG to PARAM_VALUE_ID,
+            PARAM_KEY_SELECTED_CART_ID to cartId,
+            PARAM_KEY_ADDITIONAL to mapOf(
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_KEY_STATE to state
+            )
         )
     }
 
@@ -54,5 +56,4 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
 
         private const val QUERY_CART_REVAMP = "CartRevampQuery"
     }
-
 }

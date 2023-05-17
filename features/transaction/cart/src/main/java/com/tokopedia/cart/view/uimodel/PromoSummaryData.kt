@@ -8,15 +8,15 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class PromoSummaryData(
-        val title: String = "",
-        val details: MutableList<PromoSummaryDetailData> = arrayListOf()
+    val title: String = "",
+    val details: MutableList<PromoSummaryDetailData> = arrayListOf()
 ) : Parcelable
 
 @Parcelize
 data class PromoSummaryDetailData(
-        val description: String = "",
-        val type: String = "",
-        val amountStr: String = "",
-        val amount: Double = 0.0,
-        val currencyDetailStr: String = ""
+    val description: String = "",
+    val type: String = "",
+    val amountStr: String = "",
+    val amount: Double = 0.0,
+    val currencyDetailStr: String = ""
 ) : Parcelable

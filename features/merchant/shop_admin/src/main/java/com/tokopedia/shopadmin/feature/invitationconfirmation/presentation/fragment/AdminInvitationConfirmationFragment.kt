@@ -95,7 +95,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         observeAdminType()
         observeShopAdminInfo()
         observeConfirmationReg()
-        observeValidationEmail()
         observeUpdateUserProfile()
         actionGlobalError()
         checkAfterLogin()
@@ -466,6 +465,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
                 adminInvitationWithNoEmailSection.root.show()
+                observeValidationEmail()
                 emailTypingListener()
                 shopAdminTrackers.impressInvitationPageInputEmail()
             } else {

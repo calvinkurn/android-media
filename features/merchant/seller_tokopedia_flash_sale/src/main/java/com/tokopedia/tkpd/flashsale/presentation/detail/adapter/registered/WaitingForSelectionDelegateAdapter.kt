@@ -11,17 +11,21 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductWaitingForSelectionBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.*
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.MULTI_VARIANT_SINGLE_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.SINGLE_VARIANT_MULTI_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.SINGLE_VARIANT_SINGLE_LOCATION
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class WaitingForSelectionDelegateAdapter(
     private val onProductItemClicked: (Int) -> Unit,
-    private val onCheckBoxClicked: (Int, Boolean) -> Unit):
-DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
-WaitingForSelectionItem::class.java
-) {
+    private val onCheckBoxClicked: (Int, Boolean) -> Unit
+) :
+    DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
+        WaitingForSelectionItem::class.java
+    ) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductWaitingForSelectionBinding.inflate(
@@ -43,11 +47,9 @@ WaitingForSelectionItem::class.java
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener { onProductItemClicked(adapterPosition) }
-            binding.run{
-                checkProductItem.apply {
-                    setOnClickListener {
-                        onCheckBoxClicked(checkProductItem.isChecked)
-                    }
+            binding.run {
+                checkProductItem.setOnCheckedChangeListener { _, isChecked ->
+                    onCheckBoxClicked(isChecked)
                 }
             }
         }
@@ -74,7 +76,6 @@ WaitingForSelectionItem::class.java
                 item.discountedPrice.upperPrice.getCurrencyFormatted()
             } else {
                 "${item.discountedPrice.lowerPrice.getCurrencyFormatted()} - ${item.discountedPrice.upperPrice.getCurrencyFormatted()}"
-
             }
         }
 
@@ -103,6 +104,7 @@ WaitingForSelectionItem::class.java
                         item.campaignStock
                     )
                 )
+
                 SINGLE_VARIANT_MULTI_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_single_multiloc_placeholder,
@@ -110,6 +112,7 @@ WaitingForSelectionItem::class.java
                         item.countLocation
                     )
                 )
+
                 MULTI_VARIANT_SINGLE_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_variant_singleloc_placeholder,
@@ -117,6 +120,7 @@ WaitingForSelectionItem::class.java
                         item.campaignStock
                     )
                 )
+
                 MULTI_VARIANT_MULTI_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_variant_multiloc_placeholder,

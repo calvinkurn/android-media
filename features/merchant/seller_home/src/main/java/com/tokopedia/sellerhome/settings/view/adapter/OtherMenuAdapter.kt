@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
@@ -16,16 +17,19 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
 class OtherMenuAdapter(
     private val context: Context?,
     private val listener: Listener,
+    private val userSession: UserSessionInterface,
+    private val sharedPref: SellerHomeSharedPref,
     typeFactory: OtherMenuAdapterTypeFactory
-) :
-    BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
+) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
@@ -36,6 +40,7 @@ class OtherMenuAdapter(
     }
 
     private var isShowCentralizedPromoTag: Boolean = false
+    private var isTopAdsShopUsed: Boolean = false
 
     private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
@@ -45,7 +50,11 @@ class OtherMenuAdapter(
             iconUnify = IconUnify.GRAPH,
             tag = getStatisticNewTag()
         ),
-
+        MenuItemUiModel(
+            title = context?.getString(R.string.setting_menu_iklan_topads).orEmpty(),
+            clickApplink = if(isTopAdsShopUsed) ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL else ApplinkConstInternalTopAds.TOPADS_ONBOARDING,
+            iconUnify = IconUnify.SPEAKER,
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
@@ -146,13 +155,17 @@ class OtherMenuAdapter(
     }
 
     private fun getSettingsTag(): String {
-        val expiredDateMillis = PERSONA_EXPIRED_DATE
-        val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
-            context?.getString(R.string.setting_new_tag).orEmpty()
-        } else {
-            SellerHomeConst.EMPTY_STRING
+        context?.let {
+            val expiredDateMillis = PERSONA_EXPIRED_DATE
+            val todayMillis = Date().time
+            val isNotExpired = todayMillis < expiredDateMillis
+            return if (sharedPref.shouldShowPersonaEntryPoint(userSession.userId) && isNotExpired) {
+                it.getString(R.string.setting_new_tag)
+            } else {
+                SellerHomeConst.EMPTY_STRING
+            }
         }
+        return SellerHomeConst.EMPTY_STRING
     }
 
     private fun getCentralizedPromoTag(): String {
@@ -187,6 +200,11 @@ class OtherMenuAdapter(
         addElement(generateSettingList())
     }
 
+    fun addIklanTopadsMenu(isUsed: Boolean){
+        isTopAdsShopUsed = isUsed
+        clearAllElements()
+        addElement(generateSettingList())
+    }
 
     fun setCentralizedPromoTag(isShow: Boolean = false) {
         this.isShowCentralizedPromoTag = isShow

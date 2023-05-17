@@ -56,25 +56,14 @@ object ApplinkConstInternalSellerapp {
     //SellerSeamlessLoginFragment
     const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
-    //CreateMerchantVoucherStepsActivity
-    const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
-    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
-
-    //VoucherListActivity
-    const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
-    const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
-    const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
-    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
-
-    //VoucherDetailActivity
-    const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
-    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
-
     // Seller Shop Flash Sale - CampaignListActivity
     const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
     // Seller Tokopedia Flash Sale - CampaignListActivity
-    const val SELLER_TOKOPEDIA_FLASH_SALE = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/{tab_menu}/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/upcoming/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/registered/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_ONGOING = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/ongoing/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_FINISHED = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/finished/"
 
     // Seller Tokopedia Flash Sale - CampaignDetailActivity
     const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
@@ -101,6 +90,9 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_MVC_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/{voucher_type}/"
 
     const val SELLER_MVC_DETAIL = "$INTERNAL_SELLERAPP/seller-mvc/detail/{voucher_id}/"
+
+    const val SELLER_MVC_CREATE_PRODUCT_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/product/"
+    const val SELLER_MVC_CREATE_SHOP_VOUCHER = "$INTERNAL_SELLERAPP/seller-mvc/create/shop/"
 
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
@@ -145,4 +137,8 @@ object ApplinkConstInternalSellerapp {
 
     //Seller Persona
     const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
+
+    //Stock Reminder
+    const val SELLER_STOCK_REMINDER = "$INTERNAL_SELLERAPP/stock-reminder/{productId}/{productName}/{isVariant}/"
+
 }

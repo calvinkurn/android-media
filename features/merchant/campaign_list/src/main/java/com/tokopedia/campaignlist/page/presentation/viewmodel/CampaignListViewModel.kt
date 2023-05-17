@@ -5,16 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaignlist.common.data.model.response.*
+import com.tokopedia.campaignlist.common.data.model.response.Campaign
+import com.tokopedia.campaignlist.common.data.model.response.CampaignListV2
+import com.tokopedia.campaignlist.common.data.model.response.CampaignStatus
+import com.tokopedia.campaignlist.common.data.model.response.CampaignTypeData
+import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
+import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_LIST_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
+import com.tokopedia.campaignlist.common.util.PreferenceDataStore
 import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -22,6 +32,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,11 +45,12 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getMerchantBannerUseCase: GetMerchantBannerUseCase,
-    private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
+    private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase,
+    private val preferenceDataStore: PreferenceDataStore
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
+        const val NPL_ICON_URL = TokopediaImageUrl.NPL_ICON_URL
         private const val ONGOING_STATUS_ID = "7"
         private const val NO_OVERLOAD_PRODUCT = 0
         private const val NO_PRODUCT = 0
@@ -56,6 +72,36 @@ class CampaignListViewModel @Inject constructor(
 
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
+
+
+    sealed class UiEvent {
+        data class TapShareButton(val campaignId: Int): UiEvent()
+        data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
+        data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
+        object ClearFilter : UiEvent()
+        object NoCampaignStatusFilterApplied : UiEvent()
+        object DismissTicker: UiEvent()
+    }
+
+    sealed class UiEffect {
+        data class ShowShareBottomSheet(val banner: GetMerchantCampaignBannerGeneratorData) : UiEffect()
+    }
+
+    data class UiState(
+        val campaigns: List<ActiveCampaign> = listOf(),
+        val campaignStatus: List<CampaignStatusSelection> = emptyList(),
+        val campaignType: List<CampaignTypeSelection> = emptyList(),
+        val selectedCampaignStatus: CampaignStatusSelection? = null,
+        val selectedCampaignType: CampaignTypeSelection? = null,
+        val isTickerDismissed: Boolean = false,
+        val showClearFilterIcon : Boolean = true
+    )
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
 
     fun setCampaignName(campaignName : String) {
         this.campaignName = campaignName
@@ -107,17 +153,30 @@ class CampaignListViewModel @Inject constructor(
         return merchantBannerData
     }
 
-    fun getCampaignList(campaignName: String = "",
-                        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
-                        listTypeId: Int = NPL_LIST_TYPE,
-                        statusId: List<Int> = GetCampaignListUseCase.statusId) {
+    fun checkTickerState() {
+        _uiState.update {
+            it.copy(isTickerDismissed = preferenceDataStore.isTickerDismissed())
+        }
+    }
+
+    fun getCampaignList(
+        campaignName: String = "",
+        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
+        listTypeId: Int = NPL_LIST_TYPE,
+        statusId: List<Int> = GetCampaignListUseCase.statusId
+    ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
                 getCampaignListUseCase.setRequestParams(params = params.parameters)
                 getCampaignListUseCase.executeOnBackground()
             }
+
             getCampaignListResultLiveData.value = Success(result)
+
+            _uiState.update {
+                it.copy(campaigns = mapCampaignListDataToActiveCampaignList(result.getCampaignListV2.campaignList))
+            }
         }, onError = {
             getCampaignListResultLiveData.value = Fail(it)
         })
@@ -131,6 +190,8 @@ class CampaignListViewModel @Inject constructor(
                 getMerchantBannerUseCase.executeOnBackground()
             }
             getMerchantBannerResultLiveData.value = Success(result)
+
+            _uiEffect.emit(UiEffect.ShowShareBottomSheet(result.getMerchantCampaignBannerGeneratorData))
         }, onError = {
             getMerchantBannerResultLiveData.value = Fail(it)
         })
@@ -141,7 +202,20 @@ class CampaignListViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 getSellerMetaDataUseCase.executeOnBackground()
             }
+
             getSellerMetaDataResultLiveData.value = Success(result)
+
+            val campaignType = mapCampaignTypeDataToCampaignTypeSelections(result.getSellerCampaignSellerAppMeta.campaignTypeData)
+            val campaignStatus = mapCampaignStatusToCampaignStatusSelections(result.getSellerCampaignSellerAppMeta.campaignStatus)
+            setDefaultCampaignTypeSelection(campaignType)
+
+            _uiState.update {
+                it.copy(
+                    campaignStatus = campaignStatus,
+                    campaignType = campaignType,
+                    selectedCampaignType = getSelectedCampaignTypeSelection()
+                )
+            }
         }, onError = {
             getSellerMetaDataResultLiveData.value = Fail(it)
         })
@@ -278,6 +352,29 @@ class CampaignListViewModel @Inject constructor(
             unsafeProductCount.toInt()
         } catch (e: Exception) {
             NO_PRODUCT
+        }
+    }
+
+    fun onEvent(event: UiEvent) {
+        when(event) {
+            is UiEvent.CampaignStatusFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignStatus = event.selectedCampaignStatus, showClearFilterIcon = true) }
+            }
+            is UiEvent.CampaignTypeFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignType = event.selectedCampaignType, showClearFilterIcon = true) }
+            }
+            UiEvent.NoCampaignStatusFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignStatus = null, showClearFilterIcon = true) }
+            }
+            UiEvent.DismissTicker -> {
+                preferenceDataStore.markTickerAsDismissed()
+                _uiState.update { it.copy(isTickerDismissed = true) }
+            }
+            is UiEvent.TapShareButton -> { getSellerBanner(event.campaignId) }
+            UiEvent.ClearFilter -> {
+                _uiState.update { it.copy(showClearFilterIcon = false, selectedCampaignType = selectedCampaignTypeSelection, selectedCampaignStatus = null ) }
+                getCampaignList()
+            }
         }
     }
 }

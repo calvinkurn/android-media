@@ -71,10 +71,6 @@ class PlayChannelAnalyticManager @Inject constructor(
                             it.productMap.isEmpty()
                         ) return@collect
 
-                        it.productMap.forEach { entry ->
-                            if (!entry.key.isPinned) return@forEach
-                            analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
-                        }
                         sendImpression(it.productMap)
                     }
                     is ProductCarouselUiComponent.Event.OnUpdated -> {
@@ -157,6 +153,7 @@ class PlayChannelAnalyticManager @Inject constructor(
         if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
 
         finalProducts.forEach {
+            if (it.first.isPinned) analytic2?.impressPinnedProductInCarousel(it.first, it.second)
             impressionSet.add(it.first.id)
         }
     }

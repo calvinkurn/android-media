@@ -91,6 +91,22 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               }
                               is_quota_empty
                           }
+                          free_shippings {
+                              icon_url
+                              flag 
+                              shipping_price 
+                              eta_text
+                              error_code 
+                              title
+                              desc
+                              raw_shipping_rate
+                              free_shipping_bottomsheet{
+                                shipping_price
+                                eta_text
+                                raw_shipping_rate
+                              }
+                              is_quota_empty
+                          }
                           address {
                               city_name
                               province_name

@@ -13,16 +13,6 @@
         android:layout_height="match_parent"
         android:background="@color/Unify_Background">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ticker_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:closeButtonVisibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerType="announcement" />
-
         <LinearLayout
             android:id="@+id/empty_search"
             android:layout_width="match_parent"

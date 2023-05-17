@@ -134,26 +134,6 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    fun logIdentifier(context: Context, source: String) {
-        GlobalScope.launch {
-            try {
-                val hasFID = !getFirebaseId().isNullOrBlank()
-                ServerLogger.log(
-                    Priority.P2,
-                    "DEVICE_UNIQUE_ID",
-                    mapOf(
-                        "type" to "ads_id_empty",
-                        "source" to source,
-                        "hasUUID" to hasUuid(context).toString(),
-                        "hasFID" to hasFID.toString()
-                    )
-                )
-            } catch (ignored: Exception) {
-            }
-        }
-    }
-
-    @JvmStatic
     fun hasUuid(context: Context): Boolean {
         return try {
             val uuid = getUUID(context)
@@ -191,16 +171,9 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                getAdsIdSuspend(
-                    context, ({ adsId ->
-                        if (adsId.isEmpty()) {
-                            logIdentifier(context, "DeviceInfo")
-                        }
-                    }))
-                ""
-            } catch (e: Exception) {
-                ""
-            }
+                getAdsIdSuspend(context)
+            } catch (ignored: Exception) { }
+            ""
         }
     }
 

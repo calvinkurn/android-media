@@ -1,8 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 buildscript {
@@ -50,13 +49,9 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)

@@ -67,51 +67,51 @@ class OrderSummaryPageActivityCampaignRevampTest {
 
         orderSummaryPage {
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = "Rp200.000",
-                    productSlashPriceLabel = "50%",
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = "Rp200.000",
+                productSlashPriceLabel = "50%",
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertPayment("Rp116.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp116.000",
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1000.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp116.000",
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1000.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -181,9 +181,9 @@ class OrderSummaryPageActivityCampaignRevampTest {
             assertPayment("Rp215.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -223,9 +223,9 @@ class OrderSummaryPageActivityCampaignRevampTest {
             assertPayment("Rp215.000", "Bayar")
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }

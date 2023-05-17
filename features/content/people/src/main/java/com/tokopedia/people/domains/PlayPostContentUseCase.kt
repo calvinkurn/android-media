@@ -98,10 +98,17 @@ class PlayPostContentUseCase @Inject constructor(
                         partner {
                           id
                           name
+                          type
+                        }
+                        share {
+                          text
+                          redirect_url
+                          is_show_button
                         }
                         app_link
                         web_link
                         display_type
+                        performanceSummaryPageLink
                       }
                     }
                     hash

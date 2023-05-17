@@ -93,6 +93,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.firebase.crashlytics
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.medialoader)

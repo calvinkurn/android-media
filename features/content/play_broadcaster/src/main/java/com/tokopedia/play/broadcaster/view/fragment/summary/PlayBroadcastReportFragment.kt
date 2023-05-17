@@ -85,6 +85,10 @@ class PlayBroadcastReportFragment @Inject constructor(
             analytic.clickPostingVideoOnReportPage()
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideo)
         }
+
+        binding.btnDone.setOnClickListener {
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
+        }
     }
 
     private fun setupObserver() {
@@ -151,6 +155,9 @@ class PlayBroadcastReportFragment @Inject constructor(
                     titleChannel = viewModel.channelTitle,
                     errorMessage = value.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                 )
+            }
+            else -> {
+                //no-op
             }
         }
     }

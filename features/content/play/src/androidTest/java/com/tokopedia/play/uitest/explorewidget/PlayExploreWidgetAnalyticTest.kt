@@ -25,8 +25,6 @@ import org.junit.runner.RunWith
 /**
  * @author by astidhiyaa on 06/01/23
  */
-@RunWith(AndroidJUnit4ClassRunner::class)
-@CassavaTest
 class PlayExploreWidgetAnalyticTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()

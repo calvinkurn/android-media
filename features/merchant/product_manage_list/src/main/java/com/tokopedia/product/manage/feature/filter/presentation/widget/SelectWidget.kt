@@ -47,12 +47,6 @@ class SelectWidget : BaseCustomView {
         }
     }
 
-    fun bindPayload(element: SelectUiModel, selectClickListener: SelectClickListener) {
-        binding?.check?.visibility = if (element.isSelected ) View.VISIBLE else View.GONE
-        this.setOnClickListener {
-            selectClickListener.onSelectClick(element)
-        }
-    }
 }
 
 interface SelectClickListener {

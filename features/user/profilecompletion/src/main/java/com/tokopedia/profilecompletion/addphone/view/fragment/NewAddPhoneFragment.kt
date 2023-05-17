@@ -94,7 +94,10 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
                     binding?.fieldInputPhone?.setMessageField(message)
-                    analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
+                    analytics.sendClickOnButtonTambahNomorHpEvent(
+                        NewAddPhoneNumberTracker.ACTION_FAILED,
+                        message
+                    )
                 }
             }
         }
@@ -110,7 +113,10 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
-                    analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
+                    analytics.sendClickOnButtonTambahNomorHpEvent(
+                        NewAddPhoneNumberTracker.ACTION_FAILED,
+                        message
+                    )
                     handleGlobalError(it.throwable)
                 }
             }
@@ -248,7 +254,10 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
             validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
             changePhoneNumber(validateToken)
         } else {
-            analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, NewAddPhoneNumberTracker.MESSAGE_FAILED_OTP)
+            analytics.sendClickOnButtonTambahNomorHpEvent(
+                NewAddPhoneNumberTracker.ACTION_FAILED,
+                NewAddPhoneNumberTracker.MESSAGE_FAILED_OTP
+            )
         }
     }
 

@@ -133,26 +133,26 @@ class OrderSummaryPageEnhanceECommerce {
 
     fun build(step: Int, option: String): Map<String, Any> {
         return mapOf(
-                KEY_CHECKOUT to mapOf(
-                        KEY_ACTION_FIELD to mapOf(
-                                KEY_STEP to step,
-                                KEY_OPTION to option
-                        ),
-                        KEY_CURRENCY_CODE to "IDR",
-                        KEY_PRODUCTS to dataList
-                )
+            KEY_CHECKOUT to mapOf(
+                KEY_ACTION_FIELD to mapOf(
+                    KEY_STEP to step,
+                    KEY_OPTION to option
+                ),
+                KEY_CURRENCY_CODE to "IDR",
+                KEY_PRODUCTS to dataList
+            )
         )
     }
 
     fun buildForPP(step: Int, option: String): Map<String, Any> {
         return mapOf(
-                KEY_CHECKOUT to mapOf(
-                        KEY_ACTION_FIELD to mapOf(
-                                KEY_STEP to step,
-                                KEY_OPTION to option
-                        ),
-                        KEY_PRODUCTS to mapDataListForPP()
-                )
+            KEY_CHECKOUT to mapOf(
+                KEY_ACTION_FIELD to mapOf(
+                    KEY_STEP to step,
+                    KEY_OPTION to option
+                ),
+                KEY_PRODUCTS to mapDataListForPP()
+            )
         )
     }
 
@@ -214,8 +214,8 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_SHOP_NAME_DIMENSION = "dimension80"
         private const val KEY_SHOP_NAME = "shop_name"
-        private const val KEY_SHOP_TYPE_DIMENSION = "dimension81" //marketplace or official_store or gold_merchant
-        private const val KEY_SHOP_TYPE = "shop_type" //marketplace or official_store or gold_merchant
+        private const val KEY_SHOP_TYPE_DIMENSION = "dimension81" // marketplace or official_store or gold_merchant
+        private const val KEY_SHOP_TYPE = "shop_type" // marketplace or official_store or gold_merchant
         private const val KEY_CATEGORY_ID = "dimension82"
         private const val KEY_PRODUCT_TYPE = "dimension83"
         private const val KEY_SHIPPING_PRICE = "dimension12"

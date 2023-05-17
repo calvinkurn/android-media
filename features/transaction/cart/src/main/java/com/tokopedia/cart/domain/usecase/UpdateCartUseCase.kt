@@ -18,9 +18,11 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                            private val schedulers: ExecutorSchedulers,
-                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartData>() {
+class UpdateCartUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<UpdateCartData>() {
 
     companion object {
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
@@ -38,10 +40,10 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         val source = requestParams?.getString(PARAM_KEY_SOURCE, "")
 
         val variables = mapOf(
-                PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_CARTS to paramUpdateList,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_KEY_SOURCE to source
+            PARAM_KEY_LANG to PARAM_VALUE_ID,
+            PARAM_CARTS to paramUpdateList,
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_KEY_SOURCE to source
         )
 
         val mutation = getUpdateCartMutation()
@@ -50,16 +52,15 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
-                    var updateCartData = UpdateCartData()
-                    updateCartGqlResponse?.updateCartDataResponse?.data?.let {
-                        updateCartData = mapUpdateCartData(updateCartGqlResponse, it)
-                    }
-                    updateCartData
+            .map {
+                val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
+                var updateCartData = UpdateCartData()
+                updateCartGqlResponse?.updateCartDataResponse?.data?.let {
+                    updateCartData = mapUpdateCartData(updateCartGqlResponse, it)
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+                updateCartData
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

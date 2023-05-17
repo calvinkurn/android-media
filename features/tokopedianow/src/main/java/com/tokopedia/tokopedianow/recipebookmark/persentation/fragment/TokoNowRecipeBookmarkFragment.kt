@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,7 +47,7 @@ import javax.inject.Inject
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
-        private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
+        private const val NO_DATA_IMAGE = TokopediaImageUrl.TOKO_NOW_NO_DATA_IMAGE
 
         const val DEFAULT_PAGE = 1
         const val DEFAULT_PER_PAGE = 10
@@ -159,6 +160,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showGlobalError(state.throwable, state.errorCode)
                 is UiState.Success -> showPage(state.data)
                 is UiState.Loading -> showLoadingState()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -169,6 +173,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> showFailToaster(state.throwable, state.data)
                 is UiState.Success -> showSuccessToaster(state.data)
                 is UiState.Loading -> showRecipeItemLoading(state.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -179,6 +186,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> { /* nothing to do */ }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

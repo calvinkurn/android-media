@@ -6,9 +6,6 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_NAME_ADD_TO_CART
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -123,7 +120,7 @@ object SearchResultTracker {
             userId = userId
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
     fun trackClickProduct(
@@ -164,7 +161,7 @@ object SearchResultTracker {
             userId = userId
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackClickAddToCartProduct(
@@ -205,7 +202,7 @@ object SearchResultTracker {
             userId = userId
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_NAME_ADD_TO_CART, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
     fun sendRecommendationSeeAllClickEvent(keyword: String) {

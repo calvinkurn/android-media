@@ -2,10 +2,8 @@ package com.tokopedia.mvcwidget.usecases
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.mvcwidget.FOLLOW_SHOP
-import com.tokopedia.mvcwidget.FollowShop
 import com.tokopedia.mvcwidget.FollowShopResponse
 import com.tokopedia.mvcwidget.GqlUseCaseWrapper
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @GqlQuery("FollowShopQuery", FOLLOW_SHOP)

@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.shortsuploader.di.uploader
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.play_common.shortsuploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
 import dagger.Component
 
@@ -18,4 +19,6 @@ import dagger.Component
 interface PlayShortsUploaderComponent {
 
     fun inject(receiver: PlayShortsUploadReceiver)
+
+    fun inject(activity: PlayShortsPostUploadActivity)
 }

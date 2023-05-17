@@ -138,7 +138,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
                 markAsPersonaFirstVisit()
                 R.id.openingFragment
             }
-            graph.startDestination = defaultDestination
+            graph.setStartDestination(defaultDestination)
 
             navController.graph = graph
             setupToolbar(navController)

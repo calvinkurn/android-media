@@ -7,29 +7,6 @@ import com.google.gson.annotations.SerializedName
 
 class GeneratedHost() : Parcelable {
 
-    companion object {
-        private val TAG = GeneratedHost::class.java.simpleName
-
-        val CREATOR: Parcelable.Creator<GeneratedHost> = object : Parcelable.Creator<GeneratedHost> {
-            override fun createFromParcel(source: Parcel): GeneratedHost? {
-                return GeneratedHost(source)
-            }
-
-            override fun newArray(size: Int): Array<GeneratedHost?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    protected constructor(`in`: Parcel) : this() {
-        serverId = `in`.readInt()
-        uploadHost = `in`.readString()
-        userId = `in`.readInt()
-        message = `in`.readString()
-        status = `in`.readString()
-        messageError = `in`.createStringArrayList()
-    }
-
     @SerializedName("server_id")
     @Expose
     var serverId = 0

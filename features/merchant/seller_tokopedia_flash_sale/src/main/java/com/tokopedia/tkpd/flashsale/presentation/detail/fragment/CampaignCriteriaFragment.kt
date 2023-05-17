@@ -39,6 +39,12 @@ class CampaignCriteriaFragment: BaseDaggerFragment() {
         setupCriteriaList()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // refresh views to re-calculate height at viewpager
+        binding?.root?.requestLayout()
+    }
+
     private fun setupCriteriaList() {
         binding?.rvCriteria?.apply {
             val criteriaItems = resources.getStringArray(R.array.criteria_items).toList()

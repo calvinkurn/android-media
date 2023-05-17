@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -41,10 +42,10 @@ import com.tokopedia.product.addedit.variant.presentation.model.ValidationResult
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -273,10 +274,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
 
             val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
-                if (!editted[index]) {
-                    val picture =
-                        pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
-                    if (picture != "null" && picture.isNotBlank()) {
+                if (!editted.getOrNull(index).orTrue()) {
+                    val picture = pictureList.find {
+                            pict -> pict.urlOriginal == cleanResult.getOrNull(index).orEmpty()
+                    }?.urlThumbnail.orEmpty()
+                    if (picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }

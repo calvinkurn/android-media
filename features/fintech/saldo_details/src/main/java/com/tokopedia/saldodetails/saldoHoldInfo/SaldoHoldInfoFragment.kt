@@ -66,18 +66,20 @@ class SaldoHoldInfoFragment : Fragment() {
     private fun initView() {
 
         var resultAmount: Long? = null
-        when (transactionType) {
-            FOR_BUYER -> {
-                resultAmount = buyerAmount
-                title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
-            }
-            FOR_SELLER -> {
-                resultAmount = sellerAmount
-                title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
-            }
-            else -> {
-                title_saldo.gone()
-                title_saldo_value.gone()
+        context?.let { context ->
+            when (transactionType) {
+                FOR_BUYER -> {
+                    resultAmount = buyerAmount
+                    title_saldo.text = context.resources.getString(R.string.saldo_total_balance_buyer)
+                }
+                FOR_SELLER -> {
+                    resultAmount = sellerAmount
+                    title_saldo.text = context.resources.getString(R.string.saldo_total_balance_seller)
+                }
+                else -> {
+                    title_saldo.gone()
+                    title_saldo_value.gone()
+                }
             }
         }
 

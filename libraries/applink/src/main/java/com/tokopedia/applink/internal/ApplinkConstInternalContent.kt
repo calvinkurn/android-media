@@ -1,6 +1,8 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.url.TokopediaUrl
 
 object ApplinkConstInternalContent {
     const val HOST_CONTENT = "content"
@@ -36,9 +38,13 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
 
+    const val HOST_PLAY_SHORTS = "play-shorts"
+    const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
+
     const val INTERNAL_CONTENT_POST_DETAIL = "$INTERNAL_CONTENT/post-detail/"
 
     const val PLAY_PATH_LITE = "play/channel/"
+    const val PLAY_LIVE = "play/live"
     const val FEED_VIDEO = "feed/video"
 
     const val TAB_POSITION_EXPLORE = 2
@@ -47,4 +53,9 @@ object ApplinkConstInternalContent {
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
+
+    private val tokopediaUrl = TokopediaUrl.getInstance().WEB
+    private val performanceDashboardUrl = tokopediaUrl + PLAY_LIVE
+    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "${ApplinkConst.WEBVIEW}?pull_to_refresh=true&url=%s"
+    val PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK = String.format(PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT, performanceDashboardUrl)
 }

@@ -52,7 +52,7 @@ class ThematicWidgetViewHolder (
         private const val RV_DEFAULT_MARGIN_TOP = 16f
         private const val RV_DEFAULT_MARGIN_BOTTOM = 12f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
-        private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 16f
+        private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     }
 

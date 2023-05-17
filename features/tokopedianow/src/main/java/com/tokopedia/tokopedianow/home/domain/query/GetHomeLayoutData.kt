@@ -30,6 +30,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
               persona
               brandID
               categoryPersona
+              styleParam
               name
               layout
               type

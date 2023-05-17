@@ -175,6 +175,9 @@ class LivenessFragment : BaseDaggerFragment(),
             Detector.DetectionType.POS_YAW -> {
                 analytics.eventSuccessHeadDetection(projectId, true)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -322,6 +325,7 @@ class LivenessFragment : BaseDaggerFragment(),
     }
 
     override fun onGetFaceDataStart() {}
+
 
     @SuppressLint("DeprecatedMethod")
     override fun onGetFaceDataSuccess(resultEntity: ResultEntity?) {

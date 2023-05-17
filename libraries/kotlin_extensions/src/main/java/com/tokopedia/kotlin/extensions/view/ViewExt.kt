@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.SystemClock
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -39,6 +40,11 @@ fun View.show() {
     if (this.visibility != View.VISIBLE) {
         this.visibility = View.VISIBLE
     }
+}
+
+fun View.showKeyboard() {
+    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
 fun View.hideKeyboard() {
@@ -456,4 +462,17 @@ fun View.setLayoutHeight(height: Int) {
     if (layoutParams.height == height) return
 
     layoutParams.height = height
+}
+
+fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
+    var lastClickTime = 0L
+
+    setOnClickListener onClick@{
+        if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+            return@onClick
+        }
+
+        lastClickTime = SystemClock.elapsedRealtime()
+        block()
+    }
 }

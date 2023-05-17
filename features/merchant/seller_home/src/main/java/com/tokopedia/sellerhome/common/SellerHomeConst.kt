@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhome.common
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 /**
  * Created By @ilhamsuaib on 08/09/21
  */
@@ -14,22 +16,18 @@ object SellerHomeConst {
     const val HOME_BACKGROUND_RATIO = 0.75f
 
     object Images {
-        const val IMG_ERROR_500 = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_500.png"
-        const val IMG_NEW_SELLER_LEFT = "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_left.png"
-        const val IMG_NEW_SELLER_RIGHT = "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_right.png"
-
-        const val SAH_SHOP_STATE_BG_RM_THEMATIC = "https://images.tokopedia.net/img/android/seller_home/sah_shop_state_bg_rm_thematic.png"
-        const val SAH_SHOP_STATE_BG_PM_THEMATIC = "https://images.tokopedia.net/img/android/seller_home/sah_shop_state_bg_pm_thematic.png"
-        const val SAH_SHOP_STATE_BG_OS_THEMATIC = "https://images.tokopedia.net/img/android/seller_home/sah_shop_state_bg_os_thematic.png"
-
-        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_RM = "https://images.tokopedia.net/img/android/seller_home/bg_base_sah_other_curved_header_thematic_rm@3x.png"
-        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_PM = "https://images.tokopedia.net/img/android/seller_home/bg_base_sah_other_curved_header_thematic_pm@3x.png"
-        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_OS = "https://images.tokopedia.net/img/android/seller_home/bg_base_sah_other_curved_header_thematic_os@3x.png"
-
-        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_RM = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_left_star_thematic_rm@3x.png"
-        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_PM = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_left_star_thematic_pm@3x.png"
-        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_OS = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_left_star_thematic_os@3x.png"
-
-        const val BG_SAH_OTHER_THEMATIC_RIGHT_STAR = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_right_star_thematic@3x.png"
+        const val IMG_ERROR_500 = TokopediaImageUrl.GLOBAL_ERROR_500
+        const val IMG_NEW_SELLER_LEFT = TokopediaImageUrl.IMG_NEW_SELLER_LEFT
+        const val IMG_NEW_SELLER_RIGHT = TokopediaImageUrl.IMG_NEW_SELLER_RIGHT
+        const val SAH_SHOP_STATE_BG_RM_THEMATIC = TokopediaImageUrl.SAH_SHOP_STATE_BG_RM_THEMATIC
+        const val SAH_SHOP_STATE_BG_PM_THEMATIC = TokopediaImageUrl.SAH_SHOP_STATE_BG_PM_THEMATIC
+        const val SAH_SHOP_STATE_BG_OS_THEMATIC = TokopediaImageUrl.SAH_SHOP_STATE_BG_OS_THEMATIC
+        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_RM = TokopediaImageUrl.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_RM
+        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_PM = TokopediaImageUrl.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_PM
+        const val BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_OS = TokopediaImageUrl.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_OS
+        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_RM = TokopediaImageUrl.BG_SAH_OTHER_THEMATIC_LEFT_STAR_RM
+        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_PM = TokopediaImageUrl.BG_SAH_OTHER_THEMATIC_LEFT_STAR_PM
+        const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_OS = TokopediaImageUrl.BG_SAH_OTHER_THEMATIC_LEFT_STAR_OS
+        const val BG_SAH_OTHER_THEMATIC_RIGHT_STAR = TokopediaImageUrl.BG_SAH_OTHER_THEMATIC_RIGHT_STAR
     }
 }

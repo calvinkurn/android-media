@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -28,6 +31,8 @@ object WebViewHelper {
     private const val KEY_PARAM_URL: String = "url"
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
+    private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+    var whiteListedDomains = WhiteListedDomains()
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
@@ -37,12 +42,59 @@ object WebViewHelper {
             val urlSeamless = getUrlSeamless(url)
             if (!urlSeamless.isNullOrEmpty()) isUrlValid(urlSeamless) else false
         } else {
-            val domain = getDomainName(url)
-            (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN)
+            isTokopediaDomain(url)
         }
     }
 
-    private fun getDomainName(url: String): String {
+    fun isTokopediaDomain(url: String): Boolean {
+        val domain = getDomainName(url)
+        return (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN)
+    }
+
+    private fun isDomainWhitelisted(context: Context, domain: String): Boolean {
+        if (domain.isEmpty()) {
+            return false
+        }
+        if (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN) {
+            return true
+        }
+        if (whiteListedDomains.domains.isEmpty()) {
+            whiteListedDomains = getWhiteListedDomains(context.applicationContext)
+        }
+        if (whiteListedDomains.isEnabled) {
+            whiteListedDomains.domains.forEach {
+                if (domain.endsWith(it)) {
+                    return true
+                }
+            }
+            return false
+        }
+        return false
+    }
+
+    @JvmStatic
+    fun isUrlWhitelisted(context: Context, url: String): Boolean {
+        return isDomainWhitelisted(context, getDomainName(url))
+    }
+
+    fun getWhiteListedDomains(context: Context):WhiteListedDomains {
+        return try {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+            if (whiteListedDomainsCsv.isNotBlank()) {
+                Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            } else {
+                WhiteListedDomains()
+            }
+        } catch (e: Exception) {
+            if (!GlobalConfig.isAllowDebuggingTools()) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+            WhiteListedDomains()
+        }
+    }
+
+    fun getDomainName(url: String): String {
         val domain = Uri.parse(url).host
         return if (domain != null) {
             if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
@@ -313,7 +365,7 @@ object WebViewHelper {
      * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
      * https://www.tokopedia.com/events/hiburan
      */
-    private fun String.normalizeSymbol(): String {
+    fun String.normalizeSymbol(): String {
         val indexAnd = indexOf("&")
         return if (indexAnd == -1) {
             this

@@ -83,6 +83,7 @@ object DigitalCheckoutQueries {
               fintech_amount
               fintech_partner_amount
               operator_name
+              cross_sell_metadata
               info {
                 title
                 subtitle

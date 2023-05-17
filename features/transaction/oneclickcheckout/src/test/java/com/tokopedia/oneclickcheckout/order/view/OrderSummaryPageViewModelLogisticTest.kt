@@ -1778,7 +1778,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
@@ -1875,7 +1876,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
 
         // When Choose Logistic Promo
@@ -1908,7 +1910,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
 
         // When Update Quantity
@@ -2057,7 +2060,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                     PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
                 )
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         orderSummaryPageViewModel.getRates()
@@ -2092,7 +2096,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
@@ -2268,7 +2273,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
 
         // When
@@ -2303,7 +2309,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                     PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
                 )
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         orderSummaryPageViewModel.orderShipment.value = orderSummaryPageViewModel.orderShipment.value.copy(logisticPromoShipping = null)

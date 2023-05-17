@@ -5,12 +5,11 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:theme="?toolbarTheme"/>
+        app:elevation="0dp"/>
 
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:id="@+id/stepper_progress"

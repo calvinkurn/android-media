@@ -294,7 +294,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
                     listener.forceUpdateCart()
                     true
-                } else false
+                } else {
+                    false
+                }
             }
             tfNote.editText.setOnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
@@ -334,12 +336,18 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             }
             qtyEditorProduct.setAddClickListener {
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId,
-                    shop.shopId, product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityIncrease(
+                    product.productId,
+                    shop.shopId,
+                    product.orderQuantity.toString()
+                )
             }
             qtyEditorProduct.setSubstractListener {
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId,
-                    shop.shopId, product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityDecrease(
+                    product.productId,
+                    shop.shopId,
+                    product.orderQuantity.toString()
+                )
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {

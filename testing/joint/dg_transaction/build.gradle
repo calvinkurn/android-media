@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 
 android {
     defaultConfig {
@@ -20,6 +19,12 @@ android {
 
     buildFeatures {
         buildConfig = false
+    }
+
+    configurations {
+        androidTestImplementation {
+            exclude group: 'com.google.firebase', module: 'firebase-perf'
+        }
     }
 }
 

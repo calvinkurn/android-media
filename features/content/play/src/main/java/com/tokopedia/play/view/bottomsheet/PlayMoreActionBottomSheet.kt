@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -48,13 +51,12 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created by jegul on 10/12/19
@@ -62,7 +64,8 @@ import javax.inject.Inject
 class PlayMoreActionBottomSheet @Inject constructor(
     private val analytic: PlayAnalytic,
     private val trackingQueue: TrackingQueue,
-    private val analytic2Factory: PlayAnalytic2.Factory
+    private val analytic2Factory: PlayAnalytic2.Factory,
+    private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
 ) : BottomSheetUnify(),
     KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
@@ -85,23 +88,56 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     var mListener: Listener? = null
 
-    private val reportAction by lazy {
+    private val seePerformanceAction by lazy {
         PlayMoreActionUiModel(
-            type = PlayMoreActionType.Report,
+            type = PlayMoreActionType.SeePerformance,
             icon = getIconUnifyDrawable(
                 requireContext(),
-                IconUnify.WARNING,
+                IconUnify.GRAPH,
                 MethodChecker.getColor(
                     requireContext(),
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = R.string.play_kebab_report_title,
+            subtitleRes = R.string.play_kebab_see_performance,
             onClick = {
-                shouldOpenUserReport()
+                playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointGroupChatRoom(
+                    playViewModel.shopId,
+                    playViewModel.channelId,
+                )
+                mListener?.onSeePerformanceClicked(this)
             },
-            priority = 4,
-            onImpress = { analytic2?.impressUserReport() }
+            priority = 1,
+            onImpress = {
+
+            }
+        )
+    }
+
+    private val performanceDashboardAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.PerformanceDashboard,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.GRAPH_REPORT,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = contentCommonR.string.performance_dashboard_wording_entry_point,
+            onClick = {
+                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointChannelPage(
+                    playViewModel.shopId,
+                    playViewModel.channelId,
+                )
+                RouteManager.route(
+                    requireContext(),
+                    PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+                )
+            },
+            priority = 2,
+            onImpress = { }
         )
     }
 
@@ -114,7 +150,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickPiP()
                 mListener?.onPipClicked(this)
             },
-            priority = 1,
+            priority = 3,
             onImpress = { analytic2?.impressPiP() }
         )
     }
@@ -135,8 +171,28 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickWatchMode()
                 mListener?.onWatchModeClicked(this)
             },
-            priority = 3,
+            priority = 4,
             onImpress = { analytic2?.impressWatchMode() }
+        )
+    }
+
+    private val reportAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.Report,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.WARNING,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = R.string.play_kebab_report_title,
+            onClick = {
+                shouldOpenUserReport()
+            },
+            priority = 5,
+            onImpress = { analytic2?.impressUserReport() }
         )
     }
 
@@ -161,7 +217,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
-        setObserve()
+        setupObserve()
+        setupListAction()
     }
 
     fun setState(isFreeze: Boolean) {}
@@ -191,7 +248,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
      *
      * Setup Observer
      */
-    private fun setObserve() {
+    private fun setupObserve() {
         observeKebabInsets()
         observeUserReport()
         observeUserReportSubmission()
@@ -200,7 +257,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         observeCast()
         observeVideoMeta()
         observeState()
-        buildListAction(action = reportAction)
     }
 
     private fun observeBottomInsets() {
@@ -238,8 +294,16 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.value.channel.channelInfo
                 )
+
+                renderPerformanceDashboardEntryPoint(it.prevValue?.partner?.id, it.value.partner.id)
             }
         }
+    }
+
+    private fun renderPerformanceDashboardEntryPoint(prevId: Long?, currentId: Long) {
+        if (prevId == currentId || currentId.toString() != playViewModel.shopId) return
+
+        buildListAction(action = performanceDashboardAction)
     }
 
     private fun renderPiPView(
@@ -321,6 +385,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
                         toasterType = Toaster.TYPE_ERROR,
                         message = ErrorHandler.getErrorMessage(requireContext(), cache.value.state.error)
                     )
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }
@@ -332,6 +399,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 when (event) {
                     OpenUserReportEvent -> {
                         doActionUserReport()
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -354,6 +424,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
     /***
      * Private Methods
      */
+
+    private fun setupListAction() {
+        buildListAction(action = reportAction)
+
+        if(playViewModel.performanceSummaryPageLink.isNotEmpty())
+            buildListAction(action = seePerformanceAction)
+    }
 
     private fun hideSheets() {
         if (requireParentFragment() is PlayUserInteractionFragment) (requireParentFragment() as PlayUserInteractionFragment).hideBottomSheet()
@@ -528,6 +605,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     interface Listener {
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
         fun onPipClicked(bottomSheet: PlayMoreActionBottomSheet)
+        fun onSeePerformanceClicked(bottomSheet: PlayMoreActionBottomSheet)
     }
 
     companion object {

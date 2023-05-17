@@ -134,6 +134,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
@@ -232,7 +234,8 @@ open class TopChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    ChatTextAreaTabLayoutListener {
+    ChatTextAreaTabLayoutListener,
+    BannedChatMessageViewHolder.TopChatMessageCensorListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -345,7 +348,6 @@ open class TopChatRoomFragment :
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
-        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
@@ -573,6 +575,7 @@ open class TopChatRoomFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.updateMessageId(messageId)
+        initBubbleChatFlag()
         setupBackground()
         setupViewState()
         setupArguments(savedInstanceState)
@@ -815,7 +818,7 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
         try {
             if (::viewModel.isInitialized) {
                 val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
@@ -1153,7 +1156,7 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, session
+            this, this, this, session
         )
     }
 
@@ -2017,6 +2020,7 @@ open class TopChatRoomFragment :
     }
 
     override fun onBackPressed(): Boolean {
+        if (!isAdded || isDetached) return super.onBackPressed()
         if (super.onBackPressed()) return true
         if (webSocketViewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
@@ -3165,7 +3169,8 @@ open class TopChatRoomFragment :
                     context = ctx,
                     image = image,
                     messageId = msgId,
-                    isSecure = isUploadImageSecure()
+                    isSecure = isUploadImageSecure(),
+                    sourceReply = webSocketViewModel.getSourceReply()
                 )
             }
         }
@@ -3607,6 +3612,11 @@ open class TopChatRoomFragment :
             getUserSession().userId,
             shopId
         )
+    }
+
+    override fun onClickCheckGuide() {
+        view?.hideKeyboard()
+        TopChatGuideChatBottomSheet().show(childFragmentManager)
     }
 
     companion object {

@@ -6,7 +6,6 @@ import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.*
-import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -17,14 +16,16 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
-class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDispatcher,
-                                                @Named(IO) workerDispatcher: CoroutineDispatcher,
-                                                val giftBoxDailyUseCase: GiftBoxDailyUseCase,
-                                                val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
-                                                val couponDetailUseCase: CouponDetailUseCase,
-                                                val remindMeUseCase: RemindMeUseCase,
-                                                val autoApplyUseCase: AutoApplyUseCase)
-    : BaseViewModel(workerDispatcher) {
+class GiftBoxDailyViewModel @Inject constructor(
+    @Named(MAIN) val ui: CoroutineDispatcher,
+    @Named(IO) workerDispatcher: CoroutineDispatcher,
+    val giftBoxDailyUseCase: GiftBoxDailyUseCase,
+    val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
+    val couponDetailUseCase: CouponDetailUseCase,
+    val remindMeUseCase: RemindMeUseCase,
+    val autoApplyUseCase: AutoApplyUseCase
+) :
+    BaseViewModel(workerDispatcher) {
 
     @Volatile
     var campaignSlug: String? = ""
@@ -35,7 +36,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
     val giftBoxLiveData: MutableLiveData<LiveDataResult<Pair<GiftBoxEntity, RemindMeCheckEntity>>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
     val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
-    var autoApplycallback: AutoApplyCallback?=null
+    var autoApplycallback: AutoApplyCallback? = null
     var rewardJob: Job? = null
     var remindMeJob: Job? = null
 
@@ -44,14 +45,13 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
         launchCatchError(block = {
             val params = giftBoxDailyUseCase.getRequestParams(pageName)
             val response = giftBoxDailyUseCase.getResponse(params)
-            campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
+            campaignSlug = response.gamiLuckyHome.tokensUser.campaignSlug
             val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
 
             giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
-
         }, onError = {
-            giftBoxLiveData.postValue(LiveDataResult.error(it))
-        })
+                giftBoxLiveData.postValue(LiveDataResult.error(it))
+            })
     }
 
     fun getRewards() {
@@ -64,10 +64,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
                 val couponDetail = composeApi(response)
                 response.couponDetailResponse = couponDetail
                 rewardLiveData.postValue(LiveDataResult.success(response))
-
             }, onError = {
-                rewardLiveData.postValue(LiveDataResult.error(it))
-            })
+                    rewardLiveData.postValue(LiveDataResult.error(it))
+                })
         }
     }
 
@@ -79,8 +78,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
                 response.gameRemindMe.requestToSetReminder = true
                 reminderSetLiveData.postValue(LiveDataResult.success(response))
             }, onError = {
-                reminderSetLiveData.postValue(LiveDataResult.error(it))
-            })
+                    reminderSetLiveData.postValue(LiveDataResult.error(it))
+                })
         }
     }
 
@@ -92,13 +91,12 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
                 response.gameRemindMe.requestToSetReminder = false
                 reminderSetLiveData.postValue(LiveDataResult.success(response))
             }, onError = {
-                reminderSetLiveData.postValue(LiveDataResult.error(it))
-            })
+                    reminderSetLiveData.postValue(LiveDataResult.error(it))
+                })
         }
     }
 
     suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse? {
-
         suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
             return couponDetailUseCase.getResponse(ids)
         }
@@ -129,8 +127,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
                 autoApplycallback?.success(response)
             }
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
 }
 

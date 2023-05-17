@@ -10,9 +10,11 @@ import rx.Subscriber
 /**
  * Created by fwidjaja on 2020-03-05.
  */
-class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
-                                         private val presenter: ICartListPresenter?,
-                                         private val shouldHideToaster: Boolean) : Subscriber<UpdateAndValidateUseData>() {
+class UpdateCartAndValidateUseSubscriber(
+    private val view: ICartListView?,
+    private val presenter: ICartListPresenter?,
+    private val shouldHideToaster: Boolean
+) : Subscriber<UpdateAndValidateUseData>() {
     override fun onNext(t: UpdateAndValidateUseData?) {
         t?.let {
             it.updateCartData?.let { updateCartData ->
@@ -29,7 +31,6 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
     }
 
     override fun onCompleted() {
-
     }
 
     override fun onError(e: Throwable) {

@@ -3,10 +3,8 @@ package com.tokopedia.product.manage.nonCassava
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.cassava.robot.actionTest
-import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import org.junit.Test
 
 class ProductManageTest : ProductManageTestFixture() {

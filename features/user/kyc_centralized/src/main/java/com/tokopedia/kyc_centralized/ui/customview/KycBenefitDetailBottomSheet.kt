@@ -1,5 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.customview
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,14 +52,14 @@ class KycBenefitDetailBottomSheet: BottomSheetUnify() {
 
     companion object {
         const val TAG = "KycBenefitDetailBottomSheet"
-        private const val URL_REFERRAL = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_referral.png"
-        private const val URL_AFFILIATE = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_affiliatte.png"
-        private const val URL_BANK_ACCOUNT = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_cc.png"
-        private const val URL_PRODUCT_DEWASA = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_porudct_dewasa.png"
-        private const val URL_PAY_LATER = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_pinjaman_online.png"
-        private const val URL_MITRA = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_mitra.png"
-        private const val URL_POWER_MERCHANT = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_power_merchant.png"
-        private const val URL_MODAL_TOKO = "https://images.tokopedia.net/img/android/user/kyc/ic_kyc_benefit_modal_toko.png"
+        private const val URL_REFERRAL = TokopediaImageUrl.URL_REFERRAL
+        private const val URL_AFFILIATE = TokopediaImageUrl.URL_AFFILIATE
+        private const val URL_BANK_ACCOUNT = TokopediaImageUrl.URL_BANK_ACCOUNT
+        private const val URL_PRODUCT_DEWASA = TokopediaImageUrl.URL_PRODUCT_DEWASA
+        private const val URL_PAY_LATER = TokopediaImageUrl.URL_PAY_LATER
+        private const val URL_MITRA = TokopediaImageUrl.URL_MITRA
+        private const val URL_POWER_MERCHANT = TokopediaImageUrl.URL_POWER_MERCHANT
+        private const val URL_MODAL_TOKO = TokopediaImageUrl.URL_MODAL_TOKO
 
         fun createInstance(): KycBenefitDetailBottomSheet {
             return KycBenefitDetailBottomSheet()

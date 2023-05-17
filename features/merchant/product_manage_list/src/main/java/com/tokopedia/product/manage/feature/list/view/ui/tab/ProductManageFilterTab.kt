@@ -1,8 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.ui.tab
 
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus

@@ -7,7 +7,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderTickerBinding
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
-class OrderTickerCard(private val binding: CardOrderTickerBinding, private val listener: OrderTickerCardListener): RecyclerView.ViewHolder(binding.root) {
+class OrderTickerCard(private val binding: CardOrderTickerBinding, private val listener: OrderTickerCardListener) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 0

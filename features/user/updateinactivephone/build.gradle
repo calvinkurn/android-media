@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 buildscript {
@@ -39,14 +38,10 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.design
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.supportLibDependencies.constraintLayout

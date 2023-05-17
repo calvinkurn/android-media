@@ -74,6 +74,7 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
+import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
 import com.tokopedia.mvc.util.tracker.VoucherDetailTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -674,7 +675,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
 
-                    if (!isDiscountPromoTypeEnabled) {
+                    if (!isDiscountPromoTypeEnabled && data.voucherType.isDiscount()) {
                         stateButtonDuplicateBinding?.btnDuplicate?.disable()
                     }
                 }
@@ -964,16 +965,16 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         )
         bottomSheet.setOnDownloadSuccess {
             binding?.layoutButtonGroup.showToaster(
-                getString(
+                context?.getString(
                     R.string.smvc_placeholder_download_voucher_image_success,
                     voucherDetail.voucherName
-                ),
+                ).orEmpty(),
                 getString(R.string.smvc_ok)
             )
         }
         bottomSheet.setOnDownloadError {
             binding?.layoutButtonGroup.showToaster(
-                getString(R.string.smvc_download_voucher_image_failed),
+                context?.getString(R.string.smvc_download_voucher_image_failed).orEmpty(),
                 getString(R.string.smvc_ok)
             )
         }
