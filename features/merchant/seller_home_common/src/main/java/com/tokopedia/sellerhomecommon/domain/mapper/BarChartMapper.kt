@@ -31,7 +31,8 @@ class BarChartMapper @Inject constructor(
     }
 
     override fun mapRemoteDataToUiData(
-        response: GetBarChartDataResponse, isFromCache: Boolean
+        response: GetBarChartDataResponse,
+        isFromCache: Boolean
     ): List<BarChartDataUiModel> {
         return response.fetchBarChartWidgetData.data.map {
             BarChartDataUiModel(
@@ -81,20 +82,25 @@ class BarChartMapper @Inject constructor(
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "# 4FBA68"
+                "color": "#4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "# 4FBA68"
+                "color": "#4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "# 4FBA68"
+                "color": "#4FBA68"
             }
         ]*/
     private fun getBarHexColor(metric: BarChartMetricModel): String {
-        return metric.value.getOrNull(COLOR_INDEX)?.hexColor ?: ChartColor.DMS_DEFAULT_BAR_COLOR
+        val hexColor = metric.value.getOrNull(COLOR_INDEX)?.hexColor
+        return if (hexColor == null) {
+            ChartColor.DMS_DEFAULT_BAR_COLOR
+        } else {
+            darkModeHelper.getUnifyHexColor(hexColor)
+        }
     }
 }

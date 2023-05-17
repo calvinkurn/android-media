@@ -23,7 +23,7 @@ class DarkModeHelper @Inject constructor(
         private const val HEX_COLOR_FORMAT = "#%06X"
     }
 
-    private fun getHexColor(hexColor: String): String {
+    fun getUnifyHexColor(hexColor: String): String {
         try {
             val colorResId = stringToUnifyColor(context, hexColor).unifyColorResourceID.orZero()
             if (colorResId != Int.ZERO) {
@@ -47,7 +47,7 @@ class DarkModeHelper @Inject constructor(
 
         while (matcher.find()) {
             val hexColor = matcher.group()
-            val unifyHexColor = getHexColor(hexColor)
+            val unifyHexColor = getUnifyHexColor(hexColor)
             newText = newText.replace(hexColor, unifyHexColor)
         }
 
