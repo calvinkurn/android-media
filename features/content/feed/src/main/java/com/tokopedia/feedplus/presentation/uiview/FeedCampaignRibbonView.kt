@@ -361,7 +361,8 @@ class FeedCampaignRibbonView(
                         listener.onReminderClicked(
                             mCampaign?.id.toLongOrZero(),
                             !(mCampaign?.isReminderActive ?: false),
-                            trackerData
+                            trackerData,
+                            type,
                         )
                     }
 
