@@ -277,7 +277,27 @@ class FeedCampaignRibbonView(
                             }
                         }
                     }
+
+                    root.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                mProduct?.let { product ->
+                                    listener.onASGCGeneralClicked(
+                                        mPostId,
+                                        author,
+                                        mPostType,
+                                        mIsFollowing,
+                                        campaign,
+                                        mHasVoucher,
+                                        listOf(product),
+                                        trackerData
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
+
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
@@ -305,7 +325,28 @@ class FeedCampaignRibbonView(
                             }
                         }
                     }
+                    root.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                mProduct?.let { product ->
+                                    listener.onOngoingCampaignClicked(
+                                        mPostId,
+                                        author,
+                                        mPostType,
+                                        mIsFollowing,
+                                        campaign,
+                                        mHasVoucher,
+                                        listOf(product),
+                                        trackerData,
+                                        campaign.shortName,
+                                        feedPosition
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
+
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                     setupTimer(mCampaign?.startTime ?: "") {}
@@ -323,8 +364,11 @@ class FeedCampaignRibbonView(
                             trackerData
                         )
                     }
+
+                    root.setOnClickListener {}
                 }
             }
+
             resetAnimationBasedOnType()
         }
     }
