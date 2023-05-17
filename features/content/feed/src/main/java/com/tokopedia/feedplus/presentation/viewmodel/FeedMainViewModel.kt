@@ -74,7 +74,11 @@ class FeedMainViewModel @Inject constructor(
     val currentTabIndex: LiveData<Int>
         get() = _currentTabIndex
 
-    private val _swipeOnboardingState = MutableStateFlow(SwipeOnboardingStateModel.Empty)
+    private val _swipeOnboardingState = MutableStateFlow(
+        SwipeOnboardingStateModel.Empty.copy(
+            hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
+        )
+    )
 
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
@@ -95,6 +99,7 @@ class FeedMainViewModel @Inject constructor(
                     if (!isEligible) return@collectLatest
                     uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
 
+                    if (userSession.isLoggedIn) onboardingPreferences.setHasShownSwipeOnboarding()
                     _swipeOnboardingState.update { it.copy(hasShown = true) }
                 }
         }
