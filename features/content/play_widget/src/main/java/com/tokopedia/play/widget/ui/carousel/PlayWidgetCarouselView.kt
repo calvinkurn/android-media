@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
+import com.tokopedia.play.widget.ui.IPlayWidgetView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -18,7 +20,7 @@ import com.tokopedia.play.widget.ui.model.switch
 /**
  * Created by kenny.hadisaputra on 05/05/23
  */
-class PlayWidgetCarouselView : ConstraintLayout {
+class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -93,6 +95,8 @@ class PlayWidgetCarouselView : ConstraintLayout {
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
     private var mListener: Listener? = null
 
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
+
     init {
         val layoutManager = PlayWidgetCarouselLayoutManager(context)
         val itemDecoration = PlayWidgetCarouselItemDecoration(context)
@@ -127,6 +131,10 @@ class PlayWidgetCarouselView : ConstraintLayout {
         mModel = data
 
         setupChannels(data, scrollToFirstPosition = true)
+    }
+
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        this.mWidgetInternalListener = listener
     }
 
     private fun setupChannels(data: PlayWidgetUiModel, scrollToFirstPosition: Boolean = false) {
