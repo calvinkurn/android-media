@@ -406,7 +406,7 @@ class PlayBroadcastActivity : BaseActivity(),
         if(!::broadcaster.isInitialized) return
 
         val selectedFaceFilter = value ?: return
-        applyFaceFilter(selectedFaceFilter)
+        applyFaceFilter(listOf(selectedFaceFilter))
     }
 
     private fun renderPreset(
@@ -421,7 +421,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun applyFaceFilter(
-        vararg faceFilters: FaceFilterUiModel,
+        faceFilters: List<FaceFilterUiModel>,
         withToaster: Boolean = true,
     ): Boolean {
         var isAllFilterApplied = true
@@ -453,7 +453,7 @@ class PlayBroadcastActivity : BaseActivity(),
                                     page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
                                     customFace = faceFilter.id,
                                 )
-                                applyFaceFilter(faceFilter)
+                                applyFaceFilter(listOf(faceFilter))
                             }
                         )
                     }
@@ -493,9 +493,9 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
         if (viewModel.isBeautificationEnabled) {
             val isAllFaceFilterApplied = if (viewModel.selectedFaceFilter?.isRemoveEffect == true) {
-                viewModel.selectedFaceFilter?.let { applyFaceFilter(it, withToaster = false) }.orTrue()
+                viewModel.selectedFaceFilter?.let { applyFaceFilter(listOf(it), withToaster = false) }.orTrue()
             } else {
-                applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray(), withToaster = false)
+                applyFaceFilter(viewModel.faceFiltersWithoutNoneOption, withToaster = false)
             }
 
             val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it, withToaster = false) }.orTrue()
