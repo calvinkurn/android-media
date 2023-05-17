@@ -541,7 +541,7 @@ object DeeplinkMapperMerchant {
             .joinToString("/")
             .startsWith(URL_SEGMENT_FLASH_SALE_TOKOPEDIA, false)
         ) {
-            ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
+            ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
         } else {
             ""
         }
