@@ -1226,6 +1226,8 @@ class FeedFragment :
         actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         if (view == null) return
+        if (message.isEmpty()) return
+
         Toaster.build(
             requireView(),
             message,
