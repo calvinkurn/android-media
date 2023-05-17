@@ -37,12 +37,12 @@ class UserReviewViewHolder private constructor() {
 
         private val adapter by lazyThreadSafetyNone {
             UserReviewMediaAdapter(
-                listener = object : UserReviewMediaViewHolder.Media.Listener {
+                listener = object : UserReviewMediaAdapter.Listener {
                     override fun onMediaClick(
                         feedbackID: String,
                         attachment: UserReviewUiModel.Attachment
                     ) {
-
+                        /** TODO: handle this */
                     }
                 }
             )
@@ -140,10 +140,17 @@ class UserReviewViewHolder private constructor() {
         private fun setupMedia(item: UserReviewUiModel.Review) {
             adapter.setItemsAndAnimateChanges(
                 item.attachments.map { attachment ->
-                    UserReviewMediaAdapter.Model.Media(
-                        feedbackID = item.feedbackID,
-                        attachment = attachment,
-                    )
+                    if (attachment.isVideo) {
+                        UserReviewMediaAdapter.Model.Video(
+                            feedbackID = item.feedbackID,
+                            attachment = attachment,
+                        )
+                    } else {
+                        UserReviewMediaAdapter.Model.Image(
+                            feedbackID = item.feedbackID,
+                            attachment = attachment,
+                        )
+                    }
                 }
             )
         }

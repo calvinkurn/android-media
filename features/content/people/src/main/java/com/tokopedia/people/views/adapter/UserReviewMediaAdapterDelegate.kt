@@ -11,13 +11,13 @@ import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
  */
 class UserReviewMediaAdapterDelegate private constructor() {
 
-    class Media(
-        private val listener: UserReviewMediaViewHolder.Media.Listener,
-    ) : TypedAdapterDelegate<UserReviewMediaAdapter.Model.Media, UserReviewMediaAdapter.Model, UserReviewMediaViewHolder.Media>
+    class Image(
+        private val listener: UserReviewMediaAdapter.Listener,
+    ) : TypedAdapterDelegate<UserReviewMediaAdapter.Model.Image, UserReviewMediaAdapter.Model, UserReviewMediaViewHolder.Image>
         (R.layout.view_cc_empty) {
         override fun onBindViewHolder(
-            item: UserReviewMediaAdapter.Model.Media,
-            holder: UserReviewMediaViewHolder.Media,
+            item: UserReviewMediaAdapter.Model.Image,
+            holder: UserReviewMediaViewHolder.Image,
         ) {
             holder.bind(item.feedbackID, item.attachment)
         }
@@ -25,8 +25,30 @@ class UserReviewMediaAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): UserReviewMediaViewHolder.Media {
-            return UserReviewMediaViewHolder.Media.create(
+        ): UserReviewMediaViewHolder.Image {
+            return UserReviewMediaViewHolder.Image.create(
+                parent,
+                listener
+            )
+        }
+    }
+
+    class Video(
+        private val listener: UserReviewMediaAdapter.Listener,
+    ) : TypedAdapterDelegate<UserReviewMediaAdapter.Model.Video, UserReviewMediaAdapter.Model, UserReviewMediaViewHolder.Video>
+        (R.layout.view_cc_empty) {
+        override fun onBindViewHolder(
+            item: UserReviewMediaAdapter.Model.Video,
+            holder: UserReviewMediaViewHolder.Video,
+        ) {
+            holder.bind(item.feedbackID, item.attachment)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): UserReviewMediaViewHolder.Video {
+            return UserReviewMediaViewHolder.Video.create(
                 parent,
                 listener
             )

@@ -86,6 +86,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.fragmentKtx
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayer
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 

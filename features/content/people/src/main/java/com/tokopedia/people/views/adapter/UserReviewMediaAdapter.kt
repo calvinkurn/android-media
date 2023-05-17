@@ -8,17 +8,19 @@ import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
  * Created By : Jonathan Darwin on May 16, 2023
  */
 class UserReviewMediaAdapter(
-    listener: UserReviewMediaViewHolder.Media.Listener
+    listener: Listener,
 ) : BaseDiffUtilAdapter<UserReviewMediaAdapter.Model>() {
 
     init {
         delegatesManager
-            .addDelegate(UserReviewMediaAdapterDelegate.Media(listener))
+            .addDelegate(UserReviewMediaAdapterDelegate.Image(listener))
+            .addDelegate(UserReviewMediaAdapterDelegate.Video(listener))
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return when {
-            oldItem is Model.Media && newItem is Model.Media -> oldItem.feedbackID == newItem.feedbackID
+            oldItem is Model.Image && newItem is Model.Image -> oldItem.feedbackID == newItem.feedbackID
+            oldItem is Model.Video && newItem is Model.Video -> oldItem.feedbackID == newItem.feedbackID
             else -> oldItem == newItem
         }
     }
@@ -27,7 +29,12 @@ class UserReviewMediaAdapter(
         return oldItem == newItem
     }
 
+    interface Listener {
+        fun onMediaClick(feedbackID: String, attachment: UserReviewUiModel.Attachment)
+    }
+
     sealed interface Model {
-        data class Media(val feedbackID: String, val attachment: UserReviewUiModel.Attachment) : Model
+        data class Image(val feedbackID: String, val attachment: UserReviewUiModel.Attachment) : Model
+        data class Video(val feedbackID: String, val attachment: UserReviewUiModel.Attachment) : Model
     }
 }
