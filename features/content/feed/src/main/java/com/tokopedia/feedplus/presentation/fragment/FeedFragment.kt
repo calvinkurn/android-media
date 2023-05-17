@@ -508,7 +508,8 @@ class FeedFragment :
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel
+                trackerData = trackerModel,
+                campaign = campaign
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -545,7 +546,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = trackerModel
+                    trackerData = trackerModel,
+                    campaign = campaign
                 )
             }
         }
@@ -565,7 +567,8 @@ class FeedFragment :
             author = author,
             hasVoucher = hasVoucher,
             products = products,
-            trackerData = trackerModel
+            trackerData = trackerModel,
+            campaign = campaign
         )
     }
 
@@ -676,7 +679,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it
+                    trackerData = it,
+                    campaign = campaign
                 )
             }
         }
@@ -1165,7 +1169,8 @@ class FeedFragment :
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        campaign: FeedCardCampaignModel
     ) {
         if (products.isEmpty()) return
 
@@ -1188,7 +1193,7 @@ class FeedFragment :
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
-        val mappedProducts = products.map(MapperProductsToXProducts::transform)
+        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
         productBottomSheet.show(
             taggedProducts = mappedProducts,
             manager = childFragmentManager,
