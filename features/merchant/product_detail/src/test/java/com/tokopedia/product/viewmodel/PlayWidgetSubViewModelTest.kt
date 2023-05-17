@@ -49,7 +49,7 @@ class PlayWidgetSubViewModelTest {
     lateinit var playWidgetTools: PlayWidgetTools
 
     @RelaxedMockK
-    lateinit var mediator: GetProductDetailDataMediator
+    lateinit var mockMediator: GetProductDetailDataMediator
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -85,7 +85,7 @@ class PlayWidgetSubViewModelTest {
 
         viewModel = PlayWidgetSubViewModel(playWidgetTools = playWidgetTools).apply {
             registerScope(viewModelScope = CoroutineScope(CoroutineTestDispatchersProvider.main))
-            registerMediator(mediator = mediator)
+            registerMediator(mediator = mockMediator)
         }
     }
 
@@ -100,8 +100,8 @@ class PlayWidgetSubViewModelTest {
 
         val expectedResponse = PlayWidget()
 
-        coEvery { mediator.getP1() } returns null
-        coEvery { mediator.getVariant() } returns null
+        coEvery { mockMediator.getP1() } returns null
+        coEvery { mockMediator.getVariant() } returns null
         coEvery {
             playWidgetTools.getWidgetFromNetwork(widgetType = widgetType)
         } returns expectedResponse
