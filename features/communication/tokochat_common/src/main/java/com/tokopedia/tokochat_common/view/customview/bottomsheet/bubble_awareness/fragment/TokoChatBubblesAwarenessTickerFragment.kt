@@ -18,6 +18,8 @@ class TokoChatBubblesAwarenessTickerFragment: Fragment() {
 
     private var binding: TokochatBubblesAwarenessTickerFragmentBinding? = null
 
+    private var onEduClickListener: (() -> Unit)? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,6 +28,10 @@ class TokoChatBubblesAwarenessTickerFragment: Fragment() {
         val viewBinding = TokochatBubblesAwarenessTickerFragmentBinding.inflate(inflater)
         binding = viewBinding
         return viewBinding.root
+    }
+
+    fun setEduClickListener(onClick: (() -> Unit)) {
+        onEduClickListener = onClick
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,6 +79,7 @@ class TokoChatBubblesAwarenessTickerFragment: Fragment() {
                             BUBBLE_CHAT_HELP_PAGE_URL,
                         )
                         RouteManager.route(context, bubbleChatHelpPageUrl)
+                        onEduClickListener?.invoke()
                     }
                 )
             }

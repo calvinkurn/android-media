@@ -13,6 +13,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.databinding.TokochatBubblesAwarenessBottomsheetBinding
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.adapter.TokoChatBubblesAwarenessAdapter
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.fragment.TokoChatBubblesAwarenessFragment
@@ -25,6 +26,10 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<TokochatBubblesAwarenessBottomsheetBinding>()
 
     private var fragmentAdapter: TokoChatBubblesAwarenessAdapter? = null
+
+    private var analyticsListener: AnalyticsListener? = null
+
+    private var currentPage: Int = Int.ZERO
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +58,10 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
         }
     }
 
+    fun setListener(analyticsListener: AnalyticsListener) {
+        this.analyticsListener = analyticsListener
+    }
+
     private fun setupViews() {
         setBottomSheetTitle()
         setupAwarenessViewPager()
@@ -71,11 +80,14 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
             binding?.vpTokochatBubbleAwareness?.adapter = it
             binding?.pageControlTokochatBubbleAwareness?.setIndicator(fragmentSize)
             binding?.vpTokochatBubbleAwareness?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     setPageControl(position)
                     setButtonText(position, fragmentSize - Int.ONE)
+                    hitSwipeListener(position)
                 }
+
             })
         }
     }
@@ -90,6 +102,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
                 text = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_activate_setting_button)
                 setOnClickListener {
                     goToSettingsPage()
+                    analyticsListener?.onClickSettingActivation()
                 }
             }
         } else {
@@ -97,6 +110,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
                 text = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_next_button)
                 setOnClickListener {
                     binding?.vpTokochatBubbleAwareness?.currentItem = position + Int.ONE
+                    analyticsListener?.onClickContinue()
                 }
             }
         }
@@ -117,7 +131,11 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
                 imageUrl = TokopediaImageUrl.IMG_TOKOCHAT_BUBBLES_AWARENESS_2,
                 firstDesc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_3),
                 secondDesc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_info_3)
-            )
+            ).apply {
+                setEduClickListener {
+                    analyticsListener?.onClickEdu()
+                }
+            }
         )
     }
 
@@ -132,6 +150,20 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
                 FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
+    }
+
+    private fun hitSwipeListener(position: Int) {
+        if (position > currentPage) {
+            analyticsListener?.onSwipeNext()
+        }
+        currentPage = position
+    }
+
+    interface AnalyticsListener {
+        fun onClickContinue()
+        fun onSwipeNext()
+        fun onClickEdu()
+        fun onClickSettingActivation()
     }
 
     companion object {
