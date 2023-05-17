@@ -198,8 +198,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_I
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.TOKOMEMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
