@@ -3,7 +3,7 @@ package com.tokopedia.mediauploader.video
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader

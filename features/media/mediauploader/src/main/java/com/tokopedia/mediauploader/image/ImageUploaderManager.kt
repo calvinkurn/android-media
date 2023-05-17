@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader

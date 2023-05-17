@@ -1,22 +1,19 @@
 package com.tokopedia.mediauploader.video.data.repository
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import com.abedelazizshe.lightcompressorlibrary.CompressionProgressListener
 import com.abedelazizshe.lightcompressorlibrary.compressor.Compressor
 import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.media.loader.utils.toUri
-import com.tokopedia.mediauploader.common.internal.CacheCompressionModel
-import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.CacheCompressionModel
+import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
-import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.min

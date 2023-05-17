@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.util
+package com.tokopedia.mediauploader.common.util.network
 
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import okhttp3.MultipartBody

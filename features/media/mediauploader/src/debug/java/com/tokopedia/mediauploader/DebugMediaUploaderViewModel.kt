@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.view.formattedToMB
-import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository

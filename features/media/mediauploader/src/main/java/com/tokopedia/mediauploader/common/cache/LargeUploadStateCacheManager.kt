@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal
+package com.tokopedia.mediauploader.common.cache
 
 import android.content.Context
 import com.google.gson.Gson
@@ -8,7 +8,7 @@ import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
 import java.io.File
 import javax.inject.Inject
 
-class LargeUploadStateManager @Inject constructor(
+class LargeUploadStateCacheManager @Inject constructor(
     @ApplicationContext context: Context
 ) : LocalCacheHandler(context, NAME_PREFERENCE_LARGE_UPLOAD) {
 

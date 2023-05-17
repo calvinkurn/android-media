@@ -34,25 +34,26 @@ android {
 dependencies {
     implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
 
-    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.miscDependencies.mp4parser
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
+
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
@@ -64,23 +65,25 @@ dependencies {
         transitive = true
     }
 
+    debugImplementation rootProject.ext.supportLibDependencies.constraintLayout
+    debugImplementation rootProject.ext.miscDependencies.workManager
+
     debugImplementation rootProject.ext.composeDependencies.composeActivity
     debugImplementation rootProject.ext.composeDependencies.composeConstraint
     debugImplementation rootProject.ext.composeDependencies.composeLiveData
     debugImplementation project(rootProject.ext.libraries.commonCompose)
 
+    debugImplementation rootProject.ext.composeDependencies.composeVideoCoil
     debugImplementation rootProject.ext.composeDependencies.composeCoil
-    debugImplementation "io.coil-kt:coil-video:$composeCoil"
 
-    debugImplementation rootProject.ext.miscDependencies.workManager
-    debugImplementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
-    debugImplementation projectOrAar(rootProject.ext.libraries.applink)
+    debugImplementation rootProject.ext.unifyDependencies.principles
+    debugImplementation rootProject.ext.unifyDependencies.principles
+    debugImplementation rootProject.ext.unifyDependencies.components
+
     debugImplementation projectOrAar(rootProject.ext.features.medialoader)
     debugImplementation projectOrAar(rootProject.ext.features.mediapicker)
     debugImplementation projectOrAar(rootProject.ext.features.mediapickerCommon)
-    debugImplementation rootProject.ext.unifyDependencies.principles
-    debugImplementation rootProject.ext.unifyDependencies.components
-    debugImplementation rootProject.ext.supportLibDependencies.constraintLayout
+    debugImplementation projectOrAar(rootProject.ext.libraries.applink)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest

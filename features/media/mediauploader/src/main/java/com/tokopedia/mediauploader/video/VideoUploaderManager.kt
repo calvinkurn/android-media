@@ -3,8 +3,7 @@ package com.tokopedia.mediauploader.video
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
-import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
@@ -13,9 +12,7 @@ import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
-import timber.log.Timber
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class VideoUploaderManager @Inject constructor(

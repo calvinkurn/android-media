@@ -1,8 +1,8 @@
 package com.tokopedia.mediauploader.common.di
 
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
-import com.tokopedia.mediauploader.common.internal.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
+import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase

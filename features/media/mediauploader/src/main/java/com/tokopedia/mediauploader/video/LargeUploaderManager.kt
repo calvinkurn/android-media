@@ -4,8 +4,8 @@ import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.internal.LargeUploadStateManager
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.logger.trackToTimber
@@ -30,7 +30,7 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 class LargeUploaderManager @Inject constructor(
-    private val uploadStateManager: LargeUploadStateManager,
+    private val uploadStateManager: LargeUploadStateCacheManager,
     private val policyManager: SourcePolicyManager,
     private val initUseCase: InitVideoUploaderUseCase,
     private val checkerUseCase: GetChunkCheckerUseCase,

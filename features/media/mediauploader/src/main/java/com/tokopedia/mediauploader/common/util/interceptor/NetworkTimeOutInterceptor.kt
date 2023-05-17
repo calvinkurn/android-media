@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.util
+package com.tokopedia.mediauploader.common.util.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response

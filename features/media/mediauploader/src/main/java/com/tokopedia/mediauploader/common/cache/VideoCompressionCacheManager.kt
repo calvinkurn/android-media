@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal
+package com.tokopedia.mediauploader.common.cache
 
 import android.content.Context
 import com.google.gson.Gson

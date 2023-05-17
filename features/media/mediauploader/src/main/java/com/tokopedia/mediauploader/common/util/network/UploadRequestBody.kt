@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.util
+package com.tokopedia.mediauploader.common.util.network
 
 import android.os.Handler
 import android.os.Looper

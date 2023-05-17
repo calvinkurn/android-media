@@ -1,6 +1,6 @@
-package com.tokopedia.mediauploader.common.internal
+package com.tokopedia.mediauploader.common.cache
 
-import com.tokopedia.mediauploader.common.util.MediaUploaderNetwork.BASE_URL
+import com.tokopedia.mediauploader.common.di.NetworkModule.Companion.BASE_URL
 import javax.inject.Inject
 
 class MediaUploaderUrl @Inject constructor(
