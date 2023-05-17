@@ -102,10 +102,6 @@ class FeedProductTagView(
         binding.root.hide()
     }
 
-    fun hideClearView() {
-        binding.root.show()
-    }
-
     fun showIfPossible() {
         bindText(this.products)
     }

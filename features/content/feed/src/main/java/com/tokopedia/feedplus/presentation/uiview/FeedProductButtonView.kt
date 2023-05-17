@@ -82,6 +82,10 @@ class FeedProductButtonView(
         }
     }
 
+    fun showClearView() {
+        binding.root.hide()
+    }
+
     fun showIfPossible() {
         bind(this.products)
     }
