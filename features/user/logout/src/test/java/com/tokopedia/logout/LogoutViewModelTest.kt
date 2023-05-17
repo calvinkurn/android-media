@@ -76,4 +76,26 @@ class LogoutViewModelTest {
 
         verify { observer.onChanged(Fail(mockThrowable)) }
     }
+
+    @Test
+    fun `do logout - without save token()`() {
+        val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponse
+
+        viewModel.doLogout()
+
+        verify(exactly = 0) { oclPref.storeToken(any()) }
+        verify { observer.onChanged(Success(mockResponse)) }
+    }
+
+    @Test
+    fun `do logout - with save token()`() {
+        val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponse
+
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+
+        verify(exactly = 1) { oclPref.storeToken(any()) }
+        verify { observer.onChanged(Success(mockResponse)) }
+    }
 }
