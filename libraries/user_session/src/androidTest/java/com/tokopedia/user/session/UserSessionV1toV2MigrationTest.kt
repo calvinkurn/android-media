@@ -13,8 +13,6 @@ import org.junit.Ignore
 import org.junit.Test
 import timber.log.Timber
 
-const val LEGACY_SESSION = "LOGIN_SESSION"
-
 class UserSessionV1toV2MigrationTest {
 
     private lateinit var sut: UserSession

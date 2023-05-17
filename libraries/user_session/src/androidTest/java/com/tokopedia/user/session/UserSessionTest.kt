@@ -11,6 +11,9 @@ import org.junit.Before
 import org.junit.Test
 import timber.log.Timber
 
+const val LEGACY_SESSION = "LOGIN_SESSION"
+const val V2_SESSION = LEGACY_SESSION + "_v2"
+
 class UserSessionTest {
 
     lateinit var sut: UserSession
@@ -43,7 +46,7 @@ class UserSessionTest {
     }
 
     @Test
-    fun basicGetAndSet() {
+    fun basicGetAndSet_stringValue() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val userSession = UserSession(context)
         assertEquals(userSession.email, "")
@@ -77,8 +80,7 @@ class UserSessionTest {
         val test = "test@tokopedia.com"
         sut.email = test
 
-        val actual = RawAccessPreference(context, LEGACY_SESSION + "_v2")
-            .getRawValue("EMAIL_v2").toString()
+        val actual = RawAccessPreference(context, V2_SESSION).getRawValue("EMAIL_v2").toString()
 
         assertThat(actual, not(equalTo(test)))
     }
