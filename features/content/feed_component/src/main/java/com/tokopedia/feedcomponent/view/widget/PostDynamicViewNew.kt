@@ -35,6 +35,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
@@ -1551,9 +1552,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0,
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0
             )
         }
