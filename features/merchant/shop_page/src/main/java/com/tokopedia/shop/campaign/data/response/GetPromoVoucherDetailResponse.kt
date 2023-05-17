@@ -4,10 +4,10 @@ package com.tokopedia.shop.campaign.data.response
 import com.google.gson.annotations.SerializedName
 
 data class GetPromoVoucherDetailResponse(
-    @SerializedName("detail")
-    val detail: Detail
+    @SerializedName("hachikoCatalogDetail")
+    val hachikoCatalogDetail: HackhikoCatalogDetail
 ) {
-    data class Detail(
+    data class HackhikoCatalogDetail(
         @SerializedName("activePeriod")
         val activePeriod: String,
         @SerializedName("activePeriodDate")

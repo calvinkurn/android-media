@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetPromoVoucherDetailMapper @Inject constructor() {
 
     fun map(response: GetPromoVoucherDetailResponse): PromoVoucherDetail {
-        val detail = response.detail
+        val detail = response.hachikoCatalogDetail
         return PromoVoucherDetail(
             detail.activePeriodDate,
             detail.buttonStr,
