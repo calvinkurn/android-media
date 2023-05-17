@@ -4330,6 +4330,8 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
         bottomSheetUnify.setShowCloseIcon(true);
         bottomSheetUnify.setChild(childView);
         bottomSheetUnify.show(getChildFragmentManager(), null);
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
     }
 
     private void getPaymentFee() {
@@ -4359,6 +4361,8 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         hideLoaderTotalPayment();
         updateCost();
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
     }
 
     @Override

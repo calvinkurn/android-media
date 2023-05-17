@@ -57,7 +57,6 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorApplyBo
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorCheckout
@@ -226,7 +225,6 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -869,9 +867,9 @@ class ShipmentFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if ((
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -2597,9 +2595,9 @@ class ShipmentFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -2732,13 +2730,13 @@ class ShipmentFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartItemPosition)
         } else {
@@ -4782,8 +4780,9 @@ class ShipmentFragment :
     override fun checkPlatformFee() {
         if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentPresenter.getShipmentCostModel().dynamicPlatformFee
-            if (shipmentPresenter.getShipmentCostModel().totalPrice > platformFeeModel.minRange
-                    && shipmentPresenter.getShipmentCostModel().totalPrice < platformFeeModel.maxRange) {
+            if (shipmentPresenter.getShipmentCostModel().totalPrice > platformFeeModel.minRange &&
+                shipmentPresenter.getShipmentCostModel().totalPrice < platformFeeModel.maxRange
+            ) {
                 shipmentAdapter.setPlatformFeeData(platformFeeModel)
                 updateCost()
             } else {
@@ -4813,14 +4812,18 @@ class ShipmentFragment :
         bottomSheetUnify.showCloseIcon = true
         bottomSheetUnify.setChild(childView)
         bottomSheetUnify.show(childFragmentManager, null)
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
+            userSessionInterface.userId,
+            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+        )
     }
 
     private fun getPaymentFee() {
         val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest()
         paymentFeeCheckoutRequest.gatewayCode = ""
-        paymentFeeCheckoutRequest.profileCode = shipmentPresenter.getShipmentPlatformFeeData()!!.profileCode
+        paymentFeeCheckoutRequest.profileCode = shipmentPresenter.getShipmentPlatformFeeData().profileCode
         paymentFeeCheckoutRequest.paymentAmount = shipmentPresenter.getShipmentCostModel().totalPrice
-        paymentFeeCheckoutRequest.additionalData = shipmentPresenter.getShipmentPlatformFeeData()!!.additionalData
+        paymentFeeCheckoutRequest.additionalData = shipmentPresenter.getShipmentPlatformFeeData().additionalData
         shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest)
     }
 
@@ -4841,6 +4844,10 @@ class ShipmentFragment :
         shipmentAdapter.setPlatformFeeData(platformFeeModel)
         hideLoaderTotalPayment()
         updateCost()
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
+            userSessionInterface.userId,
+            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+        )
     }
 
     override fun showPaymentFeeSkeletonLoading() {
