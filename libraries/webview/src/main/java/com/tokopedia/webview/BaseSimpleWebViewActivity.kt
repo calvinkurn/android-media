@@ -35,11 +35,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var needLogin = false
     protected var backPressedEnabled = true
     protected var backPressedMessage = ""
-    var whiteListedFintechPath = WhiteListedFintechPath()
     var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getWhitelistFintechPrefixUrl()
         init(intent)
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -319,10 +317,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     fun updateToolbarVisibility(url: String) {
-        if (whiteListedFintechPath.isEnabled) {
+        if (WebViewHelper.isWhiteListedFintechPathEnabled(this)) {
             val uri = Uri.parse(url)
             val path = uri.pathSegments.joinToString("/")
-            if (isFintechUrlPathWhiteList(path)) {
+            if (WebViewHelper.isFintechUrlPathWhiteList(path)) {
                 supportActionBar?.hide()
             } else {
                 setupToolbar()
@@ -330,30 +328,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         } else {
             setupToolbar()
         }
-    }
-
-    private fun getWhitelistFintechPrefixUrl() {
-        try {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(this)
-            val whitelistedFintechPrefixes = remoteConfig.getString(FINTECH_WEBVIEW_HIDE_TOOLBAR)
-            if (whitelistedFintechPrefixes.isNotBlank()) {
-                whiteListedFintechPath = Gson().fromJson(
-                    whitelistedFintechPrefixes,
-                    WhiteListedFintechPath::class.java
-                )
-            }
-        } catch (exception: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(exception)
-        }
-    }
-
-    private fun isFintechUrlPathWhiteList(path: String): Boolean {
-        whiteListedFintechPath.path.forEach {
-            if (path.startsWith(it)) {
-                return true
-            }
-        }
-        return false
     }
 
     companion object {
