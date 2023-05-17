@@ -43,7 +43,7 @@ class LogoutViewModelTest {
         val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
         coEvery { logoutUseCase.invoke(any()) } returns mockResponse
 
-        viewModel.doLogout()
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
 
         verify { observer.onChanged(Success(mockResponse)) }
     }
@@ -60,7 +60,7 @@ class LogoutViewModelTest {
 
         coEvery { logoutUseCase.invoke(any()) } returns mockResponseData
 
-        viewModel.doLogout()
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
 
         verify(exactly = 1) { observer.onChanged(match { it is Fail }) }
     }
@@ -72,7 +72,7 @@ class LogoutViewModelTest {
         coEvery { oclPref.getToken() } returns token
         coEvery { logoutUseCase.invoke(any()) } throws mockThrowable
 
-        viewModel.doLogout()
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
 
         verify { observer.onChanged(Fail(mockThrowable)) }
     }

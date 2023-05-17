@@ -29,8 +29,8 @@ class LogoutViewModel @Inject constructor(
             try {
                 val param = LogoutParam(saveSession = saveSession, token = oclPreference.getToken())
                 val result = logoutUseCase(param)
-                if(result.response.success) {
-                    if(saveSession == LogoutUseCase.PARAM_SAVE_SESSION) {
+                if (result.response.success) {
+                    if (saveSession == LogoutUseCase.PARAM_SAVE_SESSION) {
                         saveOclToken(result.response.token)
                     }
                     _logoutResult.value = Success(result)
@@ -43,7 +43,7 @@ class LogoutViewModel @Inject constructor(
         }
     }
 
-    fun saveOclToken(token: String) {
+    private fun saveOclToken(token: String) {
         oclPreference.storeToken(token)
     }
 }
