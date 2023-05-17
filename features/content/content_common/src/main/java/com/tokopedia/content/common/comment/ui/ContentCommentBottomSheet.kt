@@ -36,6 +36,7 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.getImeHeight
+import com.tokopedia.content.common.view.isImeVisible
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -233,12 +234,7 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.newComment.addTextChangedListener(textWatcher)
         binding.root.setOnApplyWindowInsetsListener { view , windowInsets ->
             val height = view.getImeHeight()
-            val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.isVisible(WindowInsets.Type.ime())
-            } else {
-                height > keyboardHeight
-            }
-            if (isKeyboardOnScreen) {
+            if (view.isImeVisible(threshold = keyboardHeight)) {
                 binding.root.setPadding(0, 0, 0, height)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
@@ -447,9 +443,11 @@ class ContentCommentBottomSheet @Inject constructor(
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        binding.root.layoutParams.height = newHeight
-        val avatar =
-            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = newHeight
+        }
+
+        val avatar = if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
     }
 
