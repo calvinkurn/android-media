@@ -17,13 +17,17 @@
     <string name="notif_failed_menu_device">Notifikasi HP belum aktif.</string>
     <string name="notif_failed_menu_ringtone">Bunyi notifikasi mati.</string>
     <string name="notif_failed_menu_push">Push notification gagal dites.</string>
+    <string name="notif_failed_menu_play_services">Google Play Service tidak tersedia.</string>
 
     <string name="notif_loading_menu_notification">Memeriksa aplikasi Tokopedia kamu…</string>
     <string name="notif_loading_menu_device">Memeriksa pengaturan HP kamu…</string>
     <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
     <string name="notif_loading_menu_push">Mengirim push notification…</string>
+    <string name="notif_loading_menu_play_services">Google Play Service tersedia.</string>
+
 
     <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
+
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
     <string name="notif_error_update_token">Gagal perbaharui token</string>
