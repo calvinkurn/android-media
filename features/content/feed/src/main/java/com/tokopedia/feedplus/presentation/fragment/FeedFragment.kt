@@ -64,6 +64,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
@@ -240,6 +241,7 @@ class FeedFragment :
         observeMerchantVoucher()
         observeAddProductToCart()
         observeBuyProduct()
+        observeReminder()
 
         observeEvent()
     }
@@ -626,7 +628,8 @@ class FeedFragment :
     override fun onReminderClicked(
         campaignId: Long,
         setReminder: Boolean,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        type: FeedCampaignRibbonType
     ) {
         trackerModel?.let {
             if (setReminder) {
@@ -636,7 +639,7 @@ class FeedFragment :
             }
         }
 
-        feedPostViewModel.setUnsetReminder(campaignId, setReminder)
+        feedPostViewModel.setUnsetReminder(campaignId, setReminder, type)
     }
 
     override fun onTopAdsImpression(
@@ -1329,6 +1332,24 @@ class FeedFragment :
         } else {
             feedPostViewModel.suspendBuyProduct(product)
             buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    private fun observeReminder() {
+        feedPostViewModel.reminderResult.observe(viewLifecycleOwner) {
+            val message = when (it) {
+                is Success -> {
+                    val type = when (it.data) {
+                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> getString(feedR.string.feed_flash_sale)
+                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
+                        else -> ""
+                    }
+                    getString(feedR.string.feed_reminder_success, type)
+                }
+                is Fail -> it.throwable.message
+                else -> ""
+            }
+            showToast(message = message.orEmpty(), type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR, actionText = getString(feedR.string.feed_cta_ok_toaster))
         }
     }
 

@@ -29,6 +29,7 @@ import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
@@ -99,6 +100,10 @@ class FeedPostViewModel @Inject constructor(
     private val _deletePostResult = MutableLiveData<Result<Int>>()
     val deletePostResult: LiveData<Result<Int>>
         get() = _deletePostResult
+
+    private val _reminderResult = MutableLiveData<Result<FeedCampaignRibbonType>>()
+    val reminderResult: LiveData<Result<FeedCampaignRibbonType>>
+        get() = _reminderResult
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
@@ -195,7 +200,8 @@ class FeedPostViewModel @Inject constructor(
 
     fun setUnsetReminder(
         campaignId: Long,
-        setReminder: Boolean
+        setReminder: Boolean,
+        type: FeedCampaignRibbonType,
     ) {
         viewModelScope.launch {
             try {
@@ -234,8 +240,10 @@ class FeedPostViewModel @Inject constructor(
                             )
                         }
                     }
+                    _reminderResult.value = Success(type)
                 }
             } catch (e: Throwable) {
+                _reminderResult.value = Fail(e)
             }
         }
     }
