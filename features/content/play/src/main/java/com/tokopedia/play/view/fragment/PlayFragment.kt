@@ -294,8 +294,8 @@ class PlayFragment @Inject constructor(
                 productId = product.id,
                 shopId = product.shopId,
                 dismissAfterTransaction = false,
-                showQtyEditor = false,
-                trackerCdListName = channelId
+                showQtyEditor = product.isTokoNow,
+                trackerCdListName = channelId,
             )
         )
 
