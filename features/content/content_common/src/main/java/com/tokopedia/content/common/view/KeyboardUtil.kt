@@ -1,12 +1,12 @@
-package com.tokopedia.play_common.view
+package com.tokopedia.content.common.view
 
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
+import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play_common.util.extension.doOnLayout
 
 /**
  * Created by kenny.hadisaputra on 29/07/22
