@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter

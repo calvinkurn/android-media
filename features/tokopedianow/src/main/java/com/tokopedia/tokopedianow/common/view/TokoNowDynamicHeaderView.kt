@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.shape.CornerFamily
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,7 +31,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     private var tpTitle: Typography? = null
     private var tpSubtitle: Typography? = null
     private var tusCountDown: TimerUnifySingle? = null
-    private var sivCircleSeeAll: ShapeableImageView? = null
+    private var sivCircleSeeAll: AppCompatImageView? = null
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_dynamic_header_custom_view, this)
@@ -82,14 +82,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String, circleSeeAll: Boolean) {
         if (ctaTextLink.isNotBlank()) {
             if (circleSeeAll) {
-                sivCircleSeeAll?.apply {
-                    shapeAppearanceModel = shapeAppearanceModel
-                        .toBuilder()
-                        .setAllCornerSizes(10f)
-                        .build()
-                    show()
-                }
-
+                sivCircleSeeAll?.show()
                 tpSeeAll?.hide()
             } else {
                 tpSeeAll?.text = if (ctaText.isNotBlank()) {
