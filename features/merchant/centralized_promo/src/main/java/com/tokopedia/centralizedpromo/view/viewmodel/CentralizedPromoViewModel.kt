@@ -64,7 +64,8 @@ class CentralizedPromoViewModel @Inject constructor(
                 async { promoPlayAuthorConfigUseCase.execute(userSession.shopId) }
             val promotionListUiModel = PromoCreationMapper.mapperToPromoCreationUiModel(
                 responseDeferred.await(),
-                hasPlayContentDeferred.await())
+                hasPlayContentDeferred.await()
+            )
             Success(promotionListUiModel)
         } catch (t: Throwable) {
             Fail(t)

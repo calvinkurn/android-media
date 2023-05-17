@@ -14,8 +14,9 @@ object PromoCreationMapper {
     private const val PAGE_ID_TOKOPEDIA_PLAY = "64"
     private const val PAGE_ID_SHORT_VIDEO = "66"
 
-    fun mapperToPromoCreationUiModel(merchantPromotionGetPromoList: MerchantPromotionGetPromoList,
-                                     hasPlayContent: Boolean = false
+    fun mapperToPromoCreationUiModel(
+        merchantPromotionGetPromoList: MerchantPromotionGetPromoList,
+        hasPlayContent: Boolean = false
     ): PromoCreationListUiModel {
 
         val filterItems = arrayListOf(FilterPromoUiModel(TAB_ID_ALL_FEATURE, TAB_NAME_ALL_FEATURE))
@@ -59,8 +60,10 @@ object PromoCreationMapper {
         return pageId == PAGE_ID_TOKOPEDIA_PLAY || pageId == PAGE_ID_SHORT_VIDEO
     }
 
-    private fun getCustomPlayMapping(promo: MerchantPromotionGetPromoListPage,
-                                     hasContent: Boolean): PromoCreationUiModel {
+    private fun getCustomPlayMapping(
+        promo: MerchantPromotionGetPromoListPage,
+        hasContent: Boolean
+    ): PromoCreationUiModel {
         return PromoCreationUiModel(
             pageId = promo.pageId,
             icon = promo.iconImage,
