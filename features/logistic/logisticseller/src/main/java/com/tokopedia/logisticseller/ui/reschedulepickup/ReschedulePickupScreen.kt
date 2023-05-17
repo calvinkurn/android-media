@@ -206,8 +206,8 @@ fun ReschedulePickupScreenLayout(
         NestButton(
             modifier = Modifier
                 .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp),
+                .fillMaxWidth(),
+            size = ButtonSize.LARGE,
             text = stringResource(id = R.string.title_button_reschedule_pickup),
             enabled = state.valid
         ) {
