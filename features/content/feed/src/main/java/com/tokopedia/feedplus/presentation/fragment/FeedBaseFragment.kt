@@ -29,7 +29,6 @@ import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
-import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -66,7 +65,8 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment(),
+class FeedBaseFragment :
+    BaseDaggerFragment(),
     FeedContentCreationTypeBottomSheet.Listener,
     FragmentListener {
 
@@ -234,23 +234,28 @@ class FeedBaseFragment : BaseDaggerFragment(),
             CreateContentType.CREATE_POST -> {
                 feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
 
-                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                intent.putExtra(
-                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
-                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                )
-                intent.putExtra(
-                    BundleData.MAX_MULTI_SELECT_ALLOWED,
-                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
-                )
-                intent.putExtra(
-                    BundleData.TITLE,
-                    getString(feedComponentR.string.feed_post_sebagai)
-                )
-                intent.putExtra(
-                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
-                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                )
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
+                    putExtra(
+                        BundleData.IS_CREATE_POST_AS_BUYER,
+                        creationTypeItem.creatorType.asBuyer
+                    )
+                    putExtra(
+                        BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                    )
+                    putExtra(
+                        BundleData.MAX_MULTI_SELECT_ALLOWED,
+                        BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                    )
+                    putExtra(
+                        BundleData.TITLE,
+                        getString(feedComponentR.string.feed_post_sebagai)
+                    )
+                    putExtra(
+                        BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                    )
+                }
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
@@ -299,7 +304,6 @@ class FeedBaseFragment : BaseDaggerFragment(),
                         )
                     )
                 }
-                onChangeTab(position)
 
                 if (shouldSendSwipeTracker) {
                     if (THRESHOLD_OFFSET_HALF > positionOffset) {
@@ -312,6 +316,7 @@ class FeedBaseFragment : BaseDaggerFragment(),
             }
 
             override fun onPageSelected(position: Int) {
+                feedMainViewModel.changeCurrentTabByIndex(position)
                 appLinkTabPosition = position
             }
 
@@ -563,7 +568,7 @@ class FeedBaseFragment : BaseDaggerFragment(),
             binding.tyFeedFirstTab.text = firstTabData.title
             binding.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
+                feedMainViewModel.changeCurrentTabByIndex(TAB_FIRST_INDEX)
             }
             binding.tyFeedFirstTab.show()
         } else {
@@ -574,7 +579,7 @@ class FeedBaseFragment : BaseDaggerFragment(),
             binding.tyFeedSecondTab.text = secondTabData.title
             binding.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
+                feedMainViewModel.changeCurrentTabByIndex(TAB_SECOND_INDEX)
             }
             binding.tyFeedSecondTab.show()
         } else {
@@ -625,7 +630,7 @@ class FeedBaseFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToDefaultTabPosition() {
-        binding.vpFeedTabItemsContainer.setCurrentItem(appLinkTabPosition, true)
+        feedMainViewModel.changeCurrentTabByIndex(appLinkTabPosition)
     }
 
     private fun onChangeTab(position: Int) {
@@ -709,9 +714,11 @@ class FeedBaseFragment : BaseDaggerFragment(),
 
     private fun getEntryPoint() = if (isFromPushNotif) {
         FeedAnalytics.ENTRY_POINT_PUSH_NOTIF
-    } else if (activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT) != null)
+    } else if (activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT) != null) {
         activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
-    else FeedAnalytics.ENTRY_POINT_SHARE_LINK
+    } else {
+        FeedAnalytics.ENTRY_POINT_SHARE_LINK
+    }
 
     companion object {
         const val TAB_FIRST_INDEX = 0

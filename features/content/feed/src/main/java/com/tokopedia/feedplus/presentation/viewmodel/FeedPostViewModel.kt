@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -22,17 +23,37 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
+import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FollowShopModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +80,7 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
+    private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -155,7 +177,7 @@ class FeedPostViewModel @Inject constructor(
 
                         _shouldShowNoMoreContent =
                             _feedHome.value?.items.orEmpty().isNotEmpty() &&
-                            items.isEmpty()
+                                items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
@@ -394,6 +416,52 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun updateCommentsCount(contentId: String, isPlayContent: Boolean) {
+        viewModelScope.launch {
+            try {
+                val result = withContext(dispatchers.io) {
+                    getCountCommentsUseCase(
+                        GetCountCommentsUseCase.Param(
+                            sourceId = listOf(
+                                contentId
+                            ),
+                            sourceType = if (isPlayContent) TYPE_COMMENT_PLAY_CHANNEL_ID else TYPE_COMMENT_ACTIVITY_ID
+                        )
+                    ).parent.child.data.firstOrNull {
+                        it.contentId == contentId
+                    }
+                }
+
+                result?.let {
+                    updateItems { item ->
+                        when {
+                            item is FeedCardImageContentModel &&
+                                item.id == contentId &&
+                                !isPlayContent -> item.copy(
+                                comments = item.comments.copy(
+                                    count = it.count.toIntSafely(),
+                                    countFmt = it.countFmt
+                                )
+                            )
+                            item is FeedCardVideoContentModel && (
+                                (item.id == contentId && !isPlayContent) ||
+                                    (item.playChannelId == contentId && isPlayContent)
+                                ) -> item.copy(
+                                comments = item.comments.copy(
+                                    count = it.count.toIntSafely(),
+                                    countFmt = it.countFmt
+                                )
+                            )
+                            else -> item
+                        }
+                    }
+
+                }
+            } catch (_: Throwable) {
+            }
+        }
+    }
+
     private suspend fun getRelevantPosts(postId: String): FeedModel {
         return feedXHomeUseCase(
             feedXHomeUseCase.createPostDetailParams(postId)
@@ -544,6 +612,7 @@ class FeedPostViewModel @Inject constructor(
     fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
         _suspendedAddProductToCartData.value = product
     }
+
     fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
         _suspendedBuyProductData.value = product
     }
@@ -564,7 +633,8 @@ class FeedPostViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
-                _observeAddProductToCart.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+                _observeAddProductToCart.value =
+                    Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
                 _observeAddProductToCart.value = Success(response)
             }
@@ -577,7 +647,8 @@ class FeedPostViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
-                _observeBuyProduct.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+                _observeBuyProduct.value =
+                    Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
                 _observeBuyProduct.value = Success(response)
             }
@@ -585,6 +656,7 @@ class FeedPostViewModel @Inject constructor(
             _observeBuyProduct.value = Fail(it)
         }
     }
+
 
     private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
         addToCartUseCase.apply {
@@ -620,7 +692,9 @@ class FeedPostViewModel @Inject constructor(
                     _merchantVoucherLiveData.value = Success(result)
                 } else {
                     _merchantVoucherLiveData.value = Fail(
-                        ResponseErrorException(response.data?.resultStatus?.message?.firstOrNull().orEmpty())
+                        ResponseErrorException(
+                            response.data?.resultStatus?.message?.firstOrNull().orEmpty()
+                        )
                     )
                 }
             }
@@ -645,8 +719,8 @@ class FeedPostViewModel @Inject constructor(
         private const val SHOP = "toko"
         private const val USER = "akun"
 
-        private const val FOLLOWING = "following"
+        const val TYPE_COMMENT_ACTIVITY_ID = "ActivityID"
+        const val TYPE_COMMENT_PLAY_CHANNEL_ID = "PlayChannelID"
 
-        private const val FOLLOWING_TYPE = "type"
     }
 }

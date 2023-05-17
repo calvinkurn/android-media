@@ -33,7 +33,7 @@ class FeedAnalytics @Inject constructor(
     private object Action {
         const val VIEW_POST = "view - post"
         const val CLICK_PAUSE_VIDEO = "click - screen pause video"
-        const val CLICK_PRODUCT_LIST_BOTTOMSHEET = "view - product list bottomsheet"
+        const val CLICK_PRODUCT_LIST_BOTTOMSHEET = "view - product list bottom sheet"
         const val CLICK_HOLD_SEEKER_BAR_VIDEO = "click - tap hold seeker bar video"
         const val SWIPE_UP_DOWN_CONTENT = "swipe - up down content"
         const val SWIPE_RIGHT_LEFT_MULTIPLE_POST = "swipe - right left multiple post"
@@ -50,16 +50,16 @@ class FeedAnalytics @Inject constructor(
         const val VIEW_SUCCESS_REPORT_CONTENT = "view - success report content"
         const val CLICK_PRODUCT_TAG = "click - product tag"
         const val CLICK_PRODUCT_LABEL_PDP = "click - product label pdp"
-        const val VIEW_VOUCHER_BOTTOMSHEET = "view - voucher bottomsheet"
+        const val VIEW_VOUCHER_BOTTOMSHEET = "view - voucher bottom sheet"
         const val CLICK_PRODUCT = "click - product"
         const val CLICK_BUY_BUTTON = "click - beli button"
         const val CLICK_CART_BUTTON = "click - keranjang button"
-        const val CLICK_CLOSE_PRODUCT_LIST = "click - close product list bottomsheet"
+        const val CLICK_CLOSE_PRODUCT_LIST = "click - close product list bottom sheet"
         const val CLICK_FOLLOW_BUTTON = "click - follow button"
         const val CLICK_CREATOR_NAME = "click - creator name"
         const val CLICK_CREATOR_PROFILE_PICTURE = "click - creator profile picture"
         const val CLICK_CONTENT_CAPTION = "click - content caption"
-        const val CLICK_CONTENT_PRODUCT_LABEL = "click - product label bottomsheet"
+        const val CLICK_CONTENT_PRODUCT_LABEL = "click - product label bottom sheet"
         const val CLICK_LIVE_PREVIEW = "click - live preview"
     }
 
@@ -84,8 +84,8 @@ class FeedAnalytics @Inject constructor(
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
 
-        const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottomsheet"
-        const val UNIFIED_FEED_CONTENT = "unified-feed-content\\\""
+        const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottom sheet"
+        const val UNIFIED_FEED_CONTENT = "unified-feed-content"
         const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
         const val CAMPAIGN_POST_IN_UNIFIED_FEED = "campaign post in unified feed"
     }

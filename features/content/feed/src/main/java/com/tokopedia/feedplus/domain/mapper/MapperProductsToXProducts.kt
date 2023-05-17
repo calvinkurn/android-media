@@ -30,8 +30,8 @@ object MapperProductsToXProducts {
                 FeedTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount.toInt(),
                     originalFormattedPrice = product.priceOriginalFmt,
-                    formattedPrice = product.priceFmt,
-                    price = product.price
+                    formattedPrice = product.priceDiscountFmt,
+                    price = product.priceDiscount
                 )
             } else {
                 FeedTaggedProductUiModel.NormalPrice(
