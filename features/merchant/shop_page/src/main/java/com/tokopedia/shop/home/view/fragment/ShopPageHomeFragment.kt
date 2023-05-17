@@ -528,7 +528,12 @@ open class ShopPageHomeFragment :
         viewModel?.productComparisonLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    shopHomeAdapter.setProductComparisonData(it.data)
+                    val listRecommendationItem = it.data.recommendationWidget?.recommendationItemList.orEmpty()
+                    if(listRecommendationItem.isNotEmpty()) {
+                        shopHomeAdapter.setProductComparisonData(it.data)
+                    } else {
+                        shopHomeAdapter.removeProductComparisonWidget()
+                    }
                 }
                 is Fail -> {
                     shopHomeAdapter.getPersoProductComparisonWidgetUiModel()?.let { uiModel ->

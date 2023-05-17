@@ -187,6 +187,16 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun removeProductComparisonWidget() {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
+            if (index >= 0) {
+                newList.removeAt(index)
+            }
+        }
+        submitList(newList)
+    }
+
     override fun hideLoading() {
         val newList = getNewVisitableItems()
         if (newList.contains(loadingModel)) {
