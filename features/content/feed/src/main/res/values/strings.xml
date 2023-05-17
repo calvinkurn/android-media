@@ -143,5 +143,7 @@ dari Feed.</string>
     <string name="toast_delete_post_failed">Oops, gagal menghapus konten. Coba lagi, ya</string>
     <string name="feed_reminder_success">Yay, kamu akan diingatkan sebelum %s dimulai.</string>
     <string name="feed_cta_ok_toaster">Oke</string>
+    <string name="feed_flash_sale">Flash Sale</string>
+    <string name="feed_special_release">Rilisan Spesial</string>
 
 </resources>

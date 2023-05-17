@@ -1340,8 +1340,8 @@ class FeedFragment :
             val message = when (it) {
                 is Success -> {
                     val type = when (it.data) {
-                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> "Flash Sale"
-                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> "Rilisan Spesial"
+                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> getString(feedR.string.feed_flash_sale)
+                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
                         else -> ""
                     }
                     getString(feedR.string.feed_reminder_success, type)
