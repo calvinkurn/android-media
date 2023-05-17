@@ -22,6 +22,7 @@ import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.people.views.adapter.UserReviewMediaAdapter
 import com.tokopedia.people.views.itemdecoration.UserReviewMediaItemDecoration
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
+import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as unifyR
 
 
@@ -52,6 +53,10 @@ class UserReviewViewHolder private constructor() {
                 binding.rvMedia.addItemDecoration(UserReviewMediaItemDecoration(itemView.context))
             binding.rvMedia.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             binding.rvMedia.adapter = adapter
+
+            var preX = 0f
+            var preY = 0f
+
             binding.rvMedia.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                 override fun onInterceptTouchEvent(
                     view: RecyclerView,
@@ -59,7 +64,18 @@ class UserReviewViewHolder private constructor() {
                 ): Boolean {
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> binding.rvMedia.parent.requestDisallowInterceptTouchEvent(true)
+                        MotionEvent.ACTION_MOVE -> {
+                            if (abs(event.x - preX) > abs(event.y - preY)) {
+                                binding.rvMedia.parent.requestDisallowInterceptTouchEvent(true)
+                            } else if (abs(event.y - preY) > Y_SCROLL_BUFFER) {
+                                binding.rvMedia.parent.requestDisallowInterceptTouchEvent(false)
+                            }
+                        }
                     }
+
+                    preX = event.x
+                    preY = event.y
+
                     return false
                 }
 
@@ -168,6 +184,7 @@ class UserReviewViewHolder private constructor() {
 
         companion object {
 
+            private const val Y_SCROLL_BUFFER = 10
             private const val MAX_REVIEW_CHAR = 140
             fun create(
                 parent: ViewGroup,
