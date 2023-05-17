@@ -35,9 +35,9 @@ import com.tokopedia.shop_nib.presentation.submission_success.NibSubmissionSucce
 import com.tokopedia.shop_nib.util.helper.FileHelper
 import com.tokopedia.shop_nib.util.constant.UrlConstant
 import com.tokopedia.shop_nib.util.extension.toMb
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -116,6 +116,11 @@ class NibSubmissionFragment : BaseDaggerFragment() {
                 viewModel.processEvent(UiEvent.SubmitFile)
             }
         }
+
+        useOpenSauceOneFont()
+    }
+    private fun useOpenSauceOneFont() {
+        Typography.setUnifyTypographyOSO(true)
     }
 
     private fun observeUiState() {
