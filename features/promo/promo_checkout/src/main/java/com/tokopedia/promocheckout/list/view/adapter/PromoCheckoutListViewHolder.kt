@@ -1,8 +1,8 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.promocheckout.R
@@ -39,8 +39,11 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
         }
         setDateUsage(element)
         view?.timerUsage?.visibility = View.GONE
-        if ((element?.usage?.activeCountdown ?: 0 > 0 &&
-                        element?.usage?.activeCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+        if ((
+            element?.usage?.activeCountdown ?: 0 > 0 &&
+                element?.usage?.activeCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY
+            )
+        ) {
             timerUsage?.listener = object : TimerPromoCheckout.Listener {
                 override fun onTick(l: Long) {
                     element?.usage?.activeCountdown = l.toInt()
@@ -49,11 +52,13 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
                 override fun onFinishTick() {
                     setTimerEnabled()
                 }
-
             }
             setActiveTimerUsage(timerUsage, element?.usage?.activeCountdown?.toLong() ?: 0)
-        } else if ((element?.usage?.expiredCountdown ?: 0 > 0 &&
-                        element?.usage?.expiredCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+        } else if ((
+            element?.usage?.expiredCountdown ?: 0 > 0 &&
+                element?.usage?.expiredCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY
+            )
+        ) {
             view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener {
                 override fun onTick(l: Long) {
                     element?.usage?.expiredCountdown = l.toInt()
@@ -62,7 +67,6 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
                 override fun onFinishTick() {
                     onExpiryTimerEnded()
                 }
-
             }
             setExpiryTimerUsage(element?.usage?.expiredCountdown?.toLong() ?: 0)
         }
@@ -84,13 +88,13 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
     }
 
     private fun setTimerDisabled() {
-        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view?.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view?.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
     }
 
     private fun setTimerEnabled() {
-        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
     }
 
     fun setDateUsage(element: PromoCheckoutListModel?) {

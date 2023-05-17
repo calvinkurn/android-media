@@ -46,5 +46,4 @@ class TokoFoodPurchaseToolbar : Toolbar {
             listener?.onBackPressed()
         }
     }
-
 }

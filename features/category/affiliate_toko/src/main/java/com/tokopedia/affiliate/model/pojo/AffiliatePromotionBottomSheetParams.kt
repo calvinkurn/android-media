@@ -11,6 +11,7 @@ data class AffiliatePromotionBottomSheetParams(
     val productIdentifier: String,
     val origin: Int = 1, // default origin promosikan = 1
     val isLinkGenerationEnabled: Boolean = true,
+    val appUrl: String? = "",
     val commission: String = "",
     val status: String = "",
     val type: String? = "pdp",

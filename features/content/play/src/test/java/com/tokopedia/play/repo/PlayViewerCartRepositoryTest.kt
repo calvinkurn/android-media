@@ -18,7 +18,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -56,7 +56,7 @@ class PlayViewerCartRepositoryTest {
 
     @Test
     fun `when atc success, it should return cart appropriate success response`() {
-        runBlockingTest {
+        runTest {
 
             /** Prepare */
             val mockErrorMessage = ""
@@ -88,7 +88,7 @@ class PlayViewerCartRepositoryTest {
 
     @Test
     fun `when atc failed, it should return cart appropriate error response`() {
-        runBlockingTest {
+        runTest {
 
             /** Prepare */
             val mockErrorMessage = "Error 1"

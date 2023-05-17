@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantIn
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +41,9 @@ class AddEditProductShipmentViewModelTest {
 
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase

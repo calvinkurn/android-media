@@ -49,6 +49,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -64,6 +65,7 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -387,7 +389,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
         Assert.assertNotNull(data)
     }
 
@@ -406,7 +408,45 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
 
-        val data = spykViewModel.getP2RatesEstimateByProductId()
+        val data = spykViewModel.getP2RatesEstimateDataByProductId()
+        Assert.assertNull(data)
+    }
+    //endregion
+
+    //region getP2ShipmentPlusByProductId
+    @Test
+    fun `get shipment plus by product id should return non-null when exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("123"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
+        Assert.assertNotNull(data)
+    }
+
+    @Test
+    fun `get shipment plus by product id should return null when not exist`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(
+            ratesEstimate = listOfNotNull(
+                P2RatesEstimate(
+                    listfProductId = listOf("321"),
+                    shipmentPlus = mockk(relaxed = true)
+                )
+            )
+        )
+
+        val data = spykViewModel.getP2ShipmentPlusByProductId()
         Assert.assertNull(data)
     }
     //endregion
@@ -2482,7 +2522,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2504,7 +2544,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2520,7 +2560,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } throws Throwable()
 
-        viewModel.atcRecomNonVariant(recomItem, quantity)
+        viewModel.atcRecomNonVariant(recomItem, quantity, RecommendationNowAffiliateData())
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
@@ -2541,7 +2581,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2565,7 +2605,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2585,7 +2626,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart)
+        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -3214,7 +3255,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { addToCartUseCase.createObservable(any()) }
     }
@@ -3234,7 +3279,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { updateCartUseCase.executeOnBackground() }
     }
@@ -3254,7 +3303,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns true
 
-        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         coVerify { deleteCartUseCase.executeOnBackground() }
     }
@@ -3268,7 +3321,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             userSessionInterface.isLoggedIn
         } returns false
 
-        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recommItem,
+            quantity,
+            RecommendationNowAffiliateData(),
+        )
 
         Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
     }
@@ -3320,6 +3377,108 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(testResults.size == 2)
 
         job.cancel()
+    }
+
+    @Test
+    fun `product media recom bs state should showing when successfully fetch non-empty recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingData)
+    }
+
+    @Test
+    fun `product media recom bs state should dismissed when successfully fetch empty recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
+    }
+
+    @Test
+    fun `product media recom bs state should error when unsuccessfully fetch recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Exception("Dummy")
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+    }
+
+    @Test
+    fun `product media recom bs state should loading when fetching recom data`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } answers {
+            Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Loading)
+            throw Exception("Dummy")
+        }
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+    }
+
+    @Test
+    fun `should not fetch recom data when pageName is not changed`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `should re-fetch recom data when pageName is changed`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(mockk(relaxed = true)))
+        )
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy 1", "123", false)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `should re-fetch recom data when previous recom data is empty`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
+    fun `product media recom bs state should dismissed when dismiss product media recom bs`() {
+        `product media recom bs state should showing when successfully fetch non-empty recom data`()
+
+        viewModel.dismissProductMediaRecomBottomSheet()
+
+        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
     }
 
     private fun getUserLocationCache(): LocalCacheModel {

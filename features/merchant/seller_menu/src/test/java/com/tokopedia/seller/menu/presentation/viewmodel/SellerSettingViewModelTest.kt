@@ -48,7 +48,7 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should be eligible multi location`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val eligibleMultiLoc = 1
             val mockResponse = ShopLocationWhitelistResponse(
@@ -73,7 +73,7 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should not be eligible multi location`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val notEligibleMultiLoc = -1
             val mockResponse = ShopLocationWhitelistResponse(
@@ -100,7 +100,7 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should be failed`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val throwable = Throwable("error")
 

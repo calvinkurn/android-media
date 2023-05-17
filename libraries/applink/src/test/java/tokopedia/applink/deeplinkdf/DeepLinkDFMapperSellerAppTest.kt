@@ -12,7 +12,7 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `check shop settings base appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-settings"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP)
     }
 
     @Test
@@ -257,6 +257,30 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `check flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check upcoming flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/upcoming"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check registered flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/registered"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check ongoing flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/ongoing"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check finished flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/finished"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
     }
 
