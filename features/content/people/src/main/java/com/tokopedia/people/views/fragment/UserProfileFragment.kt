@@ -1224,12 +1224,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val desc = buildString {
-            append("Lihat foto & video menarik dari ${viewModel.displayName}")
-            if (viewModel.profileUsername.isNotBlank()) append(" (${getUsernameWithAdd()})")
-            append(", yuk! \uD83D\uDE0D")
-        }
-
         val linkerShareData = DataMapper.getLinkerShareData(
             LinkerData().apply {
                 type = LinkerData.USER_PROFILE_SOCIAL
@@ -1257,7 +1251,21 @@ class UserProfileFragment @Inject constructor(
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {
-                            val shareString = desc + "\n" + linkerShareData?.shareUri
+                            val shareString = if (viewModel.profileUsername.isNotBlank()) {
+                                getString(
+                                    R.string.up_share_text_with_username_template,
+                                    viewModel.displayName,
+                                    getUsernameWithAdd(),
+                                    linkerShareData?.shareUri
+                                )
+                            } else {
+                                getString(
+                                    R.string.up_share_text_template,
+                                    viewModel.displayName,
+                                    linkerShareData?.shareUri
+                                )
+                            }
+
                             SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,
