@@ -3,6 +3,7 @@ package com.tokopedia.people.views.viewholder
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.tokopedia.people.views.adapter.UserReviewMediaAdapter
 import com.tokopedia.people.views.itemdecoration.UserReviewMediaItemDecoration
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.unifyprinciples.R as unifyR
+
 
 /**
  * Created By : Jonathan Darwin on May 15, 2023
@@ -50,6 +52,20 @@ class UserReviewViewHolder private constructor() {
                 binding.rvMedia.addItemDecoration(UserReviewMediaItemDecoration(itemView.context))
             binding.rvMedia.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             binding.rvMedia.adapter = adapter
+            binding.rvMedia.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(
+                    view: RecyclerView,
+                    event: MotionEvent
+                ): Boolean {
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> binding.rvMedia.parent.requestDisallowInterceptTouchEvent(true)
+                    }
+                    return false
+                }
+
+                override fun onTouchEvent(view: RecyclerView, event: MotionEvent) {}
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+            })
         }
 
         fun bind(item: UserReviewUiModel.Review) {
