@@ -10,7 +10,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
@@ -21,6 +20,7 @@ import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.databinding.DiscoItemMultiProductHighlightBinding
@@ -125,7 +125,7 @@ class ProductHighlightItem(
                     try {
                         bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
                     } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
+                        Utils.logException(e)
                     }
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
@@ -158,7 +158,7 @@ class ProductHighlightItem(
                             phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
                         } catch (e: Exception) {
                             phProductDiscount.hide()
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                            Utils.logException(e)
                         }
                     } else {
                         phProductDiscount.hide()
@@ -237,7 +237,7 @@ class ProductHighlightItem(
                     try {
                         bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
                     } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
+                        Utils.logException(e)
                     }
 
                     if (!properties?.supergraphicImageUrl.isNullOrEmpty()) {
@@ -271,7 +271,7 @@ class ProductHighlightItem(
                             phProductDiscount.text = if (productHighlightData.discountPercentage.toIntOrZero() > 0) "${productHighlightData.discountPercentage}%" else ""
                         } catch (e: Exception) {
                             phProductDiscount.hide()
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                            Utils.logException(e)
                         }
                     } else {
                         phProductDiscount.invisible()
