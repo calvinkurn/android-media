@@ -291,9 +291,15 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check seller shop nib applink should return DF_BASE in sellerapp`() {
+    fun `check seller shop nib public applink should return DF_BASE in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-nib"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check seller shop nib internal applink should return DF_BASE in sellerapp`() {
+        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/shop-nib"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test
