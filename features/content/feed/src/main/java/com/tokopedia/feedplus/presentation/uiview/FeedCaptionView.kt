@@ -96,6 +96,8 @@ class FeedCaptionView(
 
                     textView.movementMethod = ScrollingMovementMethod.getInstance()
                     textView.text = spannableString
+
+                    textView.requestLayout()
                 } else if (!isCollapsed) {
                     val spannableString = SpannableStringBuilder().apply {
                         append("$fullText\n")
@@ -103,6 +105,7 @@ class FeedCaptionView(
                     }
 
                     textView.text = spannableString
+                    textView.requestLayout()
                 }
             }
         })
