@@ -72,7 +72,7 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val keyboardHeight by lazyThreadSafetyNone {
+    private val keyboardThreshold by lazyThreadSafetyNone {
         (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
     }
 
@@ -236,9 +236,9 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
-        binding.root.setOnApplyWindowInsetsListener { view , windowInsets ->
+        binding.root.setOnApplyWindowInsetsListener { view, windowInsets ->
             val height = view.getImeHeight()
-            if (view.isImeVisible(threshold = keyboardHeight)) {
+            if (view.isImeVisible(threshold = keyboardThreshold)) {
                 binding.root.setPadding(0, 0, 0, height)
             } else {
                 binding.root.setPadding(0, 0, 0, space16.orZero())
