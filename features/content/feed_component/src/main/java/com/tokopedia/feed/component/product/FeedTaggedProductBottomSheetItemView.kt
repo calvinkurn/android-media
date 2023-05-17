@@ -22,7 +22,7 @@ class FeedTaggedProductBottomSheetItemView(
 
     private val binding = ViewFeedTaggedProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
-        this,
+        this
     )
     private var mListener: Listener? = null
 
@@ -58,7 +58,7 @@ class FeedTaggedProductBottomSheetItemView(
     }
 
     private fun bindPrice(price: FeedTaggedProductUiModel.Price) {
-        when(price) {
+        when (price) {
             is FeedTaggedProductUiModel.CampaignPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.show()
@@ -91,6 +91,7 @@ class FeedTaggedProductBottomSheetItemView(
             binding.tvStock.text = campaign.status.stockLabel
             binding.llStockContainer.show()
         } else {
+            binding.llProductActionButton.hide()
             binding.llStockContainer.hide()
         }
     }
