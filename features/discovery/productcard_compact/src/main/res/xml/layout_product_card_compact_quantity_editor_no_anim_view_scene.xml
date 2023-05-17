@@ -48,6 +48,7 @@
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:translationZ="4dp"
+            android:alpha="1"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent" />
@@ -67,8 +68,9 @@
             android:id="@+id/add_to_cart_btn_shimmer"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:translationZ="4dp"
+            android:translationZ="1dp"
             android:visibility="gone"
+            android:alpha="0"
             motion:layout_constraintBottom_toBottomOf="@id/add_button"
             motion:layout_constraintStart_toStartOf="@id/add_button"
             motion:layout_constraintEnd_toEndOf="@id/add_button"
