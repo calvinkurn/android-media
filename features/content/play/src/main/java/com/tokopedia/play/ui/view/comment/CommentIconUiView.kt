@@ -12,9 +12,11 @@ class CommentIconUiView(private val group: Group, listener: Listener) {
 
     private val view = group.rootView
     init {
-        group.referencedIds.forEach {
-            view.findViewById<View>(it).setOnClickListener {
-                  listener.onCommentClicked(this)
+        group.post {
+            group.referencedIds.forEach {
+                view.findViewById<View>(it).setOnClickListener {
+                    listener.onCommentClicked(this)
+                }
             }
         }
     }
