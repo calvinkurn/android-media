@@ -575,7 +575,6 @@ open class TopChatRoomFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.updateMessageId(messageId)
-        initBubbleChatFlag()
         setupBackground()
         setupViewState()
         setupArguments(savedInstanceState)
@@ -851,6 +850,7 @@ open class TopChatRoomFragment :
         setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+        initBubbleChatFlag()
     }
 
     private fun setupPostFirstPage() {
