@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -12,18 +13,26 @@ import com.tokopedia.usecase.coroutines.UseCase
 /**
  * Created by jegul on 24/07/20
  */
-class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
+class GetBroadcasterAuthorConfig(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
 
     var params: RequestParams = RequestParams.EMPTY
     private val query = """
-    query getBroadcasterConfig(${'$'}shopId: String!){
-        broadcasterGetShopConfig(shopID: ${'$'}shopId)
-        {
-          streamAllowed
-          shortVideoAllowed
-        }
-    }
-    """
+            query BroadcasterGetAuthorConfig(
+                ${"$$PARAMS_AUTHOR_ID"}: Int64!, 
+                ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
+                ${"$$PARAMS_WITH_CHANNEL_STATE"}: Boolean
+            ) {
+              broadcasterGetAuthorConfig(
+                 $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"}, 
+                 $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
+                 $PARAMS_WITH_CHANNEL_STATE: ${"$$PARAMS_WITH_CHANNEL_STATE"}
+              ) {
+                streamAllowed
+                shortVideoAllowed
+                hasContent
+              }
+            }
+        """
     val request by lazy {
         GraphqlRequest(query, Broadcaster::class.java, params.parameters)
     }
@@ -46,13 +55,18 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
     }
 
     companion object {
-        private const val PARAM_SHOP_IDS = "shopId"
+        private const val PARAMS_AUTHOR_ID = "authorID"
+        private const val PARAMS_AUTHOR_TYPE = "authorType"
+        private const val PARAMS_WITH_CHANNEL_STATE = "withChannelState"
+        private const val VALUE_WITH_CHANNEL_STATE = true
 
         @JvmStatic
         fun createParams(
-            shopId: String
+            authorId: String,
         ): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, shopId)
+            putObject(PARAMS_AUTHOR_ID, authorId)
+            putObject(PARAMS_AUTHOR_TYPE, VALUE_TYPE_ID_SHOP)
+            putObject(PARAMS_WITH_CHANNEL_STATE, VALUE_WITH_CHANNEL_STATE)
         }
     }
 }
