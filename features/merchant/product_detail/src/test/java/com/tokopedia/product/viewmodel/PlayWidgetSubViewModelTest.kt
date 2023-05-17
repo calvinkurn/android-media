@@ -84,8 +84,8 @@ class PlayWidgetSubViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = PlayWidgetSubViewModel(playWidgetTools = playWidgetTools).apply {
-            registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
-            registerMediator { this@PlayWidgetSubViewModelTest.mediator }
+            registerScope(viewModelScope = CoroutineScope(CoroutineTestDispatchersProvider.main))
+            registerMediator(mediator = mediator)
         }
     }
 

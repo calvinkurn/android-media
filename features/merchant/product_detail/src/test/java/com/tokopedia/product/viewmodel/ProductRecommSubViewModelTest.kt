@@ -66,7 +66,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase = { getRecommendationUseCase },
             getProductRecommendationUseCase = { getProductRecommendationUseCase }
         ).apply {
-            registerScope { CoroutineScope(CoroutineTestDispatchersProvider.main) }
+            registerScope(viewModelScope = CoroutineScope(CoroutineTestDispatchersProvider.main))
         }
     }
 
