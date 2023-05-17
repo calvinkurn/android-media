@@ -375,6 +375,7 @@ class SearchProductFirstPageGqlUseCase(
                                     value
                                     color
                                 }
+                                warehouse_id_default
                             }
                             card_button {
                                 title
