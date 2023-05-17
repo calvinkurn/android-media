@@ -14,6 +14,6 @@ data class FeedTrackerDataModel(
     val isFollowing: Boolean,
     val contentScore: String,
     val hasVoucher: Boolean,
-    val campaignStatus: String = "no",
+    val campaignStatus: String,
     val entryPoint: String
 )
