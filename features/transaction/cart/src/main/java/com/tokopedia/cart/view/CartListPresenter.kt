@@ -939,21 +939,25 @@ class CartListPresenter @Inject constructor(
                     val addCartToWishlistRequest = AddCartToWishlistRequest()
                     addCartToWishlistRequest.cartIds = listOf(cartId)
                     val data = addCartToWishlistUseCase(addCartToWishlistRequest)
-                    view?.let { cartListView ->
-                        if (data.status == STATUS_OK) {
-                            if (data.success == 1) {
-                                cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                    withContext(dispatchers.main) {
+                        view?.let { cartListView ->
+                            if (data.status == STATUS_OK) {
+                                if (data.success == 1) {
+                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)  
+                                } else {
+                                    cartListView.showToastMessageRed(data.message)
+                                }
                             } else {
                                 cartListView.showToastMessageRed(data.message)
                             }
-                        } else {
-                            cartListView.showToastMessageRed(data.message)
                         }
                     }
                 } catch (t: Throwable) {
-                    view?.let { cartListView ->
-                        Timber.e(t)
-                        cartListView.showToastMessageRed(t)
+                    withContext(dispatchers.main) {
+                        view?.let { cartListView ->
+                            Timber.e(t)
+                            cartListView.showToastMessageRed(t)
+                        }
                     }
                 }
             }
@@ -1776,19 +1780,23 @@ class CartListPresenter @Inject constructor(
         launch(dispatchers.io) {
             try {
                 val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
-                view?.let { cartListView ->
-                    cartListView.hideProgressLoading()
-                    if (model.message.isNotEmpty()) {
-                        cartListView.showToastMessageGreen(model.message[0])
+                withContext(dispatchers.main) {
+                    view?.let { cartListView ->
+                        cartListView.hideProgressLoading()
+                        if (model.message.isNotEmpty()) {
+                            cartListView.showToastMessageGreen(model.message[0])
+                        }
+                        cartListView.refreshCartWithSwipeToRefresh()
                     }
-                    cartListView.refreshCartWithSwipeToRefresh()
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
-                view?.let {
-                    it.hideProgressLoading()
-                    it.showToastMessageRed(t)
-                    it.refreshCartWithSwipeToRefresh()
+                withContext(dispatchers.main) {
+                    view?.let {
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(t)
+                        it.refreshCartWithSwipeToRefresh()
+                    }
                 }
             }
         }
@@ -2026,16 +2034,20 @@ class CartListPresenter @Inject constructor(
         launch(dispatchers.io) {
             try {
                 val data = followShopUseCase(shopId)
-                view?.let {
-                    it.hideProgressLoading()
-                    it.showToastMessageGreen(data.followShop?.message ?: "")
-                    processInitialGetCartData("0", false, false)
+                withContext(dispatchers.main) {
+                    view?.let {
+                        it.hideProgressLoading()
+                        it.showToastMessageGreen(data.followShop?.message ?: "")
+                        processInitialGetCartData("0", false, false)
+                    }
                 }
             } catch (t: Throwable) {
-                view?.let {
-                    Timber.e(t)
-                    it.hideProgressLoading()
-                    it.showToastMessageRed(t)
+                withContext(dispatchers.main) {
+                    view?.let {
+                        Timber.e(t)
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(t)
+                    }
                 }
             }
         }
