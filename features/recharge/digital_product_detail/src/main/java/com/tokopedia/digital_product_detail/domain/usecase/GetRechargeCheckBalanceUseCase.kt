@@ -70,6 +70,13 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
                     subtitle
                     iconURL
                   }
+                  products {
+                    title
+                    subtitle
+                    subtitleColor
+                    applink
+                    buttonText
+                  }
                  }
               }
             }
