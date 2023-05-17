@@ -260,7 +260,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
+                if (text.toIntSafely() < minAmount) {
                     setWrapperError(
                         wrapper,
                         getString(
@@ -280,7 +280,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
-                    binding.btnTipping.isEnabled = false
+                    binding.btnTipping.isEnabled = true
                 }
 
                 validateSelectedChip(text)
