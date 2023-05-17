@@ -33,17 +33,6 @@ object FavoriteNumberDataMapper {
         }
     }
 
-    fun mapPersoFavNumberItemToContactDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsAutoComplete> {
-        return clientNumbers.map {
-            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
-                it.title to it.subtitle
-            } else {
-                "" to it.title
-            }
-            TopupBillsAutoCompleteContactModel(clientName, clientNumber)
-        }
-    }
-
     fun mapPersoFavNumberItemToSearchDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsSearchNumberDataModel> {
         return clientNumbers.map {
             val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
@@ -57,18 +46,6 @@ object FavoriteNumberDataMapper {
                 categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
                 productId = it.trackingData.productId
-            )
-        }
-    }
-
-    fun mapSeamlessFavNumberItemToSearchDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<TopupBillsSearchNumberDataModel> {
-        return clientNumbers.map {
-            TopupBillsSearchNumberDataModel(
-                clientName = it.clientName,
-                clientNumber = it.clientNumber,
-                categoryId = it.categoryId,
-                operatorId = it.operatorId,
-                productId = it.productId
             )
         }
     }
