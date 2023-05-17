@@ -188,7 +188,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                     } + it.attachments.map { attachment ->
                         UserReviewUiModel.Attachment(
                             attachmentID = attachment.attachmentID,
-                            mediaUrl = attachment.thumbnailURL,
+                            mediaUrl = attachment.fullsizeURL,
                             type = UserReviewUiModel.Attachment.Type.Image,
                         )
                     },

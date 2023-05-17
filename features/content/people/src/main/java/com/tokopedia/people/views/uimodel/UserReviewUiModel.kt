@@ -1,5 +1,13 @@
 package com.tokopedia.people.views.uimodel
 
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewDetail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewerUserInfo
+
 /**
  * Created By : Jonathan Darwin on May 12, 2023
  */
@@ -21,7 +29,66 @@ data class UserReviewUiModel(
         val attachments: List<Attachment>,
         val likeDislike: LikeDislike,
         val isReviewTextExpanded: Boolean,
-    )
+    ) {
+        fun mapToProductReviewMediaGalleryModel(
+            userId: String,
+            userDisplayName: String,
+            userImage: String,
+        ): ProductrevGetReviewMedia {
+            return ProductrevGetReviewMedia(
+                reviewMedia = attachments.mapIndexed { index, attachment ->
+                    val position = index + 1
+
+                    if (attachment.isVideo) {
+                        ReviewMedia(
+                            videoId = attachment.attachmentID,
+                            feedbackId = feedbackID,
+                            mediaNumber = position,
+                        )
+                    } else {
+                        ReviewMedia(
+                            imageId = attachment.attachmentID,
+                            feedbackId = feedbackID,
+                            mediaNumber = position,
+                        )
+                    }
+                },
+                detail = Detail(
+                    reviewGalleryImages = attachments.filter { !it.isVideo }.map {
+                        ReviewGalleryImage(
+                            attachmentId = it.attachmentID,
+                            thumbnailURL = it.mediaUrl,
+                            fullsizeURL = it.mediaUrl,
+                            feedbackId = feedbackID,
+                        )
+                    },
+                    reviewGalleryVideos = attachments.filter { it.isVideo }.map {
+                        ReviewGalleryVideo(
+                            attachmentId = it.attachmentID,
+                            url = it.mediaUrl,
+                            feedbackId = feedbackID,
+                        )
+                    },
+                    mediaCount = attachments.size.toLong(),
+                    reviewDetail = listOf(
+                        ReviewDetail(
+                            user = ReviewerUserInfo(
+                                userId = userId,
+                                fullName = userDisplayName,
+                                image = userImage,
+                            ),
+                            feedbackId = feedbackID,
+                            variantName = product.productVariant.variantName,
+                            review = reviewText,
+                            rating = rating,
+                            isLiked = likeDislike.isLike,
+                            totalLike = likeDislike.totalLike,
+                        )
+                    )
+                )
+            )
+        }
+    }
 
     data class Product(
         val productID: String,

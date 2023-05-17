@@ -45,6 +45,14 @@ import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewDetail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewerUserInfo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -80,6 +88,13 @@ class UserProfileReviewFragment @Inject constructor(
 
                 override fun onClickSeeMore(review: UserReviewUiModel.Review) {
                     viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
+                }
+
+                override fun onMediaClick(
+                    feedbackID: String,
+                    attachment: UserReviewUiModel.Attachment
+                ) {
+                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackID, attachment))
                 }
             },
             onLoading = {
@@ -134,6 +149,26 @@ class UserProfileReviewFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.ErrorLikeDislike -> {
                         showError(event.throwable)
+                    }
+                    is UserProfileUiEvent.OpenReviewMediaGalleryPage -> {
+                        val intent = ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                            context = requireContext(),
+                            pageSource = ReviewMediaGalleryRouter.PageSource.USER_PROFILE,
+                            productID = event.review.product.productID,
+                            shopID = "",
+                            isProductReview = true,
+                            isFromGallery = false,
+                            mediaPosition = event.mediaPosition,
+                            showSeeMore = false,
+                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel(
+                                userId = viewModel.profileUserID,
+                                userDisplayName = viewModel.displayName,
+                                userImage = viewModel.profileCover,
+                            )
+                        )
+
+                        /** TODO: startActivityForResult for handling like dislike inside media gallery */
+                        startActivity(intent)
                     }
                     else -> {}
                 }

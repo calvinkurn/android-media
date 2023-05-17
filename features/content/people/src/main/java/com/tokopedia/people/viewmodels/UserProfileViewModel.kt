@@ -177,6 +177,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
+            is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
             else -> {}
         }
     }
@@ -583,6 +584,20 @@ class UserProfileViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun handleClickReviewMedia(feedbackID: String, attachment: UserReviewUiModel.Attachment) {
+        launch {
+            val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackID } ?: return@launch
+            val mediaPosition = review.attachments.indexOf(attachment) + 1
+
+            _uiEvent.emit(
+                UserProfileUiEvent.OpenReviewMediaGalleryPage(
+                    review = review,
+                    mediaPosition = mediaPosition,
+                )
+            )
         }
     }
 

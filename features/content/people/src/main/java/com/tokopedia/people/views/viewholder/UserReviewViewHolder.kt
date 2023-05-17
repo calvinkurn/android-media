@@ -42,7 +42,7 @@ class UserReviewViewHolder private constructor() {
                         feedbackID: String,
                         attachment: UserReviewUiModel.Attachment
                     ) {
-                        /** TODO: handle this */
+                        listener.onMediaClick(feedbackID, attachment)
                     }
                 }
             )
@@ -185,6 +185,11 @@ class UserReviewViewHolder private constructor() {
         interface Listener {
             fun onClickLike(review: UserReviewUiModel.Review)
             fun onClickSeeMore(review: UserReviewUiModel.Review)
+
+            fun onMediaClick(
+                feedbackID: String,
+                attachment: UserReviewUiModel.Attachment
+            )
         }
     }
 
