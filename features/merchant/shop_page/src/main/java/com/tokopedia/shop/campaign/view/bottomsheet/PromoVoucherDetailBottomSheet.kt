@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import com.tokopedia.shop.R
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
-import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.view.viewmodel.PromoVoucherDetailViewModel
@@ -34,7 +36,6 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetPromoVoucherDetailBinding>()
 
-    private var onVoucherUse: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherRedeemSuccess: (RedeemPromoVoucherResult) -> Unit = {}
     private var onVoucherRedeemFailed: (Throwable) -> Unit = {}
 
@@ -43,6 +44,8 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         isSkipCollapseState = true
         isKeyboardOverlap = false
         showKnob = true
+        isFullpage = true
+        showCloseIcon = false
     }
 
     @Inject
@@ -109,11 +112,11 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
             when (result) {
                 is Success -> {
                     handleRedeemVoucherResult(result.data)
-                    binding?.btnAddProduct?.stopLoading()
+                    binding?.btnUse?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
                 }
                 is Fail -> {
-                    binding?.btnAddProduct?.stopLoading()
+                    binding?.btnUse?.stopLoading()
                     onVoucherRedeemFailed(result.throwable)
                 }
             }
@@ -121,7 +124,17 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun displayVoucherDetail(voucherDetail: PromoVoucherDetail) {
-
+        binding?.run {
+            tpgVoucherName.text = voucherDetail.title
+            tpgMinPurchase.text = voucherDetail.minimumUsage
+            btnUse.text = voucherDetail.buttonStr
+            btnUse.isEnabled = !voucherDetail.isDisabledButton
+            tpgTnc.text = MethodChecker.fromHtml(voucherDetail.tnc)
+            imgVoucher.loadImage(voucherDetail.imageUrlMobile)
+            tpgMinPurchase.text = voucherDetail.minimumUsage
+            tpgPromoPeriod.text = voucherDetail.activePeriodDate
+            tpgHowToUse.text = MethodChecker.fromHtml(voucherDetail.howToUse)
+        }
     }
 
     private fun handleRedeemVoucherResult(result: RedeemPromoVoucherResult) {
@@ -130,11 +143,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         binding?.run { 
-            btnAddProduct.setOnClickListener {
-                binding?.btnAddProduct?.startLoading()
+            btnUse.setOnClickListener {
+                binding?.btnUse?.startLoading()
                 viewModel.redeemVoucher(17675539)
                 dismiss()
             }
+            imgVoucher.cornerRadius = Int.ZERO
         }
     }
 
@@ -150,9 +164,6 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         this.isClickable = true
     }
 
-    fun setOnVoucherUseClick(onVoucherUse: (ExclusiveLaunchVoucher) -> Unit) {
-        this.onVoucherUse = onVoucherUse
-    }
 
     fun setOnVoucherRedeemSuccess(onVoucherRedeemSuccess : (RedeemPromoVoucherResult) -> Unit) {
         this.onVoucherRedeemSuccess = onVoucherRedeemSuccess

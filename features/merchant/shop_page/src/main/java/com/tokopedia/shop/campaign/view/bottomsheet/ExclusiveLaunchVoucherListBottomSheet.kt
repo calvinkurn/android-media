@@ -134,9 +134,9 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                     exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
                         ?: return@setOnVoucherClaimClick
                 showVoucherDetailBottomSheet(selectedVoucher)
-                onVoucherClaim(selectedVoucher)
+                //onVoucherClaim(selectedVoucher)
 
-                dismiss()
+               // dismiss()
             }
             setOnVoucherUseClick { selectedVoucherPosition ->
                 val selectedVoucher =
@@ -150,6 +150,16 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     }
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
+        if (!isAdded) return
+
+        val bottomSheet = PromoVoucherDetailBottomSheet()
+        bottomSheet.setOnVoucherRedeemSuccess { redeemResult ->
+            dismiss()
+        }
+        bottomSheet.setOnVoucherRedeemFailed { throwable ->
+            dismiss()
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     fun setOnVoucherUse(onVoucherUse: (ExclusiveLaunchVoucher) -> Unit) {
