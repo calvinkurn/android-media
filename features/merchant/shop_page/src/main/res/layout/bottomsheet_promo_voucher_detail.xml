@@ -37,13 +37,14 @@
         app:layout_constraintTop_toBottomOf="@+id/imgVoucher"
         tools:text="Cashback 20% s.d. 100.000 Gopay Coins" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconClock"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        app:icon_name="CLOCK"
+        app:srcCompat="@drawable/ic_clock_green"
         android:layout_marginTop="14dp"
+        android:contentDescription="@string/shop_page_clock_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography2" />
 
@@ -66,20 +67,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="@string/shop_page_promo_period"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="30 Mar - 30 Apr 2023"
         app:layout_constraintTop_toTopOf="@+id/iconClock"
         app:typographyType="display_2" />
 
 
-    <com.tokopedia.iconunify.IconUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconMinPurchase"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:icon_name="CLOCK"
+        android:contentDescription="@string/shop_page_rupiah_icon"
+        app:srcCompat="@drawable/ic_rupiah_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iconClock" />
 
@@ -102,7 +103,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="@string/shop_page_promo_period"
         app:layout_constraintBottom_toBottomOf="@+id/labelMinPurchase"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/labelMinPurchase"
@@ -156,7 +156,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnAddProduct"
+            android:id="@+id/btnUse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
