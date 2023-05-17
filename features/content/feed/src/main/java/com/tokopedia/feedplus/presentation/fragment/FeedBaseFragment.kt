@@ -235,7 +235,10 @@ class FeedBaseFragment :
                 feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
-                    putExtra(BundleData.IS_CREATE_POST_AS_BUYER, creationTypeItem.creatorType.asBuyer)
+                    putExtra(
+                        BundleData.IS_CREATE_POST_AS_BUYER,
+                        creationTypeItem.creatorType.asBuyer
+                    )
                     putExtra(
                         BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
                         ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
@@ -284,43 +287,43 @@ class FeedBaseFragment :
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
+            OnPageChangeCallback() {
 
-                var shouldSendSwipeTracker = false
+            var shouldSendSwipeTracker = false
 
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
-                            )
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
                         )
+                    )
+                }
+
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
                     }
-                    onChangeTab(position)
-
-                    if (shouldSendSwipeTracker) {
-                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                            feedNavigationAnalytics.eventSwipeFollowingTab()
-                        } else {
-                            feedNavigationAnalytics.eventSwipeForYouTab()
-                        }
-                        shouldSendSwipeTracker = false
-                    }
+                    shouldSendSwipeTracker = false
                 }
+            }
 
-                override fun onPageSelected(position: Int) {
-                    appLinkTabPosition = position
-                }
+            override fun onPageSelected(position: Int) {
+                feedMainViewModel.changeCurrentTabByIndex(position)
+                appLinkTabPosition = position
+            }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-                }
-            })
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -565,7 +568,7 @@ class FeedBaseFragment :
             binding.tyFeedFirstTab.text = firstTabData.title
             binding.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
+                feedMainViewModel.changeCurrentTabByIndex(TAB_FIRST_INDEX)
             }
             binding.tyFeedFirstTab.show()
         } else {
@@ -576,7 +579,7 @@ class FeedBaseFragment :
             binding.tyFeedSecondTab.text = secondTabData.title
             binding.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
+                feedMainViewModel.changeCurrentTabByIndex(TAB_SECOND_INDEX)
             }
             binding.tyFeedSecondTab.show()
         } else {
@@ -627,7 +630,7 @@ class FeedBaseFragment :
     }
 
     private fun scrollToDefaultTabPosition() {
-        binding.vpFeedTabItemsContainer.setCurrentItem(appLinkTabPosition, true)
+        feedMainViewModel.changeCurrentTabByIndex(appLinkTabPosition)
     }
 
     private fun onChangeTab(position: Int) {

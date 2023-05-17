@@ -46,7 +46,8 @@ data class FeedCardVideoContentModel(
     val isPlayContent: Boolean
         get() = typename == TYPE_FEED_X_CARD_PLAY
 
-    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
+    val contentScore = detailScore.firstOrNull { it.isContentScore }?.value
+        ?: if (detailScore.isNotEmpty()) detailScore.first().value else ""
 
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 }

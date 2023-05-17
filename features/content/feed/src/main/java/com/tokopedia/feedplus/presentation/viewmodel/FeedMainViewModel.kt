@@ -108,6 +108,10 @@ class FeedMainViewModel @Inject constructor(
         _isPageResumed.value = false
     }
 
+    fun changeCurrentTabByIndex(index: Int) {
+        _currentTabIndex.value = index
+    }
+
     fun changeCurrentTabByType(type: String) {
         feedTabs.value?.let {
             if (it is Success) {
