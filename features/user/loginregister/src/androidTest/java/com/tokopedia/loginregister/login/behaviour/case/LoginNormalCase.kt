@@ -20,7 +20,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -39,9 +38,6 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.UiTest
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -132,9 +128,9 @@ class LoginNormalCase : LoginBase() {
     /* Check if RegisterInitialActivity is launching when Top Daftar button clicked */
     @Test
     fun goToRegisterInitial_Top() {
-        mockkStatic(FirebaseCrashlytics::class)
-        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
         runTest {
+            Thread.sleep(1000)
+
             clickTopRegister()
             intended(hasComponent(RegisterInitialActivity::class.java.name))
         }
@@ -337,6 +333,8 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun checkDeveloperOptions() {
         runTest {
+            Thread.sleep(1000)
+
             val viewDevOpts = onView(withText("Developer Options"))
             if (GlobalConfig.isAllowDebuggingTools()) {
                 viewDevOpts.check(matches(isDisplayed()))
@@ -349,6 +347,8 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun gotoVerification_true() {
         runTest {
+            Thread.sleep(1000)
+
             val viewDevOpts = onView(withText("Developer Options"))
             if (GlobalConfig.isAllowDebuggingTools()) {
                 viewDevOpts.check(matches(isDisplayed()))
