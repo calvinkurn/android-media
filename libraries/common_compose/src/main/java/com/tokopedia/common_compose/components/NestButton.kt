@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -37,8 +36,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.components.loader.NestLoader
+import com.tokopedia.common_compose.components.loader.NestLoaderType
 import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.header.NestHeaderVariant
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -138,7 +138,7 @@ private fun FilledButton(
         buttonColors = buttonColors,
         buttonHeight = size.buttonHeight,
         buttonBorderStroke = null,
-        progressBarColor = Color.White,
+        useWhiteColorLoader = true,
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -185,7 +185,7 @@ private fun GhostButton(
             width = 1.dp,
             color = if (isEnabled) NestTheme.colors.GN._500 else NestTheme.colors.NN._100
         ),
-        progressBarColor = NestTheme.colors.GN._500,
+        useWhiteColorLoader = false,
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -232,7 +232,7 @@ private fun GhostAlternateButton(
             width = 1.dp,
             color = if (isEnabled) NestTheme.colors.NN._300 else NestTheme.colors.NN._100
         ),
-        progressBarColor = NestTheme.colors.NN._300,
+        useWhiteColorLoader = false,
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -282,7 +282,7 @@ private fun GhostInvertedButton(
             width = 1.dp,
             color = if (isEnabled) NestTheme.colors.NN._1000 else NestTheme.colors.NN._100
         ),
-        progressBarColor = NestTheme.colors.NN._1000,
+        useWhiteColorLoader = isSystemInDarkTheme(),
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -337,7 +337,7 @@ private fun TransactionFilledButton(
             width = 1.dp,
             color = if (isEnabled) buttonBackgroundColor else NestTheme.colors.NN._100
         ),
-        progressBarColor = Color.White,
+        useWhiteColorLoader = true,
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -388,7 +388,7 @@ private fun TransactionGhostButton(
             width = 1.dp,
             color = if (isEnabled) textColor else NestTheme.colors.NN._100
         ),
-        progressBarColor = textColor,
+        useWhiteColorLoader = true,
         loadingText = loadingText,
         rightLoader = rightLoader,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
@@ -433,7 +433,7 @@ private fun TextButton(
         buttonHeight = size.buttonHeight,
         buttonBorderStroke = null,
         buttonIconHeightAndWidth = size.buttonIconHeightAndWidth,
-        progressBarColor = NestTheme.colors.NN._400,
+        useWhiteColorLoader = false,
         loadingText = loadingText,
         rightLoader = rightLoader,
         loaderHeight = size.loaderHeight,
@@ -457,7 +457,7 @@ private fun NestDefaultButton(
     buttonBorderStroke: BorderStroke?,
     buttonIconHeightAndWidth: Dp,
     loaderHeight: Dp,
-    progressBarColor: Color,
+    useWhiteColorLoader: Boolean,
     rightLoader: Boolean,
     loadingText: String,
     leadingIcon: Int? = null,
@@ -483,10 +483,10 @@ private fun NestDefaultButton(
         ) {
 
             when {
-                isLoading && loadingText.isNotEmpty() -> LoadingWithTextButton(loadingText, rightLoader, textStyle, loaderHeight, progressBarColor)
+                isLoading && loadingText.isNotEmpty() -> LoadingWithTextButton(loadingText, rightLoader, textStyle, loaderHeight, useWhiteColorLoader)
                 isLoading && loadingText.isEmpty() -> NestButtonProgressBar(
                     loaderHeight = loaderHeight,
-                    progressBarColor = progressBarColor
+                    useWhiteColorLoader = useWhiteColorLoader
                 )
                 !isLoading && leadingIcon != null -> ButtonWithLeftIcon(
                     resourceId = leadingIcon,
@@ -510,9 +510,11 @@ private fun NestDefaultButton(
 }
 
 @Composable
-private fun NestButtonProgressBar(loaderHeight: Dp, progressBarColor: Color) {
-    //TODO: Replace loader with NestLoader
-    CircularProgressIndicator(modifier = Modifier.size(loaderHeight), color = progressBarColor)
+private fun NestButtonProgressBar(loaderHeight: Dp, useWhiteColorLoader: Boolean) {
+    NestLoader(
+        modifier = Modifier.size(loaderHeight),
+        variant = NestLoaderType.Circular(isWhite = useWhiteColorLoader)
+    )
 }
 @Composable
 private fun NestButtonIcon(resourceId: Int, buttonIconHeightAndWidth: Dp) {
@@ -540,10 +542,13 @@ private fun RowScope.LoadingWithTextButton(
     rightLoader: Boolean,
     textStyle: TextStyle,
     loaderHeight: Dp,
-    progressBarColor: Color
+    useWhiteColorLoader: Boolean
 ) = apply {
     if (!rightLoader) {
-        NestButtonProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
+        NestButtonProgressBar(
+            loaderHeight = loaderHeight,
+            useWhiteColorLoader = useWhiteColorLoader
+        )
     }
 
     NestButtonText(
@@ -557,7 +562,10 @@ private fun RowScope.LoadingWithTextButton(
 
 
     if (rightLoader) {
-        NestButtonProgressBar(loaderHeight = loaderHeight, progressBarColor = progressBarColor)
+        NestButtonProgressBar(
+            loaderHeight = loaderHeight,
+            useWhiteColorLoader = useWhiteColorLoader
+        )
     }
 }
 
