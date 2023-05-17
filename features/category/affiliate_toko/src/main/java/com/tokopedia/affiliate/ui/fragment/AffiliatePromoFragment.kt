@@ -551,6 +551,7 @@ class AffiliatePromoFragment :
         commison: String,
         status: String,
         type: String?,
+        appUrl: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
@@ -561,6 +562,7 @@ class AffiliatePromoFragment :
                 itemImage,
                 itemURL,
                 itemID,
+                appUrl = appUrl,
                 commission = commison,
                 type = type,
                 isLinkGenerationEnabled = true,
