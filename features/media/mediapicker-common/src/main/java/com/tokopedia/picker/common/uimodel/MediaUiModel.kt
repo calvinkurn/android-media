@@ -17,7 +17,7 @@ open class MediaUiModel(
     * the media file is removable.
     * */
     var isCacheFile: Boolean = false,
-    var includedUrl: String? = null
+    var sourcePath: String? = file?.absolutePath
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +26,8 @@ open class MediaUiModel(
                 id == other.id &&
                 file == other.file &&
                 uri == other.uri &&
-                isCacheFile == other.isCacheFile
+                isCacheFile == other.isCacheFile &&
+                sourcePath == other.sourcePath
     }
 
     override fun hashCode(): Int {
@@ -34,6 +35,7 @@ open class MediaUiModel(
         hashCode = 5 * hashCode + file.hashCode()
         hashCode = 5 * hashCode + uri.hashCode()
         hashCode = 5 * hashCode + isCacheFile.hashCode()
+        hashCode = 5 * hashCode + sourcePath.hashCode()
         return hashCode
     }
 

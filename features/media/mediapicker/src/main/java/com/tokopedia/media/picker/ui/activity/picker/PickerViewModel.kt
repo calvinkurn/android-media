@@ -116,28 +116,29 @@ class PickerViewModel @Inject constructor(
 
         val localFiles = uris
             .map { it.asPickerFile() }
-            .map {
-                it.toUiModel().apply {
-                    includedUrl = it.absolutePath
-                }
-            }
+            .map { it.toUiModel() }
 
         bitmapConverter.convert(urls)
             .flowOn(dispatchers.io)
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                val uiModels = it.map { listConvertedUrl ->
-                    listConvertedUrl?.let {  (localPath, originalPath) ->
-                        localPath.asPickerFile().toUiModel().apply {
-                            includedUrl = originalPath
-                        }
-                    }
-                }
+                val uiModels = setIncludedUrls(it)
 
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun setIncludedUrls(result: List<Pair<String, String>?>): List<MediaUiModel?> {
+        return result.map {
+            it?.first
+                ?.asPickerFile()
+                ?.toUiModel()
+                ?.also { model ->
+                    model.sourcePath = it.second
+                }
+        }
     }
 
     fun loadMedia(bucketId: Long, start: Int = 0) {

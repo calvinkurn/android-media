@@ -61,7 +61,7 @@ class PreviewViewModel @Inject constructor(
             .flowOn(dispatchers.computation)
 
     private val selectedIncludedMedia = _files.map { files ->
-        files.mapNotNull { it.includedUrl }
+        files.mapNotNull { it.sourcePath }
     }
 
     val result = combine(
