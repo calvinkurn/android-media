@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
@@ -359,15 +360,11 @@ interface DynamicProductDetailListener {
     )
 
     fun onAnnotationOpenProductInfoSheet(
-        key: String,
         extParam: String,
-        trackData: ComponentTrackDataModel?
+        trackData: ProductDetailInfoAnnotationTrackData
     )
 
-    fun onAnnotationGenericImpression(
-        key: String,
-        trackData: ComponentTrackDataModel?
-    )
+    fun onAnnotationGenericImpression(trackData: ProductDetailInfoAnnotationTrackData)
 
     /**
      * ProductReportViewHolder

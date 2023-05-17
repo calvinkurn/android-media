@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
@@ -20,6 +21,10 @@ class ItemProductDetailInfoViewHolder(
     private val listener: DynamicProductDetailListener,
     private val isProductCatalog: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private val annotationTrackData by lazy {
+        ProductDetailInfoAnnotationTrackData()
+    }
 
     fun bind(
         data: ProductDetailInfoContent,
@@ -103,9 +108,12 @@ class ItemProductDetailInfoViewHolder(
 
             override fun toProductDetailInfo(key: String, extParam: String) {
                 listener.onAnnotationOpenProductInfoSheet(
-                    key = key,
                     extParam = extParam,
-                    trackData = trackData
+                    trackData = annotationTrackData.copy(
+                        parentTrackData = trackData,
+                        key = key,
+                        value = data.subtitle
+                    )
                 )
             }
         })
@@ -115,8 +123,11 @@ class ItemProductDetailInfoViewHolder(
         if (data.key == Content.KEY_PANDUAN_UKURAN) {
             binding.root.addOnImpressionListener(data.impressionHolder) {
                 listener.onAnnotationGenericImpression(
-                    key = data.key,
-                    trackData = trackData
+                    trackData = annotationTrackData.copy(
+                        parentTrackData = trackData,
+                        key = data.key,
+                        value = data.subtitle
+                    )
                 )
             }
         }

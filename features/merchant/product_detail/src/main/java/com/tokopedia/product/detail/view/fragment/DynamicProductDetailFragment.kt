@@ -166,6 +166,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasic
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
@@ -936,7 +937,7 @@ open class DynamicProductDetailFragment :
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -1167,9 +1168,8 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onAnnotationOpenProductInfoSheet(
-        key: String,
         extParam: String,
-        trackData: ComponentTrackDataModel?
+        trackData: ProductDetailInfoAnnotationTrackData
     ) {
         val activity = activity ?: return
 
@@ -1186,19 +1186,15 @@ open class DynamicProductDetailFragment :
         )
 
         ProductDetailInfoTracking.onClickAnnotationGeneric(
-            trackDataModel = trackData ?: ComponentTrackDataModel(),
-            productInfo = viewModel.getDynamicProductInfoP1,
-            key = key,
-            userId = viewModel.userId
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
         )
     }
 
-    override fun onAnnotationGenericImpression(key: String, trackData: ComponentTrackDataModel?) {
+    override fun onAnnotationGenericImpression(trackData: ProductDetailInfoAnnotationTrackData) {
         ProductDetailInfoTracking.onImpressionAnnotationGeneric(
-            trackDataModel = trackData ?: ComponentTrackDataModel(),
-            productInfo = viewModel.getDynamicProductInfoP1,
-            key = key,
-            userId = viewModel.userId
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
         )
     }
 
