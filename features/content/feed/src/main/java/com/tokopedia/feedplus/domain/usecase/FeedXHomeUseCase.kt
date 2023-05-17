@@ -403,6 +403,6 @@ class FeedXHomeUseCase @Inject constructor(
 
         private const val SOURCE_DETAIL = "detail-immersive"
 
-        private const val LIMIT_DETAIL = 1
+        private const val LIMIT_DETAIL = 50 // limit products
     }
 }

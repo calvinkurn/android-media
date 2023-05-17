@@ -189,7 +189,7 @@ class FeedXProduct(
     val priceOriginalFmt: String = "",
     @SerializedName("priceDiscount")
     val priceDiscount: Double = 0.0,
-    @SerializedName("pricDiscountFmt")
+    @SerializedName("priceDiscountFmt")
     val priceDiscountFmt: String = "",
     @SerializedName("totalSold")
     val totalSold: Int = 0,
