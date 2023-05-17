@@ -543,13 +543,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             uploadMessageAfterLolipop = filePathCallback;
 
+            String[] acceptTypes = fileChooserParams.getAcceptTypes();
+            boolean hasVideo = false;
+
+            if (acceptTypes != null) {
+                for (String type : acceptTypes) {
+                    if (type != null && type.contains("video")) {
+                        hasVideo = true;
+                        break;
+                    }
+                }
+            }
+
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
             Intent[] intentArray = new Intent[0];
             if(getContext() != null){
                 intentArray = new Intent[1];
-                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                Intent mediaPickerIntent =
+                        WebViewHelper.INSTANCE.getMediaPickerIntent(getContext(), hasVideo);
                 intentArray[0] = mediaPickerIntent;
             }
 

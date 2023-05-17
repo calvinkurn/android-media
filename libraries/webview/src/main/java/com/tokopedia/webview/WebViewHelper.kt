@@ -418,10 +418,10 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context): Intent {
+    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
-            modeType(ModeType.IMAGE_ONLY)
+            modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
             singleSelectionMode()
         }
     }
