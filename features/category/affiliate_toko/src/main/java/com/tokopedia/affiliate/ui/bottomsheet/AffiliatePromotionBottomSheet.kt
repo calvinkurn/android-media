@@ -78,6 +78,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private var type = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
+    private var appUrl: String? = null
     private var identifier: String? = null
     private var isLinkGenerationEnabled = true
 
@@ -103,6 +104,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         private const val KEY_PRODUCT_NAME = "KEY_PRODUCT_NAME"
         private const val KEY_PRODUCT_IMAGE = "KEY_PRODUCT_IMAGE"
         private const val KEY_PRODUCT_URL = "KEY_PRODUCT_URL"
+        private const val KEY_APP_URL = "KEY_APP_URL"
         private const val KEY_COMMISON_PRICE = "KEY_COMMISION_PRICE"
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
@@ -254,6 +256,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 productId =
                     params?.itemId ?: bundle.getString(KEY_PRODUCT_ID, "")
                 url = params?.itemUrl ?: bundle.getString(KEY_PRODUCT_URL, "")
+                appUrl = params?.appUrl ?: bundle.getString(KEY_APP_URL, "")
                 identifier = params?.productIdentifier ?: bundle.getString(KEY_PRODUCT_IDENTIFIER)
                 originScreen = params?.origin ?: bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
                 isLinkGenerationEnabled =
@@ -262,8 +265,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
                 type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
 
-                if (originScreen == ORIGIN_SSA_SHOP) {
-                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                when (originScreen) {
+                    ORIGIN_SSA_SHOP -> findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
                         RouteManager.route(
                             context,
                             ApplinkConst.SHOP.replace(
@@ -272,14 +275,21 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         )
                     }
-                }
-
-                if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
-                    findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
-                        RouteManager.route(
-                            context,
-                            ApplinkConst.TokopediaNow.HOME
-                        )
+                    ORIGIN_PROMO_TOKO_NOW -> {
+                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                ApplinkConst.TokopediaNow.HOME
+                            )
+                        }
+                    }
+                    ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
+                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                appUrl
+                            )
+                        }
                     }
                 }
             }

@@ -237,6 +237,10 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTopAdsShop(isUsed: Boolean){
+        otherMenuAdapter?.addIklanTopadsMenu(isUsed)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)

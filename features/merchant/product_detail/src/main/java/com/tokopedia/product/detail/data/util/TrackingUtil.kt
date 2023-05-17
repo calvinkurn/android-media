@@ -46,7 +46,8 @@ object TrackingUtil {
         customItemName: String = "",
         customLabel: String = "",
         customPromoCode: String = "",
-        customItemId: String = ""
+        customItemId: String = "",
+        customPromoId: String = ""
     ): HashMap<String, Any>? {
         val productId = productInfo?.basic?.productID ?: ""
         val shopId = productInfo?.basic?.shopID ?: ""
@@ -77,7 +78,7 @@ object TrackingUtil {
                             "creative_url", "",
                             "position", componentTrackDataModel.adapterPosition, // creative_slot
                             "category", categoryString,
-                            "promo_id", "",
+                            "promo_id", customPromoId,
                             "promo_code", customPromoCode
                         )
                     )

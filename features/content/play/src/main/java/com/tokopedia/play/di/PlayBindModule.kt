@@ -1,5 +1,7 @@
 package com.tokopedia.play.di
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
 import com.tokopedia.play.analytic.explorewidget.PlayExploreWidgetAnalytic
@@ -104,4 +106,8 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindPlayLog(log: PlayLogImpl): PlayLog
+
+    @Binds
+    @PlayScope
+    abstract fun bindPlayPerformanceDashboardAnalytic(analytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
 }

@@ -116,6 +116,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                         partner {
                           id
                           name
+                          type
                         }
                         app_link
                         web_link
