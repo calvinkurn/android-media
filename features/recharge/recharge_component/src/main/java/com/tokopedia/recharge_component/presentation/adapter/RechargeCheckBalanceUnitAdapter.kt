@@ -10,6 +10,7 @@ import com.tokopedia.recharge_component.presentation.adapter.viewholder.Recharge
 class RechargeCheckBalanceUnitAdapter: RecyclerView.Adapter<RechargeCheckBalanceUnitViewHolder>() {
 
     private var balanceInfo = listOf<RechargeCheckBalanceUnitModel>()
+    private var unitListener: RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -20,7 +21,7 @@ class RechargeCheckBalanceUnitAdapter: RecyclerView.Adapter<RechargeCheckBalance
             parent,
             false
         )
-        return RechargeCheckBalanceUnitViewHolder(binding)
+        return RechargeCheckBalanceUnitViewHolder(binding, unitListener)
     }
 
     override fun onBindViewHolder(holder: RechargeCheckBalanceUnitViewHolder, position: Int) {
@@ -32,5 +33,9 @@ class RechargeCheckBalanceUnitAdapter: RecyclerView.Adapter<RechargeCheckBalance
     fun setBalanceInfo(balanceInfo: List<RechargeCheckBalanceUnitModel>) {
         this.balanceInfo = balanceInfo
         notifyDataSetChanged()
+    }
+
+    fun setCheckBalanceUnitListener(listener: RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener) {
+        unitListener = listener
     }
 }

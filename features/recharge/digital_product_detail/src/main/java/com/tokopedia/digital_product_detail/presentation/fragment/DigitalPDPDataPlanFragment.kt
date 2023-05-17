@@ -92,6 +92,7 @@ import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeProductDescListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -100,6 +101,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
@@ -768,7 +770,8 @@ class DigitalPDPDataPlanFragment :
                 showCheckBalanceOtpWidget()
             } else {
                 renderCheckBalanceWidget(
-                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
+                    DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
                 )
                 showCheckBalanceWidget()
             }
@@ -795,9 +798,8 @@ class DigitalPDPDataPlanFragment :
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
                     checkBalanceData.iconUrl
-                ) {
-                    // TODO: [Misael] show bottom sheet, ini cuma di paket data ya
-                }
+                )
+                removeClientNumberBottomPadding()
             } else {
                 hideCheckBalanceWarning()
             }
@@ -815,6 +817,8 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             rechargePdpPaketDataClientNumberWidget.hideCheckBalanceWidget()
             rechargePdpPaketDataClientNumberWidget.hideCheckBalanceOtpWidget()
+            rechargePdpPaketDataClientNumberWidget.showClientNumberBottomPadding()
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -1877,9 +1881,16 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberCheckBalanceListener
-    override fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel) {
+    override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
         val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
         bottomSheet.setBottomSheetModel(model)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel) {
+        val bottomSheet = RechargeCheckBalanceDetailBottomSheet()
+        bottomSheet.setBottomSheetTitle(model.title)
+        bottomSheet.setCheckBalanceDetailModels(model.details)
         bottomSheet.show(childFragmentManager)
     }
     //endregion

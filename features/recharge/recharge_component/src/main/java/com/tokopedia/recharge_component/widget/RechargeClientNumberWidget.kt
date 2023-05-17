@@ -18,6 +18,8 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -29,6 +31,8 @@ import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListene
 import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
@@ -399,23 +403,53 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
             setTitle(checkBalanceOTPModel.subtitle)
             setNotificationLabel(checkBalanceOTPModel.label)
             setOnClickListener {
-                mCheckBalanceListener?.onClickCheckBalance(checkBalanceOTPModel.bottomSheetModel)
+                mCheckBalanceListener?.onClickCheckBalanceOTPWidget(checkBalanceOTPModel.bottomSheetModel)
             }
         }
     }
 
-    fun renderCheckBalanceWidget(balanceInfo: List<RechargeCheckBalanceUnitModel>) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.setBalanceInfo(balanceInfo)
+    fun renderCheckBalanceWidget(
+        balanceInfo: List<RechargeCheckBalanceUnitModel>,
+        balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel,
+    ) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.run {
+            setBalanceInfo(balanceInfo)
+            if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
+                setListener(object: RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
+                    override fun onClickWidget() {
+                        mCheckBalanceListener?.onClickCheckBalanceWidget(balanceDetailBottomSheetModel)
+                    }
+                })
+            }
+        }
     }
 
-    fun showCheckBalanceWarning(message: String, iconUrl: String, onClick: () -> Unit) {
+    fun showCheckBalanceWarning(message: String, iconUrl: String) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showWarningMessage(
-            message, iconUrl, onClick
+            message, iconUrl
         )
     }
 
     fun hideCheckBalanceWarning() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideWarningMessage()
+    }
+
+    fun removeClientNumberBottomPadding() {
+        binding.clientNumberWidgetMainLayout.root.setPadding(
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics),
+            Int.ZERO,
+            Int.ZERO
+        )
+    }
+
+    fun showClientNumberBottomPadding() {
+        binding.clientNumberWidgetMainLayout.root.setPadding(
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics),
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics)
+        )
     }
 
     fun startShakeAnimation() {
@@ -464,6 +498,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         private const val FADE_DURATION = 200L
         private const val ALPHA_0_5 = 0.5f
         private const val ALPHA_1_0 = 1.0f
+        private const val PADDING_16 = 16
 
         private const val DEFAULT_EMPTY_STRING = ""
     }

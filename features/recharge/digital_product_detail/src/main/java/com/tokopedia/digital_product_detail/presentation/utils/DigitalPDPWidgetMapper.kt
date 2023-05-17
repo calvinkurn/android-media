@@ -3,6 +3,8 @@ package com.tokopedia.digital_product_detail.presentation.utils
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
@@ -43,7 +45,7 @@ object DigitalPDPWidgetMapper {
         )
     }
 
-    fun mapCheckBalanceToWidgetModels(checkBalanceModel: DigitalCheckBalanceModel): List<RechargeCheckBalanceUnitModel> {
+    fun mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceModel: DigitalCheckBalanceModel): List<RechargeCheckBalanceUnitModel> {
         return checkBalanceModel.widgets.map {
             RechargeCheckBalanceUnitModel(
                 key = it.title,
@@ -51,5 +53,20 @@ object DigitalPDPWidgetMapper {
                 iconUrl = it.iconUrl
             )
         }
+    }
+
+    fun mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceModel: DigitalCheckBalanceModel): RechargeCheckBalanceDetailBottomSheetModel {
+        return RechargeCheckBalanceDetailBottomSheetModel(
+            title = checkBalanceModel.title,
+            details = checkBalanceModel.products.map {
+                RechargeCheckBalanceDetailModel(
+                    title = it.title,
+                    subtitle = it.subtitle,
+                    subtitleColor = it.subtitleColor,
+                    buttonText = it.buttonText,
+                    applink = it.applink
+                )
+            }
+        )
     }
 }

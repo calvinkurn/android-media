@@ -15,8 +15,9 @@ class DigitalPersoMapper @Inject constructor() {
     fun mapDigiPersoToCheckBalanceOTPModel(data: DigitalPersoData): DigitalCheckBalanceModel {
         val persoItem = data.items.getOrNull(0)
         return DigitalCheckBalanceModel(
+            title = persoItem?.title.toEmptyStringIfNull(),
             subtitle = persoItem?.subtitle.toEmptyStringIfNull(),
-            label = "testing",
+            label = persoItem?.label2.toEmptyStringIfNull(),
             bottomSheetModel = DigitalCheckBalanceOTPBottomSheetModel(
                 title = persoItem?.title.toEmptyStringIfNull(),
                 mediaUrl = persoItem?.mediaURL.toEmptyStringIfNull(),

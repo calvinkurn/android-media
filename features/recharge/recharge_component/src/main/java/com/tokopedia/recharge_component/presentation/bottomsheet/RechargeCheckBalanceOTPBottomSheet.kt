@@ -59,6 +59,6 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG_CHECK_BALANCE_OTP_BOTTOM_SHEET = "check_balance_ottp_bottom_sheet"
+        private const val TAG_CHECK_BALANCE_OTP_BOTTOM_SHEET = "check_balance_otp_bottom_sheet"
     }
 }

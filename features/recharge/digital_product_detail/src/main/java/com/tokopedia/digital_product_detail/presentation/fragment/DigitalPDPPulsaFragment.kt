@@ -84,6 +84,8 @@ import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -92,6 +94,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -604,7 +607,8 @@ class DigitalPDPPulsaFragment :
                 showCheckBalanceOtpWidget()
             } else {
                 renderCheckBalanceWidget(
-                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
+                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
+                    DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData),
                 )
                 showCheckBalanceWidget()
             }
@@ -1432,9 +1436,16 @@ class DigitalPDPPulsaFragment :
     //endregion
 
     //region ClientNumberCheckBalanceListener
-    override fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel) {
+    override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
         val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
         bottomSheet.setBottomSheetModel(model)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel) {
+        val bottomSheet = RechargeCheckBalanceDetailBottomSheet()
+        bottomSheet.setBottomSheetTitle(model.title)
+        bottomSheet.setCheckBalanceDetailModels(model.details)
         bottomSheet.show(childFragmentManager)
     }
     //endregion

@@ -1,7 +1,9 @@
 package com.tokopedia.recharge_component.listener
 
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 
 interface ClientNumberCheckBalanceListener {
-    fun onClickCheckBalance(model: RechargeCheckBalanceOTPBottomSheetModel)
+    fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel)
+    fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel)
 }

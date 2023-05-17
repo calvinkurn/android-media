@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/check_balance_divider"
@@ -25,10 +26,14 @@
         android:id="@+id/check_balance_warning_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_RN50"
+        android:background="@drawable/bg_client_number_check_balance_warning_shadow"
         android:layout_marginTop="12dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/check_balance_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
