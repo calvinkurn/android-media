@@ -33,7 +33,7 @@ data class GetPromoVoucherDetailResponse(
         @SerializedName("how_to_use")
         val howToUse: String,
         @SerializedName("id")
-        val id: Int,
+        val id: Long,
         @SerializedName("image_url")
         val imageUrl: String,
         @SerializedName("image_url_mobile")

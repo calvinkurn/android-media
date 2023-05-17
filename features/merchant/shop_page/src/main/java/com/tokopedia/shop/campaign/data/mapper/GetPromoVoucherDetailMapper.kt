@@ -25,7 +25,8 @@ class GetPromoVoucherDetailMapper @Inject constructor() {
             detail.thumbnailUrl,
             detail.thumbnailUrlMobile,
             detail.title,
-            detail.tnc
+            detail.tnc,
+            detail.isGift
         )
     }
 }

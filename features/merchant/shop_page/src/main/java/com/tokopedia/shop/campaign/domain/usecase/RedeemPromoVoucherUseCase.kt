@@ -22,7 +22,6 @@ class RedeemPromoVoucherUseCase @Inject constructor(
 ) : GraphqlUseCase<RedeemPromoVoucherResult>(repository) {
 
     companion object {
-        private const val NON_GIFT = 0
         private const val REQUEST_PARAM_KEY_CATALOG_ID= "catalog_id"
         private const val REQUEST_PARAM_KEY_API_VERSION = "apiVersion"
         private const val REQUEST_PARAM_KEY_IS_GIFT = "is_gift"
@@ -60,17 +59,17 @@ class RedeemPromoVoucherUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(catalogId: Long): RedeemPromoVoucherResult {
-        val request = buildRequest(catalogId)
+    suspend fun execute(param: Param): RedeemPromoVoucherResult {
+        val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<RedeemPromoVoucherResponse>()
         return mapper.map(data)
     }
 
-    private fun buildRequest(catalogId: Long): GraphqlRequest {
+    private fun buildRequest(param: Param): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_KEY_CATALOG_ID to catalogId,
-            REQUEST_PARAM_KEY_IS_GIFT to NON_GIFT,
+            REQUEST_PARAM_KEY_CATALOG_ID to param.catalogId,
+            REQUEST_PARAM_KEY_IS_GIFT to param.isGift,
             REQUEST_PARAM_KEY_API_VERSION to ShopPageConstant.HACHIKO_VOUCHER_GRAPHQL_API_VERSION
         )
 
@@ -80,6 +79,8 @@ class RedeemPromoVoucherUseCase @Inject constructor(
             params
         )
     }
+
+    data class Param(val catalogId: Long, val isGift: Int)
 
 
 }

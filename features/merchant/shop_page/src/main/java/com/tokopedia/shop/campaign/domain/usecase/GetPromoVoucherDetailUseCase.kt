@@ -23,7 +23,7 @@ class GetPromoVoucherDetailUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_KEY_API_VERSION = "apiVersion"
-        private const val REQUEST_PARAM_KEY_SLUG = "slug"
+        private const val REQUEST_PARAM_KEY_SLUG = "categorySlug"
     }
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -76,17 +76,17 @@ class GetPromoVoucherDetailUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(slug: String): PromoVoucherDetail {
-        val request = buildRequest(slug)
+    suspend fun execute(categorySlug: String): PromoVoucherDetail {
+        val request = buildRequest(categorySlug)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetPromoVoucherDetailResponse>()
 
         return mapper.map(data)
     }
 
-    private fun buildRequest(slug: String): GraphqlRequest {
+    private fun buildRequest(categorySlug: String): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_KEY_SLUG to slug,
+            REQUEST_PARAM_KEY_SLUG to categorySlug,
             REQUEST_PARAM_KEY_API_VERSION to ShopPageConstant.HACHIKO_VOUCHER_GRAPHQL_API_VERSION,
         )
 

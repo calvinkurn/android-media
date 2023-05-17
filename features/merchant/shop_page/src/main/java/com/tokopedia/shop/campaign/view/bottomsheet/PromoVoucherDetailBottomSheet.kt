@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
@@ -17,6 +18,7 @@ import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.view.viewmodel.PromoVoucherDetailViewModel
+import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetPromoVoucherDetailBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -28,9 +30,14 @@ import javax.inject.Inject
 class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val BUNDLE_KEY_CATEGORY_SLUG = "category_slug"
         @JvmStatic
-        fun newInstance(): PromoVoucherDetailBottomSheet {
-            return PromoVoucherDetailBottomSheet()
+        fun newInstance(categorySlug : String): PromoVoucherDetailBottomSheet {
+            return PromoVoucherDetailBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_CATEGORY_SLUG, categorySlug)
+                }
+            }
         }
     }
 
@@ -53,6 +60,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[PromoVoucherDetailViewModel::class.java] }
+    private val categorySlug by lazy { arguments?.getString(BUNDLE_KEY_CATEGORY_SLUG).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +98,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         setupView()
         observeVoucherDetail()
         observeRedeemVoucher()
-        viewModel.getVoucherDetail("MAYFASH01")
+        viewModel.getVoucherDetail(categorySlug)
     }
 
     private fun observeVoucherDetail() {
@@ -99,9 +107,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 is Success -> {
                     displayVoucherDetail(result.data)
                     binding?.loader?.gone()
+                    binding?.card?.visible()
                 }
                 is Fail -> {
                     binding?.loader?.gone()
+                    binding?.card?.gone()
+                    showToasterError(result.throwable)
                 }
             }
         }
@@ -112,11 +123,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
             when (result) {
                 is Success -> {
                     handleRedeemVoucherResult(result.data)
-                    binding?.btnUse?.stopLoading()
+                    binding?.btnUseVoucher?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
                 }
                 is Fail -> {
-                    binding?.btnUse?.stopLoading()
+                    binding?.btnUseVoucher?.stopLoading()
+                    showToasterError(result.throwable)
                     onVoucherRedeemFailed(result.throwable)
                 }
             }
@@ -127,25 +139,31 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         binding?.run {
             tpgVoucherName.text = voucherDetail.title
             tpgMinPurchase.text = voucherDetail.minimumUsage
-            btnUse.text = voucherDetail.buttonStr
-            btnUse.isEnabled = !voucherDetail.isDisabledButton
+            btnUseVoucher.text = voucherDetail.buttonStr
+            btnUseVoucher.isEnabled = !voucherDetail.isDisabledButton
             tpgTnc.text = MethodChecker.fromHtml(voucherDetail.tnc)
             imgVoucher.loadImage(voucherDetail.imageUrlMobile)
             tpgMinPurchase.text = voucherDetail.minimumUsage
             tpgPromoPeriod.text = voucherDetail.activePeriodDate
             tpgHowToUse.text = MethodChecker.fromHtml(voucherDetail.howToUse)
         }
+
+        if (voucherDetail.buttonStr == "Klaim") {
+            showClaimVoucherButton()
+        } else {
+            showUseVoucherButton()
+        }
     }
 
     private fun handleRedeemVoucherResult(result: RedeemPromoVoucherResult) {
-
+        showUseVoucherButton()
     }
 
     private fun setupView() {
-        binding?.run { 
-            btnUse.setOnClickListener {
-                binding?.btnUse?.startLoading()
-                viewModel.redeemVoucher(17675539)
+        binding?.run {
+            btnUseVoucher.setOnClickListener {
+                binding?.btnUseVoucher?.startLoading()
+                viewModel.redeemVoucher()
                 dismiss()
             }
             imgVoucher.cornerRadius = Int.ZERO
@@ -164,6 +182,23 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         this.isClickable = true
     }
 
+    private fun showUseVoucherButton() {
+        binding?.card?.visible()
+
+        binding?.btnUseVoucher?.visible()
+
+        binding?.btnClaimVoucher?.gone()
+        binding?.tpgVoucherPrice?.gone()
+    }
+
+    private fun showClaimVoucherButton() {
+        binding?.card?.visible()
+
+        binding?.btnUseVoucher?.gone()
+
+        binding?.btnClaimVoucher?.visible()
+        binding?.tpgVoucherPrice?.visible()
+    }
 
     fun setOnVoucherRedeemSuccess(onVoucherRedeemSuccess : (RedeemPromoVoucherResult) -> Unit) {
         this.onVoucherRedeemSuccess = onVoucherRedeemSuccess

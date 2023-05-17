@@ -16,7 +16,8 @@ class GetPromoVoucherListMapper @Inject constructor() {
                     voucherName = voucher.title,
                     minimumPurchase = voucher.minimumUsage.digitsOnly(),
                     remainingQuota = voucher.quota,
-                    source = ExclusiveLaunchVoucher.VoucherSource.PROMO
+                    source = ExclusiveLaunchVoucher.VoucherSource.PROMO,
+                    categorySlug = voucher.slug
                 )
             }
         }

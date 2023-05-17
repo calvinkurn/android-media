@@ -5,7 +5,8 @@ data class ExclusiveLaunchVoucher(
     val voucherName: String,
     val minimumPurchase: Long,
     val remainingQuota: Int,
-    val source: VoucherSource
+    val source: VoucherSource,
+    val categorySlug: String
 ) {
     /**
      * CATALOG = Voucher need to be claimed first before use

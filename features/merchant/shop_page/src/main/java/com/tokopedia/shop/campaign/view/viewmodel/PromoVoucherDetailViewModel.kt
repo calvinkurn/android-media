@@ -28,11 +28,11 @@ class PromoVoucherDetailViewModel @Inject constructor(
     val redeemResult: LiveData<Result<RedeemPromoVoucherResult>>
         get() = _redeemResult
 
-    fun getVoucherDetail(slug: String) {
+    fun getVoucherDetail(categorySlug: String) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val voucherDetail = getPromoVoucherDetailUseCase.execute(slug)
+                val voucherDetail = getPromoVoucherDetailUseCase.execute(categorySlug)
                 _voucherDetail.postValue(Success(voucherDetail))
             },
             onError = { throwable ->
@@ -41,17 +41,28 @@ class PromoVoucherDetailViewModel @Inject constructor(
         )
     }
 
-    fun redeemVoucher(catalogId : Long) {
+    fun redeemVoucher() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val voucherDetail = redeemPromoVoucherUseCase.execute(catalogId)
-                _redeemResult.postValue(Success(voucherDetail))
+                val voucherDetail = _voucherDetail.getVoucherDetailOrNull() ?: return@launchCatchError
+                val param = RedeemPromoVoucherUseCase.Param(voucherDetail.id, voucherDetail.isGift)
+                val redeemResult = redeemPromoVoucherUseCase.execute(param)
+                _redeemResult.postValue(Success(redeemResult))
             },
             onError = { throwable ->
                 _redeemResult.postValue(Fail(throwable))
             }
         )
+    }
+
+    private fun LiveData<Result<PromoVoucherDetail>>.getVoucherDetailOrNull(): PromoVoucherDetail? {
+        val voucherDetail = this.value
+        return if (voucherDetail is Success) {
+            voucherDetail.data
+        } else {
+            null
+        }
     }
 
 }
