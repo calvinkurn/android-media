@@ -36,7 +36,7 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -57,7 +57,8 @@ class ManageAddressViewModel @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    private val remoteConfig: RemoteConfig
 ) : ViewModel() {
 
     companion object {
@@ -85,10 +86,7 @@ class ManageAddressViewModel @Inject constructor(
         get() = source == ManageAddressSource.MONEY_IN.source
 
     val isEligibleShareAddress: Boolean
-        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            KEY_SHARE_ADDRESS_LOGI,
-            ""
-        ) == KEY_SHARE_ADDRESS_LOGI
+        get() = remoteConfig.getString(KEY_SHARE_ADDRESS_LOGI, "") == KEY_SHARE_ADDRESS_LOGI
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -339,7 +337,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsReceiver(senderUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsReceiverParam(
                     senderUserId = senderUserId,
                     source = getSourceValue()
@@ -351,11 +348,9 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
     }
@@ -363,7 +358,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsSender(receiverUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsSenderParam(
                     receiverUserId = receiverUserId,
                     source = getSourceValue()
@@ -375,17 +369,11 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
-    }
-
-    private fun showValidateShareAddressLoadingState(isShowLoading: Boolean) {
-        _validateShareAddressState.value = ValidateShareAddressState.Loading(isShowLoading)
     }
 
     fun getSourceValue(): String {
@@ -422,6 +410,6 @@ class ManageAddressViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        compositeSubscription.clear()
+//        compositeSubscription.clear()
     }
 }
