@@ -44,6 +44,10 @@ private const val MPS_GQL_QUERY = """
             image_url
             show
           }
+          free_ongkir {
+            image_url
+            is_active
+          }
           products {
             id
             name
