@@ -29,12 +29,11 @@ class GetPromoVoucherDetailUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-
     private val query = object : GqlQueryInterface {
-        private val OPERATION_NAME = "hachikoCatalogDetailQuery"
+        private val OPERATION_NAME = "hachikoCatalogDetail"
         private val QUERY =
-            """query hachikoCatalogDetailQuery(${'$'}apiVersion: String, ${'$'}slug: String) {
-  hachikoCatalogDetailQuery(apiVersion: ${'$'}apiVersion, slug: ${'$'}slug) {
+            """query hachikoCatalogDetail(${'$'}apiVersion: String, ${'$'}slug: String) {
+  hachikoCatalogDetail(apiVersion: ${'$'}apiVersion, slug: ${'$'}slug) {
     button_str
     points_slash_str
     expired_label
