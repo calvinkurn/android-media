@@ -78,10 +78,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
                 }
             }
         } catch (e: UIWidgetUninitializedException) {
+            e.componentName =
+                "${componentList[position].name ?: ""} - ${componentList[position].pageEndPoint ?: ""}"
             val map = mutableMapOf<String, String>()
             map["type"] = "log"
             map["err"] = "uiWidgetComponent not initialized"
-//            Todo:: Add keys.
+            map["page"] = componentList[position].pageEndPoint ?: ""
+            map["compName"] = componentList[position].name ?: ""
             ServerLogger.log(Priority.P2, "DISCO_DAGGER_VALIDATION", map)
             Utils.logException(e)
         }
@@ -122,12 +125,20 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
-        holder.onViewAttachedToWindow()
+        try {
+            holder.onViewAttachedToWindow()
+        } catch (e: UninitializedPropertyAccessException) {
+            Utils.logException(e)
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
         holder.onViewDetachedToWindow()
-        super.onViewDetachedFromWindow(holder)
+        try {
+            super.onViewDetachedFromWindow(holder)
+        } catch (e: UninitializedPropertyAccessException) {
+            Utils.logException(e)
+        }
     }
 
     private fun setViewSpanType(holder: AbstractViewHolder, template: String?) {

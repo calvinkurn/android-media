@@ -467,7 +467,7 @@ class CommonTopupBillsViewModelTest {
     }
 
     @Test
-    fun checkVoucher_callUseCaseExecute() = testCoroutineRule.runBlockingTest {
+    fun checkVoucher_callUseCaseExecute() = testCoroutineRule.runTest {
         every { digitalCheckVoucherUseCase.execute(any(), any()) } returns Unit
 
         topupBillsViewModel.checkVoucher("", PromoDigitalModel())

@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.shorts.robot
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
@@ -16,7 +17,6 @@ import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -28,6 +28,7 @@ class PlayShortsViewModelRobot(
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     accountManager: PlayShortsAccountManager = mockk(relaxed = true),
     playShortsUploader: PlayShortsUploader = mockk(relaxed = true),
+    dataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
@@ -36,6 +37,7 @@ class PlayShortsViewModelRobot(
         sharedPref = sharedPref,
         accountManager = accountManager,
         playShortsUploader = playShortsUploader,
+        dataStore = dataStore,
     )
 
     val isAllMandatoryMenuChecked: Boolean

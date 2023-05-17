@@ -371,6 +371,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -393,6 +396,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     containerViewFlipper.displayedChild = 1
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -443,6 +449,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isPreValidateVipError = true
                     closeLoadingDialog()
                     handleProgramValidateNetworkError()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -579,6 +588,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 ).show()
                             }
                         }
+                        else -> {
+                            //no-op
+                        }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -614,6 +626,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         }
                     })
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -648,6 +663,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     handleProgramValidateNetworkError()
                     closeLoadingDialog()
                     setButtonState()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

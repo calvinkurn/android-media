@@ -285,8 +285,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openTokoFood(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.NOW_HOME:
                 case DeepLinkChecker.NOW_RECIPE:
-                    openNowRecipe(uriData);
+                    openNowPage(uriData);
                     screenName = "";
                     break;
                 case DeepLinkChecker.TOP_ADS_CLICK_LINK:
@@ -438,19 +439,27 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
-            } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
+            } else if (uri.getQuery() != null && isCanAllowOverride(uri)) {
                 prepareOpenWebView(uri);
             } else {
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
-        } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
+        } else if (uri.getQuery() != null && isCanAllowOverride(uri)) {
             prepareOpenWebView(uri);
         } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
             RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
             context.finish();
+        }
+    }
+
+    private Boolean isCanAllowOverride(Uri uri) {
+        if(uri.getQueryParameter(ALLOW_OVERRIDE) != null) {
+            return uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE);
+        } else {
+            return false;
         }
     }
 
@@ -535,7 +544,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.goToPage(intent);
     }
 
-    private void openNowRecipe(Uri uriData) {
+    private void openNowPage(Uri uriData) {
         String appLink = DeeplinkMapperTokopediaNow.INSTANCE.getRegisteredNavigationFromHttp(uriData);
         Intent intent = RouteManager.getIntent(context, appLink);
         viewListener.goToPage(intent);

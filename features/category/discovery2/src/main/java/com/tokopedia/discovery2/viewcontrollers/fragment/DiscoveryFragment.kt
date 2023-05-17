@@ -1406,7 +1406,8 @@ open class DiscoveryFragment :
                 isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
                     userPressed = false
-                    recyclerView.smoothScrollToPosition(position, isTabPresent)
+                    if (this.isResumed)
+                        recyclerView.smoothScrollToPosition(position, isTabPresent)
                     isManualScroll = false
                 }
             }
@@ -2114,7 +2115,8 @@ open class DiscoveryFragment :
                     }
                 }
             smoothScroller.targetPosition = position
-            staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            if (this.isResumed)
+                staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
         } catch (e: Exception) {
         }
     }

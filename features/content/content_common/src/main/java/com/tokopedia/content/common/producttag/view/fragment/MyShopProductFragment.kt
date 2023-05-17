@@ -220,6 +220,9 @@ class MyShopProductFragment @Inject constructor(
                             requireActivity().classLoader
                         ).showNow(childFragmentManager)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

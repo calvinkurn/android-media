@@ -411,10 +411,14 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
     String EPHARMACY = "tokopedia://epharmacy";
+    String CATALOG_LIBRARY = "tokopedia://catalog-library";
     String AFFILIATE_TOKO_HOST = "affiliate";
     String AFFILIATE_TOKO = "tokopedia://affiliate";
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
     String AFFILIATE_TOKO_TRANSACTION_HISTORY = "tokopedia://affiliate/transaction-history";
+    String AFFILIATE_TOKO_SSA_SHOP_LIST = "tokopedia://affiliate/shoplist-dipromosikan-affiliate";
+    String AFFILIATE_TOKO_DISCO_PAGE_LIST = "tokopedia://affiliate/discopage-list";
+    String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
@@ -502,6 +506,7 @@ public interface ApplinkConst {
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
+    String DISCOVERY_DEALS = "tokopedia://discovery/deals";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
@@ -582,8 +587,10 @@ public interface ApplinkConst {
         String SELLER_MVC_LIST_ONGOING = "sellerapp://seller-mvc/list/ongoing";
         //{voucher_type} value -> shop, product
         String SELLER_MVC_CREATE = "sellerapp://seller-mvc/create/{voucher_type}";
+
         String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
         String SELLER_PERSONA = "sellerapp://seller-persona";
+        String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{isVariant}";
 
     }
 

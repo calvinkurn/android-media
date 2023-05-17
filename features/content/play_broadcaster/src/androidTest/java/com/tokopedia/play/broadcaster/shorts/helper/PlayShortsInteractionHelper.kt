@@ -1,18 +1,14 @@
 package com.tokopedia.play.broadcaster.shorts.helper
 
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.content.test.util.*
-import com.tokopedia.play.broadcaster.shorts.const.DEFAULT_DELAY
-import com.tokopedia.content.common.R as contentCommonR
-import com.tokopedia.unifycomponents.R as unifyR
+import com.tokopedia.content.test.util.click
+import com.tokopedia.content.test.util.clickItemRecyclerView
+import com.tokopedia.content.test.util.type
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.dialog.R as dialogR
-import org.hamcrest.CoreMatchers
+import com.tokopedia.unifycomponents.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on December 12, 2022
@@ -76,6 +72,7 @@ fun inputUsername(username: String = "pokemon") {
 }
 
 fun clickAcceptTnc() {
+    Espresso.closeSoftKeyboard()
     click(contentCommonR.id.cbx_tnc)
 }
 
@@ -106,28 +103,33 @@ fun clearTitle() {
 }
 
 fun submitTitle() {
-    pressActionSoftKeyboard(unifyR.id.text_field_input)
+    Espresso.closeSoftKeyboard()
+    click(R.id.btn_setup_title)
 }
 
 fun clickBackTitleForm() {
-    click(R.id.ic_close_title_form)
+    click(unifyR.id.bottom_sheet_close)
 }
 
 /** Cover Form */
 fun clickBackCoverForm() {
-    click(R.id.ic_close_cover_form)
+    delay()
+    click(unifyR.id.bottom_sheet_close)
 }
 
 fun clickSelectCover() {
+    delay()
     click(R.id.cl_cover_form_preview)
 }
 
 /** Product Picker SGC */
 fun selectProduct(idx: Int = 0) {
+    delay()
     clickItemRecyclerView(R.id.rv_products, idx)
 }
 
 fun clickSubmitProductTag() {
+    Espresso.closeSoftKeyboard()
     click(R.id.btn_next)
 }
 

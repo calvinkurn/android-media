@@ -44,6 +44,9 @@ class EngagementWidgetViewHolder(
         when(item.game){
             is GameUiModel.Giveaway -> setupGiveaway(item.game, item)
             is GameUiModel.Quiz-> setupQuiz(item.game, item)
+            else -> {
+                //no-op
+            }
         }
         binding.setOnClickListener {
             listener.onWidgetClicked(engagement = item)
@@ -77,6 +80,9 @@ class EngagementWidgetViewHolder(
                 },
                 id = item.game.id,
             )
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -93,6 +99,9 @@ class EngagementWidgetViewHolder(
                 },
                 id = item.game.id,
             )
+            else -> {
+                //no-op
+            }
         }
     }
 

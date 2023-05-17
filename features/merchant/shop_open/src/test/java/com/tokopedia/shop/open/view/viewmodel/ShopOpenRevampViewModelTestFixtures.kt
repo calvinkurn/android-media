@@ -15,6 +15,7 @@ import com.tokopedia.shop.open.domain.ShopOpenRevampGetSurveyUseCase
 import com.tokopedia.shop.open.domain.ShopOpenRevampSendSurveyUseCase
 import com.tokopedia.shop.open.presentation.viewmodel.ShopOpenRevampViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -66,7 +67,7 @@ open class ShopOpenRevampViewModelTestFixtures {
 
     @ExperimentalCoroutinesApi
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = StandardTestRule()
 
     @ExperimentalCoroutinesApi
     @Before
