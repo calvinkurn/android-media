@@ -9,7 +9,11 @@ interface OnboardingPreferences {
 
     fun hasShownProfileEntryPoint(): Boolean
 
+    fun hasShownSwipeOnboarding(): Boolean
+
     fun setHasShownCreateContent()
 
     fun setHasShownProfileEntryPoint()
+
+    fun setHasShownSwipeOnboarding()
 }
