@@ -291,6 +291,12 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check seller shop nib applink should return DF_BASE in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-nib"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
     fun `check power merchant subscribe appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://power_merchant/subscribe"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
