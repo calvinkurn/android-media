@@ -25,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -40,7 +42,8 @@ class FeedCampaignRibbonView(
     private val binding: LayoutFeedCampaignRibbonMotionBinding,
     private val listener: FeedListener
 ) {
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
     private var mProduct: FeedCardProductModel? = null
@@ -82,6 +85,11 @@ class FeedCampaignRibbonView(
             mIsFollowing = isFollowing
             feedPosition = positionInFeed
 
+            root.background = MethodChecker.getDrawable(
+                root.context,
+                R.drawable.feed_tag_product_background
+            )
+
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.texts.isEmpty()
 
@@ -105,6 +113,7 @@ class FeedCampaignRibbonView(
     }
 
     fun resetView() {
+        scope.cancel()
         with(binding) {
             root.background = MethodChecker.getDrawable(
                 root.context,
@@ -316,6 +325,7 @@ class FeedCampaignRibbonView(
                     }
                 }
             }
+            resetAnimationBasedOnType()
         }
     }
 
