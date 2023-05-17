@@ -140,16 +140,19 @@ class UserReviewViewHolder private constructor() {
         private fun setupMedia(item: UserReviewUiModel.Review) {
             adapter.setItemsAndAnimateChanges(
                 item.attachments.map { attachment ->
-                    if (attachment.isVideo) {
-                        UserReviewMediaAdapter.Model.Video(
-                            feedbackID = item.feedbackID,
-                            attachment = attachment,
-                        )
-                    } else {
-                        UserReviewMediaAdapter.Model.Image(
-                            feedbackID = item.feedbackID,
-                            attachment = attachment,
-                        )
+                    when (attachment) {
+                        is UserReviewUiModel.Attachment.Video -> {
+                            UserReviewMediaAdapter.Model.Video(
+                                feedbackID = item.feedbackID,
+                                attachment = attachment,
+                            )
+                        }
+                        is UserReviewUiModel.Attachment.Image -> {
+                            UserReviewMediaAdapter.Model.Image(
+                                feedbackID = item.feedbackID,
+                                attachment = attachment,
+                            )
+                        }
                     }
                 }
             )

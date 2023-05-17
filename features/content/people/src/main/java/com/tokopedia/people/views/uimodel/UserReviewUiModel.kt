@@ -39,30 +39,33 @@ data class UserReviewUiModel(
                 reviewMedia = attachments.mapIndexed { index, attachment ->
                     val position = index + 1
 
-                    if (attachment.isVideo) {
-                        ReviewMedia(
-                            videoId = attachment.attachmentID,
-                            feedbackId = feedbackID,
-                            mediaNumber = position,
-                        )
-                    } else {
-                        ReviewMedia(
-                            imageId = attachment.attachmentID,
-                            feedbackId = feedbackID,
-                            mediaNumber = position,
-                        )
+                    when (attachment) {
+                        is Attachment.Video -> {
+                            ReviewMedia(
+                                videoId = attachment.attachmentID,
+                                feedbackId = feedbackID,
+                                mediaNumber = position,
+                            )
+                        }
+                        is Attachment.Image -> {
+                            ReviewMedia(
+                                imageId = attachment.attachmentID,
+                                feedbackId = feedbackID,
+                                mediaNumber = position,
+                            )
+                        }
                     }
                 },
                 detail = Detail(
-                    reviewGalleryImages = attachments.filter { !it.isVideo }.map {
+                    reviewGalleryImages = attachments.filterIsInstance<Attachment.Image>().map {
                         ReviewGalleryImage(
                             attachmentId = it.attachmentID,
-                            thumbnailURL = it.mediaUrl,
-                            fullsizeURL = it.mediaUrl,
+                            thumbnailURL = it.thumbnailUrl,
+                            fullsizeURL = it.fullSizeUrl,
                             feedbackId = feedbackID,
                         )
                     },
-                    reviewGalleryVideos = attachments.filter { it.isVideo }.map {
+                    reviewGalleryVideos = attachments.filterIsInstance<Attachment.Video>().map {
                         ReviewGalleryVideo(
                             attachmentId = it.attachmentID,
                             url = it.mediaUrl,
@@ -104,17 +107,17 @@ data class UserReviewUiModel(
         val variantName: String
     )
 
-    data class Attachment(
-        val attachmentID: String,
-        val mediaUrl: String,
-        val type: Type,
-    ) {
-        val isVideo: Boolean
-            get() = type == Type.Video
+    sealed interface Attachment {
 
-        enum class Type {
-            Video, Image,
-        }
+        data class Image(
+            val attachmentID: String,
+            val thumbnailUrl: String,
+            val fullSizeUrl: String,
+        ) : Attachment
+        data class Video(
+            val attachmentID: String,
+            val mediaUrl: String,
+        ) : Attachment
     }
 
     data class LikeDislike(

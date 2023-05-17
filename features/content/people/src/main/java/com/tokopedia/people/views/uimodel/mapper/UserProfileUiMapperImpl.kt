@@ -180,16 +180,15 @@ class UserProfileUiMapperImpl @Inject constructor(
                     reviewText = it.reviewText,
                     reviewTime = it.reviewTime,
                     attachments = it.videoAttachments.map { attachment ->
-                        UserReviewUiModel.Attachment(
+                        UserReviewUiModel.Attachment.Video(
                             attachmentID = attachment.attachmentID,
                             mediaUrl = attachment.videoUrl,
-                            type = UserReviewUiModel.Attachment.Type.Video,
                         )
                     } + it.attachments.map { attachment ->
-                        UserReviewUiModel.Attachment(
+                        UserReviewUiModel.Attachment.Image(
                             attachmentID = attachment.attachmentID,
-                            mediaUrl = attachment.fullsizeURL,
-                            type = UserReviewUiModel.Attachment.Type.Image,
+                            thumbnailUrl = attachment.thumbnailURL,
+                            fullSizeUrl = attachment.fullsizeURL,
                         )
                     },
                     likeDislike = UserReviewUiModel.LikeDislike(

@@ -34,7 +34,7 @@ class UserReviewMediaAdapter(
     }
 
     sealed interface Model {
-        data class Image(val feedbackID: String, val attachment: UserReviewUiModel.Attachment) : Model
-        data class Video(val feedbackID: String, val attachment: UserReviewUiModel.Attachment) : Model
+        data class Image(val feedbackID: String, val attachment: UserReviewUiModel.Attachment.Image) : Model
+        data class Video(val feedbackID: String, val attachment: UserReviewUiModel.Attachment.Video) : Model
     }
 }
