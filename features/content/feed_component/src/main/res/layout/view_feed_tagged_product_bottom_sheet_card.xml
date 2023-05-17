@@ -131,7 +131,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="12dp"
             android:text="@string/feed_product_add_to_cart"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
@@ -141,14 +141,13 @@
             app:unifyButtonSize="micro"
             app:unifyButtonVariant="ghost"
             tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
-            tools:unifyButtonVariant="ghost"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_product_action_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="12dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:orientation="horizontal"
             android:weightSum="10"
@@ -156,7 +155,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             app:layout_constraintTop_toBottomOf="@+id/ll_stock_container"
-            tools:visibility="gone"
+            tools:visibility="visible"
             >
 
             <com.tokopedia.unifycomponents.UnifyButton
