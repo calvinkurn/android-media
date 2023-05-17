@@ -237,7 +237,7 @@ class ContentCommentBottomSheet @Inject constructor(
             if (view.isImeVisible(threshold = keyboardHeight)) {
                 binding.root.setPadding(0, 0, 0, height)
             } else {
-                binding.root.setPadding(0, 0, 0, 16.toPx())
+                binding.root.setPadding(0, 0, 0, 16)
             }
             windowInsets
         }
