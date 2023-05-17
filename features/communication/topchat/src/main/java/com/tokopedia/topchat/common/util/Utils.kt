@@ -81,8 +81,8 @@ object Utils {
 
     fun Activity?.isFromBubble(): Boolean {
         return try {
-            this?.let {
-                ActivityCompat.isLaunchedFromBubble(this)
+            this?.let { activity ->
+                ActivityCompat.isLaunchedFromBubble(activity)
             } ?: false
         } catch (e: Exception) {
             false
