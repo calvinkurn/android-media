@@ -365,7 +365,7 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             itemView.footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }

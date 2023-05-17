@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.animation.AnimationUtils
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
@@ -11,6 +12,7 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_create_post_fab.view.*
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by milhamj on 2019-09-14.
@@ -52,7 +54,7 @@ class CreatePostFabView @JvmOverloads constructor(
         if (isInitial) {
             fab_feed.hide()
         } else {
-            fab_feed.animation = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
+            fab_feed.animation = AnimationUtils.loadAnimation(context, contentCommonR.anim.rotate_backward)
         }
 
         fab_feed_byme.hide()
@@ -69,7 +71,7 @@ class CreatePostFabView @JvmOverloads constructor(
                 hideAllFab(false)
             } else {
                 if (context != null) {
-                    fab_feed.animation = AnimationUtils.loadAnimation(context, R.anim.rotate_forward)
+                    fab_feed.animation = AnimationUtils.loadAnimation(context, contentCommonR.anim.rotate_forward)
                 }
 
                 layout_grey_popup.show()
