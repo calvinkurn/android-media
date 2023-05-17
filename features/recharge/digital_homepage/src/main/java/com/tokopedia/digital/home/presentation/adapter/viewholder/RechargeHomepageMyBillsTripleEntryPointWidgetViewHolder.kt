@@ -27,7 +27,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
     }
 
     override fun bind(element: RechargeHomepageMyBillsTripleEntryPointsModel) {
-        if(element.section.items.isNotEmpty() && element.section.items.size == SIZE) {
+        if(element.isTripleEntryPointLoaded && element.section.items.isNotEmpty() && element.section.items.size == SIZE) {
             binding.containerContent.visible()
             binding.containerShimmer.gone()
 
@@ -42,10 +42,13 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             binding.root.addOnImpressionListener(element.section) {
                 listener.onRechargeSectionItemImpression(element.section)
             }
-        } else {
+        } else if(element.isTripleEntryPointLoaded && element.section.items.isEmpty()) {
+            binding.containerContent.gone()
+            binding.containerShimmer.gone()
+        } else if(!element.isTripleEntryPointLoaded && element.section.items.isEmpty()) {
             binding.containerContent.gone()
             binding.containerShimmer.visible()
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionDataWithLoadedParam(element.visitableId(), isLoaded = true)
         }
     }
 

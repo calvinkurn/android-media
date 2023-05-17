@@ -690,7 +690,7 @@ class RechargeHomepageMyBillsEntryPointModel(val section: RechargeHomepageSectio
 
 }
 
-class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepageSections.Section)
+class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepageSections.Section, val isTripleEntryPointLoaded: Boolean)
     : RechargeHomepageSectionModel{
 
     override fun visitableId(): String = section.id

@@ -130,7 +130,8 @@ object RechargeHomepageSectionMapper {
     fun mapHomepageSections(
         sections: List<RechargeHomepageSections.Section>,
         tickerList: RechargeTickerHomepageModel,
-        platformId: Int
+        platformId: Int,
+        isTripleEntryPointLoaded: Boolean
     ): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id
@@ -208,7 +209,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_OFFERING_WIDGET -> RechargeHomepageOfferingWidgetModel(it)
                     SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
                     SECTION_MY_BILLS_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsEntryPointModel(it)
-                    SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it)
+                    SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it, isTripleEntryPointLoaded)
                     else -> null
                 }
             }

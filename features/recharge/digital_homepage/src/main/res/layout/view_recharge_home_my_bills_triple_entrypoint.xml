@@ -39,6 +39,8 @@
                 android:layout_marginTop="12dp"
                 app:layout_constraintStart_toEndOf="@id/img_left"
                 app:layout_constraintTop_toTopOf="parent"
+                android:ellipsize="end"
+                android:lines="1"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Bayar Sekaligus" />
@@ -112,6 +114,8 @@
                 android:layout_marginTop="12dp"
                 app:layout_constraintStart_toEndOf="@id/img_right"
                 app:layout_constraintTop_toTopOf="parent"
+                android:ellipsize="end"
+                android:lines="1"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Bayar Otomatis" />
