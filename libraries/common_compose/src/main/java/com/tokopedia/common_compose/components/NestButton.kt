@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.header.NestHeaderType
+import com.tokopedia.common_compose.header.NestHeaderVariant
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -627,7 +629,7 @@ enum class ButtonSize(
 private fun NestButtonPreview() {
     NestTheme {
         Column {
-            NestHeader(title = "NestButton Preview")
+            NestHeader(type = NestHeaderType.SingleLine(title = "Nest Button Preview"))
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
