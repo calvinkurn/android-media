@@ -410,8 +410,8 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
 
-        productTagView.showIfPossible()
-        productButtonView.showIfPossible()
+        productTagView.showClearView()
+        productButtonView.showClearView()
     }
 
     private fun hideClearView() {
@@ -429,6 +429,9 @@ class FeedPostVideoViewHolder(
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
+
+        productTagView.showIfPossible()
+        productButtonView.showIfPossible()
     }
 
     override fun onViewRecycled() {
