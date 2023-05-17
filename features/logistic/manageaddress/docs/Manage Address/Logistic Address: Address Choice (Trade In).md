@@ -1,5 +1,5 @@
 ---
-title: Logistic Address: Address Choice (Trade In)
+title: "Logistic Address: Address Choice (Trade In)"
 labels:
 - logistic
 - addresslist
