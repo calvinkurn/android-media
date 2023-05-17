@@ -4,11 +4,13 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify
+import kotlin.math.roundToInt
 
 /**
  * Created by shruti.agarwal on 23/02/23
@@ -38,6 +40,7 @@ class FeedTaggedProductBottomSheetItemView(
         binding.tvProductTitle.text = product.title
 
         bindPrice(product.price)
+        bindCampaign(product.campaign)
 
         binding.btnProductBuy.setOnClickListener {
             mListener?.onBuyProductButtonClicked(this, product)
@@ -56,6 +59,12 @@ class FeedTaggedProductBottomSheetItemView(
 
     private fun bindPrice(price: FeedTaggedProductUiModel.Price) {
         when(price) {
+            is FeedTaggedProductUiModel.CampaignPrice -> {
+                binding.tvProductDiscount.hide()
+                binding.tvOriginalPrice.show()
+                binding.tvOriginalPrice.text = price.originalFormattedPrice
+                binding.tvCurrentPrice.text = price.formattedPrice
+            }
             is FeedTaggedProductUiModel.DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
@@ -69,6 +78,20 @@ class FeedTaggedProductBottomSheetItemView(
                 binding.tvOriginalPrice.hide()
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
+        }
+    }
+
+    private fun bindCampaign(campaign: FeedTaggedProductUiModel.Campaign) {
+        if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.OnGoing) {
+            binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
+            binding.pbStock.progressBarColor = intArrayOf(
+                ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
+                ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            )
+            binding.tvStock.text = campaign.status.stockLabel
+            binding.llStockContainer.show()
+        } else {
+            binding.llStockContainer.hide()
         }
     }
 
