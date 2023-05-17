@@ -50,6 +50,10 @@ class FeedTaggedProductBottomSheetItemView(
             mListener?.onAddToCartProductButtonClicked(this, product)
         }
 
+        binding.btnProductLongAtc.setOnClickListener {
+            mListener?.onAddToCartProductButtonClicked(this, product)
+        }
+
         setOnClickListener {
             if (product.appLink.isNotEmpty()) {
                 mListener?.onProductCardClicked(this, product)
@@ -91,8 +95,14 @@ class FeedTaggedProductBottomSheetItemView(
             binding.tvStock.text = campaign.status.stockLabel
             binding.llStockContainer.show()
         } else {
-            binding.llProductActionButton.hide()
             binding.llStockContainer.hide()
+        }
+        if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Upcoming) {
+            binding.llProductActionButton.hide()
+            binding.btnProductLongAtc.show()
+        } else {
+            binding.llProductActionButton.show()
+            binding.btnProductLongAtc.hide()
         }
     }
 
