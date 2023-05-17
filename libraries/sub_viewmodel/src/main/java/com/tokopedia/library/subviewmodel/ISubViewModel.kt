@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import java.io.Closeable
 
 /**
- * this interface is the attribute register which needs a sub-viewmodel to [SubViewModelScope]
+ * This interface is the attribute register required by the [SubViewModel]
  */
 interface ISubViewModel : Closeable {
 
@@ -17,13 +17,13 @@ interface ISubViewModel : Closeable {
 
     /**
      * register [viewModelScope]
-     * @param viewModelScope delegate
+     * @param viewModelScope
      */
-    fun registerScope(viewModelScope: () -> CoroutineScope)
+    fun registerScope(viewModelScope: CoroutineScope)
 
     /**
      * register [SubViewModelMediator]
-     * @param mediator delegate
+     * @param mediator
      */
-    fun registerMediator(mediator: () -> SubViewModelMediator)
+    fun registerMediator(mediator: SubViewModelMediator)
 }

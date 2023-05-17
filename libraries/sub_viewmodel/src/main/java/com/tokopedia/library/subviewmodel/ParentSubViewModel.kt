@@ -18,13 +18,12 @@ open class ParentSubViewModel(
     }
 
     /**
-     * register all properties in provider scope
-     * @param subViewModels
+     * register scope and mediator for all [subViewModels]
      */
     private fun registerSubViewModelProvider() {
         subViewModels.forEach {
-            it.registerScope { viewModelScope + baseDispatcher }
-            it.registerMediator { this }
+            it.registerScope(viewModelScope = viewModelScope + baseDispatcher)
+            it.registerMediator(mediator = this)
         }
     }
 

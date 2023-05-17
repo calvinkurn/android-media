@@ -14,30 +14,30 @@ import timber.log.Timber
  */
 abstract class SubViewModel : ISubViewModel {
     // store delegate to get viewModelScopeProvider
-    private var viewModelScopeProvider: (() -> CoroutineScope)? = null
+    private var mViewModelScope: CoroutineScope? = null
 
     // store delegate to get SubViewModelMediator
-    private var mediatorProvider: (() -> SubViewModelMediator)? = null
+    private var mMediator: SubViewModelMediator? = null
 
     override val viewModelScope: CoroutineScope
-        get() = viewModelScopeProvider?.invoke()
+        get() = mViewModelScope
             ?: throw IllegalAccessException("viewModelScope is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}")
 
     override val mediator: SubViewModelMediator
-        get() = mediatorProvider?.invoke()
+        get() = mMediator
             ?: throw IllegalAccessException("Mediator is not registered yet, make sure your ViewModel extend ${ParentSubViewModel::class.simpleName}")
 
     /**
-     * register [viewModelScope] and store to [viewModelScopeProvider]
-     * @param viewModelScope delegate
+     * register [viewModelScope]
+     * @param viewModelScope
      */
-    override fun registerScope(viewModelScope: () -> CoroutineScope) {
+    override fun registerScope(viewModelScope: CoroutineScope) {
         validateMultipleUseProvider()
-        this.viewModelScopeProvider = viewModelScope
+        this.mViewModelScope = viewModelScope
     }
 
     private fun validateMultipleUseProvider() {
-        if (this.viewModelScopeProvider != null) {
+        if (this.mViewModelScope != null) {
             val message = "This SubVieModelProvider is already in use by another ViewModel"
             val throwable = IllegalAccessException(message)
             Timber.e(throwable)
@@ -46,18 +46,18 @@ abstract class SubViewModel : ISubViewModel {
     }
 
     /**
-     * register [SubViewModelMediator] and store to [mediatorProvider]
-     * @param mediator delegate
+     * register [SubViewModelMediator]
+     * @param mediator
      */
-    override fun registerMediator(mediator: () -> SubViewModelMediator) {
-        this.mediatorProvider = mediator
+    override fun registerMediator(mediator: SubViewModelMediator) {
+        this.mMediator = mediator
     }
 
     /**
-     * clear memory usage when this class has closed
+     * clear memory usage when this class is unused
      */
     override fun close() {
-        viewModelScopeProvider = null
-        mediatorProvider = null
+        mViewModelScope = null
+        mMediator = null
     }
 }
