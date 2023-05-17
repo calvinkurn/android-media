@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:typographyType="heading_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgVoucher"
+        tools:text="Cashback 20% s.d. 100.000 Gopay Coins" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconClock"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:icon_name="CLOCK"
+        android:layout_marginTop="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/labelPromoPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_promo_period"
+        app:layout_constraintBottom_toBottomOf="@+id/iconClock"
+        app:layout_constraintEnd_toStartOf="@+id/tpgPromoPeriod"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iconClock"
+        app:layout_constraintTop_toTopOf="@+id/iconClock"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgPromoPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_promo_period"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="30 Mar - 30 Apr 2023"
+        app:layout_constraintTop_toTopOf="@+id/iconClock"
+        app:typographyType="display_2" />
+
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconMinPurchase"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:icon_name="CLOCK"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iconClock" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/labelMinPurchase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_min_transaction"
+        app:layout_constraintBottom_toBottomOf="@+id/iconMinPurchase"
+        app:layout_constraintEnd_toStartOf="@+id/tpgPromoPeriod"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iconClock"
+        app:layout_constraintTop_toTopOf="@+id/iconMinPurchase"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgMinPurchase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_promo_period"
+        app:layout_constraintBottom_toBottomOf="@+id/labelMinPurchase"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/labelMinPurchase"
+        app:typographyType="display_2"
+        tools:text="Rp300.000" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iconMinPurchase" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/labelTnc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_tnc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgTnc"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/shop_page_promo_period"
+        app:layout_constraintBottom_toTopOf="@+id/cardUnify2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelTnc"
+        app:typographyType="display_2"
+        tools:text="1. Cashback OVO Points 100% hingga Rp20.000" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/cardUnify2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnAddProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/shop_page_use_promo" />
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

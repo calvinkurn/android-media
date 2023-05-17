@@ -1,0 +1,164 @@
+package com.tokopedia.shop.campaign.view.bottomsheet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.shop.R
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
+import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
+import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
+import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
+import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.view.viewmodel.PromoVoucherDetailViewModel
+import com.tokopedia.shop.databinding.BottomsheetPromoVoucherDetailBinding
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
+
+class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): PromoVoucherDetailBottomSheet {
+            return PromoVoucherDetailBottomSheet()
+        }
+    }
+
+    private var binding by autoClearedNullable<BottomsheetPromoVoucherDetailBinding>()
+
+    private var onVoucherUse: (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherRedeemSuccess: (RedeemPromoVoucherResult) -> Unit = {}
+    private var onVoucherRedeemFailed: (Throwable) -> Unit = {}
+
+    init {
+        clearContentPadding = true
+        isSkipCollapseState = true
+        isKeyboardOverlap = false
+        showKnob = true
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider[PromoVoucherDetailViewModel::class.java] }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupDependencyInjection()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setupBottomSheet(inflater, container)
+        setCloseClickListener { dismiss() }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupDependencyInjection() {
+        activity?.run {
+            DaggerShopCampaignComponent
+                .builder()
+                .shopCampaignModule(ShopCampaignModule())
+                .shopComponent(ShopComponentHelper().getComponent(application, this))
+                .build()
+                .inject(this@PromoVoucherDetailBottomSheet)
+        }
+    }
+
+    private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
+        binding = BottomsheetPromoVoucherDetailBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+        observeVoucherDetail()
+        observeRedeemVoucher()
+        viewModel.getVoucherDetail("MAYFASH01")
+    }
+
+    private fun observeVoucherDetail() {
+        viewModel.voucherDetail.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayVoucherDetail(result.data)
+                    binding?.loader?.gone()
+                }
+                is Fail -> {
+                    binding?.loader?.gone()
+                }
+            }
+        }
+    }
+
+    private fun observeRedeemVoucher() {
+        viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    handleRedeemVoucherResult(result.data)
+                    binding?.btnAddProduct?.stopLoading()
+                    onVoucherRedeemSuccess(result.data)
+                }
+                is Fail -> {
+                    binding?.btnAddProduct?.stopLoading()
+                    onVoucherRedeemFailed(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun displayVoucherDetail(voucherDetail: PromoVoucherDetail) {
+
+    }
+
+    private fun handleRedeemVoucherResult(result: RedeemPromoVoucherResult) {
+
+    }
+
+    private fun setupView() {
+        binding?.run { 
+            btnAddProduct.setOnClickListener {
+                binding?.btnAddProduct?.startLoading()
+                viewModel.redeemVoucher(17675539)
+                dismiss()
+            }
+        }
+    }
+
+    private fun UnifyButton.startLoading() {
+        this.isLoading = true
+        this.loadingText = context?.getString(R.string.shop_page_please_wait).orEmpty()
+        this.isClickable = false
+    }
+
+    private fun UnifyButton.stopLoading() {
+        this.isLoading = false
+        this.loadingText = ""
+        this.isClickable = true
+    }
+
+    fun setOnVoucherUseClick(onVoucherUse: (ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherUse = onVoucherUse
+    }
+
+    fun setOnVoucherRedeemSuccess(onVoucherRedeemSuccess : (RedeemPromoVoucherResult) -> Unit) {
+        this.onVoucherRedeemSuccess = onVoucherRedeemSuccess
+    }
+
+    fun setOnVoucherRedeemFailed(onVoucherRedeemFailed : (Throwable) -> Unit) {
+        this.onVoucherRedeemFailed = onVoucherRedeemFailed
+    }
+}
