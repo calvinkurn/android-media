@@ -57,6 +57,7 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.developer_options.utils.PushTokenRefreshUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
@@ -147,6 +148,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
+    private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -202,6 +204,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        if(GlobalConfig.isAllowDebuggingTools()){
+            PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
+            pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
+        }
     }
 
     private void initRobust() {
