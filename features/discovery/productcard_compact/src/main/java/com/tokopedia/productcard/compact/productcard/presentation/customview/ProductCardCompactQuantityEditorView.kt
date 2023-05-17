@@ -76,8 +76,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     var isVariant: Boolean = false
     var hasBlockedAddToCart: Boolean = false
+
     // Cart quantity listener for non variant product
     var onQuantityChangedListener: ((counter: Int) -> Unit)? = null
+
     // Add to cart listener for variant product
     var onClickAddVariantListener: ((counter: Int) -> Unit)? = null
     var onBlockAddToCartListener: (() -> Unit)? = null
@@ -237,7 +239,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun loadLayoutDescription() {
         val animScene = R.xml.layout_product_card_compact_quantity_editor_custom_view_scene
 
-        if(enableQuantityEditor) {
+        if (enableQuantityEditor) {
             binding.root.loadLayoutDescription(animScene)
         } else {
             val scene = R.xml.layout_product_card_compact_quantity_editor_no_anim_view_scene
@@ -247,7 +249,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddNonVariant() {
-        if(enableQuantityEditor) {
+        if (enableQuantityEditor) {
             onClickAddToCartWithAnimation()
         } else {
             onClickAddToCartWithoutAnimation()
@@ -282,7 +284,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddToCartWithoutAnimation() {
         root.setTransition(R.id.end, R.id.end)
-        root.progress = FINISHED_PROGRESS
+        root.transitionToEnd()
+
+        addButton.alpha = MIN_ALPHA
         addToCartBtnShimmer.alpha = MAX_ALPHA
         onQuantityChangedListener?.invoke(minQuantity)
     }
@@ -347,7 +351,8 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun LayoutProductCardCompactQuantityEditorViewBinding.collapseAnimation() {
         context.getActivityFromContext()?.runOnUiThread {
             editText.setDimenAsTextSize(
-                R.dimen.product_card_compact_quantity_editor_text_size_start_with_value)
+                R.dimen.product_card_compact_quantity_editor_text_size_start_with_value
+            )
             editText.clearFocus()
             hideKeyboardFrom(context, editText)
             executeTimerAfterTextChanged = false
@@ -444,18 +449,22 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showCheckMarkIcon() {
         root.setTransition(R.id.startWithValue, R.id.startWithValue)
         root.progress = NO_PROGRESS
+
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addButton.alpha = MIN_ALPHA
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
         root.setTransition(R.id.start, R.id.start)
         root.progress = NO_PROGRESS
+
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addButton.alpha = MAX_ALPHA
     }
 
     fun setQuantity(quantity: Int) {
         binding.apply {
-            if(enableQuantityEditor) {
+            if (enableQuantityEditor) {
                 onSetQuantityWithAnimation(quantity)
             } else {
                 onSetQuantityWithoutAnimation(quantity)
