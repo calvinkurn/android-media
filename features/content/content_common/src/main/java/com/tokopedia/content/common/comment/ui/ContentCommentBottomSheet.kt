@@ -35,6 +35,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.view.getImeHeight
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -230,19 +231,15 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
-        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
-            val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.getInsets(WindowInsets.Type.ime()).bottom
-            } else {
-                windowInsets.systemWindowInsetBottom
-            }
+        binding.root.setOnApplyWindowInsetsListener { view , windowInsets ->
+            val height = view.getImeHeight()
             val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 windowInsets.isVisible(WindowInsets.Type.ime())
             } else {
                 height > keyboardHeight
             }
             if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, keyboardHeight)
+                binding.root.setPadding(0, 0, 0, height)
             } else {
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
