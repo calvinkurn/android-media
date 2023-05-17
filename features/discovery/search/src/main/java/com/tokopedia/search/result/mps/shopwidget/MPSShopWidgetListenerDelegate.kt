@@ -32,9 +32,10 @@ class MPSShopWidgetListenerDelegate(
     }
 
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-        mpsShopWidgetDataView.buttonList.first().click(analytics)
+        val seeShopButton = mpsShopWidgetDataView.buttonList.first()
+        seeShopButton.click(analytics)
 
-        openApplink(context, mpsShopWidgetDataView.applink)
+        openApplink(context, seeShopButton.applink)
     }
 
     override fun onSeeAllCardClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
