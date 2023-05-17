@@ -6,15 +6,14 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 
 class TokoNowViewCallback(
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    private val refreshLayout: () -> Unit
 ): TokoNowView {
     override fun getFragmentPage(): Fragment = fragment
 
     override fun getFragmentManagerPage(): FragmentManager = fragment.childFragmentManager
 
-    override fun refreshLayoutPage() {
-        /* nothing to do temp */
-    }
+    override fun refreshLayoutPage() = refreshLayout.invoke()
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 

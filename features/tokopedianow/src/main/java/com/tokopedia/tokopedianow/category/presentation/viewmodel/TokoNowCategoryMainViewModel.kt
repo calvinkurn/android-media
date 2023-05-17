@@ -12,7 +12,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.di.module.CategoryUseCaseModule.Companion.MAIN_CATEGORY_HEADER_USE_CASE_NAME
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryMenuMapper.mapToCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryTitle
@@ -28,6 +30,8 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseC
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -66,7 +70,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     private val layout: MutableList<Visitable<*>> = mutableListOf()
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
-    private var noNeedLoadMore: Boolean = false
+    private var categoryMenu: TokoNowCategoryMenuUiModel? = null
 
     private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _categoryPage = MutableLiveData<Result<List<Visitable<*>>>>()
@@ -159,6 +163,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
                 val headerResponse = getCategoryHeaderUseCase.executeOnBackground()
                 val categoryNavigationUiModel = headerResponse.categoryNavigation.mapToCategoryNavigation(categoryIdL1)
+                categoryMenu = headerResponse.categoryNavigation.mapToCategoryMenu()
 
                 layout.addHeaderSpace(
                     space = navToolbarHeight,
@@ -202,10 +207,23 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     fun loadMore(
         isAtTheBottomOfThePage: Boolean
     ) {
-        if (noNeedLoadMore) {
+        if (categoryL2Models.isEmpty()) {
             _isOnScrollNotNeeded.value = true
-        } else if (isAtTheBottomOfThePage && categoryL2Models.isNotEmpty()) {
+
+            categoryMenu?.let {
+                layout.addCategoryMenu(it)
+                _categoryPage.value = Success(layout)
+            }
+        } else if (isAtTheBottomOfThePage) {
             getMoreShowcases()
         }
+    }
+
+    fun refreshLayout(
+        navToolbarHeight: Int
+    ) {
+        layout.clear()
+        getCategoryHeader(navToolbarHeight)
+        _isOnScrollNotNeeded.value = false
     }
 }

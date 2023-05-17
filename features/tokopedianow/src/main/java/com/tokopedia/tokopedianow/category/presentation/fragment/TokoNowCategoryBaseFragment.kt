@@ -47,6 +47,8 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
 {
     private companion object {
         const val SCROLL_DOWN_DIRECTION = 1
+        const val START_SWIPE_PROGRESS_POSITION = 120
+        const val END_SWIPE_PROGRESS_POSITION = 200
 
         const val PAGE_NAME = "TokoNow Category"
         const val TOKONOW_DIRECTORY = "tokonow_directory"
@@ -66,8 +68,13 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
             return if (binding?.navToolbar?.height.isZero()) defaultHeight else binding?.navToolbar?.height ?: defaultHeight
         }
-    protected val navSource: String
-        get() = TOKONOW_DIRECTORY
+    protected val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+            loadMore(isAtTheBottomOfThePage)
+        }
+    }
 
     private var shareCategoryTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -109,9 +116,11 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         setupNavigationToolbar()
         setupRecyclerView()
         setupScreenshotDetector()
+        setupRefreshLayout()
     }
 
     abstract fun loadMore(isAtTheBottomOfThePage: Boolean)
+    abstract fun refreshLayout()
 
     private fun NavToolbar.setupNavigationToolbarInteraction() {
         activity?.let { setupToolbarWithStatusBar(activity = it) }
@@ -126,7 +135,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
             params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
             params[SearchApiConst.PREVIOUS_KEYWORD] = String.EMPTY
-            params[SearchApiConst.NAVSOURCE] = navSource
+            params[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
 
             val finalAppLink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + UrlParamUtils.generateUrlParamString(params)
 
@@ -343,7 +352,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         binding?.apply {
             rvCategory.adapter = this@TokoNowCategoryBaseFragment.adapter
             rvCategory.layoutManager = LinearLayoutManager(context)
-            rvCategory.addOnScrollListener(createLoadMoreListener())
+            rvCategory.addOnScrollListener(onScrollListener)
             rvCategory.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
         }
     }
@@ -359,12 +368,16 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
-                loadMore(isAtTheBottomOfThePage)
+    private fun setupRefreshLayout() {
+        binding?.apply {
+            strRefreshLayout.setProgressViewOffset(
+                false,
+                START_SWIPE_PROGRESS_POSITION,
+                END_SWIPE_PROGRESS_POSITION
+            )
+            strRefreshLayout.setOnRefreshListener {
+                strRefreshLayout.isRefreshing = false
+                refreshLayout()
             }
         }
     }

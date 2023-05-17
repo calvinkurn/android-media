@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 internal object VisitableMapper {
@@ -83,12 +83,14 @@ internal object VisitableMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.removeRecipeProgressBar() {
-        removeFirst { it is TokoNowProgressBarUiModel }
-    }
-
     fun MutableList<Visitable<*>>.addRecipeProgressBar() {
         add(TokoNowProgressBarUiModel())
+    }
+
+    fun MutableList<Visitable<*>>.addCategoryMenu(
+        categoryMenuUiModel: TokoNowCategoryMenuUiModel
+    ) {
+        add(categoryMenuUiModel)
     }
 
     fun MutableList<Visitable<*>>.mapCategoryShowcase(
@@ -108,6 +110,10 @@ internal object VisitableMapper {
                 )
             }
         )
+    }
+
+    fun MutableList<Visitable<*>>.removeRecipeProgressBar() {
+        removeFirst { it is TokoNowProgressBarUiModel }
     }
 
     fun MutableList<Visitable<*>>.updateItemById(id: String?, block: () -> Visitable<*>?) {

@@ -21,7 +21,6 @@ class CategoryShowcaseItemViewHolder(
 
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
-
     override fun bind(element: CategoryShowcaseItemUiModel) {
         binding?.productCard?.apply {
             setData(

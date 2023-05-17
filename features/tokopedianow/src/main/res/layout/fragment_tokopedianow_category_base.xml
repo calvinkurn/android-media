@@ -38,7 +38,7 @@
         android:orientation="horizontal">
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/tokonowSearchCategorySwipeRefreshLayout"
+            android:id="@+id/str_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

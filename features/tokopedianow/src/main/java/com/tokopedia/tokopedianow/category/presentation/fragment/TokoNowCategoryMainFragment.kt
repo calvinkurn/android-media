@@ -11,14 +11,13 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.Cate
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.ProductRecommendationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
@@ -53,15 +52,11 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     override val adapter: CategoryAdapter by lazy {
         CategoryAdapter(
             typeFactory = CategoryAdapterTypeFactory(
-                categoryTitleListener = CategoryTitleCallback(
-                    context = context,
-                    warehouseId = viewModel.getWarehouseId()
-                ),
-                categoryNavigationListener = CategoryNavigationCallback(),
-                tokoNowView = TokoNowViewCallback(
-                    fragment = this@TokoNowCategoryMainFragment
-                ),
-                tokoNowChooseAddressWidgetListener = TokoNowChooseAddressWidgetCallback(),
+                categoryTitleListener = createTitleCallback(),
+                categoryNavigationListener = createCategoryNavigationCallback(),
+                tokoNowView = createTokoNowViewCallback(),
+                tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
+                tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
                 tokoNowProductRecommendationListener = createProductRecommendationCallback()
             ),
             differ = CategoryDiffer()
@@ -82,6 +77,12 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     override fun loadMore(isAtTheBottomOfThePage: Boolean) {
         viewModel.loadMore(isAtTheBottomOfThePage)
+    }
+
+    override fun refreshLayout() {
+        viewModel.refreshLayout(
+            navToolbarHeight = navToolbarHeight
+        )
     }
 
     private fun observer() {
@@ -117,10 +118,33 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     private fun observeIsScrollNotNeeded() {
         viewModel.isOnScrollNotNeeded.observe(viewLifecycleOwner) { isNotNeeded ->
             if (isNotNeeded) {
-                binding?.rvCategory?.clearOnScrollListeners()
+                binding?.rvCategory?.removeOnScrollListener(onScrollListener)
+            } else {
+                binding?.rvCategory?.addOnScrollListener(onScrollListener)
             }
         }
     }
+
+    /**
+     * Callback Sections
+     */
+
+    private fun createTitleCallback() = CategoryTitleCallback(
+        context = context,
+        warehouseId = viewModel.getWarehouseId()
+    )
+
+    private fun createCategoryNavigationCallback() = CategoryNavigationCallback()
+
+    private fun createTokoNowViewCallback() = TokoNowViewCallback(
+        fragment = this@TokoNowCategoryMainFragment
+    ) {
+        viewModel.refreshLayout(navToolbarHeight)
+    }
+
+    private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback()
+
+    private fun createTokoNowChooseAddressWidgetCallback() = TokoNowChooseAddressWidgetCallback()
 
     private fun createProductRecommendationCallback() = ProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
