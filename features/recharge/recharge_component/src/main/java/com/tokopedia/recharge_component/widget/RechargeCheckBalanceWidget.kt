@@ -17,6 +17,9 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
 import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
     @NotNull context: Context,
@@ -26,11 +29,29 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
 
     private val binding = WidgetRechargeCheckBalanceBinding.inflate(LayoutInflater.from(context), this, true)
     private var checkBalanceAdapter: RechargeCheckBalanceUnitAdapter? = null
+    private var checkBalanceWidgetListener: RechargeCheckBalanceWidgetListener? = null
+
+    init {
+        binding.root.setOnClickListener {
+            checkBalanceWidgetListener?.onClickWidget()
+        }
+    }
+
+    fun setListener(listener: RechargeCheckBalanceWidgetListener) {
+        checkBalanceWidgetListener = listener
+    }
 
     fun setBalanceInfo(balanceInfo: List<RechargeCheckBalanceUnitModel>) {
         binding.run {
             checkBalanceAdapter = RechargeCheckBalanceUnitAdapter().apply {
                 setBalanceInfo(balanceInfo)
+                setCheckBalanceUnitListener(
+                    object: RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener {
+                        override fun onClickCheckBalanceUnit() {
+                            checkBalanceWidgetListener?.onClickWidget()
+                        }
+                    }
+                )
             }
             val dividerDrawable = ContextCompat.getDrawable(
                 context,
@@ -49,22 +70,22 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showWarningMessage(
-        message: String,
-        iconUrl: String,
-        onClick: () -> Unit
-    ) {
+    fun showWarningMessage(message: String, iconUrl: String) {
         binding.run {
             checkBalanceWarningContainer.show()
             checkBalanceWarningIcon.loadImage(iconUrl)
             checkBalanceWarningTxt.text = MethodChecker.fromHtml(message)
             checkBalanceWarningContainer.setOnClickListener {
-                onClick.invoke()
+                checkBalanceWidgetListener?.onClickWidget()
             }
         }
     }
 
     fun hideWarningMessage() {
         binding.checkBalanceWarningContainer.hide()
+    }
+
+    interface RechargeCheckBalanceWidgetListener {
+        fun onClickWidget()
     }
 }

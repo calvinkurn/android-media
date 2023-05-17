@@ -7,13 +7,21 @@ import com.tokopedia.recharge_component.databinding.ViewRechargeCheckBalanceUnit
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 
 class RechargeCheckBalanceUnitViewHolder(
-   private val binding: ViewRechargeCheckBalanceUnitBinding
+   private val binding: ViewRechargeCheckBalanceUnitBinding,
+   private val listener: RechargeCheckBalanceUnitListener?
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(model: RechargeCheckBalanceUnitModel) {
         with(binding) {
             checkBalanceUnitKey.text = model.key
             checkBalanceUnitValue.text = MethodChecker.fromHtml(model.value)
             checkBalanceUnitIcon.loadImage(model.iconUrl)
+            root.setOnClickListener {
+                listener?.onClickCheckBalanceUnit()
+            }
         }
+    }
+
+    interface RechargeCheckBalanceUnitListener {
+        fun onClickCheckBalanceUnit()
     }
 }
