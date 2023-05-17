@@ -32,7 +32,8 @@ class CardMapper @Inject constructor(
     }
 
     override fun mapRemoteDataToUiData(
-        response: GetCardDataResponse, isFromCache: Boolean
+        response: GetCardDataResponse,
+        isFromCache: Boolean
     ): List<CardDataUiModel> {
         return response.getCardData?.cardData.orEmpty().map {
             mapToCardUiModel(it, isFromCache)
