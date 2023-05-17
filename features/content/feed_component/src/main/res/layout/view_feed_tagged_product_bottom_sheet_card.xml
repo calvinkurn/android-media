@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_product_title"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="Rp150.000" />
+            tools:text="Rp150.000.000.000.000.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_discount"
@@ -79,21 +79,24 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:ignore="TextContrastCheck,TextContrastCheck"
-            tools:text="57%" />
+            tools:text="100%" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_44"
             android:layout_marginStart="@dimen/spacing_lvl2"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
+            app:layout_constraintEnd_toEndOf="@id/tv_product_title"
             app:layout_constraintStart_toEndOf="@+id/tv_product_discount"
             app:layout_constraintTop_toTopOf="@+id/tv_current_price"
             app:typographyType="small"
             tools:ignore="TextContrastCheck"
-            tools:text="Rp349.000"
-            />
+            tools:text="Rp349.000.000.000" />
 
         <LinearLayout
             android:id="@+id/ll_stock_container"
