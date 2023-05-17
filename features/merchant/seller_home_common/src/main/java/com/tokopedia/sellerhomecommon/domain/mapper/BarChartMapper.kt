@@ -82,17 +82,17 @@ class BarChartMapper @Inject constructor(
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             }
         ]*/
     private fun getBarHexColor(metric: BarChartMetricModel): String {
