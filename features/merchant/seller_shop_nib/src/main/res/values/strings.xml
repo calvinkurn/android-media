@@ -4,7 +4,7 @@
     <string name="ssn_nib_instruction_description">Lengkapi dokumen NIB agar semakin mudah berjualan.</string>
     <string name="ssn_nib">Nomor Induk Berusaha</string>
     <string name="ssn_select_picture">Pilih Gambar</string>
-    <string name="ssn_max_file_size">Ukuran file maks. 5MB dengan format .jpg, .png, .pdf.</string>
+    <string name="ssn_max_file_size">Ukuran file maks. 5 MB dengan format .jpg, .png, .pdf.</string>
     <string name="ssn_nib_publish_date">Tanggal NIB diterbitkan</string>
     <string name="ssn_nib_benefit">Belum punya NIB? Daftar dan lihat berbagai keuntungannya di sini</string>
     <string name="ssn_finish">Selesai</string>

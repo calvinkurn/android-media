@@ -103,7 +103,7 @@
                 android:id="@+id/layoutFilePickerSelected"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ssn_shape_dashed_select_file"
+                android:background="@drawable/ssn_shape_dashed_file_selected"
                 android:layout_marginTop="9dp"
                 android:visibility="gone"
                 android:orientation="vertical">
@@ -242,7 +242,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ssn_nib_benefit"
-                android:layout_marginTop="24dp"
                 app:typographyType="display_3" />
         </LinearLayout>
 
