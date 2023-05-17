@@ -2,11 +2,15 @@ package com.tokopedia.search.result.mps.shopwidget
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -14,6 +18,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.databinding.SearchMpsShopWidgetBinding
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MPSShopWidgetViewHolder(
@@ -59,7 +64,12 @@ class MPSShopWidgetViewHolder(
     private fun bindShopLocation(dataView: MPSShopWidgetDataView) {
         val locationLabel = dataView.subtitle.ifEmpty { dataView.city }
         binding?.searchMPSShopLocation?.shouldShowWithAction(locationLabel.isNotEmpty()) {
-            binding?.searchMPSShopLocation?.text = locationLabel
+            binding?.searchMPSShopLocation?.apply {
+                // adjust margin to cater TokoNow layout requirement
+                val topMargin = if (dataView.subtitle.isNotEmpty()) 2.toPx() else 4.toPx()
+                setMargin(marginLeft, topMargin, marginRight, marginBottom)
+                text = locationLabel
+            }
         }
 
         binding?.searchMPSShopLocationLine?.showWithCondition(

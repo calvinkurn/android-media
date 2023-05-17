@@ -41,7 +41,7 @@ class MPSShopWidgetDataView(
         shopFreeOngkir.isActive && shopFreeOngkir.imageUrl.isNotEmpty()
 
     fun willShowLocationFreeOngkirSeparator() =
-        location.isNotEmpty() && willShowFreeOngkir()
+        (location.isNotEmpty() || subtitle.isNotEmpty()) && willShowFreeOngkir()
 
     companion object {
         fun create(shopItem: Shop, keywords: String) = MPSShopWidgetDataView(
