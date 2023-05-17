@@ -2,6 +2,8 @@ package com.tokopedia.unifyorderhistory.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -19,12 +21,30 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifyorderhistory.data.model.*
-import com.tokopedia.unifyorderhistory.domain.*
+import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
+import com.tokopedia.unifyorderhistory.data.model.LsPrintData
+import com.tokopedia.unifyorderhistory.data.model.PmsNotification
+import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
+import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
+import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
+import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrder
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrderParam
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohListParam
+import com.tokopedia.unifyorderhistory.domain.FlightResendEmailUseCase
+import com.tokopedia.unifyorderhistory.domain.GetUohFilterCategoryUseCase
+import com.tokopedia.unifyorderhistory.domain.GetUohPmsCounterUseCase
+import com.tokopedia.unifyorderhistory.domain.LsPrintFinishOrderUseCase
+import com.tokopedia.unifyorderhistory.domain.RechargeSetFailUseCase
+import com.tokopedia.unifyorderhistory.domain.TrainResendEmailUseCase
+import com.tokopedia.unifyorderhistory.domain.UohFinishOrderUseCase
+import com.tokopedia.unifyorderhistory.domain.UohListUseCase
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
 import com.tokopedia.unifyorderhistory.util.UohUtils.asFail
 import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
@@ -112,7 +132,24 @@ class UohListViewModel @Inject constructor(
         UohIdlingResource.increment()
         launchCatchError(block = {
             val result = uohListUseCase(Pair(paramOrder, false))
-            _orderHistoryListResult.value = Success(result.uohOrders)
+            _orderHistoryListResult.value = Success(
+                result.uohOrders.copy(
+                    orders = result.uohOrders.orders.map { order ->
+                        order.copy(
+                            metadata = order.metadata.copy(
+                                buttons = order.metadata.buttons.map {
+                                    if (it.label == ULAS_LABEL) {
+                                        val invoice = Gson().fromJson(order.metadata.queryParams, JsonObject::class.java).get("invoice")
+                                        it.copy(appURL = "tokopedia://product-review/bulk-create?invoice=$invoice")
+                                    } else {
+                                        it
+                                    }
+                                }
+                            )
+                        )
+                    }
+                )
+            )
             UohIdlingResource.decrement()
         }, onError = {
                 _orderHistoryListResult.value = Fail(it)
