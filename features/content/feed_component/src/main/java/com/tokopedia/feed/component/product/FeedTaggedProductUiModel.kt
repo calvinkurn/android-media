@@ -56,7 +56,7 @@ data class FeedTaggedProductUiModel(
     sealed class CampaignStatus {
         object Unknown : CampaignStatus()
         object Upcoming : CampaignStatus()
-        data class OnGoing(
+        data class Ongoing(
             val stockLabel: String,
             val stockInPercent: Float
         ) : CampaignStatus()

@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.domain.mapper
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import okhttp3.internal.format
 
 /**
  * Created By : Muhammad Furqan on 12/04/23
@@ -43,13 +42,13 @@ object MapperProductsToXProducts {
         )
     }
 
-    private fun mapCampaignProduct(product: FeedCardProductModel, campaign: FeedCardCampaignModel) : FeedTaggedProductUiModel.Campaign {
+    private fun mapCampaignProduct(product: FeedCardProductModel, campaign: FeedCardCampaignModel): FeedTaggedProductUiModel.Campaign {
         val status = when (campaign.status) {
             "upcoming" -> {
                 FeedTaggedProductUiModel.CampaignStatus.Upcoming
             }
             "ongoing" -> {
-                FeedTaggedProductUiModel.CampaignStatus.OnGoing(product.stockWording, product.stockSoldPercentage)
+                FeedTaggedProductUiModel.CampaignStatus.Ongoing(product.stockWording, product.stockSoldPercentage)
             }
             else -> {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown
