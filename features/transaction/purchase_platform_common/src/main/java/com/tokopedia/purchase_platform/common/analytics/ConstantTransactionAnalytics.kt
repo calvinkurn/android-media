@@ -473,6 +473,7 @@ object ConstantTransactionAnalytics {
         const val PROMO_FLAG = "promoFlag"
         const val TRACKER_ID = "trackerId"
         const val PROMOTIONS = "promotions"
+        const val PLATFORM_FEE = "platformFee"
     }
 
     object ScreenName {

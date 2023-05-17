@@ -4327,7 +4327,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         bottomSheetUnify.setShowCloseIcon(true);
         bottomSheetUnify.setChild(childView);
         bottomSheetUnify.show(getChildFragmentManager(), null);
-        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton();
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
     }
 
     private void getPaymentFee() {
@@ -4357,7 +4358,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setPlatformFeeData(platformFeeModel);
         hideLoaderTotalPayment();
         updateCost();
-        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage();
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
     }
 
     @Override
