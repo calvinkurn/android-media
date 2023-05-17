@@ -460,15 +460,11 @@ class ContentCommentBottomSheet @Inject constructor(
         val imm =
             binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (needToShow) {
+            binding.newComment.requestFocus()
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
-            binding.newComment.apply {
-                requestFocus()
-            }
         } else {
+            binding.newComment.clearFocus()
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
-            binding.newComment.apply {
-                clearFocus()
-            }
         }
     }
 
