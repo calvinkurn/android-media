@@ -211,27 +211,27 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         }
         binding.etNominalTip.run {
             setMessage(
-                        getString(
-                            R.string.nominal_tip_message,
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
-                        )
-                    )
+                getString(
+                    R.string.nominal_tip_message,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
+                )
+            )
             editText.addTextChangedListener(
-                        setWrapperWatcherTipping(
-                            binding.etNominalTip.textInputLayout,
-                            logisticDriverModel.prepayment.minAmount,
-                            logisticDriverModel.prepayment.maxAmount
-                        )
-                    )
+                setWrapperWatcherTipping(
+                    binding.etNominalTip.textInputLayout,
+                    logisticDriverModel.prepayment.minAmount,
+                    logisticDriverModel.prepayment.maxAmount
+                )
+            )
             counterView?.visibility = View.GONE
         }
 
         binding.btnTipping.setOnClickListener {
             val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace(
-                        "{{amount}}",
-                        binding.etNominalTip.editText.text.toString()
-                    )
+                "{{amount}}",
+                binding.etNominalTip.editText.text.toString()
+            )
 
             RouteManager.route(
                 context,
@@ -280,7 +280,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
-                    binding.btnTipping.isEnabled = true
+                    binding.btnTipping.isEnabled = false
                 }
 
                 validateSelectedChip(text)
