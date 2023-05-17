@@ -35,6 +35,8 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.view.getImeHeight
+import com.tokopedia.content.common.view.isImeVisible
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -70,7 +72,7 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val keyboardHeight by lazyThreadSafetyNone {
+    private val keyboardThreshold by lazyThreadSafetyNone {
         (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
     }
 
@@ -168,17 +170,22 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    //to escape Emoji length
+    private val space16 by lazyThreadSafetyNone {
+        context?.resources?.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
+    }
+
+    // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
         var count = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val it: BreakIterator = BreakIterator.getCharacterInstance()
-             it.setText(this)
-             while (it.next() != BreakIterator.DONE) {
-                 count++
-             }
-         } else
-             count = binding.newComment?.text?.length.orZero()
+            it.setText(this)
+            while (it.next() != BreakIterator.DONE) {
+                count++
+            }
+        } else {
+            count = binding.newComment?.text?.length.orZero()
+        }
         return count
     }
 
@@ -204,6 +211,7 @@ class ContentCommentBottomSheet @Inject constructor(
         setupView()
         observeData()
         observeEvent()
+        refreshData()
     }
 
     private fun setupBottomSheet() {
@@ -228,21 +236,12 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
-        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
-            val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+        binding.root.setOnApplyWindowInsetsListener { view, windowInsets ->
+            val height = view.getImeHeight()
+            if (view.isImeVisible(threshold = keyboardThreshold)) {
+                binding.root.setPadding(0, 0, 0, height)
             } else {
-                windowInsets.systemWindowInsetBottom
-            }
-            val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.isVisible(WindowInsets.Type.ime())
-            } else {
-                height > keyboardHeight
-            }
-            if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, 16.toPx() + height)
-            } else {
-                binding.root.setPadding(0, 0, 0, 16.toPx())
+                binding.root.setPadding(0, 0, 0, space16.orZero())
             }
             windowInsets
         }
@@ -448,28 +447,23 @@ class ContentCommentBottomSheet @Inject constructor(
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        binding.root.layoutParams.height = newHeight
-        val avatar =
-            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = newHeight
+        }
+
+        val avatar = if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
-        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     private fun showKeyboard(needToShow: Boolean) {
         val imm =
             binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (needToShow) {
+            binding.newComment.requestFocus()
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
-            binding.newComment.apply {
-                isFocusable = true
-                isFocusableInTouchMode = true
-            }
         } else {
+            binding.newComment.clearFocus()
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
-            binding.newComment.apply {
-                isFocusable = false
-                isFocusableInTouchMode = false
-            }
         }
     }
 
@@ -601,6 +595,10 @@ class ContentCommentBottomSheet @Inject constructor(
         analytics = tracker
     }
 
+    private fun refreshData() {
+        viewModel.submitAction(CommentAction.RefreshComment)
+    }
+
     interface EntrySource {
         fun getPageSource(): PageSource
 
@@ -611,7 +609,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.35
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
