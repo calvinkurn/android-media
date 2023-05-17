@@ -202,6 +202,9 @@ class LastTaggedProductFragment @Inject constructor(
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
                 ).show()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

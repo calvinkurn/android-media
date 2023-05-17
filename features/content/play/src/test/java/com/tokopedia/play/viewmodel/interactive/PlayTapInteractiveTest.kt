@@ -29,6 +29,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -43,6 +44,9 @@ class PlayTapInteractiveTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = CoroutineTestDispatchers
 

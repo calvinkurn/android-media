@@ -185,18 +185,10 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     private fun getOrderDetailData() {
         if (userSessionInterface.isLoggedIn) {
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
-                orderDetailViewModel.getOrderDetail(
-                        QueryHotelOrderDetail(),
-                        QueryTravelCrossSelling(),
-                        orderId, orderCategory)
-            } else {
-                orderDetailViewModel.getOrderDetail(
-                        QueryHotelOrderDetail(),
-                        null,
-                        orderId, orderCategory)
-            }
-
+           orderDetailViewModel.getOrderDetail(
+               QueryHotelOrderDetail(),
+               QueryTravelCrossSelling(),
+               orderId, orderCategory)
 
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
