@@ -140,6 +140,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultiloca
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -165,6 +166,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -1180,12 +1182,13 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
-            == ProductDetailConstant.PRODUCT_PROTECTION
-        ) {
-            getPurchaseProtectionUrl()
-        } else {
-            ""
+        val purchaseProtectionUrl = when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
+            else -> ""
+        }
+        val promoId = when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.SHIPMENT_V2 -> getShipmentPlusText()
+            else -> ""
         }
 
         DynamicProductDetailTracking.Impression
@@ -1196,7 +1199,8 @@ open class DynamicProductDetailFragment :
                 componentName = "",
                 purchaseProtectionUrl = purchaseProtectionUrl,
                 userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId()
+                lcaWarehouseId = getLcaWarehouseId(),
+                promoId = promoId
             )
     }
 
@@ -1536,6 +1540,10 @@ open class DynamicProductDetailFragment :
     private fun getPurchaseProtectionUrl(): String {
         return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
             ?: ""
+    }
+
+    private fun getShipmentPlusText(): String {
+        return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
     }
 
     private fun getPPTitleName(): String {
@@ -2607,11 +2615,12 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateTicker(selectedTicker)
 
         pdpUiUpdater?.updateShipmentData(
-            viewModel.getP2RatesEstimateByProductId(),
+            viewModel.getP2RatesEstimateDataByProductId(),
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            viewModel.getP2ShipmentPlusByProductId()
         )
         pdpUiUpdater?.updateProductBundlingData(viewModel.p2Data.value, selectedChild?.productId)
 
@@ -2840,7 +2849,8 @@ open class DynamicProductDetailFragment :
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
-            val ratesData = viewModel.getP2RatesEstimateByProductId()
+            val ratesData = viewModel.getP2RatesEstimateDataByProductId()
+            val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
@@ -2864,7 +2874,7 @@ open class DynamicProductDetailFragment :
                 )
             }
 
-            onSuccessGetDataP2(it, boeData, ratesData)
+            onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
@@ -3121,7 +3131,7 @@ open class DynamicProductDetailFragment :
             ),
             productInfo = viewModel.getDynamicProductInfoP1,
             boType = boData.boType,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId()
@@ -3282,7 +3292,8 @@ open class DynamicProductDetailFragment :
     private fun onSuccessGetDataP2(
         it: ProductInfoP2UiData,
         boeData: BebasOngkirImage,
-        ratesData: P2RatesEstimateData?
+        ratesData: P2RatesEstimateData?,
+        shipmentPlus: ShipmentPlus?
     ) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice ?: 0.0
         if (minimumShippingPriceP2 != 0.0) {
@@ -3301,7 +3312,8 @@ open class DynamicProductDetailFragment :
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            shipmentPlus
         )
 
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
@@ -3415,7 +3427,15 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        goToAtcVariant()
+        if (variantOptions.isEmpty()) { // lihat semua label clicked
+            goToAtcVariant()
+        } else { // chip variant clicked
+            val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+            singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
+            val child = viewModel.getChildOfVariantSelected(singleVariant)
+            productId = child?.productId
+            goToAtcVariant()
+        }
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
@@ -3685,7 +3705,7 @@ open class DynamicProductDetailFragment :
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
-            val rates = viewModel.getP2RatesEstimateByProductId()
+            val rates = viewModel.getP2RatesEstimateDataByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
 
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
@@ -4090,7 +4110,7 @@ open class DynamicProductDetailFragment :
             boType = boType,
             affiliateUniqueId = affiliateUniqueId,
             uuid = uuid,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId(),
@@ -5809,6 +5829,28 @@ open class DynamicProductDetailFragment :
             common,
             componentTrackDataModel
         )
+    }
+
+    override fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        ShipmentTracking.sendClickShipmentPlusBanner(
+            trackerData = trackerData,
+            common = generateCommonTracker(),
+            component = componentTrackDataModel
+        )
+        val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
+            UriUtil
+                .buildUriAppendParam(
+                    ApplinkConst.WEBVIEW,
+                    mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
+                )
+        } else {
+            link
+        }
+        goToApplink(processedLink)
     }
 
     override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {
