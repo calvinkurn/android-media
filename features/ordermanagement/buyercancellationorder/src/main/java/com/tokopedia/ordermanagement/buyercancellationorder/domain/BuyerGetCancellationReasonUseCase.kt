@@ -84,6 +84,7 @@ class BuyerGetCancellationReasonUseCase @Inject constructor(private val useCase:
                     bundle_id,
                     bundle_variant_id
                 }
+                group_type
                 grouped_orders {
                   title
                   group_order_details {

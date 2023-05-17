@@ -589,17 +589,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         bottomSheet.dismiss()
         binding?.run {
             btnReqCancel.isEnabled = false
-//            tfChooseReason.textFieldInput.inputType =
-//                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-//            tfChooseReason.textFieldInput.isSingleLine = false
-//            tfChooseReason.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-//            tfChooseReason.textFieldInput.setText(reason)
+
             tvChooseReasonLabel.text = reason
             currentReasonStr = reason
 
             if (reason.equals(LAINNYA, true)) {
                 reasonCode = BuyerConsts.REASON_CODE_LAINNYA
-//                tfChooseSubReason.gone()
                 cardUnifyChooseSubReason.hide()
                 tvSubReason.visible()
                 tvSubReason.text = getString(R.string.ask_2_lainnya)
@@ -780,6 +775,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 //                            gone()
 //                        }
 //                    }
+//                    setupRecyclerViewCancellationProduct(products)
                 }
             }
         }

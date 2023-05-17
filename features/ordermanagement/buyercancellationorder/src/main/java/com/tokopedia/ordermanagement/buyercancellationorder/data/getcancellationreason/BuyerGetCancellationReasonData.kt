@@ -40,6 +40,9 @@ data class BuyerGetCancellationReasonData(
             @SerializedName("grouped_orders")
             val groupedOrders: GroupedOrders = GroupedOrders(),
 
+            @SerializedName("group_type")
+            val groupType: Int = 0,
+
             @SerializedName("have_product_bundle")
             @Expose
             val haveProductBundle: Boolean = false,

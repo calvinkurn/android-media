@@ -7,7 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachM
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ShipmentInfoUiModel(
-    val owocInfoUiModel: OwocBomDetailSectionUiModel,
+    val owocInfoUiModel: OwocBomDetailSectionUiModel?,
     val awbInfoUiModel: AwbInfoUiModel,
     val courierDriverInfoUiModel: CourierDriverInfoUiModel,
     val driverTippingInfoUiModel: DriverTippingInfoUiModel,

@@ -102,22 +102,19 @@ data class GetBuyerOrderDetailResponse(
                 @Expose
                 val epharmacyData: EpharmacyData = EpharmacyData(),
                 @SerializedName("group_order_data")
-                val groupOrderData: GroupOrderData = GroupOrderData()
+                val groupOrderData: GroupOrderData? = GroupOrderData()
             ) {
 
                 data class GroupOrderData(
-                    @SerializedName("button")
-                    val button: Button = Button()
-                ) {
-                    data class Button(
-                        @SerializedName("description")
-                        val description: String = "",
-                        @SerializedName("display_name")
-                        val displayName: String = "",
-                        @SerializedName("key")
-                        val key: String = ""
-                    )
-                }
+                    @SerializedName("tx_id")
+                    val txId: String = "0",
+                    @SerializedName("icon_url")
+                    val iconUrl: String = "",
+                    @SerializedName("title")
+                    val title: String = "",
+                    @SerializedName("description")
+                    val description: String = "",
+                )
                 data class EpharmacyData(
                     @SerializedName("consultation_date")
                     @Expose

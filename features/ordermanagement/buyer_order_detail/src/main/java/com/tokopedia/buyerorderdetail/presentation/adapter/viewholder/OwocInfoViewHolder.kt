@@ -29,8 +29,10 @@ class OwocInfoViewHolder(
 
     private fun ItemOwocInfoBinding.setOWOCSectionClickListener() {
         root.setOnClickListener {
+
         }
         icOWOCSectionChevronRight.setOnClickListener {
+
         }
     }
 

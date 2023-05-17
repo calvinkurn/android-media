@@ -8,6 +8,5 @@ class BuyerCancellationProductUiModel(
     val invoiceNumber: String,
     val productId: String,
     val productName: String,
-    val productMoreInfo: String,
     val productThumbnailUrl: String
 )

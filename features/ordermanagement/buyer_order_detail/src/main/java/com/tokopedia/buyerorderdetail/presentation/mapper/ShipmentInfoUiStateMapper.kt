@@ -111,7 +111,7 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapShipmentInfoUiModel(
-        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData,
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?,
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
         meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
         orderId: String,
@@ -152,15 +152,15 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapOwocBomDetailSectionUiModel(
-        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData
-    ): OwocBomDetailSectionUiModel {
-        return OwocBomDetailSectionUiModel(
-            buttonKey = owocSection.button.key,
-            sectionTitle = owocSection.button.displayName,
-            sectionDesc = owocSection.button.description,
-            // TODO will update later
-            imageUrl = ""
-        )
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?
+    ): OwocBomDetailSectionUiModel? {
+        return owocSection?.let {
+            OwocBomDetailSectionUiModel(
+                sectionTitle = owocSection.title,
+                sectionDesc = owocSection.description,
+                imageUrl = owocSection.iconUrl
+            )
+        }
     }
 
     private fun mapAwbInfoUiModel(
