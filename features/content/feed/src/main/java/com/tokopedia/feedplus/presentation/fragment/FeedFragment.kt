@@ -503,7 +503,7 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        val action: () -> Unit = {
             openProductTagBottomSheet(
                 author = author,
                 hasVoucher = hasVoucher,
@@ -513,6 +513,10 @@ class FeedFragment :
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
             }
+        }
+
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+            action()
         }
     }
 
@@ -528,7 +532,7 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickProductLabel(it)
                 feedAnalytics.eventClickContentProductLabel(it)
@@ -548,6 +552,10 @@ class FeedFragment :
                     trackerData = trackerModel
                 )
             }
+        }
+
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+            action()
         }
     }
 
@@ -665,7 +673,7 @@ class FeedFragment :
         campaignName: String,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickCampaignRibbon(
                     it,
@@ -679,6 +687,10 @@ class FeedFragment :
                     trackerData = it
                 )
             }
+        }
+
+        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+            action()
         }
     }
 
@@ -1239,17 +1251,23 @@ class FeedFragment :
 
     private fun checkForFollowerBottomSheet(
         positionInFeed: Int,
-        campaign: FeedCardCampaignModel
+        campaign: FeedCardCampaignModel,
+        onDismiss: () -> Unit
     ): Boolean {
         if (campaign.isExclusiveForMember) {
-            showFollowerBottomSheet(positionInFeed, campaign.status)
+            showFollowerBottomSheet(positionInFeed, campaign.status, onDismiss)
         }
         return campaign.isExclusiveForMember
     }
 
-    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
+    private fun showFollowerBottomSheet(
+        positionInFeed: Int,
+        campaignStatus: String,
+        onDismiss: () -> Unit
+    ) {
         feedFollowersOnlyBottomSheet =
             FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+        feedFollowersOnlyBottomSheet?.setOnDismissListener(onDismiss)
 
         if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false) {
             feedFollowersOnlyBottomSheet?.show(
