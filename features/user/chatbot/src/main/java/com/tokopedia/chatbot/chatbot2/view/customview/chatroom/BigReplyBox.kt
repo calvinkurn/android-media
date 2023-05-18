@@ -25,7 +25,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     init {
         initViewBindings()
-        disableSendButton()
+        enableSendButton()
         bindClickListeners()
     }
 
@@ -49,7 +49,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    private fun disableSendButton() {
+    fun disableSendButton() {
         sendButtonListener?.disableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }
@@ -61,6 +61,10 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     fun setText(text: String) {
         replyBoxText?.text = text
+    }
+
+    fun getMessage(): String {
+        return replyBoxText?.text?.toString() ?: ""
     }
 
     fun shouldShowAddAttachmentButton(showAddAttachmentMenu: Boolean) {

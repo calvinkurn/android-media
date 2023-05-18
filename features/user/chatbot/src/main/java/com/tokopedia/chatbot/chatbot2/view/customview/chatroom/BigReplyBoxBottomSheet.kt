@@ -1,17 +1,21 @@
 package com.tokopedia.chatbot.chatbot2.view.customview.chatroom
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
@@ -44,7 +48,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         disableSendButton()
         bindClickListeners()
         setUpEditText()
-        getBindingView().ivChatMenu.showWithCondition(shouldShowAddAttachmentButton)
+        getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
+        changeSendButtonIcon(isEnabled = true)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -55,12 +60,20 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
             setPlaceholder(hintText)
+            labelText.hide()
             editText.setHintTextColor(
                 ContextCompat.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
+            val message = String.format(
+                context?.resources?.getString(R.string.chatbot_remaining_words)
+                    .toBlankOrString(),
+                MINIMUM_NUMBER_OF_WORDS
+            )
+            setMessage(message)
+            requestFocus()
         }
     }
 
@@ -76,12 +89,28 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                     getBindingView().chatText.editText.text?.toString() ?: ""
                 )
                 dismissAllowingStateLoss()
+            } else {
+                setWordLengthError()
             }
         }
-        getBindingView().ivChatMenu.setOnClickListener {
-            dismissAllowingStateLoss()
+        getBindingView().chatText.icon1.setOnClickListener {
+            hideKeyboard()
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
+
+        setOnDismissListener {
+            val text = getBindingView().chatText.editText.text?.toString() ?: ""
+            hideKeyboard()
+            replyBoxClickListener?.dismissBigReplyBoxBottomSheet(
+                text,
+                getWordCount()
+            )
+        }
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(_viewBinding?.parent?.windowToken, 0)
     }
 
     private fun getWordCount(): Int {
@@ -101,21 +130,67 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (getWordCount() < MINIMUM_NUMBER_OF_WORDS) {
+                val wordCount = getWordCount()
+                if (wordCount < MINIMUM_NUMBER_OF_WORDS) {
                     disableSendButton()
                 }
+                setWordLengthWarning(wordCount)
             }
         }
     }
 
     override fun disableSendButton() {
-        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
         isSendButtonActivated = false
     }
 
     override fun enableSendButton() {
-        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
         isSendButtonActivated = true
+    }
+
+    private fun changeSendButtonIcon(isEnabled: Boolean) {
+        if (isEnabled) {
+            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
+        } else {
+            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        }
+    }
+
+    private fun setWordLengthWarning(wordCount: Int) {
+        getBindingView().chatText.run {
+            if (this.editText.text.isEmpty()) {
+                val message = String.format(
+                    context?.resources?.getString(R.string.chatbot_remaining_words)
+                        .toBlankOrString(),
+                    MINIMUM_NUMBER_OF_WORDS
+                )
+                isInputError = false
+                setMessage(message)
+                return
+            }
+            if (wordCount < MINIMUM_NUMBER_OF_WORDS) {
+                val message = String.format(
+                    context?.resources?.getString(R.string.chatbot_remaining_words)
+                        .toBlankOrString(),
+                    MINIMUM_NUMBER_OF_WORDS - wordCount
+                )
+                isInputError = false
+                setMessage(message)
+            } else {
+                setMessage("")
+            }
+        }
+    }
+
+    private fun setWordLengthError() {
+        getBindingView().chatText.run {
+            val message = String.format(
+                context?.resources?.getString(R.string.chatbot_big_reply_word_error)
+                    .toBlankOrString(),
+                MINIMUM_NUMBER_OF_WORDS
+            )
+            setMessage(message)
+            isInputError = true
+        }
     }
 
     companion object {
@@ -133,7 +208,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         }
 
         var replyBoxClickListener: ReplyBoxClickListener? = null
-        const val MINIMUM_NUMBER_OF_WORDS = 2
+        const val MINIMUM_NUMBER_OF_WORDS = 5
         const val MINIMUM_NUMBER_OF_LINES = 3
         const val MAXIMUM_NUMBER_OF_LINES = 10
     }

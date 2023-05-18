@@ -4,4 +4,6 @@ interface ReplyBoxClickListener {
     fun onAttachmentMenuClicked()
     fun goToBigReplyBoxBottomSheet()
     fun getMessageContentFromBottomSheet(message: String)
+
+    fun dismissBigReplyBoxBottomSheet(s: String, wordLength: Int)
 }

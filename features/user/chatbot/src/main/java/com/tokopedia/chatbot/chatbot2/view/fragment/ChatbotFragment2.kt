@@ -20,6 +20,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -121,6 +124,7 @@ import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
@@ -350,6 +354,7 @@ class ChatbotFragment2 :
         private const val COPY_TO_CLIPBOARD_LABEL = "Tokopedia-Chatbot"
         private const val ZERO_RATIO = 0F
         private const val ZERO_POSITION = 0
+        private const val REPLY_BOX_SIZE = 150
     }
 
     override fun initInjector() {
@@ -670,7 +675,6 @@ class ChatbotFragment2 :
         bigReplyBox = getBindingView().bigReplyBox
         guideline = smallReplyBox?.getGuidelineForReplyBubble()
 
-        smallReplyBox?.bindCommentTextBackground()
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
 
         setUpBigReplyBoxListeners()
@@ -1628,7 +1632,7 @@ class ChatbotFragment2 :
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
-        bigReplyBox?.setText(text)
+        bigReplyBox?.setText(placeholder)
         bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
@@ -2257,10 +2261,28 @@ class ChatbotFragment2 :
             params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt()
                 ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
+
+            smallReplyBox?.commentEditText?.apply {
+                setMargin(
+                    top = REPLY_BOX_SIZE,
+                    left = this.marginLeft,
+                    right = this.marginRight,
+                    bottom = this.marginBottom
+                )
+            }
         } else {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
             params.guideBegin = DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
+
+            smallReplyBox?.commentEditText?.apply {
+                setMargin(
+                    top = ZERO_POSITION,
+                    left = this.marginLeft,
+                    right = this.marginRight,
+                    bottom = this.marginBottom
+                )
+            }
         }
     }
 
@@ -2624,6 +2646,14 @@ class ChatbotFragment2 :
         )
     }
 
+    override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
+        bigReplyBox?.setText(msg)
+        if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
+            bigReplyBox?.enableSendButton()
+        } else {
+            bigReplyBox?.disableSendButton()
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
