@@ -90,7 +90,7 @@ class UserSessionV1toV2MigrationTest {
     }
 
     @Test
-    @Ignore("boolean value will not be migrated if value is default value, will resolve later")
+    @Ignore("boolean value will not be removed if value is default value, will resolve later")
     fun whenGettingIsShopOwner_oldPreferenceShouldBeRemoved() {
         val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
         val editor = sharedPrefs.edit()
@@ -99,10 +99,13 @@ class UserSessionV1toV2MigrationTest {
 
         // when
         assertEquals(false, sut.isShopOwner)
+        sut.setIsShopOwner(true)
+        UserSessionMap.map.clear()
+        assertEquals(true, sut.isShopOwner)
 
         // old value should be removed by now
-        val oldValue = sharedPrefs.getString(IS_SHOP_OWNER, "none")
-        assertEquals("none", oldValue)
+        val oldValue = sharedPrefs.contains(IS_SHOP_OWNER)
+        assertEquals(false, oldValue)
     }
 
     @Test
@@ -120,7 +123,7 @@ class UserSessionV1toV2MigrationTest {
         assertEquals("none", oldValue)
     }
 
-    @Ignore("Strange case where the value is empty")
+    @Ignore("Strange case where the value is empty. it is because of value.isEmpty() condition")
     @Test
     fun whenMigratingWithEmptyValue_shouldBeMigrated() {
         val empty = ""
