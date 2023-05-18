@@ -121,6 +121,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -511,7 +512,7 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_APP_SETTING_SECTION,
-            String.format("%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            String.format(Locale.getDefault(), "%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -525,7 +526,7 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_APP_SETTING_SECTION,
-            String.format("%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            String.format(Locale.getDefault(), "%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -539,7 +540,7 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_APP_SETTING_SECTION,
-            String.format("%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            String.format(Locale.getDefault(), "%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
