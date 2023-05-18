@@ -18,7 +18,7 @@ class KycRobot {
 
     fun checkTermsAndCondition() {
         // waiting for user consent
-        Thread.sleep(2000)
+        Thread.sleep(500)
         onView(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes)).perform(click())
     }
 
