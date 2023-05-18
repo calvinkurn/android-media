@@ -35,9 +35,57 @@ class UserSessionV1toV2MigrationTest {
     }
 
     @Test
-    fun whenGettingLoginMethod_oldPreferenceShouldBeRemoved() {
-        testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "google") {
+    fun whenMigratingLoginMethodWithEmptyValue_oldPreferenceShouldBeRemoved() {
+        testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "") {
             assertEquals(it, sut.loginMethod)
+        }
+    }
+
+    @Test
+    fun whenMigratingLoginMethodWithEmptyValueWhileV2Exists_oldPreferenceShouldBeRemoved() {
+        testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "") {
+            sut.loginMethod = "bar"
+            UserSessionMap.map.clear()
+            assertEquals("bar", sut.loginMethod)
+        }
+    }
+
+    @Test
+    fun whenMigratingEmailWhileV2Exists_oldPreferenceShouldBeRemoved() {
+        testV1PreferenceShouldBeRemoved(EMAIL, "foo") {
+            sut.email = "bar"
+            UserSessionMap.map.clear()
+            assertEquals("bar", sut.email)
+        }
+    }
+
+    @Test
+    fun withMultipleDefaultValue_testMigration_shouldRemovePreviousUserSession() {
+        val defaultValueTests = listOf(null, "Bearer", "", "0")
+        val keyName = "REFRESH_TOKEN"
+        val v = "foobar"
+        // save using old key and value : for example login_session
+        defaultValueTests.forEach { toTest ->
+            cleanUp()
+            Timber.d("Executing test for $toTest")
+            val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putString(keyName, v).apply()
+            val token = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
+            assertEquals(v, token)
+
+            val none = "none"
+            // old value should be removed by now
+            val oldValue = sharedPrefs.getString(keyName, none)
+            assertEquals(none, oldValue)
+
+            UserSessionMap.map.clear()
+            val secondToken = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
+            assertEquals(v, secondToken)
+            // old value should be still removed
+            val oldValue2 = sharedPrefs.getString(keyName, none)
+            assertEquals(none, oldValue2)
+            val cleaningLogs = timber.logs.filter { it.message.contains("cleaning") }
+            assertEquals(1, cleaningLogs.size)
         }
     }
 
@@ -70,43 +118,6 @@ class UserSessionV1toV2MigrationTest {
         // old value should be removed by now
         val oldValue = sharedPrefs.getString(GCM_ID_TIMESTAMP, "none")
         assertEquals("none", oldValue)
-    }
-
-    @Test
-    fun whenGettingLoginMethodWithEmptyValue_oldPreferenceShouldBeRemoved() {
-        testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "") {
-            assertEquals(it, sut.loginMethod)
-        }
-    }
-
-    @Test
-    fun withMultipleDefaultValue_testMigration_shouldRemovePreviousUserSession() {
-        val defaultValueTests = listOf(null, "Bearer", "", "0")
-        val keyName = "REFRESH_TOKEN"
-        val v = "foobar"
-        // save using old key and value : for example login_session
-        defaultValueTests.forEach { toTest ->
-            cleanUp()
-            Timber.d("Executing test for $toTest")
-            val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
-            sharedPrefs.edit().putString(keyName, v).apply()
-            val token = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
-            assertEquals(v, token)
-
-            val none = "none"
-            // old value should be removed by now
-            val oldValue = sharedPrefs.getString(keyName, none)
-            assertEquals(none, oldValue)
-
-            UserSessionMap.map.clear()
-            val secondToken = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
-            assertEquals(v, secondToken)
-            // old value should be still removed
-            val oldValue2 = sharedPrefs.getString(keyName, none)
-            assertEquals(none, oldValue2)
-            val cleaningLogs = timber.logs.filter { it.message.contains("cleaning") }
-            assertEquals(1, cleaningLogs.size)
-        }
     }
 
     @Ignore("Strange case where the value is empty")
