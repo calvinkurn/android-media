@@ -14,7 +14,7 @@ class CommentIconUiView(private val group: Group, listener: Listener) {
     init {
         group.post {
             group.referencedIds.forEach {
-                view.findViewById<View>(it).setOnClickListener {
+                view.findViewById<View>(it)?.setOnClickListener {
                     listener.onCommentClicked(this)
                 }
             }
