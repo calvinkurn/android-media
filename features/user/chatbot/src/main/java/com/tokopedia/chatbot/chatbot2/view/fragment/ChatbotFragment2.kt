@@ -315,7 +315,6 @@ class ChatbotFragment2 :
     var isVideoCoachMarkShowing = false
     private var recyclerView: RecyclerView? = null
     private var isArticleDataSent: Boolean = false
-    private var csatRemoteConfig: Boolean = false
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
@@ -324,6 +323,9 @@ class ChatbotFragment2 :
     private var showAddAttachmentMenu: Boolean = true
     private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
+
+    private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
+    private var bigReplyBoxText: String = ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -2621,15 +2623,17 @@ class ChatbotFragment2 :
 
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
-            val bottomSheetUnify = BigReplyBoxBottomSheet
-                .newInstance(
-                    replyBoxBottomSheetPlaceHolder,
-                    replyBoxBottomSheetTitle,
-                    showAddAttachmentMenu
-                )
+            if(bigReplyBoxBottomSheet == null) {
+                bigReplyBoxBottomSheet =  BigReplyBoxBottomSheet
+                    .newInstance(
+                        replyBoxBottomSheetPlaceHolder,
+                        replyBoxBottomSheetTitle,
+                        showAddAttachmentMenu
+                    )
+            }
             BigReplyBoxBottomSheet.replyBoxClickListener = this
-            bottomSheetUnify.clearContentPadding = true
-            bottomSheetUnify.show(childFragmentManager, "")
+            bigReplyBoxBottomSheet?.clearContentPadding = true
+            bigReplyBoxBottomSheet?.show(childFragmentManager, "")
         }
     }
 

@@ -23,6 +23,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var labelText = ""
     private var hintText = ""
     private var shouldShowAddAttachmentButton: Boolean = false
+    private var messageText: String = ""
 
     private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -60,6 +61,9 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
             setPlaceholder(hintText)
+            if (messageText.isNotEmpty()) {
+                editText.setText(messageText)
+            }
             labelText.hide()
             editText.setHintTextColor(
                 ContextCompat.getColor(
@@ -198,12 +202,14 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         fun newInstance(
             replyBoxBottomSheetPlaceHolder: String,
             replyBoxBottomSheetTitle: String,
-            shouldShowAddAttachmentButton: Boolean
+            shouldShowAddAttachmentButton: Boolean,
+            msgText: String = ""
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.labelText = replyBoxBottomSheetTitle
                 this.hintText = replyBoxBottomSheetPlaceHolder
                 this.shouldShowAddAttachmentButton = shouldShowAddAttachmentButton
+                this.messageText = msgText
             }
         }
 
