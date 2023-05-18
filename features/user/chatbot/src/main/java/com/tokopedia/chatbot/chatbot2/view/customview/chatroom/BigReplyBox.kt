@@ -35,7 +35,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBox = findViewById(R.id.reply_box)
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
-            sendButton = findViewById(R.id.send_but)
+            sendButton = findViewById(R.id.send_button)
             replyBoxText = findViewById(R.id.reply_box_text)
         }
     }
@@ -46,6 +46,9 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
         }
         replyBox?.setOnClickListener {
             replyBoxClickListener?.goToBigReplyBoxBottomSheet()
+        }
+        sendButton?.setOnClickListener {
+            replyBoxClickListener?.getMessageContentFromBottomSheet(replyBoxText?.text?.toString() ?: "")
         }
     }
 
