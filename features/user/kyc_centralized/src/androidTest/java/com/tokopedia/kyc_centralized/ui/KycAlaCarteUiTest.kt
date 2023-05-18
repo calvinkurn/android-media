@@ -27,7 +27,9 @@ class KycAlaCarteUiTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoSimpleActivity::class.java, false, false
+        UserIdentificationInfoSimpleActivity::class.java,
+        false,
+        false
     )
 
     private lateinit var timber: MockTimber
@@ -38,6 +40,7 @@ class KycAlaCarteUiTest {
     fun setup() {
         timber = MockTimber()
         Timber.plant(timber)
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -85,5 +88,4 @@ class KycAlaCarteUiTest {
             assertThat(timber, hasProjectIdOf(projectId))
         }
     }
-
 }
