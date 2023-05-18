@@ -327,10 +327,12 @@ public class MigratedUserSession {
             if (oldValue != null) {
                 Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
-                internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
                 logUserSessionEventWithKey("migrate_from_v1", keyName, null);
-                return oldValue;
+                if (internalGetString(newPrefName, newKeyName) == null) {
+                    internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
+                    return oldValue;
+                }
             }
 
             SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
