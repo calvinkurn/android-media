@@ -1,0 +1,72 @@
+package com.tokopedia.topads.dashboard.recommendation.usecase
+
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
+
+class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<TopAdsAdGroupBidInsightResponse>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(GqlQuery)
+        setTypeClass(TopAdsAdGroupBidInsightResponse::class.java)
+    }
+
+    suspend operator fun invoke():
+        TopAdsListAllInsightState<TopAdsAdGroupBidInsightResponse> {
+        setRequestParams(createRequestParam().parameters)
+        val data = executeOnBackground()
+
+        return when {
+            data.topAdsBatchGetAdGroupBidInsightByGroupID.error.title.isNullOrEmpty() -> {
+                TopAdsListAllInsightState.Success(data)
+            }
+            else -> TopAdsListAllInsightState.Fail(Throwable(data.topAdsBatchGetAdGroupBidInsightByGroupID.error.title))
+        }
+    }
+
+    private fun createRequestParam(): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putString("source", "adbidinsight.shopinsight.test")
+        requestParams.putObject(
+            "groupIDs", listOf("23169218")
+        )
+        return requestParams
+    }
+
+    object GqlQuery : GqlQueryInterface {
+        private const val OPERATION_NAME = "topAdsBatchGetAdGroupBidInsightByGroupID"
+        private val QUERY = """
+            query $OPERATION_NAME(${'$'}groupIDs: [String]!, ${'$'}source: String!) {
+              $OPERATION_NAME(groupIDs: ${'$'}groupIDs, source: ${'$'}source) {
+                groups {
+                  data {
+                    groupID
+                    currentBidSettings {
+                      bidType
+                      priceBid
+                    }
+                    suggestionBidSettings {
+                      bidType
+                      priceBid
+                    }
+                    predictedTotalImpression
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+
+        override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
+
+        override fun getQuery(): String = QUERY
+
+        override fun getTopOperationName(): String = OPERATION_NAME
+    }
+
+}

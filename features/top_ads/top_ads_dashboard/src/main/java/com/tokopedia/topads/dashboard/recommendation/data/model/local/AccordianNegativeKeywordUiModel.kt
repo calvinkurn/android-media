@@ -1,19 +1,13 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-data class GroupInsightsUiModel(
-    val title: String = "",
-    val subTitle: String = "",
-    val isInsightAvailable: Boolean = false,
-    val expandItemDataModel: GroupDetailDataModel? = null
-) :
-    GroupDetailDataModel {
+data class AccordianNegativeKeywordUiModel(
+    val text: String = "",
+    val newNegativeKeywordsRecom: List<TopAdsBatchGroupInsightResponse.Group.GroupData.NewNegativeKeywordsRecom>?,
 
-    override fun isAvailable(): Boolean {
-        return isInsightAvailable
-    }
-
+    ) : GroupDetailDataModel {
     override fun type(): String {
         return ""
     }
@@ -25,4 +19,5 @@ data class GroupInsightsUiModel(
     override fun equalsWith(newItem: GroupDetailDataModel): Boolean {
         return this == newItem
     }
+
 }

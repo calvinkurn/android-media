@@ -63,5 +63,10 @@ abstract class ViewModelModule {
     @ViewModelKey(TopAdsListAllInsightViewModel::class)
     internal abstract fun bindsTopTopAdsListAllInsightViewModel(viewModel: TopAdsListAllInsightViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel::class)
+    internal abstract fun bindsGroupDetailViewModel(viewModel: com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel): ViewModel
+
 
 }
