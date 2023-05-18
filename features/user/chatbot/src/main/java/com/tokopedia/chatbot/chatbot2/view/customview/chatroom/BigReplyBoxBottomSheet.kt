@@ -99,6 +99,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         }
         getBindingView().chatText.icon1.setOnClickListener {
             hideKeyboard()
+            dismissAllowingStateLoss()
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
 
@@ -115,6 +116,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(_viewBinding?.parent?.windowToken, 0)
+    }
+
+    fun hideAddAttachmentButton(state: Boolean) {
+        getBindingView().chatText.icon1.showWithCondition(state)
     }
 
     private fun getWordCount(): Int {

@@ -52,6 +52,10 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    fun handleAddAttachmentButton(state: Boolean) {
+        addAttachmentMenu?.showWithCondition(state)
+    }
+
     fun disableSendButton() {
         sendButtonListener?.disableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)

@@ -325,7 +325,6 @@ class ChatbotFragment2 :
     private var showUploadVideoButton: Boolean = false
 
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
-    private var bigReplyBoxText: String = ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -997,6 +996,8 @@ class ChatbotFragment2 :
         getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
             showAddAttachmentMenu
         )
+        bigReplyBox?.handleAddAttachmentButton(toShow)
+        bigReplyBoxBottomSheet?.hideAddAttachmentButton(toShow)
         if (showAddAttachmentMenu) {
             getBindingView().smallReplyBox.getMessageView()?.apply {
                 if (!isConnectedToAgent) {
@@ -2623,8 +2624,8 @@ class ChatbotFragment2 :
 
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
-            if(bigReplyBoxBottomSheet == null) {
-                bigReplyBoxBottomSheet =  BigReplyBoxBottomSheet
+            if (bigReplyBoxBottomSheet == null) {
+                bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
                     .newInstance(
                         replyBoxBottomSheetPlaceHolder,
                         replyBoxBottomSheetTitle,
@@ -2640,6 +2641,7 @@ class ChatbotFragment2 :
     override fun getMessageContentFromBottomSheet(msg: String) {
         val startTime = SendableUiModel.generateStartTime()
         enableTyping()
+        hideKeyboard()
         viewModel.sendMessage(
             messageId,
             msg,
@@ -2657,6 +2659,7 @@ class ChatbotFragment2 :
         } else {
             bigReplyBox?.disableSendButton()
         }
+        hideKeyboard()
     }
     override fun onDestroyView() {
         super.onDestroyView()
