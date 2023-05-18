@@ -26,6 +26,7 @@ class CommentIconUiView(private val group: Group, listener: Listener) {
     }
 
     fun setCounter(value: String) {
+        if (value.isBlank()) return
         view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_vod_comment_counter)?.text = value
     }
 
