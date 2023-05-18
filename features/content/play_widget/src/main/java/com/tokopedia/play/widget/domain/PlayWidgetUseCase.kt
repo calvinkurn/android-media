@@ -78,6 +78,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                     partner {
                       ID
                       name
+                      type
                     }
                     video {
                       ID

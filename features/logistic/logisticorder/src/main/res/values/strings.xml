@@ -50,7 +50,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="maksimum_tipping">Maks. %1$s</string>
     <string name="detail_info_label">Detail Informasi</string>
     <string name="resi_label">No. Resi</string>
-    <string name="invoice_label">No. Invoice</string>
+    <string name="order_label">No. Order</string>
     <string name="phone_number_label">Nomor HP</string>
     <string name="driver_name_label">Nama Driver</string>
     <string name="license_label">Plat Nomor Kendaraan</string>

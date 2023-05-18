@@ -60,7 +60,10 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
     // Seller Tokopedia Flash Sale - CampaignListActivity
-    const val SELLER_TOKOPEDIA_FLASH_SALE = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/{tab_menu}/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/upcoming/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/registered/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_ONGOING = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/ongoing/"
+    const val SELLER_TOKOPEDIA_FLASH_SALE_FINISHED = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/finished/"
 
     // Seller Tokopedia Flash Sale - CampaignDetailActivity
     const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
