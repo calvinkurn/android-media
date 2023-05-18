@@ -17,6 +17,8 @@ import com.tokopedia.kyc_centralized.util.waitOnView
 class KycRobot {
 
     fun checkTermsAndCondition() {
+        // waiting for user consent
+        Thread.sleep(2000)
         onView(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes)).perform(click())
     }
 
@@ -39,12 +41,12 @@ class KycRobot {
     }
 
     fun atFaceIntroClickNext() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.button)).perform(click())
     }
 
     fun atFinalPressCta() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.upload_button)).perform(click())
     }
 
