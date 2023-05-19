@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -11,8 +12,19 @@
         android:visibility="gone"
         tools:visibility="visible"
         tools:background="@color/Unify_Static_Black"/>
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="gone"
+        android:visibility="gone"
+        app:cta_mode="reload"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/container_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +33,8 @@
 
         <ViewStub
             tools:visibility="visible"
-            android:id="@+id/channel_title"
-            android:inflatedId="@+id/channel_title"
+            android:id="@+id/channel_pk_title"
+            android:inflatedId="@+id/channel_pk_title"
             android:layout="@layout/view_stub_pk_title"
             android:layout_marginLeft="@dimen/home_component_margin_default"
             android:layout_marginStart="@dimen/home_component_margin_default"
@@ -36,8 +48,8 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ViewStub
-            android:id="@+id/channel_subtitle"
-            android:inflatedId="@+id/channel_subtitle"
+            android:id="@+id/channel_pk_subtitle"
+            android:inflatedId="@+id/channel_pk_subtitle"
             android:layout="@layout/view_stub_dc_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +61,7 @@
             tools:background="@color/Unify_N700"
             tools:text="Berakhir dalam"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/channel_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/channel_pk_title"/>
 
         <ViewStub
             android:id="@+id/iv_reload"
@@ -103,16 +115,16 @@
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:itemCount="4"
             tools:listitem="@layout/layout_popular_keyword_item"
-            app:layout_constraintTop_toBottomOf="@+id/channel_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/channel_pk_subtitle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/channel_title"
+            app:layout_constraintLeft_toLeftOf="@+id/channel_pk_title"
             app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/header_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="channel_subtitle, loader_popular_keyword_title"
+            app:constraint_referenced_ids="channel_pk_subtitle, loader_popular_keyword_title"
             app:barrierDirection="bottom"/>
 
         <ViewStub
@@ -140,7 +152,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             app:unify_local_load_title="@string/popular_keyword_error_title"
-            app:layout_constraintTop_toBottomOf="@+id/channel_title"
+            app:layout_constraintTop_toBottomOf="@+id/channel_pk_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
