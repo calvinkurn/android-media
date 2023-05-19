@@ -8,6 +8,7 @@ import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.MIGRATED
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matchers
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -58,7 +60,27 @@ class DataStoreMigrationWorkerTest {
 
             assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
             assertThat(dataStore.getSampleUser(), equalTo(sample))
-//            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
+            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
+        }
+    }
+
+    @Test
+    fun when_cleared_after_migration_data_remains_synced() {
+        runBlocking {
+            val sample = SampleUserModel()
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            userSession.setSample(sample)
+            every { spykedPref.isDataStoreEnabled() } returns true
+
+            val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
+            val result = worker.doWork()
+            assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
+
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+
+            userSession.logoutSession()
+            assertThat(dataStore.getSampleUser(), equalTo(sample))
+            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(Matchers.empty()))
         }
     }
 
