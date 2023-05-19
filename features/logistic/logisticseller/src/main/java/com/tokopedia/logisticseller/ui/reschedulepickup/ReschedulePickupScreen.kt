@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.reschedulepickup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -39,6 +40,7 @@ import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -77,6 +79,7 @@ fun ReschedulePickupScreen(
                     sheetState.show()
                 }
             } else {
+                setRescheduleBottomSheetState(bottomSheetState)
                 sheetState.hide()
             }
         }
@@ -98,12 +101,16 @@ fun ReschedulePickupScreen(
 
     Scaffold(topBar = {
         NestHeader(
-            title = stringResource(id = R.string.title_reschedule_pickup_activity),
-            showBackIcon = true,
-            onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
+            type = NestHeaderType.SingleLine(
+                title = stringResource(id = R.string.title_reschedule_pickup_activity),
+                onBackClicked = {
+                    onEvent(ReschedulePickupUiEvent.PressBack)
+                }
+            )
         )
-    }) {
+    }) { paddingValues ->
         ModalBottomSheetLayout(
+            modifier = Modifier.padding(paddingValues),
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
             sheetContent = {
@@ -198,8 +205,9 @@ fun ReschedulePickupScreenLayout(
         }
         NestButton(
             modifier = Modifier
+                .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()
-                .padding(16.dp),
+                .defaultMinSize(minHeight = 48.dp),
             text = stringResource(id = R.string.title_button_reschedule_pickup),
             enabled = state.valid
         ) {
@@ -307,17 +315,10 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
-        label = {
-            NestTypography(
-                text =
-                stringResource(id = R.string.label_day_reschedule_pick_up)
-            )
-        },
+        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         enabled = false,
-        placeholder = {
-            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
-        },
-        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
+        placeholder = stringResource(id = R.string.placeholder_day_reschedule_pick_up),
+        icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
     )
 }
 
@@ -334,13 +335,9 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
                 )
             },
         enabled = false,
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_time_reschedule_pick_up))
-        },
-        placeholder = {
-            NestTypography(text = stringResource(id = R.string.placeholder_time_reschedule_pick_up))
-        },
-        trailingIcon = {
+        label = stringResource(id = R.string.label_time_reschedule_pick_up),
+        placeholder = stringResource(id = R.string.placeholder_time_reschedule_pick_up),
+        icon1 = {
             DropDownIcon(onClick = {
                 onOpenBottomSheet(
                     RescheduleBottomSheetState.TIME
@@ -358,11 +355,9 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
-        },
+        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         enabled = false,
-        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
+        icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
 }
 
@@ -377,11 +372,8 @@ private fun InputCustomReason(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = {
-            NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
-        },
+        label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
         onValueChanged = { onOtherReasonChanged(it) },
-        isError = !error.isNullOrEmpty(),
         counter = 160,
         error = error
     )

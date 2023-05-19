@@ -68,7 +68,7 @@
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>
 
-    <dimen name="play_count_background_radius">16dp</dimen>
+    <dimen name="play_count_background_radius">6dp</dimen>
     <dimen name="play_product_item_image_size">104dp</dimen>
     <dimen name="play_line_spacing_4">4sp</dimen>
     <dimen name="play_voucher_info_translationY">-2dp</dimen>

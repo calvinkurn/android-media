@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -66,7 +67,6 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         // On refresh
         homeViewModel.refreshWithThreeMinsRules(true)
 
@@ -94,7 +94,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(false)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
@@ -120,7 +119,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
@@ -196,6 +194,9 @@ class HomeViewModelBalanceWidgetUnitTest {
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        homeViewModel.resetNestedScrolling.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() == true)
+        }
     }
 
     @ExperimentalCoroutinesApi
@@ -292,7 +293,6 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)

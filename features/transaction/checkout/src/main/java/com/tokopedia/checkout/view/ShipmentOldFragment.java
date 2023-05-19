@@ -1299,6 +1299,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
         if (getContext() != null) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
             if (shipmentCartItemModel != null) {
+                shipmentLoadingIndex = -1;
                 shipmentCartItemModel.setStateLoadingCourierState(false);
                 if (isTradeInDropOff) {
                     shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);

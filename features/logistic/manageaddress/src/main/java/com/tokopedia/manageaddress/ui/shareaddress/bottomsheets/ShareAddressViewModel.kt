@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.domain.request.shareaddress.SendShareAddressRequestParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SendShareAddressRequestUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -37,9 +37,10 @@ class ShareAddressViewModel @Inject constructor(
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showLoadingRequestAddress(false)
-            mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+                showLoadingRequestAddress(false)
+                mutableRequestAddressResponse.value =
+                    ShareAddressBottomSheetState.Fail(it.message.orEmpty())
+            })
     }
 
     private fun showLoadingRequestAddress(isShowLoading: Boolean) {
@@ -57,9 +58,10 @@ class ShareAddressViewModel @Inject constructor(
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showLoadingCheckAddress(false)
-            mutableCheckShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+                showLoadingCheckAddress(false)
+                mutableCheckShareAddressResponse.value =
+                    ShareAddressBottomSheetState.Fail(it.message.orEmpty())
+            })
     }
 
     private fun showLoadingCheckAddress(isShow: Boolean) {
