@@ -748,6 +748,8 @@ class FeedFragment :
                 }
             }
         }
+
+        (childFragmentManager.findFragmentByTag(FeedFollowersOnlyBottomSheet.TAG) as? FeedFollowersOnlyBottomSheet)?.dismiss()
     }
 
     private fun observeReport() {
@@ -1415,7 +1417,11 @@ class FeedFragment :
                 is Fail -> it.throwable.message
                 else -> ""
             }
-            showToast(message = message.orEmpty(), type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR, actionText = getString(feedR.string.feed_cta_ok_toaster))
+            showToast(
+                message = message.orEmpty(),
+                type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
+                actionText = getString(feedR.string.feed_cta_ok_toaster)
+            )
         }
     }
 
