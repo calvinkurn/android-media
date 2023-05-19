@@ -66,5 +66,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.icons
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }

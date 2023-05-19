@@ -9,7 +9,7 @@
     <string name="catalog_detail_product">Detail Produk</string>
     <string name="catalog_lihat_selengkapnya">Lihat Selengkapnya</string>
     <string name="catalog_lihat_selengkapnya_two_lines">Lihat \n Selengkapnya</string>
-    <string name="catalog_apply_filter">Terapakan Filter</string>
+    <string name="catalog_apply_filter">Terapkan Filter</string>
     <string name="catalog_filter_text">Filter</string>
     <string name="catalog_search_product_zero_count_text">Produk terkait</string>
     <string name="catalog_no_products_title">Oops, belum ada produk terkait</string>
@@ -38,4 +38,7 @@
     <string name="catalog_lainnya_disini">Cek katalog lainnya disini</string>
     <string name="catalog_product_count_view_text">%1$d Produk terkait</string>
     <string name="catalog_product_count_view_text_empty">Produk terkait</string>
+    <string name="catalog_katalog_tokopedia">Katalog Tokopedia</string>
+    <string name="catalog_entry_banner_product_count">Temukan %1$s Katalog lainnya</string>
+    <string name="catalog_entry_banner_title">di %1$s</string>
 </resources>

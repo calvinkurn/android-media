@@ -67,7 +67,7 @@ class SomConfirmShippingViewModelTest {
 
     // confirm_shipping_result
     @Test
-    fun getConfirmShippingData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun getConfirmShippingData_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
@@ -82,7 +82,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getConfirmShippingData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getConfirmShippingData_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
@@ -96,7 +96,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getConfirmShippingData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getConfirmShippingData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
@@ -112,7 +112,7 @@ class SomConfirmShippingViewModelTest {
 
     // courier_list
     @Test
-    fun getCourierListData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun getCourierListData_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute()
@@ -127,7 +127,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getCourierListData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getCourierListData_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute()
@@ -141,7 +141,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getCourierListData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getCourierListData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute()
@@ -157,7 +157,7 @@ class SomConfirmShippingViewModelTest {
 
     // change_courier
     @Test
-    fun getChangeCourierData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun getChangeCourierData_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())
@@ -172,7 +172,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getChangeCourierData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getChangeCourierData_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())
@@ -186,7 +186,7 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getChangeCourierData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getChangeCourierData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())

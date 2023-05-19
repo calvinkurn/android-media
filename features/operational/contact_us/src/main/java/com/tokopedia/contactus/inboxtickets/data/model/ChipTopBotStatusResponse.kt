@@ -37,4 +37,6 @@ data class ChipTopBotStatusResponse(
     }
 
     fun getTopBotStatusInbox() = chipTopBotStatusInbox ?: ChipTopBotStatusInbox()
+    fun isStatusTopBotNotError() = chipTopBotStatusInbox?.messageError.isNullOrEmpty()
+    fun getErrorMessage() = chipTopBotStatusInbox?.messageError?.firstOrNull().orEmpty()
 }

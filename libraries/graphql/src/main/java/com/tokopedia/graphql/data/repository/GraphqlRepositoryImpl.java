@@ -3,6 +3,7 @@ package com.tokopedia.graphql.data.repository;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +23,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
+import com.tokopedia.graphql.util.RemoteConfigHelper;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         );
             } else {
                 return Observable.concat(getCachedResponse(requests, cacheStrategy).subscribeOn(Schedulers.computation()),
-                        getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))
+                                getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))
                         .first(data -> data != null);
             }
         }).map(response -> {
@@ -88,7 +90,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
                             Type type = requests.get(i).getTypeOfT();
-                            Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
+                            Object object;
+                            if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
+                                object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT(), this.getClass());
+                            } else {
+                                object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
+                            }
                             checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
                             //Lookup for data
                             mResults.put(type, object);
@@ -98,8 +105,15 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
                         if (error != null && !error.isJsonNull()) {
                             //Lookup for error
-                            errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
-                            }.getType()));
+                            List<GraphqlError> listGqlError;
+                            if(RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()){
+                                listGqlError = CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                                }.getType(), this.getClass());
+                            }else {
+                                listGqlError = CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                                }.getType());
+                            }
+                            errors.put(requests.get(i).getTypeOfT(), listGqlError);
                         }
                         LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                         LoggingUtils.logGqlSuccessRate(operationName, "1");
@@ -147,7 +161,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     continue;
                 }
 
-                Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
+                Object object;
+                if(RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()){
+                    object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT(), this.getClass());
+                } else {
+                    object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
+                }
                 checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
                 //Lookup for data
                 mResults.put(copyRequests.get(i).getTypeOfT(), object);

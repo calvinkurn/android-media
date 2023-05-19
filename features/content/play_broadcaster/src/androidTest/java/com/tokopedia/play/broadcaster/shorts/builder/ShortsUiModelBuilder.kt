@@ -23,6 +23,7 @@ class ShortsUiModelBuilder {
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
         isBanned: Boolean = false,
+        hasContent: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = listOf(),
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
@@ -35,6 +36,7 @@ class ShortsUiModelBuilder {
         maxTaggedProduct = maxTaggedProduct,
         maxTitleCharacter = maxTitleCharacter,
         shortsVideoSourceId = shortsVideoSourceId,
+        hasContent = hasContent,
     )
 
     fun buildAccountListModel(
