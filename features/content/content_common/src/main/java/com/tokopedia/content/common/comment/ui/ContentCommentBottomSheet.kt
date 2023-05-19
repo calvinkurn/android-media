@@ -332,7 +332,10 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
-                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReportSuccess -> {
+                        sheetMenu.setFinalView()
+                        analytics?.impressSuccessReport()
+                    }
                     is CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(event.position)
