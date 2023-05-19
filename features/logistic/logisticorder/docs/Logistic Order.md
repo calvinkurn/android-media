@@ -1,6 +1,5 @@
 ---
 title: Logistic Order
-labels:
 ---
 - [Tracking Page](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1843134919/Tracking+Page)
 - [Tipping Gojek](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2160789261/Tipping+Gojek)

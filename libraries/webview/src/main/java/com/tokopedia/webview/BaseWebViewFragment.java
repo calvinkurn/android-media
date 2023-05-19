@@ -637,6 +637,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebViewClient extends WebViewClient {
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String title = view.getTitle();

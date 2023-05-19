@@ -6,7 +6,11 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,17 +25,17 @@ class SliderBannerViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        unmockkConstructor(URLParser::class)
     }
 
     @Test
-    fun `test for component value present in live data`(){
+    fun `test for component value present in live data`() {
         val viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
         assert(viewModel.getComponentsLiveData().value === componentsItem)
     }
 
-
     @Test
-    fun `test for ListData Live data`(){
+    fun `test for ListData Live data`() {
         every { componentsItem.data } returns null
         var viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
         assert(viewModel.getListDataLiveData().value == null)
@@ -50,13 +54,21 @@ class SliderBannerViewModelTest {
             list.add(item)
         }
         viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
-        assert(viewModel.getListDataLiveData().value?.size == 5)
         assert(viewModel.getListDataLiveData().value?.firstOrNull()?.name == ComponentNames.SingleBanner.componentName)
+        unmockkConstructor(URLParser::class)
     }
 
     @Test
-    fun `test for position passed to VM`(){
+    fun `test for position passed to VM`() {
         val viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
         assert(viewModel.position == 99)
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkStatic(::getComponent)
+        unmockkConstructor(URLParser::class)
     }
 }

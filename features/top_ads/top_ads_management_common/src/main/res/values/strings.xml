@@ -128,6 +128,9 @@
     <string name="topads_common_search_hint">Cari Kata Kunci</string>
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
     <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
+    <string name="topads_common_manual_key_already_exists_alert_msg">Kata kunci sudah dipilih, silahkan coba kata kunci lainnya</string>
+    <string name="topads_common_manual_key_max_length_alert_msg">Maksimum 70 karakter.</string>
+    <string name="topads_common_manual_key_invalid_characters_alert_msg">Hanya gunakan huruf dan angka.</string>
     <string name="topads_common_tambah_button">Tambahkan</string>
     <string name="topads_common_confirmation_switch_manual_description">Iklan Otomatis butuh waktu setidaknya<![CDATA["<font color='#fa31353b'><b> 2 minggu</b></font> ]]> untuk memaksimalkan penjualanmu.</string>
     <string name="topads_common_confirmation_switch_manual">Yakin matikan Iklan Otomatis?</string>

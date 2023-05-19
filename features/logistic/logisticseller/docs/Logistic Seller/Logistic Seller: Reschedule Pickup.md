@@ -1,5 +1,5 @@
 ---
-title: Logistic Seller: Reschedule Pickup
+title: "Logistic Seller: Reschedule Pickup"
 labels:
 - logistic
 - logistic-seller
