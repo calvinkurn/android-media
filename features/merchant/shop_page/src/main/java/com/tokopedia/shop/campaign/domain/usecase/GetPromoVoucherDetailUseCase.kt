@@ -23,7 +23,7 @@ class GetPromoVoucherDetailUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_KEY_API_VERSION = "apiVersion"
-        private const val REQUEST_PARAM_KEY_SLUG = "categorySlug"
+        private const val REQUEST_PARAM_KEY_SLUG = "slug"
     }
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

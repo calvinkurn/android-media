@@ -24,20 +24,20 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     val vouchers: LiveData<Result<List<ExclusiveLaunchVoucher>>>
         get() = _vouchers
 
-    fun getExclusiveLaunchVouchers() {
+    fun getExclusiveLaunchVouchers(promoVouchersCategorySlugs: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val merchantVouchersDeferred = async { getMerchantVoucherListUseCase.execute() }
 
-                val promoVoucherParam = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = listOf("FMCG523"))
+                val promoVoucherParam = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = promoVouchersCategorySlugs)
                 val promoVouchersDeferred = async { getPromoVoucherListUseCase.execute(promoVoucherParam) }
 
                 val merchantVouchers = merchantVouchersDeferred.await()
                 val promoVouchers = promoVouchersDeferred.await()
 
                 val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > 0 }
-                val availablePromoVouchers = promoVouchers.filter { it.remainingQuota > 0 }
+                val availablePromoVouchers = promoVouchers
                 val exclusiveLaunchVouchers = availableMerchantVouchers + availablePromoVouchers
 
                 _vouchers.postValue(Success(exclusiveLaunchVouchers))

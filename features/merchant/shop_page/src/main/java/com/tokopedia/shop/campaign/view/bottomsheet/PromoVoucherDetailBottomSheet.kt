@@ -148,10 +148,10 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
             tpgHowToUse.text = MethodChecker.fromHtml(voucherDetail.howToUse)
         }
 
-        if (voucherDetail.buttonStr == "Klaim") {
-            showClaimVoucherButton()
-        } else {
+        if (voucherDetail.isDisabledButton) {
             showUseVoucherButton()
+        } else {
+            showClaimVoucherButton()
         }
     }
 

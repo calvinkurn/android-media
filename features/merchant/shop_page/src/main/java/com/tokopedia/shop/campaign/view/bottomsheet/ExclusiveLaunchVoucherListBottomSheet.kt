@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -27,14 +28,22 @@ import javax.inject.Inject
 class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
+        private const val BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS = "use_dark_background"
         @JvmStatic
-        fun newInstance(): ExclusiveLaunchVoucherListBottomSheet {
-            return ExclusiveLaunchVoucherListBottomSheet()
+        fun newInstance(useDarkBackground: Boolean, promoVouchersCategorySlugs: List<String>): ExclusiveLaunchVoucherListBottomSheet {
+            return ExclusiveLaunchVoucherListBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
+                    putStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS, ArrayList(promoVouchersCategorySlugs))
+                }
+            }
         }
     }
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
-
+    private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, false).orFalse() }
+    private val promoVouchersCategorySlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS)?.toList().orEmpty() }
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaim: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherUse: (ExclusiveLaunchVoucher) -> Unit = {}
@@ -88,7 +97,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getExclusiveLaunchVouchers()
+        viewModel.getExclusiveLaunchVouchers(promoVouchersCategorySlugs)
     }
 
     private fun observeVouchers() {
@@ -122,7 +131,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         }
 
         exclusiveLaunchAdapter.apply {
-            setUseDarkBackground(false)
+            setUseDarkBackground(useDarkBackground)
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher =
                     exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
@@ -136,9 +145,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                     exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
                         ?: return@setOnVoucherClaimClick
                 showVoucherDetailBottomSheet(selectedVoucher)
-                //onVoucherClaim(selectedVoucher)
-
-               // dismiss()
             }
             setOnVoucherUseClick { selectedVoucherPosition ->
                 val selectedVoucher =
@@ -146,6 +152,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                         ?: return@setOnVoucherUseClick
                 onVoucherUse(selectedVoucher)
 
+                //TODO: Route to "Produk Berkupon Khusus"
                 dismiss()
             }
         }
@@ -153,7 +160,12 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
         if (!isAdded) return
-        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(categorySlug = selectedVoucher.categorySlug)
+        val categorySlug = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+            selectedVoucher.source.categorySlug
+        } else {
+            ""
+        }
+        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(categorySlug = categorySlug)
 
         bottomSheet.setOnVoucherRedeemSuccess { redeemResult ->
             dismiss()

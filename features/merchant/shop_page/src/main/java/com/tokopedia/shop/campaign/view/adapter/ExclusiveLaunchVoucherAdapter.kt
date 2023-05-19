@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -71,13 +72,8 @@ class ExclusiveLaunchVoucherAdapter :
                 setRemainingQuota(voucher.remainingQuota)
                 setVoucherName(voucher.voucherName)
 
-                val isMerchantCreatedVoucher = voucher.source == ExclusiveLaunchVoucher.VoucherSource.MERCHANT_CREATED
-                val ctaText = if (isMerchantCreatedVoucher) {
-                    context.getString(R.string.shop_page_use)
-                } else {
-                    context.getString(R.string.shop_page_claim)
-                }
-
+                val isMerchantCreatedVoucher = voucher.source == ExclusiveLaunchVoucher.VoucherSource.MerchantCreated
+                val ctaText = getVoucherClaimStatus(context, voucher)
                 setPrimaryCta(ctaText, onClick = {
                     if (isMerchantCreatedVoucher) {
                         onVoucherUseClick(bindingAdapterPosition)
@@ -90,6 +86,15 @@ class ExclusiveLaunchVoucherAdapter :
             }
         }
 
+    }
+
+    private fun getVoucherClaimStatus(context: Context, voucher: ExclusiveLaunchVoucher): String {
+        return when {
+            voucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated -> context.getString(R.string.shop_page_use)
+            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && voucher.source.isClaimed -> context.getString(R.string.shop_page_claimed)
+            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && !voucher.source.isClaimed -> context.getString(R.string.shop_page_claim)
+            else -> context.getString(R.string.shop_page_use)
+        }
     }
 
     fun submit(newVouchers: List<ExclusiveLaunchVoucher>) {

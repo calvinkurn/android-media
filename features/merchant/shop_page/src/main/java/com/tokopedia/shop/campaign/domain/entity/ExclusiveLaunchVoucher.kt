@@ -5,15 +5,14 @@ data class ExclusiveLaunchVoucher(
     val voucherName: String,
     val minimumPurchase: Long,
     val remainingQuota: Int,
-    val source: VoucherSource,
-    val categorySlug: String
+    val source: VoucherSource
 ) {
     /**
-     * CATALOG = Voucher need to be claimed first before use
-     * MERCHANT_CREATED = No need to claim voucher first before use
+     * Promo = Voucher need to be claimed first before use
+     * MerchantCreated = No need to claim voucher first before use
      */
-    enum class VoucherSource {
-        PROMO,
-        MERCHANT_CREATED
+    sealed class VoucherSource {
+        data class Promo(val categorySlug: String, val isClaimed: Boolean): VoucherSource()
+        object MerchantCreated : VoucherSource()
     }
 }

@@ -473,7 +473,16 @@ open class ShopPageHomeFragment :
     }
 
     private fun showVoucherListBottomsheet() {
-        val bottomsheet = ExclusiveLaunchVoucherListBottomSheet()
+        val bottomsheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            useDarkBackground = false,
+            promoVouchersCategorySlugs = listOf("HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY")
+        )
+        bottomsheet.setOnVoucherClaim {
+
+        }
+        bottomsheet.setOnVoucherUse {
+
+        }
         bottomsheet.show(childFragmentManager, bottomsheet.tag)
     }
     private fun observeLatestShopHomeWidgetLayoutData() {
