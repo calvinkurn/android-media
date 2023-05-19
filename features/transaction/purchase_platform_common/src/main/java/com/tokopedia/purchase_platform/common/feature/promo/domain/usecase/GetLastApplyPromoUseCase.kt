@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.getlastapply.GetLastApplyResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -42,9 +43,9 @@ class GetLastApplyPromoUseCase @Inject constructor(
     override suspend fun execute(params: ValidateUsePromoRequest): ValidateUsePromoRevampUiModel {
         val param = params.copy()
 
-        val request = GraphqlRequest(GetLastApplyQuery(), ValidateUseResponse::class.java, getParams(param))
-        val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
+        val request = GraphqlRequest(GetLastApplyQuery(), GetLastApplyResponse::class.java, getParams(param))
+        val getLastApplyGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<GetLastApplyResponse>()
 
-        return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)
+        return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(getLastApplyGqlResponse.validateUsePromoRevamp)
     }
 }
