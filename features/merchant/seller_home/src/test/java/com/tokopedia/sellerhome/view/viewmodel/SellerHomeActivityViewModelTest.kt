@@ -16,7 +16,6 @@ import com.tokopedia.device.info.DeviceInfo.await
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetShopStateUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
@@ -73,9 +72,6 @@ class SellerHomeActivityViewModelTest {
     lateinit var authorizeOrderAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
-    lateinit var getShopStateUseCase: GetShopStateUseCase
-
-    @RelaxedMockK
     lateinit var capabilityClient: CapabilityClient
 
     @RelaxedMockK
@@ -106,7 +102,6 @@ class SellerHomeActivityViewModelTest {
             sellerAdminUseCase,
             authorizeChatAccessUseCase,
             authorizeOrderAccessUseCase,
-            getShopStateUseCase,
             capabilityClient,
             nodeClient,
             remoteActivityHelper,
@@ -873,62 +868,6 @@ class SellerHomeActivityViewModelTest {
         mViewModel.launchMarket(mockIntent)
         verify {
             remoteActivityHelper.startRemoteActivity(any())
-        }
-    }
-
-    @Test
-    fun `when get shop state info should return success result`() {
-        coroutineTestRule.runTest {
-            val shopId = "123"
-            val dataKeys = "shopStateChanged"
-            val pageSource = "seller-home"
-
-            val response = ShopStateInfoUiModel()
-
-            coEvery {
-                userSession.shopId
-            } returns shopId
-
-            coEvery {
-                getShopStateUseCase.executeInBackground(any(), any(), any())
-            } returns response
-
-            mViewModel.getShopStateInfo()
-
-            coVerify {
-                getShopStateUseCase.executeInBackground(shopId, dataKeys, pageSource)
-            }
-
-            val expected = Success(response)
-            mViewModel.shopStateInfo.verifySuccessEquals(expected)
-        }
-    }
-
-    @Test
-    fun `when get shop state info should return error result`() {
-        coroutineTestRule.runTest {
-            val shopId = "123"
-            val dataKeys = "shopStateChanged"
-            val pageSource = "seller-home"
-
-            val throwable = RuntimeException()
-
-            coEvery {
-                userSession.shopId
-            } returns shopId
-
-            coEvery {
-                getShopStateUseCase.executeInBackground(any(), any(), any())
-            } throws throwable
-
-            mViewModel.getShopStateInfo()
-
-            coVerify {
-                getShopStateUseCase.executeInBackground(shopId, dataKeys, pageSource)
-            }
-
-            val expected = Fail(throwable)
-            mViewModel.shopStateInfo.verifyErrorEquals(expected)
         }
     }
 

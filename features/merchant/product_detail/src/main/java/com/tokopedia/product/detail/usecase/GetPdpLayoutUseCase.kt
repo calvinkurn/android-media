@@ -24,8 +24,10 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
-                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(
+    private val gqlUseCase: MultiRequestGraphqlUseCase,
+    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
+) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         const val QUERY = """
@@ -279,6 +281,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       defaultChild
                       sizeChart
                       maxFinalPrice
+                      postATCLayout {
+                        layoutID
+                      }
                       variants {
                         productVariantID
                         variantID
