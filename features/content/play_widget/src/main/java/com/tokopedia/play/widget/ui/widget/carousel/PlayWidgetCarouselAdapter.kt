@@ -27,7 +27,7 @@ class PlayWidgetCarouselAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val data = getItem(position % currentList.size)
+        val data = getItem(position)
         when (holder) {
             is PlayWidgetCarouselViewHolder.VideoContent -> holder.bind(data)
             is PlayWidgetCarouselViewHolder.UpcomingContent -> holder.bind(data)
@@ -42,7 +42,7 @@ class PlayWidgetCarouselAdapter(
     ) {
         if (payloads.isEmpty()) onBindViewHolder(holder, position)
         else {
-            val data = getItem(position % currentList.size)
+            val data = getItem(position)
             val payloadSet = payloads
                 .filterIsInstance<PlayWidgetCarouselDiffCallback.Payloads>()
                 .flatMap { it.payloads }
@@ -57,15 +57,11 @@ class PlayWidgetCarouselAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position % currentList.size)
+        val item = getItem(position)
         return when {
             item.isUpcoming -> TYPE_UPCOMING
             else -> TYPE_VIDEO
         }
-    }
-
-    override fun getItemCount(): Int {
-        return Integer.MAX_VALUE
     }
 
     fun setSelected(position: Int) {
@@ -98,6 +94,7 @@ class PlayWidgetCarouselAdapter(
 }
 
 class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidgetChannelUiModel>() {
+
     override fun areItemsTheSame(
         oldItem: PlayWidgetChannelUiModel,
         newItem: PlayWidgetChannelUiModel

@@ -10,10 +10,14 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.common.PlayWidgetSampleCommonAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetSampleAnalytic
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -46,12 +50,37 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
         val sampleData = getSampleData()
         val coordinatorMap = List(sampleData.size) {
             PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
+                setListener(object : PlayWidgetListener {
+                    override fun onReminderClicked(
+                        view: PlayWidgetCarouselView,
+                        channelId: String,
+                        reminderType: PlayWidgetReminderType,
+                        position: Int
+                    ) {
+                        val oldItems = adapter.getItems()
+                        val newItems = oldItems.map { state ->
+                            state.copy(
+                                model = state.model.copy(
+                                    items = state.model.items.map { item ->
+                                        if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
+                                            item.copy(reminderType = reminderType.switch())
+                                        } else {
+                                            item
+                                        }
+                                    }
+                                )
+                            )
+                        }
+                        adapter.setItemsAndAnimateChanges(newItems)
+                    }
+                })
                 setAnalyticListener(PlayWidgetSampleAnalytic(requireContext()))
             }
         }.associateWith { null }
 
         adapter = PlayWidgetSampleCommonAdapter(coordinatorMap)
 
+        rvWidgetSample?.itemAnimator = null
         rvWidgetSample?.adapter = adapter
         adapter.setItemsAndAnimateChanges(getSampleData())
     }
@@ -80,7 +109,10 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(
                     items = PlayWidgetUiMock.getSampleItemData().mapIndexed { index, data ->
-                        if (data is PlayWidgetChannelUiModel) data.copy(title = "Channel $index")
+                        if (data is PlayWidgetChannelUiModel) data.copy(
+                            channelId = index.toString(),
+                            title = "Channel $index"
+                        )
                         else data
                     }
                 ),

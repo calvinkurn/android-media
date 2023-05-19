@@ -12,7 +12,7 @@ import kotlin.random.Random
 object PlayWidgetUiMock {
 
     private val cardItemTypeRandom = Random(2)
-    private const val MOCK_DATA_SIZE = 141
+    private const val MOCK_DATA_SIZE = 5
     private const val MAX_DATA_INDEX = 6
     private const val MIN_DATA_INDEX = 0
     private const val BANNER_POSITION_INDEX = 3
