@@ -40,7 +40,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             pageSource = it.getQueryParameter("page_source").orEmpty()
             isChatbotActive = it.getQueryParameter("is_chatbot_active").orEmpty()
             bundle.putString(PAGE_SOURCE, pageSource)
-            if (isChatbotActive=="true")
+            if (isChatbotActive.isEmpty() || isChatbotActive=="true")
                 bundle.putBoolean(IS_CHATBOT_ACTIVE, true)
             else
                 bundle.putBoolean(IS_CHATBOT_ACTIVE, false)
