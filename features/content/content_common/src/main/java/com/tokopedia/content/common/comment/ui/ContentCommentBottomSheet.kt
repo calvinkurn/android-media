@@ -170,9 +170,6 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    private val space16 by lazyThreadSafetyNone {
-        context?.resources?.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
-    }
 
     // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
@@ -241,7 +238,7 @@ class ContentCommentBottomSheet @Inject constructor(
             if (view.isImeVisible(threshold = keyboardThreshold)) {
                 binding.root.setPadding(0, 0, 0, height)
             } else {
-                binding.root.setPadding(0, 0, 0, space16.orZero())
+                binding.root.setPadding(0, 0, 0, 0)
             }
             windowInsets
         }
