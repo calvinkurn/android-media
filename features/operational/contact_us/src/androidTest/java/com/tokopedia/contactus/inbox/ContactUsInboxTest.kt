@@ -1,7 +1,6 @@
 package com.tokopedia.contactus.inbox
 
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,11 +11,7 @@ import com.tokopedia.contactus.inbox.di.DaggerTestAppComponentInbox
 import com.tokopedia.contactus.inbox.di.FakeAppInboxModule
 import com.tokopedia.contactus.inbox.di.FakeGraphqlRepositoryInbox
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsActivity
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.scrollRecyclerViewToPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.clickOnPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isGoneView
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isVisible
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.performClick
+import com.tokopedia.contactus.initRulePage
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.Before
@@ -46,52 +41,70 @@ class ContactUsInboxTest {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
 
-    private fun waitForData(longToWaint : Long = 1000L) {
-        Thread.sleep(longToWaint)
-    }
-
     @Test
     fun successfulApiTicketList_showingListTicket() {
-        mActivityTestRule.launchActivity(Intent())
-        waitForData()
-        isVisible(R.id.rv_email_list)
-        isGoneView(R.id.home_global_error)
+        initRulePage{
+            launchInboxPage(mActivityTestRule, Intent())
+            waitForData()
+        }.verify {
+            R.id.rv_email_list.isVisible()
+            R.id.home_global_error.isGone()
+        }
     }
 
     @Test
     fun failedApiTicektList_showingErrorState() {
-        fakeGqlRepository.setResponseTypeForError(true)
-        mActivityTestRule.launchActivity(Intent())
-        isGoneView(R.id.rv_email_list)
-        isVisible(R.id.home_global_error)
+        initRulePage{
+            fakeGqlRepository.setResponseTypeForError(true)
+        }.launchPage {
+            launchInboxPage(mActivityTestRule, Intent())
+        }.doing {
+            waitForData()
+        }.verify {
+            R.id.rv_email_list.isGone()
+            R.id.home_global_error.isVisible()
+        }
     }
 
     @Test
     fun errorAPIAndClickRetry_showListTicket() {
-        fakeGqlRepository.setResponseTypeForError(true)
-        mActivityTestRule.launchActivity(Intent())
-        isGoneView(R.id.rv_email_list)
-        isVisible(R.id.home_global_error)
-        fakeGqlRepository.setResponseTypeForError(false)
-        performClick(R.id.globalerrors_action)
-        isVisible(R.id.rv_email_list)
-        isGoneView(R.id.home_global_error)
+        initRulePage {
+            fakeGqlRepository.setResponseTypeForError(true)
+        }.launchPage {
+            launchInboxPage(mActivityTestRule,Intent())
+            fakeGqlRepository.setResponseTypeForError(false)
+        }.doing {
+            click(R.id.globalerrors_action)
+        }.verify {
+            R.id.rv_email_list.isVisible()
+            R.id.home_global_error.isGone()
+        }
     }
 
     @Test
     fun successfulReqTopChat_showingChatWidget() {
-        fakeGqlRepository.setResponseTypeForError(false)
-        mActivityTestRule.launchActivity(Intent())
-        waitForData(1500L)
-        isVisible(R.id.chat_widget)
+        initRulePage{
+            fakeGqlRepository.setResponseTypeForError(false)
+        }.launchPage {
+            launchInboxPage(mActivityTestRule,Intent())
+        }.doing {
+            waitForData(1500L)
+        }.verify {
+            R.id.chat_widget.isVisible()
+        }
     }
 
     @Test
     fun failedReqTopChat_hideChatWidget() {
-        fakeGqlRepository.setResponseTypeForError(true)
-        mActivityTestRule.launchActivity(Intent())
-        waitForData(1500L)
-        isGoneView(R.id.chat_widget)
+        initRulePage {
+            fakeGqlRepository.setResponseTypeForError(true)
+        }.launchPage {
+            launchInboxPage(mActivityTestRule,Intent())
+        }.doing {
+            waitForData(1500L)
+        }.verify {
+            R.id.chat_widget.isGone()
+        }
     }
 
 

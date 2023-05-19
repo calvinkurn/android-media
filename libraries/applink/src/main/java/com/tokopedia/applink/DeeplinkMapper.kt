@@ -15,6 +15,7 @@ import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.common.DeeplinkMapperExternal
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.contactus.DeeplinkMapperContactUs.getNavigationContactUs
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
@@ -264,7 +265,7 @@ object DeeplinkMapper {
         }
 
         val appLinkEvents =
-            DeeplinkMapperEntertainment.getRegisteredNavigationFromHttpEvents(deeplink)
+            DeeplinkMapperEntertainment.getRegisteredNavigationFromHttpEvents(deeplink, context)
         if (appLinkEvents.isNotEmpty()) {
             return appLinkEvents
         }
@@ -295,6 +296,22 @@ object DeeplinkMapper {
         if (applinkPromo.isNotBlank()) {
             return applinkPromo
         }
+
+        val applinkFlashSaleTokopedia =
+            DeeplinkMapperMerchant.getRegisteredNavigationFromHttpForSellerTokopediaFlashSale(uri, deeplink)
+        if (applinkFlashSaleTokopedia.isNotBlank()) return applinkFlashSaleTokopedia
+
+        val applinkFlashSaleToko =
+            DeeplinkMapperMerchant.getRegisteredNavigationFromHttpForSellerShopFlashSale(uri, deeplink)
+        if (applinkFlashSaleToko.isNotBlank()) return applinkFlashSaleToko
+
+        val applinkSellerMvc =
+            DeeplinkMapperMerchant.getRegisteredNavigationFromHttpForSellerMvc(uri, deeplink)
+        if (applinkSellerMvc.isNotBlank()) return applinkSellerMvc
+
+        val applinkSlashPrice =
+            DeeplinkMapperMerchant.getRegisteredNavigationFromHttpForSlashPrice(uri, deeplink)
+        if (applinkSlashPrice.isNotBlank()) return applinkSlashPrice
 
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
             return DeeplinkMapperAccount.getLoginByQr(uri)
@@ -368,6 +385,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationRecommendation(deeplink) },
         DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
         DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
+        DLP.startWith(ApplinkConst.CONTACT_US) { _, _, deeplink, _ -> getNavigationContactUs(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
         DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
         DLP.startWith(ApplinkConst.CATALOG_LIBRARY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
@@ -381,8 +399,8 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
         DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
         DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
-        DLP.startWith(ApplinkConst.SALAM_UMRAH) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrah(deeplink, ctx) },
-        DLP.startWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrahOrderDetail(deeplink, ctx) },
+        DLP.startWith(ApplinkConst.SALAM_UMRAH) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrah(deeplink) },
+        DLP.startWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrahOrderDetail(deeplink) },
         DLP.startWith(ApplinkConst.OFFICIAL_STORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeOfficialStore(deeplink) },
         DLP.startWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
         DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
@@ -781,6 +799,11 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
+                DeeplinkMapperMerchant.isSellerTokopediaUpcomingFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming()
+                DeeplinkMapperMerchant.isSellerTokopediaRegisteredFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleRegistered()
+                DeeplinkMapperMerchant.isSellerTokopediaOngoingFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleOngoing()
+                DeeplinkMapperMerchant.isSellerTokopediaFinishedFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleFinished()
+                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
                 DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
                 DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)

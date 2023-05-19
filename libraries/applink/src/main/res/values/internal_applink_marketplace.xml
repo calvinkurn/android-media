@@ -111,7 +111,9 @@
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
     <string name="path_chat_setting">/chat/settings</string>
     <string name="path_notification">/notification</string>
+    <string name="host_notif_center" translatable="false">notif-center</string>
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
+    <string name="path_notification_affiliate" translatable="false">/affiliate</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>
 
     <string name="path_product_ar">/productar/.*\\/</string>
