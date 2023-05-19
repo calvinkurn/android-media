@@ -827,7 +827,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 recommendationWidgetModel = RecommendationWidgetModel(
                     widget = data,
                     metadata = RecommendationWidgetMetadata(
-                        pageSource = RecommendationWidgetSource.PDP.xSourceValue
+                        pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                        pageName = data.pageName,
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = RecommendationWidgetSource.PDP.trackingValue
