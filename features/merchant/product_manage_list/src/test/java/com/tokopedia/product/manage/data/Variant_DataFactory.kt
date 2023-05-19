@@ -29,7 +29,9 @@ fun createProductVariantResponse(
     hasStockAlert: Boolean = false,
     notifyMeOOSCount: Int = 0,
     isBelowStockAlert: Boolean = false,
-    isEmptyStock: Boolean = false
+    isEmptyStock: Boolean = false,
+    hasDTStock: Boolean = false,
+    isTokoCabang: Boolean = false
 ): Product {
     return Product(
         productID,
@@ -46,7 +48,9 @@ fun createProductVariantResponse(
         hasStockAlert = hasStockAlert,
         isEmptyStock = isEmptyStock,
         isBelowStockAlert = isBelowStockAlert,
-        notifymeCount = notifyMeOOSCount
+        notifymeCount = notifyMeOOSCount,
+        hasDTStock = hasDTStock,
+        isTokoCabang = isTokoCabang
     )
 }
 
@@ -87,7 +91,9 @@ fun createProductVariant(
     notifyMeOOSCount: Int = 0,
     stockAlertStatus: Int = 1,
     stockAlertCount: Int = 0,
-    isBelowStockAlert: Boolean = false
+    isBelowStockAlert: Boolean = false,
+    hasDTStock: Boolean = false,
+    isTokoCabang: Boolean = false
 ): ProductVariant {
     return ProductVariant(
         id,
@@ -107,7 +113,9 @@ fun createProductVariant(
         notifyMeOOSCount,
         stockAlertStatus,
         stockAlertCount,
-        isBelowStockAlert
+        isBelowStockAlert,
+        hasDTStock,
+        isTokoCabang
     )
 }
 

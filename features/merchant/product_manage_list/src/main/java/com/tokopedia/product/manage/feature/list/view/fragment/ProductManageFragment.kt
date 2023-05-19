@@ -68,6 +68,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.InfoDilayaniTokopediaBottomSheet
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -87,6 +88,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
@@ -665,7 +667,7 @@ open class ProductManageFragment :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add_product_menu) {
-            if (GlobalConfig.isSellerApp()) {
+            if (ProductManageConfig.IS_SELLER_APP) {
                 val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
                 startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
                 ProductManageTracking.eventAddProduct()
@@ -789,7 +791,12 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsInActive() {
-        showEditProductsInActiveConfirmationDialog()
+        val haveeDTProducts = itemsChecked.filter { it.isDTInbound }
+        if (haveeDTProducts.isEmpty()) {
+            showEditProductsInActiveConfirmationDialog()
+        } else {
+            showEditDTProductsInActiveConfirmationDialog()
+        }
         ProductManageTracking.eventBulkSettingsDeactive()
     }
 
@@ -1505,7 +1512,7 @@ open class ProductManageFragment :
         val productManageAccess =
             viewModel.productManageAccess.value as? Success<ProductManageAccess>
         val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
-        val shouldShow = productNotEmpty && GlobalConfig.isSellerApp() && hasMultiSelectAccess
+        val shouldShow = productNotEmpty && ProductManageConfig.IS_SELLER_APP && hasMultiSelectAccess
 
         multiSelectContainer?.showWithCondition(productNotEmpty)
         textMultipleSelect?.showWithCondition(shouldShow)
@@ -1736,11 +1743,24 @@ open class ProductManageFragment :
     }
 
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
+        if (result is EditByStatus) {
+            if (result.failedDT.isNotEmpty() && result.status == DELETED) {
+                showInfoNotAllowedToDeleteProductDT(
+                    getString(
+                        com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
+                        result.failedDT.size.toString()
+                    ),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                )
+            }
+        }
+
         showMultiEditToast(result)
         updateEditProductList(result)
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
+
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
                 val retryLabel =
@@ -1748,7 +1768,7 @@ open class ProductManageFragment :
                 val retryMessage = getRetryMessage(context, result)
 
                 showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
-            } else {
+            } else if (result.success.isNotEmpty()) {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
 
@@ -1970,6 +1990,13 @@ open class ProductManageFragment :
         stockGuaranteeBottomSheet.show()
     }
 
+    override fun onClickDTIdentifier() {
+        val infoDilayaniTokopediaBottomSheet = InfoDilayaniTokopediaBottomSheet(
+            childFragmentManager
+        )
+        infoDilayaniTokopediaBottomSheet.show()
+    }
+
     override fun onClickEditStockButton(product: ProductUiModel) {
         if (product.hasStockReserved) {
             context?.run {
@@ -2027,7 +2054,8 @@ open class ProductManageFragment :
                 val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
                     product.id,
                     product.isProductBundling,
-                    ::onClickCampaignInfo
+                    ::onClickCampaignInfo,
+                    ::onClickDTIdentifier
                 ) { result ->
                     viewModel.editVariantsStock(result)
                 }
@@ -2139,7 +2167,14 @@ open class ProductManageFragment :
                 ProductManageTracking.eventSettingsReminder(productId)
             }
             is Delete -> {
-                clickDeleteProductMenu(productName, productId)
+                if (product.isDTInbound) {
+                    showInfoNotAllowedToDeleteProductDT(
+                        getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_title),
+                        getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                    )
+                } else {
+                    clickDeleteProductMenu(productName, productId)
+                }
                 ProductManageTracking.eventSettingsDelete(productId)
             }
             is SetTopAds -> {
@@ -2781,6 +2816,27 @@ open class ProductManageFragment :
         }
     }
 
+    private fun showEditDTProductsInActiveConfirmationDialog() {
+        context?.let { it ->
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        R.string.product_manage_confirm_inactive_dt_product_title
+                    )
+                )
+                setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc))
+                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
+                setPrimaryCTAClickListener {
+                    val productIds = itemsChecked.map { item -> item.id }
+                    viewModel.editProductsByStatus(productIds, INACTIVE)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
+    }
+
     private fun observeProductList() {
         viewLifecycleOwner.observe(viewModel.productListResult) {
             when (it) {
@@ -3084,7 +3140,9 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.deleteProductDialog) {
             when (it) {
                 is SingleProduct -> showDialogDeleteProduct(it)
-                is MultipleProduct -> showDeleteProductsConfirmationDialog(it)
+                is MultipleProduct -> {
+                    showDeleteProductsConfirmationDialog(it)
+                }
             }
         }
     }
@@ -3229,7 +3287,7 @@ open class ProductManageFragment :
                     showCoachProductWithStockReminder(view)
                 }
                 view.id == R.id.btnMoreOptions && !conditionNotShowMoreMenu -> {
-                    if (GlobalConfig.isSellerApp()) {
+                    if (ProductManageConfig.IS_SELLER_APP) {
                         showCoachMoreOptionMenu(
                             view,
                             conditionNotShowCoachmarkAvailable,
@@ -3439,6 +3497,22 @@ open class ProductManageFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun showInfoNotAllowedToDeleteProductDT(title: String, desc: String) {
+        context?.let { it ->
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    title
+                )
+                setDescription(desc)
+                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.oke))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+
+            }.show()
         }
     }
 

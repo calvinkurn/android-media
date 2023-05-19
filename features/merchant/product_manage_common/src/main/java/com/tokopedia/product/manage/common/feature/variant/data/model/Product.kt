@@ -52,4 +52,10 @@ data class Product(
     @Expose
     @SerializedName("isBelowStockAlert")
     val isBelowStockAlert: Boolean,
+    @Expose
+    @SerializedName("hasDTStock")
+    val hasDTStock: Boolean,
+    @Expose
+    @SerializedName("isTokoCabang")
+    val isTokoCabang: Boolean
 )
