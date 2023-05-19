@@ -20,6 +20,7 @@ import com.tokopedia.campaign.utils.extension.setHyperlinkText
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -92,6 +93,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         setupView()
         observeUiState()
         observeUiEffect()
+        applyUnifyBackgroundColor()
     }
 
     private fun setupView() {
@@ -111,6 +113,9 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             tauNibPublishedDate.editText.setOnClickListener { viewModel.processEvent(UiEvent.TapChangeDate) }
             tauNibPublishedDate.editText.inputType = InputType.TYPE_NULL
             tauNibPublishedDate.editText.isFocusable = false
+            tauNibPublishedDate.icon1.setOnClickListener {
+                viewModel.processEvent(UiEvent.TapChangeDate)
+            }
 
             btnFinish.setOnClickListener {
                 viewModel.processEvent(UiEvent.SubmitFile)

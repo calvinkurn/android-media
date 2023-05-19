@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibSubmissionSuccessBinding
 import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
 import com.tokopedia.shop_nib.util.tracker.NibSubmissionSuccessPageTracker
@@ -50,6 +51,7 @@ class NibSubmissionSuccessFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         tracker.sendPageImpression()
+        applyUnifyBackgroundColor()
     }
 
     private fun setupView() {

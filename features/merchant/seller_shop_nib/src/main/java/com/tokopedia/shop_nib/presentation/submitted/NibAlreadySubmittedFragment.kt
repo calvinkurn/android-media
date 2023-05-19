@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.shop_nib.databinding.SsnFragmentNibAlreadySubmittedBinding
 import com.tokopedia.shop_nib.di.component.DaggerShopNibComponent
 import com.tokopedia.shop_nib.util.constant.UrlConstant
@@ -52,6 +53,7 @@ class NibAlreadySubmittedFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        applyUnifyBackgroundColor()
         tracker.sendPageImpression()
     }
 
