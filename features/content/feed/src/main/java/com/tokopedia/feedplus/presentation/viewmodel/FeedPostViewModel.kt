@@ -152,6 +152,30 @@ class FeedPostViewModel @Inject constructor(
                     }
                 }
 
+                val relevantPostData = relevantPostsDeferred.await().map {
+                    when (it) {
+                        is FeedCardImageContentModel -> if (it.campaign.id.isNotEmpty()) {
+                            it.copy(
+                                campaign = it.campaign.copy(
+                                    isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                )
+                            )
+                        } else {
+                            it
+                        }
+                        is FeedCardVideoContentModel -> if (it.campaign.id.isNotEmpty()) {
+                            it.copy(
+                                campaign = it.campaign.copy(
+                                    isReminderActive = getCampaignReminderStatus(it.campaign.id.toLongOrZero())
+                                )
+                            )
+                        } else {
+                            it
+                        }
+                        else -> it
+                    }
+                }
+
                 val feedPosts = feedPostsDeferred.await()
                 _feedHome.value = when (feedPosts) {
                     is Success -> {
@@ -184,7 +208,7 @@ class FeedPostViewModel @Inject constructor(
 
                         Success(
                             data = feedPosts.data.copy(
-                                items = relevantPostsDeferred.await() + _feedHome.value?.items.orEmpty() + items
+                                items = relevantPostData + _feedHome.value?.items.orEmpty() + items
                             )
                         )
                     }
