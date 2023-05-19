@@ -102,8 +102,8 @@ class FeedPostViewModel @Inject constructor(
     val deletePostResult: LiveData<Result<Int>>
         get() = _deletePostResult
 
-    private val _reminderResult = MutableLiveData<Result<FeedCampaignRibbonType>>()
-    val reminderResult: LiveData<Result<FeedCampaignRibbonType>>
+    private val _reminderResult = MutableLiveData<Result<Pair<Boolean, FeedCampaignRibbonType>>>()
+    val reminderResult: LiveData<Result<Pair<Boolean, FeedCampaignRibbonType>>>
         get() = _reminderResult
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
@@ -232,7 +232,7 @@ class FeedPostViewModel @Inject constructor(
                             )
                         }
                     }
-                    _reminderResult.value = Success(type)
+                    _reminderResult.value = Success(Pair(setReminder, type))
                 }
             } catch (e: Throwable) {
                 _reminderResult.value = Fail(e)
@@ -275,10 +275,11 @@ class FeedPostViewModel @Inject constructor(
                         when {
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
-                                    topAdsHeadlineUseCase.setParams(UrlParamHelper.generateUrlParamString(
-                                        defaultTopAdsUrlParams.apply {
-                                            put(PARAM_PAGE, ++currentTopAdsPage)
-                                        }), topAdsAddressData
+                                    topAdsHeadlineUseCase.setParams(
+                                        UrlParamHelper.generateUrlParamString(
+                                            defaultTopAdsUrlParams.apply {
+                                                put(PARAM_PAGE, ++currentTopAdsPage)
+                                            }), topAdsAddressData
                                     )
                                     val data = topAdsHeadlineUseCase.executeOnBackground()
                                     if (data.displayAds.data.isNotEmpty()) {
