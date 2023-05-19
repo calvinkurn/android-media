@@ -1407,13 +1407,13 @@ class FeedFragment :
         feedPostViewModel.reminderResult.observe(viewLifecycleOwner) {
             val message = when (it) {
                 is Success -> {
-                    val type = when (it.data.second) {
+                    val type = when (it.data.reminderType) {
                         FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> getString(feedR.string.feed_flash_sale)
                         FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
                         else -> ""
                     }
                     // if set reminder
-                    if (it.data.first) {
+                    if (it.data.isSetReminder) {
                         getString(feedR.string.feed_reminder_set_success, type)
                     } else {
                         // if unset reminder
