@@ -266,6 +266,11 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currReviewContent = _reviewContent.value
 
+            if (isRefresh) {
+                _reviewSettings.update {
+                    repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings()
+                }
+            }
             if (!_reviewSettings.value.isEnabled) return@launchCatchError
             if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
             if (currReviewContent.isLoading) return@launchCatchError
@@ -292,6 +297,18 @@ class UserProfileViewModel @AssistedInject constructor(
                     hasNext = response.hasNext,
                     status = response.status,
                 )
+            }
+
+            if (isSelfProfile &&
+                _reviewSettings.value.isEnabled &&
+                !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+            ) {
+                viewModelScope.launch {
+                    delay(DELAY_SHOW_REVIEW_ONBOARDING)
+
+                    userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+                    _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
+                }
             }
         }) {
             _reviewContent.update { userReview ->
@@ -589,7 +606,6 @@ class UserProfileViewModel @AssistedInject constructor(
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val profileInfo = repo.getProfile(username)
-        val profileSettings = repo.getProfileSettings(profileInfo.userID)
 
         val profileType = if (userSession.isLoggedIn) {
             if (userSession.userId == profileInfo.userID) {
@@ -610,7 +626,6 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
         _profileType.update { profileType }
-        _reviewSettings.update { profileSettings.getReviewSettings() }
 
         if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()
@@ -627,18 +642,6 @@ class UserProfileViewModel @AssistedInject constructor(
         if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
 
         if (isRefresh) loadProfileTab()
-
-        if (isSelfProfile &&
-            profileSettings.getReviewSettings().isEnabled &&
-            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-        ) {
-            viewModelScope.launch {
-                delay(DELAY_SHOW_REVIEW_ONBOARDING)
-
-                userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-                _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
-            }
-        }
     }
 
     private suspend fun loadProfileTab() {
