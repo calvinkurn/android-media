@@ -14,7 +14,7 @@ class CommentIconUiView(private val group: Group, listener: Listener) {
     init {
         group.post {
             group.referencedIds.forEach {
-                view.findViewById<View>(it).setOnClickListener {
+                view.findViewById<View>(it)?.setOnClickListener {
                     listener.onCommentClicked(this)
                 }
             }
@@ -26,8 +26,8 @@ class CommentIconUiView(private val group: Group, listener: Listener) {
     }
 
     fun setCounter(value: String) {
-        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_vod_comment_counter)
-            .text = value
+        if (value.isBlank()) return
+        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_vod_comment_counter)?.text = value
     }
 
     interface Listener {

@@ -12,7 +12,6 @@
         android:background="@drawable/bg_play_product_count"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:inputType="textNoSuggestions"
         android:paddingStart="@dimen/unify_space_4"
         android:paddingTop="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/unify_space_4"

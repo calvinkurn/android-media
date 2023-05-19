@@ -143,7 +143,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val newText =
                     TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
-                binding.newComment.setText(newText)
+                binding.newComment.text?.clear()
+                binding.newComment.append(newText)
 
                 val currentLength = binding.newComment.length()
                 if (distanceFromEnd in 1 until currentLength) {
@@ -170,9 +171,6 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    private val space16 by lazyThreadSafetyNone {
-        context?.resources?.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
-    }
 
     // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
@@ -241,7 +239,7 @@ class ContentCommentBottomSheet @Inject constructor(
             if (view.isImeVisible(threshold = keyboardThreshold)) {
                 binding.root.setPadding(0, 0, 0, height)
             } else {
-                binding.root.setPadding(0, 0, 0, space16.orZero())
+                binding.root.setPadding(0, 0, 0, 0)
             }
             windowInsets
         }
@@ -332,7 +330,10 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
-                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReportSuccess -> {
+                        sheetMenu.setFinalView()
+                        analytics?.impressSuccessReport()
+                    }
                     is CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(event.position)
@@ -497,9 +498,9 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
+        analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment(
+            CommentAction.ReportComment (
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
@@ -586,7 +587,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 Toaster.LENGTH_LONG,
                 getString(R.string.feed_content_coba_lagi_text)
             ) {
-                action(false)
+                requireInternet { action(it) }
             }
         }
     }
