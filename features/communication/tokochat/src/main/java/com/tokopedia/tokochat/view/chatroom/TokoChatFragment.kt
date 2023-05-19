@@ -66,6 +66,7 @@ import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNum
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
@@ -104,7 +105,9 @@ open class TokoChatFragment :
     TokoChatMessageCensorListener,
     TokoChatReplyAreaListener,
     TokoChatAttachmentMenuListener,
-    MaskingPhoneNumberBottomSheet.AnalyticsListener {
+    MaskingPhoneNumberBottomSheet.AnalyticsListener,
+    TokoChatBubblesAwarenessBottomSheet.AnalyticsListener
+{
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -1360,6 +1363,38 @@ open class TokoChatFragment :
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
+    }
+
+    override fun onClickContinue() {
+        tokoChatAnalytics.clickContinueOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onSwipeNext() {
+        tokoChatAnalytics.swipeNextOnboardingBottomsheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onClickEdu() {
+        tokoChatAnalytics.clickSelengkapnyaOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onClickSettingActivation() {
+        tokoChatAnalytics.clickActivateFromOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
     }
 
     companion object {
