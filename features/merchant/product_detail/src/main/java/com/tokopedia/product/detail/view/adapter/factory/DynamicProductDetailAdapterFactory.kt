@@ -82,7 +82,8 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductCustomInfoTitleDataModel): Int
     fun type(data: ProductShopReviewDataModel): Int
 
-    // New recom widget
+    // This is the new centralized recom widget model.
+    // After migration, all recom widgets will only be mapped into this model
     fun type(data: PdpRecommendationWidgetDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

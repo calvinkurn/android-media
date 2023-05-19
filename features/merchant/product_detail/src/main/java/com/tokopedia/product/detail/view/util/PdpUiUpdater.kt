@@ -71,7 +71,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
@@ -805,37 +804,37 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateComparisonDataModel(data: RecommendationWidget) {
-        if (data.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
+        val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
+        if (recomModel != null) {
             updateData(data.pageName) {
-                mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
-                    recommendationWidgetModel = RecommendationWidgetModel(
-                        widget = data,
-                        metadata = RecommendationWidgetMetadata(
-                            pageSource = RecommendationWidgetSource.PDP.xSourceValue
-                        ),
-                        trackingModel = RecommendationWidgetTrackingModel(
-                            androidPageName = RecommendationWidgetSource.PDP.trackingValue
-                        )
-                    )
-                )
+                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
+                    recommendationWidget = data
+                }
             }
         } else {
-            val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
-            if (recomModel != null) {
-                updateData(data.pageName) {
-                    (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
-                        recommendationWidget = data
-                    }
-                }
-            } else {
-                updateData(data.pageName) {
-                    mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
-                        "",
-                        data.pageName,
-                        data
-                    )
-                }
+            updateData(data.pageName) {
+                mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
+                    "",
+                    data.pageName,
+                    data
+                )
             }
+        }
+    }
+
+    fun updateComparisonBpcDataModel(data: RecommendationWidget) {
+        updateData(data.pageName) {
+            mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
+                recommendationWidgetModel = RecommendationWidgetModel(
+                    widget = data,
+                    metadata = RecommendationWidgetMetadata(
+                        pageSource = RecommendationWidgetSource.PDP.xSourceValue
+                    ),
+                    trackingModel = RecommendationWidgetTrackingModel(
+                        androidPageName = RecommendationWidgetSource.PDP.trackingValue
+                    )
+                )
+            )
         }
     }
 

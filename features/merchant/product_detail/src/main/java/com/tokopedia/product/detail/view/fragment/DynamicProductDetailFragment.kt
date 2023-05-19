@@ -516,7 +516,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -941,7 +941,7 @@ open class DynamicProductDetailFragment :
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -1183,11 +1183,11 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        val purchaseProtectionUrl = when(componentTrackDataModel.componentName) {
+        val purchaseProtectionUrl = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
             else -> ""
         }
-        val promoId = when(componentTrackDataModel.componentName) {
+        val promoId = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.SHIPMENT_V2 -> getShipmentPlusText()
             else -> ""
         }
@@ -1645,8 +1645,8 @@ open class DynamicProductDetailFragment :
             RecommendationNowAffiliateData(
                 affiliateUniqueId,
                 affiliateChannel,
-                recommendationWidget.affiliateTrackerId,
-            ),
+                recommendationWidget.affiliateTrackerId
+            )
         )
     }
 
@@ -2949,13 +2949,19 @@ open class DynamicProductDetailFragment :
                         true
                     )
                     if (enableComparisonWidget) {
-                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET ||
-                            it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET) {
-                            pdpUiUpdater?.updateComparisonDataModel(it.data)
-                            updateUi()
-                        } else {
-                            pdpUiUpdater?.updateRecommendationData(it.data)
-                            updateUi()
+                        when (it.data.layoutType) {
+                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonBpcDataModel(it.data)
+                                updateUi()
+                            }
+                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonDataModel(it.data)
+                                updateUi()
+                            }
+                            else -> {
+                                pdpUiUpdater?.updateRecommendationData(it.data)
+                                updateUi()
+                            }
                         }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
