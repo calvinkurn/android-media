@@ -53,11 +53,11 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     }
 
     override fun getTokenType(): Flow<String> {
-        return getUserSessionFlow().map { it.tokenType }
+        return getUserSessionFlow().map { it.tokenType.ifEmpty { "Bearer" } }
     }
 
     override fun getRefreshToken(): Flow<String> {
-        return getUserSessionFlow().map { it.refreshToken }
+        return getUserSessionFlow().map { it.refreshToken.ifEmpty { "Bearer" } }
     }
 
     override fun getUserId(): Flow<String> {
