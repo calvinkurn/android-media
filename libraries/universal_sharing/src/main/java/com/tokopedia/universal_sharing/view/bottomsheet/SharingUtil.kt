@@ -20,6 +20,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -181,7 +182,7 @@ class SharingUtil {
                                 if (shareImageFileUri != null) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
-                                type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                type = MimeType.IMAGE.type
                                 if (shareModel.shareOnlyLink) {
                                     shareString = linkerShareData?.url.toString()
                                 }
@@ -198,10 +199,10 @@ class SharingUtil {
                                         if (shareImageFileUri != null) {
                                             putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                         }
-                                        type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                        type = MimeType.IMAGE.type
                                         shareString = linkerShareData?.url ?: ""
                                     } else {
-                                        type = UniversalShareBottomSheet.MimeType.TEXT.type
+                                        type = MimeType.TEXT.type
                                     }
                                     putExtra(Intent.EXTRA_TEXT, shareString)
                                 },
@@ -212,7 +213,7 @@ class SharingUtil {
                     is ShareModel.Whatsapp -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                type = UniversalShareBottomSheet.MimeType.TEXT.type
+                                type = MimeType.TEXT.type
                                 putExtra(Intent.EXTRA_TEXT, shareString)
                             }
                         )
@@ -227,7 +228,7 @@ class SharingUtil {
                     is ShareModel.Telegram -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                type = UniversalShareBottomSheet.MimeType.ALL.type
+                                type = MimeType.ALL.type
                                 putExtra(Intent.EXTRA_TEXT, shareString)
                             }
                         )
@@ -235,7 +236,7 @@ class SharingUtil {
                     is ShareModel.Twitter -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                type = UniversalShareBottomSheet.MimeType.TEXT.type
+                                type = MimeType.TEXT.type
                                 putExtra(Intent.EXTRA_TEXT, shareString)
                             }
                         )
@@ -246,7 +247,7 @@ class SharingUtil {
                                 if (shareImageFileUri != null) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
-                                type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                type = MimeType.IMAGE.type
                                 if (shareModel.shareOnlyLink) {
                                     shareString = linkerShareData?.url ?: ""
                                 }
@@ -355,10 +356,10 @@ class SharingUtil {
                                         if (shareImageFileUri != null) {
                                             putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                         }
-                                        type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                        type = MimeType.IMAGE.type
                                         shareString = linkerShareData?.url ?: ""
                                     } else {
-                                        type = UniversalShareBottomSheet.MimeType.TEXT.type
+                                        type = MimeType.TEXT.type
                                     }
                                     putExtra(Intent.EXTRA_TEXT, shareString)
                                 },
@@ -386,7 +387,7 @@ class SharingUtil {
                                 if (shareImageFileUri != null) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
-                                type = UniversalShareBottomSheet.MimeType.ALL.type
+                                type = MimeType.ALL.type
                                 if (shareModel.shareOnlyLink) {
                                     shareString = linkerShareData?.url ?: ""
                                 }
@@ -400,7 +401,7 @@ class SharingUtil {
                                 if (shareImageFileUri != null) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
-                                type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                type = MimeType.IMAGE.type
                                 if (shareModel.shareOnlyLink) {
                                     shareString = linkerShareData?.url ?: ""
                                 }

@@ -256,13 +256,13 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareHomeData(
             isScreenShot = true,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty()
         )
 
-        showUniversalShareBottomSheet(shareCategoryTokonow)
+        showUniversalShareBottomSheet(shareCategoryTokonow, path)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -370,9 +370,13 @@ class TokoNowCategoryFragment :
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(
                 pageName = PAGE_SHARE_NAME,

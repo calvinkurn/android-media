@@ -691,7 +691,7 @@ class ShopPageHeaderFragment :
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
                 val followStatusData = (it as? Success)?.data?.followStatus
@@ -2953,7 +2953,7 @@ class ShopPageHeaderFragment :
                 customDimensionShopPage,
                 userId,
                 shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
-                UniversalShareBottomSheet.getUserType()
+                universalShareBottomSheet?.getUserType() ?: ""
             )
             if (!isMyShop) {
                 shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
@@ -2967,7 +2967,7 @@ class ShopPageHeaderFragment :
                 shareModel.channel.orEmpty(),
                 customDimensionShopPage,
                 userId,
-                UniversalShareBottomSheet.getUserType(),
+                universalShareBottomSheet?.getUserType() ?: "",
                 shareModel.campaign?.split("-")?.lastOrNull().orEmpty()
             )
         }
@@ -3003,19 +3003,19 @@ class ShopPageHeaderFragment :
 
     override fun onCloseOptionClicked() {
         if (isGeneralShareBottomSheet) {
-            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
+            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId, universalShareBottomSheet?.getUserType() ?: "")
         } else {
-            shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
+            shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId, universalShareBottomSheet?.getUserType() ?: "")
         }
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         isGeneralShareBottomSheet = false
-        showUniversalShareBottomSheet()
+        showUniversalShareBottomSheet(path)
         shopPageTracking?.onImpressionScreenshotShareBottomSheet(
             customDimensionShopPage,
             userId,
-            UniversalShareBottomSheet.getUserType()
+            universalShareBottomSheet?.getUserType() ?: ""
         )
     }
 
@@ -3023,9 +3023,13 @@ class ShopPageHeaderFragment :
         return priceTextIdr.replace(IDR_CURRENCY_TO_RAW_STRING_REGEX.toRegex(), "").toLong()
     }
 
-    private fun showUniversalShareBottomSheet() {
+    private fun showUniversalShareBottomSheet(path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@ShopPageHeaderFragment)
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             enableDefaultShareIntent()
             setMetaData(
                 shopPageHeaderDataModel?.shopName.orEmpty(),
@@ -3241,7 +3245,7 @@ class ShopPageHeaderFragment :
         shopPageTracking?.onImpressionShareBottomSheet(
             customDimensionShopPage,
             userId,
-            UniversalShareBottomSheet.getUserType()
+            universalShareBottomSheet?.getUserType() ?: ""
         )
     }
 

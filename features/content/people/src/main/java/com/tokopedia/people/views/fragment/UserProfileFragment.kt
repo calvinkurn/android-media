@@ -108,7 +108,7 @@ class UserProfileFragment @Inject constructor(
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator,
     private val coachMarkManager: ContentCoachMarkManager,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -401,7 +401,7 @@ class UserProfileFragment @Inject constructor(
 
             fabUp.menuOpen = !fabUp.menuOpen
 
-            if(fabUp.menuOpen && viewModel.isWhitelist) {
+            if (fabUp.menuOpen && viewModel.isWhitelist) {
                 userProfileTracker.viewCreateShorts(viewModel.profileUserID)
             }
         }
@@ -514,7 +514,7 @@ class UserProfileFragment @Inject constructor(
                         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -526,10 +526,12 @@ class UserProfileFragment @Inject constructor(
         if (!isRefreshPost) return
 
         if (pagerAdapter.getTabs().isEmpty()) return
-        if (pagerAdapter.getFeedsTabs().isNotEmpty())
+        if (pagerAdapter.getFeedsTabs().isNotEmpty()) {
             viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
-        if (pagerAdapter.getVideoTabs().isNotEmpty())
+        }
+        if (pagerAdapter.getVideoTabs().isNotEmpty()) {
             viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
+        }
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -689,7 +691,7 @@ class UserProfileFragment @Inject constructor(
                     val items = arrayListOf<FloatingButtonItem>()
                     items.add(createLiveFab())
                     items.add(createPostFab())
-                    if(playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+                    if (playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
                         items.add(createShortsFab())
                     }
 
@@ -735,8 +737,9 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.shopRecommendation.setData(shopRecom)
 
-        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.hide()
-        else {
+        if (value.shopRecom.items.isEmpty()) {
+            mainBinding.shopRecommendation.hide()
+        } else {
             mainBinding.shopRecommendation.show()
             mainBinding.shopRecommendation.showContentShopRecom()
         }
@@ -757,7 +760,7 @@ class UserProfileFragment @Inject constructor(
         val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
 
         val idx = tabs.indexOfFirst { it.key == selectedTab.key }
-        if(idx != -1) {
+        if (idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
     }
@@ -1029,8 +1032,11 @@ class UserProfileFragment @Inject constructor(
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
 
         val bundle = UGCOnboardingParentFragment.createBundle(
-            if (viewModel.profileUsername.isEmpty()) UGCOnboardingParentFragment.OnboardingType.Complete
-            else UGCOnboardingParentFragment.OnboardingType.Tnc
+            if (viewModel.profileUsername.isEmpty()) {
+                UGCOnboardingParentFragment.OnboardingType.Complete
+            } else {
+                UGCOnboardingParentFragment.OnboardingType.Tnc
+            }
         )
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
@@ -1149,11 +1155,15 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
-        if(!isAdded) return
+    private fun showUniversalShareBottomSheet(path: String? = null) {
+        if (!isAdded) return
 
-        if(universalShareBottomSheet == null) {
+        if (universalShareBottomSheet == null) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                path?.let {
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
                 init(this@UserProfileFragment)
                 userSession.userId.ifEmpty { "0" }.let {
                     setUtmCampaignData(
@@ -1218,7 +1228,7 @@ class UserProfileFragment @Inject constructor(
                             )
                             // send gtm trackers if you want to
 
-                            when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+                            when (universalShareBottomSheet?.getShareBottomSheetType()) {
                                 UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                                     userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
                                 }
@@ -1240,8 +1250,8 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    override fun screenShotTaken() {
-        showUniversalShareBottomSheet()
+    override fun screenShotTaken(path: String) {
+        showUniversalShareBottomSheet(path)
         userProfileTracker.viewScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
         // add tracking for the screenshot bottom sheet
     }
@@ -1264,7 +1274,7 @@ class UserProfileFragment @Inject constructor(
 //        TODO gtm tracking
         // This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
         // this will give you the bottomsheet type : if it's screenshot or general
-        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+        when (universalShareBottomSheet?.getShareBottomSheetType()) {
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                 userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }

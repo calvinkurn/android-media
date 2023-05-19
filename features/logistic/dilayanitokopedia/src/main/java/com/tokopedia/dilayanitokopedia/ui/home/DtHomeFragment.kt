@@ -390,8 +390,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalUiModel?) {
+    private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalUiModel?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             setFeatureFlagRemoteConfigKey()
             init(this@DtHomeFragment)
             setUtmCampaignData(
@@ -859,14 +863,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareHomeData(
             pageIdConstituents = listOf(SHARE_LINK_PAGE_ID),
             isScreenShot = false,
             linkerType = SHARE_LINK_LINKER_TYPE
         )
 
-        showUniversalShareBottomSheet(shareHome)
+        showUniversalShareBottomSheet(shareHome, path)
     }
 
     override fun permissionAction(action: String, label: String) {

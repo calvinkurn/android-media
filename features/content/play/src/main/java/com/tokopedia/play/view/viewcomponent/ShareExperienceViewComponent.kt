@@ -122,9 +122,11 @@ class ShareExperienceViewComponent(
             }
 
             loadImageWithEmptyTarget(
-                context, imageUrl, {
-                fitCenter()
-            },
+                context,
+                imageUrl,
+                {
+                    fitCenter()
+                },
                 MediaBitmapEmptyTarget(
                     onReady = {
                         bitmap = it
@@ -163,7 +165,7 @@ class ShareExperienceViewComponent(
         screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
             context,
             object : ScreenShotListener {
-                override fun screenShotTaken() {
+                override fun screenShotTaken(path: String) {
                     listener.onScreenshotTaken(this@ShareExperienceViewComponent)
                 }
             },

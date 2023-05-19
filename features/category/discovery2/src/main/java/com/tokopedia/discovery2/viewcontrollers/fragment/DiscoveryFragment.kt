@@ -1163,7 +1163,7 @@ class DiscoveryFragment :
             }
 
             universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
-            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+            shareType = universalShareBottomSheet?.getShareBottomSheetType() ?: 0
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
                 if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
@@ -1230,7 +1230,7 @@ class DiscoveryFragment :
     }
 
     override fun screenShotTaken(path: String) {
-        showUniversalShareBottomSheet(pageInfoHolder)
+        showUniversalShareBottomSheet(pageInfoHolder, path)
     }
 
     private fun setToolBarPageInfoOnFail() {

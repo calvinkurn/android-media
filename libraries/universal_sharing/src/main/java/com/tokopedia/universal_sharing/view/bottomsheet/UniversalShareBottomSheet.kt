@@ -1496,6 +1496,19 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         screenShotImagePath = imgPath
     }
 
+    fun getShareBottomSheetType(): Int {
+        var shareSheetType = CUSTOM_SHARE_SHEET
+        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+            shareSheetType = SCREENSHOT_SHARE_SHEET
+        }
+        return shareSheetType
+    }
+
+    fun clearData() {
+        isImageOnlySharing = false
+        screenShotImagePath = ""
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.clear()

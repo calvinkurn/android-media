@@ -414,7 +414,7 @@ class TokoNowHomeFragment :
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = true,
@@ -422,7 +422,7 @@ class TokoNowHomeFragment :
             linkerType = NOW_TYPE
         )
 
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(shareHomeTokonow, path)
     }
 
     override fun onRequestPermissionsResult(
@@ -1844,9 +1844,13 @@ class TokoNowHomeFragment :
             .isNotEmpty()
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             val shareInput = viewModelTokoNow.getAffiliateShareInput()
 
             init(this@TokoNowHomeFragment)
