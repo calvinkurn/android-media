@@ -10,29 +10,59 @@ data class FeedTaggedProductUiModel(
     val imageUrl: String,
     val price: Price,
     val appLink: String,
+    val campaign: Campaign
 ) {
     data class Shop(
         val id: String,
-        val name: String,
+        val name: String
     )
     data class DiscountedPrice(
         val discount: Int,
         val originalFormattedPrice: String,
         val formattedPrice: String,
         val price: Double
-    ): Price()
+    ) : Price()
+
+    data class CampaignPrice(
+        val originalFormattedPrice: String,
+        val formattedPrice: String,
+        val price: Double
+    ) : Price()
 
     data class NormalPrice(
         val formattedPrice: String,
         val price: Double
-    ): Price()
+    ) : Price()
 
     sealed class Price
 
     val finalPrice: Double get() {
-        return when(val price = this.price) {
+        return when (val price = this.price) {
             is DiscountedPrice -> price.price
             is NormalPrice -> price.price
+            is CampaignPrice -> price.price
         }
+    }
+
+    data class Campaign(
+        val type: CampaignType,
+        val status: CampaignStatus
+    ) {
+        val isUpcoming: Boolean get() {
+            return status is CampaignStatus.Upcoming
+        }
+    }
+
+    sealed class CampaignStatus {
+        object Unknown : CampaignStatus()
+        object Upcoming : CampaignStatus()
+        data class Ongoing(
+            val stockLabel: String,
+            val stockInPercent: Float
+        ) : CampaignStatus()
+    }
+
+    enum class CampaignType {
+        FlashSaleToko, RilisanSpecial, NoCampaign
     }
 }

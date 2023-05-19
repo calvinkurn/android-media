@@ -50,14 +50,23 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
-import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
-import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -82,7 +91,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -230,6 +238,7 @@ class FeedFragment :
         observeMerchantVoucher()
         observeAddProductToCart()
         observeBuyProduct()
+        observeReminder()
 
         observeEvent()
     }
@@ -483,7 +492,8 @@ class FeedFragment :
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel
+                trackerData = trackerModel,
+                campaign = campaign
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -520,7 +530,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = trackerModel
+                    trackerData = trackerModel,
+                    campaign = campaign
                 )
             }
         }
@@ -540,14 +551,16 @@ class FeedFragment :
             author = author,
             hasVoucher = hasVoucher,
             products = products,
-            trackerData = trackerModel
+            trackerData = trackerModel,
+            campaign = campaign
         )
     }
 
     override fun onReminderClicked(
         campaignId: Long,
         setReminder: Boolean,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        type: FeedCampaignRibbonType
     ) {
         trackerModel?.let {
             if (setReminder) {
@@ -557,7 +570,7 @@ class FeedFragment :
             }
         }
 
-        feedPostViewModel.setUnsetReminder(campaignId, setReminder)
+        feedPostViewModel.setUnsetReminder(campaignId, setReminder, type)
     }
 
     override fun onTopAdsImpression(
@@ -600,7 +613,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it
+                    trackerData = it,
+                    campaign = campaign
                 )
             }
         }
@@ -938,12 +952,18 @@ class FeedFragment :
         }
     }
 
-    override fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int) {
+    override fun onCommentClick(
+        trackerModel: FeedTrackerDataModel?,
+        contentId: String,
+        isPlayContent: Boolean,
+        rowNumber: Int
+    ) {
         trackerModel?.let {
             currentTrackerData = trackerModel
             commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
                 override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
                 override fun onCommentDismissed() {
+                    feedPostViewModel.updateCommentsCount(contentId, isPlayContent)
                 }
             }
 
@@ -1044,7 +1064,8 @@ class FeedFragment :
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        campaign: FeedCardCampaignModel
     ) {
         if (products.isEmpty()) return
 
@@ -1067,7 +1088,7 @@ class FeedFragment :
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
-        val mappedProducts = products.map(MapperProductsToXProducts::transform)
+        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
         productBottomSheet.show(
             taggedProducts = mappedProducts,
             manager = childFragmentManager,
@@ -1203,6 +1224,24 @@ class FeedFragment :
         } else {
             feedPostViewModel.suspendBuyProduct(product)
             buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    private fun observeReminder() {
+        feedPostViewModel.reminderResult.observe(viewLifecycleOwner) {
+            val message = when (it) {
+                is Success -> {
+                    val type = when (it.data) {
+                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> getString(feedR.string.feed_flash_sale)
+                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
+                        else -> ""
+                    }
+                    getString(feedR.string.feed_reminder_success, type)
+                }
+                is Fail -> it.throwable.message
+                else -> ""
+            }
+            showToast(message = message.orEmpty(), type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR, actionText = getString(feedR.string.feed_cta_ok_toaster))
         }
     }
 

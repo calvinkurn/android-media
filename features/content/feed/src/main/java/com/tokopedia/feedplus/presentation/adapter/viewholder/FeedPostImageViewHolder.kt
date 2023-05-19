@@ -18,6 +18,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
@@ -245,6 +246,11 @@ class FeedPostImageViewHolder(
             if (payloads.contains(FEED_POST_CLEAR_MODE)) {
                 showClearView()
             }
+
+            if (payloads.contains(FEED_POST_COMMENT_COUNT)) {
+                bindComments(it)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
@@ -253,6 +259,7 @@ class FeedPostImageViewHolder(
                 isAutoSwipeOn = true
                 runAutoSwipe()
             }
+
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 job?.cancel()
                 campaignView.resetView()
@@ -260,9 +267,11 @@ class FeedPostImageViewHolder(
 
                 isAutoSwipeOn = false
             }
+
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
             }
+
             payloads.forEach { payload ->
                 if (payload is FeedViewHolderPayloads) {
                     bind(
@@ -448,7 +457,13 @@ class FeedPostImageViewHolder(
     }
 
     private fun bindComments(model: FeedCardImageContentModel) {
-        commentButtonView.bind(model.comments.countFmt, trackerDataModel, absoluteAdapterPosition)
+        commentButtonView.bind(
+            model.id,
+            false,
+            model.comments.countFmt,
+            trackerDataModel,
+            absoluteAdapterPosition
+        )
 
         if (model.isTypeProductHighlight) {
             commentButtonView.hide()

@@ -2,7 +2,11 @@ package com.tokopedia.feedplus.presentation.adapter.listener
 
 import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
     fun onMenuClicked(
@@ -26,7 +30,8 @@ interface FeedListener {
     fun onReminderClicked(
         campaignId: Long,
         setReminder: Boolean,
-        trackerModel: FeedTrackerDataModel?
+        trackerModel: FeedTrackerDataModel?,
+        type: FeedCampaignRibbonType
     )
 
     fun onTopAdsImpression(
@@ -125,5 +130,5 @@ interface FeedListener {
         positionInFeed: Int
     )
 
-    fun onCommentClick(trackerModel: FeedTrackerDataModel?, rowNumber: Int)
+    fun onCommentClick(trackerModel: FeedTrackerDataModel?, contentId: String, isPlayContent: Boolean, rowNumber: Int)
 }

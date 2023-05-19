@@ -364,9 +364,11 @@ object MapperFeedHome {
             ) &&
             card.media.none { it.type == TYPE_FEED_LONG_VIDEO }
 
-    private fun isVideoPost(card: FeedXCard) =
-        ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PLAY)) &&
-            card.type != TYPE_FEED_PLAY_LIVE && card.media.isNotEmpty() && card.media[0].type == TYPE_MEDIA_VIDEO
+    private fun isVideoPost(card: FeedXCard): Boolean {
+        val isVideo = card.media.isNotEmpty() && card.media.first().type.contains(TYPE_MEDIA_VIDEO)
+        return ((card.typename == TYPE_FEED_X_CARD_POST) || (card.typename == TYPE_FEED_X_CARD_PLAY)) &&
+            card.type != TYPE_FEED_PLAY_LIVE && isVideo
+    }
 
     private fun isLivePreviewPost(card: FeedXCard) =
         card.typename == TYPE_FEED_X_CARD_PLAY && card.type == TYPE_FEED_PLAY_LIVE &&

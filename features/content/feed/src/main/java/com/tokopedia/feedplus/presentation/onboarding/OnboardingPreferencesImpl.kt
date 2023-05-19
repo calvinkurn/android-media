@@ -22,6 +22,10 @@ class OnboardingPreferencesImpl @Inject constructor(
         return sharedPref.getBoolean(KEY_PROFILE_ENTRY_POINT, false)
     }
 
+    override fun hasShownSwipeOnboarding(): Boolean {
+        return sharedPref.getBoolean(KEY_SWIPE_ONBOARDING, false)
+    }
+
     override fun setHasShownCreateContent() {
         sharedPref.edit(true) {
             putBoolean(KEY_CREATE_CONTENT, true)
@@ -34,10 +38,17 @@ class OnboardingPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun setHasShownSwipeOnboarding() {
+        sharedPref.edit(true) {
+            putBoolean(KEY_SWIPE_ONBOARDING, true)
+        }
+    }
+
     companion object {
         private const val FEED_ONBOARDING_PREFERENCES = "feed_onboarding_pref"
 
         private const val KEY_CREATE_CONTENT = "create_content"
         private const val KEY_PROFILE_ENTRY_POINT = "profile_entry_point"
+        private const val KEY_SWIPE_ONBOARDING = "swipe_onboarding"
     }
 }
