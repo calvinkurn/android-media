@@ -9,19 +9,13 @@ import android.view.MenuItem
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR
 import com.tokopedia.track.TrackApp
-import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 
