@@ -1,15 +1,12 @@
 package com.tokopedia.common_compose.card2
 
-import android.animation.TimeInterpolator
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +17,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,25 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
-
-
-private const val CARD_TRANSITION_DURATION = 300
-private const val LONG_PRESS_DURATION = 400
-
-private fun TimeInterpolator.toEasing() = Easing { x ->
-    getInterpolation(x)
-}
-
-private val bezierCustomInterpolator = PathInterpolatorCompat.create(
-    .2f, .64f, .21f, 1f
-).toEasing()
 
 @Composable
 private fun borderSelected(): Color {
@@ -58,48 +40,30 @@ private fun borderDisabled(): Color {
     return NestTheme.colors.NN._200
 }
 
-sealed interface Card2Border {
-    data class StateBorder(val isSelected: Boolean) : Card2Border
-    object Border : Card2Border
-    object Shadow : Card2Border
-    object BorderActive : Card2Border
-    object BorderDisabled : Card2Border
-    object ShadowActive : Card2Border
-    object ShadowDisabled : Card2Border
-    object NoBorder : Card2Border
+sealed interface NestCardType {
+    data class StateBorder(val isSelected: Boolean) : NestCardType
+    object Border : NestCardType
+    object Shadow : NestCardType
+    object BorderActive : NestCardType
+    object BorderDisabled : NestCardType
+    object ShadowActive : NestCardType
+    object ShadowDisabled : NestCardType
+    object NoBorder : NestCardType
 
     companion object {
-        fun default(): Card2Border {
+        fun default(): NestCardType {
             return Border
         }
     }
 }
 
-private suspend fun PointerInputScope.configGesture(
-    onTouch: MutableState<Boolean>, onClick: () -> Unit, onLongPress: () -> Unit
-) {
-    detectTapGestures(onPress = { offset ->
-        val currentTimePress = System.currentTimeMillis()
-        onTouch.value = true
-
-        tryAwaitRelease()
-        onTouch.value = false
-
-        val clickDuration = System.currentTimeMillis() - currentTimePress
-        if (clickDuration < LONG_PRESS_DURATION) {
-            onClick.invoke()
-        }
-    }, onDoubleTap = { offset -> }, onLongPress = { offset ->
-        onLongPress.invoke()
-    }, onTap = { offset -> })
-}
 
 @Composable
-fun Card2Unify(
+fun NestCard(
     modifier: Modifier = Modifier,
     enableTransitionAnimation: Boolean = false,
     enableBounceAnimation: Boolean = false,
-    type: Card2Border = Card2Border.NoBorder,
+    type: NestCardType = NestCardType.NoBorder,
     onClick: () -> Unit,
     onLongPress: () -> Unit,
     content: @Composable () -> Unit
@@ -120,7 +84,7 @@ fun Card2Unify(
     var shadow = false
 
     when (type) {
-        is Card2Border.StateBorder -> {
+        is NestCardType.StateBorder -> {
             if (type.isSelected) {
                 shadow = true
                 borderColor = borderSelected()
@@ -129,26 +93,26 @@ fun Card2Unify(
                 borderColor = borderSelected()
             }
         }
-        is Card2Border.Border -> {
+        is NestCardType.Border -> {
             borderColor = borderDisabled()
         }
-        is Card2Border.Shadow -> {
+        is NestCardType.Shadow -> {
             shadow = true
         }
-        is Card2Border.BorderActive -> {
+        is NestCardType.BorderActive -> {
             borderColor = borderSelected()
             backgroundColor = NestTheme.colors.GN._50
         }
-        is Card2Border.ShadowActive -> {
+        is NestCardType.ShadowActive -> {
             shadow = true
             borderColor = borderSelected()
             backgroundColor = NestTheme.colors.GN._50
         }
-        is Card2Border.BorderDisabled -> {
+        is NestCardType.BorderDisabled -> {
             borderColor = borderDisabled()
             backgroundColor = NestTheme.colors.NN._50
         }
-        is Card2Border.ShadowDisabled -> {
+        is NestCardType.ShadowDisabled -> {
             borderColor = borderDisabled()
             shadow = true
             backgroundColor = NestTheme.colors.NN._50
@@ -199,8 +163,10 @@ fun Card2Unify(
 }
 
 @Composable
-fun BoxCustomRipple(
-    boxScope: BoxScope, enableAnimation: Boolean, clickChange: Boolean
+private fun BoxCustomRipple(
+    boxScope: BoxScope,
+    enableAnimation: Boolean,
+    clickChange: Boolean
 ) {
     if (enableAnimation) {
         val color = remember {
@@ -233,10 +199,10 @@ fun BoxCustomRipple(
 
 @Composable
 @Preview
-private fun Card2Preview() {
+private fun NestCardMainPreview() {
     Surface {
-        val type by remember { mutableStateOf(Card2Border.default()) }
-        Card2Unify(enableBounceAnimation = true,
+        val type by remember { mutableStateOf(NestCardType.default()) }
+        NestCard(enableBounceAnimation = true,
             type = type,
             onClick = {
 
