@@ -155,9 +155,9 @@ public class MigratedUserSession {
         return aead;
     }
 
-    private String internalGetString(String prefName, String keyName, String defValue) {
+    private String internalGetString(String prefName, String keyName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
+        return sharedPrefs.getString(keyName, null);
     }
 
     protected void setString(String prefName, String keyName, String value) {
@@ -322,15 +322,17 @@ public class MigratedUserSession {
         }
 
         try {
-            String oldValue = internalGetString(prefName, keyName, defValue);
+            String oldValue = internalGetString(prefName, keyName);
 
-            if (oldValue != null && !oldValue.equals(defValue)) {
+            if (oldValue != null) {
                 Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
-                internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
                 logUserSessionEventWithKey("migrate_from_v1", keyName, null);
-                return oldValue;
+                if (internalGetString(newPrefName, newKeyName) == null) {
+                    internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
+                    return oldValue;
+                }
             }
 
             SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
