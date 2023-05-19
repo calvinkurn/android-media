@@ -133,6 +133,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductBundling(R.layout.disco_product_bundling_layout,ComponentNames.ProductBundling.componentName),
     ContentCard(R.layout.disco_content_card, ComponentNames.ContentCard.componentName),
     ContentCardItem(R.layout.disco_content_card_item, ComponentNames.ContentCardItem.componentName),
+    ProductHighlight(R.layout.multi_banner_layout, ComponentNames.ProductHighlight.componentName),
     ThematicHeader(R.layout.disco_thematic_header_layout, ComponentNames.ThematicHeader.componentName),
     ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
