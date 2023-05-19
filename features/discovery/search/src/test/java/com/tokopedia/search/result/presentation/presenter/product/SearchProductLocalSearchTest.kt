@@ -11,14 +11,14 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
@@ -295,13 +295,13 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `When Load Data`(searchParameter)
 
-        `Then verify recommendation use case is called`()
+        `Then verify recommendation use case is not called`()
         `Then verify empty search view model for non local search`()
         `Then verify get local search recommendation is not called`()
     }
 
-    private fun `Then verify recommendation use case is called`() {
-        verify {
+    private fun `Then verify recommendation use case is not called`() {
+        verify(exactly = 0) {
             recommendationUseCase.execute(any(), any())
         }
     }
@@ -317,7 +317,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptyStateDataView.globalSearchApplink shouldBe ""
         emptyStateDataView.keyword shouldBe keyword
         emptyStateDataView.pageTitle shouldBe ""
-        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe true
     }
 
     private fun `Then verify get local search recommendation is not called`() {

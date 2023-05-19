@@ -28,7 +28,10 @@ class AdsLowOrganic @Inject constructor(
     responseCodeProvider: ResponseCodeProvider,
 ): ResponseCodeProvider by responseCodeProvider {
 
-    val isEnabledRollence by lazy(LazyThreadSafetyMode.NONE, ::getIsEnabledRollence)
+    private val isEnabledRollence by lazy(LazyThreadSafetyMode.NONE, ::getIsEnabledRollence)
+
+    val isEnabled: Boolean
+        get() = isAdsLowOrganicAllowed
 
     private fun getIsEnabledRollence() = try {
         abTestRemoteConfig.get().getString(EXP_NAME, "") == VAR_ADS

@@ -788,7 +788,7 @@ class ProductListPresenter @Inject constructor(
             isFilterActive = isAnyFilterActive,
             keyword = view.queryKey,
             localSearch = emptyStateLocalSearch(isAnyFilterActive),
-            isShowAdsLowOrganic = adsLowOrganic.isEnabledRollence,
+            isShowAdsLowOrganic = adsLowOrganic.isEnabled,
         )
     }
 
@@ -874,7 +874,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isShowGlobalSearchRecommendation() =
-        !view.isAnyFilterActive && !adsLowOrganic.isEnabledRollence
+        !view.isAnyFilterActive && !adsLowOrganic.isEnabled
 
     private fun getGlobalSearchRecommendation() {
         view.addLoading()
