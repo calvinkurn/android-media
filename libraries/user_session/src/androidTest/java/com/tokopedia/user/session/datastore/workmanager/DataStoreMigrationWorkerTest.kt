@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.empty
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -78,10 +77,12 @@ class DataStoreMigrationWorkerTest {
             assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
 
             val dataStore = UserSessionDataStoreClient.getInstance(context)
-
             userSession.logoutSession()
+            userSession.clearToken()
+            dataStore.logoutSession()
+
+            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
             assertThat(dataStore.getSampleUser(), equalTo(sample))
-            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(Matchers.empty()))
         }
     }
 
