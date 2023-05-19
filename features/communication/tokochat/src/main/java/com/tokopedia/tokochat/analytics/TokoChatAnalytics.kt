@@ -557,4 +557,38 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
         )
         tracking.sendGeneralEvent(mapData)
     }
+
+    fun clickCloseOnBoardingTicker(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_CLOSE_ON_BOARDING_TICKER,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43191,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickCheckHereOnBoardingTicker(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_CHECK_HERE_ONBOARDING_TICKER,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43192,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
 }

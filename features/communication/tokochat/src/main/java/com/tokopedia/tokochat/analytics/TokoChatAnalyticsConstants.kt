@@ -98,4 +98,9 @@ object TokoChatAnalyticsConstants {
     const val CLICK_ACTIVATE_FROM_ONBOARDING_BOTTOMSHEET = "click activate from onboarding bottomsheet"
     const val TRACKER_ID_43189 = "43189"
 
+    const val CLICK_CLOSE_ON_BOARDING_TICKER = "click close onboarding ticker"
+    const val TRACKER_ID_43191 = "43191"
+
+    const val CLICK_CHECK_HERE_ONBOARDING_TICKER = "click check here onboarding ticker"
+    const val TRACKER_ID_43192 = "43192"
 }
