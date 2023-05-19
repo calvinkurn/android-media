@@ -1063,7 +1063,9 @@ open class TokoChatFragment :
             )
         }
         adapter.removeItem(element)
-        adapter.notifyItemRemoved(position)
+        if (position >= Int.ZERO) {
+            adapter.notifyItemRemoved(position)
+        }
     }
 
     override fun loadImage(
