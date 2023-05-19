@@ -36,6 +36,7 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.common_compose.components.ButtonSize
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestLabel
 import com.tokopedia.common_compose.components.NestLabelType
@@ -361,6 +362,7 @@ fun CampaignItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
+                size = ButtonSize.SMALL,
                 text = stringResource(id = R.string.cl_action_share),
                 onClick = { onTapShareButton(campaign) },
             )
