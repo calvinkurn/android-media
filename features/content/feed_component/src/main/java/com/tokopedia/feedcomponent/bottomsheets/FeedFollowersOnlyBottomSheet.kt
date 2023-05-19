@@ -69,7 +69,7 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
         this.listener = listener
         this.mPositionInFeed = position
         this.campaignStatus = status
-        show(fragmentManager, TAG)
+        show(fragmentManager, "")
     }
 
     override fun onDestroyView() {
@@ -87,7 +87,7 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "FeedFollowersOnlyBottomSheet"
+        private const val TAG = "FeedFollowersOnlyBottomSheet"
 
         fun getOrCreate(fragmentManager: FragmentManager): FeedFollowersOnlyBottomSheet {
             val oldInstance =

@@ -207,39 +207,48 @@ class FeedPostViewModel @Inject constructor(
                     )
                 )
 
-                if (response.success && response.errorMessage.isEmpty()) {
-                    _feedHome.value?.let {
-                        if (it is Success) {
-                            val newData = it.data.items.map { item ->
-                                when {
-                                    item is FeedCardImageContentModel && item.campaign.id == campaignId.toString() -> item.copy(
-                                        campaign = item.campaign.copy(
-                                            isReminderActive = setReminder
-                                        )
-                                    )
-                                    item is FeedCardVideoContentModel && item.campaign.id == campaignId.toString() -> item.copy(
-                                        campaign = item.campaign.copy(
-                                            isReminderActive = setReminder
-                                        )
-                                    )
-                                    else -> item
-                                }
-                            }
-
-                            _feedHome.value = it.copy(
-                                data = it.data.copy(
-                                    items = newData
-                                )
-                            )
-                        }
-                    }
-                    _reminderResult.value = Success(
-                        FeedReminderResultModel(
-                            isSetReminder = setReminder,
-                            reminderType = type
-                        )
-                    )
+                if (!response.success || response.errorMessage.isNotEmpty()) {
+                    throw MessageErrorException(response.errorMessage)
                 }
+
+
+                _feedHome.value?.let {
+                    if (it is Success) {
+                        val newData = it.data.items.map { item ->
+                            when {
+                                item is FeedCardImageContentModel && item.campaign.id.equals(
+                                    campaignId.toString(),
+                                    true
+                                ) -> item.copy(
+                                    campaign = item.campaign.copy(
+                                        isReminderActive = setReminder
+                                    )
+                                )
+                                item is FeedCardVideoContentModel && item.campaign.id.equals(
+                                    campaignId.toString(),
+                                    true
+                                ) -> item.copy(
+                                    campaign = item.campaign.copy(
+                                        isReminderActive = setReminder
+                                    )
+                                )
+                                else -> item
+                            }
+                        }
+
+                        _feedHome.value = it.copy(
+                            data = it.data.copy(
+                                items = newData
+                            )
+                        )
+                    }
+                }
+                _reminderResult.value = Success(
+                    FeedReminderResultModel(
+                        isSetReminder = setReminder,
+                        reminderType = type
+                    )
+                )
             } catch (e: Throwable) {
                 _reminderResult.value = Fail(e)
             }
