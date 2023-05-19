@@ -17,6 +17,7 @@ import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
@@ -139,6 +140,15 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
         position: Int
     ) {
         Toast.makeText(context, "onToggleReminderClicked PlayWidgetLargeView $channelId", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onReminderClicked(
+        view: PlayWidgetCarouselView,
+        channelId: String,
+        reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {
+        Toast.makeText(context, "onToggleReminderClicked PlayWidgetCarouselView $channelId", Toast.LENGTH_SHORT).show()
     }
 
     override fun onToggleReminderClicked(

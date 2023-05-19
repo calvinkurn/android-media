@@ -3,19 +3,23 @@ package com.tokopedia.play.widget.ui.carousel
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.IPlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play.widget.ui.model.ext.setMute
-import com.tokopedia.play.widget.ui.model.switch
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselChannelView
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselUpcomingView
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselAdapter
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselViewHolder
 
 /**
  * Created by kenny.hadisaputra on 05/05/23
@@ -42,60 +46,74 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this
     )
 
-    private val adapter = PlayWidgetCarouselAdapter(
-        object : PlayWidgetVideoContentViewHolder.Listener {
-            override fun onMuteButtonClicked(
-                viewHolder: PlayWidgetVideoContentViewHolder,
-                data: PlayWidgetChannelUiModel,
-                shouldMute: Boolean
-            ) {
-//                Toast.makeText(context, "Mute Button Clicked", Toast.LENGTH_SHORT).show()
-                val items = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>()
-                val newItems = items.map {
-                    if (it.channelId == data.channelId) {
-                        it.setMute(shouldMute)
-                    } else it
-                }
-                setupChannels(mModel.copy(items = newItems))
-            }
+    private var mIsMuted: Boolean = true
 
-            override fun onProductClicked(
-                viewHolder: PlayWidgetVideoContentViewHolder,
-                product: PlayWidgetProduct
-            ) {
+    private val videoContentListener = object : PlayWidgetCarouselViewHolder.VideoContent.Listener {
+        override fun onChannelImpressed(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
 
-            }
-        },
-        object : PlayWidgetUpcomingContentViewHolder.Listener {
-            override fun onReminderClicked(
-                viewHolder: PlayWidgetUpcomingContentViewHolder,
-                data: PlayWidgetChannelUiModel,
-                isReminded: Boolean
-            ) {
-//                Toast.makeText(context, "Reminder Button Clicked", Toast.LENGTH_SHORT).show()
-                val items = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>()
-                val newItems = items.map {
-                    if (it.channelId == data.channelId) {
-                        it.copy(
-                            reminderType = if (isReminded) {
-                                PlayWidgetReminderType.Reminded
-                            } else {
-                                PlayWidgetReminderType.NotReminded
-                            }
-                        )
-                    } else it
-                }
-                setupChannels(mModel.copy(items = newItems))
-            }
         }
+
+        override fun onMuteButtonClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            shouldMute: Boolean,
+            position: Int
+        ) {
+            mIsMuted = shouldMute
+            //TODO("Update mute button for the selected channel")
+        }
+
+        override fun onProductClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            product: PlayWidgetProduct,
+            position: Int
+        ) {
+            mWidgetListener?.onWidgetOpenAppLink(
+                this@PlayWidgetCarouselView,
+                product.appLink,
+            )
+        }
+    }
+
+    private val upcomingListener = object : PlayWidgetCarouselViewHolder.UpcomingContent.Listener {
+        override fun onChannelImpressed(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+
+        }
+
+        override fun onReminderClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel,
+            reminderType: PlayWidgetReminderType,
+            position: Int
+        ) {
+            mWidgetListener?.onReminderClicked(
+                this@PlayWidgetCarouselView,
+                item.channelId,
+                reminderType,
+                position,
+            )
+        }
+    }
+
+    private val adapter = PlayWidgetCarouselAdapter(
+        videoContentListener = videoContentListener,
+        upcomingListener = upcomingListener,
     )
 
     private val snapHelper = PagerSnapHelper()
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
-    private var mListener: Listener? = null
 
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
+    private var mWidgetListener: Listener? = null
 
     init {
         val layoutManager = PlayWidgetCarouselLayoutManager(context)
@@ -111,6 +129,8 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
                 if (adapter.itemCount == 0) return
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+
+                mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
 
                 val snappedView = snapHelper.findSnapView(layoutManager) ?: return
                 val snappedPosition = recyclerView.getChildAdapterPosition(snappedView)
@@ -131,6 +151,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         mModel = data
 
         setupChannels(data, scrollToFirstPosition = true)
+
+        binding.rvChannels.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(binding.rvChannels)
+        }
+    }
+
+    fun setWidgetListener(listener: Listener?) {
+        mWidgetListener = listener
     }
 
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
@@ -138,7 +166,6 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     private fun setupChannels(data: PlayWidgetUiModel, scrollToFirstPosition: Boolean = false) {
-        mModel = data
         val channels = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
         val dataWithFake = if (channels.isEmpty()) emptyList() else buildList {
             addAll(
@@ -165,7 +192,12 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         private const val FAKE_COUNT_PER_SIDE = 2
     }
 
-    interface Listener {
-        fun onChevronClicked(view: PlayWidgetCarouselView)
+    interface Listener : PlayWidgetRouterListener {
+        fun onReminderClicked(
+            view: PlayWidgetCarouselView,
+            channelId: String,
+            reminderType: PlayWidgetReminderType,
+            position: Int,
+        )
     }
 }

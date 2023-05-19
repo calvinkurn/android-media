@@ -7,7 +7,9 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.play.widget.databinding.ItemPlayWidgetUpcomingContentBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselDiffCallback
 
 /**
  * Created by kenny.hadisaputra on 04/05/23
@@ -60,7 +62,8 @@ class PlayWidgetUpcomingContentViewHolder(
             listener.onReminderClicked(
                 this,
                 data,
-                !data.reminderType.reminded,
+                data.reminderType,
+                absoluteAdapterPosition,
             )
         }
     }
@@ -83,7 +86,8 @@ class PlayWidgetUpcomingContentViewHolder(
         fun onReminderClicked(
             viewHolder: PlayWidgetUpcomingContentViewHolder,
             data: PlayWidgetChannelUiModel,
-            isReminded: Boolean,
+            reminderType: PlayWidgetReminderType,
+            position: Int,
         )
     }
 }

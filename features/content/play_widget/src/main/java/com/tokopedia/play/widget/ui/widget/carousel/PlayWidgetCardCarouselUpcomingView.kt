@@ -1,0 +1,101 @@
+package com.tokopedia.play.widget.ui.widget.carousel
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselUpcomingBinding
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
+
+/**
+ * Created by kenny.hadisaputra on 17/05/23
+ */
+class PlayWidgetCardCarouselUpcomingView : FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val binding = ViewPlayWidgetCardCarouselUpcomingBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
+    private lateinit var mModel: PlayWidgetChannelUiModel
+
+    private var mListener: Listener? = null
+
+    init {
+        showActionButton(false)
+    }
+
+    fun setModel(model: PlayWidgetChannelUiModel) {
+        this.mModel = model
+
+        binding.tvStartTime.text = model.startTime
+        binding.viewPlayWidgetCaption.root.text = model.title
+        binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
+        binding.imgCover.setImageUrl(model.video.coverUrl)
+
+        setReminded(model.reminderType.reminded)
+        setRemindedListener(model)
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    fun showActionButton(shouldShow: Boolean) {
+        binding.viewPlayWidgetActionButton.root.showWithCondition(shouldShow)
+    }
+
+    private fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
+        val lottieComposition = LottieCompositionFactory.fromRawRes(
+            binding.root.context,
+            if (shouldRemind) R.raw.play_widget_lottie_reminder_off_on
+            else R.raw.play_widget_lottie_reminder_on_off
+        )
+
+        lottieComposition.addListener { composition ->
+            binding.viewPlayWidgetActionButton.root.setComposition(composition)
+
+            if (animate) binding.viewPlayWidgetActionButton.root.playAnimation()
+            else binding.viewPlayWidgetActionButton.root.progress = 1f
+        }
+    }
+
+    private fun setRemindedListener(data: PlayWidgetChannelUiModel) {
+        binding.viewPlayWidgetActionButton.root.setOnClickListener {
+            mListener?.onReminderClicked(
+                this,
+                data,
+                data.reminderType,
+            )
+        }
+    }
+
+    interface Listener {
+        fun onReminderClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel,
+            reminderType: PlayWidgetReminderType,
+        )
+    }
+}

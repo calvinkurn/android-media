@@ -6,10 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN300"
-    android:maxWidth="234dp"
-    android:maxHeight="416dp"
     app:rcl_cornerRadius="12dp"
     >
+
+<!--    234dp-->
+<!--    416dp-->
+
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_cover"
@@ -19,6 +21,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="zoom"
+        app:shutter_background_color="@color/transparent"
+        app:surface_type="texture_view"
+        app:use_artwork="false"
+        app:use_controller="false"
         />
 
     <include
@@ -45,35 +62,33 @@
         app:layout_constraintVertical_bias="1"
         />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_clock"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_live_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        app:icon_color_light_disabled="@color/Unify_Static_White"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_disabled="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="CLOCK"
+        android:background="@drawable/bg_play_widget_live_badge"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
+        android:text="LIVE"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
+        app:layout_constraintBottom_toBottomOf="@id/view_play_widget_total_views"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_start_time"
+    <include
+        android:id="@+id/view_play_widget_total_views"
+        layout="@layout/view_play_widget_total_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/icon_clock"
-        app:layout_constraintStart_toEndOf="@id/icon_clock"
-        app:layout_constraintTop_toTopOf="@id/icon_clock"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="17 Apr 2023 | 17.00"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toEndOf="@id/tv_live_badge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="12dp"
         />
 
     <include
@@ -83,7 +98,7 @@
         android:layout_height="28dp"
         android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_start_time"
+        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
         />
 
     <include
@@ -105,13 +120,37 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scrollable_host_products"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_goneMarginBottom="12dp"
         />
 
+    <com.tokopedia.play_common.ui.custom.NestedScrollableHost
+        android:id="@+id/scrollable_host_products"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_play_widget_carousel_product"
+            />
+
+    </com.tokopedia.play_common.ui.custom.NestedScrollableHost>
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

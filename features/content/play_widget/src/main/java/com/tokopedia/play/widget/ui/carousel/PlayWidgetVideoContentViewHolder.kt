@@ -13,6 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselDiffCallback
 
 /**
  * Created by kenny.hadisaputra on 04/05/23
@@ -32,6 +33,7 @@ class PlayWidgetVideoContentViewHolder(
             }
         }
     )
+
     init {
         setMuted(true)
 

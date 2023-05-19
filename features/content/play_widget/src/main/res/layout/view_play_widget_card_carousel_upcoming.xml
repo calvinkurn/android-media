@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN300"
-    android:maxWidth="234dp"
-    android:maxHeight="416dp"
     app:rcl_cornerRadius="12dp"
     >
 
