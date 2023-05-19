@@ -124,6 +124,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         mListener = listener
     }
 
+    fun resetProductPosition() {
+        binding.rvProducts.scrollToPosition(0)
+    }
+
     fun showMuteButton(shouldShow: Boolean, animate: Boolean = true) {
         if (animate) {
             TransitionManager.beginDelayedTransition(

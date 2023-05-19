@@ -57,6 +57,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
                         channelView.showMuteButton(shouldShow = false)
+                        channelView.resetProductPosition()
                     }
                 }
             }
