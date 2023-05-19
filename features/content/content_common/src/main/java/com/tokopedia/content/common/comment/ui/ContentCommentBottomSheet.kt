@@ -589,7 +589,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 Toaster.LENGTH_LONG,
                 getString(R.string.feed_content_coba_lagi_text)
             ) {
-                action(false)
+                requireInternet { action(it) }
             }
         }
     }
