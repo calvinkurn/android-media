@@ -1,5 +1,8 @@
 package com.tokopedia.tokochat.util
 
+import android.os.Build
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+
 object TokoChatValueUtil {
     /**
      * Extension values
@@ -25,4 +28,28 @@ object TokoChatValueUtil {
      * Censor values
      */
     const val CENSOR_TEXT = "******"
+
+    /**
+     * Bubbles
+     */
+    const val BUBBLES_NOTIF = "bubbles_notif"
+    const val BUBBLES_ROLLENCE = "tokochat_bubbles_rollence"
+    const val BUBBLES_PREF = "tokochat_bubbles_awareness"
+
+    fun shouldShowBubblesAwareness(): Boolean {
+        return shouldShowBubblesAwarenessRollence() && shouldShowBubblesAwarenessOS()
+    }
+    private fun shouldShowBubblesAwarenessOS(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+    }
+    private fun shouldShowBubblesAwarenessRollence(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                BUBBLES_ROLLENCE,
+                ""
+            ) == BUBBLES_ROLLENCE
+        } catch (e: Throwable) {
+            false
+        }
+    }
 }

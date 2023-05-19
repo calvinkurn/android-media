@@ -5,7 +5,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class TokoChatReminderTickerUiModel(
     val message: String,
     val tickerType: Int,
-    val showCloseButton: Boolean = false
+    val showCloseButton: Boolean = false,
+    val tag: String = ""
 ) {
     val impressHolder = ImpressHolder()
 }
