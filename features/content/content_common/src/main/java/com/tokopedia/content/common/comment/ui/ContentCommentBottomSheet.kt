@@ -498,9 +498,9 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
+        analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment(
+            CommentAction.ReportComment (
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
