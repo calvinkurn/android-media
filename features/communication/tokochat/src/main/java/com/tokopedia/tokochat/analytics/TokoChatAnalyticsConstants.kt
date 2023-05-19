@@ -82,4 +82,20 @@ object TokoChatAnalyticsConstants {
     const val CLICK_CLOSE_ON_CHAT_WITH_DRIVER_CONSENT_TICKER = "click close on chat with driver consent bottomsheet"
     const val TRACKER_ID_42872 = "42872"
     const val TRACKER_ID_43181 = "43181"
+
+    const val VIEW_ONBOARDING_BOTTOMSHEET = "view onboarding bottomsheet"
+    const val TRACKER_ID_43185 = "43185"
+
+    const val CLICK_CONTINUE_ONBOARDING_BOTTOMSHEET = "click continue onboarding bottomsheet"
+    const val TRACKER_ID_43186 = "43186"
+
+    const val SWIPE_NEXT_ONBOARDING_BOTTOMSHEET = "swipe next onboarding bottomsheet"
+    const val TRACKER_ID_43187 = "43187"
+
+    const val CLICK_SELENGKAPNYA_ONBOARDING_BOTTOMSHEET = "click selengkapnya onboarding bottomsheet"
+    const val TRACKER_ID_43188 = "43188"
+
+    const val CLICK_ACTIVATE_FROM_ONBOARDING_BOTTOMSHEET = "click activate from onboarding bottomsheet"
+    const val TRACKER_ID_43189 = "43189"
+
 }
