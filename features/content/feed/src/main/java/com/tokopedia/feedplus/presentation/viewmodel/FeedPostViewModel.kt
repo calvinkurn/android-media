@@ -24,6 +24,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
@@ -117,9 +118,7 @@ class FeedPostViewModel @Inject constructor(
         get() = _shouldShowNoMoreContent
 
     fun fetchFeedPosts(
-        source: String,
-        isNewData: Boolean = false,
-        postId: String? = null
+        source: String, isNewData: Boolean = false, postId: String? = null
     ) {
         _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
@@ -144,8 +143,7 @@ class FeedPostViewModel @Inject constructor(
                     try {
                         Success(
                             getFeedPosts(
-                                source = source,
-                                cursor = _feedHome.value?.cursor.orEmpty()
+                                source = source, cursor = _feedHome.value?.cursor.orEmpty()
                             )
                         )
                     } catch (e: Throwable) {
@@ -181,14 +179,11 @@ class FeedPostViewModel @Inject constructor(
                         }.toList()
 
                         _shouldShowNoMoreContent =
-                            _feedHome.value?.items.orEmpty().isNotEmpty() &&
-                                items.isEmpty()
+                            _feedHome.value?.items.orEmpty().isNotEmpty() && items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
-                                items = relevantPostsDeferred.await() +
-                                    _feedHome.value?.items.orEmpty() +
-                                    items
+                                items = relevantPostsDeferred.await() + _feedHome.value?.items.orEmpty() + items
                             )
                         )
                     }
@@ -207,8 +202,7 @@ class FeedPostViewModel @Inject constructor(
             try {
                 val response = setCampaignReminderUseCase(
                     setCampaignReminderUseCase.createParams(
-                        campaignId,
-                        setReminder
+                        campaignId, setReminder
                     )
                 )
 
@@ -217,18 +211,16 @@ class FeedPostViewModel @Inject constructor(
                         if (it is Success) {
                             val newData = it.data.items.map { item ->
                                 when {
-                                    item is FeedCardImageContentModel && item.campaign.id == campaignId.toString() ->
-                                        item.copy(
-                                            campaign = item.campaign.copy(
-                                                isReminderActive = setReminder
-                                            )
+                                    item is FeedCardImageContentModel && item.campaign.id == campaignId.toString() -> item.copy(
+                                        campaign = item.campaign.copy(
+                                            isReminderActive = setReminder
                                         )
-                                    item is FeedCardVideoContentModel && item.campaign.id == campaignId.toString() ->
-                                        item.copy(
-                                            campaign = item.campaign.copy(
-                                                isReminderActive = setReminder
-                                            )
+                                    )
+                                    item is FeedCardVideoContentModel && item.campaign.id == campaignId.toString() -> item.copy(
+                                        campaign = item.campaign.copy(
+                                            isReminderActive = setReminder
                                         )
+                                    )
                                     else -> item
                                 }
                             }
@@ -248,6 +240,27 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun isFollowing(id: String): Boolean = feedHome.value?.let {
+        return when (it) {
+            is Success -> {
+                val filteredData = it.data.items.firstOrNull { item ->
+                    (item is FeedCardImageContentModel && item.id == id) ||
+                        (item is FeedCardVideoContentModel && item.id == id) ||
+                        (item is FeedCardLivePreviewContentModel && item.id == id)
+                }
+                return filteredData?.let { item ->
+                    when {
+                        item is FeedCardImageContentModel && item.id == id -> item.followers.isFollowed
+                        item is FeedCardVideoContentModel && item.id == id -> item.followers.isFollowed
+                        item is FeedCardLivePreviewContentModel && item.id == id -> item.followers.isFollowed
+                        else -> false
+                    }
+                } ?: false
+            }
+            else -> false
+        }
+    } ?: false
+
     fun fetchTopAdsData() {
         viewModelScope.launch {
             feedHome.value?.let {
@@ -262,13 +275,10 @@ class FeedPostViewModel @Inject constructor(
                         when {
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
-                                    topAdsHeadlineUseCase.setParams(
-                                        UrlParamHelper.generateUrlParamString(
-                                            defaultTopAdsUrlParams.apply {
-                                                put(PARAM_PAGE, ++currentTopAdsPage)
-                                            }
-                                        ),
-                                        topAdsAddressData
+                                    topAdsHeadlineUseCase.setParams(UrlParamHelper.generateUrlParamString(
+                                        defaultTopAdsUrlParams.apply {
+                                            put(PARAM_PAGE, ++currentTopAdsPage)
+                                        }), topAdsAddressData
                                     )
                                     val data = topAdsHeadlineUseCase.executeOnBackground()
                                     if (data.displayAds.data.isNotEmpty()) {
@@ -301,14 +311,13 @@ class FeedPostViewModel @Inject constructor(
     }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
-        _suspendedFollowData.value =
-            FollowShopModel(
-                id = id,
-                encryptedId = encryptedId,
-                success = false,
-                isFollowing = false,
-                isShop = isShop
-            )
+        _suspendedFollowData.value = FollowShopModel(
+            id = id,
+            encryptedId = encryptedId,
+            success = false,
+            isFollowing = false,
+            isShop = isShop
+        )
     }
 
     fun processSuspendedFollow() {
@@ -357,9 +366,7 @@ class FeedPostViewModel @Inject constructor(
 
     fun suspendLikeContent(contentId: String, rowNumber: Int) {
         _suspendedLikeData.value = LikeFeedDataModel(
-            contentId,
-            rowNumber,
-            FeedLikeAction.Like
+            contentId, rowNumber, FeedLikeAction.Like
         )
     }
 
@@ -443,21 +450,14 @@ class FeedPostViewModel @Inject constructor(
                 result?.let {
                     updateItems { item ->
                         when {
-                            item is FeedCardImageContentModel &&
-                                item.id == contentId &&
-                                !isPlayContent -> item.copy(
+                            item is FeedCardImageContentModel && item.id == contentId && !isPlayContent -> item.copy(
                                 comments = item.comments.copy(
-                                    count = it.count.toIntSafely(),
-                                    countFmt = it.countFmt
+                                    count = it.count.toIntSafely(), countFmt = it.countFmt
                                 )
                             )
-                            item is FeedCardVideoContentModel && (
-                                (item.id == contentId && !isPlayContent) ||
-                                    (item.playChannelId == contentId && isPlayContent)
-                                ) -> item.copy(
+                            item is FeedCardVideoContentModel && ((item.id == contentId && !isPlayContent) || (item.playChannelId == contentId && isPlayContent)) -> item.copy(
                                 comments = item.comments.copy(
-                                    count = it.count.toIntSafely(),
-                                    countFmt = it.countFmt
+                                    count = it.count.toIntSafely(), countFmt = it.countFmt
                                 )
                             )
                             else -> item
@@ -477,31 +477,26 @@ class FeedPostViewModel @Inject constructor(
     }
 
     private suspend fun getFeedPosts(
-        source: String,
-        cursor: String = ""
+        source: String, cursor: String = ""
     ): FeedModel {
         return feedXHomeUseCase(
             feedXHomeUseCase.createParams(
-                source,
-                cursor
+                source, cursor
             )
         )
     }
 
-    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
-        try {
-            checkCampaignReminderUseCase(
-                checkCampaignReminderUseCase.createParams(campaignId)
-            ).isAvailable
-        } catch (e: Throwable) {
-            false
-        }
+    private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean = try {
+        checkCampaignReminderUseCase(
+            checkCampaignReminderUseCase.createParams(campaignId)
+        ).isAvailable
+    } catch (e: Throwable) {
+        false
+    }
 
     private fun mapLikeResponse(contentId: String, likeAction: FeedLikeAction, rowNumber: Int) =
         LikeFeedDataModel(
-            contentId = contentId,
-            rowNumber = rowNumber,
-            action = likeAction
+            contentId = contentId, rowNumber = rowNumber, action = likeAction
         )
 
     private fun updateFollowStatus(id: String, isFollowing: Boolean) {
@@ -579,29 +574,24 @@ class FeedPostViewModel @Inject constructor(
         currentValue?.let {
             when (it) {
                 is Success -> {
-                    _feedHome.value = Success(
-                        it.data.copy(
-                            items = it.data.items.map { item ->
-                                onUpdate(item)
-                            }
-                        )
-                    )
+                    _feedHome.value = Success(it.data.copy(items = it.data.items.map { item ->
+                        onUpdate(item)
+                    }))
                 }
                 else -> {}
             }
         }
     }
 
-    private fun getTopAdsParams(): MutableMap<String, Any> =
-        mutableMapOf(
-            PARAM_DEVICE to VALUE_DEVICE,
-            PARAM_EP to VALUE_EP,
-            PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-            PARAM_ITEM to VALUE_ITEM,
-            PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
-            PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-            PARAM_USER_ID to userSession.userId
-        )
+    private fun getTopAdsParams(): MutableMap<String, Any> = mutableMapOf(
+        PARAM_DEVICE to VALUE_DEVICE,
+        PARAM_EP to VALUE_EP,
+        PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+        PARAM_ITEM to VALUE_ITEM,
+        PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
+        PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+        PARAM_USER_ID to userSession.userId
+    )
 
     /**
      * Add to Cart & Buy
@@ -682,8 +672,7 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Merchant Voucher
      */
-    private val _merchantVoucherLiveData =
-        MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
+    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
     val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
         get() = _merchantVoucherLiveData
 

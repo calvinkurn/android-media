@@ -505,7 +505,9 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        currentTrackerData = trackerModel
+
+        val action: () -> Unit = {
             openProductTagBottomSheet(
                 author = author,
                 hasVoucher = hasVoucher,
@@ -516,6 +518,17 @@ class FeedFragment :
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
             }
+        }
+
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
+            )
+        ) {
+            action()
         }
     }
 
@@ -531,7 +544,9 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        currentTrackerData = trackerModel
+
+        val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickProductLabel(it)
                 feedAnalytics.eventClickContentProductLabel(it)
@@ -552,6 +567,14 @@ class FeedFragment :
                     campaign = campaign
                 )
             }
+        }
+
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+            )
+        ) {
+            action()
         }
     }
 
@@ -671,7 +694,8 @@ class FeedFragment :
         campaignName: String,
         positionInFeed: Int
     ) {
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign)) {
+        currentTrackerData = trackerModel
+        val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickCampaignRibbon(
                     it,
@@ -686,6 +710,14 @@ class FeedFragment :
                     campaign = campaign
                 )
             }
+        }
+
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+            )
+        ) {
+            action()
         }
     }
 
@@ -1217,6 +1249,8 @@ class FeedFragment :
         actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         if (view == null) return
+        if (message.isEmpty()) return
+
         Toaster.build(
             requireView(),
             message,
@@ -1246,18 +1280,26 @@ class FeedFragment :
     }
 
     private fun checkForFollowerBottomSheet(
+        id: String,
         positionInFeed: Int,
-        campaign: FeedCardCampaignModel
+        campaignStatus: String,
+        isExclusiveForMember: Boolean,
+        onDismiss: () -> Unit
     ): Boolean {
-        if (campaign.isExclusiveForMember) {
-            showFollowerBottomSheet(positionInFeed, campaign.status)
+        if (isExclusiveForMember && !feedPostViewModel.isFollowing(id)) {
+            showFollowerBottomSheet(positionInFeed, campaignStatus, onDismiss)
         }
-        return campaign.isExclusiveForMember
+        return isExclusiveForMember && !feedPostViewModel.isFollowing(id)
     }
 
-    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
+    private fun showFollowerBottomSheet(
+        positionInFeed: Int,
+        campaignStatus: String,
+        onDismiss: () -> Unit
+    ) {
         feedFollowersOnlyBottomSheet =
             FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+        feedFollowersOnlyBottomSheet?.setOnDismissListener(onDismiss)
 
         if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false) {
             feedFollowersOnlyBottomSheet?.show(
@@ -1294,44 +1336,68 @@ class FeedFragment :
         product: FeedTaggedProductUiModel,
         itemPosition: Int
     ) {
-        currentTrackerData?.let { data ->
-            feedAnalytics.eventClickCartButton(
-                trackerData = data,
-                productName = product.title,
-                productId = product.id,
-                productPrice = product.finalPrice,
-                shopId = product.shop.id,
-                shopName = product.shop.name,
-                index = itemPosition
-            )
-        }
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                itemPosition,
+                when (product.campaign.status) {
+                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                product.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            currentTrackerData?.let { data ->
+                feedAnalytics.eventClickCartButton(
+                    trackerData = data,
+                    productName = product.title,
+                    productId = product.id,
+                    productPrice = product.finalPrice,
+                    shopId = product.shop.id,
+                    shopName = product.shop.name,
+                    index = itemPosition
+                )
+            }
 
-        if (userSession.isLoggedIn) {
-            feedPostViewModel.addProductToCart(product)
-        } else {
-            feedPostViewModel.suspendAddProductToCart(product)
-            addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (userSession.isLoggedIn) {
+                feedPostViewModel.addProductToCart(product)
+            } else {
+                feedPostViewModel.suspendAddProductToCart(product)
+                addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            }
         }
     }
 
     override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
-        currentTrackerData?.let { data ->
-            feedAnalytics.eventClickBuyButton(
-                trackerData = data,
-                productName = product.title,
-                productId = product.id,
-                productPrice = product.finalPrice,
-                shopId = product.shop.id,
-                shopName = product.shop.name,
-                index = itemPosition
-            )
-        }
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                itemPosition,
+                when (product.campaign.status) {
+                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                product.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            currentTrackerData?.let { data ->
+                feedAnalytics.eventClickBuyButton(
+                    trackerData = data,
+                    productName = product.title,
+                    productId = product.id,
+                    productPrice = product.finalPrice,
+                    shopId = product.shop.id,
+                    shopName = product.shop.name,
+                    index = itemPosition
+                )
+            }
 
-        if (userSession.isLoggedIn) {
-            feedPostViewModel.buyProduct(product)
-        } else {
-            feedPostViewModel.suspendBuyProduct(product)
-            buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (userSession.isLoggedIn) {
+                feedPostViewModel.buyProduct(product)
+            } else {
+                feedPostViewModel.suspendBuyProduct(product)
+                buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            }
         }
     }
 
