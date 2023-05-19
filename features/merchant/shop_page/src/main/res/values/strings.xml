@@ -217,4 +217,5 @@
     <string name="shop_page_clock_icon">Icon jam</string>
 
     <string name="shop_page_please_wait">Tunggu sebentar</string>
+    <string name="shop_page_use_voucher_success">Kupon sudah terpasang, transaksi sekarang yuk!</string>
 </resources>

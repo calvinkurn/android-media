@@ -8,6 +8,7 @@ import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherDetailUseCase
 import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
+import com.tokopedia.shop.campaign.domain.usecase.UsePromoVoucherUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class PromoVoucherDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getPromoVoucherDetailUseCase: GetPromoVoucherDetailUseCase,
-    private val redeemPromoVoucherUseCase: RedeemPromoVoucherUseCase
+    private val redeemPromoVoucherUseCase: RedeemPromoVoucherUseCase,
+    private val usePromoVoucherUseCase: UsePromoVoucherUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherDetail = MutableLiveData<Result<PromoVoucherDetail>>()
@@ -27,6 +29,10 @@ class PromoVoucherDetailViewModel @Inject constructor(
     private val _redeemResult = MutableLiveData<Result<RedeemPromoVoucherResult>>()
     val redeemResult: LiveData<Result<RedeemPromoVoucherResult>>
         get() = _redeemResult
+
+    private val _useVoucherResult = MutableLiveData<Result<Boolean>>()
+    val useVoucherResult: LiveData<Result<Boolean>>
+        get() = _useVoucherResult
 
     fun getVoucherDetail(categorySlug: String) {
         launchCatchError(
@@ -56,6 +62,20 @@ class PromoVoucherDetailViewModel @Inject constructor(
         )
     }
 
+    fun useVoucher() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val redeemedVoucherCode = _redeemResult.voucherCodeOrNull() ?: return@launchCatchError
+                val useVoucherResult = usePromoVoucherUseCase.execute(redeemedVoucherCode)
+                _useVoucherResult.postValue(Success(useVoucherResult))
+            },
+            onError = { throwable ->
+                _useVoucherResult.postValue(Fail(throwable))
+            }
+        )
+    }
+
     private fun LiveData<Result<PromoVoucherDetail>>.getVoucherDetailOrNull(): PromoVoucherDetail? {
         val voucherDetail = this.value
         return if (voucherDetail is Success) {
@@ -65,6 +85,14 @@ class PromoVoucherDetailViewModel @Inject constructor(
         }
     }
 
+    private fun LiveData<Result<RedeemPromoVoucherResult>>.voucherCodeOrNull(): String? {
+        val redeemResult = this.value
+        return if (redeemResult is Success) {
+           redeemResult.data.voucherCode
+        } else {
+            null
+        }
+    }
 }
 
 

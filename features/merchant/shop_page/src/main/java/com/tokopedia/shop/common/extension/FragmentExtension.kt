@@ -12,3 +12,9 @@ fun Fragment.showToasterError(throwable: Throwable) {
         Toaster.build(view ?: return, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 }
+
+fun Fragment.showToaster(message: String) {
+    activity?.let {
+        Toaster.build(view ?: return, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+    }
+}

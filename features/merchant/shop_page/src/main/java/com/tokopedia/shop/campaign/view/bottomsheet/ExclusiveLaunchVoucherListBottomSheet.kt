@@ -17,6 +17,7 @@ import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
+import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -168,10 +169,16 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(categorySlug = categorySlug)
 
         bottomSheet.setOnVoucherRedeemSuccess { redeemResult ->
-            dismiss()
+            if (redeemResult.redeemMessage.isNotEmpty()) showToaster(redeemResult.redeemMessage)
         }
         bottomSheet.setOnVoucherRedeemFailed { throwable ->
-            dismiss()
+            showToasterError(throwable)
+        }
+        bottomSheet.setOnVoucherUseSuccess {
+            showToaster(context?.getString(R.string.shop_page_use_voucher_success).orEmpty())
+        }
+        bottomSheet.setOnVoucherUseFailed { throwable ->
+            showToasterError(throwable)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

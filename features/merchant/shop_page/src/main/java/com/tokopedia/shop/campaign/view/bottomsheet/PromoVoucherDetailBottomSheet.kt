@@ -45,7 +45,9 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     private var onVoucherRedeemSuccess: (RedeemPromoVoucherResult) -> Unit = {}
     private var onVoucherRedeemFailed: (Throwable) -> Unit = {}
-
+    private var onVoucherUseSuccess: () -> Unit = {}
+    private var onVoucherUseFailed: (Throwable) -> Unit = {}
+    
     init {
         clearContentPadding = true
         isSkipCollapseState = true
@@ -98,8 +100,26 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         setupView()
         observeVoucherDetail()
         observeRedeemVoucher()
+        observeUseVoucher()
         viewModel.getVoucherDetail(categorySlug)
     }
+
+
+    private fun setupView() {
+        binding?.run {
+            btnUseVoucher.setOnClickListener {
+                binding?.btnUseVoucher?.startLoading()
+                viewModel.useVoucher()
+            }
+
+            btnClaimVoucher.setOnClickListener {
+                binding?.btnClaimVoucher?.startLoading()
+                viewModel.redeemVoucher()
+            }
+            imgVoucher.cornerRadius = Int.ZERO
+        }
+    }
+
 
     private fun observeVoucherDetail() {
         viewModel.voucherDetail.observe(viewLifecycleOwner) { result ->
@@ -122,7 +142,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    handleRedeemVoucherResult(result.data)
+                    showUseVoucherButton()
                     binding?.btnUseVoucher?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
                 }
@@ -130,6 +150,22 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                     binding?.btnUseVoucher?.stopLoading()
                     showToasterError(result.throwable)
                     onVoucherRedeemFailed(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeUseVoucher() {
+        viewModel.useVoucherResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.btnUseVoucher?.stopLoading()
+                    onVoucherUseSuccess()
+                }
+                is Fail -> {
+                    binding?.btnUseVoucher?.stopLoading()
+                    showToasterError(result.throwable)
+                    onVoucherUseFailed(result.throwable)
                 }
             }
         }
@@ -155,20 +191,6 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleRedeemVoucherResult(result: RedeemPromoVoucherResult) {
-        showUseVoucherButton()
-    }
-
-    private fun setupView() {
-        binding?.run {
-            btnUseVoucher.setOnClickListener {
-                binding?.btnUseVoucher?.startLoading()
-                viewModel.redeemVoucher()
-                dismiss()
-            }
-            imgVoucher.cornerRadius = Int.ZERO
-        }
-    }
 
     private fun UnifyButton.startLoading() {
         this.isLoading = true
@@ -206,5 +228,13 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     fun setOnVoucherRedeemFailed(onVoucherRedeemFailed : (Throwable) -> Unit) {
         this.onVoucherRedeemFailed = onVoucherRedeemFailed
+    }
+
+    fun setOnVoucherUseSuccess(onVoucherUseSuccess : () -> Unit) {
+        this.onVoucherUseSuccess = onVoucherUseSuccess
+    }
+
+    fun setOnVoucherUseFailed(onVoucherUseFailed : (Throwable) -> Unit) {
+        this.onVoucherUseFailed = onVoucherUseFailed
     }
 }
