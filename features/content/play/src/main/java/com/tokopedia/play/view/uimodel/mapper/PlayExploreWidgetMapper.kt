@@ -83,11 +83,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         partner = PlayWidgetPartnerUiModel(
                             id = it.partner.id,
                             name = partnerName,
-                            type = when (it.partner.type) {
-                                PartnerType.Shop.value -> PartnerType.Shop
-                                PartnerType.Buyer.value -> PartnerType.Buyer
-                                else -> PartnerType.Unknown
-                            }
+                            type = PartnerType.getTypeByValue(it.partner.name)
                         ),
                         video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
                         channelType = channelType,

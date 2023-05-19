@@ -84,9 +84,3 @@ data class PlayWidgetTotalView(
     val totalViewFmt: String,
     val isVisible: Boolean,
 )
-
-enum class PartnerType(val value: String) {
-    Shop("shop"),
-    Buyer("buyer"),
-    Unknown(""),
-}

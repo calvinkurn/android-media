@@ -61,11 +61,7 @@ object UserProfileVideoMapper {
             partner = PlayWidgetPartnerUiModel(
                 id = item.partner.id,
                 name = item.partner.name,
-                type = when (item.partner.type) {
-                    PartnerType.Shop.value -> PartnerType.Shop
-                    PartnerType.Buyer.value -> PartnerType.Buyer
-                    else -> PartnerType.Unknown
-                }
+                type = PartnerType.getTypeByValue(item.partner.name)
             ),
             video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
             channelType = channelType,

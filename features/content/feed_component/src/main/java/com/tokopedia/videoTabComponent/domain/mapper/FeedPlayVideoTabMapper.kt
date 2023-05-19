@@ -190,11 +190,7 @@ object FeedPlayVideoTabMapper {
                     partner = PlayWidgetPartnerUiModel(
                         id = item.partner.id,
                         name = MethodChecker.fromHtml(item.partner.name).toString(),
-                        type = when (item.partner.type) {
-                            PartnerType.Shop.value -> PartnerType.Shop
-                            PartnerType.Buyer.value -> PartnerType.Buyer
-                            else -> PartnerType.Unknown
-                        }
+                        type = PartnerType.getTypeByValue(item.partner.name)
                     ),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
