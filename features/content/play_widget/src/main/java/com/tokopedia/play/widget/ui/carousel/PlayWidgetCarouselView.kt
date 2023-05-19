@@ -118,9 +118,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private var mWidgetListener: Listener? = null
 
     private val itemDecoration = PlayWidgetCarouselItemDecoration(context)
+    private val layoutManager = PlayWidgetCarouselLayoutManager(context)
 
     init {
-        val layoutManager = PlayWidgetCarouselLayoutManager(context)
         binding.rvChannels.layoutManager = layoutManager
         binding.rvChannels.adapter = adapter
         binding.rvChannels.addItemDecoration(itemDecoration)
@@ -216,9 +216,21 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         adapter.submitList(dataWithFake) {
             if (channels.isEmpty()) return@submitList
             if (scrollToFirstPosition) {
-                binding.rvChannels.scrollToPosition(FAKE_COUNT_PER_SIDE - 1)
-                binding.rvChannels.smoothScrollToPosition(FAKE_COUNT_PER_SIDE)
+                roughlyScrollTo(FAKE_COUNT_PER_SIDE) {
+                    binding.rvChannels.smoothScrollBy(1, 0)
+                }
             }
+        }
+    }
+
+    private fun roughlyScrollTo(position: Int, onScrolled: () -> Unit) {
+        binding.rvChannels.scrollToPosition(position)
+        binding.rvChannels.post {
+            val firstItem = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val view = binding.rvChannels.findViewHolderForAdapterPosition(firstItem)?.itemView ?: return@post
+            val scrollBy = ((2 * view.x + view.width) / 2 - binding.rvChannels.width / 2).toInt()
+            binding.rvChannels.scrollBy(scrollBy, 0)
+            onScrolled()
         }
     }
 
