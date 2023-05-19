@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fallback_badge_width">189dp</dimen>
+    <dimen name="fallback_badge_height">211dp</dimen>
+    <dimen name="mdpi_device_top_margin">142dp</dimen>
+</resources>
