@@ -46,3 +46,20 @@ internal suspend fun UserSessionDataStore.getSampleUser(): SampleUserModel {
         isShopOwner().first()
     )
 }
+
+internal fun UserSession.getSampleUser(): SampleUserModel {
+    return SampleUserModel(
+        isLoggedIn,
+        userId,
+        name,
+        accessToken,
+        freshToken,
+        shopId,
+        shopName,
+        email,
+        isMsisdnVerified,
+        isGoldMerchant,
+        phoneNumber,
+        isShopOwner
+    )
+}

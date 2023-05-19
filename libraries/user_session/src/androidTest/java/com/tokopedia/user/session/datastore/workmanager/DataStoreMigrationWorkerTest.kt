@@ -65,7 +65,7 @@ class DataStoreMigrationWorkerTest {
     }
 
     @Test
-    fun when_cleared_after_migration_data_remains_synced() {
+    fun when_cleared_session_after_migration_data_remains_synced() {
         runBlocking {
             val sample = SampleUserModel()
             val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
@@ -83,7 +83,7 @@ class DataStoreMigrationWorkerTest {
             dataStore.clearToken()
 
             assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
-            assertThat(dataStore.getSampleUser(), equalTo(sample))
+            assertThat(dataStore.getSampleUser(), equalTo(userSession.getSampleUser()))
         }
     }
 
