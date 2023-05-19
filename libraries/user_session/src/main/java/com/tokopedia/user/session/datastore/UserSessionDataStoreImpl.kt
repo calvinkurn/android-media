@@ -272,7 +272,6 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             clearShopAvatar()
             clearIsPowerMerchantIdle()
             clearTwitterAccessToken()
-            clearTwitterAccessToken()
             clearLoginMethod()
             clearTwitterShouldPost()
             clearIsShopOfficialStore()
@@ -469,6 +468,5 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
         private const val DEFAULT_EMPTY_SHOP_ID = "0"
         private const val DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1"
-
     }
 }
