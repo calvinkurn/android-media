@@ -749,7 +749,7 @@ class FeedFragment :
             }
         }
 
-        (childFragmentManager.findFragmentByTag(FeedFollowersOnlyBottomSheet.TAG) as? FeedFollowersOnlyBottomSheet)?.dismiss()
+        feedFollowersOnlyBottomSheet?.dismiss()
     }
 
     private fun observeReport() {
