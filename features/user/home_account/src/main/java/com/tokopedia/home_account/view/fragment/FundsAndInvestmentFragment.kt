@@ -143,7 +143,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
             addSubtitleView()
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
-                if (it.id == AccountConstants.WALLET.CO_BRAND_CC) {
+                if (it.id == AccountConstants.WALLET.CO_BRAND_CC || it.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
                     viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
                 } else {
@@ -180,16 +180,15 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 adapter?.changeItemToSuccessBySameId(wallet)
             }
         } else {
-            adapter?.changeItemToSuccessBySameId(
-                    UiModelMapper.getWalletUiModel(
-                            balanceAndPoint
-                    ).apply {
-                        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
-                            this.isActive = true
-                        }
-                        this.isVertical = true
-                    }
-            )
+            val wallet = UiModelMapper.getWalletUiModel(
+                balanceAndPoint
+            ).apply {
+                if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+                    this.isActive = true
+                }
+                this.isVertical = true
+            }
+            adapter?.changeItemToSuccessBySameId(wallet)
         }
     }
 
