@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.viewholder
+package com.tokopedia.tokopedianow.common.viewholder.oldrepurchase
 
 import android.view.View
 import androidx.annotation.LayoutRes
