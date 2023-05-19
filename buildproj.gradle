@@ -107,6 +107,7 @@ subprojects {
                 substitute module('androidx.legacy:legacy-support-v4') with module("androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}")
                 substitute module('androidx.arch.core:core-runtime') with module("androidx.arch.core:core-runtime:${archCoreVersion}")
                 substitute module('androidx.arch.core:core-common') with module("androidx.arch.core:core-common:${archCoreVersion}")
+                substitute module('androidx.core:core') with module("androidx.core:core:${androidxCoreVersion}")
                 if (project.name != 'wearosapp') {
                     substitute module('androidx.cardview:cardview') with module("androidx.cardview:cardview:${supportLegacyLibraryVersion}")
                 }
