@@ -58,7 +58,6 @@ import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstPr
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.checkout.view.helper.ShipmentValidatePromoHolderData
-import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
@@ -164,6 +163,8 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -4532,14 +4533,19 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun releaseBooking() {
         // As deals product is using OCS, the shipment should only contain 1 product
         val productId =
             getFirstProductId(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
         if (productId != 0L) {
-            releaseBookingUseCase
-                .execute(productId)
-                .subscribe(ReleaseBookingStockSubscriber())
+            GlobalScope.launch {
+                try {
+                    releaseBookingUseCase(productId)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
         }
     }
     // endregion
