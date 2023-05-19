@@ -715,13 +715,8 @@ class DigitalCartFragment :
     private fun handleCrossSellConsent(fintechProduct: FintechProduct, isSubscriptionChecked: Boolean) {
         binding?.run {
             if (isSubscriptionChecked) {
-                val dummy = CollectionPointMetadata(
-                    "c2aaa1d7-2c1e-4b32-87ef-b18358dbd442",
-                    "1",
-                    ""
-                )
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
-                if (dummy.collectionPointId.isNotEmpty() && !hasProductConsent()) {
+                if (collectionPointMetadata.collectionPointId.isNotEmpty() && !hasProductConsent()) {
                     checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                     checkoutBottomViewWidget.showCrossSellConsent()
                     renderCrossSellConsentWidget(collectionPointMetadata)
