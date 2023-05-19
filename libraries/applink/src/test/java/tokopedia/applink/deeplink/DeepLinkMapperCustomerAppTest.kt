@@ -8,7 +8,6 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.applink.user.DeeplinkMapperUser
@@ -25,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 224
+        const val SIZE_MAPPER = 225
     }
 
     override fun setup() {
@@ -2589,5 +2588,4 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = ApplinkConstInternalDilayaniTokopedia.HOME
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
-
 }
