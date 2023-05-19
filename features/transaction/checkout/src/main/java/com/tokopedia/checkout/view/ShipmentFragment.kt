@@ -2355,6 +2355,7 @@ class ShipmentFragment :
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
             if (shipmentCartItemModel != null) {
+                shipmentLoadingIndex = -1
                 shipmentCartItemModel.isStateLoadingCourierState = false
                 if (isTradeInDropOff) {
                     shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState = true
