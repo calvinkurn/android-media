@@ -138,6 +138,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topq
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryHomeFactory {
 
@@ -642,7 +643,9 @@ class DiscoveryHomeFactory {
             viewType: Int,
             fragment: Fragment
         ): AbstractViewHolder? {
-            return componentMapper[viewType]?.getViewHolder(itemView, fragment)
+            return componentMapper[viewType]?.getViewHolder(itemView, fragment)?.apply {
+                uiWidgetComponent = (fragment as DiscoveryFragment).provideSubComponent()
+            }
         }
 
         fun createViewModel(viewType: Int): (application: Application, components: ComponentsItem, position: Int) -> DiscoveryBaseViewModel {
