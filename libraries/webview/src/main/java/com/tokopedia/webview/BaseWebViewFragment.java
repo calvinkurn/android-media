@@ -565,7 +565,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         }
 
-        public boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
+        private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
             String[] acceptTypes = fileChooserParams.getAcceptTypes();
             boolean hasVideo = false;
 
