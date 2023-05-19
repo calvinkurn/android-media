@@ -64,6 +64,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -325,6 +326,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
+
+    private Snackbar toasterErrorAkamai;
+
 
     // count down component
     private View cdLayout;
@@ -942,6 +946,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
                         .show();
             }
+        }
+    }
+
+
+    @Override
+    public void showToastErrorAkamai(String message) {
+
+        if (toasterErrorAkamai == null) {
+            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+            toasterErrorAkamai = Toaster.build(
+                    getView(), message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText,
+                    view -> {
+                        //no op
+                    });
+        }
+
+        if (!toasterErrorAkamai.isShownOrQueued()) {
+            toasterErrorAkamai.show();
         }
     }
 
