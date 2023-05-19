@@ -11,7 +11,7 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-class FakeKycActivityComponentFactory: ActivityComponentFactory() {
+class FakeKycActivityComponentFactory : ActivityComponentFactory() {
 
     val kycApi = FakeKycUploadApi()
 

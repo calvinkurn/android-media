@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -9,8 +10,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -103,7 +104,7 @@ class MenuSettingViewModel @Inject constructor(
 
     private suspend fun getSettingAccess(
         shopId: Long,
-        @AccessId accessId: Int,
+        @com.tokopedia.shopadmin.common.util.AccessId accessId: Int,
         useCase: AuthorizeAccessUseCase
     ): Boolean {
         val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)

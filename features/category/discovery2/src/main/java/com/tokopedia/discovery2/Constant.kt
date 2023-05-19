@@ -114,4 +114,15 @@ object Constant {
     }
 
     const val RESETTING_SELECTED_TAB = -1
+
+    object ProductHighlight{
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val TRIPLE = "triple"
+        const val DOUBLESINGLEEMPTY = "doubleSingleEmpty"
+        const val TRIPLESINGLEEMPTY = "tripleSingleEmpty"
+        const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
+        const val STATUS = "status"
+        const val PROMO = "promo"
+    }
 }
