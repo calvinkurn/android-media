@@ -246,8 +246,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
-import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -309,7 +309,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -448,7 +447,7 @@ open class DynamicProductDetailFragment :
     private var screenshotDetector: ScreenshotDetector? = null
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
@@ -516,7 +515,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -941,7 +940,7 @@ open class DynamicProductDetailFragment :
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -1645,8 +1644,8 @@ open class DynamicProductDetailFragment :
             RecommendationNowAffiliateData(
                 affiliateUniqueId,
                 affiliateChannel,
-                recommendationWidget.affiliateTrackerId,
-            ),
+                recommendationWidget.affiliateTrackerId
+            )
         )
     }
 
