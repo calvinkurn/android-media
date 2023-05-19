@@ -12,6 +12,7 @@ import com.tokopedia.play.widget.sample.analytic.PlayWidgetSampleAnalytic
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -71,13 +72,18 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
 //                widgetType = PlayWidgetType.Small,
 //                isLoading = false,
 //            ),
+//            PlayWidgetState(
+//                model = PlayWidgetUiMock.getSamplePlayWidget(),
+//                widgetType = PlayWidgetType.Medium,
+//                isLoading = false
+//            ),
             PlayWidgetState(
-                model = PlayWidgetUiMock.getSamplePlayWidget(),
-                widgetType = PlayWidgetType.Medium,
-                isLoading = false
-            ),
-            PlayWidgetState(
-                model = PlayWidgetUiMock.getSamplePlayWidget(),
+                model = PlayWidgetUiMock.getSamplePlayWidget(
+                    items = PlayWidgetUiMock.getSampleItemData().mapIndexed { index, data ->
+                        if (data is PlayWidgetChannelUiModel) data.copy(title = "Channel $index")
+                        else data
+                    }
+                ),
                 widgetType = PlayWidgetType.Carousel,
                 isLoading = false
             )

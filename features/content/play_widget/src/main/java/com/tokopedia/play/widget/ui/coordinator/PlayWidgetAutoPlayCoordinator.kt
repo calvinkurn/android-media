@@ -16,6 +16,7 @@ import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.model.WidgetInList
 import kotlinx.coroutines.*
 
 /**
@@ -36,6 +37,10 @@ class PlayWidgetAutoPlayCoordinator(
 
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         startAutoPlay(widgetCardsContainer)
+    }
+
+    override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
+        startAutoPlay(focusedWidgets)
     }
 
     override fun onWidgetDetached(widget: View) {
@@ -120,6 +125,37 @@ class PlayWidgetAutoPlayCoordinator(
             videoPlayerMap.entries.forEach {
                 if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
             }
+
+            autoPlayEligibleReceivers
+                .filter { it.getPlayer() == null }
+                .forEach {
+                    val nextIdlePlayer = getNextIdlePlayer()
+
+                    if (nextIdlePlayer != null) {
+                        it.setPlayer(nextIdlePlayer)
+                        videoPlayerMap[nextIdlePlayer] = it
+                    }
+                }
+        }
+    }
+
+    private fun startAutoPlay(focusedWidgets: List<WidgetInList>) {
+        autoPlayJob?.cancel()
+
+        val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+            visibleCards = focusedWidgets.map {
+                AutoPlayModel(it.widget, it.position)
+            },
+            itemCount = focusedWidgets.size,
+            maxAutoPlay = getMaxAutoPlayCard()
+        )
+
+        videoPlayerMap.entries.forEach {
+            if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
+        }
+
+        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
+            delay(MAX_DELAY)
 
             autoPlayEligibleReceivers
                 .filter { it.getPlayer() == null }
