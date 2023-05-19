@@ -127,7 +127,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         mainList = parentView.findViewById<View>(R.id.review_list) as RecyclerView?
         swipeToRefresh =
             parentView.findViewById<View>(R.id.swipe_refresh_inbox_reputation) as SwipeToRefresh?
-        searchView = parentView.findViewById<View>(R.id.search) as SearchInputView?
+        searchView = parentView.findViewById<View>(R.id.review_search_invoice) as SearchInputView?
         searchView?.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED)
         searchView?.setListener(this)
         filterButton = parentView.findViewById(R.id.filter_button)
