@@ -6,6 +6,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.ext.isMuted
+import com.tokopedia.play.widget.ui.model.reminded
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -41,6 +43,23 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 listener.onChannelImpressed(channelView, data, adapterPosition)
             }
             channelView.setModel(data)
+        }
+
+        fun bind(data: PlayWidgetChannelUiModel, payloads: Set<String>) {
+            payloads.forEach {
+                when (it) {
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_MUTE_CHANGE -> {
+                        channelView.setMuted(shouldMuted = data.isMuted, animate = true)
+//                        setMutedListener(data)
+                    }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
+                        channelView.showMuteButton(shouldShow = true)
+                    }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
+                        channelView.showMuteButton(shouldShow = false)
+                    }
+                }
+            }
         }
 
         companion object {
@@ -102,6 +121,23 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 listener.onChannelImpressed(upcomingView, data, adapterPosition)
             }
             upcomingView.setModel(data)
+        }
+
+        fun bind(data: PlayWidgetChannelUiModel, payloads: Set<String>) {
+            payloads.forEach {
+                when (it) {
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_REMINDED_CHANGE -> {
+                        upcomingView.setReminded(data.reminderType.reminded, animate = true)
+//                        setRemindedListener(data)
+                    }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
+                        upcomingView.showReminderButton(shouldShow = true)
+                    }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
+                        upcomingView.showReminderButton(shouldShow = false)
+                    }
+                }
+            }
         }
 
         companion object {

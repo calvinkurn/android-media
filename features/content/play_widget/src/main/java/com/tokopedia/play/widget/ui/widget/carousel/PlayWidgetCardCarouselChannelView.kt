@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -69,7 +71,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     init {
-        showActionButton(false)
+        showMuteButton(false, animate = false)
         setMuted(true)
 
         binding.rvProducts.adapter = adapter
@@ -122,11 +124,19 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         mListener = listener
     }
 
-    fun showActionButton(shouldShow: Boolean) {
+    fun showMuteButton(shouldShow: Boolean, animate: Boolean = true) {
+        if (animate) {
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+                    .addTarget(binding.viewPlayWidgetActionButton.root)
+            )
+        }
+
         binding.viewPlayWidgetActionButton.root.showWithCondition(shouldShow)
     }
 
-    private fun setMuted(shouldMuted: Boolean, animate: Boolean = false) {
+    fun setMuted(shouldMuted: Boolean, animate: Boolean = false) {
         val lottieComposition = LottieCompositionFactory.fromRawRes(
             binding.root.context,
             if (shouldMuted) R.raw.play_widget_lottie_mute_on_off

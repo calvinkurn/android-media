@@ -49,8 +49,8 @@ class PlayWidgetCarouselAdapter(
                 .toSet()
 
             when (holder) {
-//                is PlayWidgetCarouselViewHolder.VideoContent -> holder.bind(data, payloadSet)
-//                is PlayWidgetCarouselViewHolder.UpcomingContent -> holder.bind(data, payloadSet)
+                is PlayWidgetCarouselViewHolder.VideoContent -> holder.bind(data, payloadSet)
+                is PlayWidgetCarouselViewHolder.UpcomingContent -> holder.bind(data, payloadSet)
                 else -> {}
             }
         }
@@ -66,6 +66,29 @@ class PlayWidgetCarouselAdapter(
 
     override fun getItemCount(): Int {
         return Integer.MAX_VALUE
+    }
+
+    fun setSelected(position: Int) {
+        notifyItemChanged(
+            position,
+            PlayWidgetCarouselDiffCallback.Payloads(
+                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED)
+            )
+        )
+
+        notifyItemChanged(
+            position - 1,
+            PlayWidgetCarouselDiffCallback.Payloads(
+                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
+            )
+        )
+
+        notifyItemChanged(
+            position + 1,
+            PlayWidgetCarouselDiffCallback.Payloads(
+                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
+            )
+        )
     }
 
     companion object {
@@ -108,6 +131,9 @@ class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidgetChannelUi
     companion object {
         internal const val PAYLOAD_REMINDED_CHANGE = "reminded_change"
         internal const val PAYLOAD_MUTE_CHANGE = "mute_change"
+
+        internal const val PAYLOAD_SELECTED = "selected"
+        internal const val PAYLOAD_NOT_SELECTED = "not_selected"
     }
 
     data class Payloads(

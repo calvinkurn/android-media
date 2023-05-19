@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.IPlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
@@ -126,6 +125,8 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         snapHelper.attachToRecyclerView(binding.rvChannels)
 
         binding.rvChannels.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            private var mSnappedPosition = RecyclerView.NO_POSITION
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
@@ -135,8 +136,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 val focusedWidgets = getFocusedWidgets(recyclerView)
                 mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
 
-//                val snappedView = snapHelper.findSnapView(layoutManager) ?: return
-//                val snappedPosition = recyclerView.getChildAdapterPosition(snappedView)
+                val snappedView = snapHelper.findSnapView(layoutManager) ?: return
+                val snappedPosition = recyclerView.getChildAdapterPosition(snappedView)
+
+                if (snappedPosition == mSnappedPosition) return
+                adapter.setSelected(snappedPosition)
+
+                mSnappedPosition = snappedPosition
 
 //                if (snappedPosition < FAKE_COUNT_PER_SIDE) {
 //                    val distanceStep = adapter.itemCount + (2 * -1) - FAKE_COUNT_PER_SIDE

@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.widget.R
@@ -43,7 +45,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     private var mListener: Listener? = null
 
     init {
-        showActionButton(false)
+        showReminderButton(false, animate = false)
     }
 
     fun setModel(model: PlayWidgetChannelUiModel) {
@@ -62,11 +64,19 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         mListener = listener
     }
 
-    fun showActionButton(shouldShow: Boolean) {
+    fun showReminderButton(shouldShow: Boolean, animate: Boolean = true) {
+        if (animate) {
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+                    .addTarget(binding.viewPlayWidgetActionButton.root)
+            )
+        }
+
         binding.viewPlayWidgetActionButton.root.showWithCondition(shouldShow)
     }
 
-    private fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
+    fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
         val lottieComposition = LottieCompositionFactory.fromRawRes(
             binding.root.context,
             if (shouldRemind) R.raw.play_widget_lottie_reminder_off_on
