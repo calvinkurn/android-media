@@ -143,7 +143,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val newText =
                     TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
-                binding.newComment.setText(newText)
+                binding.newComment.text?.clear()
+                binding.newComment.append(newText)
 
                 val currentLength = binding.newComment.length()
                 if (distanceFromEnd in 1 until currentLength) {
