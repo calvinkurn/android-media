@@ -1417,7 +1417,7 @@ class FeedFragment :
                         getString(feedR.string.feed_reminder_set_success, type)
                     } else {
                         // if unset reminder
-                        getString(feedR.string.feed_reminder_unset_success, type)
+                        getString(feedR.string.feed_reminder_unset_success)
                     }
                 }
                 is Fail -> it.throwable.message
