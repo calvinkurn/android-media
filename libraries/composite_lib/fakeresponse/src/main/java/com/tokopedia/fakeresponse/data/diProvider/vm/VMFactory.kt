@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 class VMFactory(application: Application, val list: Array<Any>) :
         ViewModelProvider.AndroidViewModelFactory(application) {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddGqlVM::class.java)) {
             return AddGqlVM(
                     list[0] as CoroutineDispatcher,

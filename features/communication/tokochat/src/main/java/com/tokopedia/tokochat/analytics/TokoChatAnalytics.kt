@@ -344,6 +344,91 @@ class TokoChatAnalytics @Inject constructor() {
         tracking.sendGeneralEvent(mapData)
     }
 
+    fun viewOnboardingBottomsheet(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.VIEW_ONBOARDING_BOTTOMSHEET,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43185,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickContinueOnboardingBottomSheet(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_CONTINUE_ONBOARDING_BOTTOMSHEET,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43186,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun swipeNextOnboardingBottomsheet(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.SWIPE_NEXT_ONBOARDING_BOTTOMSHEET,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43187,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickSelengkapnyaOnboardingBottomSheet(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_SELENGKAPNYA_ONBOARDING_BOTTOMSHEET,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43188,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickActivateFromOnboardingBottomSheet(
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_ACTIVATE_FROM_ONBOARDING_BOTTOMSHEET,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
+            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43189,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
     fun clickCloseOnBoardingTicker(
         orderId: String,
         role: String,

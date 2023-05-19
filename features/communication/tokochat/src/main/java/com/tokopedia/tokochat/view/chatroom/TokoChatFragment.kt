@@ -40,6 +40,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -68,6 +69,7 @@ import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNum
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
@@ -107,7 +109,9 @@ open class TokoChatFragment :
     TokoChatMessageCensorListener,
     TokoChatReplyAreaListener,
     TokoChatAttachmentMenuListener,
-    MaskingPhoneNumberBottomSheet.AnalyticsListener {
+    MaskingPhoneNumberBottomSheet.AnalyticsListener,
+    TokoChatBubblesAwarenessBottomSheet.AnalyticsListener
+{
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -120,6 +124,9 @@ open class TokoChatFragment :
 
     @Inject
     lateinit var tokoChatAnalytics: TokoChatAnalytics
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var selfUiModel: TokoChatHeaderUiModel? = null
@@ -149,6 +156,13 @@ open class TokoChatFragment :
             baseBinding?.tokochatReplyBox?.composeArea
         )
         baseBinding?.tokochatReplyBox?.composeArea?.clearFocus()
+    }
+
+    override fun shouldShowAttachmentButton(): Boolean {
+        return remoteConfig.getBoolean(
+            TOKOCHAT_ATTACHMENT_MENU,
+            false
+        )
     }
 
     override fun onReplyAreaFocusChanged(isFocused: Boolean) {
@@ -1398,8 +1412,41 @@ open class TokoChatFragment :
         }
     }
 
+    override fun onClickContinue() {
+        tokoChatAnalytics.clickContinueOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onSwipeNext() {
+        tokoChatAnalytics.swipeNextOnboardingBottomsheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onClickEdu() {
+        tokoChatAnalytics.clickSelengkapnyaOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onClickSettingActivation() {
+        tokoChatAnalytics.clickActivateFromOnboardingBottomSheet(
+            orderId = viewModel.tkpdOrderId,
+            source = viewModel.source,
+            role = TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
     companion object {
         private const val TAG = "TokoChatFragment"
+        const val TOKOCHAT_ATTACHMENT_MENU = "android_show_attachment_menu_tokochat"
 
         fun getFragment(
             fragmentManager: FragmentManager,
