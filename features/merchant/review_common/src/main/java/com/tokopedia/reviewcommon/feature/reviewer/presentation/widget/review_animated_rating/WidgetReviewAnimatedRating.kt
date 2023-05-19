@@ -18,7 +18,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -30,13 +32,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reviewcommon.R
 import kotlin.math.abs
 
-const val DEFAULT_RATING = 0
 private const val STAR_COUNT = 5
-private const val DEFAULT_STAR_SIZE = 24
-private const val DEFAULT_STAR_SPACE_IN_BETWEEN = 8
 private const val STAR_ANIM_DELAY = 50
 private const val STAR_COLOR_ANIM_DURATION = 100
 private const val STAR_SCALE = 1f
@@ -51,10 +51,8 @@ private const val STAR_SCALE_KEYFRAME_3_TIME = 333
 @Composable
 private fun ReviewStar(
     modifier: Modifier = Modifier,
-    color: Color,
-    contentDescription: String,
-    onClick: () -> Unit
-) {
+    config: ReviewStarConfig
+) = with(config) {
     Image(
         painter = painterResource(id = R.drawable.review_ic_star),
         colorFilter = ColorFilter.tint(color),
@@ -63,60 +61,69 @@ private fun ReviewStar(
     )
 }
 
+private data class ReviewStarConfig(
+    val color: Color,
+    val contentDescription: String,
+    val onClick: () -> Unit
+)
+
 @Composable
 private fun WidgetReviewAnimatedStars(
     modifier: Modifier = Modifier,
-    rating: Int,
-    starSize: Dp,
-    spaceInBetween: Dp,
-    starScaleStates: List<State<Float>>,
-    starColorStates: List<State<Color>>,
-    onStarClicked: (previousRating: Int, currentRating: Int) -> Unit
-) {
+    config: WidgetReviewAnimatedStarsConfig
+) = with(config) {
     Row(modifier = modifier) {
         starScaleStates.forEachIndexed { index, _ ->
             val starRating = index.inc()
-            ReviewStar(
-                modifier = Modifier
-                    .size(starSize)
-                    .scale(starScaleStates[index].value),
+            val reviewStarModifier = Modifier
+                .size(widgetReviewAnimatedRatingConfig.starSize)
+                .scale(starScaleStates[index].value)
+            val reviewStarConfig = ReviewStarConfig(
                 color = starColorStates[index].value,
                 contentDescription = "$starRating star rating",
-                onClick = { onStarClicked(rating, starRating) }
+                onClick = {
+                    widgetReviewAnimatedRatingConfig.onStarClicked(
+                        widgetReviewAnimatedRatingConfig.rating,
+                        starRating
+                    )
+                }
             )
+            ReviewStar(reviewStarModifier, reviewStarConfig)
             if (index < starScaleStates.size.dec()) {
-                Spacer(modifier = Modifier.size(spaceInBetween))
+                Spacer(modifier = Modifier.size(widgetReviewAnimatedRatingConfig.spaceInBetween))
             }
         }
     }
 }
 
+private data class WidgetReviewAnimatedStarsConfig(
+    val starScaleStates: List<State<Float>>,
+    val starColorStates: List<State<Color>>,
+    val widgetReviewAnimatedRatingConfig: WidgetReviewAnimatedRatingConfig
+)
+
 @Composable
 fun WidgetReviewAnimatedRating(
     modifier: Modifier = Modifier,
-    rating: Int = DEFAULT_RATING,
-    starSize: Dp = DEFAULT_STAR_SIZE.dp,
-    spaceInBetween: Dp = DEFAULT_STAR_SPACE_IN_BETWEEN.dp,
-    onStarClicked: (previousRating: Int, currentRating: Int) -> Unit = { _, _ -> }
+    config: WidgetReviewAnimatedRatingConfig
 ) {
-    if (rating > STAR_COUNT) throw IllegalStateException("Rating cannot be more than $STAR_COUNT")
+    with(config) {
+        if (rating > STAR_COUNT) throw IllegalStateException("Rating cannot be more than $STAR_COUNT")
 
-    val starStates = remember { mutableStateListOf(*createStarStates(rating)) }
-    val starTransitions = starStates.createStateTransition()
-    val starScaleStates = starTransitions.createScaleAnimation()
-    val starColorStates = starTransitions.createColorAnimation()
+        val starStates = remember { mutableStateListOf(*createStarStates(rating)) }
+        val starTransitions = starStates.createStateTransition()
+        val starScaleStates = starTransitions.createScaleAnimation()
+        val starColorStates = starTransitions.createColorAnimation()
+        val widgetReviewAnimatedStarsConfig = WidgetReviewAnimatedStarsConfig(
+            starScaleStates = starScaleStates,
+            starColorStates = starColorStates,
+            widgetReviewAnimatedRatingConfig = config
+        )
 
-    LaunchedEffect(rating) { updateStarStates(rating = rating, starStates = starStates) }
+        LaunchedEffect(rating) { updateStarStates(rating = rating, starStates = starStates) }
 
-    WidgetReviewAnimatedStars(
-        modifier = modifier,
-        rating = rating,
-        starSize = starSize,
-        spaceInBetween = spaceInBetween,
-        starScaleStates = starScaleStates,
-        starColorStates = starColorStates,
-        onStarClicked = onStarClicked
-    )
+        WidgetReviewAnimatedStars(modifier = modifier, config = widgetReviewAnimatedStarsConfig)
+    }
 }
 
 @Composable
@@ -196,32 +203,105 @@ private fun updateStarStates(
     }
 }
 
+//region Preview
+private const val DEFAULT_PREVIEW_STAR_SIZE = 24
+private const val DEFAULT_PREVIEW_STAR_SPACE_IN_BETWEEN = 8
+private const val DEFAULT_PREVIEW_SIZE_MULTIPLIER = 3
+private const val DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER = 3
+
+private data class WidgetReviewAnimatedRatingPreviewConfig(
+    val sizeMultiplier: Int,
+    val spaceInBetweenMultiplier: Int,
+    val configs: MutableList<WidgetReviewAnimatedRatingConfig>
+)
+
+private val previewConfig = mutableStateOf(createPreviewConfig())
+
 @Preview
 @Composable
 fun WidgetReviewAnimatedRatingPreview() {
-    val ratings = remember {
-        val initialRatings = (DEFAULT_RATING..STAR_COUNT).map { rating -> rating }
-        mutableStateListOf(*initialRatings.toTypedArray())
-    }
+    val config by remember { previewConfig }
+
     Column {
-        ratings.forEachIndexed { index, rating ->
-            WidgetReviewAnimatedRating(
-                rating = rating,
-                starSize = (DEFAULT_STAR_SIZE + index * 3).dp,
-                spaceInBetween = (DEFAULT_STAR_SPACE_IN_BETWEEN + index * 3).dp,
-                onStarClicked = { _, currentRating ->
-                    ratings[index] = currentRating
-                }
-            )
-        }
-        Button(
-            onClick = {
-                (DEFAULT_RATING..STAR_COUNT).forEachIndexed { index, rating ->
-                    ratings[index] = rating
-                }
-            }
-        ) {
-            Text(text = "Reset Ratings")
-        }
+        config.configs.forEach { config -> WidgetReviewAnimatedRating(config = config) }
+        Button(onClick = ::onEnlargeWidgets) { Text(text = "Enlarge Widgets") }
+        Button(onClick = ::onEnlargeSpaceInBetween) { Text(text = "Enlarge Space in Between") }
+        Button(onClick = ::onResetRating) { Text(text = "Reset Ratings") }
     }
 }
+
+private fun createPreviewConfig(): WidgetReviewAnimatedRatingPreviewConfig {
+    return WidgetReviewAnimatedRatingPreviewConfig(
+        sizeMultiplier = DEFAULT_PREVIEW_SIZE_MULTIPLIER,
+        spaceInBetweenMultiplier = DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER,
+        configs = createPreviewConfigs()
+    )
+}
+
+private fun createPreviewConfigs(): MutableList<WidgetReviewAnimatedRatingConfig> {
+    return (Int.ZERO..STAR_COUNT).mapIndexed { index, rating ->
+        WidgetReviewAnimatedRatingConfig(
+            rating = rating,
+            starSize = calculateStarSize(index, DEFAULT_PREVIEW_SIZE_MULTIPLIER),
+            spaceInBetween = calculateSpaceInBetween(index, DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER),
+            onStarClicked = { previousRating, currentRating ->
+                if (previousRating != currentRating) onRatingChanged(index, currentRating)
+            }
+        )
+    }.toMutableList()
+}
+
+private fun calculateStarSize(index: Int, multiplier: Int): Dp {
+    return (DEFAULT_PREVIEW_STAR_SIZE + index * multiplier).dp
+}
+
+private fun calculateSpaceInBetween(index: Int, multiplier: Int): Dp {
+    return (DEFAULT_PREVIEW_STAR_SPACE_IN_BETWEEN + index * multiplier).dp
+}
+
+private fun onRatingChanged(index: Int, rating: Int) {
+    previewConfig.value.let {
+        previewConfig.value = it.copy(
+            configs = it.configs.mapIndexed { configIndex, config ->
+                if (configIndex == index) config.copy(rating = rating) else config
+            }.toMutableList()
+        )
+    }
+}
+
+private fun onEnlargeWidgets() {
+    previewConfig.value.let {
+        previewConfig.value = it.copy(
+            sizeMultiplier = it.sizeMultiplier.inc(),
+            configs = it.configs.mapIndexed { index, config ->
+                config.copy(
+                    starSize = calculateStarSize(
+                        index = index,
+                        multiplier = it.sizeMultiplier.inc()
+                    )
+                )
+            }.toMutableList()
+        )
+    }
+}
+
+private fun onEnlargeSpaceInBetween() {
+    previewConfig.value.let {
+        previewConfig.value = it.copy(
+            spaceInBetweenMultiplier = it.spaceInBetweenMultiplier.inc(),
+            configs = it.configs.mapIndexed { index, config ->
+                config.copy(
+                    spaceInBetween = calculateSpaceInBetween(
+                        index = index,
+                        multiplier = it.spaceInBetweenMultiplier.inc()
+                    )
+                )
+            }.toMutableList()
+        )
+    }
+}
+
+private fun onResetRating() {
+    previewConfig.value = createPreviewConfig()
+}
+//endregion Preview
