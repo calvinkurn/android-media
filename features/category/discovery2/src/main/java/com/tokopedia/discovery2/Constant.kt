@@ -104,4 +104,15 @@ object Constant {
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"
     }
+
+    object ProductHighlight{
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val TRIPLE = "triple"
+        const val DOUBLESINGLEEMPTY = "doubleSingleEmpty"
+        const val TRIPLESINGLEEMPTY = "tripleSingleEmpty"
+        const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
+        const val STATUS = "status"
+        const val PROMO = "promo"
+    }
 }

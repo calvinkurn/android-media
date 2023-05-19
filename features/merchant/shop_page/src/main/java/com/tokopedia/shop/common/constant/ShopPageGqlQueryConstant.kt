@@ -40,6 +40,7 @@ object ShopPageGqlQueryConstant {
                     reviewCount
                     rating
                     viewCount
+                    averageRating
                   }
                   campaign{
                     hide_gimmick

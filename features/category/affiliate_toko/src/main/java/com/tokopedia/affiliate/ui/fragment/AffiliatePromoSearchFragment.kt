@@ -252,6 +252,7 @@ class AffiliatePromoSearchFragment :
         commison: String,
         status: String,
         type: String?,
+        appUrl: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         AffiliatePromotionBottomSheet.newInstance(

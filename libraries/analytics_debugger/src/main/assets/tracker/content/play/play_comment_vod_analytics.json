@@ -1,0 +1,182 @@
+{
+    "readme": "Play Viewer - Comment VOD analytics",
+    "mode": "exact",
+    "query": [
+        {
+            "event": "clickContent",
+            "eventAction": "click - comment button",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42591",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - close comment bottomsheet",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42592",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - reply button",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42593",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - name commenter",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42594",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - profile picture commenter",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42595",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "view - lihat x balasan",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42596",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - lihat x balasan",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42597",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - sembunyikan comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42598",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - text box",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42599",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - send main comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42600",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - send reply comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42601",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - long press slide comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42602",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - hapus comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42603",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - laporkan comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42604",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - reason laporkan comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+ - .*",
+            "trackerId": "42605",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "view - success report comment",
+            "eventCategory": "groupchat room",
+            "eventLabel": "\\d+ - \\d+",
+            "trackerId": "42606",
+            "businessUnit": "play",
+            "currentSite": "tokopediamarketplace",
+            "sessionIris": ".*",
+            "userId": ".*"
+        }
+    ]
+}
