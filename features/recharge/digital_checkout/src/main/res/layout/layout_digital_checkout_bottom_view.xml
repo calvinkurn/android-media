@@ -8,18 +8,26 @@
     android:focusableInTouchMode="true">
 
     <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
-        android:id="@+id/viewUserConsentWidget"
+        android:id="@+id/viewCrossSellConsentWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:defaultTemplate="TNC_MANDATORY"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
+        android:id="@+id/viewProductConsentWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:defaultTemplate="TNC_MANDATORY"
+        app:layout_constraintTop_toBottomOf="@id/viewCrossSellConsentWidget"/>
+
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
         android:id="@+id/digitalPromoBtnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/viewUserConsentWidget"/>
+        app:layout_constraintTop_toBottomOf="@id/viewProductConsentWidget"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPaymentLabel"

@@ -396,7 +396,7 @@ class DigitalCartFragment :
             it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
         }?.checkBoxDisabled
         if (ifSubscriptionCheckboxDisabled == true) {
-            binding?.checkoutBottomViewWidget?.hideConsent()
+            binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
         }
 
         renderMyBillsLayout(cartInfo)
@@ -417,8 +417,8 @@ class DigitalCartFragment :
                     cartInfo.collectionPointId,
                     cartInfo.collectionPointVersion
                 )
-                renderConsentWidget(productCollectionPointMetadata)
-                it.checkoutBottomViewWidget.showConsent()
+                renderProductConsentWidget(productCollectionPointMetadata)
+                it.checkoutBottomViewWidget.showProductConsent()
                 it.checkoutBottomViewWidget.isCheckoutButtonEnabled = false
             }
         }
@@ -472,13 +472,13 @@ class DigitalCartFragment :
             showPromoTicker()
 
             it.checkoutBottomViewWidget.setCheckoutButtonListener {
-                if (it.checkoutBottomViewWidget.isConsentWidgetVisible()) {
-                    val consentPayload = it.checkoutBottomViewWidget.getConsentPayload()
-                    if (hasProductConsent()) {
-                        viewModel.updateProductConsentPayload(consentPayload)
-                    } else {
-                        viewModel.updateSubscriptionMetadata(consentPayload)
-                    }
+                if (it.checkoutBottomViewWidget.isProductConsentWidgetVisible()) {
+                    val consentPayload = it.checkoutBottomViewWidget.getProductConsentPayload()
+                    viewModel.updateProductConsentPayload(consentPayload)
+                }
+                if (it.checkoutBottomViewWidget.isCrossSellConsentWidgetVisible()) {
+                    val consentPayload = it.checkoutBottomViewWidget.getCrossSellConsentPayload()
+                    viewModel.updateSubscriptionMetadata(consentPayload)
                 }
                 viewModel.proceedToCheckout(getDigitalIdentifierParam())
             }
@@ -715,16 +715,23 @@ class DigitalCartFragment :
     private fun handleCrossSellConsent(fintechProduct: FintechProduct, isSubscriptionChecked: Boolean) {
         binding?.run {
             if (isSubscriptionChecked) {
+                val dummy = CollectionPointMetadata(
+                    "c2aaa1d7-2c1e-4b32-87ef-b18358dbd442",
+                    "1",
+                    ""
+                )
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
-                if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
+                if (dummy.collectionPointId.isNotEmpty() && !hasProductConsent()) {
                     checkoutBottomViewWidget.isCheckoutButtonEnabled = false
-                    checkoutBottomViewWidget.showConsent()
-                    renderConsentWidget(collectionPointMetadata)
+                    checkoutBottomViewWidget.showCrossSellConsent()
+                    renderCrossSellConsentWidget(collectionPointMetadata)
                 }
             } else {
                 renderConsentJob?.cancel()
-                checkoutBottomViewWidget.isCheckoutButtonEnabled = true
-                checkoutBottomViewWidget.hideConsent()
+                if (!hasProductConsent()) {
+                    checkoutBottomViewWidget.isCheckoutButtonEnabled = true
+                }
+                checkoutBottomViewWidget.hideCrossSellConsent()
             }
         }
     }
@@ -748,7 +755,7 @@ class DigitalCartFragment :
         return CollectionPointMetadata()
     }
 
-    private fun renderConsentWidget(collectionPointData: CollectionPointMetadata) {
+    private fun renderCrossSellConsentWidget(collectionPointData: CollectionPointMetadata) {
         binding?.run {
             if (collectionPointData.collectionPointId.isNotEmpty()) {
                 renderConsentJob?.cancel()
@@ -757,7 +764,26 @@ class DigitalCartFragment :
                         collectionPointData.collectionPointId,
                         collectionPointData.collectionPointVersion
                     )
-                    checkoutBottomViewWidget.setUserConsentWidget(
+                    checkoutBottomViewWidget.setCrossSellConsentWidget(
+                        viewLifecycleOwner,
+                        this@DigitalCartFragment,
+                        consentParam
+                    )
+                }
+            }
+        }
+    }
+
+    private fun renderProductConsentWidget(collectionPointData: CollectionPointMetadata) {
+        binding?.run {
+            if (collectionPointData.collectionPointId.isNotEmpty()) {
+                renderConsentJob?.cancel()
+                renderConsentJob = lifecycleScope.launch {
+                    val consentParam = ConsentCollectionParam(
+                        collectionPointData.collectionPointId,
+                        collectionPointData.collectionPointVersion
+                    )
+                    checkoutBottomViewWidget.setProductConsentWidget(
                         viewLifecycleOwner,
                         this@DigitalCartFragment,
                         consentParam

@@ -86,12 +86,12 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     private var onClickConsentListener: ((String) -> Unit)? = null
 
-    fun setUserConsentWidget(
+    fun setCrossSellConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
         consentCollectionParam: ConsentCollectionParam
     ) {
-        with(binding.viewUserConsentWidget) {
+        with(binding.viewCrossSellConsentWidget) {
             setOnCheckedChangeListener { isChecked ->
                 isCheckoutButtonEnabled = isChecked
             }
@@ -99,7 +99,32 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 isCheckoutButtonEnabled = false
             }
             setOnDetailConsentListener { _, consentType ->
-                if (isConsentWidgetVisible()) {
+                if (isCrossSellConsentWidgetVisible()) {
+                    isCheckoutButtonEnabled = when (consentType) {
+                        is ConsentType.SingleInfo -> true
+                        is ConsentType.SingleChecklist -> false
+                        is ConsentType.MultipleChecklist -> false
+                        else -> true
+                    }
+                }
+            }
+            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+        }
+    }
+    fun setProductConsentWidget(
+        lifecycleOwner: LifecycleOwner,
+        viewModelStoreOwner: ViewModelStoreOwner,
+        consentCollectionParam: ConsentCollectionParam
+    ) {
+        with(binding.viewProductConsentWidget) {
+            setOnCheckedChangeListener { isChecked ->
+                isCheckoutButtonEnabled = isChecked
+            }
+            setOnFailedGetCollectionListener {
+                isCheckoutButtonEnabled = false
+            }
+            setOnDetailConsentListener { _, consentType ->
+                if (isProductConsentWidgetVisible()) {
                     isCheckoutButtonEnabled = when (consentType) {
                         is ConsentType.SingleInfo -> true
                         is ConsentType.SingleChecklist -> false
@@ -148,19 +173,28 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
         binding.digitalPromoBtnView.setOnClickListener { /* do nothing */ }
     }
 
-    fun getConsentPayload(): String =
-        binding.viewUserConsentWidget.generatePayloadData()
+    fun getCrossSellConsentPayload(): String = binding.viewCrossSellConsentWidget.generatePayloadData()
 
-    fun showConsent() {
-        binding.viewUserConsentWidget.show()
+    fun getProductConsentPayload(): String = binding.viewProductConsentWidget.generatePayloadData()
+
+    fun showCrossSellConsent() {
+        binding.viewCrossSellConsentWidget.show()
     }
 
-    fun hideConsent() {
-        binding.viewUserConsentWidget.hide()
+    fun hideCrossSellConsent() {
+        binding.viewCrossSellConsentWidget.hide()
     }
 
-    fun isConsentWidgetVisible(): Boolean {
-        return binding.viewUserConsentWidget.isVisible
+    fun showProductConsent() {
+        binding.viewProductConsentWidget.show()
+    }
+
+    fun isProductConsentWidgetVisible(): Boolean {
+        return binding.viewProductConsentWidget.isVisible
+    }
+
+    fun isCrossSellConsentWidgetVisible(): Boolean {
+        return binding.viewCrossSellConsentWidget.isVisible
     }
 
     override fun onDetachedFromWindow() {
