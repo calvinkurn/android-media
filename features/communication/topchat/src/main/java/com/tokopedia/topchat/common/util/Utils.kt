@@ -83,7 +83,7 @@ object Utils {
         return try {
             this?.let { activity ->
                 ActivityCompat.isLaunchedFromBubble(activity)
-            } ?: false
+            } == true
         } catch (e: Exception) {
             false
         }
