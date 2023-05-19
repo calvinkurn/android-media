@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -317,6 +318,8 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             lottieStars.setImageDrawable(null)
             setAllText()
             setupSponsorCard()
+            val headingSize = resources.getDimension(R.dimen.heading_2_large)
+            celebrationHeading.setTextSize(TypedValue.COMPLEX_UNIT_PX,headingSize)
         }
     }
 
@@ -549,6 +552,10 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun animateSpotlight() {
         if(shouldShowAsset()){
             binding?.mainView?.spotlight?.setImageDrawable(spotlightImage)
+            binding?.mainView?.spotlight?.apply {
+                pivotX = width/2f
+                pivotY = 0f
+            }
             scaleView(
                 view = binding?.mainView?.spotlight,
                 duration = ANIMATION_DURATION,

@@ -2,9 +2,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/container"
+    tools:background="@color/Unify_GN500"
     >
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/background_image"
@@ -53,7 +55,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_2" />
+                app:typographyType="heading_2"
+                />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/sunflare"
@@ -75,15 +78,6 @@
                 app:layout_constraintStart_toStartOf="@+id/sunflare"
                 app:layout_constraintTop_toTopOf="@+id/sunflare" />
 
-<!--            <FrameLayout-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/celebration_heading"-->
-<!--                android:background="@color/white"-->
-<!--                >-->
-
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/badge_image"
                 android:layout_width="216dp"
@@ -94,7 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/celebration_heading"
                 android:scaleType="fitCenter"
                 />
-<!--</FrameLayout>-->
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/sponsor_card"
                 android:layout_width="wrap_content"
@@ -141,7 +135,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/badge_name"
-                app:typographyType="body_2"
+                app:typographyType="body_1"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
