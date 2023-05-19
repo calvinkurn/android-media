@@ -749,7 +749,7 @@ class FeedFragment :
             }
         }
 
-        (childFragmentManager.findFragmentByTag(FeedFollowersOnlyBottomSheet.TAG) as? FeedFollowersOnlyBottomSheet)?.dismiss()
+        feedFollowersOnlyBottomSheet?.dismiss()
     }
 
     private fun observeReport() {
@@ -1412,6 +1412,7 @@ class FeedFragment :
                         FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
                         else -> ""
                     }
+
                     // if set reminder
                     if (it.data.isSetReminder) {
                         getString(feedR.string.feed_reminder_set_success, type)
@@ -1423,6 +1424,7 @@ class FeedFragment :
                 is Fail -> it.throwable.message
                 else -> ""
             }
+
             showToast(
                 message = message.orEmpty(),
                 type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
