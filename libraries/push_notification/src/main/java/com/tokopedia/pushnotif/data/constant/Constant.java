@@ -9,6 +9,8 @@ public interface Constant {
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_NOTIFICATION_TYPE = "notification_type";
     String EXTRA_NOTIFICATION_ID = "notification_id";
+
+    String EXTRA_APPLINK_VALUE = "applink_value";
     String CACHE_DELAY = "cache_delay";
     String PREV_TIME = "prev_time";
     String DEFAULT_AVATAR_URL = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg";
@@ -131,5 +133,12 @@ public interface Constant {
     interface IntentFilter {
          String GET_CHAT_SELLER_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA";
          String GET_ORDER_SELLER_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA";
+    }
+
+    interface NotificationReceiver {
+        String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.push_notification.ACTION_ON_NOTIFICATION_DISMISS";
+        String ACTION_ON_NOTIFICATION_CLICK = "com.tokopedia.push_notification.ACTION_ON_NOTIFICATION_CLICK";
+
+       String ACTIVITY_NOTIFIER_RECEIVER = "NotifierReceiverActivity";
     }
 }
