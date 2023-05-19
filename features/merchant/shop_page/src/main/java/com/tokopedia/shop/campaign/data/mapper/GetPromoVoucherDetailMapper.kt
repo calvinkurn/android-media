@@ -12,21 +12,17 @@ class GetPromoVoucherDetailMapper @Inject constructor() {
         return PromoVoucherDetail(
             detail.activePeriodDate,
             detail.buttonStr,
-            detail.cta,
             detail.howToUse,
             detail.id,
-            detail.imageUrl,
             detail.imageUrlMobile,
             detail.isDisabled,
             detail.isDisabledButton,
             detail.minimumUsage,
             detail.quota,
-            detail.subTitle,
-            detail.thumbnailUrl,
-            detail.thumbnailUrlMobile,
             detail.title,
             detail.tnc,
-            detail.isGift
+            detail.isGift,
+            detail.pointsStr
         )
     }
 }

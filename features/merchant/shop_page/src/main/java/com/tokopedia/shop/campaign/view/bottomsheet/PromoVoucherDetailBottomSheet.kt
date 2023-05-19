@@ -139,16 +139,16 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         binding?.run {
             tpgVoucherName.text = voucherDetail.title
             tpgMinPurchase.text = voucherDetail.minimumUsage
-            btnUseVoucher.text = voucherDetail.buttonStr
-            btnUseVoucher.isEnabled = !voucherDetail.isDisabledButton
             tpgTnc.text = MethodChecker.fromHtml(voucherDetail.tnc)
             imgVoucher.loadImage(voucherDetail.imageUrlMobile)
             tpgMinPurchase.text = voucherDetail.minimumUsage
             tpgPromoPeriod.text = voucherDetail.activePeriodDate
             tpgHowToUse.text = MethodChecker.fromHtml(voucherDetail.howToUse)
+            btnClaimVoucher.text = voucherDetail.buttonLabel
+            tpgVoucherPrice.text = voucherDetail.voucherPrice
         }
 
-        if (voucherDetail.isDisabledButton) {
+        if (voucherDetail.isClaimed) {
             showUseVoucherButton()
         } else {
             showClaimVoucherButton()
