@@ -242,7 +242,6 @@ class OtherMenuViewModel @Inject constructor(
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
         getIsShowTagCentralizePromo()
-        getShopPeriodType()
         getIsTopAdsShopUsed()
     }
 
