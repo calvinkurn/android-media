@@ -503,6 +503,8 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
+        currentTrackerData = trackerModel
+
         val action: () -> Unit = {
             openProductTagBottomSheet(
                 author = author,
@@ -516,7 +518,14 @@ class FeedFragment :
             }
         }
 
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
+            )
+        ) {
             action()
         }
     }
@@ -533,6 +542,8 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
+        currentTrackerData = trackerModel
+
         val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickProductLabel(it)
@@ -556,7 +567,11 @@ class FeedFragment :
             }
         }
 
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+            )
+        ) {
             action()
         }
     }
@@ -676,6 +691,7 @@ class FeedFragment :
         campaignName: String,
         positionInFeed: Int
     ) {
+        currentTrackerData = trackerModel
         val action: () -> Unit = {
             trackerModel?.let {
                 feedAnalytics.eventClickCampaignRibbon(
@@ -693,7 +709,11 @@ class FeedFragment :
             }
         }
 
-        if (!checkForFollowerBottomSheet(positionInFeed, campaign, action)) {
+        if (!checkForFollowerBottomSheet(
+                trackerModel?.activityId ?: "",
+                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+            )
+        ) {
             action()
         }
     }
@@ -1257,14 +1277,16 @@ class FeedFragment :
     }
 
     private fun checkForFollowerBottomSheet(
+        id: String,
         positionInFeed: Int,
-        campaign: FeedCardCampaignModel,
+        campaignStatus: String,
+        isExclusiveForMember: Boolean,
         onDismiss: () -> Unit
     ): Boolean {
-        if (campaign.isExclusiveForMember) {
-            showFollowerBottomSheet(positionInFeed, campaign.status, onDismiss)
+        if (isExclusiveForMember && !feedPostViewModel.isFollowing(id)) {
+            showFollowerBottomSheet(positionInFeed, campaignStatus, onDismiss)
         }
-        return campaign.isExclusiveForMember
+        return isExclusiveForMember && !feedPostViewModel.isFollowing(id)
     }
 
     private fun showFollowerBottomSheet(
@@ -1311,44 +1333,68 @@ class FeedFragment :
         product: FeedTaggedProductUiModel,
         itemPosition: Int
     ) {
-        currentTrackerData?.let { data ->
-            feedAnalytics.eventClickCartButton(
-                trackerData = data,
-                productName = product.title,
-                productId = product.id,
-                productPrice = product.finalPrice,
-                shopId = product.shop.id,
-                shopName = product.shop.name,
-                index = itemPosition
-            )
-        }
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                itemPosition,
+                when (product.campaign.status) {
+                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                product.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            currentTrackerData?.let { data ->
+                feedAnalytics.eventClickCartButton(
+                    trackerData = data,
+                    productName = product.title,
+                    productId = product.id,
+                    productPrice = product.finalPrice,
+                    shopId = product.shop.id,
+                    shopName = product.shop.name,
+                    index = itemPosition
+                )
+            }
 
-        if (userSession.isLoggedIn) {
-            feedPostViewModel.addProductToCart(product)
-        } else {
-            feedPostViewModel.suspendAddProductToCart(product)
-            addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (userSession.isLoggedIn) {
+                feedPostViewModel.addProductToCart(product)
+            } else {
+                feedPostViewModel.suspendAddProductToCart(product)
+                addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            }
         }
     }
 
     override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
-        currentTrackerData?.let { data ->
-            feedAnalytics.eventClickBuyButton(
-                trackerData = data,
-                productName = product.title,
-                productId = product.id,
-                productPrice = product.finalPrice,
-                shopId = product.shop.id,
-                shopName = product.shop.name,
-                index = itemPosition
-            )
-        }
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                itemPosition,
+                when (product.campaign.status) {
+                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                product.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            currentTrackerData?.let { data ->
+                feedAnalytics.eventClickBuyButton(
+                    trackerData = data,
+                    productName = product.title,
+                    productId = product.id,
+                    productPrice = product.finalPrice,
+                    shopId = product.shop.id,
+                    shopName = product.shop.name,
+                    index = itemPosition
+                )
+            }
 
-        if (userSession.isLoggedIn) {
-            feedPostViewModel.buyProduct(product)
-        } else {
-            feedPostViewModel.suspendBuyProduct(product)
-            buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (userSession.isLoggedIn) {
+                feedPostViewModel.buyProduct(product)
+            } else {
+                feedPostViewModel.suspendBuyProduct(product)
+                buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            }
         }
     }
 

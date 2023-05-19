@@ -8,7 +8,10 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
  * Created By : Muhammad Furqan on 12/04/23
  */
 object MapperProductsToXProducts {
-    fun transform(product: FeedCardProductModel, campaign: FeedCardCampaignModel): FeedTaggedProductUiModel {
+    fun transform(
+        product: FeedCardProductModel,
+        campaign: FeedCardCampaignModel
+    ): FeedTaggedProductUiModel {
         val newCampaign = mapCampaignProduct(product, campaign)
         return FeedTaggedProductUiModel(
             id = product.id,
@@ -42,13 +45,19 @@ object MapperProductsToXProducts {
         )
     }
 
-    private fun mapCampaignProduct(product: FeedCardProductModel, campaign: FeedCardCampaignModel): FeedTaggedProductUiModel.Campaign {
+    private fun mapCampaignProduct(
+        product: FeedCardProductModel,
+        campaign: FeedCardCampaignModel
+    ): FeedTaggedProductUiModel.Campaign {
         val status = when (campaign.status) {
             "upcoming" -> {
                 FeedTaggedProductUiModel.CampaignStatus.Upcoming
             }
             "ongoing" -> {
-                FeedTaggedProductUiModel.CampaignStatus.Ongoing(product.stockWording, product.stockSoldPercentage)
+                FeedTaggedProductUiModel.CampaignStatus.Ongoing(
+                    product.stockWording,
+                    product.stockSoldPercentage
+                )
             }
             else -> {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown
@@ -65,7 +74,8 @@ object MapperProductsToXProducts {
         }
         return FeedTaggedProductUiModel.Campaign(
             status = status,
-            type = type
+            type = type,
+            isExclusiveForMember = campaign.isExclusiveForMember
         )
     }
 }
