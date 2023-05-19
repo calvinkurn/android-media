@@ -87,6 +87,6 @@ data class PlayWidgetTotalView(
 
 enum class PartnerType(val value: String) {
     Shop("shop"),
-    User("user"),
+    Buyer("buyer"),
     Unknown(""),
 }

@@ -142,7 +142,11 @@ class PlayWidgetUiMapper @Inject constructor(
     private fun mapPartnerInfo(partner: PlayWidgetItemPartner) = PlayWidgetPartnerUiModel(
         id = partner.id,
         name = htmlTextTransformer.transform(partner.name),
-        type = PartnerType.valueOf(partner.type),
+        type = when (partner.type) {
+            PartnerType.Shop.value -> PartnerType.Shop
+            PartnerType.Buyer.value -> PartnerType.Buyer
+            else -> PartnerType.Unknown
+        }
     )
 
     private fun mapShare(item: PlayWidgetItemShare): PlayWidgetShareUiModel {
