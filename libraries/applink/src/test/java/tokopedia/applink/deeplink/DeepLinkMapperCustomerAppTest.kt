@@ -24,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 225
+        const val SIZE_MAPPER = 226
     }
 
     override fun setup() {
