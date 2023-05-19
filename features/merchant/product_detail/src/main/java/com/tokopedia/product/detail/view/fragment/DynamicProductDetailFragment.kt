@@ -168,6 +168,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
@@ -214,6 +215,7 @@ import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductArTrackerData
 import com.tokopedia.product.detail.tracking.ProductArTracking
+import com.tokopedia.product.detail.tracking.ProductDetailInfoTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -1168,6 +1170,37 @@ open class DynamicProductDetailFragment :
             )
             shouldRefreshProductInfoBottomSheet = false
         }
+    }
+
+    override fun onAnnotationOpenProductInfoSheet(
+        extParam: String,
+        trackData: ProductDetailInfoAnnotationTrackData
+    ) {
+        val activity = activity ?: return
+
+        ProductDetailInfoHelper.showBottomSheetInfo(
+            fragmentActivity = activity,
+            daggerComponent = productDaggerComponent,
+            listener = this,
+            p1Data = viewModel.getDynamicProductInfoP1,
+            sizeChartImageUrl = viewModel.variantData?.sizeChart,
+            infoData = pdpUiUpdater?.productDetailInfoData ?: ProductDetailInfoDataModel(),
+            forceRefresh = shouldRefreshProductInfoBottomSheet,
+            isOpenSpecification = false,
+            annotationExtParam = extParam
+        )
+
+        ProductDetailInfoTracking.onClickAnnotationGeneric(
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
+        )
+    }
+
+    override fun onAnnotationGenericImpression(trackData: ProductDetailInfoAnnotationTrackData) {
+        ProductDetailInfoTracking.onImpressionAnnotationGeneric(
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
+        )
     }
 
     override fun getParentViewModelStoreOwner(): ViewModelStore {
