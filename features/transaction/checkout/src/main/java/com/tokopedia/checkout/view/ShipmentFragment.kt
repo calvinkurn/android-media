@@ -90,7 +90,6 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -865,9 +864,9 @@ class ShipmentFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if ((
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -1330,6 +1329,7 @@ class ShipmentFragment :
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
             if (shipmentCartItemModel != null) {
+                shipmentLoadingIndex = -1
                 shipmentCartItemModel.isStateLoadingCourierState = false
                 if (isTradeInDropOff) {
                     shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState = true
@@ -2593,9 +2593,9 @@ class ShipmentFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -2728,13 +2728,13 @@ class ShipmentFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartItemPosition)
         } else {
