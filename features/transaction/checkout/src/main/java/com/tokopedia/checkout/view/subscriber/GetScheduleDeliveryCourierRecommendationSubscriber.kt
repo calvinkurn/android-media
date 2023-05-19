@@ -46,7 +46,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
         }
         view.logOnErrorLoadCourier(e, itemPosition, boPromoCode)
         if (e is AkamaiErrorException) {
-            view.showToastErrorAkamai(ERROR_MESSAGE_AKAMAI)
+            view.showToastErrorAkamai(e.message)
         }
         logisticDonePublisher?.onCompleted()
     }
