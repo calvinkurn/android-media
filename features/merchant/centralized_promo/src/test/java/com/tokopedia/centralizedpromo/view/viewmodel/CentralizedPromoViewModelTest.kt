@@ -6,6 +6,7 @@ import com.tokopedia.centralizedpromo.R
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.PromoPlayAuthorConfigUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.model.Footer
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
@@ -49,6 +50,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var getPromotionUseCase: GetPromotionUseCase
+
+    @RelaxedMockK
+    lateinit var promoPlayAuthorConfigUseCase: PromoPlayAuthorConfigUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -99,6 +103,7 @@ class CentralizedPromoViewModelTest {
             userSession,
             getOnGoingPromotionUseCase,
             getPromotionUseCase,
+            promoPlayAuthorConfigUseCase,
             coroutineTestRule.dispatchers
         )
     }
@@ -194,6 +199,10 @@ class CentralizedPromoViewModelTest {
         coEvery {
             getPromotionUseCase.execute(any())
         } returns successResult
+
+        coEvery {
+            promoPlayAuthorConfigUseCase.execute(any())
+        } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION, tabId = "0")
 
