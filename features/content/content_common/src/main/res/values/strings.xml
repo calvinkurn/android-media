@@ -161,5 +161,4 @@
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>
 
-    <string name="content_common_zero_value">0</string>
 </resources>
