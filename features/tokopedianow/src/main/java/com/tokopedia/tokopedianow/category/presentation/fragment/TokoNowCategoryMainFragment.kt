@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
@@ -97,6 +98,8 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
                     adapter.submitList(it.data)
 
                     viewModel.getFirstPage()
+
+                    binding?.categoryShimmering?.root?.hide()
                 }
                 is Fail -> {}
             }

@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -156,6 +157,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
+                delay(3000)
+
                 getCategoryHeaderUseCase.setParams(
                     categoryId = categoryIdL1,
                     warehouseId = getWarehouseId()

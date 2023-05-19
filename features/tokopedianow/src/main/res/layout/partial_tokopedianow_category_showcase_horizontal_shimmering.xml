@@ -7,35 +7,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
-    <include
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_1"
-        layout="@layout/partial_tokopedianow_category_showcase_item_shimmering"
         android:layout_width="0dp"
         android:layout_height="224dp"
         android:layout_marginStart="16dp"
         app:layout_constraintEnd_toStartOf="@+id/shimmer_2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"/>
 
-    <include
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_2"
-        layout="@layout/partial_tokopedianow_category_showcase_item_shimmering"
         android:layout_width="0dp"
         android:layout_height="224dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/shimmer_3"
         app:layout_constraintStart_toEndOf="@+id/shimmer_1"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"/>
 
-    <include
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_3"
-        layout="@layout/partial_tokopedianow_category_showcase_item_shimmering"
         android:layout_width="0dp"
         android:layout_height="224dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shimmer_2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
