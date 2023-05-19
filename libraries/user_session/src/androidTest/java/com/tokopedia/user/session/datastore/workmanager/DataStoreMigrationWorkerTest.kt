@@ -80,6 +80,7 @@ class DataStoreMigrationWorkerTest {
             userSession.logoutSession()
             userSession.clearToken()
             dataStore.logoutSession()
+            dataStore.clearToken()
 
             assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
             assertThat(dataStore.getSampleUser(), equalTo(sample))
