@@ -121,4 +121,8 @@ class StickyHeadRecyclerView : ConstraintLayout {
     fun dpToPx(dp: Int): Float {
         return (dp * Resources.getSystem().displayMetrics.density)
     }
+
+    fun setPaddingToInnerRV(left: Int, top: Int, right: Int, bottom: Int) {
+        recyclerView.setPadding(left, top, right, bottom)
+    }
 }
