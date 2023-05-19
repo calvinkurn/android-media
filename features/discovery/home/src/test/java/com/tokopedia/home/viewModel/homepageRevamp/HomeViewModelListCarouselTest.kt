@@ -122,5 +122,8 @@ class HomeViewModelListCarouselTest {
                 Assert.assertTrue(false)
             }
         )
+        homeViewModel.errorEventLiveData.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() is Throwable)
+        }
     }
 }

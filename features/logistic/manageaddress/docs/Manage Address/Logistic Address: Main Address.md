@@ -1,5 +1,5 @@
 ---
-title: Logistic Address: Main Address
+title: "Logistic Address: Main Address"
 labels:
 - logistic
 - mainaddress
