@@ -472,7 +472,11 @@ object DynamicProductDetailMapper {
                 showAtFront = it.showAtFront,
                 isAnnotation = it.isAnnotation,
                 infoLink = it.infoLink,
-                showAtBottomSheet = it.showAtBottomSheet
+                showAtBottomSheet = it.showAtBottomSheet,
+                key = it.key,
+                type = it.type,
+                action = it.action,
+                extParam = it.extParam
             )
         }
     }
@@ -660,10 +664,7 @@ object DynamicProductDetailMapper {
         product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
         product.data.campaign.percentageAmount,
         startTime,
-        (
-            product.data.campaign.endDateUnix
-                ?: ""
-            ).toLongOrZero()
+        product.data.campaign.endDateUnix.toLongOrZero()
     )
 
     fun generateAffiliateShareData(
