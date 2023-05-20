@@ -13,6 +13,7 @@ import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
+import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
@@ -82,6 +83,7 @@ class HomeAccountUserViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val accountPref = mockk<AccountPreference>(relaxed = true)
     private val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
+    private val dataStoreMapper = mockk<ProfileWithDataStoreMapper>(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: HomeAccountUserViewModel
@@ -120,6 +122,7 @@ class HomeAccountUserViewModelTest {
             saveAttributeOnLocal,
             offerInterruptUseCase,
             refreshProfileUseCase,
+            dataStoreMapper,
             dispatcher
         )
 
@@ -161,16 +164,18 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Success`() {
         /* When */
+        val profileDataView = ProfileDataView()
         coEvery { homeAccountUserUsecase(Unit) } returns responseResult
         coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
 
         viewModel.getBuyerData()
 
         responseResult.linkStatus = linkStatusResult.response
 
-        assertEquals(viewModel.buyerAccountDataData.value, Success(responseResult))
+        assertEquals(viewModel.buyerAccountDataData.value, Success(profileDataView))
     }
 
     @Test
