@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view.adapter.delegate
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
@@ -9,15 +10,23 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 class UniversalInboxRecommendationDelegate(
     private val recommendationListener: RecommendationListener
-):
+) :
     TypedAdapterDelegate<RecommendationItem, Any, UniversalInboxRecommendationProductViewHolder>(
-    UniversalInboxRecommendationProductViewHolder.LAYOUT
-) {
+        UniversalInboxRecommendationProductViewHolder.LAYOUT
+    ) {
     override fun onBindViewHolder(
         item: RecommendationItem,
         holder: UniversalInboxRecommendationProductViewHolder
     ) {
         holder.bind(item)
+    }
+
+    override fun onBindViewHolderWithPayloads(
+        item: RecommendationItem,
+        holder: UniversalInboxRecommendationProductViewHolder,
+        payloads: Bundle
+    ) {
+        holder.bind(item, payloads)
     }
 
     override fun onCreateViewHolder(
@@ -26,5 +35,4 @@ class UniversalInboxRecommendationDelegate(
     ): UniversalInboxRecommendationProductViewHolder {
         return UniversalInboxRecommendationProductViewHolder(basicView, recommendationListener)
     }
-
 }

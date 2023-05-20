@@ -8,6 +8,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -17,7 +18,7 @@ class UniversalInboxAdapter(
     tdnBannerResponseListener: TdnBannerResponseListener,
     topAdsClickListener: TopAdsImageViewClickListener,
     recommendationListener: RecommendationListener
-): BaseCommonAdapter() {
+) : BaseCommonAdapter() {
 
     init {
         delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
@@ -31,7 +32,7 @@ class UniversalInboxAdapter(
         delegatesManager.addDelegate(UniversalInboxMenuSeparatorDelegate())
     }
 
-    private val recommendationViewType: Int? = null
+    private var recommendationViewType: Int? = null
 
     fun getProductRecommendationViewType(): Int? {
         if (recommendationViewType != null) {
@@ -39,10 +40,15 @@ class UniversalInboxAdapter(
         } else {
             itemList.forEachIndexed { index, item ->
                 if (item is RecommendationItem) {
-                    return getItemViewType(index)
+                    recommendationViewType = getItemViewType(index)
+                    return recommendationViewType
                 }
             }
             return null
         }
+    }
+
+    fun isRecommendationLoader(position: Int): Boolean {
+        return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
     }
 }

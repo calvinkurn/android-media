@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inbox.universalinbox.data.response.UniversalInboxRecommendationWithTDN
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
@@ -26,20 +27,22 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val addWishListV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
-
-    private val _topAds = MutableLiveData<Result<List<TopAdsImageViewModel>>>()
-    val topAds: LiveData<Result<List<TopAdsImageViewModel>>>
-        get() = _topAds
+) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
     private val _firstPageRecommendation = MutableLiveData<Result<UniversalInboxRecommendationWithTDN>>()
     val firstPageRecommendation: LiveData<Result<UniversalInboxRecommendationWithTDN>>
@@ -109,10 +112,10 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    suspend fun getTopAdsBannerData(): List<TopAdsImageViewModel> {
-        try {
-            return topAdsImageViewUseCase.getImageData(
-                topAdsImageViewUseCase.getQueryMap( //TODO: dummy param from notif
+    private suspend fun getTopAdsBannerData(): List<TopAdsImageViewModel> {
+        return try {
+            topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap( // TODO: dummy param from notif
                     "",
                     NotificationViewModel.TOP_ADS_SOURCE,
                     "",
@@ -121,10 +124,9 @@ class UniversalInboxViewModel @Inject constructor(
                     ""
                 )
             )
-//            _topAds.postValue(Success(results))
         } catch (throwable: Throwable) {
-//            _topAds.postValue(Fail(throwable))
-            return listOf()
+            Timber.d(throwable)
+            listOf()
         }
     }
 
@@ -132,14 +134,55 @@ class UniversalInboxViewModel @Inject constructor(
         val recommendationParams = GetRecommendationRequestParam(
             pageNumber = page,
             xSource = DEFAULT_VALUE_X_SOURCE,
-            pageName = PAGE,
+            pageName = PAGE_NAME,
             productIds = emptyList(),
             xDevice = DEFAULT_VALUE_X_DEVICE
         )
         return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
-    companion object {
-        private const val PAGE = "inbox"
+    fun addWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener
+    ) {
+        viewModelScope.launch {
+            withContext(dispatcher.main) {
+                try {
+                    val productId = model.productId.toString()
+                    addWishListV2UseCase.setParams(productId, userSession.userId)
+                    val result = withContext(dispatcher.io) { addWishListV2UseCase.executeOnBackground() }
+                    if (result is Success) {
+                        actionListener.onSuccessAddWishlist(result.data, productId)
+                    } else if (result is Fail) {
+                        actionListener.onErrorAddWishList(result.throwable, productId)
+                    }
+                } catch (throwable: Throwable) {
+                    Timber.d(throwable)
+                    actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                }
+            }
+        }
+    }
+
+    fun removeWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener
+    ) {
+        viewModelScope.launch {
+            withContext(dispatcher.main) {
+                try {
+                    deleteWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
+                    val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+                    if (result is Success) {
+                        actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                    } else if (result is Fail) {
+                        actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+                    }
+                } catch (throwable: Throwable) {
+                    Timber.d(throwable)
+                    actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                }
+            }
+        }
     }
 }
