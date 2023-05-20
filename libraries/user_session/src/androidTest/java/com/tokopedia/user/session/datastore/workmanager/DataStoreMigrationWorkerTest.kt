@@ -8,6 +8,7 @@ import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionMap
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
@@ -25,6 +26,7 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.empty
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -61,6 +63,56 @@ class DataStoreMigrationWorkerTest {
             assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
             assertThat(dataStore.getUserModel(), equalTo(userSession.getUserModel()))
             assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
+        }
+    }
+
+    @Test
+    fun whenShopIdIsSetFromUserSession_DataStoreShopIdShouldBeSet() {
+        runBlocking {
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            every { spykedPref.isDataStoreEnabled() } returns true
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+
+            userSession.shopId = "923081"
+            UserSessionMap.map.clear()
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+
+            userSession.shopId = ""
+            UserSessionMap.map.clear()
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+
+            userSession.shopId = "0"
+            UserSessionMap.map.clear()
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+
+            userSession.shopId = "-1"
+            UserSessionMap.map.clear()
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+
+            userSession.shopId = null
+            UserSessionMap.map.clear()
+            assertEquals(userSession.shopId, dataStore.getShopId().first())
+        }
+    }
+
+    @Test
+    fun whenLoginMethodIsSetFromUserSession_DataStoreLoginMethodShouldBeSet() {
+        runBlocking {
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            every { spykedPref.isDataStoreEnabled() } returns true
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+
+            assertEquals(userSession.loginMethod, dataStore.getLoginMethod().first())
+
+            userSession.loginMethod = UserSession.LOGIN_METHOD_GOOGLE
+            UserSessionMap.map.clear()
+            assertEquals(userSession.loginMethod, dataStore.getLoginMethod().first())
+
+            userSession.loginMethod = ""
+            UserSessionMap.map.clear()
+            assertEquals(userSession.loginMethod, dataStore.getLoginMethod().first())
         }
     }
 
