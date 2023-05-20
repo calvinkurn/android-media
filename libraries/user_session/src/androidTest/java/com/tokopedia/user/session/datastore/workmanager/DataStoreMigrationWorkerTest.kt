@@ -117,7 +117,7 @@ class DataStoreMigrationWorkerTest {
     }
 
     @Test
-    fun when_cleared_session_after_migration_data_remains_synced() {
+    fun when_logout_session_after_migration_data_remains_synced() {
         runBlocking {
             val sample = UserSessionModel()
             val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
@@ -130,8 +130,27 @@ class DataStoreMigrationWorkerTest {
 
             val dataStore = UserSessionDataStoreClient.getInstance(context)
             userSession.logoutSession()
-            userSession.clearToken()
             dataStore.logoutSession()
+
+            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
+            assertThat(dataStore.getUserModel(), equalTo(userSession.getUserModel()))
+        }
+    }
+
+    @Test
+    fun when_cleared_token_after_migration_data_remains_synced() {
+        runBlocking {
+            val sample = UserSessionModel()
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            userSession.setModel(sample)
+            every { spykedPref.isDataStoreEnabled() } returns true
+
+            val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
+            val result = worker.doWork()
+            assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
+
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+            userSession.clearToken()
             dataStore.clearToken()
 
             assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))

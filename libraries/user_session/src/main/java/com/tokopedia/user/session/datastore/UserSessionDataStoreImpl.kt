@@ -249,7 +249,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         userSessionSetter {
             clearAccessToken()
             clearTokenType()
-            clearRefreshToken()
+//            clearRefreshToken() // need to confirm
         }
     }
 
