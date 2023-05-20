@@ -36,6 +36,10 @@ class KycRobot {
         onView(withId(R.id.button)).perform(click())
     }
 
+    fun atFinalAlacarteClickOK() {
+        onView(withId(R.id.uii_simple_button)).perform(click())
+    }
+
     fun atCameraClickCapture() {
         Thread.sleep(500)
         onView(withId(R.id.image_button_shutter)).perform(click())

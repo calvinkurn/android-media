@@ -67,6 +67,31 @@ class KycAlaCarteUiTest {
     }
 
     @Test
+    fun whenAlaCarteWithShowcase_happyFlow() {
+        val projectId = "18"
+        kycApi.case = FakeKycUploadApi.Case.Success
+        val url = "https://tokopedia.com"
+        val i = Intent().apply {
+            data = Uri.parse(
+                UriUtil.buildUri(KYC_ALA_CARTE, projectId, "true", url, "ktpWithLiveness")
+            )
+        }
+        activityTestRule.launchActivity(i)
+        stubKtpCamera()
+        stubLiveness(projectId)
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            atFaceIntroClickNext()
+            atFinalAlacarteClickOK()
+        } upload {
+            hasRedirectUrl(activityTestRule, url)
+            assertThat(timber, hasProjectIdOf(projectId))
+        }
+    }
+
+    @Test
     fun whenLivenessResultIsFailedThenSuccess_projectIdIsHavingCorrectValue() {
         val projectId = "18"
         kycApi.case = FakeKycUploadApi.Case.Success
