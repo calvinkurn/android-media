@@ -41,7 +41,7 @@ data class UserSessionModel(
     val androidId: String = "idAndroid"
 )
 
-internal fun UserSession.setSample(model: UserSessionModel) {
+internal fun UserSession.setModel(model: UserSessionModel) {
     setLoginSession(
         model.isLogin, model.userId, model.name, model.shopId, model.isMsisdnVerified,
         model.shopName, model.email, model.isGoldMerchant, model.phone
@@ -69,7 +69,7 @@ internal fun UserSession.setSample(model: UserSessionModel) {
     setIsMultiLocationShop(model.isMultiLocationShop)
 }
 
-internal suspend fun UserSessionDataStore.getSampleUser(): UserSessionModel {
+internal suspend fun UserSessionDataStore.getUserModel(): UserSessionModel {
     return UserSessionModel(
         isLoggedIn().first(),
         getUserId().first(),
@@ -106,7 +106,7 @@ internal suspend fun UserSessionDataStore.getSampleUser(): UserSessionModel {
     )
 }
 
-internal fun UserSession.getSampleUser(): UserSessionModel {
+internal fun UserSession.getUserModel(): UserSessionModel {
     return UserSessionModel(
         isLoggedIn,
         userId,
