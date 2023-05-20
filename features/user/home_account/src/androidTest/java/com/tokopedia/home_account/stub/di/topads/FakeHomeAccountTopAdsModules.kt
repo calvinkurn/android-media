@@ -14,16 +14,13 @@ import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
-import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,15 +48,9 @@ class FakeHomeAccountTopAdsModules(val context: Context) {
     }
 
     @Provides
-    fun provideDataViewMapper(userSession: UserSessionInterface, userSessionDataStore: Lazy<UserSessionDataStore>): DataViewMapper {
-        return DataViewMapper(userSession, userSessionDataStore)
-    }
-
-    @Provides
     fun providePermissionChecker(): PermissionCheckerHelper {
         return PermissionCheckerHelper()
     }
-
 
     @Provides
     fun providePermissionCheck(@ApplicationContext context: Context, permissionChecker: PermissionCheckerHelper): PermissionChecker {
