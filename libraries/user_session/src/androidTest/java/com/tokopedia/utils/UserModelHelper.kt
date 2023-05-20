@@ -1,8 +1,10 @@
 package com.tokopedia.utils
 
+import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 data class UserSessionModel(
     val isLogin: Boolean = true,
@@ -32,7 +34,11 @@ data class UserSessionModel(
     val loginMethod: String = "default",
     val isShopOS: Boolean = false,
     val gtmLoginId: String = "gtm_loginId",
-    val isAffiliate: Boolean = false
+    val isAffiliate: Boolean = false,
+    val isShopAdmin: Boolean = false,
+    val isLocationAdmin: Boolean = false,
+    val isMultiLocationShop: Boolean = false,
+    val androidId: String = "idAndroid"
 )
 
 internal fun UserSession.setSample(model: UserSessionModel) {
@@ -58,6 +64,9 @@ internal fun UserSession.setSample(model: UserSessionModel) {
     setIsShopOfficialStore(model.isShopOS)
     // setgtmloginid
     setIsAffiliateStatus(model.isAffiliate)
+    setIsShopAdmin(model.isShopAdmin)
+    setIsLocationAdmin(model.isLocationAdmin)
+    setIsMultiLocationShop(model.isMultiLocationShop)
 }
 
 internal suspend fun UserSessionDataStore.getSampleUser(): UserSessionModel {
@@ -89,7 +98,11 @@ internal suspend fun UserSessionDataStore.getSampleUser(): UserSessionModel {
         getLoginMethod().first(),
         isShopOfficialStore().first(),
         getGTMLoginID().first(),
-        isAffiliate().first()
+        isAffiliate().first(),
+        isShopAdmin().first(),
+        isLocationAdmin().first(),
+        isMultiLocationShop().first(),
+        runBlocking { getAndroidId(ApplicationProvider.getApplicationContext()).first() }
     )
 }
 
@@ -122,6 +135,10 @@ internal fun UserSession.getSampleUser(): UserSessionModel {
         loginMethod,
         isShopOfficialStore,
         gtmLoginID,
-        isAffiliate
+        isAffiliate,
+        isShopAdmin,
+        isLocationAdmin,
+        isMultiLocationShop,
+        androidId
     )
 }
