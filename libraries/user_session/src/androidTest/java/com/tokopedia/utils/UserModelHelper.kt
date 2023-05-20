@@ -4,11 +4,13 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import kotlinx.coroutines.flow.first
 
-data class SampleUserModel(
+data class UserSessionModel(
     val isLogin: Boolean = true,
     val userId: String = "fakeId",
+    val tempUserId: String = "tempFakeId",
     val name: String = "Foo Name",
-    val token: String = "fooToken",
+    val accessToken: String = "fooToken",
+    val tokenType: String = "bearer",
     val refreshToken: String = "barToken",
     val shopId: String = "1234",
     val shopName: String = "Kelontong",
@@ -16,26 +18,56 @@ data class SampleUserModel(
     val isMsisdnVerified: Boolean = true,
     val isGoldMerchant: Boolean = true,
     val phone: String = "0812345678",
-    val isShopOwner: Boolean = false
+    val isShopOwner: Boolean = false,
+    val profilePicture: String = "pic.jpeg",
+    val hasShop: Boolean = false,
+    val hasPassword: Boolean = false,
+    val gcToken: String = "gcToken",
+    val shopAvatar: String = "avatar",
+    val isPowerMerchantIdle: Boolean = false,
+    val autofillUserData: String = "autofilldata",
+//    val twitterAccessToken: String = "twtToken",
+//    val twitterSecretToken: String = "twtSecret",
+//    val twitterShouldPost: Boolean = false,
+    val loginMethod: String = "default",
+    val isShopOS: Boolean = false,
+    val gtmLoginId: String = "gtm_loginId",
+    val isAffiliate: Boolean = false
 )
 
-internal fun UserSession.setSample(model: SampleUserModel) {
+internal fun UserSession.setSample(model: UserSessionModel) {
     setLoginSession(
         model.isLogin, model.userId, model.name, model.shopId, model.isMsisdnVerified,
         model.shopName, model.email, model.isGoldMerchant, model.phone
     )
-    setToken(model.token, "Bearer", model.refreshToken)
+    setToken(model.accessToken, model.tokenType, model.refreshToken)
     deviceId = "d3v1c3"
     androidId
     setIsShopOwner(model.isShopOwner)
+    profilePicture = model.profilePicture
+    setTempUserId(model.tempUserId)
+    // setHasShop
+    setHasPassword(model.hasPassword)
+    gcToken = model.gcToken
+    shopAvatar = model.shopAvatar
+    setIsPowerMerchantIdle(model.isPowerMerchantIdle)
+    autofillUserData = model.autofillUserData
+//    setTwitterAccessTokenAndSecret(model.twitterAccessToken, model.twitterSecretToken)
+//    twitterShouldPost = model.twitterShouldPost
+    loginMethod = model.loginMethod
+    setIsShopOfficialStore(model.isShopOS)
+    // setgtmloginid
+    setIsAffiliateStatus(model.isAffiliate)
 }
 
-internal suspend fun UserSessionDataStore.getSampleUser(): SampleUserModel {
-    return SampleUserModel(
+internal suspend fun UserSessionDataStore.getSampleUser(): UserSessionModel {
+    return UserSessionModel(
         isLoggedIn().first(),
         getUserId().first(),
+        getTemporaryUserId().first(),
         getName().first(),
         getAccessToken().first(),
+        getTokenType().first(),
         getRefreshToken().first(),
         getShopId().first(),
         getShopName().first(),
@@ -43,16 +75,32 @@ internal suspend fun UserSessionDataStore.getSampleUser(): SampleUserModel {
         isMsisdnVerified().first(),
         isGoldMerchant().first(),
         getPhoneNumber().first(),
-        isShopOwner().first()
+        isShopOwner().first(),
+        getProfilePicture().first(),
+        hasShop().first(),
+        hasPassword().first(),
+        getGCToken().first(),
+        getShopAvatar().first(),
+        isPowerMerchantIdle().first(),
+        getAutofillUserData().first(),
+//        getTwitterAccessToken().first(),
+//        getTwitterAccessTokenSecret().first(),
+//        getTwitterShouldPost().first(),
+        getLoginMethod().first(),
+        isShopOfficialStore().first(),
+        getGTMLoginID().first(),
+        isAffiliate().first()
     )
 }
 
-internal fun UserSession.getSampleUser(): SampleUserModel {
-    return SampleUserModel(
+internal fun UserSession.getSampleUser(): UserSessionModel {
+    return UserSessionModel(
         isLoggedIn,
         userId,
+        temporaryUserId,
         name,
         accessToken,
+        tokenType,
         freshToken,
         shopId,
         shopName,
@@ -60,6 +108,20 @@ internal fun UserSession.getSampleUser(): SampleUserModel {
         isMsisdnVerified,
         isGoldMerchant,
         phoneNumber,
-        isShopOwner
+        isShopOwner,
+        profilePicture,
+        hasShop(),
+        hasPassword(),
+        gcToken.orEmpty(),
+        shopAvatar,
+        isPowerMerchantIdle,
+        autofillUserData,
+//        twitterAccessToken.orEmpty(),
+//        twitterAccessTokenSecret.orEmpty(),
+//        twitterShouldPost,
+        loginMethod,
+        isShopOfficialStore,
+        gtmLoginID,
+        isAffiliate
     )
 }

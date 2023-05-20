@@ -514,6 +514,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public void logoutSession() {
         cleanKey(LOGIN_SESSION, LOGIN_ID);
+        cleanKey(LOGIN_SESSION, GTM_LOGIN_ID);
         cleanKey(LOGIN_SESSION, FULL_NAME);
         cleanKey(LOGIN_SESSION, SHOP_ID);
         cleanKey(LOGIN_SESSION, SHOP_NAME);

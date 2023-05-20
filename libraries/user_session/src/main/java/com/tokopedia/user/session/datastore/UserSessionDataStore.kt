@@ -130,6 +130,8 @@ interface UserSessionDataStore {
 
     fun getAutofillUserData(): Flow<String>
 
+    // considering to take out these twitter data
+
     fun getTwitterAccessToken(): Flow<String>
 
     fun getTwitterAccessTokenSecret(): Flow<String>
