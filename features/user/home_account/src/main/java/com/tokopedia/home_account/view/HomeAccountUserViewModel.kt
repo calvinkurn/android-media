@@ -12,6 +12,7 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
+import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
@@ -57,11 +58,12 @@ class HomeAccountUserViewModel @Inject constructor(
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
     private val offerInterruptUseCase: OfferInterruptUseCase,
     private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    private val profileWithDataStoreMapper: ProfileWithDataStoreMapper,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
-    val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
+    private val _buyerAccountData = MutableLiveData<Result<ProfileDataView>>()
+    val buyerAccountDataData: LiveData<Result<ProfileDataView>>
         get() = _buyerAccountData
 
     private val _settingData = MutableLiveData<SettingDataView>()
@@ -198,7 +200,7 @@ class HomeAccountUserViewModel @Inject constructor(
                         this.offerInterrupt = offerInterruption.data
                     }
 
-                    _buyerAccountData.value = Success(accountModel)
+                    _buyerAccountData.value = Success(profileWithDataStoreMapper(accountModel))
                     // This is executed after setting live data to save load time
                     saveAttributeOnLocal(accountModel)
                 }
