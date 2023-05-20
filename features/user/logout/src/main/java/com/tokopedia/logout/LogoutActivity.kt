@@ -194,7 +194,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        userSession.clearToken()
+        userSession.clearToken() // this is unnecessary
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
