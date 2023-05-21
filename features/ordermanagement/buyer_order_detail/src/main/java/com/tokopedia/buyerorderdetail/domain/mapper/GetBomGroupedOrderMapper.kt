@@ -35,7 +35,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
             ))
         }
 
-        return OwocGroupedOrderWrapper(owocGroupedOrderList)
+        return OwocGroupedOrderWrapper(owocGroupedOrderList, getBomGroupedOrder.title)
     }
 
     private fun mapToTickerUiModel(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo): OwocTickerUiModel {
@@ -61,7 +61,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     val (productBundlingListToShow, productBundlingRest) = mapToSplitProductBundleList(
                         it
                     )
-                    //productNonBundlingListToShow = 1, remainingSlot 2
+                    //productBundlingListToShow = 1, remainingSlot 2
                     var remainingSlot = if (productBundlingListToShow.size >= MAX_ORDER_ITEMS) {
                         Int.ZERO
                     } else {
@@ -79,10 +79,10 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     remainingSlot = if (productNonBundlingListToShow.size >= remainingSlot) {
                         Int.ZERO
                     } else {
-                        remainingSlot - productBundlingListToShow.size
+                        remainingSlot - productNonBundlingListToShow.size
                     }
 
-                    addAll(productBundlingListToShow)
+                    addAll(productNonBundlingListToShow)
 
                     val (addonListToShow, addonListRest) = mapToSplitAddonList(
                         it,
@@ -99,13 +99,19 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     val groupedProductListUiModelRest = mutableListOf<BaseOwocVisitableUiModel>().apply {
                         addAll(productBundlingRest)
                         addAll(productNonBundlingRest)
-                        add(addonListRest)
+                        if (addonListRest.addonsItemList.isNotEmpty()) {
+                            add(addonListRest)
+                        }
                     }
 
-                    add(mapToProductListToggleUiModel(
-                        shopId = it.shop.shopId,
-                        collapsedProductList = groupedProductListUiModelRest
-                    ))
+                    if (groupedProductListUiModelRest.isNotEmpty()) {
+                        add(
+                            mapToProductListToggleUiModel(
+                                shopId = it.shop.shopId,
+                                collapsedProductList = groupedProductListUiModelRest
+                            )
+                        )
+                    }
 
                     if (index < orders.size - Int.ONE) {
                         add(OwocThickDividerUiModel())

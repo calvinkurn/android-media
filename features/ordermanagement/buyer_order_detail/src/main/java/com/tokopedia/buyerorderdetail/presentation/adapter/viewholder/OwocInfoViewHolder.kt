@@ -9,7 +9,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiM
 import com.tokopedia.media.loader.loadImage
 
 class OwocInfoViewHolder(
-    view: View
+    view: View,
+    private val listener: Listener
 ) : AbstractViewHolder<OwocBomDetailSectionUiModel>(view) {
 
     companion object {
@@ -23,16 +24,16 @@ class OwocInfoViewHolder(
             setOWOCSectionImage(element.imageUrl)
             setOWOCSectionTitle(element.sectionTitle)
             setOWOCSectionDesc(element.sectionDesc)
-            setOWOCSectionClickListener()
+            setOWOCSectionClickListener(element)
         }
     }
 
-    private fun ItemOwocInfoBinding.setOWOCSectionClickListener() {
+    private fun ItemOwocInfoBinding.setOWOCSectionClickListener(element: OwocBomDetailSectionUiModel) {
         root.setOnClickListener {
-
+            listener.onOwocInfoClicked(element.txId)
         }
         icOWOCSectionChevronRight.setOnClickListener {
-
+            listener.onOwocInfoClicked(element.txId)
         }
     }
 
@@ -46,5 +47,9 @@ class OwocInfoViewHolder(
 
     private fun ItemOwocInfoBinding.setOWOCSectionImage(imageUrl: String) {
         ivOWOCSection.loadImage(imageUrl)
+    }
+
+    interface Listener {
+        fun onOwocInfoClicked(txId: String)
     }
 }

@@ -376,9 +376,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOwocSection(
         context: Context?,
-        owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel
+        owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel?
     ) {
-        if (owocBomDetailSectionUiModel.shouldShow(context = context)) {
+        if (owocBomDetailSectionUiModel?.shouldShow(context = context) == true) {
             add(owocBomDetailSectionUiModel)
         }
     }

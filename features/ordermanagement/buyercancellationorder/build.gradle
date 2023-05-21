@@ -67,6 +67,9 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     // unit test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

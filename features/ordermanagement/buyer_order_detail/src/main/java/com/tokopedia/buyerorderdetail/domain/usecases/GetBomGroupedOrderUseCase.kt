@@ -9,7 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_BOM_GROUPED_ORDER_QUERY = """
-    query get_bom_grouped_order(${'$'}tx_id: String!, ${'$'}order_id: String!) {
+    query GetBomGroupedOrder(${'$'}tx_id: String!, ${'$'}order_id: String!) {
       get_bom_grouped_order(input: {
             tx_id: ${'$'}tx_id
             order_id: ${'$'}order_id

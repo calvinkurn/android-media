@@ -64,10 +64,11 @@ open class BuyerOrderDetailTypeFactory(
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     private val productListToggleListener: ProductListToggleViewHolder.Listener,
     private val pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
+    private val owocInfoListener: OwocInfoViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
+    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
 ) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -114,7 +115,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
-            OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent)
+            OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent, owocInfoListener)
             else -> super.createViewHolder(parent, type)
         }
     }

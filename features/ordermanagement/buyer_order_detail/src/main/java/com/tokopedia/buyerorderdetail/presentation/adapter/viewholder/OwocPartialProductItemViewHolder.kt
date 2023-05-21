@@ -50,7 +50,8 @@ class OwocPartialProductItemViewHolder(
         element.let {
             if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
                 navigator?.goToProductSnapshotPage(it.orderId, it.orderDetailId)
-                BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+                //todo will update later
+//                BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
             } else {
                 showToaster(
                     context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice)

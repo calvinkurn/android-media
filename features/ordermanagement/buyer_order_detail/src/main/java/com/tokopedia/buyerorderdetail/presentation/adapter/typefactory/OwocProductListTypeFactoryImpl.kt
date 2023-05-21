@@ -7,14 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocAddonsViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 
@@ -55,6 +53,7 @@ class OwocProductListTypeFactoryImpl(
             OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator)
             OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocSectionGroupListener)
             OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
+            OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

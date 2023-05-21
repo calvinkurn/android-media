@@ -2,6 +2,8 @@ package com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellatio
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
 
 data class BuyerGetCancellationReasonData(
 
@@ -41,7 +43,7 @@ data class BuyerGetCancellationReasonData(
             val groupedOrders: GroupedOrders = GroupedOrders(),
 
             @SerializedName("group_type")
-            val groupType: Int = 0,
+            val groupType: Int = BuyerCancellationOrderWrapperUiModel.NORMAL_ORDER_TYPE,
 
             @SerializedName("have_product_bundle")
             @Expose
@@ -73,8 +75,8 @@ data class BuyerGetCancellationReasonData(
                     val productPrice: Double = 0.0,
                     @SerializedName("product_qty")
                     val productQty: Int = 0,
-                    @SerializedName("shop_image")
-                    val shopImage: String = "",
+                    @SerializedName("shop_icon")
+                    val shopIcon: String = "",
                     @SerializedName("shop_name")
                     val shopName: String = ""
                 )

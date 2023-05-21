@@ -1,12 +1,13 @@
 package com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
+
 class BuyerCancellationProductUiModel(
     val shopName: String,
-    val shopId: String,
-    val orderNumber: String,
-    val shopType: String,
+    val shopIcon: String,
     val invoiceNumber: String,
-    val productId: String,
     val productName: String,
-    val productThumbnailUrl: String
+    val productThumbnailUrl: String,
+    val productInfo: String,
+    val orderInfo: String = String.EMPTY
 )

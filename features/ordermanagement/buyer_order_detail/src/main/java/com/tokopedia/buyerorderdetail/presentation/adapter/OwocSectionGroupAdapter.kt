@@ -3,7 +3,6 @@ package com.tokopedia.buyerorderdetail.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.OwocSectionGrouplDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
@@ -35,7 +34,7 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
 
     fun showLoadingShimmer() {
         if (visitables.getOrNull(Int.ZERO) !is OwocShimmerUiModel) {
-            visitables.add(LoadingModel())
+            visitables.add(OwocShimmerUiModel())
             notifyItemInserted(Int.ZERO)
         }
     }

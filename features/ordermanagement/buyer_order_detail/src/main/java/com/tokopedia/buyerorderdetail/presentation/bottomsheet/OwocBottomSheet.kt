@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -82,6 +83,12 @@ class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
         fetchBomGroupedOrder()
     }
 
+    fun show(fm: FragmentManager) {
+        if (!isVisible) {
+            show(fm, TAG)
+        }
+    }
+
     private fun initInjector() {
         activity?.let {
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
@@ -115,6 +122,7 @@ class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
             owocSectionGroupAdapter.hideLoadingShimmer()
             when (it) {
                 is Success -> {
+                    setTitle(it.data.owocTitle)
                     showOwocGroupedOrderList(it.data)
                 }
                 is Fail -> {
@@ -136,6 +144,8 @@ class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
 
         const val OWOC_ORDER_ID_KEY = "owoc_order_id_key"
         const val OWOC_TX_ID_KEY = "owoc_tx_id_key"
+
+        private val TAG = OwocBottomSheet::class.java.simpleName
 
         fun newInstance(orderId: String, txId: String): OwocBottomSheet {
             return OwocBottomSheet().apply {

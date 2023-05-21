@@ -5,6 +5,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 
 data class OwocBomDetailSectionUiModel(
+    val txId: String,
     val sectionTitle: String,
     val sectionDesc: String,
     val imageUrl: String

@@ -5,12 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils.getGlobalErrorType
 import com.tokopedia.buyerorderdetail.databinding.OwocErrorStateBinding
+import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 
 class OwocErrorStateViewHolder(
     view: View,
     private val listener: Listener
-) : AbstractViewHolder<PofErrorUiModel>(view) {
+) : AbstractViewHolder<OwocErrorUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.owoc_error_state
@@ -18,7 +19,7 @@ class OwocErrorStateViewHolder(
 
     private val binding = OwocErrorStateBinding.bind(itemView)
 
-    override fun bind(element: PofErrorUiModel) {
+    override fun bind(element: OwocErrorUiModel) {
         with(binding) {
             globalErrorStateOwoc.run {
                 setType(element.throwable.getGlobalErrorType())

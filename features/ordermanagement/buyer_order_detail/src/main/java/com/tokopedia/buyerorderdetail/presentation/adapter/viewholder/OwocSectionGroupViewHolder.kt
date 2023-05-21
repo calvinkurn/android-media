@@ -37,9 +37,12 @@ class OwocSectionGroupViewHolder(view: View?,
     }
 
     private fun ItemOwocSectionGroupBinding.setupRecyclerView(item: OwocSectionGroupUiModel) {
-        if (rvOwocProductList.adapter != owocSectionGroupAdapter) {
-            rvOwocProductList.layoutManager = LinearLayoutManager(root.context)
-            rvOwocProductList.adapter = owocSectionGroupAdapter
+        with(rvOwocProductList) {
+            if (adapter != owocSectionGroupAdapter) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = owocSectionGroupAdapter
+                isNestedScrollingEnabled = false
+            }
             owocSectionGroupAdapter.updateItems(item.baseOwocProductListUiModel)
         }
     }

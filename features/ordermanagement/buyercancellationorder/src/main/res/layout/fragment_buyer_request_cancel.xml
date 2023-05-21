@@ -316,10 +316,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
                     android:text="@string/ask_2_placeholder"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -374,41 +372,21 @@
 
                 </com.tokopedia.unifycomponents.CardUnify>
 
-                <com.tokopedia.unifycomponents.TextFieldUnify
-                    android:id="@+id/tf_choose_sub_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/btn_req_cancel"
-                    app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
-                    app:layout_constraintVertical_bias="0"
-                    app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
-                    app:text_field_label=""
-                    app:text_field_label_static="true"
-                    app:text_field_placeholder="@string/reason_placeholder" />
-
-                <com.tokopedia.unifycomponents.TextFieldUnify
+                <com.tokopedia.unifycomponents.TextFieldUnify2
                     android:id="@+id/tf_choose_sub_reason_editable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@id/btn_req_cancel"
                     app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
                     app:layout_constraintVertical_bias="0"
-                    app:text_field_label=""
+                    app:text_field_label="@string/buyer_cancellation_order_choose_reason"
                     app:text_field_label_static="true"
                     app:text_field_message="@string/error_message_buyer_request_cancel_reason_should_not_contains_special_chars"
-                    app:text_field_placeholder="@string/tulis_alasan" />
+                    app:text_field_placeholder="@string/buyer_cancellation_order_choose_reason" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_req_cancel"

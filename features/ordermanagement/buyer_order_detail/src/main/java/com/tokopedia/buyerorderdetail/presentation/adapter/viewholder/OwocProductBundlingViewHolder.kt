@@ -73,10 +73,11 @@ class OwocProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
+    override fun onBundleItemClicked(orderId: String, orderDetailId: String) {
         if (orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
             navigator?.goToProductSnapshotPage(orderId, orderDetailId)
-            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, orderId)
+            //todo will update later
+//            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, orderId)
         } else {
             showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
         }

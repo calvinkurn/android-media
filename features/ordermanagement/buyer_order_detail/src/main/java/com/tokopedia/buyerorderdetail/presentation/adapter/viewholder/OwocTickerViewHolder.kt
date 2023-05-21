@@ -8,29 +8,33 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
+import com.tokopedia.buyerorderdetail.databinding.ItemOwocTickerBinding
+import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class OwocTickerViewHolder(
-    itemView: View?,
+    view: View?,
     private val navigator: BuyerOrderDetailNavigator?,
-) : AbstractViewHolder<TickerUiModel>(itemView), TickerCallback {
+) : AbstractViewHolder<OwocTickerUiModel>(view), TickerCallback {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_ticker
     }
 
-    private var element: TickerUiModel? = null
+    private val binding = ItemOwocTickerBinding.bind(itemView)
 
-    override fun bind(element: TickerUiModel?) {
+    private var element: OwocTickerUiModel? = null
+
+    override fun bind(element: OwocTickerUiModel?) {
         element?.let {
             this.element = it
             setupTicker(element)
         }
     }
 
-    override fun bind(element: TickerUiModel?, payloads: MutableList<Any>) {
+    override fun bind(element: OwocTickerUiModel?, payloads: MutableList<Any>) {
         bind(element)
     }
 
@@ -40,8 +44,8 @@ class OwocTickerViewHolder(
 
     override fun onDismiss() {}
 
-    private fun setupTicker(element: TickerUiModel) {
-        (itemView as? Ticker)?.apply {
+    private fun setupTicker(element: OwocTickerUiModel) {
+        binding.owocTicker.run {
             val tickerDescription = composeDescriptionText(element.description, element.actionText, element.actionUrl)
             setHtmlDescription(tickerDescription)
             setDescriptionClickEvent(this@OwocTickerViewHolder)

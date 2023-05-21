@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -100,8 +101,27 @@ class OwocProductListHeaderViewHolder(
         OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel
     ) {
         val isLabelType = owocButtonActionButtonsUiModel.type == LABEL_TYPE
-        labelOwoc?.showWithCondition(isLabelType)
-        btnOwocMoreDetail?.showWithCondition(!isLabelType)
+        setupButton(owocButtonActionButtonsUiModel, isLabelType)
+        setupLabel(owocButtonActionButtonsUiModel, isLabelType)
+    }
+
+    private fun setupButton(
+        owocButtonActionButtonsUiModel:
+        OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel,
+        isLabelType: Boolean
+    ) {
+        btnOwocMoreDetail?.run {
+            buttonVariant = Utils.mapButtonVariant(owocButtonActionButtonsUiModel.variant)
+            buttonType = Utils.mapButtonType(owocButtonActionButtonsUiModel.type)
+            showWithCondition(!isLabelType && owocButtonActionButtonsUiModel.displayName.isNotBlank())
+        }
+    }
+
+    private fun setupLabel(
+        owocButtonActionButtonsUiModel: OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel,
+        isLabelType: Boolean
+    ) {
+        labelOwoc?.showWithCondition(isLabelType && owocButtonActionButtonsUiModel.displayName.isNotBlank())
     }
 
     private fun setupShopBadge(shopBadgeUrl: String) {
