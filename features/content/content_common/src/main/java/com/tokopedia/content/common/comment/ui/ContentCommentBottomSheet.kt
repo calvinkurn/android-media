@@ -10,7 +10,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
@@ -20,7 +24,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.comment.*
+import com.tokopedia.content.common.comment.CommentAction
+import com.tokopedia.content.common.comment.CommentEvent
+import com.tokopedia.content.common.comment.CommentException
+import com.tokopedia.content.common.comment.ContentCommentFactory
+import com.tokopedia.content.common.comment.ContentCommentViewModel
+import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
@@ -41,7 +51,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -139,7 +153,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val prevLength = binding.newComment.length()
                 val selEnd = binding.newComment.selectionEnd
-                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from end of text
+                val distanceFromEnd =
+                    prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
                     TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
@@ -170,7 +185,6 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
-
 
     // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
@@ -232,7 +246,8 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
         }
-        Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
+        Toaster.toasterCustomBottomHeight =
+            context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
         binding.root.setOnApplyWindowInsetsListener { view, windowInsets ->
             val height = view.getImeHeight()
@@ -302,13 +317,15 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty()).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty())
+                                    .orFalse()
+                            ) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
                             type = if (event.message.message?.equals(CommentException.createLinkNotAllowed().message.orEmpty())
-                                .orFalse()
+                                    .orFalse()
                             ) {
                                 Toaster.TYPE_ERROR
                             } else {
@@ -452,7 +469,8 @@ class ContentCommentBottomSheet @Inject constructor(
             height = newHeight
         }
 
-        val avatar = if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        val avatar =
+            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
     }
 
@@ -500,7 +518,7 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment (
+            CommentAction.ReportComment(
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
