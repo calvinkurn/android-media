@@ -205,8 +205,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val NOTIFICATION_MENU_ID = 0
-        val SEARCH_MENU_ID = 1
+        private val SEARCH_MENU_ID = R.id.sah_search_action_menu
+        private val NOTIFICATION_MENU_ID = R.id.sah_notification_action_menu
 
         private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
@@ -274,8 +274,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
-    private val notificationDotBadge: NotificationDotBadge? by lazy {
-        NotificationDotBadge(context ?: return@lazy null)
+    private val notificationDotBadge by lazy {
+        NotificationDotBadge()
     }
     private val isNewLazyLoad by lazy {
         Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
@@ -410,53 +410,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         context?.let {
             menu.clear()
-            val iconSize = it.dpToPx(8).toInt()
-            val search = menu.add(
-                Menu.NONE,
-                SEARCH_MENU_ID,
-                Menu.NONE,
-                it.getString(R.string.sah_search)
-            )
-            val iconColor = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
-            val searchDrawable = getIconUnifyDrawable(
-                context = it,
-                iconId = IconUnify.SEARCH,
-                assetColor = iconColor
-            )
-            val searchBitmap = (searchDrawable as? BitmapDrawable)?.bitmap
-            if (searchBitmap == null) {
-                search.icon = searchDrawable
-            } else {
-                val searchIcon = BitmapDrawable(
-                    resources,
-                    Bitmap.createScaledBitmap(searchBitmap, iconSize, iconSize, true)
-                )
-                search.icon = searchIcon
-            }
-            search.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-
-            val notification = menu.add(
-                Menu.NONE,
-                NOTIFICATION_MENU_ID,
-                Menu.NONE,
-                it.getString(R.string.sah_notification)
-            )
-            val notifDrawable = getIconUnifyDrawable(
-                context = it,
-                iconId = IconUnify.BELL,
-                assetColor = iconColor
-            )
-            val notifBitmap = (notifDrawable as? BitmapDrawable)?.bitmap
-            if (notifBitmap == null) {
-                notification.icon = notifDrawable
-            } else {
-                val notifIcon = BitmapDrawable(
-                    resources,
-                    Bitmap.createScaledBitmap(notifBitmap, iconSize, iconSize, true)
-                )
-                notification.icon = notifIcon
-            }
-            notification.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
 
             for (i in Int.ZERO until menu.size()) {
                 menu.getItem(i)?.let { menuItem ->
@@ -1015,9 +969,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             context?.let {
                 val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                    notificationDotBadge.showBadge(menuItem ?: return@let)
                 } else {
-                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                    notificationDotBadge.removeBadge(menuItem ?: return@let)
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
