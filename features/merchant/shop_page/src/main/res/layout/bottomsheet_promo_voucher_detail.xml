@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/shop_page_promo_period"
+                android:text="@string/shop_page_active_until"
                 app:layout_constraintBottom_toBottomOf="@+id/iconClock"
                 app:layout_constraintStart_toEndOf="@+id/iconClock"
                 app:layout_constraintTop_toTopOf="@+id/iconClock"

@@ -60,7 +60,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
-    private var onVoucherClick: (ExclusiveLaunchVoucher) -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -150,8 +149,11 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             setUseDarkBackground(useDarkBackground)
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
-                onVoucherClick(selectedVoucher)
-                dismiss()
+                if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated) {
+                    redirectToVoucherProductPage(selectedVoucher.id)
+                } else {
+                    showVoucherDetailBottomSheet(selectedVoucher)
+                }
             }
             setOnVoucherClaimClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClaimClick
@@ -198,13 +200,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             setOnVoucherRedeemSuccess { redeemResult ->
                 handleRedeemVoucherSuccess(selectedVoucher, redeemResult)
             }
-            setOnVoucherRedeemFailed { throwable ->
-                showToasterError(binding?.root ?: return@setOnVoucherRedeemFailed, throwable)
-            }
-            setOnVoucherUseSuccess { handleUseVoucherSuccess() }
-            setOnVoucherUseFailed { throwable ->
-                showToasterError(binding?.root ?: return@setOnVoucherUseFailed, throwable)
-            }
+            setOnVoucherUseSuccess { handleUseVoucherSuccess(selectedVoucher) }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -214,16 +210,14 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         redeemResult: RedeemPromoVoucherResult
     ) {
         if (redeemResult.redeemMessage.isNotEmpty()){
-            showToaster(binding?.root ?: return, redeemResult.redeemMessage)
+            showToaster(view ?: return, redeemResult.redeemMessage)
             refreshVoucherStatus(selectedVoucher)
         }
     }
 
-    private fun handleUseVoucherSuccess() {
-        showToaster(
-            binding?.root ?: return,
-            context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
-        )
+    private fun handleUseVoucherSuccess(selectedVoucher: ExclusiveLaunchVoucher) {
+        onVoucherUseSuccess(selectedVoucher)
+        dismiss()
     }
 
     private fun refreshVoucherStatus(selectedVoucher: ExclusiveLaunchVoucher) {

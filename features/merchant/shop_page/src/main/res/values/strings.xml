@@ -210,11 +210,13 @@
     <!--Promo voucher detail bottomsheet-->
     <string name="shop_page_promo_period">Periode Promo</string>
     <string name="shop_page_min_transaction">Min. Transaksi</string>
+    <string name="shop_page_active_until">Berlaku hingga</string>
     <string name="shop_page_tnc">Syarat dan Ketentuan</string>
     <string name="shop_page_use_promo">Gunakan</string>
     <string name="shop_page_how_to_use">Cara Pakai</string>
     <string name="shop_page_rupiah_icon">Icon rupiah</string>
     <string name="shop_page_clock_icon">Icon jam</string>
+    <string name="shop_page_shop_using_promo">Belanja Pakai Promo</string>
 
     <string name="shop_page_please_wait">Tunggu sebentar</string>
     <string name="shop_page_use_voucher_success">Kupon sudah terpasang, transaksi sekarang yuk!</string>

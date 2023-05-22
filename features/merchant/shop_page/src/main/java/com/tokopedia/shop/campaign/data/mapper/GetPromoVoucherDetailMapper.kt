@@ -15,7 +15,6 @@ class GetPromoVoucherDetailMapper @Inject constructor() {
             detail.howToUse,
             detail.id,
             detail.imageUrlMobile,
-            detail.isDisabled,
             detail.isDisabledButton,
             detail.minimumUsage,
             detail.quota,

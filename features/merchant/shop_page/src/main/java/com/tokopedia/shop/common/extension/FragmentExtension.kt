@@ -10,10 +10,16 @@ fun Fragment.showToasterError(view: View, throwable: Throwable) {
     if (!isAdded) return
 
     val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-    Toaster.build(view, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    Toaster.build(view.rootView, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).apply {
+        anchorView = view
+        show()
+    }
 }
 
 fun Fragment.showToaster(view: View, message: String) {
     if (!isAdded) return
-    Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+    Toaster.build(view.rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).apply {
+        anchorView = view
+        show()
+    }
 }

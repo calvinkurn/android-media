@@ -32,8 +32,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_CATEGORY_SLUG = "category_slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
+
         @JvmStatic
-        fun newInstance(categorySlug : String, promoVoucherCode: String): PromoVoucherDetailBottomSheet {
+        fun newInstance(
+            categorySlug: String,
+            promoVoucherCode: String
+        ): PromoVoucherDetailBottomSheet {
             return PromoVoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_CATEGORY_SLUG, categorySlug)
@@ -46,9 +50,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetPromoVoucherDetailBinding>()
 
     private var onVoucherRedeemSuccess: (RedeemPromoVoucherResult) -> Unit = {}
-    private var onVoucherRedeemFailed: (Throwable) -> Unit = {}
     private var onVoucherUseSuccess: () -> Unit = {}
-    private var onVoucherUseFailed: (Throwable) -> Unit = {}
     
     init {
         clearContentPadding = true
@@ -146,13 +148,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
             when (result) {
                 is Success -> {
                     showUseVoucherButton()
-                    binding?.btnUseVoucher?.stopLoading()
+                    binding?.btnClaimVoucher?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
                 }
                 is Fail -> {
-                    binding?.btnUseVoucher?.stopLoading()
-                    showToasterError(binding?.root ?: return@observe, result.throwable)
-                    onVoucherRedeemFailed(result.throwable)
+                    binding?.btnClaimVoucher?.stopLoading()
+                    showToasterError(binding?.btnClaimVoucher ?: return@observe, result.throwable)
                 }
             }
         }
@@ -168,8 +169,8 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 }
                 is Fail -> {
                     binding?.btnUseVoucher?.stopLoading()
-                    showToasterError(binding?.root ?: return@observe, result.throwable)
-                    onVoucherUseFailed(result.throwable)
+
+                    showToasterError(binding?.btnUseVoucher ?: return@observe, result.throwable)
                 }
             }
         }
@@ -185,13 +186,16 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
             tpgPromoPeriod.text = voucherDetail.activePeriodDate
             tpgHowToUse.text = MethodChecker.fromHtml(voucherDetail.howToUse)
             btnClaimVoucher.text = voucherDetail.buttonLabel
+            btnClaimVoucher.isEnabled = !voucherDetail.isDisabledButton
+            iconClock.isEnabled = !voucherDetail.isDisabledButton
+            iconMinPurchase.isEnabled = !voucherDetail.isDisabledButton
             tpgVoucherPrice.text = voucherDetail.voucherPrice
         }
 
-        if (voucherDetail.isClaimed) {
-            showUseVoucherButton()
-        } else {
+        if (promoVoucherCode.isEmpty()) {
             showClaimVoucherButton()
+        } else {
+            showUseVoucherButton()
         }
     }
 
@@ -230,15 +234,8 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         this.onVoucherRedeemSuccess = onVoucherRedeemSuccess
     }
 
-    fun setOnVoucherRedeemFailed(onVoucherRedeemFailed : (Throwable) -> Unit) {
-        this.onVoucherRedeemFailed = onVoucherRedeemFailed
-    }
-
     fun setOnVoucherUseSuccess(onVoucherUseSuccess : () -> Unit) {
         this.onVoucherUseSuccess = onVoucherUseSuccess
     }
 
-    fun setOnVoucherUseFailed(onVoucherUseFailed : (Throwable) -> Unit) {
-        this.onVoucherUseFailed = onVoucherUseFailed
-    }
 }
