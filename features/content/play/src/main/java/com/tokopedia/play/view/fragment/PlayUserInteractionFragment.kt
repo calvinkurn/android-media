@@ -2087,7 +2087,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         private const val AUTO_SWIPE_DELAY = 500L
 
-        private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
+        private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.05f
     }
 
     sealed interface Event {
