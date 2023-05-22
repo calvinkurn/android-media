@@ -284,9 +284,11 @@ public interface CMConstant {
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_SA = "37797";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_MA = "37794";
         String VALUE_TRACKER_ID_REMINDER_VIEW = "42642";
+        String VALUE_TRACKER_ID_REMINDER_VIEW_SA = "42649";
         String VALUE_TRACKER_ID_CLICK_CTA_REMINDER = "42645";
-
+        String VALUE_TRACKER_ID_CLICK_CTA_REMINDER_SA = "42650";
         String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER = "42646";
+        String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER_SA = "42651";
         String VALUE_CURRENT_SITE = "tokopediamarketplace";
         String VALUE_EVENT_CLICK_CONTENT = "clickContent";
         String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
@@ -295,6 +297,7 @@ public interface CMConstant {
         String VALUE_GEN_CATEGORY = "general android push prompt";
         String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
         String VALUE_REMINDER_CATEGORY = "reminder push prompt";
+        String VALUE_REMINDER_CATEGORY_SA = "seller reminder push prompt";
         String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";
