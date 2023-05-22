@@ -27,7 +27,6 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCate
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeRecipeProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateShowcaseQuantity
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryHeaderUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
@@ -41,7 +40,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -84,7 +82,34 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     val categoryPage: LiveData<Result<List<Visitable<*>>>> = _categoryPage
     val isOnScrollNotNeeded: LiveData<Boolean> = _isOnScrollNotNeeded
 
-    private suspend fun getCategoryShowcaseAsync(categoryL2Model: CategoryL2Model, hasAdded: Boolean): Deferred<Unit?> {
+    override fun updateProductCartQuantity(
+        productId: String,
+        quantity: Int,
+        layoutType: CategoryLayoutType
+    ) {
+        miniCartData?.apply {
+            layout.updateProductQuantity(
+                productId = productId,
+                quantity = quantity,
+                layoutType = layoutType
+            )
+        }
+    }
+
+    override fun onSuccessGetMiniCartData(
+        miniCartData: MiniCartSimplifiedData
+    ) {
+        super.onSuccessGetMiniCartData(miniCartData)
+        layout.updateProductQuantity(
+            miniCartData = miniCartData,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+        )
+    }
+
+    private suspend fun getCategoryShowcaseAsync(
+        categoryL2Model: CategoryL2Model,
+        hasAdded: Boolean
+    ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val categoryPage = getCategoryProductUseCase.execute(
                 chooseAddressData = addressData.getAddressData(),
@@ -122,7 +147,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         }
     }
 
-    private fun addCategoryShowcases(categoryNavigationUiModel: CategoryNavigationUiModel) {
+    private fun addCategoryShowcases(
+        categoryNavigationUiModel: CategoryNavigationUiModel
+    ) {
         categoryL2Models.clear()
 
         categoryL2Models.addAll(
@@ -163,8 +190,6 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
-                delay(3000)
-
                 getCategoryHeaderUseCase.setParams(
                     categoryId = categoryIdL1,
                     warehouseId = getWarehouseId()
@@ -234,16 +259,5 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         layout.clear()
         getCategoryHeader(navToolbarHeight)
         _isOnScrollNotNeeded.value = false
-    }
-
-    override fun updateProductCartQuantity(productId: String, quantity: Int, layoutType: CategoryLayoutType) {
-        miniCartData?.apply {
-            layout.updateProductQuantity(productId, quantity, layoutType)
-        }
-    }
-
-    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.onSuccessGetMiniCartData(miniCartData)
-        layout.updateShowcaseQuantity(miniCartData)
     }
 }

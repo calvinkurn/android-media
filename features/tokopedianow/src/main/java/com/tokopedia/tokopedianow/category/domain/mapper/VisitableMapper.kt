@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
@@ -23,21 +22,15 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
-import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 internal object VisitableMapper {
     const val DEFAULT_PRODUCT_PARENT_ID = "0"
     const val DEFAULT_PRODUCT_QUANTITY = 0
-
 
     /**
      * -- Header Section --
@@ -261,16 +254,17 @@ internal object VisitableMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.updateShowcaseQuantity(
-        miniCartData: MiniCartSimplifiedData
+    fun MutableList<Visitable<*>>.updateProductQuantity(
+        miniCartData: MiniCartSimplifiedData,
+        layoutType: CategoryLayoutType
     ) {
         updateAllProductQuantity(
             miniCartData = miniCartData,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            layoutType = layoutType
         )
         updateDeletedProductQuantity(
             miniCartData = miniCartData,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            layoutType = layoutType
         )
     }
 

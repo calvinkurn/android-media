@@ -143,6 +143,8 @@ open class BaseTokoNowViewModel(
 
     fun updateAddressData() = addressData.updateLocalData()
 
+    fun getAddressData() = addressData.getAddressData()
+
     private fun addItemToCart(
         productId: String,
         shopId: String,

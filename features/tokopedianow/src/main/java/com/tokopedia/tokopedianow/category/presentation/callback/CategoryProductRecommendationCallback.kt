@@ -6,12 +6,12 @@ import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
@@ -19,9 +19,11 @@ import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_I
 import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 
 class CategoryProductRecommendationCallback(
-    private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
+    private val categoryIdL1: String,
     private val activity: FragmentActivity?,
     private val startActivityForResult: (Intent, Int) -> Unit,
+    private val hideProductRecommendationWidgetListener: () -> Unit,
+    private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
 ): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
     companion object {
         private const val REQUEST_CODE_LOGIN = 69
@@ -29,9 +31,7 @@ class CategoryProductRecommendationCallback(
 
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
 
-    override fun hideProductRecommendationWidget() {
-
-    }
+    override fun hideProductRecommendationWidget() = hideProductRecommendationWidgetListener()
 
     override fun openLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -69,19 +69,7 @@ class CategoryProductRecommendationCallback(
         product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
-    ) {
-//        val recommendationItem =
-//            ProductRecommendationMapper.mapProductItemToRecommendationItem(product)
-//        SearchResultTracker.trackImpressionProduct(
-//            position,
-//            eventLabel,
-//            eventActionImpressed,
-//            eventCategory,
-//            getListValue(recommendationItem),
-//            userId,
-//            recommendationItem
-//        )
-    }
+    ) { /* waiting for the tracker */ }
 
     override fun seeMoreClicked(
         seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
@@ -98,7 +86,6 @@ class CategoryProductRecommendationCallback(
     private fun directToSeeMorePage(
         appLink: String
     ) {
-//        CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
         modifySeeMoreAppLink(appLink)
         RouteManager.route(activity, appLink)
     }
@@ -107,20 +94,15 @@ class CategoryProductRecommendationCallback(
         originalAppLink: String
     ): String {
         val uri = Uri.parse(originalAppLink)
-        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
-        val ref = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
+        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: String.EMPTY)
+        val ref = queryParamsMap[RECOM_QUERY_PARAM_REF].orEmpty()
 
         return if (ref == RecomPageConstant.TOKONOW_CLP) {
-            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
+            val categoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID].orEmpty()
 
-//            if (recomCategoryId.isEmpty()) {
-//                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = categoryL1
-//            }
+            if (categoryId.isEmpty()) queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = categoryIdL1
 
-            "${uri.scheme}://" +
-                "${uri.host}/" +
-                "${uri.path}?" +
-                UrlParamUtils.generateUrlParamString(queryParamsMap)
+            "${uri.scheme}://${uri.host}/${uri.path}?" + UrlParamUtils.generateUrlParamString(queryParamsMap)
         } else {
             originalAppLink
         }

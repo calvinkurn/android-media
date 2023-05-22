@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokopedianow.R
@@ -28,6 +29,7 @@ class CategoryShowcaseItemViewHolder(
             )
             setOnClickListener {
                 listener?.onProductCardClicked(
+                    context = context,
                     position = layoutPosition,
                     product = element
                 )
@@ -41,6 +43,7 @@ class CategoryShowcaseItemViewHolder(
             }
             setOnClickQuantityEditorVariantListener {
                 listener?.onProductCardAddVariantClicked(
+                    context = context,
                     position = layoutPosition,
                     product = element
                 )
@@ -64,6 +67,7 @@ class CategoryShowcaseItemViewHolder(
 
     interface CategoryShowcaseItemListener {
         fun onProductCardAddVariantClicked(
+            context: Context,
             position: Int,
             product: CategoryShowcaseItemUiModel
         )
@@ -73,6 +77,7 @@ class CategoryShowcaseItemViewHolder(
             quantity: Int
         )
         fun onProductCardClicked(
+            context: Context,
             position: Int,
             product: CategoryShowcaseItemUiModel
         )

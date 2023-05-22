@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.MiniCartMapper.getAddToCartQuantity
@@ -8,7 +7,6 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import kotlin.math.min
 
 internal object CategoryPageMapper {
 
@@ -23,9 +21,8 @@ internal object CategoryPageMapper {
         minOrder = product.minOrder,
         maxOrder = product.maxOrder,
         availableStock = product.stock,
-        orderQuantity = getAddToCartQuantity(
-            productId = product.id,
-            miniCartData = miniCartData
+        orderQuantity = miniCartData.getAddToCartQuantity(
+            productId = product.id
         ),
         price = product.price,
         discountInt = product.discountPercentage,
@@ -55,13 +52,13 @@ internal object CategoryPageMapper {
         @TokoNowLayoutState state: Int
     ): CategoryShowcaseUiModel = CategoryShowcaseUiModel(
         id = categoryIdL2,
-        productListUiModels = this.searchProduct.data.productList.take(MAX_SHOWCASE_PRODUCT).map {
+        productListUiModels = searchProduct.data.productList.take(MAX_SHOWCASE_PRODUCT).map { product ->
             CategoryShowcaseItemUiModel(
                 productCardModel = mapAceSearchProductToProductCard(
-                    product = it,
+                    product = product,
                     miniCartData = miniCartData
                 ),
-                parentProductId = it.parentId
+                parentProductId = product.parentId
             )
         },
         title = title,

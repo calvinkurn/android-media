@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
@@ -21,7 +20,6 @@ import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCall
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -57,6 +55,9 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     override val currentCategoryId: String
         get() = viewModel.categoryIdL1
+
+    override val addressData: LocalCacheModel
+        get() = viewModel.getAddressData()
 
     override val adapter: CategoryAdapter by lazy {
         CategoryAdapter(
@@ -115,6 +116,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         observeProductRecomAddToCart()
         observeProductRecomRemoveCartItem()
         observeProductRecomUpdateCartItem()
+        observeToolbarNotification()
     }
 
     private fun observeCategoryHeader() {
@@ -171,60 +173,60 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     }
 
     private fun observeAddToCart() {
-        viewModel.addItemToCart.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> onSuccessAddItemToCart(it.data)
-                is Fail -> showErrorToaster(it)
+        viewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> onSuccessAddItemToCart(
+                    data = result.data
+                )
+                is Fail -> showErrorToaster(
+                    error = result
+                )
             }
         }
     }
 
     private fun observeUpdateCartItem() {
-        viewModel.updateCartItem.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    val shopIds = listOf(shopId)
-                    binding?.miniCartWidget?.updateData(shopIds)
-                }
-                is Fail -> {
-                    showToaster(
-                        message = it.throwable.message.orEmpty(),
-                        type = Toaster.TYPE_ERROR
-                    )
-                }
+        viewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success ->  onSuccessUpdateCartItem()
+                is Fail -> showErrorToaster(
+                    error = result
+                )
             }
         }
     }
 
     private fun observeRemoveCartItem() {
-        observe(viewModel.removeCartItem) {
-            when (it) {
-                is Success -> onSuccessRemoveCartItem(it.data)
-                is Fail -> showErrorToaster(it)
+        viewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> onSuccessRemoveCartItem(result.data)
+                is Fail -> showErrorToaster(result)
             }
         }
     }
 
     private fun observeProductRecomAddToCart() {
-        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> onSuccessAddItemToCart(it.data)
-                is Fail -> showErrorToaster(it)
+        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> onSuccessAddItemToCart(
+                    data = result.data
+                )
+                is Fail -> showErrorToaster(
+                    error = result
+                )
             }
         }
     }
 
     private fun observeProductRecomUpdateCartItem() {
-        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) {
-            when (it) {
+        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is Success -> {
-                    val shopIds = listOf(shopId)
-                    binding?.miniCartWidget?.updateData(shopIds)
+                    onSuccessUpdateCartItem()
                 }
                 is Fail -> {
-                    showToaster(
-                        message = it.throwable.message.orEmpty(),
-                        type = Toaster.TYPE_ERROR
+                    showErrorToaster(
+                        error = result
                     )
                 }
             }
@@ -232,20 +234,28 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     }
 
     private fun observeProductRecomRemoveCartItem() {
-        observe(productRecommendationViewModel.removeCartItem) {
-            when (it) {
-                is Success -> onSuccessRemoveCartItem(it.data)
-                is Fail -> showErrorToaster(it)
+        productRecommendationViewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> onSuccessRemoveCartItem(
+                    data = result.data
+                )
+                is Fail -> showErrorToaster(
+                    error = result
+                )
             }
         }
     }
 
+    private fun observeToolbarNotification() {
+        viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
+            if (needToUpdate) updateToolbarNotification()
+        }
+    }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
         showToaster(message = data.second)
         getMiniCart()
     }
-
 
     /**
      * Callback Sections
@@ -259,8 +269,8 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     private fun createCategoryNavigationCallback() = CategoryNavigationCallback()
 
     private fun createCategoryShowcaseItemCallback() = CategoryShowcaseItemCallback(
-        context = context,
         shopId = shopId,
+        categoryIdL1 = categoryIdL1,
         startActivityForResult = ::startActivityForResult,
         onCartQuantityChangedListener = { position, product, quantity ->
             viewModel.onCartQuantityChanged(
@@ -285,6 +295,9 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     private fun createProductRecommendationCallback() = CategoryProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         activity = activity,
-        startActivityForResult = ::startActivityForResult
+        categoryIdL1 = categoryIdL1,
+        startActivityForResult = ::startActivityForResult,
+        hideProductRecommendationWidgetListener = {
+        }
     )
 }
