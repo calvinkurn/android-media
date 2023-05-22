@@ -615,6 +615,11 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
+    fun shouldShowBottomsheetBubblesCache(): Boolean {
+        val cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        return cacheResult == null
+    }
+
     fun setBubblesClose() {
         cacheManager.saveCache(
             BUBBLES_PREF,
@@ -622,6 +627,17 @@ class TokoChatViewModel @Inject constructor(
                 channelId = channelId,
                 hasShownBottomSheet = true, // Need true to show ticker
                 hasShownTicker = true // Mark the cache as true, so ticker won't show again
+            )
+        )
+    }
+
+    fun setBubblesBottomSheetOpen() {
+        cacheManager.saveCache(
+            BUBBLES_PREF,
+            TokoChatBubblesCache(
+                channelId = channelId,
+                hasShownBottomSheet = true,
+                hasShownTicker = false
             )
         )
     }
