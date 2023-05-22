@@ -474,7 +474,7 @@ open class ShopPageHomeFragment :
 
     private fun showVoucherListBottomsheet() {
         val bottomsheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            useDarkBackground = false,
+            useDarkBackground = true,
             promoVouchersCategorySlugs = listOf("HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY")
         )
         bottomsheet.setOnVoucherClaimSuccess {

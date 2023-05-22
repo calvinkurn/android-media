@@ -135,7 +135,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 is Fail -> {
                     binding?.loader?.gone()
                     binding?.card?.gone()
-                    showToasterError(result.throwable)
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
                 }
             }
         }
@@ -151,7 +151,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 }
                 is Fail -> {
                     binding?.btnUseVoucher?.stopLoading()
-                    showToasterError(result.throwable)
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
                     onVoucherRedeemFailed(result.throwable)
                 }
             }
@@ -164,10 +164,11 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 is Success -> {
                     binding?.btnUseVoucher?.stopLoading()
                     onVoucherUseSuccess()
+                    dismiss()
                 }
                 is Fail -> {
                     binding?.btnUseVoucher?.stopLoading()
-                    showToasterError(result.throwable)
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
                     onVoucherUseFailed(result.throwable)
                 }
             }

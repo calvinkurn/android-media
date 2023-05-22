@@ -1,6 +1,7 @@
 package com.tokopedia.shop.campaign.view.customview
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -15,6 +16,10 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var binding: CustomViewExclusiveLaunchVoucherBinding? = null
+
+    companion object {
+        private const val STATIC_COLOR_NN_950 = "#F5F6FF"
+    }
 
     init {
         binding = CustomViewExclusiveLaunchVoucherBinding.inflate(
@@ -37,8 +42,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
             context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
     }
 
-    fun setOnPrimaryCtaClick(block: () -> Unit) {
-        binding?.tpgClaim?.setOnClickListener { block() }
+    fun setOnPrimaryCtaClick(onClick: () -> Unit) {
+        binding?.tpgClaim?.setOnClickListener { onClick() }
     }
 
     fun setPrimaryCta(ctaText: String, onClick: () -> Unit) {
@@ -52,7 +57,7 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
             tpgBenefitName.setTextColorCompat(R.color.Unify_Static_White)
             tpgMinPurchase.setTextColorCompat(R.color.Unify_Static_White)
             tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
-            tpgClaim.setTextColorCompat(R.color.Unify_NN950)
+            tpgClaim.setTextColor(Color.parseColor(STATIC_COLOR_NN_950))
         }
     }
 

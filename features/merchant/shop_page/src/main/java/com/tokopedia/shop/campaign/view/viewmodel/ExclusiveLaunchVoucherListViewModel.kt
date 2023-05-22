@@ -48,6 +48,27 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
         )
     }
 
+    fun updateVoucherAsClaimed(
+        allVouchers: List<ExclusiveLaunchVoucher>,
+        selectedVoucher: ExclusiveLaunchVoucher
+    ): List<ExclusiveLaunchVoucher> {
+        return allVouchers.map { voucher ->
+            if (voucher.id == selectedVoucher.id) {
+                selectedVoucher.claim()
+            } else {
+                voucher
+            }
+        }
+    }
+
+    private fun ExclusiveLaunchVoucher.claim(): ExclusiveLaunchVoucher {
+        return if (this.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+            val newVoucherStatus = this.source.copy(isClaimed = true)
+            this.copy(source = newVoucherStatus)
+        } else {
+            this
+        }
+    }
 }
 
 

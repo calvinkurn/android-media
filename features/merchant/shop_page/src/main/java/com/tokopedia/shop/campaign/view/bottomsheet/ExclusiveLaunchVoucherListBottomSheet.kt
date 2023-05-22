@@ -17,6 +17,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
+import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
@@ -34,20 +35,27 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
-        private const val BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS = "use_dark_background"
+        private const val BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS = "category_slugs"
+
         @JvmStatic
-        fun newInstance(useDarkBackground: Boolean, promoVouchersCategorySlugs: List<String>): ExclusiveLaunchVoucherListBottomSheet {
+        fun newInstance(
+            useDarkBackground: Boolean,
+            promoVouchersCategorySlugs: List<String>
+        ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
-                    putStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS, ArrayList(promoVouchersCategorySlugs))
+                    putStringArrayList(
+                        BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS,
+                        ArrayList(promoVouchersCategorySlugs)
+                    )
                 }
             }
         }
     }
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
-    private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, false).orFalse() }
+    private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
     private val promoVouchersCategorySlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS)?.toList().orEmpty() }
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
@@ -105,10 +113,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-    }
-
-    override fun onResume() {
-        super.onResume()
         viewModel.getExclusiveLaunchVouchers(promoVouchersCategorySlugs)
     }
 
@@ -121,7 +125,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 }
                 is Fail -> {
                     binding?.loader?.gone()
-                    showToasterError(result.throwable)
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
                 }
             }
         }
@@ -192,17 +196,40 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             promoVoucherCode = promoVoucherCode
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
-                dismiss()
-                if (redeemResult.redeemMessage.isNotEmpty()) showToaster(redeemResult.redeemMessage)
+                handleRedeemVoucherSuccess(selectedVoucher, redeemResult)
             }
-            setOnVoucherRedeemFailed { throwable -> showToasterError(throwable) }
-            setOnVoucherUseSuccess {
-                dismiss()
-                showToaster(context?.getString(R.string.shop_page_use_voucher_success).orEmpty())
+            setOnVoucherRedeemFailed { throwable ->
+                showToasterError(binding?.root ?: return@setOnVoucherRedeemFailed, throwable)
             }
-            setOnVoucherUseFailed { throwable -> showToasterError(throwable) }
+            setOnVoucherUseSuccess { handleUseVoucherSuccess() }
+            setOnVoucherUseFailed { throwable ->
+                showToasterError(binding?.root ?: return@setOnVoucherUseFailed, throwable)
+            }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun handleRedeemVoucherSuccess(
+        selectedVoucher: ExclusiveLaunchVoucher,
+        redeemResult: RedeemPromoVoucherResult
+    ) {
+        if (redeemResult.redeemMessage.isNotEmpty()){
+            showToaster(binding?.root ?: return, redeemResult.redeemMessage)
+            refreshVoucherStatus(selectedVoucher)
+        }
+    }
+
+    private fun handleUseVoucherSuccess() {
+        showToaster(
+            binding?.root ?: return,
+            context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
+        )
+    }
+
+    private fun refreshVoucherStatus(selectedVoucher: ExclusiveLaunchVoucher) {
+        val allVouchers = exclusiveLaunchAdapter.snapshot()
+        val updatedVouchers = viewModel.updateVoucherAsClaimed(allVouchers, selectedVoucher)
+        exclusiveLaunchAdapter.submit(updatedVouchers)
     }
 
     fun setOnVoucherUseSuccess(onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit) {

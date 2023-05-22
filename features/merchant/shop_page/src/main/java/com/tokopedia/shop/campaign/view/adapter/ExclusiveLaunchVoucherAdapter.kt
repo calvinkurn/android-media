@@ -74,13 +74,16 @@ class ExclusiveLaunchVoucherAdapter :
 
                 val isMerchantCreatedVoucher = voucher.source == ExclusiveLaunchVoucher.VoucherSource.MerchantCreated
                 val ctaText = getVoucherClaimStatus(context, voucher)
-                setPrimaryCta(ctaText, onClick = {
-                    if (isMerchantCreatedVoucher) {
-                        onVoucherUseClick(bindingAdapterPosition)
-                    } else {
-                        onVoucherClaimClick(bindingAdapterPosition)
+                setPrimaryCta(
+                    ctaText = ctaText,
+                    onClick = {
+                        if (isMerchantCreatedVoucher) {
+                            onVoucherUseClick(bindingAdapterPosition)
+                        } else {
+                            onVoucherClaimClick(bindingAdapterPosition)
+                        }
                     }
-                })
+                )
 
                 if (useDarkBackground) useDarkBackground() else useLightBackground()
             }
@@ -125,7 +128,7 @@ class ExclusiveLaunchVoucherAdapter :
         }
     }
 
-    private fun snapshot(): List<ExclusiveLaunchVoucher> {
+    fun snapshot(): List<ExclusiveLaunchVoucher> {
         return differ.currentList
     }
 }
