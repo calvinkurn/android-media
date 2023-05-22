@@ -89,14 +89,11 @@ import com.tokopedia.navigation_common.listener.HomeCoachmarkListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
-import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
-import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
@@ -126,7 +123,6 @@ public class MainParentActivity extends BaseActivity implements
         RefreshNotificationListener,
         MainParentStatusBarListener,
         HomePerformanceMonitoringListener,
-        OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
         MainParentStateListener,
         ITelemetryActivity,
@@ -173,11 +169,6 @@ public class MainParentActivity extends BaseActivity implements
     private static final String PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
     private static final String PERFORMANCE_MONITORING_NETWORK_VALUE = "Network";
 
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS = "official_store_plt_start_page_metrics";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS = "official_store_plt_network_request_page_metrics";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
-
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
     private static final String MAIN_PARENT_LOAD_ON_RESUME = "main_parent_load_on_resume";
@@ -200,6 +191,11 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_PAGE = "UohListFragment";
 
     public static final String WISHLIST_COLLECTION_PAGE = "WishlistCollectionFragment";
+    private static final String DISCOVERY_APPLINK = "discovery_applink";
+    private static final String DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/sos";
+    private static final String DISCOVERY_PAGE_SOURCE = "discovery_page_source";
+    private static final String DISCOVERY_END_POINT = "end_point";
+    private static final String SOS_END_POINT = "sos";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -234,10 +230,7 @@ public class MainParentActivity extends BaseActivity implements
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
-    private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
-
-    private boolean isOsExperiment;
 
     private String embracePageName = "";
 
@@ -259,8 +252,6 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        validateNavigationRollence();
-
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
@@ -434,16 +425,7 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
-            if (fragment instanceof OfficialHomeContainerFragment
-                    && getIntent().getExtras() != null
-                    && getIntent().getExtras().get(OfficialHomeContainerFragment.KEY_CATEGORY) != null) {
-                String keyCategory = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY, "");
-                if (keyCategory.equals(OS_KEY_MOBILE)) {
-                    ((OfficialHomeContainerFragment) fragment).selectFirstTab();
-                } else {
-                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
-                }
-            } else if (fragment.getClass().getName().equalsIgnoreCase(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT)) {
+            if (fragment.getClass().getName().equalsIgnoreCase(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT)) {
                 try {
                     Bundle oldArgs = fragment.getArguments();
                     if (oldArgs == null) {
@@ -498,10 +480,6 @@ public class MainParentActivity extends BaseActivity implements
             case HOME_MENU:
                 startHomePerformanceMonitoring();
                 break;
-            case OS_MENU:
-                if (!isOsExperiment) {
-                    startOfficialStorePerformanceMonitoring();
-                }
         }
     }
 
@@ -651,7 +629,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
@@ -789,14 +767,14 @@ public class MainParentActivity extends BaseActivity implements
             );
         }
 
-        if (!isOsExperiment) {
-            Bundle bundleOS = new Bundle();
-            bundleOS.putString(OfficialHomeContainerFragment.PARAM_ACTIVITY_OFFICIAL_STORE, OfficialHomeContainerFragment.PARAM_HOME);
-            if (getIntent().getExtras() != null) {
-                bundleOS.putAll(getIntent().getExtras());
-            }
-            fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
+        Bundle bundleSosDisco = getIntent().getExtras();
+        if (bundleSosDisco == null) {
+            bundleSosDisco = new Bundle();
         }
+        bundleSosDisco.putString(DISCOVERY_APPLINK, DISCOVERY_APPLINK_TARGET);
+        bundleSosDisco.putString(DISCOVERY_PAGE_SOURCE, PARAM_HOME);
+        bundleSosDisco.putString(DISCOVERY_END_POINT, SOS_END_POINT);
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.DISCOVERY_FRAGMENT, bundleSosDisco));
 
         Bundle bundleWishlistCollection = getIntent().getExtras();
         if (bundleWishlistCollection == null) {
@@ -1168,47 +1146,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void stopOfficialStorePerformanceMonitoring(boolean isCache) {
-        if (officialStorePageLoadTimePerformanceCallback != null) {
-            if (isCache) {
-                officialStorePageLoadTimePerformanceCallback.addAttribution(
-                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        PERFORMANCE_MONITORING_CACHE_VALUE);
-            } else {
-                officialStorePageLoadTimePerformanceCallback.addAttribution(
-                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        PERFORMANCE_MONITORING_NETWORK_VALUE);
-            }
-            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
-            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
-            officialStorePageLoadTimePerformanceCallback = null;
-        }
-    }
-
-    @Override
-    public void startOfficialStorePerformanceMonitoring() {
-        if (officialStorePageLoadTimePerformanceCallback == null) {
-            officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS,
-                    0,
-                    0,
-                    0,
-                    0,
-                    null
-            );
-            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
-        }
-    }
-
-    @Override
-    public PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface() {
-        return officialStorePageLoadTimePerformanceCallback;
-    }
-
-    @Override
     public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
         if (index != currentSelectedFragmentPosition) {
@@ -1255,12 +1192,7 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if (isOsExperiment && !presenter.get().isUserLogin() && position == OS_MENU) { // if isOSExperiment then OS_MENU = WISHLIST_MENU
-            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
-            intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
-            startActivity(intent);
-            return false;
-        } else if ((position == CART_MENU || position == UOH_MENU || position == WISHLIST_MENU) && !presenter.get().isUserLogin()) {
+        if ((position == CART_MENU || position == UOH_MENU || position == WISHLIST_MENU) && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
@@ -1289,11 +1221,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public boolean isOsExperiment() {
-        return isOsExperiment;
-    }
-
-    @Override
     public String currentVisibleFragment() {
         return embracePageName;
     }
@@ -1301,22 +1228,11 @@ public class MainParentActivity extends BaseActivity implements
     public void populateBottomNavigationView() {
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        if (!isOsExperiment) {
-            menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        }
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
         handleAppLinkBottomNavigation();
-    }
-
-    private void validateNavigationRollence() {
-        try {
-            String rollenceOsExperiment = RemoteConfigInstance.getInstance().getABTestPlatform().getString(RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, "");
-            this.isOsExperiment = rollenceOsExperiment.equalsIgnoreCase(RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT);
-        } catch (Exception e) {
-            this.isOsExperiment = false;
-        }
     }
 
     private void gotoNewUserZonePage() {
