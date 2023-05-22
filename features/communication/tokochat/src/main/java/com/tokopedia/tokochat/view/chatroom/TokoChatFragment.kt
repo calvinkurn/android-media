@@ -190,7 +190,12 @@ open class TokoChatFragment :
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        return if (TokoChatValueUtil.shouldShowBubblesAwareness() && viewModel.shouldShowBottomsheetBubblesCache()) {
+        val shouldShowBubblesAwarenessBottomSheet =
+            TokoChatValueUtil.shouldShowBubblesAwareness()
+                && (activity?.isFromBubble() == false)
+                && viewModel.shouldShowBottomsheetBubblesCache()
+
+        return if (shouldShowBubblesAwarenessBottomSheet) {
             showBubblesAwarenessBottomSheet()
             tokoChatAnalytics.viewOnboardingBottomsheet(
                 orderId = viewModel.tkpdOrderId,
@@ -198,6 +203,7 @@ open class TokoChatFragment :
                 role = TokoChatAnalyticsConstants.BUYER
             )
             viewModel.setBubblesBottomSheetOpen()
+            addBubbleTicker()
             true
         } else {
             super.onFragmentBackPressed()
