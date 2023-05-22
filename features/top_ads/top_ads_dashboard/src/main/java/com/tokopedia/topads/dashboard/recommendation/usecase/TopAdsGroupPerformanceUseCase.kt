@@ -22,9 +22,9 @@ class TopAdsGroupPerformanceUseCase @Inject constructor(
         setTypeClass(TopAdsSellerGroupPerformanceResponse::class.java)
     }
 
-    suspend operator fun invoke():
+    suspend operator fun invoke(groupId: String, adType: String):
         TopAdsListAllInsightState<GroupPerformanceWidgetUiModel> {
-        setRequestParams(createRequestParam().parameters)
+        setRequestParams(createRequestParam(groupId, adType).parameters)
         val data = executeOnBackground()
         return when {
             data.getSellerGroupPerformance.errors.isEmpty() -> {
@@ -34,12 +34,12 @@ class TopAdsGroupPerformanceUseCase @Inject constructor(
         }
     }
 
-    private fun createRequestParam(): RequestParams {
+    private fun createRequestParam(groupId: String, adType: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("shop_id", userSession.shopId)
-        requestParams.putString("group_id", "18501117")
+        requestParams.putString("group_id", groupId)
         requestParams.putString("insight_type", "GROUP_PERFORMANCE")
-        requestParams.putString("ad_type", "1")
+        requestParams.putString("ad_type", adType)
 
         return requestParams
     }
@@ -76,5 +76,4 @@ class TopAdsGroupPerformanceUseCase @Inject constructor(
 
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 }

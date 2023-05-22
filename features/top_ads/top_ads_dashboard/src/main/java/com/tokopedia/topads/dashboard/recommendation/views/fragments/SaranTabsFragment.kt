@@ -17,18 +17,17 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState.*
-import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
-import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_SHOP
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
@@ -36,9 +35,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
 
     private var chipsRecyclerView: RecyclerView? = null
     private var groupCardRecyclerView: RecyclerView? = null
-    private val insightListAdapter by lazy { InsightListAdapter(){
-        this.startActivity(Intent(context, GroupDetailActivity::class.java))
-    } }
+    private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
     private var chipsAdapter: ChipsAdapter? = null
     private val loadingModel = LoadingUiModel()
 
@@ -68,11 +65,14 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            R.layout.topads_dash_saran_topads_tab_fragment_layout, container, false
+            R.layout.topads_dash_saran_topads_tab_fragment_layout,
+            container,
+            false
         )
 
         chipsRecyclerView = view.findViewById(R.id.chipsRecyclerView)
@@ -102,7 +102,6 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         groupCardRecyclerView?.addItemDecoration(itemDecoration)
         groupCardRecyclerView?.adapter = insightListAdapter
         groupCardRecyclerView?.addOnScrollListener(recyclerviewScrollListener)
-
     }
 
     private fun setPageState(tabType: Int) {
@@ -110,19 +109,20 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     }
 
     private fun onClick(): (List<SaranTopAdsChipsUiModel>, Int) -> Unit = { list, position ->
-        chipsRecyclerView?.layoutManager?.startSmoothScroll(object : LinearSmoothScroller(context) {
-            override fun getHorizontalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
+        chipsRecyclerView?.layoutManager?.startSmoothScroll(
+            object : LinearSmoothScroller(context) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
 
-            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
-            }
-        }.apply { targetPosition = position })
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                }
+            }.apply { targetPosition = position }
+        )
         val mList = mutableListOf<SaranTopAdsChipsUiModel>()
         list.forEachIndexed { index, saranTopAdsChipsModel ->
             mList.add(SaranTopAdsChipsUiModel(saranTopAdsChipsModel.name, position == index))
-
         }
         chipsAdapter?.submitList(mList)
 
@@ -130,7 +130,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
             viewModel.getFirstPageData(
                 adGroupType = "product",
                 insightType = position,
-                mapper = mapper,
+                mapper = mapper
             )
         }
 
@@ -139,15 +139,12 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-
-
         viewModel.productInsights.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessProductInsight(it)
                 }
                 is Fail -> {
-
                 }
                 is Loading -> {
                     if (mapper.insightDataMap[it.type]?.nextCursor?.isNotEmpty() == true) {
@@ -158,26 +155,23 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
                         insightListAdapter.submitList(mapper.insightDataMap[it.type]?.adGroups?.toMutableList())
                     }
                 }
-
             }
         }
 
         viewModel.headlineInsights.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    onSuccessProductInsight(it, TYPE_SHOP)
+                    onSuccessProductInsight(it)
                 }
                 is Fail -> {
-
                 }
                 is Loading -> {
-
                 }
             }
         }
     }
 
-    private fun onSuccessProductInsight(it: Success<InsightUiModel>, tabType: Int = TYPE_PRODUCT) {
+    private fun onSuccessProductInsight(it: Success<InsightUiModel>) {
         recyclerviewScrollListener.updateStateAfterGetData()
         val type = it.data.insightType
         mapper.insightDataMap[type]?.adGroups?.remove(loadingModel)
@@ -208,12 +202,24 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         }
     }
 
+    private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit =
+        { nameList, name, adGroupID ->
+            val bundle = Bundle()
+            bundle.putInt("adType", tabType)
+            bundle.putStringArrayList("insightTypeList", nameList)
+            bundle.putString("adGroupName", name)
+            bundle.putString("groupId", adGroupID)
+            Intent(context, GroupDetailActivity::class.java).apply {
+                this.putExtra("groupDetailBundle", bundle)
+                startActivity(this)
+            }
+        }
+
     private fun getFirstPageData() {
         viewModel.getFirstPageData(
             adGroupType = if (tabType == TYPE_PRODUCT) "product" else "headline",
             insightType = if (tabType == TYPE_PRODUCT) 0 else 5,
-            mapper = mapper,
+            mapper = mapper
         )
     }
-
 }

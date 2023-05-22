@@ -25,7 +25,8 @@ class GroupDetailActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardCo
         }
     }
 
-    override fun getNewFragment(): Fragment = GroupDetailFragment.createInstance()
+    override fun getNewFragment(): Fragment =
+        GroupDetailFragment.createInstance(intent.getBundleExtra("groupDetailBundle"))
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_topads_group_details
@@ -40,5 +41,4 @@ class GroupDetailActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardCo
             (application as BaseMainApplication).baseAppComponent
         ).build()
     }
-
 }

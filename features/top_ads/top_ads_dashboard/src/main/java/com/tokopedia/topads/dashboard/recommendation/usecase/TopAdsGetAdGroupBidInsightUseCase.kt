@@ -9,7 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<TopAdsAdGroupBidInsightResponse>(graphqlRepository) {
 
     init {
@@ -17,9 +17,9 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
         setTypeClass(TopAdsAdGroupBidInsightResponse::class.java)
     }
 
-    suspend operator fun invoke():
+    suspend operator fun invoke(groupId: String):
         TopAdsListAllInsightState<TopAdsAdGroupBidInsightResponse> {
-        setRequestParams(createRequestParam().parameters)
+        setRequestParams(createRequestParam(groupId).parameters)
         val data = executeOnBackground()
 
         return when {
@@ -30,11 +30,12 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
         }
     }
 
-    private fun createRequestParam(): RequestParams {
+    private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("source", "adbidinsight.shopinsight.test")
         requestParams.putObject(
-            "groupIDs", listOf("23169218")
+            "groupIDs",
+            listOf(groupId)
         )
         return requestParams
     }
@@ -68,5 +69,4 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
 
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 }

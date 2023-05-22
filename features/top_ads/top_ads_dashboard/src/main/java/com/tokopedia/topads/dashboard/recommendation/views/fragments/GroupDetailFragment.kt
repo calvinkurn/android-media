@@ -31,7 +31,13 @@ class GroupDetailFragment : BaseDaggerFragment() {
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var groupChipsLayout: View? = null
-    private val groupDetailAdapter by lazy { GroupDetailAdapter(GroupDetailAdapterFactoryImpl()) }
+    private val groupDetailAdapter by lazy {
+        GroupDetailAdapter(
+            GroupDetailAdapterFactoryImpl(
+                onChipClick
+            )
+        )
+    }
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
 
     @Inject
@@ -42,21 +48,35 @@ class GroupDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_group_detail_fragment, container, false
+            R.layout.fragment_group_detail_fragment,
+            container,
+            false
         )
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadData()
+        retrieveInitialData()
         initializeViews()
         setUpRecyclerView()
         setUpChipsRecyclerView()
         observeLiveData()
+    }
+
+    private fun retrieveInitialData() {
+        val adType = arguments?.getInt("adType")
+        val insightList = arguments?.getStringArrayList("insightTypeList")
+        val adGroupName = arguments?.getString("adGroupName")
+        val adGroupId = arguments?.getString("groupId")
+        viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
+        if (adType != null && adGroupId != null) {
+            loadData(adType, adGroupId)
+        }
     }
 
     private fun observeLiveData() {
@@ -71,39 +91,37 @@ class GroupDetailFragment : BaseDaggerFragment() {
                     Toast.makeText(context, "fejrfberf", Toast.LENGTH_SHORT).show()
                 }
                 is TopAdsListAllInsightState.Fail -> {
-
                 }
                 is TopAdsListAllInsightState.Loading -> {
-
                 }
             }
         }
     }
 
-    private fun loadData() {
-        viewModel.loadDetailPage()
+    private fun loadData(adGroupType: Int, groupId: String) {
+        viewModel.loadDetailPage(adGroupType, groupId)
     }
-
 
     private fun setUpChipsRecyclerView() {
         groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onChipsClick)
         groupDetailChipsRv?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         groupDetailChipsRv?.adapter = groupDetailsChipsAdapter
-
     }
 
     private val onChipsClick: (Int) -> Unit = { position ->
-        groupDetailChipsRv?.layoutManager?.startSmoothScroll(object :
-            LinearSmoothScroller(context) {
-            override fun getHorizontalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
+        groupDetailChipsRv?.layoutManager?.startSmoothScroll(
+            object :
+                LinearSmoothScroller(context) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
 
-            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
-            }
-        }.apply { targetPosition = position })
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                }
+            }.apply { targetPosition = position }
+        )
         groupDetailAdapter.updateItem()
     }
 
@@ -138,15 +156,31 @@ class GroupDetailFragment : BaseDaggerFragment() {
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
     }
 
+    private val onChipClick: (Int) -> Unit = {
+        viewModel.reOrganiseData()
+    }
+
+    private fun onInsightTypeChipClick() {
+        // /for demonstration change to real data call
+        val adType = arguments?.getInt("adType")
+        val adGroupId = arguments?.getString("groupId")
+        if (adType != null && adGroupId != null) {
+            viewModel.loadDetailPageOnAction(adType, "23132035", true)
+        }
+    }
+
     companion object {
-        fun createInstance() = GroupDetailFragment()
+        fun createInstance(bundleExtra: Bundle?): GroupDetailFragment {
+            val fragment = GroupDetailFragment()
+            fragment.arguments = bundleExtra
+            return fragment
+        }
     }
 
     override fun getScreenName(): String = javaClass.name
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
-
 }
 
 fun <T> Iterable<T>.findPositionOfSelected(predicate: (T) -> Boolean): Int {

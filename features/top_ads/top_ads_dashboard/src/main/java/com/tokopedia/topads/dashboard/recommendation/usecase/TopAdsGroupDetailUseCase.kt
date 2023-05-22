@@ -16,17 +16,19 @@ import javax.inject.Inject
 class TopAdsGroupDetailUseCase @Inject constructor(
     private val topAdsGetBatchKeywordInsightUseCase: TopAdsGetBatchKeywordInsightUseCase,
     private val topAdsGroupPerformanceUseCase: TopAdsGroupPerformanceUseCase,
-    private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase,
-    private val groupDetailMapper: GroupDetailMapper
+    private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase
 ) {
 
-//    private val detailPageDataMap: MutableMap<Int, GroupDetailDataModel> = mutableMapOf()
-
-    suspend fun executeOnBackground(): Map<Int, GroupDetailDataModel> {
+    suspend fun executeOnBackground(
+        groupDetailMapper: GroupDetailMapper,
+        adGroupType: Int,
+        groupId: String
+    ): Map<Int, GroupDetailDataModel> {
         return coroutineScope {
-            val batchKeywordAsync = async { getBatchKeywordInsight() }
-            val groupPerformanceAsync = async { getGroupPerformance() }
-            val groupBidInsightAsync = async { getGroupBidInsight() }
+            val batchKeywordAsync = async { getBatchKeywordInsight(groupId) }
+            val groupPerformanceAsync =
+                async { getGroupPerformance(groupId, adGroupType.toString()) }
+            val groupBidInsightAsync = async { getGroupBidInsight(groupId) }
 
             val batchKeyword = batchKeywordAsync.await()
             val groupPerformance = groupPerformanceAsync.await()
@@ -102,30 +104,32 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 }
                 else -> {}
             }
-            return@coroutineScope groupDetailMapper.detailPageDataMap
+            return@coroutineScope groupDetailMapper.reArrangedDataMap()
         }
     }
 
-    private suspend fun getGroupBidInsight(): TopAdsListAllInsightState<TopAdsAdGroupBidInsightResponse> {
+    private suspend fun getGroupBidInsight(groupId: String): TopAdsListAllInsightState<TopAdsAdGroupBidInsightResponse> {
         return try {
-            topAdsGetAdGroupBidInsightUseCase()
-        } catch (e: Exception) {
-            TopAdsListAllInsightState.Fail(e)
-        }
-
-    }
-
-    private suspend fun getBatchKeywordInsight(): TopAdsListAllInsightState<TopAdsBatchGroupInsightResponse> {
-        return try {
-            topAdsGetBatchKeywordInsightUseCase()
+            topAdsGetAdGroupBidInsightUseCase(groupId)
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }
     }
 
-    private suspend fun getGroupPerformance(): TopAdsListAllInsightState<GroupPerformanceWidgetUiModel> {
+    private suspend fun getBatchKeywordInsight(groupId: String): TopAdsListAllInsightState<TopAdsBatchGroupInsightResponse> {
         return try {
-            topAdsGroupPerformanceUseCase()
+            topAdsGetBatchKeywordInsightUseCase(groupId)
+        } catch (e: Exception) {
+            TopAdsListAllInsightState.Fail(e)
+        }
+    }
+
+    private suspend fun getGroupPerformance(
+        groupId: String,
+        adType: String
+    ): TopAdsListAllInsightState<GroupPerformanceWidgetUiModel> {
+        return try {
+            topAdsGroupPerformanceUseCase(groupId, adType)
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }

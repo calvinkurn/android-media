@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -17,12 +16,12 @@ class InsightTypeChipsViewHolder(val itemView: View) :
 
     inner class InsightTypeChipsAdapter :
         RecyclerView.Adapter<InsightTypeChipsAdapter.InsightChipsViewHolder>() {
-        var insightChipsList: List<InsightTypeChipsItemUiModel> = mutableListOf()
+        var insightChipsList: List<String> = mutableListOf()
 
         inner class InsightChipsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val chips: ChipsUnify = itemView.findViewById(R.id.groupInsightChips)
-            fun bind(insightTypeChipsItemUiModel: InsightTypeChipsItemUiModel) {
-                chips.chipText = insightTypeChipsItemUiModel.chipsTitle
+            fun bind(chipName: String) {
+                chips.chipText = chipName
                 chips.chip_right_icon.setImageDrawable(
                     ContextCompat.getDrawable(
                         itemView.context,
@@ -31,7 +30,6 @@ class InsightTypeChipsViewHolder(val itemView: View) :
                 )
                 chips.setChevronClickListener { }
             }
-
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InsightChipsViewHolder {
@@ -51,7 +49,6 @@ class InsightTypeChipsViewHolder(val itemView: View) :
         override fun getItemCount(): Int {
             return insightChipsList.count()
         }
-
     }
 
     private val adapter by lazy { InsightTypeChipsAdapter() }
@@ -61,7 +58,7 @@ class InsightTypeChipsViewHolder(val itemView: View) :
         insightTypeChipsRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         insightTypeChipsRv.adapter = adapter
-        element?.let { adapter.insightChipsList = element.list }
+        element?.let { adapter.insightChipsList = element.chipsList }
     }
 
     companion object {

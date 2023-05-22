@@ -14,7 +14,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.G
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.findPositionOfSelected
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 
-class GroupDetailChipsViewHolder(private val view: View) :
+class GroupDetailChipsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit) :
     AbstractViewHolder<GroupDetailChipsUiModel>(view) {
 
     private var adapter: GroupDetailsChipsAdapter? = null
@@ -25,26 +25,26 @@ class GroupDetailChipsViewHolder(private val view: View) :
         chipsRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         chipsRv.adapter = adapter
-
     }
 
     private val onChipsClick: (Int) -> Unit = { position ->
-        chipsRv.layoutManager?.startSmoothScroll(object : LinearSmoothScroller(view.context) {
-            override fun getHorizontalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
+        chipsRv.layoutManager?.startSmoothScroll(
+            object : LinearSmoothScroller(view.context) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
 
-            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
-            }
-        }.apply { targetPosition = position })
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return TopAdsProductIklanFragment.MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                }
+            }.apply { targetPosition = position }
+        )
+        onChipClick.invoke(position)
     }
-
 
     fun onViewAttachedToWindow() {
         chipsRv.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
     }
-
 
     companion object {
         val LAYOUT = R.layout.top_ads_group_detail_chips_item_layout
