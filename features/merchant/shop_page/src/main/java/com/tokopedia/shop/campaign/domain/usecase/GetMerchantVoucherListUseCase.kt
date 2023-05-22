@@ -27,7 +27,9 @@ class GetMerchantVoucherListUseCase @Inject constructor(
     }
 
     companion object {
-        private const val REQUEST_PARAM_PAGE_SOURCE = "shop_page"
+        private const val REQUEST_PARAM_SHOP_ID = "shopID"
+        private const val REQUEST_PARAM_SOURCE = "source"
+        private const val REQUEST_PARAM_VALUE_PAGE_SOURCE = "shop_page"
     }
 
     private val query = object : GqlQueryInterface {
@@ -77,8 +79,8 @@ class GetMerchantVoucherListUseCase @Inject constructor(
 
     private fun buildRequest(): GraphqlRequest {
         val params = mapOf(
-            "shopID" to "11694144",
-            "source" to REQUEST_PARAM_PAGE_SOURCE
+            REQUEST_PARAM_SHOP_ID to userSession.shopId,
+            REQUEST_PARAM_SOURCE to REQUEST_PARAM_VALUE_PAGE_SOURCE
         )
 
         return GraphqlRequest(
