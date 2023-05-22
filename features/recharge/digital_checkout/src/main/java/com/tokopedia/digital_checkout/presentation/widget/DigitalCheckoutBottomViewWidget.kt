@@ -89,22 +89,29 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     fun setCrossSellConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
-        consentCollectionParam: ConsentCollectionParam
+        consentCollectionParam: ConsentCollectionParam,
+        isEnableCheckoutButtonInteraction: Boolean
     ) {
         with(binding.viewCrossSellConsentWidget) {
-            setOnCheckedChangeListener { isChecked ->
-                isCheckoutButtonEnabled = isChecked
-            }
-            setOnFailedGetCollectionListener {
-                isCheckoutButtonEnabled = false
-            }
-            setOnDetailConsentListener { _, consentType ->
-                if (isCrossSellConsentWidgetVisible()) {
-                    isCheckoutButtonEnabled = when (consentType) {
-                        is ConsentType.SingleInfo -> true
-                        is ConsentType.SingleChecklist -> false
-                        is ConsentType.MultipleChecklist -> false
-                        else -> true
+            /* isEnableCheckoutButtonInteraction
+            * If we also have Product Consent in the checkout page,
+            * we need to disable any interaction with checkout button.
+            *  **/
+            if (isEnableCheckoutButtonInteraction) {
+                setOnCheckedChangeListener { isChecked ->
+                    isCheckoutButtonEnabled = isChecked
+                }
+                setOnFailedGetCollectionListener {
+                    isCheckoutButtonEnabled = false
+                }
+                setOnDetailConsentListener { _, consentType ->
+                    if (isCrossSellConsentWidgetVisible()) {
+                        isCheckoutButtonEnabled = when (consentType) {
+                            is ConsentType.SingleInfo -> true
+                            is ConsentType.SingleChecklist -> false
+                            is ConsentType.MultipleChecklist -> false
+                            else -> true
+                        }
                     }
                 }
             }
