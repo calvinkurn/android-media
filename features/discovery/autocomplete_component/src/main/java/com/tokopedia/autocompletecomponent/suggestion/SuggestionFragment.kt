@@ -33,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -230,6 +229,13 @@ class SuggestionFragment :
             val modifiedApplink = getModifiedApplink(applink, searchParameter, activeKeyword)
             RouteManager.route(it, modifiedApplink)
         }
+    }
+
+    override fun applySuggestionToSelectedKeyword(
+        suggestedText: String,
+        activeKeyword: SearchBarKeyword,
+    ) {
+        viewModel?.onApplySuggestionToSelectedKeyword(suggestedText, activeKeyword)
     }
 
     override fun finish() {

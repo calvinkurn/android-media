@@ -100,6 +100,11 @@ interface SuggestionContract {
             activeKeyword: SearchBarKeyword,
         )
 
+        fun applySuggestionToSelectedKeyword(
+            suggestedText: String,
+            activeKeyword: SearchBarKeyword,
+        )
+
         fun finish()
 
         fun showSuggestionCoachMark()

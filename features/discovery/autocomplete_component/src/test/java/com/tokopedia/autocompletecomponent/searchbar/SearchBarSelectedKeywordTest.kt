@@ -107,4 +107,83 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
     private fun `Then verify latest keyword`(searchBarKeyword: SearchBarKeyword) {
         viewModel.activeKeywordLiveData.value shouldBe searchBarKeyword
     }
+
+    @Test
+    fun `apply suggestion with different keyword should replace selected keyword and end selection`() {
+        `Given mps enabled and no coach mark should be displayed`()
+        val query = "samsung"
+        val keyword1 = SearchBarKeyword(
+            position = 0,
+            keyword = "samsung galaxy",
+        )
+        val keyword2 = SearchBarKeyword(
+            position = 1,
+            keyword = query,
+        )
+        val keywords = listOf(
+            keyword1,
+            keyword2,
+        )
+        `Given search bar keyword list already populated`(keywords)
+
+        viewModel.onKeywordSelected(keyword1)
+        val selectedKeyword = keyword1.copy(isSelected = true)
+        val suggestionText = "samsung s21"
+        viewModel.onApplySuggestionToSelectedKeyword(suggestionText, selectedKeyword)
+
+        val updatedKeyword = keyword1.copy(keyword = suggestionText)
+        val expectedKeywords = listOf(updatedKeyword, keyword2)
+        val activeKeyword = SearchBarKeyword(position = expectedKeywords.size)
+
+        `Then verify active keyword`(activeKeyword)
+        `Then verify latest keyword`(activeKeyword)
+        `Then verify SearchBarKeyword list`(expectedKeywords)
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isMpsAnimationEnabled = true,
+                isAddButtonEnabled = true,
+                isKeyboardDismissEnabled = false,
+                shouldDisplayMpsPlaceHolder = true,
+            )
+        )
+    }
+
+    @Test
+    fun `apply suggestion with keyword that already in keyword list should not replace selected keyword`() {
+        `Given mps enabled and no coach mark should be displayed`()
+        val query = "samsung"
+        val keyword1 = SearchBarKeyword(
+            position = 0,
+            keyword = "samsung galaxy",
+        )
+        val keyword2 = SearchBarKeyword(
+            position = 1,
+            keyword = query,
+        )
+        val keywords = listOf(
+            keyword1,
+            keyword2,
+        )
+        `Given search bar keyword list already populated`(keywords)
+
+        viewModel.onKeywordSelected(keyword1)
+        val selectedKeyword = keyword1.copy(isSelected = true)
+        viewModel.onApplySuggestionToSelectedKeyword(query, selectedKeyword)
+
+        val expectedKeywords = listOf(selectedKeyword, keyword2)
+
+        `Then verify active keyword`(selectedKeyword)
+        `Then verify latest keyword`(selectedKeyword)
+        `Then verify SearchBarKeyword list`(expectedKeywords)
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isAddButtonEnabled = false,
+                isKeyboardDismissEnabled = false,
+                shouldDisplayMpsPlaceHolder = true,
+            )
+        )
+    }
 }

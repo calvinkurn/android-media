@@ -60,11 +60,15 @@ internal open class SuggestionPresenterTestFixtures {
         finish()
     }
 
-    protected fun `Given View already load data`(responseJSON: String, searchParameter: Map<String, String>) {
+    protected fun `Given View already load data`(
+        responseJSON: String,
+        searchParameter: Map<String, String>,
+        activeKeyword: SearchBarKeyword = SearchBarKeyword(),
+    ) {
         val suggestionUniverse = responseJSON.jsonToObject<SuggestionUniverse>()
 
         `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse)
-        `Given view already get suggestion`(searchParameter)
+        `Given view already get suggestion`(searchParameter, activeKeyword)
     }
 
     protected fun `Given Suggestion API will return SuggestionUniverse`(

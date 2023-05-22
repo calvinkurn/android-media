@@ -152,7 +152,10 @@ class SearchBarViewModel @Inject constructor(
 
     fun onQueryUpdated(query: String) {
         if (query == activeKeyword.keyword) return
-        val keyword = activeKeyword.copy(keyword = query)
+        val keyword = activeKeyword.copy(
+            keyword = query,
+            isSelected = activeKeyword.isSelected && query.isNotEmpty(),
+        )
         val searchParameter = activeSearchParameter
         val keywords = _searchBarKeywords.value ?: emptyList()
         val currentIndex = keywords.indexOfFirst { it.position == keyword.position }
@@ -222,11 +225,7 @@ class SearchBarViewModel @Inject constructor(
                 if (it.position == keyword.position) activeKeyword else it.copy(isSelected = false)
             }
         } else {
-            val cleanedQuery = activeKeyword.keyword.trim().lowercase()
-            val currentKeywords = _searchBarKeywords.value ?: emptyList()
-            val otherKeywords = currentKeywords - activeKeyword
-            val hasSameKeyword = otherKeywords.any { cleanedQuery == it.keyword.lowercase() }
-            if (hasSameKeyword) {
+            if (hasDuplicateKeyword(activeKeyword.keyword)) {
                 _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
                 return
             }
@@ -237,6 +236,37 @@ class SearchBarViewModel @Inject constructor(
                 it.copy(isSelected = false)
             }
         }
+        _searchParameterLiveData.value = activeSearchParameter
+        updateSearchBarState()
+    }
+
+    private fun hasDuplicateKeyword(query: String) : Boolean {
+        val cleanedQuery = query.trim().lowercase()
+        val currentKeywords = _searchBarKeywords.value ?: emptyList()
+        val otherKeywords = currentKeywords - activeKeyword
+        return otherKeywords.any { cleanedQuery == it.keyword.lowercase() }
+    }
+
+    fun onApplySuggestionToSelectedKeyword(
+        suggestionText: String,
+        keyword: SearchBarKeyword,
+    ) {
+        if(!keyword.isSelected) return
+        if (hasDuplicateKeyword(suggestionText)) {
+            _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
+            return
+        }
+
+        activeKeyword = SearchBarKeyword(position = _searchBarKeywords.value.orEmpty().size)
+        _activeKeywordLiveData.value = activeKeyword
+        _searchBarKeywords.value = _searchBarKeywords.value.orEmpty().map {
+            val keywordText = if (it.hasSameKeywordAndPosition(keyword)) suggestionText else it.keyword
+            it.copy(
+                keyword = keywordText,
+                isSelected = false,
+            )
+        }
+
         _searchParameterLiveData.value = activeSearchParameter
         updateSearchBarState()
     }
