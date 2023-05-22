@@ -89,4 +89,7 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubbles_rollence"
 }
