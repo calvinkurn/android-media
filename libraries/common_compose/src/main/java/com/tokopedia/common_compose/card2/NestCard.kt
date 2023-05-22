@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
@@ -31,13 +32,31 @@ import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
 
 @Composable
-private fun borderSelected(): Color {
+private fun getNestCardBorderActiveColor(): Color {
     return NestTheme.colors.GN._500
 }
 
 @Composable
-private fun borderDisabled(): Color {
+private fun getNestCardBorderColor(): Color {
     return NestTheme.colors.NN._200
+}
+
+@Composable
+private fun getNestCardBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        NestTheme.colors.NN._50
+    } else {
+        NestTheme.colors.NN._0
+    }
+}
+
+@Composable
+private fun getNestCardDisableBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        NestTheme.colors.NN._100
+    } else {
+        NestTheme.colors.NN._50
+    }
 }
 
 sealed interface NestCardType {
@@ -80,42 +99,42 @@ fun NestCard(
     }
 
     var borderColor = MaterialTheme.colors.surface
-    var backgroundColor = MaterialTheme.colors.surface
+    var backgroundColor = getNestCardBackgroundColor()
     var shadow = false
 
     when (type) {
         is NestCardType.StateBorder -> {
             if (type.isSelected) {
                 shadow = true
-                borderColor = borderSelected()
+                borderColor = getNestCardBorderActiveColor()
                 backgroundColor = NestTheme.colors.GN._50
             } else {
-                borderColor = borderSelected()
+                borderColor = getNestCardBorderActiveColor()
             }
         }
         is NestCardType.Border -> {
-            borderColor = borderDisabled()
+            borderColor = getNestCardBorderColor()
         }
         is NestCardType.Shadow -> {
             shadow = true
         }
         is NestCardType.BorderActive -> {
-            borderColor = borderSelected()
+            borderColor = getNestCardBorderActiveColor()
             backgroundColor = NestTheme.colors.GN._50
         }
         is NestCardType.ShadowActive -> {
             shadow = true
-            borderColor = borderSelected()
+            borderColor = getNestCardBorderActiveColor()
             backgroundColor = NestTheme.colors.GN._50
         }
         is NestCardType.BorderDisabled -> {
-            borderColor = borderDisabled()
-            backgroundColor = NestTheme.colors.NN._50
+            borderColor = getNestCardBorderColor()
+            backgroundColor = getNestCardDisableBackgroundColor()
         }
         is NestCardType.ShadowDisabled -> {
-            borderColor = borderDisabled()
+            borderColor = getNestCardBorderColor()
             shadow = true
-            backgroundColor = NestTheme.colors.NN._50
+            backgroundColor = getNestCardDisableBackgroundColor()
         }
         else -> {
         }
@@ -139,15 +158,17 @@ fun NestCard(
     }
 
     Card(
-        modifier = modifier.padding(16.dp).scale(scale).pointerInput(Unit) {
-            configGesture(onTouch = onTouch, onClick = {
-                onClick.invoke()
-            }, onLongPress = {
-                onLongPress.invoke()
-            })
-        },
+        modifier = modifier.padding(16.dp).scale(scale)
+
+            .pointerInput(Unit) {
+                configGesture(onTouch = onTouch, onClick = {
+                    onClick.invoke()
+                }, onLongPress = {
+                    onLongPress.invoke()
+                })
+            },
         border = BorderStroke(
-            2.dp, if (enableTransitionAnimation) animateBorderColor.value else borderColor
+            1.dp, if (enableTransitionAnimation) animateBorderColor.value else borderColor
         ),
         backgroundColor = if (enableTransitionAnimation) animateBackgroundColor.value
         else backgroundColor,

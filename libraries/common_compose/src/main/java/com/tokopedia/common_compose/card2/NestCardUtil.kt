@@ -23,18 +23,29 @@ internal suspend fun PointerInputScope.configGesture(
     onClick: () -> Unit,
     onLongPress: () -> Unit
 ) {
-    detectTapGestures(onPress = { offset ->
-        val currentTimePress = System.currentTimeMillis()
-        onTouch.value = true
+    detectTapGestures(
+        onPress = { offset ->
+            val currentTimePress = System.currentTimeMillis()
+            onTouch.value = true
 
-        tryAwaitRelease()
-        onTouch.value = false
+            /**
+             * Return true if the interaction purely click
+             * return false if the interaction being consume by another gesture eg: click+dragging
+             * This will fix when user click and scroll at the same time
+             */
+            val noScrollPress = tryAwaitRelease()
+            onTouch.value = false
 
-        val clickDuration = System.currentTimeMillis() - currentTimePress
-        if (clickDuration < LONG_PRESS_DURATION) {
-            onClick.invoke()
-        }
-    }, onDoubleTap = { offset -> }, onLongPress = { offset ->
-        onLongPress.invoke()
-    }, onTap = { offset -> })
+            val clickDuration = System.currentTimeMillis() - currentTimePress
+            if (clickDuration < LONG_PRESS_DURATION && noScrollPress) {
+                onClick.invoke()
+            }
+        },
+        onDoubleTap = { offset ->
+
+        },
+        onLongPress = { offset ->
+            onLongPress.invoke()
+        }, onTap = { offset ->
+        })
 }

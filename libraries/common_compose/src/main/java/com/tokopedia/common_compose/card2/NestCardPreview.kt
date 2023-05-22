@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -88,20 +89,22 @@ private fun NestCardTextContent() {
 @Preview(name = "Full Preview", showSystemUi = true)
 private fun NestCardPreview() {
     NestTheme {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            NestCardWithImageAndButton(true)
+        Surface(color = NestTheme.colors.NN._0 ) {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                NestCardWithImageAndButton(true)
 
-            NestCardWithActionClick()
+                NestCardWithActionClick()
 
-            NestCardPreviewSelectionAnimation()
+                NestCardPreviewSelectionAnimation()
 
-            NestCardPreviewBorderActive()
+                NestCardPreviewBorderActive()
 
-            NestCardPreviewShadowActive()
+                NestCardPreviewShadowActive()
 
-            NestCardPreviewBorderDisabled()
+                NestCardPreviewBorderDisabled()
 
-            NestCardPreviewShadowDisabled()
+                NestCardPreviewShadowDisabled()
+            }
         }
     }
 }
