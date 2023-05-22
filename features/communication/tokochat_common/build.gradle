@@ -68,10 +68,6 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation(rootProject.ext.firebase.crashlytics) {
-        transitive = true
-    }
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
