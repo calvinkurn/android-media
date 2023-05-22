@@ -56,7 +56,7 @@ class CategoryGetCategoryGridTest : CategoryTestFixtures() {
     private fun `Then assert category menu ui model state show`() {
         val expectedCategoryList = CategoryMenuMapper.mapToCategoryList(
             response = categoryList.response.data,
-            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
         )
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryMenuUIModel()
