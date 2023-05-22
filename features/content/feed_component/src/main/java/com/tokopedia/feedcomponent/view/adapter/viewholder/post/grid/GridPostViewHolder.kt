@@ -17,6 +17,8 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
         private const val SPAN_SIZE_FULL = 6
         private const val SPAN_SIZE_HALF = 3
         private const val SPAN_SIZE_SINGLE = 2
+        private const val INDEX_SPAN_FULL = 1
+        private const val INDEX_SPAN_HALF = 2
     }
 
     override var layoutRes: Int = R.layout.item_post_grid
@@ -31,8 +33,8 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (element.itemList.size) {
-                    1 -> SPAN_SIZE_FULL
-                    2 -> SPAN_SIZE_HALF
+                    INDEX_SPAN_FULL -> SPAN_SIZE_FULL
+                    INDEX_SPAN_HALF -> SPAN_SIZE_HALF
                     else -> SPAN_SIZE_SINGLE
                 }
             }
@@ -50,9 +52,9 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
             itemView.gridList.setPadding(0, 0, 0, 0)
         } else {
             itemView.gridList.setPadding(
-                this.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
+                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
                 0,
-                this.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
+                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
                 0
             )
         }
