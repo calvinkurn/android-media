@@ -38,26 +38,25 @@ class PlayWidgetCarouselViewHolder private constructor() {
             })
         }
 
-        fun bind(data: PlayWidgetChannelUiModel) {
-            itemView.addOnImpressionListener(data.impressHolder) {
-                listener.onChannelImpressed(channelView, data, adapterPosition)
+        internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
+            itemView.addOnImpressionListener(data.channel.impressHolder) {
+                listener.onChannelImpressed(channelView, data.channel, adapterPosition)
             }
-            channelView.setModel(data)
+            channelView.setModel(data.channel)
+            channelView.showMuteButton(data.isSelected)
+            if (!data.isSelected) channelView.resetProductPosition()
         }
 
-        fun bind(data: PlayWidgetChannelUiModel, payloads: Set<String>) {
+        internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
             payloads.forEach {
                 when (it) {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_MUTE_CHANGE -> {
-                        channelView.setMuted(shouldMuted = data.isMuted, animate = true)
+                        channelView.setMuted(shouldMuted = data.channel.isMuted, animate = true)
 //                        setMutedListener(data)
                     }
-                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
-                        channelView.showMuteButton(shouldShow = true)
-                    }
-                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
-                        channelView.showMuteButton(shouldShow = false)
-                        channelView.resetProductPosition()
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
+                        channelView.showMuteButton(data.isSelected)
+                        if (!data.isSelected) channelView.resetProductPosition()
                     }
                 }
             }
@@ -117,25 +116,29 @@ class PlayWidgetCarouselViewHolder private constructor() {
             })
         }
 
-        fun bind(data: PlayWidgetChannelUiModel) {
-            itemView.addOnImpressionListener(data.impressHolder) {
-                listener.onChannelImpressed(upcomingView, data, adapterPosition)
+        internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
+            itemView.addOnImpressionListener(data.channel.impressHolder) {
+                listener.onChannelImpressed(upcomingView, data.channel, adapterPosition)
             }
-            upcomingView.setModel(data)
+            upcomingView.setModel(data.channel)
+            upcomingView.showReminderButton(data.isSelected)
         }
 
-        fun bind(data: PlayWidgetChannelUiModel, payloads: Set<String>) {
+        internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
             payloads.forEach {
                 when (it) {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_REMINDED_CHANGE -> {
-                        upcomingView.setReminded(data.reminderType.reminded, animate = true)
+                        upcomingView.setReminded(data.channel.reminderType.reminded, animate = true)
 //                        setRemindedListener(data)
                     }
-                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
-                        upcomingView.showReminderButton(shouldShow = true)
-                    }
-                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
-                        upcomingView.showReminderButton(shouldShow = false)
+//                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
+//                        upcomingView.showReminderButton(shouldShow = true)
+//                    }
+//                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
+//                        upcomingView.showReminderButton(shouldShow = false)
+//                    }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
+                        upcomingView.showReminderButton(data.isSelected)
                     }
                 }
             }

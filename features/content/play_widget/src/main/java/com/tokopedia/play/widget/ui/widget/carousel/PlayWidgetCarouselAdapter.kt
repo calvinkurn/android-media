@@ -10,10 +10,10 @@ import com.tokopedia.play.widget.ui.model.ext.isMuted
 /**
  * Created by kenny.hadisaputra on 17/05/23
  */
-class PlayWidgetCarouselAdapter(
+internal class PlayWidgetCarouselAdapter(
     private val videoContentListener: PlayWidgetCarouselViewHolder.VideoContent.Listener,
     private val upcomingListener: PlayWidgetCarouselViewHolder.UpcomingContent.Listener,
-) : ListAdapter<PlayWidgetChannelUiModel, RecyclerView.ViewHolder>(PlayWidgetCarouselDiffCallback()) {
+) : ListAdapter<PlayWidgetCarouselAdapter.Model, RecyclerView.ViewHolder>(PlayWidgetCarouselDiffCallback()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -59,12 +59,12 @@ class PlayWidgetCarouselAdapter(
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return when {
-            item.isUpcoming -> TYPE_UPCOMING
+            item.channel.isUpcoming -> TYPE_UPCOMING
             else -> TYPE_VIDEO
         }
     }
 
-    fun setSelected(position: Int) {
+    fun setSelected(prevPosition: Int, position: Int) {
         notifyItemChanged(
             position,
             PlayWidgetCarouselDiffCallback.Payloads(
@@ -72,15 +72,22 @@ class PlayWidgetCarouselAdapter(
             )
         )
 
-        notifyItemChanged(
-            position - 1,
-            PlayWidgetCarouselDiffCallback.Payloads(
-                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
-            )
-        )
+//        notifyItemChanged(
+//            position - 1,
+//            PlayWidgetCarouselDiffCallback.Payloads(
+//                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
+//            )
+//        )
+
+//        notifyItemChanged(
+//            position + 1,
+//            PlayWidgetCarouselDiffCallback.Payloads(
+//                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
+//            )
+//        )
 
         notifyItemChanged(
-            position + 1,
+            prevPosition,
             PlayWidgetCarouselDiffCallback.Payloads(
                 listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
             )
@@ -91,34 +98,42 @@ class PlayWidgetCarouselAdapter(
         private const val TYPE_VIDEO = 0
         private const val TYPE_UPCOMING = 1
     }
+
+    internal data class Model(
+        val channel: PlayWidgetChannelUiModel,
+        val isSelected: Boolean,
+    )
 }
 
-class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidgetChannelUiModel>() {
+internal class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidgetCarouselAdapter.Model>() {
 
     override fun areItemsTheSame(
-        oldItem: PlayWidgetChannelUiModel,
-        newItem: PlayWidgetChannelUiModel
+        oldItem: PlayWidgetCarouselAdapter.Model,
+        newItem: PlayWidgetCarouselAdapter.Model
     ): Boolean {
-        return oldItem.channelId == newItem.channelId
+        return oldItem.channel.channelId == newItem.channel.channelId
     }
 
     override fun areContentsTheSame(
-        oldItem: PlayWidgetChannelUiModel,
-        newItem: PlayWidgetChannelUiModel
+        oldItem: PlayWidgetCarouselAdapter.Model,
+        newItem: PlayWidgetCarouselAdapter.Model
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun getChangePayload(
-        oldItem: PlayWidgetChannelUiModel,
-        newItem: PlayWidgetChannelUiModel
+        oldItem: PlayWidgetCarouselAdapter.Model,
+        newItem: PlayWidgetCarouselAdapter.Model
     ): Any? {
         val payloads = buildList {
-            if (oldItem.reminderType != newItem.reminderType) {
+            if (oldItem.channel.reminderType != newItem.channel.reminderType) {
                 add(PAYLOAD_REMINDED_CHANGE)
             }
-            if (oldItem.isMuted != newItem.isMuted) {
+            if (oldItem.channel.isMuted != newItem.channel.isMuted) {
                 add(PAYLOAD_MUTE_CHANGE)
+            }
+            if (oldItem.isSelected != newItem.isSelected) {
+                add(PAYLOAD_SELECTED_CHANGE)
             }
         }
 
@@ -128,6 +143,7 @@ class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidgetChannelUi
     companion object {
         internal const val PAYLOAD_REMINDED_CHANGE = "reminded_change"
         internal const val PAYLOAD_MUTE_CHANGE = "mute_change"
+        internal const val PAYLOAD_SELECTED_CHANGE = "is_selected"
 
         internal const val PAYLOAD_SELECTED = "selected"
         internal const val PAYLOAD_NOT_SELECTED = "not_selected"

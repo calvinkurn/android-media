@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.IPlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
@@ -20,7 +19,6 @@ import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselChanne
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselUpcomingView
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselAdapter
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselViewHolder
-import kotlin.math.abs
 import kotlin.math.min
 
 /**
@@ -112,7 +110,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
     private val snapHelper = PagerSnapHelper()
 
-    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
+    private var mModel: List<PlayWidgetChannelUiModel> = emptyList()
 
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
     private var mWidgetListener: Listener? = null
@@ -120,15 +118,16 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private val itemDecoration = PlayWidgetCarouselItemDecoration(context)
     private val layoutManager = PlayWidgetCarouselLayoutManager(context)
 
+    private var mSelectedWidgetPos = RecyclerView.NO_POSITION
+
     init {
         binding.rvChannels.layoutManager = layoutManager
         binding.rvChannels.adapter = adapter
         binding.rvChannels.addItemDecoration(itemDecoration)
+        binding.rvChannels.itemAnimator = null
         snapHelper.attachToRecyclerView(binding.rvChannels)
 
         binding.rvChannels.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            private var mSnappedPosition = RecyclerView.NO_POSITION
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
@@ -155,6 +154,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val stepToCorrectIndex = stepToOriginalStart + realItemSize - substractBy
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
+                    recyclerView.smoothScrollBy(1, 0) //to trigger onScrollStateChanged again
                 } else if (snappedPosition >= FAKE_COUNT_PER_SIDE + realItemSize) {
                     val stepToOriginalEnd = snappedPosition - FAKE_COUNT_PER_SIDE - realItemSize + 1 //e.g pos 14
                     val modulus = stepToOriginalEnd % realItemSize
@@ -162,21 +162,25 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val stepToCorrectIndex = (-1 * stepToOriginalEnd) - realItemSize + addBy
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
+                    recyclerView.smoothScrollBy(1, 0) //to trigger onScrollStateChanged again
                 }
 
-                if (snappedPosition == mSnappedPosition) return
-                adapter.setSelected(snappedPosition)
+                if (snappedPosition == mSelectedWidgetPos &&
+                    snappedPosition in FAKE_COUNT_PER_SIDE until FAKE_COUNT_PER_SIDE + realItemSize) {
+                    return
+                }
 
-                mSnappedPosition = snappedPosition
+                onWidgetSelected(snappedPosition)
+                mSelectedWidgetPos = snappedPosition
             }
         })
     }
 
     fun setData(data: PlayWidgetUiModel) {
         val prevModel = mModel
-        mModel = data
+        mModel = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
 
-        setupChannels(data, scrollToFirstPosition = adapter.currentList.size == 0)
+        setupChannels(mModel, scrollToFirstPosition = adapter.currentList.size == 0)
     }
 
     fun setWidgetListener(listener: Listener?) {
@@ -187,8 +191,11 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this.mWidgetInternalListener = listener
     }
 
-    private fun setupChannels(data: PlayWidgetUiModel, scrollToFirstPosition: Boolean = false) {
-        val channels = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
+    private fun setupChannels(
+        channels: List<PlayWidgetChannelUiModel>,
+        selectedPosition: Int = RecyclerView.NO_POSITION,
+        scrollToFirstPosition: Boolean = false
+    ) {
         val dataWithFake = if (channels.isEmpty()) emptyList() else buildList {
 
             var leftFakeCount = FAKE_COUNT_PER_SIDE
@@ -213,7 +220,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             } while (rightFakeCount > 0)
         }
 
-        adapter.submitList(dataWithFake) {
+        adapter.submitList(dataWithFake.mapIndexed { index, channel ->
+            PlayWidgetCarouselAdapter.Model(channel, index == selectedPosition)
+        }) {
             if (channels.isEmpty()) return@submitList
             if (scrollToFirstPosition) {
                 roughlyScrollTo(FAKE_COUNT_PER_SIDE) {
@@ -241,6 +250,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 widget = snappedView,
                 position = recyclerView.getChildAdapterPosition(snappedView),
             )
+        )
+    }
+
+    private fun onWidgetSelected(position: Int) {
+        setupChannels(
+            mModel,
+            selectedPosition = position,
+            scrollToFirstPosition = false,
         )
     }
 
