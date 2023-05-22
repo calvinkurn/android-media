@@ -251,6 +251,201 @@ class PinpointNewPageViewModelTest {
     }
 
     @Test
+    fun `verify set data from arguments when city and district empty is correctly`() {
+        // Inject
+        val currentPlaceId = "123"
+        val latitude = 1.0
+        val longitude = 1.0
+        val isPositiveFlow = true
+        val isPolygon = false
+        val isFromAddressForm = false
+        val isEdit = false
+        val source = "source"
+        val isGetPinPointOnly = true
+        val districtName = ""
+        val cityName = ""
+        val addressData = SaveAddressDataModel(cityName = "Semarang", districtName = "Gajah Mungkur")
+
+        // When
+        pinpointNewPageViewModel.setDataFromArguments(
+            currentPlaceId = currentPlaceId,
+            latitude = latitude,
+            longitude = longitude,
+            isPositiveFlow = isPositiveFlow,
+            isPolygon = isPolygon,
+            isFromAddressForm = isFromAddressForm,
+            isEdit = isEdit,
+            source = source,
+            isGetPinPointOnly = isGetPinPointOnly,
+            districtName = districtName,
+            cityName = cityName,
+            addressData = addressData
+        )
+
+        // Then
+        with(pinpointNewPageViewModel) {
+            Assert.assertNotEquals(this.getAddress().districtName, districtName)
+            Assert.assertNotEquals(this.getAddress().cityName, cityName)
+        }
+    }
+
+    @Test
+    fun `verify set data from arguments when city empty is correctly`() {
+        // Inject
+        val currentPlaceId = "123"
+        val latitude = 1.0
+        val longitude = 1.0
+        val isPositiveFlow = true
+        val isPolygon = false
+        val isFromAddressForm = false
+        val isEdit = false
+        val source = "source"
+        val isGetPinPointOnly = true
+        val districtName = "Gajah Mungku"
+        val cityName = ""
+        val addressData = SaveAddressDataModel(cityName = "Semarang", districtName = "Gajah Mungkur")
+
+        // When
+        pinpointNewPageViewModel.setDataFromArguments(
+            currentPlaceId = currentPlaceId,
+            latitude = latitude,
+            longitude = longitude,
+            isPositiveFlow = isPositiveFlow,
+            isPolygon = isPolygon,
+            isFromAddressForm = isFromAddressForm,
+            isEdit = isEdit,
+            source = source,
+            isGetPinPointOnly = isGetPinPointOnly,
+            districtName = districtName,
+            cityName = cityName,
+            addressData = addressData
+        )
+
+        // Then
+        with(pinpointNewPageViewModel) {
+            Assert.assertNotEquals(this.getAddress().districtName, districtName)
+            Assert.assertNotEquals(this.getAddress().cityName, cityName)
+        }
+    }
+
+    @Test
+    fun `verify set data from arguments when district empty is correctly`() {
+        // Inject
+        val currentPlaceId = "123"
+        val latitude = 1.0
+        val longitude = 1.0
+        val isPositiveFlow = true
+        val isPolygon = false
+        val isFromAddressForm = false
+        val isEdit = false
+        val source = "source"
+        val isGetPinPointOnly = true
+        val districtName = ""
+        val cityName = "Semaran"
+        val addressData = SaveAddressDataModel(cityName = "Semarang", districtName = "Gajah Mungkur")
+
+        // When
+        pinpointNewPageViewModel.setDataFromArguments(
+            currentPlaceId = currentPlaceId,
+            latitude = latitude,
+            longitude = longitude,
+            isPositiveFlow = isPositiveFlow,
+            isPolygon = isPolygon,
+            isFromAddressForm = isFromAddressForm,
+            isEdit = isEdit,
+            source = source,
+            isGetPinPointOnly = isGetPinPointOnly,
+            districtName = districtName,
+            cityName = cityName,
+            addressData = addressData
+        )
+
+        // Then
+        with(pinpointNewPageViewModel) {
+            Assert.assertNotEquals(this.getAddress().districtName, districtName)
+            Assert.assertNotEquals(this.getAddress().cityName, cityName)
+        }
+    }
+
+    @Test
+    fun `verify set data from arguments when district null is correctly`() {
+        // Inject
+        val currentPlaceId = "123"
+        val latitude = 1.0
+        val longitude = 1.0
+        val isPositiveFlow = true
+        val isPolygon = false
+        val isFromAddressForm = false
+        val isEdit = false
+        val source = "source"
+        val isGetPinPointOnly = true
+        val districtName = null
+        val cityName = "Semaran"
+        val addressData = SaveAddressDataModel(cityName = "Semarang", districtName = "Gajah Mungkur")
+
+        // When
+        pinpointNewPageViewModel.setDataFromArguments(
+            currentPlaceId = currentPlaceId,
+            latitude = latitude,
+            longitude = longitude,
+            isPositiveFlow = isPositiveFlow,
+            isPolygon = isPolygon,
+            isFromAddressForm = isFromAddressForm,
+            isEdit = isEdit,
+            source = source,
+            isGetPinPointOnly = isGetPinPointOnly,
+            districtName = districtName,
+            cityName = cityName,
+            addressData = addressData
+        )
+
+        // Then
+        with(pinpointNewPageViewModel) {
+            Assert.assertNotEquals(this.getAddress().districtName, districtName)
+            Assert.assertNotEquals(this.getAddress().cityName, cityName)
+        }
+    }
+
+    @Test
+    fun `verify set data from arguments when city null is correctly`() {
+        // Inject
+        val currentPlaceId = "123"
+        val latitude = 1.0
+        val longitude = 1.0
+        val isPositiveFlow = true
+        val isPolygon = false
+        val isFromAddressForm = false
+        val isEdit = false
+        val source = "source"
+        val isGetPinPointOnly = true
+        val districtName = "Gajah"
+        val cityName = null
+        val addressData = SaveAddressDataModel(cityName = "Semarang", districtName = "Gajah Mungkur")
+
+        // When
+        pinpointNewPageViewModel.setDataFromArguments(
+            currentPlaceId = currentPlaceId,
+            latitude = latitude,
+            longitude = longitude,
+            isPositiveFlow = isPositiveFlow,
+            isPolygon = isPolygon,
+            isFromAddressForm = isFromAddressForm,
+            isEdit = isEdit,
+            source = source,
+            isGetPinPointOnly = isGetPinPointOnly,
+            districtName = districtName,
+            cityName = cityName,
+            addressData = addressData
+        )
+
+        // Then
+        with(pinpointNewPageViewModel) {
+            Assert.assertNotEquals(this.getAddress().districtName, districtName)
+            Assert.assertNotEquals(this.getAddress().cityName, cityName)
+        }
+    }
+
+    @Test
     fun `verify when get maps geocode is success`() {
         val latitude = -7.7831383
         val longitude = 110.42679
@@ -312,6 +507,19 @@ class PinpointNewPageViewModelTest {
 
         verify {
             mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(defaultThrowable.message.orEmpty()))
+        }
+    }
+
+    @Test
+    fun `verify when get maps geocode error with null message then will show empty string`() {
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } throws Throwable()
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(""))
         }
     }
 }
