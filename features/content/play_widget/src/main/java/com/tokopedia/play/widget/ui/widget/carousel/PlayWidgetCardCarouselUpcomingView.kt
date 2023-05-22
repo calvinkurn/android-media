@@ -48,9 +48,12 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         showReminderButton(false, animate = false)
     }
 
-    fun setModel(model: PlayWidgetChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
         this.mModel = model
+        if (invalidate) invalidateUi(model)
+    }
 
+    private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvStartTime.text = model.startTime
         binding.viewPlayWidgetCaption.root.text = model.title
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
