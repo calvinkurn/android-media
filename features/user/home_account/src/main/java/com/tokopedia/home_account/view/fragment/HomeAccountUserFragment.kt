@@ -34,6 +34,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -59,9 +60,9 @@ import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
@@ -100,7 +101,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -583,7 +583,9 @@ open class HomeAccountUserFragment :
         }
 
         handleProductCardOptionsActivityResult(
-            requestCode, resultCode, data,
+            requestCode,
+            resultCode,
+            data,
             object : ProductCardOptionsWishlistCallback {
                 override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                     handleWishlistAction(productCardOptionsModel)
@@ -1030,8 +1032,8 @@ open class HomeAccountUserFragment :
             binding?.statusBarBg?.background = ColorDrawable(
                 ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
+            binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
-        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding?.statusBarBg?.visibility = View.INVISIBLE
         } else {
@@ -1056,7 +1058,6 @@ open class HomeAccountUserFragment :
     }
 
     private fun getData() {
-        viewModel.refreshUserProfile()
         binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))

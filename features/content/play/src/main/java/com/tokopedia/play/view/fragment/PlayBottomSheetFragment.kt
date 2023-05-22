@@ -26,7 +26,6 @@ import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -48,6 +47,7 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
@@ -55,7 +55,6 @@ import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
