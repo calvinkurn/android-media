@@ -26,7 +26,6 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
-import com.tokopedia.play_common.util.error.DefaultErrorThrowable.Companion.DEFAULT_MESSAGE
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -410,7 +409,6 @@ class PlayShortsViewModel @Inject constructor(
 
             _uploadState.update { PlayShortsUploadUiState.Loading }
 
-            generateChannelLinkAffiliate()
             saveTag()
             uploadMedia()
 
@@ -537,16 +535,6 @@ class PlayShortsViewModel @Inject constructor(
         onError(it)
     }
 
-    private suspend fun generateChannelLinkAffiliate() {
-        if (!isAffiliate) return
-        val request = repo.generateChannelAffiliateLink(shortsId)
-        if (!request) {
-            throw DefaultErrorThrowable(
-                "$DEFAULT_MESSAGE: Error Generate Channel Link Affiliate"
-            )
-        }
-    }
-
     private suspend fun saveTag() {
         val tagState = _tags.value
         if (tagState is NetworkResult.Success) {
@@ -556,7 +544,7 @@ class PlayShortsViewModel @Inject constructor(
                 val result = repo.saveTag(shortsId, selectedTag)
 
                 if (!result) {
-                    throw DefaultErrorThrowable("$DEFAULT_MESSAGE: Error Tag")
+                    throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
                 }
             }
         }

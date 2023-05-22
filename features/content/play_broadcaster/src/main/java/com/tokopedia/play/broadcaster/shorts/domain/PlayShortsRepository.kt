@@ -43,6 +43,4 @@ interface PlayShortsRepository {
 
     suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel
 
-    suspend fun generateChannelAffiliateLink(shortsId: String): Boolean
-
 }

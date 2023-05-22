@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -20,7 +19,6 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiSt
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
-import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -132,21 +130,10 @@ class PlayShortsSummaryFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayShortsUiEvent.ErrorUploadMedia -> {
-                        if (event.throwable.isNetworkError) {
-                            toaster.showError(
-                                event.throwable,
-                                duration = Toaster.LENGTH_INDEFINITE,
-                                actionLabel = requireContext().getString(R.string.title_try_again),
-                                actionListener = {
-                                    viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
-                                }
-                            )
-                        } else {
-                            toaster.showError(
-                                event.throwable,
-                                duration = Toaster.LENGTH_LONG,
-                            )
-                        }
+                        toaster.showError(
+                            event.throwable,
+                            duration = Toaster.LENGTH_SHORT
+                        )
                     }
                     else -> {}
                 }
