@@ -13,9 +13,13 @@ object UniversalInboxValueUtil {
 
     // TopAds
     const val COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads"
+    const val SHIFTING_INDEX = 1
+    // TopAds - Banner
     const val TOP_ADS_BANNER_COUNT = 2
     const val TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED = 22
-    const val SHIFTING_INDEX = 1
+    // TopAds - Headline
+    const val HEADLINE_ADS_BANNER_COUNT = 2
+    const val HEADLINE_POS_NOT_TO_BE_ADDED = 11
 
     // Wishlist
     const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"

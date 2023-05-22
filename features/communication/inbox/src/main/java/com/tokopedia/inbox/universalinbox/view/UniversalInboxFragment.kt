@@ -19,6 +19,9 @@ import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_FROM_PDP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
@@ -30,6 +33,8 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.viewmodel.UniversalInboxViewModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -37,12 +42,29 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -57,22 +79,34 @@ class UniversalInboxFragment :
     TdnBannerResponseListener,
     TopAdsImageViewClickListener,
     RecommendationListener {
-    private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
-    private var adapter = UniversalInboxAdapter(
-        this,
-        this,
-        this
-    )
+
     private var endlessRecyclerViewScrollListener: UniversalInboxEndlessScrollListener? = null
 
     @Inject
     lateinit var viewModel: UniversalInboxViewModel
 
     @Inject
+    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+
+    @Inject
     lateinit var topAdsAnalytic: UniversalInboxTopAdsAnalytic
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
+    private lateinit var adapter: UniversalInboxAdapter
+
+    // TopAds Banner
     private var topAdsBannerInProductCards: List<TopAdsImageViewModel>? = null
     private var topAdsBannerExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
+    private var isTopAdsBannerAdded = false
+
+    // TopAds Headline
+    private var headlineData: CpmModel? = null
+    private var headlineIndexList: ArrayList<Int>? = null
+    private var headlineExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
+    private var isAdded = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,6 +141,12 @@ class UniversalInboxFragment :
     }
 
     private fun setupRecyclerView() {
+        adapter = UniversalInboxAdapter(
+            userSession,
+            this,
+            this,
+            this
+        )
         binding?.inboxRv?.layoutManager = StaggeredGridLayoutManager(
             2,
             StaggeredGridLayoutManager.VERTICAL
@@ -135,9 +175,7 @@ class UniversalInboxFragment :
         viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
             removeLoadMoreLoading()
             when (it) {
-                is Success -> {
-                    onSuccessGetFirstRecommendationData(it.data)
-                }
+                is Success -> onSuccessGetFirstRecommendationData(it.data)
                 is Fail -> {}
             }
         }
@@ -164,12 +202,112 @@ class UniversalInboxFragment :
         val itemCountBefore = adapter.itemCount
         adapter.addItems(list)
         adapter.notifyItemRangeInserted(itemCountBefore, itemCountBefore + list.size)
+        setHeadlineAndBannerExperiment()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private fun setHeadlineAndBannerExperiment() {
+        try {
+            setTopAdsHeadlineExperiment()
+            setTopAdsBannerExperiment()
+        } catch (throwable: Throwable) {
+            context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            }
+        }
+    }
+
+    private fun setTopAdsHeadlineExperiment() {
+        var index = Int.ZERO
+        if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
+            val pageNum = endlessRecyclerViewScrollListener?.currentPage ?: Int.ZERO
+            if (pageNum == Int.ZERO) {
+                headlineExperimentPosition =
+                    headlineIndexList?.get(Int.ZERO) ?: HEADLINE_POS_NOT_TO_BE_ADDED
+            } else if (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT &&
+                pageNum < HEADLINE_ADS_BANNER_COUNT
+            ) {
+                headlineExperimentPosition =
+                    headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED
+                index = Int.ONE
+            }
+            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED ||
+                    (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT)) &&
+                headlineExperimentPosition <= adapter.itemCount &&
+                (!isAdded || (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT))
+            ) {
+                addTopAdsHeadlineUiModel(index)
+            }
+        }
+    }
+
+    private fun addTopAdsHeadlineUiModel(index: Int) {
+        val position = if (isTopAdsBannerAdded) {
+            headlineExperimentPosition + SHIFTING_INDEX
+        } else {
+            headlineExperimentPosition
+        }
+        adapter.addItem(
+            position,
+            UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
+        )
+        adapter.notifyItemInserted(position)
+        isAdded = true
+    }
+
+    private fun setTopAdsBannerExperiment() {
+        if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
+            topAdsBannerExperimentPosition <= adapter.itemCount && !isTopAdsBannerAdded
+        ) {
+            val position = if (isAdded) {
+                topAdsBannerExperimentPosition + SHIFTING_INDEX
+            } else {
+                topAdsBannerExperimentPosition
+            }
+            adapter.addItem(
+                position,
+                UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
+            )
+            adapter.notifyItemInserted(position)
+            isTopAdsBannerAdded = true
+        }
     }
 
     private fun loadTopAdsAndRecommendation() {
         showLoadMoreLoading()
-        viewModel.loadTopAdsAndFirstPageRecommendation()
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(getHeadlineAdsParam(Int.ZERO), { data ->
+            headlineData = data
+            if (data.data.isEmpty()) {
+                return@getTopAdsHeadlineData
+            }
+            setHeadlineIndexList(data)
+            viewModel.loadFirstPageRecommendation()
+        }, {
+            viewModel.loadFirstPageRecommendation()
+        })
+    }
+
+    private fun getHeadlineAdsParam(topAdsHeadLinePage: Int): String {
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
+                PARAM_DEVICE to VALUE_DEVICE,
+                PARAM_PAGE to topAdsHeadLinePage,
+                PARAM_EP to VALUE_EP,
+                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+                PARAM_ITEM to VALUE_ITEM,
+                PARAM_SRC to PAGE_NAME,
+                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+                PARAM_USER_ID to userSession.userId
+            )
+        )
+    }
+
+    private fun setHeadlineIndexList(data: CpmModel) {
+        headlineIndexList = ArrayList()
+        val size = data.header.totalData
+        for (i in 0 until size) {
+            headlineIndexList?.add(data.data[i].cpm.position + adapter.itemCount)
+        }
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -210,7 +348,7 @@ class UniversalInboxFragment :
             val productRecommendationFirstPosition =
                 adapter.getProductRecommendationFirstPosition() ?: adapter.itemCount
             topAdsBannerExperimentPosition =
-                topAdsBannerInCardsPosition + SHIFTING_INDEX + productRecommendationFirstPosition
+                topAdsBannerInCardsPosition + productRecommendationFirstPosition
         }
     }
 

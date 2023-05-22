@@ -47,7 +47,7 @@ android {
         main {
             res {
                 srcDirs 'src/main/res', 'src/main/res/layouts/oldinbox', 'src/main/res/layouts/page',
-                        'src/main/res/layouts/staticmenu', 'src/main/res/layouts/banner',
+                        'src/main/res/layouts/staticmenu', 'src/main/res/layouts/topads',
                         'src/main/res/layouts/recommendation'
             }
         }

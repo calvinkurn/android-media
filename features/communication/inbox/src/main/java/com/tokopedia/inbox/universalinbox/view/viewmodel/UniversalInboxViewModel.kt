@@ -81,7 +81,7 @@ class UniversalInboxViewModel @Inject constructor(
         )
     }
 
-    fun loadTopAdsAndFirstPageRecommendation() {
+    fun loadFirstPageRecommendation() {
         viewModelScope.launch {
             withContext(dispatcher.io) {
                 try {

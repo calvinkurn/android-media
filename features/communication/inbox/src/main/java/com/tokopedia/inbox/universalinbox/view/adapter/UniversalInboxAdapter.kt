@@ -8,6 +8,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -15,8 +16,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.user.session.UserSessionInterface
 
 class UniversalInboxAdapter(
+    userSession: UserSessionInterface,
     tdnBannerResponseListener: TdnBannerResponseListener,
     topAdsClickListener: TopAdsImageViewClickListener,
     recommendationListener: RecommendationListener
@@ -32,6 +35,7 @@ class UniversalInboxAdapter(
         delegatesManager.addDelegate(UniversalInboxRecommendationDelegate(recommendationListener))
         delegatesManager.addDelegate(UniversalInboxRecommendationLoaderDelegate())
         delegatesManager.addDelegate(UniversalInboxMenuSeparatorDelegate())
+        delegatesManager.addDelegate(UniversalInboxTopAdsHeadlineDelegate(userSession))
     }
 
     private var recommendationViewType: Int? = null

@@ -10,7 +10,6 @@ import dagger.Provides
 
 @Module
 object UniversalInboxModule {
-
     @ActivityScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
