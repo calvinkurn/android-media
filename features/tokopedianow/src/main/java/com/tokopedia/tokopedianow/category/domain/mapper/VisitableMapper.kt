@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -146,11 +145,7 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addRecipeProgressBar() {
-        add(TokoNowProgressBarUiModel())
-    }
-
-    fun MutableList<Visitable<*>>.removeRecipeProgressBar() {
-        removeFirst { it is TokoNowProgressBarUiModel }
+        add(TokoNowProgressBarUiModel(CategoryLayoutType.MORE_PROGRESS_BAR.name))
     }
 
     /**
@@ -288,6 +283,7 @@ internal object VisitableMapper {
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is CategoryShowcaseUiModel -> id
+            is TokoNowProgressBarUiModel -> id
             else -> null
         }
     }

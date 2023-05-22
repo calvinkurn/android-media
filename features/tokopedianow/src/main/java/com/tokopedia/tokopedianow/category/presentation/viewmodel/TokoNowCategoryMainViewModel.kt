@@ -25,7 +25,6 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProd
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addRecipeProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeRecipeProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryHeaderUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
@@ -39,23 +38,22 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryMainViewModel @Inject constructor(
+    private val getCategoryProductUseCase: GetCategoryProductUseCase,
     @Named(NOW_CATEGORY_L1)
     val categoryIdL1: String,
     @Named(MAIN_CATEGORY_HEADER_USE_CASE_NAME)
     val getCategoryHeaderUseCase: GetCategoryHeaderUseCase,
-    private val getCategoryProductUseCase: GetCategoryProductUseCase,
-    val userSession: UserSessionInterface,
+    addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
-    private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ): TokoNowCategoryBaseViewModel(
     userSession = userSession,
@@ -112,7 +110,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val categoryPage = getCategoryProductUseCase.execute(
-                chooseAddressData = addressData.getAddressData(),
+                chooseAddressData = getAddressData(),
                 categoryIdL2 = categoryL2Model.id,
                 uniqueId = getUniqueId()
             )
@@ -147,6 +145,19 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getBatchShowcase(
+        hasAdded: Boolean
+    ) {
+        categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
+            getCategoryShowcaseAsync(
+                categoryL2Model = categoryL2Model,
+                hasAdded = hasAdded
+            ).await()
+        }
+
+        layout.addRecipeProgressBar()
+    }
+
     private fun addCategoryShowcases(
         categoryNavigationUiModel: CategoryNavigationUiModel
     ) {
@@ -173,13 +184,11 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     private fun getMoreShowcases() {
         launch {
-            layout.addRecipeProgressBar()
+            getBatchShowcase(
+                hasAdded = false
+            )
 
-            categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
-                getCategoryShowcaseAsync(categoryL2Model, false)
-            }.awaitAll()
-
-            layout.removeRecipeProgressBar()
+            layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
 
             _categoryPage.postValue(Success(layout))
         }
@@ -230,9 +239,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     fun getFirstPage() {
         launch {
-            categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
-                getCategoryShowcaseAsync(categoryL2Model, true)
-            }.awaitAll()
+            getBatchShowcase(
+                hasAdded = true
+            )
 
             _categoryPage.postValue(Success(layout))
         }
@@ -245,7 +254,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             _isOnScrollNotNeeded.value = true
 
             categoryMenu?.let {
+                layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
                 layout.addCategoryMenu(it)
+
                 _categoryPage.value = Success(layout)
             }
         } else if (isAtTheBottomOfThePage) {
