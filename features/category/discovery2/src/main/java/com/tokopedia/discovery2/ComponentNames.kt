@@ -139,5 +139,6 @@ enum class ComponentNames(val componentName: String) {
     ExplicitWidget("explicit_widget"),
 
     ContentCard("content_card"),
-    ContentCardItem("content_card_item")
+    ContentCardItem("content_card_item"),
+    ProductHighlight("product_highlight"),
 }
