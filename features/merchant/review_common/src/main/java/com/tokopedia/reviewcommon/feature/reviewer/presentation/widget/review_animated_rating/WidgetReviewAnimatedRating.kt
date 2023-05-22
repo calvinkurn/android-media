@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,11 +54,15 @@ private fun ReviewStar(
     modifier: Modifier = Modifier,
     config: ReviewStarConfig
 ) = with(config) {
+    val interactionSource by remember { mutableStateOf(MutableInteractionSource()) }
     Image(
         painter = painterResource(id = R.drawable.review_ic_star),
         colorFilter = ColorFilter.tint(color),
         contentDescription = contentDescription,
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier.clickable(
+            interactionSource = interactionSource,
+            indication = null
+        ) { onClick() }
     )
 }
 
