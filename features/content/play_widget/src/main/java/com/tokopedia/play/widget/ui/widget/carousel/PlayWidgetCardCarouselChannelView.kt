@@ -1,7 +1,6 @@
 package com.tokopedia.play.widget.ui.widget.carousel
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -117,7 +116,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         adapter.submitList(model.products)
 
         setMuted(model.isMuted)
-        setMutedListener(model)
     }
 
     fun setListener(listener: Listener?) {
@@ -143,8 +141,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     fun setMuted(shouldMuted: Boolean, animate: Boolean = false) {
         val lottieComposition = LottieCompositionFactory.fromRawRes(
             binding.root.context,
-            if (shouldMuted) R.raw.play_widget_lottie_mute_on_off
-            else R.raw.play_widget_lottie_mute_off_on
+            if (shouldMuted) R.raw.play_widget_lottie_sound_on_off
+            else R.raw.play_widget_lottie_sound_off_on
         )
 
         lottieComposition.addListener { composition ->
@@ -153,14 +151,12 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             if (animate) binding.viewPlayWidgetActionButton.root.playAnimation()
             else binding.viewPlayWidgetActionButton.root.progress = 1f
         }
-    }
 
-    private fun setMutedListener(data: PlayWidgetChannelUiModel) {
         binding.viewPlayWidgetActionButton.root.setOnClickListener {
             mListener?.onMuteButtonClicked(
                 this,
-                data,
-                !data.isMuted,
+                mModel,
+                !shouldMuted,
             )
         }
     }

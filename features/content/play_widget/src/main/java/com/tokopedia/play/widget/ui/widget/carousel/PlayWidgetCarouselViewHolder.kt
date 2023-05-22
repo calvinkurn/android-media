@@ -8,6 +8,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.model.reminded
+import kotlin.math.abs
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -40,7 +41,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
             itemView.addOnImpressionListener(data.channel.impressHolder) {
-                listener.onChannelImpressed(channelView, data.channel, adapterPosition)
+                listener.onChannelImpressed(channelView, data.channel, absoluteAdapterPosition)
             }
             channelView.setModel(data.channel)
             channelView.showMuteButton(data.isSelected)
@@ -51,8 +52,10 @@ class PlayWidgetCarouselViewHolder private constructor() {
             payloads.forEach {
                 when (it) {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_MUTE_CHANGE -> {
-                        channelView.setMuted(shouldMuted = data.channel.isMuted, animate = true)
-//                        setMutedListener(data)
+                        channelView.setMuted(
+                            shouldMuted = data.channel.isMuted,
+                            animate = data.isSelected,
+                        )
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
                         channelView.showMuteButton(data.isSelected)
@@ -118,25 +121,22 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
             itemView.addOnImpressionListener(data.channel.impressHolder) {
-                listener.onChannelImpressed(upcomingView, data.channel, adapterPosition)
+                listener.onChannelImpressed(upcomingView, data.channel, absoluteAdapterPosition)
             }
             upcomingView.setModel(data.channel)
             upcomingView.showReminderButton(data.isSelected)
+            upcomingView.setReminded(data.channel.reminderType.reminded)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
             payloads.forEach {
                 when (it) {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_REMINDED_CHANGE -> {
-                        upcomingView.setReminded(data.channel.reminderType.reminded, animate = true)
-//                        setRemindedListener(data)
+                        upcomingView.setReminded(
+                            data.channel.reminderType.reminded,
+                            animate = data.isSelected,
+                        )
                     }
-//                    PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED -> {
-//                        upcomingView.showReminderButton(shouldShow = true)
-//                    }
-//                    PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED -> {
-//                        upcomingView.showReminderButton(shouldShow = false)
-//                    }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
                         upcomingView.showReminderButton(data.isSelected)
                     }

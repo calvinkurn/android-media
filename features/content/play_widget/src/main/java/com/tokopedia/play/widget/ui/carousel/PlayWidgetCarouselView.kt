@@ -15,6 +15,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.WidgetInList
+import com.tokopedia.play.widget.ui.model.ext.setMute
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselChannelView
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselUpcomingView
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselAdapter
@@ -46,8 +47,6 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this
     )
 
-    private var mIsMuted: Boolean = true
-
     private val videoContentListener = object : PlayWidgetCarouselViewHolder.VideoContent.Listener {
         override fun onChannelImpressed(
             view: PlayWidgetCardCarouselChannelView,
@@ -64,7 +63,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             position: Int
         ) {
             mIsMuted = shouldMute
-            //TODO("Update mute button for the selected channel")
+            updateChannels()
         }
 
         override fun onProductClicked(
@@ -119,12 +118,12 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private val layoutManager = PlayWidgetCarouselLayoutManager(context)
 
     private var mSelectedWidgetPos = RecyclerView.NO_POSITION
+    private var mIsMuted: Boolean = true
 
     init {
         binding.rvChannels.layoutManager = layoutManager
         binding.rvChannels.adapter = adapter
         binding.rvChannels.addItemDecoration(itemDecoration)
-        binding.rvChannels.itemAnimator = null
         snapHelper.attachToRecyclerView(binding.rvChannels)
 
         binding.rvChannels.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -180,7 +179,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
 
-        setupChannels(mModel, scrollToFirstPosition = adapter.currentList.size == 0)
+        updateChannels(mModel, scrollToFirstPosition = adapter.currentList.size == 0)
     }
 
     fun setWidgetListener(listener: Listener?) {
@@ -191,9 +190,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this.mWidgetInternalListener = listener
     }
 
-    private fun setupChannels(
-        channels: List<PlayWidgetChannelUiModel>,
-        selectedPosition: Int = RecyclerView.NO_POSITION,
+    private fun updateChannels(
+        channels: List<PlayWidgetChannelUiModel> = mModel,
+        selectedPosition: Int = mSelectedWidgetPos,
         scrollToFirstPosition: Boolean = false
     ) {
         val dataWithFake = if (channels.isEmpty()) emptyList() else buildList {
@@ -221,7 +220,11 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         }
 
         adapter.submitList(dataWithFake.mapIndexed { index, channel ->
-            PlayWidgetCarouselAdapter.Model(channel, index == selectedPosition)
+            val isSelected = index == selectedPosition
+            PlayWidgetCarouselAdapter.Model(
+                channel.setMute(mIsMuted),
+                isSelected,
+            )
         }) {
             if (channels.isEmpty()) return@submitList
             if (scrollToFirstPosition) {
@@ -254,11 +257,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     private fun onWidgetSelected(position: Int) {
-        setupChannels(
-            mModel,
-            selectedPosition = position,
-            scrollToFirstPosition = false,
-        )
+        updateChannels(selectedPosition = position)
     }
 
     companion object {
