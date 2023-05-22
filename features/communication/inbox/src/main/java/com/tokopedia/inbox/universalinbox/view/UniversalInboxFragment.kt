@@ -21,14 +21,17 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_FROM_PDP
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.viewmodel.UniversalInboxViewModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -45,6 +48,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxFragment :
@@ -66,6 +70,9 @@ class UniversalInboxFragment :
 
     @Inject
     lateinit var topAdsAnalytic: UniversalInboxTopAdsAnalytic
+
+    private var topAdsBannerInProductCards: List<TopAdsImageViewModel>? = null
+    private var topAdsBannerExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -129,7 +136,7 @@ class UniversalInboxFragment :
             removeLoadMoreLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetFirstRecommendationData(it.data.recommendationWidget, it.data.tdnBanner)
+                    onSuccessGetFirstRecommendationData(it.data)
                 }
                 is Fail -> {}
             }
@@ -147,13 +154,8 @@ class UniversalInboxFragment :
     }
 
     private fun onSuccessGetFirstRecommendationData(
-        recommendation: RecommendationWidget,
-        topAds: List<TopAdsImageViewModel>
+        recommendation: RecommendationWidget
     ) {
-        // TopAds
-        addTopAdsItem(topAds)
-
-        // Recommendation
         adapter.addItem(UniversalInboxRecommendationTitleUiModel(recommendation.title))
         addRecommendationItem(recommendation.recommendationItemList)
     }
@@ -163,11 +165,6 @@ class UniversalInboxFragment :
         adapter.addItems(list)
         adapter.notifyItemRangeInserted(itemCountBefore, itemCountBefore + list.size)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-    }
-
-    private fun addTopAdsItem(list: List<TopAdsImageViewModel>) {
-        adapter.addItem(UniversalInboxTopAdsBannerUiModel(list))
-        adapter.notifyItemInserted(adapter.itemCount)
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -195,15 +192,37 @@ class UniversalInboxFragment :
     }
 
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
-        // TODO
+        if (categoriesList.isEmpty()) return
+        if (categoriesList.size == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = categoriesList[Int.ONE]
+            setTopAdsBannerExperimentPosition()
+        } else if (categoriesList[Int.ZERO].size == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = listOf(categoriesList[Int.ZERO][Int.ONE])
+            setTopAdsBannerExperimentPosition()
+        }
+        adapter.updateTopAdsBanner(categoriesList[Int.ZERO])
+    }
+
+    private fun setTopAdsBannerExperimentPosition() {
+        if (!topAdsBannerInProductCards.isNullOrEmpty()) {
+            val topAdsBannerInCardsPosition =
+                topAdsBannerInProductCards?.get(Int.ZERO)?.position ?: -1
+            val productRecommendationFirstPosition =
+                adapter.getProductRecommendationFirstPosition() ?: adapter.itemCount
+            topAdsBannerExperimentPosition =
+                topAdsBannerInCardsPosition + SHIFTING_INDEX + productRecommendationFirstPosition
+        }
     }
 
     override fun onError(t: Throwable) {
-        // TODO
+        // Do nothing
+        Timber.d(t)
     }
 
     override fun onTopAdsImageViewClicked(applink: String?) {
-        // TODO
+        if (applink == null) return
+        val intent = RouteManager.getIntent(context, applink)
+        startActivity(intent)
     }
 
     override fun onProductClick(
@@ -292,9 +311,7 @@ class UniversalInboxFragment :
                         }
                     }
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                        val view: View = activity?.findViewById(android.R.id.content) ?: return
-                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
+                        showErrorAddRemoveWishlistV2(throwable = throwable)
                     }
 
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -309,9 +326,7 @@ class UniversalInboxFragment :
                 item,
                 object : WishlistV2ActionListener {
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                        val view: View = activity?.findViewById(android.R.id.content) ?: return
-                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
+                        showErrorAddRemoveWishlistV2(throwable = throwable)
                     }
                     override fun onSuccessRemoveWishlist(
                         result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
@@ -398,7 +413,7 @@ class UniversalInboxFragment :
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             handleWishListV2ActionSuccess(productCardOptionsModel)
         } else {
-            handleWishlistV2ActionFailed(productCardOptionsModel.wishlistResult)
+            showErrorAddRemoveWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -462,25 +477,27 @@ class UniversalInboxFragment :
         }
     }
 
-    private fun handleWishlistV2ActionFailed(
-        wishlistResult: ProductCardOptionsModel.WishlistResult
+    private fun showErrorAddRemoveWishlistV2(
+        wishlistResult: ProductCardOptionsModel.WishlistResult? = null,
+        throwable: Throwable? = null
     ) {
-        val rootView = view?.rootView
-        rootView?.let { v ->
-            var errorMessage = ErrorHandler.getErrorMessage(v.context, null)
-            if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
-
-            if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
-                    errorMessage,
-                    wishlistResult.ctaTextV2,
-                    wishlistResult.ctaActionV2,
-                    v,
-                    v.context
-                )
-            } else {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+        val view: View = activity?.findViewById(android.R.id.content) ?: return
+        context?.let {
+            var errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+            if (wishlistResult != null) {
+                if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+                if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
+                        errorMessage,
+                        wishlistResult.ctaTextV2,
+                        wishlistResult.ctaActionV2,
+                        view,
+                        it
+                    )
+                    return
+                }
             }
+            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
         }
     }
 

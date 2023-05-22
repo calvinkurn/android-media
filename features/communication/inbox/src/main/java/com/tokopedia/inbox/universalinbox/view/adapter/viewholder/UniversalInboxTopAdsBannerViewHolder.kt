@@ -6,9 +6,9 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxTopadsBannerBinding
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.EIGHT_DP
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxTopAdsBannerViewHolder constructor(
@@ -26,18 +26,19 @@ class UniversalInboxTopAdsBannerViewHolder constructor(
 
     private fun bindTdnBanner(uiModel: UniversalInboxTopAdsBannerUiModel) {
         uiModel.ads?.let {
-            binding?.inboxTopadsBanner?.renderTdnBanner(it, 8.toPx(), ::onTdnBannerClicked)
+            binding?.inboxTopadsBanner?.renderTdnBanner(it, EIGHT_DP, ::onTdnBannerClicked)
         }
     }
 
     private fun bindTopAds(uiModel: UniversalInboxTopAdsBannerUiModel) {
-        if (!uiModel.hasAds()) {
+        if (!uiModel.hasAds() && !uiModel.requested) {
             binding?.inboxTopadsBanner?.setTdnResponseListener(tdnBannerResponseListener)
             binding?.inboxTopadsBanner?.getTdnData(
                 SOURCE,
                 adsCount = ADS_COUNT,
                 dimenId = DIMEN_ID
             )
+            uiModel.requested = true
         }
 
     }

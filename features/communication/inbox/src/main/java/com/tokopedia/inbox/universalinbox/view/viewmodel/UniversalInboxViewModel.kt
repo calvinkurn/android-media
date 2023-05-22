@@ -7,22 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.inbox.universalinbox.data.response.UniversalInboxRecommendationWithTDN
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,7 +33,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
@@ -44,8 +40,8 @@ class UniversalInboxViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
-    private val _firstPageRecommendation = MutableLiveData<Result<UniversalInboxRecommendationWithTDN>>()
-    val firstPageRecommendation: LiveData<Result<UniversalInboxRecommendationWithTDN>>
+    private val _firstPageRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val firstPageRecommendation: LiveData<Result<RecommendationWidget>>
         get() = _firstPageRecommendation
 
     private val _morePageRecommendation = MutableLiveData<Result<List<RecommendationItem>>>()
@@ -80,7 +76,8 @@ class UniversalInboxViewModel @Inject constructor(
                 icon = IconUnify.STAR,
                 counter = 99
             ),
-            UniversalInboxMenuSeparatorUiModel()
+            UniversalInboxMenuSeparatorUiModel(),
+            UniversalInboxTopAdsBannerUiModel()
         )
     }
 
@@ -89,9 +86,7 @@ class UniversalInboxViewModel @Inject constructor(
             withContext(dispatcher.io) {
                 try {
                     val recommendationWidget = getRecommendationList(Int.ONE)
-                    val topAdsBanner = getTopAdsBannerData()
-                    val data = UniversalInboxRecommendationWithTDN(recommendationWidget, topAdsBanner)
-                    _firstPageRecommendation.postValue(Success(data))
+                    _firstPageRecommendation.postValue(Success(recommendationWidget))
                 } catch (throwable: Throwable) {
                     _firstPageRecommendation.postValue(Fail(throwable))
                 }
@@ -109,24 +104,6 @@ class UniversalInboxViewModel @Inject constructor(
                     _morePageRecommendation.postValue(Fail(throwable))
                 }
             }
-        }
-    }
-
-    private suspend fun getTopAdsBannerData(): List<TopAdsImageViewModel> {
-        return try {
-            topAdsImageViewUseCase.getImageData(
-                topAdsImageViewUseCase.getQueryMap( // TODO: dummy param from notif
-                    "",
-                    NotificationViewModel.TOP_ADS_SOURCE,
-                    "",
-                    NotificationViewModel.TOP_ADS_COUNT,
-                    NotificationViewModel.TOP_ADS_DIMEN_ID,
-                    ""
-                )
-            )
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            listOf()
         }
     }
 

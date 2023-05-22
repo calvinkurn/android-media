@@ -4,7 +4,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class UniversalInboxTopAdsBannerUiModel constructor(
-    var ads: List<TopAdsImageViewModel>? = null
+    var ads: List<TopAdsImageViewModel>? = null,
+    var requested: Boolean = false
 ) {
     val impressHolder: ImpressHolder = ImpressHolder()
 

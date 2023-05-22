@@ -9,8 +9,10 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 
@@ -33,6 +35,7 @@ class UniversalInboxAdapter(
     }
 
     private var recommendationViewType: Int? = null
+    private var recommendationFirstPosition: Int? = null
 
     fun getProductRecommendationViewType(): Int? {
         if (recommendationViewType != null) {
@@ -48,7 +51,38 @@ class UniversalInboxAdapter(
         }
     }
 
+    fun getProductRecommendationFirstPosition(): Int? {
+        if (recommendationFirstPosition != null) {
+            return recommendationFirstPosition
+        } else {
+            itemList.forEachIndexed { index, item ->
+                if (item is RecommendationItem) {
+                    recommendationFirstPosition = index
+                    return recommendationFirstPosition
+                }
+            }
+            return null
+        }
+    }
+
     fun isRecommendationLoader(position: Int): Boolean {
         return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
+    }
+
+    fun updateTopAdsBanner(topAdsImageViewModel: List<TopAdsImageViewModel>) {
+        getTopAdsBannerPositionPair()?.let { (index, item) ->
+            item.ads = topAdsImageViewModel
+            notifyItemChanged(index)
+        }
+    }
+
+    private fun getTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
+        itemList.forEachIndexed { index, item ->
+            if (item is UniversalInboxTopAdsBannerUiModel) {
+                return Pair(index, item)
+
+            }
+        }
+        return null
     }
 }
