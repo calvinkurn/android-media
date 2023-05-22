@@ -12,6 +12,7 @@ internal object QueryListTokopoints {
             "        offFlag\n" +
             "        drawerList{" +
             "           type\n" +
+            "           label\n" +
             "           iconImageURL\n" +
             "           redirectURL\n" +
             "           redirectAppLink\n" +
