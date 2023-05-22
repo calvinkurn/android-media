@@ -89,8 +89,14 @@ class FeedTaggedProductBottomSheetItemView(
         if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Ongoing) {
             binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
             binding.pbStock.progressBarColor = intArrayOf(
-                ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-                ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color
+                ),
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color
+                )
             )
             binding.tvStock.text = campaign.status.stockLabel
             binding.llStockContainer.show()
@@ -116,6 +122,7 @@ class FeedTaggedProductBottomSheetItemView(
             view: FeedTaggedProductBottomSheetItemView,
             product: FeedTaggedProductUiModel
         )
+
         fun onBuyProductButtonClicked(
             view: FeedTaggedProductBottomSheetItemView,
             product: FeedTaggedProductUiModel

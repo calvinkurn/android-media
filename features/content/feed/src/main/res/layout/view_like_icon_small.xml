@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:background="@color/black">
+    >
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"

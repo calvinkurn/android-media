@@ -46,7 +46,8 @@ data class FeedTaggedProductUiModel(
 
     data class Campaign(
         val type: CampaignType,
-        val status: CampaignStatus
+        val status: CampaignStatus,
+        val isExclusiveForMember: Boolean
     ) {
         val isUpcoming: Boolean get() {
             return status is CampaignStatus.Upcoming

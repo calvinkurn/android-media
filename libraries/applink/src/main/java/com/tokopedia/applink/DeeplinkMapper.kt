@@ -15,6 +15,7 @@ import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.common.DeeplinkMapperExternal
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.contactus.DeeplinkMapperContactUs.getNavigationContactUs
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
@@ -98,8 +99,8 @@ import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNav
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.tokopedia_applink_annotation.host.HostMatcher
 import com.tokopedia.tokopedia_applink_annotation.exact.ExactMatcher
+import com.tokopedia.tokopedia_applink_annotation.host.HostMatcher
 import com.tokopedia.tokopedia_applink_annotation.match.MatchPatternMatcher
 import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
 
@@ -385,6 +386,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationRecommendation(deeplink) },
         DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
         DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
+        DLP.startWith(ApplinkConst.CONTACT_US) { _, _, deeplink, _ -> getNavigationContactUs(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
         DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
         DLP.startWith(ApplinkConst.CATALOG_LIBRARY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
@@ -535,6 +537,7 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.SELLER_CUSTOM_PRODUCT_LOGISTIC, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC),
         DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
         DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
+        DLP.exact(ApplinkConst.SELLER_SHOP_OPERATIONAL, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS),
         DLP.exact(ApplinkConst.SETTING_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS),
         DLP.exact(ApplinkConst.SETTING_PAYMENT, ApplinkConstInternalUserPlatform.PAYMENT_SETTING),
         DLP.exact(ApplinkConst.SETTING_ACCOUNT, ApplinkConstInternalUserPlatform.ACCOUNT_SETTING),
@@ -789,6 +792,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
             ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
             ApplinkConst.SellerApp.SELLER_PERSONA -> ApplinkConstInternalSellerapp.SELLER_PERSONA
+            ApplinkConst.SellerApp.SELLER_SHOP_HOUR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
             else -> when {
                 DeepLinkMapperProductManage.isStockReminderPattern(deeplink) -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(deeplink)
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)

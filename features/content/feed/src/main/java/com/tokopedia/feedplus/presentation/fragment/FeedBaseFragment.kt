@@ -47,6 +47,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.unifycomponents.Toaster
@@ -124,7 +125,7 @@ class FeedBaseFragment :
     private var appLinkTabPosition: Int
         get() = arguments?.getString(
             ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
-        )?.toInt() ?: TAB_FIRST_INDEX
+        )?.toIntOrZero() ?: TAB_FIRST_INDEX
         set(value) {
             val arguments = getOrCreateArguments()
             arguments.putString(
@@ -355,7 +356,7 @@ class FeedBaseFragment :
 
     private fun observeFeedTabData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.feedTabs.collectLatest {
                     when (it) {
                         is Success -> initTabsView(it.data)
@@ -371,7 +372,7 @@ class FeedBaseFragment :
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.metaData.collectLatest {
                     when (it) {
                         is Success -> initMetaView(it.data)
@@ -410,7 +411,7 @@ class FeedBaseFragment :
 
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.uiEvent.collect { event ->
                     if (event == null) return@collect
 

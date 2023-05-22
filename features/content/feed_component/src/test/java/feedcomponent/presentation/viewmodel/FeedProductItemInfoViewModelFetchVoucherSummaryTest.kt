@@ -1,6 +1,7 @@
 package feedcomponent.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.unit.test.ext.getOrAwaitValue
@@ -32,6 +33,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
+    private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
 
     private lateinit var mvcSummaryUseCase: MVCSummaryUseCase
     private lateinit var viewModel: FeedProductItemInfoViewModel
@@ -42,7 +44,11 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
         MockKAnnotations.init(this)
         mvcSummaryUseCase = mockk(relaxed = true)
         viewModel =
-            FeedProductItemInfoViewModel(mvcSummaryUseCase, testDispatcher)
+            FeedProductItemInfoViewModel(
+                mvcSummaryUseCase,
+                feedXGetActivityProductsUseCase,
+                testDispatcher
+            )
     }
 
     @After
@@ -102,7 +108,8 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
     @Test
     fun `given fetch mvc response, it is fail with resultStatus not 200 and message null`() {
-        val expectedResult = builder.getMVCResponseSuccessWithResponseNot200(data = builder.buildTokopointsCatalogMVCSummaryWithResponseNotResponseAndMsgNull())
+        val expectedResult =
+            builder.getMVCResponseSuccessWithResponseNot200(data = builder.buildTokopointsCatalogMVCSummaryWithResponseNotResponseAndMsgNull())
 
         coEvery { mvcSummaryUseCase.getResponse(any()) } returns expectedResult
 
@@ -117,7 +124,8 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
     @Test
     fun `given fetch mvc response, it is fail with resultStatus not 200 and resultStatus null`() {
-        val expectedResult = builder.getMVCResponseSuccessWithResponseNot200(data = builder.buildTokopointsCatalogMVCSummaryWithResultStatusNull())
+        val expectedResult =
+            builder.getMVCResponseSuccessWithResponseNot200(data = builder.buildTokopointsCatalogMVCSummaryWithResultStatusNull())
 
         coEvery { mvcSummaryUseCase.getResponse(any()) } returns expectedResult
 

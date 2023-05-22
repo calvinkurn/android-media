@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.common.domain.usecase.cache
 
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -30,12 +31,11 @@ class DeleteMediaPostCacheUseCase @Inject constructor(
 
             cacheList.forEach {
                 val file = File(it)
-                if(file.exists())
+                if (file.exists())
                     file.delete()
             }
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }

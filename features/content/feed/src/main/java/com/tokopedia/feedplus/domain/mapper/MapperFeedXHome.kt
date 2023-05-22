@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_LONG_VIDEO
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
@@ -356,13 +355,14 @@ object MapperFeedHome {
         value = score.value
     )
 
-    private fun isImagesPost(card: FeedXCard) =
-        (
+    private fun isImagesPost(card: FeedXCard): Boolean {
+        return (
             (card.typename == TYPE_FEED_X_CARD_POST) ||
                 (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) ||
                 isTopAdsPost(card)
             ) &&
-            card.media.none { it.type == TYPE_FEED_LONG_VIDEO }
+            card.media.none { it.type.contains(TYPE_MEDIA_VIDEO) }
+    }
 
     private fun isVideoPost(card: FeedXCard): Boolean {
         val isVideo = card.media.isNotEmpty() && card.media.first().type.contains(TYPE_MEDIA_VIDEO)

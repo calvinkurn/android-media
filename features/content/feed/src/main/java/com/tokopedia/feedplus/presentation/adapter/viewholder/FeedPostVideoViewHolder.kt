@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.LayoutRes
@@ -39,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 /**
  * Created By : Muhammad Furqan on 09/03/23
  */
+@SuppressLint("ClickableViewAccessibility")
 class FeedPostVideoViewHolder(
     private val binding: ItemFeedPostVideoBinding,
     private val listener: FeedListener,

@@ -11,8 +11,7 @@ open class DefaultAnimatorListener : Animator.AnimatorListener {
 
     open fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {}
 
-    override fun onAnimationStart(animation: Animator) {
-    }
+    override fun onAnimationStart(animation: Animator) {}
 
     override fun onAnimationEnd(animation: Animator) {
         onAnimationEnd(isCancelled, animation)
@@ -23,6 +22,5 @@ open class DefaultAnimatorListener : Animator.AnimatorListener {
         isCancelled = true
     }
 
-    override fun onAnimationRepeat(animation: Animator) {
-    }
+    override fun onAnimationRepeat(animation: Animator) {}
 }
