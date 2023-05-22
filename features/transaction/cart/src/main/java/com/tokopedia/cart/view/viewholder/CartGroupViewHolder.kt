@@ -116,8 +116,8 @@ class CartGroupViewHolder(
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopId
-            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopName
+            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
+            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
                     shopId,
