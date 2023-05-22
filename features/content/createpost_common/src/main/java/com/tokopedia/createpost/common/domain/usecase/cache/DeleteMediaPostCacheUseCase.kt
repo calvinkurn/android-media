@@ -30,12 +30,9 @@ class DeleteMediaPostCacheUseCase @Inject constructor(
 
             cacheList.forEach {
                 val file = File(it)
-                if(file.exists())
+                if (file.exists())
                     file.delete()
             }
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) {}
     }
 }

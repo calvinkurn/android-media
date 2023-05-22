@@ -862,6 +862,7 @@ class FeedFragment :
                     hideLoading()
                     adapter?.showErrorNetwork()
                 }
+                else -> {}
             }
         }
     }

@@ -64,6 +64,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
@@ -87,8 +88,8 @@ class FeedPostViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _feedHome = MutableLiveData<Result<FeedModel>>()
-    val feedHome: LiveData<Result<FeedModel>>
+    private val _feedHome = MutableLiveData<Result<FeedModel>?>()
+    val feedHome: LiveData<Result<FeedModel>?>
         get() = _feedHome
 
     private val _followResult = MutableLiveData<Result<String>>()
@@ -241,16 +242,14 @@ class FeedPostViewModel @Inject constructor(
                         val newData = it.data.items.map { item ->
                             when {
                                 item is FeedCardImageContentModel && item.campaign.id.equals(
-                                    campaignId.toString(),
-                                    true
+                                    campaignId.toString(), true
                                 ) -> item.copy(
                                     campaign = item.campaign.copy(
                                         isReminderActive = setReminder
                                     )
                                 )
                                 item is FeedCardVideoContentModel && item.campaign.id.equals(
-                                    campaignId.toString(),
-                                    true
+                                    campaignId.toString(), true
                                 ) -> item.copy(
                                     campaign = item.campaign.copy(
                                         isReminderActive = setReminder
@@ -269,8 +268,7 @@ class FeedPostViewModel @Inject constructor(
                 }
                 _reminderResult.value = Success(
                     FeedReminderResultModel(
-                        isSetReminder = setReminder,
-                        reminderType = type
+                        isSetReminder = setReminder, reminderType = type
                     )
                 )
             } catch (e: Throwable) {
@@ -283,9 +281,7 @@ class FeedPostViewModel @Inject constructor(
         return when (it) {
             is Success -> {
                 val filteredData = it.data.items.firstOrNull { item ->
-                    (item is FeedCardImageContentModel && item.id == id) ||
-                        (item is FeedCardVideoContentModel && item.id == id) ||
-                        (item is FeedCardLivePreviewContentModel && item.id == id)
+                    (item is FeedCardImageContentModel && item.id == id) || (item is FeedCardVideoContentModel && item.id == id) || (item is FeedCardLivePreviewContentModel && item.id == id)
                 }
                 return filteredData?.let { item ->
                     when {
@@ -315,10 +311,9 @@ class FeedPostViewModel @Inject constructor(
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
                                     topAdsHeadlineUseCase.setParams(
-                                        UrlParamHelper.generateUrlParamString(
-                                            defaultTopAdsUrlParams.apply {
-                                                put(PARAM_PAGE, ++currentTopAdsPage)
-                                            }), topAdsAddressData
+                                        UrlParamHelper.generateUrlParamString(defaultTopAdsUrlParams.apply {
+                                            put(PARAM_PAGE, ++currentTopAdsPage)
+                                        }), topAdsAddressData
                                     )
                                     val data = topAdsHeadlineUseCase.executeOnBackground()
                                     if (data.displayAds.data.isNotEmpty()) {
@@ -505,7 +500,8 @@ class FeedPostViewModel @Inject constructor(
                     }
 
                 }
-            } catch (_: Throwable) {
+            } catch (t: Throwable) {
+                Timber.e(t)
             }
         }
     }
@@ -531,6 +527,7 @@ class FeedPostViewModel @Inject constructor(
             checkCampaignReminderUseCase.createParams(campaignId)
         ).isAvailable
     } catch (e: Throwable) {
+        Timber.e(e)
         false
     }
 
