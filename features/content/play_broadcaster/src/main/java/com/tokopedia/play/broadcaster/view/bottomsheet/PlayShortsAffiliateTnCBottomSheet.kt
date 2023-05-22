@@ -112,16 +112,13 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         binding.btnContinue.setOnClickListener {
             if (binding.btnContinue.isLoading) return@setOnClickListener
             if (it.isEnabled) {
+                updateButtonState(true)
                 mListener?.onSubmitTnc()
             }
         }
     }
 
-    fun dismissed() {
-        dismiss()
-    }
-
-    fun updateButtonState(isLoading: Boolean) {
+    private fun updateButtonState(isLoading: Boolean) {
         binding.btnContinue.isLoading = isLoading
         binding.btnContinue.isClickable = !isLoading
     }
@@ -135,6 +132,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     fun showErrorToast(throwable: Throwable) {
+        updateButtonState(false)
         toaster.showError(
             throwable,
             duration = Toaster.LENGTH_INDEFINITE,
