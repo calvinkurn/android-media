@@ -24,7 +24,7 @@ data class DataEligibility(
 
 data class ShipperServiceError(
     @SerializedName("id")
-    var id: Int = 0,
+    var id: Long = 0,
     @SerializedName("detail")
     var detail: String = ""
 )
