@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dilayanitokopedia.R
+import com.tokopedia.dilayanitokopedia.data.analytics.DtHomepageAnalytics
 import com.tokopedia.dilayanitokopedia.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeRecommendationFeedViewHolder
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeFeedEndlessScrollListener
@@ -185,7 +186,7 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
     private fun provideListener(): HomeRecommendationListener {
         return object : HomeRecommendationListener {
             override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
-                // no-op
+                DtHomepageAnalytics.sendImpressionProductCardsDtEvent()
             }
 
             override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {

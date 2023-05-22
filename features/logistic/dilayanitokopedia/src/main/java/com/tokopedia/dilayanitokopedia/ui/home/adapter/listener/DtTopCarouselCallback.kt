@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter.listener
 
+import com.tokopedia.dilayanitokopedia.data.analytics.DtHomepageAnalytics
 import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -37,7 +38,7 @@ class DtTopCarouselCallback {
                 adapterPosition: Int,
                 position: Int
             ) {
-                // no-op
+                DtHomepageAnalytics.sendImpressionProductCardsDtEvent()
             }
 
             override fun onProductCardClicked(
@@ -48,6 +49,7 @@ class DtTopCarouselCallback {
                 applink: String
             ) {
                 onActionLinkClicked(channelGrid.applink)
+                DtHomepageAnalytics.sendClickProductCardsDtEvent()
             }
 
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
