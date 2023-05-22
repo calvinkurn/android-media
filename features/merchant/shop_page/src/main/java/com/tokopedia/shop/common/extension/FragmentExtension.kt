@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.extension
 
+import android.content.res.Configuration
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -21,5 +22,14 @@ fun Fragment.showToaster(view: View, message: String) {
     Toaster.build(view.rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).apply {
         anchorView = view
         show()
+    }
+}
+
+fun Fragment.isOnDarkMode(): Boolean {
+    return when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        Configuration.UI_MODE_NIGHT_NO -> false
+        Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+        else -> false
     }
 }

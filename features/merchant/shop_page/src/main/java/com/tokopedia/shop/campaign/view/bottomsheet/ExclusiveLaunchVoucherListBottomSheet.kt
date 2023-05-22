@@ -21,6 +21,7 @@ import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
+import com.tokopedia.shop.common.extension.isOnDarkMode
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
@@ -146,7 +147,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         }
 
         exclusiveLaunchAdapter.apply {
-            setUseDarkBackground(useDarkBackground)
+            setUseDarkBackground(determineBackground())
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated) {
@@ -235,4 +236,13 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     }
 
 
+    private fun determineBackground(): Boolean {
+        val isDeviceDarkModeActive = isOnDarkMode()
+
+        return if (isDeviceDarkModeActive) {
+            true //Always use dark background for the voucher if device using dark mode
+        } else {
+            useDarkBackground
+        }
+    }
 }
