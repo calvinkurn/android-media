@@ -1,6 +1,5 @@
 ---
 title: Shipping Editor
-labels:
 ---
 
 <!--left header table-->

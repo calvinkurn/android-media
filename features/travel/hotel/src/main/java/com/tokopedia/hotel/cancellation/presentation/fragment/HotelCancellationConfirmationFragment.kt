@@ -127,25 +127,27 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
 
 
     private fun initView(cancellationSubmitModel: HotelCancellationSubmitModel) {
-        binding?.hotelCancellationConfirmationTitle?.text = cancellationSubmitModel.title
-        binding?.hotelCancellationConfirmationSubtitle?.text = cancellationSubmitModel.desc
+        context?.let { context ->
+            binding?.hotelCancellationConfirmationTitle?.text = cancellationSubmitModel.title
+            binding?.hotelCancellationConfirmationSubtitle?.text = cancellationSubmitModel.desc
 
-        binding?.hotelCancellationConfirmationButtonLayout?.removeAllViews()
-        for (button in cancellationSubmitModel.actionButton) {
-            binding?.hotelCancellationConfirmationButtonLayout?.addView(getButtonFromType(button))
+            binding?.hotelCancellationConfirmationButtonLayout?.removeAllViews()
+            for (button in cancellationSubmitModel.actionButton) {
+                binding?.hotelCancellationConfirmationButtonLayout?.addView(getButtonFromType(button))
+            }
+
+            if (cancellationSubmitModel.success) {
+                (activity as HotelCancellationConfirmationActivity).setPageTitle(context.resources.getString(R.string.hotel_cancellation_success))
+            } else {
+                if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
+                else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+                (activity as HotelCancellationConfirmationActivity).setPageTitle(context.resources.getString(R.string.hotel_cancellation_failed))
+            }
+
+            val status = if (cancellationSubmitModel.success) context.resources.getString(R.string.hotel_cancellation_success_status) else
+                context.resources.getString(R.string.hotel_cancellation_fail_status)
+            trackingHotelUtil.viewCancellationStatus(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount, status, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
         }
-
-        if (cancellationSubmitModel.success) {
-            (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
-        } else {
-            if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
-            else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
-            (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
-        }
-
-        val status = if (cancellationSubmitModel.success) getString(R.string.hotel_cancellation_success_status) else
-            getString(R.string.hotel_cancellation_fail_status)
-        trackingHotelUtil.viewCancellationStatus(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount, status, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
     }
 
     private fun getButtonFromType(actionButton: HotelCancellationSubmitModel.ActionButton): UnifyButton {

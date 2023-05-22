@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import com.tokopedia.common_compose.components.ButtonSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -178,8 +179,9 @@ private fun ReschedulePickupScreenLayout(
             modifier = Modifier
                 .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
+            size = ButtonSize.LARGE,
             text = stringResource(id = R.string.title_button_reschedule_pickup),
-            enabled = state.valid
+            isEnabled = state.valid
         ) {
             onEvent(ReschedulePickupUiEvent.SaveReschedule)
         }
