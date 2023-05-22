@@ -49,6 +49,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
+            channelView.setModel(data.channel, invalidate = false)
             payloads.forEach {
                 when (it) {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_MUTE_CHANGE -> {

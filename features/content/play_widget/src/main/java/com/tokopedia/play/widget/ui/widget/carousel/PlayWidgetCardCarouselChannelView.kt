@@ -89,6 +89,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
                 player.shouldCache = !mModel.video.isLive
+                player.mute(mModel.isMuted)
                 player.start()
             }
             player.listener = playerListener
@@ -104,9 +105,12 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mModel.channelType == PlayWidgetChannelType.Vod
     }
 
-    fun setModel(model: PlayWidgetChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
         this.mModel = model
+        if (invalidate) invalidateUi(model)
+    }
 
+    private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvLiveBadge.showWithCondition(model.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = model.totalView.totalViewFmt
         binding.viewPlayWidgetCaption.root.text = model.title
@@ -151,6 +155,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             if (animate) binding.viewPlayWidgetActionButton.root.playAnimation()
             else binding.viewPlayWidgetActionButton.root.progress = 1f
         }
+
+        mPlayer?.mute(shouldMuted)
 
         binding.viewPlayWidgetActionButton.root.setOnClickListener {
             mListener?.onMuteButtonClicked(

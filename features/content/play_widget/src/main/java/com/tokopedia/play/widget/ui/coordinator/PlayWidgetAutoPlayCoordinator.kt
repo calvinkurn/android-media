@@ -171,6 +171,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     private fun clearPlayerEntry(entry: MutableMap.MutableEntry<PlayVideoPlayer, PlayVideoPlayerReceiver?>) {
+        entry.key.mute(true)
         entry.key.stop()
         entry.key.listener = null
         entry.value?.setPlayer(null)

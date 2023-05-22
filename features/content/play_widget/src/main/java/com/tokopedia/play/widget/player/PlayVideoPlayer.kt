@@ -75,6 +75,10 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
         exoPlayer.prepare(mediaSource,true, false)
     }
 
+    fun mute(shouldMute: Boolean) {
+        exoPlayer.volume = if (shouldMute) 0f else 100f
+    }
+
     fun stop() {
         autoStopTimer?.cancel()
         exoPlayer.stop()
