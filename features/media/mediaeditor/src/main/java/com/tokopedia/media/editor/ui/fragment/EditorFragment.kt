@@ -31,6 +31,7 @@ import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
+import com.tokopedia.picker.common.EDITOR_ADD_TEXT_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -349,11 +350,26 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            val isAddLogoEnable =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
+            var isAddLogoEnable = false
+            var isAddTextEnable = false
+
+            RemoteConfigInstance.getInstance().abTestPlatform.let { remoteConfig ->
+                isAddLogoEnable = remoteConfig.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
+                isAddTextEnable = remoteConfig.getString(EDITOR_ADD_TEXT_TOOL) == EDITOR_ADD_TEXT_TOOL
+            }
+
+            // show/hide add logo base on rollence
             if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
+            // show/hide add text base on rollence
+            if (!isAddTextEnable) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
                     remove(removeIndex)
                 }
             }
