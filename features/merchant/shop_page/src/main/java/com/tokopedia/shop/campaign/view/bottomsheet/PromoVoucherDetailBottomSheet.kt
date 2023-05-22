@@ -133,8 +133,10 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                     displayVoucherDetail(result.data)
                     binding?.loader?.gone()
                     binding?.card?.visible()
+                    binding?.content?.visible()
                 }
                 is Fail -> {
+                    binding?.content?.gone()
                     binding?.loader?.gone()
                     binding?.card?.gone()
                     showToasterError(binding?.root ?: return@observe, result.throwable)
