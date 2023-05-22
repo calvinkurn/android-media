@@ -474,24 +474,25 @@ open class ShopPageHomeFragment :
     }
 
     private fun showVoucherListBottomsheet() {
-        val bottomsheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            useDarkBackground = true,
+        //TODO: Replace with real category slugs from backend
+        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            useDarkBackground = false,
             promoVouchersCategorySlugs = listOf(
                 "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",
                 "MEGAEL8MAY", "ELCPC523", "MEGAEL1JTMAY",
                 "MEGAEL150MAY"
             )
         )
-        bottomsheet.setOnVoucherClaimSuccess {
-            //Update voucher widget claim status text to "Diklaim"
+        bottomSheet.setOnVoucherClaimSuccess {
+            //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
         }
-        bottomsheet.setOnVoucherUseSuccess {
+        bottomSheet.setOnVoucherUseSuccess {
             showToaster(
                 view ?: return@setOnVoucherUseSuccess,
                 context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
             )
         }
-        bottomsheet.show(childFragmentManager, bottomsheet.tag)
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {

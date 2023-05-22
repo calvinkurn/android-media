@@ -47,8 +47,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     }
 
     fun setPrimaryCta(ctaText: String, onClick: () -> Unit) {
-        binding?.tpgClaim?.setOnClickListener { onClick() }
         binding?.tpgClaim?.text = ctaText
+        setOnPrimaryCtaClick(onClick)
     }
 
     fun useDarkBackground() {
