@@ -22,9 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -158,14 +158,17 @@ fun NestCard(
     }
 
     Card(
-        modifier = modifier.padding(16.dp).scale(scale)
-
+        modifier = modifier
+            .padding(16.dp)
+            .scale(scale)
             .pointerInput(Unit) {
-                configGesture(onTouch = onTouch, onClick = {
-                    onClick.invoke()
-                }, onLongPress = {
-                    onLongPress.invoke()
-                })
+                configGesture(
+                    onTouch = onTouch,
+                    onClick = {
+                        onClick.invoke()
+                    }, onLongPress = {
+                        onLongPress.invoke()
+                    })
             },
         border = BorderStroke(
             1.dp, if (enableTransitionAnimation) animateBorderColor.value else borderColor
@@ -212,7 +215,10 @@ private fun BoxCustomRipple(
 
         boxScope.run {
             Spacer(
-                Modifier.matchParentSize().alpha(color.value).background(Color(0xFF525A67))
+                Modifier.matchParentSize().graphicsLayer {
+                    //https://developer.android.com/jetpack/compose/performance/bestpractices#defer-reads
+                    alpha = color.value
+                }.background(Color(0xFF525A67))
             )
         }
     }
