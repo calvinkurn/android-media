@@ -183,7 +183,7 @@
         android:id="@+id/pcv_video"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
