@@ -61,7 +61,8 @@ repositories {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.byteplusEffect
+    implementation files('libs/effectAAR-release-4.4.2.aar')
+//    implementation rootProject.ext.tkpdInternalLibDependencies.byteplusEffect
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
