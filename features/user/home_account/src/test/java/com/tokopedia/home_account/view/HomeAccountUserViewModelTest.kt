@@ -235,7 +235,7 @@ class HomeAccountUserViewModelTest {
             homeAccountRecommendationUseCase.getData(any())
         } returns listOf(recommendationData)
 
-        val expectedResult = RecommendationWidgetWithTDN(recommendationData,null)
+        val expectedResult = RecommendationWidgetWithTDN(recommendationData, null)
 
         viewModel.getFirstRecommendation()
 
@@ -260,10 +260,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -285,10 +285,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data throw error`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -371,7 +371,6 @@ class HomeAccountUserViewModelTest {
 
         assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
     }
-
 
     @Test
     fun `Failed to get first recommendation`() {
@@ -510,7 +509,6 @@ class HomeAccountUserViewModelTest {
         coEvery {
             getSafeModeUseCase(Unit)
         } returns getResponse
-
 
         viewModel.setSafeMode(isActive)
 

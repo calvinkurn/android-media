@@ -2,13 +2,19 @@ package com.tokopedia.kyc_centralized.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
+import com.tokopedia.abstraction.common.di.module.AppModule
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
+import com.tokopedia.kyc_centralized.fakes.FakeAppGraphqlRepository
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
 import com.tokopedia.kyc_centralized.stubKtpCamera
@@ -27,7 +33,9 @@ class KycFlowUiTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoActivity::class.java, false, false
+        UserIdentificationInfoActivity::class.java,
+        false,
+        false
     )
 
     private val testComponent = FakeKycActivityComponentFactory()
@@ -37,6 +45,13 @@ class KycFlowUiTest {
 
     @Before
     fun setup() {
+        val baseAppComponent = DaggerBaseAppComponent.builder()
+            .appModule(object : AppModule(ApplicationProvider.getApplicationContext()) {
+                override fun provideGraphqlRepository(): GraphqlRepository {
+                    return FakeAppGraphqlRepository()
+                }
+            }).build()
+        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseAppComponent)
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -80,7 +95,6 @@ class KycFlowUiTest {
             atFaceIntroClickNext()
             // Liveness is stubbed here
             atFinalPressCta()
-
         } upload {
             shouldShowPendingPage()
             hasCameraIntent()
