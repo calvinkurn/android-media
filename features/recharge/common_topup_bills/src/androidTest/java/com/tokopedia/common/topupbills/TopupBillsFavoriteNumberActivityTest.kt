@@ -63,7 +63,11 @@ class TopupBillsFavoriteNumberActivityTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.userSession {
+            /** content.prod.automation2+frontendtest@tokopedia.com */
+            userId = "17211048"
+            shopId = "3533069"
+        }
         Intents.intending(IsNot.not(IntentMatchers.isInternal()))
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 

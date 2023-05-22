@@ -26,6 +26,8 @@ object Constant {
         const val SHARE = "Share"
         const val CART = "Cart"
         const val GLOBAL_MENU = "Global Menu"
+        const val INBOX = "Inbox"
+        const val NOTIF = "Notif"
     }
 
     object ProductTemplate {
@@ -100,6 +102,12 @@ object Constant {
 
     const val LABEL_FULFILLMENT = "fulfillment"
     const val DISCO_EMPTY_STATE_IMG = "disco_empty_state_img"
+    const val DISCO_PAGE_SOURCE = "discovery_page_source"
+    const val DISCOVERY_APPLINK = "discovery_applink"
+
+    object DiscoveryPageSource {
+        const val HOME = "home"
+    }
 
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"
@@ -113,5 +121,18 @@ object Constant {
     object FullFilterType {
         const val CATEGORY = "category"
         const val ALL_ATTRIBUTES = "all_attributes"
+    }
+
+    const val RESETTING_SELECTED_TAB = -1
+
+    object ProductHighlight{
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val TRIPLE = "triple"
+        const val DOUBLESINGLEEMPTY = "doubleSingleEmpty"
+        const val TRIPLESINGLEEMPTY = "tripleSingleEmpty"
+        const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
+        const val STATUS = "status"
+        const val PROMO = "promo"
     }
 }

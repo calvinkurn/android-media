@@ -13,8 +13,8 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LABEL_
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isDisplayedWithText
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isNotDisplayed
 import com.tokopedia.productcard.compact.productcard.utils.ViewMatchersUtil.isProductNameTypographyDisplayed
@@ -62,7 +62,7 @@ internal object ProductCardCompactProductCardModelMatcherData {
         isSimilarProductShown: Boolean = false,
         isCarousel: Boolean
     ): ProductCardCompactProductCardMatcherModel {
-        val productCardModel = TokoNowProductCardViewUiModel(
+        val productCardModel = ProductCardCompactUiModel(
             imageUrl = PRODUCT_IMAGE_URL,
             minOrder = minOrder,
             maxOrder = maxOrder,

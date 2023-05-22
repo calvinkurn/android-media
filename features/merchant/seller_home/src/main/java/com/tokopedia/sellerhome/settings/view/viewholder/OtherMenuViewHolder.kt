@@ -60,7 +60,6 @@ class OtherMenuViewHolder(
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
     private var listener: Listener,
-    private val isNewSeller: Boolean
 ) : LifecycleObserver {
 
     companion object {
@@ -85,7 +84,7 @@ class OtherMenuViewHolder(
     private var headerShopNameTextView: Typography? = null
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
-    private var shopStatusCurvedThematicBackground: ConstraintLayout? = null
+    private var shopStatusCurvedImage: AppCompatImageView? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -238,6 +237,10 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTopAdsShop(isUsed: Boolean){
+        otherMenuAdapter?.addIklanTopadsMenu(isUsed)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
@@ -249,7 +252,7 @@ class OtherMenuViewHolder(
             headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
-            shopStatusCurvedThematicBackground = findViewById(R.id.iv_sah_new_other_curved_header)
+            shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -448,75 +451,25 @@ class OtherMenuViewHolder(
     }
 
     private fun setShopStatus() {
-        val imageResourceUrl: String
+        val imageResource: Int
         val headerBackgroundResource: Int
-        val leftStarHeaderUrl: String
-        val rightStarHeaderUrl: String = SellerHomeConst.Images.BG_SAH_OTHER_THEMATIC_RIGHT_STAR
 
         when {
             userSession.isShopOfficialStore -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_OS
-                leftStarHeaderUrl = SellerHomeConst.Images.BG_SAH_OTHER_THEMATIC_LEFT_STAR_OS
+                imageResource = R.drawable.bg_sah_new_other_curved_header_os
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
             userSession.isGoldMerchant -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_PM
-                leftStarHeaderUrl = SellerHomeConst.Images.BG_SAH_OTHER_THEMATIC_LEFT_STAR_PM
+                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
             else -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_BASE_SAH_OTHER_CURVED_HEADER_THEMATIC_RM
-                leftStarHeaderUrl = SellerHomeConst.Images.BG_SAH_OTHER_THEMATIC_LEFT_STAR_RM
+                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }
 
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.bgBaseSahOther)?.run {
-            show()
-            loadImage(imageResourceUrl)
-        }
-
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherRightStar)?.run {
-            loadImage(rightStarHeaderUrl) {
-                listener(onSuccess = { _, _ ->
-                    show()
-                    requestLayout()
-                })
-            }
-        }
-
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherLeftStar)?.run {
-            loadImage(leftStarHeaderUrl) {
-                listener(onSuccess = { _, _ ->
-                    show()
-                    requestLayout()
-                })
-            }
-        }
-
-        otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
-    }
-
-    private fun setShopStatusNewSellerBackground() {
-        val (imageResourceId, headerBackgroundResource) = when {
-            userSession.isShopOfficialStore -> {
-                Pair(R.drawable.bg_sah_new_other_curved_header_os, R.drawable.bg_sah_new_other_header_os)
-            }
-            userSession.isGoldMerchant -> {
-                Pair(R.drawable.bg_sah_new_other_curved_header_pm, R.drawable.bg_sah_new_other_header_pm)
-            }
-            else -> {
-                Pair(R.drawable.bg_sah_new_other_curved_header_rm, R.drawable.bg_sah_new_other_header_rm)
-            }
-        }
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.bgBaseSahOther)?.run {
-            show()
-            setImageResource(imageResourceId)
-        }
-
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherRightStar)?.hide()
-
-        shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherLeftStar)?.hide()
+        shopStatusCurvedImage?.setImageResource(imageResource)
 
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
@@ -530,11 +483,7 @@ class OtherMenuViewHolder(
     private fun setHeaderValues() {
         setShopAvatar()
         setShopName()
-        if (isNewSeller) {
-            setShopStatusNewSellerBackground()
-        } else {
-            setShopStatus()
-        }
+        setShopStatus()
     }
 
     private fun setInitialBalanceInfoLoading() {

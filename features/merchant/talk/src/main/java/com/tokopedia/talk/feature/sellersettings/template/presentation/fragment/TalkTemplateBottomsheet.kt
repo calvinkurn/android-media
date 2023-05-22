@@ -77,9 +77,9 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     override fun getComponent(): TalkTemplateComponent? {
         return activity?.run {
             DaggerTalkTemplateComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -103,26 +103,32 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     }
 
     private fun observeTemplateMutation() {
-        viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                TalkTemplateMutationResults.DeleteTemplate -> {
-                    talkTemplateBottomSheetListener?.onSuccessUpdateTemplate(getString(R.string.template_list_success_delete_template))
-                    this.dismiss()
-                }
-                TalkTemplateMutationResults.TemplateMutationSuccess -> {
-                    talkTemplateBottomSheetListener?.onSuccessUpdateTemplate(getString(R.string.template_list_success_add_template))
-                    this.dismiss()
-                }
-                is TalkTemplateMutationResults.DeleteTemplateFailed -> {
-                    logException(it.throwable)
-                    showToaster(getString(R.string.template_delete_toaster_fail), TOASTER_ERROR_HEIGHT)
-                }
-                is TalkTemplateMutationResults.MutationFailed -> {
-                    logException(it.throwable)
-                    showToaster(getString(R.string.template_list_toaster_fail), TOASTER_ERROR_HEIGHT)
+        viewModel.templateMutation.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    TalkTemplateMutationResults.DeleteTemplate -> {
+                        talkTemplateBottomSheetListener?.onSuccessUpdateTemplate(getString(R.string.template_list_success_delete_template))
+                        this.dismiss()
+                    }
+                    TalkTemplateMutationResults.TemplateMutationSuccess -> {
+                        talkTemplateBottomSheetListener?.onSuccessUpdateTemplate(getString(R.string.template_list_success_add_template))
+                        this.dismiss()
+                    }
+                    is TalkTemplateMutationResults.DeleteTemplateFailed -> {
+                        logException(it.throwable)
+                        showToaster(getString(R.string.template_delete_toaster_fail), TOASTER_ERROR_HEIGHT)
+                    }
+                    is TalkTemplateMutationResults.MutationFailed -> {
+                        logException(it.throwable)
+                        showToaster(getString(R.string.template_list_toaster_fail), TOASTER_ERROR_HEIGHT)
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun showToaster(successMessage: String, customHeight: Int) {
@@ -133,7 +139,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private fun initButton(view: View) {
         talkEditTemplateSaveButton = view.findViewById(R.id.talkEditTemplateSaveButton)
         talkEditTemplateSaveButton?.setOnClickListener {
-            if(!isEditMode) {
+            if (!isEditMode) {
                 TalkTemplateTracking.eventClickAddTemplateInBottomSheet(getShopId(), getUserId())
             }
             saveTemplate()
@@ -193,7 +199,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 requestFocus()
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-                        if(s?.length == TEXT_LIMIT) {
+                        if (s?.length == TEXT_LIMIT) {
                             showToaster(getString(R.string.template_list_add_edit_template_limit), TOASTER_ERROR_LIMIT_HEIGHT)
                         }
                     }

@@ -100,4 +100,7 @@ data class Properties(
         @SerializedName("full_filter_type")
         var fullFilterType: String? = "",
 
+        @SerializedName("supergraphic_image_url")
+        val supergraphicImageUrl: String? = "",
+
 )

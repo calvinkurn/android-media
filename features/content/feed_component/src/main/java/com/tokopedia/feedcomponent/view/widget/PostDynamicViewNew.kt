@@ -1239,7 +1239,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         showVideoLoading()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideVideoLoading()
                         timer_view?.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND

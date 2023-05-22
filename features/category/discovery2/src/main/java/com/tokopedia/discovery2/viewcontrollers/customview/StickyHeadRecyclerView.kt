@@ -16,11 +16,11 @@ import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 
 class StickyHeadRecyclerView : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context?, attrSet: AttributeSet) : super(context, attrSet)
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
 
-    constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
+    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
     private val headerRecyclerView: FrameLayout
     private val recyclerView: RecyclerView

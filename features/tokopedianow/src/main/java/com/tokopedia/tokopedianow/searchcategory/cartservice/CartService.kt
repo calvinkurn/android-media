@@ -125,7 +125,7 @@ open class CartService @Inject constructor (
         updateCartUseCase.execute(onSuccess, onError)
     }
 
-    private fun getMiniCartItem(productId: String)
+    fun getMiniCartItem(productId: String)
         = allMiniCartItemList?.getMiniCartItemProduct(productId)
 
     private fun deleteCart(

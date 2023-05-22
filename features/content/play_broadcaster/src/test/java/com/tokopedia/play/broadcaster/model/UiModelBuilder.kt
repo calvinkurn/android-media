@@ -10,13 +10,20 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
-import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -100,6 +107,7 @@ class UiModelBuilder {
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
         shortVideoAllowed: Boolean = false,
+        hasContent: Boolean = false,
         channelId: String = "",
         channelStatus: ChannelStatus = ChannelStatus.Draft,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -119,6 +127,7 @@ class UiModelBuilder {
         countDown = countDown,
         scheduleConfig = scheduleConfig,
         tnc = tnc,
+        hasContent = hasContent,
     )
 
     fun buildDurationConfigUiModel(
@@ -300,6 +309,7 @@ class UiModelBuilder {
     fun buildShortsConfig(
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
+        hasContent: Boolean = true,
         isBanned: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
@@ -313,5 +323,6 @@ class UiModelBuilder {
         maxTitleCharacter = maxTitleCharacter,
         maxTaggedProduct = maxTaggedProduct,
         shortsVideoSourceId = shortsVideoSourceId,
+        hasContent = hasContent,
     )
 }
