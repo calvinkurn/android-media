@@ -8,6 +8,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
@@ -75,7 +76,13 @@ object PlayWidgetUiMock {
         totalView = PlayWidgetTotalView("33.1 rb", true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
-        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", PartnerType.Shop),
+        partner = PlayWidgetPartnerUiModel(
+            "11232713",
+            "Tokopedia Play",
+            PartnerType.Shop,
+            "",
+            null,
+        ),
         video = getVideoUiModel(channelType),
         hasAction = true,
         shouldShowPerformanceDashboard = false,

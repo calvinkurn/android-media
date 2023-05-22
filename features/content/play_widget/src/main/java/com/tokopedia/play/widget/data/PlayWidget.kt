@@ -31,7 +31,8 @@ data class PlayWidgetItem(
         @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
         @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
         @SerializedName("backgroundURL") val backgroundUrl : String = "",
-        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = ""
+        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = "",
+        @SerializedName("pinnedProducts") val products: List<PlayWidgetItemProduct> = emptyList(),
 )
 
 data class PlayWidgetItemConfig(
@@ -96,4 +97,12 @@ data class PlayWidgetMeta(
     @SerializedName("template") val template: String = "",
     @SerializedName("isButtonVisible") val isButtonVisible: Boolean = true,
     @SerializedName("businessWidgetPosition") val businessWidgetPosition: Int = 0
+)
+
+data class PlayWidgetItemProduct(
+    @SerializedName("id") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("image_url") val imageUrl: String = "",
+    @SerializedName("price_fmt") val priceFmt: String = "",
+    @SerializedName("app_link") val appLink: String = "",
 )

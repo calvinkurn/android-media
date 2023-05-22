@@ -8,6 +8,8 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselChannelBinding
@@ -115,8 +117,16 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.tvLiveBadge.showWithCondition(model.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = model.totalView.totalViewFmt
         binding.viewPlayWidgetCaption.root.text = model.title
-        binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.imgCover.setImageUrl(model.video.coverUrl)
+
+        binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
+        binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
+        if (model.partner.badgeUrl.isNullOrBlank()) {
+            binding.viewPlayWidgetPartnerInfo.imgBadge.hide()
+        } else {
+            binding.viewPlayWidgetPartnerInfo.imgBadge.setImageUrl(model.partner.badgeUrl)
+            binding.viewPlayWidgetPartnerInfo.imgBadge.show()
+        }
 
         adapter.submitList(model.products)
 

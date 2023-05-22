@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.mapper
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemPartner
+import com.tokopedia.play.widget.data.PlayWidgetItemProduct
 import com.tokopedia.play.widget.data.PlayWidgetItemShare
 import com.tokopedia.play.widget.data.PlayWidgetItemVideo
 import com.tokopedia.play.widget.data.PlayWidgetPromoLabel
@@ -18,6 +19,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -115,7 +117,7 @@ class PlayWidgetUiMapper @Inject constructor(
                 partnerId = item.partner.id,
             ),
             channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = widgetType),
-            products = emptyList(), //TODO()
+            products = mapProducts(item.products),
         )
     }
 
@@ -144,7 +146,19 @@ class PlayWidgetUiMapper @Inject constructor(
         id = partner.id,
         name = htmlTextTransformer.transform(partner.name),
         type = PartnerType.getTypeByValue(partner.type),
+        avatarUrl = "",
+        badgeUrl = null,
     )
+
+    private fun mapProducts(products: List<PlayWidgetItemProduct>) = products.map {
+        PlayWidgetProduct(
+            id = it.id,
+            name = it.name,
+            imageUrl = it.imageUrl,
+            appLink = it.appLink,
+            priceFmt = it.priceFmt,
+        )
+    }
 
     private fun mapShare(item: PlayWidgetItemShare): PlayWidgetShareUiModel {
         val fullShareContent = try {
