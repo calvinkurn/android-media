@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.size
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -42,14 +41,12 @@ class LottieBottomNav : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int =
-        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    private var buttonContainerBackgroundColor: Int = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int =
-        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+    private var buttonColor: Int = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
     private var activeButtonColor: Int = Color.TRANSPARENT
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
@@ -102,10 +99,7 @@ class LottieBottomNav : LinearLayout {
         val itemWidthSize = containerWidth / menu.size
         val badgeRightMargin = itemWidthSize / 4
 
-        badgeLayoutParam = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        )
+        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
             Int.ZERO,
@@ -116,8 +110,7 @@ class LottieBottomNav : LinearLayout {
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
             resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp),
-            resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp)
-        )
+            resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
             Int.ZERO,
@@ -151,20 +144,11 @@ class LottieBottomNav : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNav)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(
-            R.styleable.LottieBottomNav_buttonContainerBackgroundColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
-        )
-        buttonsHeight =
-            a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
+        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNav_buttonContainerBackgroundColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        buttonsHeight = a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
-        buttonColor = a.getColor(
-            R.styleable.LottieBottomNav_buttonColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
-        )
-        activeButtonColor =
-            a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
-        a.recycle()
+        buttonColor = a.getColor(R.styleable.LottieBottomNav_buttonColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200))
+        activeButtonColor = a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
 
         weightSum = 1f
         orientation = VERTICAL
@@ -181,10 +165,7 @@ class LottieBottomNav : LinearLayout {
         val llLayoutParam = LayoutParams(itemWidth, LayoutParams.MATCH_PARENT)
         val imgLayoutParam = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
-        badgeLayoutParam = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        )
+        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
             Int.ZERO,
@@ -195,8 +176,7 @@ class LottieBottomNav : LinearLayout {
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
             resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp),
-            resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp)
-        )
+            resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
             Int.ZERO,
@@ -231,12 +211,7 @@ class LottieBottomNav : LinearLayout {
             val icon = LottieAnimationView(context)
             icon.tag = context.getString(R.string.tag_lottie_animation_view) + bottomMenu.id
             icon.layoutParams = imgLayoutParam
-            icon.setPadding(
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING
-            )
+            icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
             icon.setFailureListener {
                 // we need to set our own failure listener to avoid crash
                 // especially for xiaomi android 8
@@ -254,20 +229,13 @@ class LottieBottomNav : LinearLayout {
             iconList.add(index, Pair(icon, false))
 
             val imageContainer = FrameLayout(context)
-            val fLayoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelOffset(R.dimen.sah_dimen_32dp)
-            )
+            val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_32dp))
             imageContainer.layoutParams = fLayoutParams
 
             val iconPlaceholder = ImageView(context)
             iconPlaceholder.tag = "iconPlaceholder" + bottomMenu.id
-            iconPlaceholder.setPadding(
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING,
-                DEFAULT_ICON_PADDING
-            )
+            iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
             iconPlaceholder.layoutParams = imgLayoutParam
             iconPlaceholder.visibility = View.INVISIBLE
             iconPlaceholderList.add(index, iconPlaceholder)
@@ -326,8 +294,7 @@ class LottieBottomNav : LinearLayout {
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
                 badgeTextViewList.add(badgeTextView)
-                badgeTextView.tag =
-                    context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
+                badgeTextView.tag = context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
                 badge.bringToFront()
@@ -432,8 +399,6 @@ class LottieBottomNav : LinearLayout {
             handleItemClicked(position, menu[position])
         }
     }
-
-    fun getMenuList() = this.menu
 
     fun setMenu(menu: List<BottomMenu>) {
         this.menu.clear()

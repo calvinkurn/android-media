@@ -2,10 +2,14 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -76,5 +80,14 @@ class CarouselBannerViewModelTest {
         viewModelTest = spyk(CarouselBannerViewModel(application, componentsItem, 99))
         assert(viewModelTest.getSeeAllButtonLiveData().value == "testVal")
         unmockkObject(DiscoveryDataMapper)
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkObject(DiscoveryDataMapper)
+        unmockkStatic(::getComponent)
+        unmockkConstructor(URLParser::class)
     }
 }

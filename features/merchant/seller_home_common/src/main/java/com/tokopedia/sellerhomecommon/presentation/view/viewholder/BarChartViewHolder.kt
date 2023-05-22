@@ -6,7 +6,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.BarChartConfig
@@ -65,7 +64,6 @@ class BarChartViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: BarChartWidgetUiModel) {
-
         observeState(element)
     }
 
@@ -155,8 +153,8 @@ class BarChartViewHolder(
 
     private fun setBottomGuideLineVisibility() {
         with(binding) {
-            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible
-                    || btnShcBarChartMore.isVisible
+            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible ||
+                btnShcBarChartMore.isVisible
         }
     }
 
@@ -409,7 +407,7 @@ class BarChartViewHolder(
     /**
      * Set left margin of empty state dynamically to avoid blocking the Y Axis
      *
-     * @param   element bar chart widget ui model
+     * @param element bar chart widget ui model
      */
     private fun setMarginFromLongestYAxisValue(element: BarChartWidgetUiModel) {
         element.data?.chartData?.yAxis?.lastOrNull()?.valueFmt?.length?.let { valueLength ->
