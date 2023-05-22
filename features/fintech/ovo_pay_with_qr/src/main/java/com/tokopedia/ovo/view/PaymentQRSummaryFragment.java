@@ -278,8 +278,10 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        inputError.setTextColor(getResources().getColor(com.tokopedia.ovo.R.color.oqr_grey_error));
-        inputError.setText(getString(com.tokopedia.ovo.R.string.oqr_min_input_hint));
+        if (getContext() != null) {
+            inputError.setTextColor(getContext().getResources().getColor(com.tokopedia.ovo.R.color.oqr_grey_error));
+            inputError.setText(getContext().getResources().getString(com.tokopedia.ovo.R.string.oqr_min_input_hint));
+        }
     }
 
     @Override
@@ -349,6 +351,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     public void setErrorMessage(String message) {
         inputError.setText(message);
-        inputError.setTextColor(getResources().getColor(com.tokopedia.ovo.R.color.oqr_error_color));
+        if (getContext() != null) {
+            inputError.setTextColor(getContext().getResources().getColor(com.tokopedia.ovo.R.color.oqr_error_color));
+        }
     }
 }

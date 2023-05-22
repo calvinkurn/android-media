@@ -1,5 +1,5 @@
 ---
-title: Logistic Address: Shop Location
+title: "Logistic Address: Shop Location"
 labels:
 - logistic
 - shoplocation

@@ -19,6 +19,8 @@ data class FetchUnificationDataModel(
 data class UnificationDataModel(
     @SerializedName("dataKey")
     val dataKey: String = "",
+    @SerializedName("error")
+    val isError: Boolean = false,
     @SerializedName("errorMsg")
     val errorMsg: String = "",
     @SerializedName("showWidget")
