@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.view.formattedToMB
-import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
@@ -27,7 +28,7 @@ import javax.inject.Inject
 * */
 class DebugMediaUploaderViewModel @Inject constructor(
     private val videoMetaDataExtractor: VideoMetaDataExtractorRepository,
-    private val compressionCacheManager: VideoCompressionCacheManager,
+    private val compressionCacheManager: TrackerCacheManager,
     private val uploaderUseCase: UploaderUseCase
 ) : ViewModel(), DebugMediaUploaderViewModelContract {
 
@@ -79,6 +80,8 @@ class DebugMediaUploaderViewModel @Inject constructor(
                     it.addLog(LogType.CompressInfo, buildString {
                         val cache = compressionCacheManager.get("exwbZW", path)
 
+                        val compressionTime = cache?.endCompressedTime.orZero() - cache?.startCompressedTime.orZero()
+
                         append("\n")
                         append("${cache?.compressedVideoPath}")
                         append("\n")
@@ -86,7 +89,7 @@ class DebugMediaUploaderViewModel @Inject constructor(
                         append("\n")
                         append("resolution: ${cache?.compressedVideoMetadata?.width} x ${cache?.compressedVideoMetadata?.height} px")
                         append("\n")
-                        append("compression time: ${TimeUnit.MILLISECONDS.toSeconds(cache?.compressedTime ?: 0)} sec.")
+                        append("compression time: ${TimeUnit.MILLISECONDS.toSeconds(compressionTime)} sec.")
                         append("\n")
                         append("size: ${
                             try {

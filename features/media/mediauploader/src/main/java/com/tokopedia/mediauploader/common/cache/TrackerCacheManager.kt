@@ -4,17 +4,14 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.mediauploader.video.data.entity.VideoInfo
-import java.io.File
+import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import javax.inject.Inject
 
-typealias CacheCompressionModel = VideoCompressionCacheManager.Data
-
-class VideoCompressionCacheManager @Inject constructor(
+class TrackerCacheManager @Inject constructor(
     @ApplicationContext context: Context
 ) : LocalCacheHandler(context, NAME_PREFERENCE_VID_COMPRESS) {
 
-    fun set(sourceId: String, data: Data) {
+    fun set(sourceId: String, data: UploaderTracker) {
         val content = Gson().toJson(data)
         val cacheKey = key(sourceId, data.originalVideoPath)
 
@@ -23,7 +20,7 @@ class VideoCompressionCacheManager @Inject constructor(
         applyEditor()
     }
 
-    fun get(sourceId: String, filePath: String): Data? {
+    fun get(sourceId: String, filePath: String): UploaderTracker? {
         val cacheKey = key(sourceId, filePath)
         val data = getString(cacheKey, "")
 
@@ -31,25 +28,10 @@ class VideoCompressionCacheManager @Inject constructor(
             return null
         }
 
-        return Gson().fromJson(data, Data::class.java)
+        return Gson().fromJson(data, UploaderTracker::class.java)
     }
 
     private fun key(sourceId: String, filePath: String) = "$sourceId#$filePath"
-
-    data class Data(
-        val originalVideoPath: String,
-        val compressedVideoPath: String,
-        val compressedTime: Long,
-        val videoOriginalSize: String,
-        val videoCompressedSize: String,
-        val originalVideoMetadata: VideoInfo?,
-        val compressedVideoMetadata: VideoInfo?
-    ) {
-
-        fun isCompressedFileExist(): Boolean {
-            return File(compressedVideoPath).exists()
-        }
-    }
 
     companion object {
         private const val NAME_PREFERENCE_VID_COMPRESS = "vid_compress_cache"

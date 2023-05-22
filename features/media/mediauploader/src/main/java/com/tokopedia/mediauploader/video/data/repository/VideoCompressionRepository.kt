@@ -6,8 +6,8 @@ import com.abedelazizshe.lightcompressorlibrary.CompressionProgressListener
 import com.abedelazizshe.lightcompressorlibrary.compressor.Compressor
 import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.common.cache.CacheCompressionModel
-import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
+import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
@@ -20,17 +20,13 @@ import kotlin.math.min
 import kotlin.math.round
 
 interface VideoCompressionRepository {
-
-    suspend fun compress(
-        progressUploader: ProgressUploader?,
-        param: VideoCompressionParam
-    ): String
+    suspend fun compress(progressUploader: ProgressUploader?, param: VideoCompressionParam): String
 }
 
 class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val metadata: VideoMetaDataExtractorRepository,
-    private val cacheManager: VideoCompressionCacheManager
+    private val cacheManager: TrackerCacheManager
 ) : VideoCompressionRepository {
 
     override suspend fun compress(
@@ -40,7 +36,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         val (sourceId, originalPath, bitrate, resolution) = param
 
         // start track the compress time
-        val startBeforeCompressionTime = System.currentTimeMillis()
+        val startCompressionTime = System.currentTimeMillis()
 
         val cache = cacheManager.get(sourceId, originalPath)
 
@@ -99,10 +95,11 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 // save the cache for tracker
                 cacheManager.set(
                     sourceId = sourceId,
-                    data = CacheCompressionModel(
+                    data = UploaderTracker(
                         originalVideoPath = originalPath,
                         compressedVideoPath = compressedPath,
-                        compressedTime = endCompressionTime - startBeforeCompressionTime,
+                        startCompressedTime = startCompressionTime,
+                        endCompressedTime = endCompressionTime,
                         videoOriginalSize = File(originalPath).length().toString(),
                         videoCompressedSize = File(compressedPath).length().toString(),
                         originalVideoMetadata = videoOriginalInfo,

@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.common.di
 
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
-import com.tokopedia.mediauploader.common.cache.VideoCompressionCacheManager
+import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
@@ -76,8 +76,8 @@ abstract class MediaUploaderModule {
     @Binds
     @MediaUploaderQualifier
     abstract fun provideVideoCompressionCacheManager(
-        impl: VideoCompressionCacheManager
-    ): VideoCompressionCacheManager
+        impl: TrackerCacheManager
+    ): TrackerCacheManager
 
     @Binds
     @MediaUploaderQualifier

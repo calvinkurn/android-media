@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
+import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
@@ -38,7 +39,8 @@ class VideoUploaderManager @Inject constructor(
         val policy = policyUseCase(sourceId)
         policyManager.set(policy)
 
-        val filePath = onVideoCompression(
+        // compress video if needed
+        val filePath = getCompressableVideoPath(
             originalFile = file,
             sourceId = sourceId,
             shouldCompress = shouldCompress,
@@ -92,7 +94,7 @@ class VideoUploaderManager @Inject constructor(
         }
     }
 
-    private suspend fun onVideoCompression(
+    private suspend fun getCompressableVideoPath(
         sourceId: String,
         originalFile: File,
         shouldCompress: Boolean,
@@ -105,8 +107,8 @@ class VideoUploaderManager @Inject constructor(
         // the toggle comes from policy
         val isCompressionEnabled = compressionPolicy.isCompressionEnabled
 
-        // remote config
-        val isCompressionRemoteConfigEnabled = true
+        // feature toggle using ab-test
+        val isCompressionRemoteConfigEnabled = FeatureToggleUploader.isCompressionEnabled()
 
         return if (shouldCompress && isCompressionEnabled && isCompressionRemoteConfigEnabled) {
             val originalFileSizeInMb = originalFile.length() / (1024 * 1024)
