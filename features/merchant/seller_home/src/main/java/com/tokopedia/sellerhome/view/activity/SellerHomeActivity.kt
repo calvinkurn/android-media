@@ -33,7 +33,6 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -738,7 +737,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 wearSharedPreference.getBoolean(WEAR_POPUP_KEY, false)
             if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.apply{
+                dialog.apply {
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
                     setDescription(resources.getString(R.string.wearos_install_popup_description))
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
