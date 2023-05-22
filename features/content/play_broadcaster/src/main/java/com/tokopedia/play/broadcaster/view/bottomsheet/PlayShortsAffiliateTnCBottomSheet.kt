@@ -74,6 +74,10 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
+    init {
+        overlayClickDismiss = false
+    }
+
     private fun generateWebViewApplink(url: String): String {
         return getString(contentCommonR.string.up_webview_template, ApplinkConst.WEBVIEW, url)
     }
