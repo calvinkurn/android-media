@@ -19,6 +19,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unifyprinciples.Typography
@@ -42,13 +43,13 @@ class LottieBottomNav : LinearLayout {
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
     private var buttonContainerBackgroundColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
+        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
     private var activeButtonColor: Int = Color.TRANSPARENT
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
@@ -79,17 +80,7 @@ class LottieBottomNav : LinearLayout {
         val badge: View? = navbarContainer?.getChildAt(iconPosition)
         val badgeText = badge?.findViewById<TextView>(R.id.notification_badge)
 
-        if (badgeValue == Int.ZERO) {
-            badgeText?.layoutParams = emptyBadgeLayoutParam
-            badgeText?.setPadding(
-                resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
-                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
-                resources.getDimensionPixelOffset(R.dimen.sah_dimen_2dp),
-                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
-            )
-            badgeText?.text = ""
-            badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
-        } else {
+        if (badgeValue > Int.ZERO) {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
@@ -98,11 +89,11 @@ class LottieBottomNav : LinearLayout {
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_2dp)
             )
 
-            badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
+            badgeText?.background = context.getResDrawable(R.drawable.bg_badge_circular)
             badgeText?.text = badgeValue.toString()
+            badgeText?.bringToFront()
         }
 
-        badgeText?.bringToFront()
         badgeText?.visibility = visibility
     }
 
@@ -162,14 +153,14 @@ class LottieBottomNav : LinearLayout {
 
         buttonContainerBackgroundColor = a.getColor(
             R.styleable.LottieBottomNav_buttonContainerBackgroundColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
         buttonsHeight =
             a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(
             R.styleable.LottieBottomNav_buttonColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N200)
+            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         )
         activeButtonColor =
             a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)

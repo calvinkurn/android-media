@@ -28,7 +28,7 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN900"
             android:textSize="12sp"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="15.000.000.000 rb" />
     </LinearLayout>

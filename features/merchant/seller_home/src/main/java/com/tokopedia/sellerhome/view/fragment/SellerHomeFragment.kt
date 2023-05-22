@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -37,11 +38,15 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -181,6 +186,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+
 /**
  * Created By @ilhamsuaib on 2020-01-14
  */
@@ -199,8 +205,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
-        val SEARCH_MENU_ID = R.id.menu_sah_search
+        val NOTIFICATION_MENU_ID = 0
+        val SEARCH_MENU_ID = 1
 
         private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
@@ -313,8 +319,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initPltPerformanceMonitoring()
+        setContentBackground()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         getWidgetLayout()
@@ -402,20 +408,68 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
+        context?.let {
+            menu.clear()
+            val iconSize = it.dpToPx(8).toInt()
+            val search = menu.add(
+                Menu.NONE,
+                SEARCH_MENU_ID,
+                Menu.NONE,
+                it.getString(R.string.sah_search)
+            )
+            val iconColor = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
+            val searchDrawable = getIconUnifyDrawable(
+                context = it,
+                iconId = IconUnify.SEARCH,
+                assetColor = iconColor
+            )
+            val searchBitmap = (searchDrawable as? BitmapDrawable)?.bitmap
+            if (searchBitmap == null) {
+                search.icon = searchDrawable
+            } else {
+                val searchIcon = BitmapDrawable(
+                    resources,
+                    Bitmap.createScaledBitmap(searchBitmap, iconSize, iconSize, true)
+                )
+                search.icon = searchIcon
+            }
+            search.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
 
-        for (i in Int.ZERO until menu.size()) {
-            menu.getItem(i)?.let { menuItem ->
-                menuItem.actionView?.setOnClickListener {
-                    onOptionsItemSelected(menuItem)
+            val notification = menu.add(
+                Menu.NONE,
+                NOTIFICATION_MENU_ID,
+                Menu.NONE,
+                it.getString(R.string.sah_notification)
+            )
+            val notifDrawable = getIconUnifyDrawable(
+                context = it,
+                iconId = IconUnify.BELL,
+                assetColor = iconColor
+            )
+            val notifBitmap = (notifDrawable as? BitmapDrawable)?.bitmap
+            if (notifBitmap == null) {
+                notification.icon = notifDrawable
+            } else {
+                val notifIcon = BitmapDrawable(
+                    resources,
+                    Bitmap.createScaledBitmap(notifBitmap, iconSize, iconSize, true)
+                )
+                notification.icon = notifIcon
+            }
+            notification.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+
+            for (i in Int.ZERO until menu.size()) {
+                menu.getItem(i)?.let { menuItem ->
+                    menuItem.actionView?.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
                 }
             }
-        }
 
-        this.menu = menu
-        showNotificationBadge()
+            this.menu = menu
+            showNotificationBadge()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -969,6 +1023,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }, NOTIFICATION_BADGE_DELAY)
     }
 
+    private fun setContentBackground() {
+        activity?.let {
+            val background = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            it.window.decorView.setBackgroundColor(background)
+        }
+    }
+
     fun setNotifCenterCounter(count: Int) {
         this.notifCenterCount = count
         showNotificationBadge()
@@ -1329,8 +1390,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(
-            context,
+        ImageHandler.loadImageWithTarget(context,
             shopShareData?.shopSnippetURL.orEmpty(),
             object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -1368,8 +1428,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(
-                        it,
+                    shopShareHelper.onShareOptionClicked(it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -1472,8 +1531,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         when (personaStatus) {
             STATUS_PERSONA_NOT_ROLLED_OUT -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
-                    shouldVisible = false
+                    userSession.userId, shouldVisible = false
                 )
             }
             STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
@@ -1484,8 +1542,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
             STATUS_PERSONA_SHOW_POPUP -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
-                    shouldVisible = true
+                    userSession.userId, shouldVisible = true
                 )
             }
         }
@@ -1520,11 +1577,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val message = context.getString(R.string.sah_activate_persona_entry_point_info)
                 val cta = context.getString(R.string.saldo_btn_oke)
                 Toaster.build(
-                    rootView,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    cta
+                    rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, cta
                 ).show()
             }
         }
