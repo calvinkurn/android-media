@@ -42,7 +42,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
             binding.root.addOnImpressionListener(element.section) {
                 listener.onRechargeSectionItemImpression(element.section)
             }
-        } else if(element.isTripleEntryPointLoaded && element.section.items.isEmpty()) {
+        } else if(element.isTripleEntryPointLoaded && (element.section.items.isEmpty() || element.section.items.size < SIZE)) {
             binding.containerContent.gone()
             binding.containerShimmer.gone()
         } else if(!element.isTripleEntryPointLoaded && element.section.items.isEmpty()) {
