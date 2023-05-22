@@ -1,43 +1,46 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
-import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.airbnb.lottie.FontAssetDelegate
-import com.airbnb.lottie.LottieCompositionFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.databinding.LayoutActivityMedalDetailBinding
+import com.tokopedia.scp_rewards.common.utils.loadImage
+import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
+import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
+import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
+import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
 import javax.inject.Inject
+
 
 const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
 const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
-const val LOTTIE_BADGE = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_inner_icon.json"
-class MedalDetailFragment: BaseDaggerFragment() {
+const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
+const val FRAME = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_frame.png"
+const val SHIMMER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
+const val MASK = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
+const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
+const val LOTTIE_BADGE = "https://gist.githubusercontent.com/rooparshgojek/8502ff5cb6f84b918141a213498f007a/raw/9e5bf0fae736334521b47a07a5d0d76346c9fc57/medali-detail.json"
+const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_outer_blinking.json"
 
-    private lateinit var binding: LayoutActivityMedalDetailBinding
+class MedalDetailFragment : BaseDaggerFragment() {
+
+    private lateinit var binding: MedalDetailFragmentLayoutBinding
 
     @Inject
     @JvmField
     var viewModelFactory: ViewModelFactory? = null
 
     private val medalDetailViewModel by lazy {
-        ViewModelProvider(this,viewModelFactory!!).get(MedalDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory!!)[MedalDetailViewModel::class.java]
     }
-
 
     override fun initInjector() {
         getComponent(MedalDetailComponent::class.java).inject(this)
@@ -48,91 +51,74 @@ class MedalDetailFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = LayoutActivityMedalDetailBinding.inflate(layoutInflater)
+        binding = MedalDetailFragmentLayoutBinding.inflate(layoutInflater)
         return binding.root
+    }
+
+
+    private fun initToolbar() {
+        (activity as AppCompatActivity).let {
+            it.setSupportActionBar(binding.toolbar)
+            it.supportActionBar?.apply {
+                setDisplayShowTitleEnabled(false)
+                setDisplayHomeAsUpEnabled(true)
+                elevation = 0f
+                //setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
+
+                //it.setTransparentSystemBar()
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initToolbar()
         setupViewModelObservers()
         medalDetailViewModel.getMedalDetail()
 
-        loadBaseImage(IMG_DETAIL_BASE)
-        loadBackgroundImage(IMG_DETAIL_BG)
+        loadData()
+    }
 
-        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(context, LOTTIE_BADGE)
-        lottieCompositionLottieTask.addListener { result ->
-            binding.lottieBadge.apply {
-                show()
-                imageAssetsFolder = "images/"
-                setFontAssetDelegate(object : FontAssetDelegate() {
-                    override fun fetchFont(fontFamily: String): Typeface {
-                        return Typeface.createFromAsset(
-                            context.assets,
-                            "fonts/Open Sauce One.ttf"
-                        )
-                    }
-                })
-                setComposition(result)
-                loop(true)
-                playAnimation()
-            }
-        }
+    private fun loadData() {
+        binding.viewMedalHeader.bindData(
+            MedalHeader(
+                lottieUrl = LOTTIE_BADGE,
+                lottieSparklesUrl = LOTTIE_SPARKS,
+                podiumUrl = IMG_DETAIL_BASE,
+                background = IMG_DETAIL_BG,
+                medalUrl = CONTENT,
+                frameUrl = FRAME,
+                shimmerUrl = SHIMMER,
+                maskUrl = MASK,
+                shutterUrl = SHUTTER
+            )
+        )
 
-        binding.lottieBadge.addAnimatorUpdateListener {
-            it.currentPlayTime
-        }
+        binding.layoutDetailContent.viewMedalDetail.bindData(
+            MedalDetail()
+        )
+
+        binding.ivBadgeBase.loadImage(IMG_DETAIL_BASE)
     }
 
     private fun setupViewModelObservers() {
-
-        medalDetailViewModel.badgeLiveData.observe(viewLifecycleOwner){
-            when(it){
+        medalDetailViewModel.badgeLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success<*> -> {
-                    //TODO
+                    // TODO
                 }
+
                 is Error -> {
-                    //TODO
+                    // TODO
                 }
+
                 is Loading -> {
-                    //TODO
+                    // TODO
                 }
             }
         }
     }
 
     override fun getScreenName() = ""
-
-    private fun loadBackgroundImage(url: String) {
-        Glide.with(binding.frameBackground.context)
-            .asDrawable()
-            .load(url)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    binding.frameBackground.background = resource
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-            })
-    }
-
-    private fun loadBaseImage(url: String) {
-        Glide.with(this)
-            .asDrawable()
-            .load(url)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    binding.ivBadgeBase.setImageDrawable(resource)
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-    }
 }

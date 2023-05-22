@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards.presentation.ui
+package com.tokopedia.scp_rewards.detail.presentation.ui
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.scp_rewards.detail.di.DaggerMedalDetailComponent
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
-import com.tokopedia.scp_rewards.detail.presentation.ui.MedalDetailFragment
 
 class MedalDetailActivity : BaseSimpleActivity(), HasComponent<MedalDetailComponent> {
 

@@ -9,7 +9,7 @@
             android:label="scp"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".presentation.ui.MedalDetailActivity"
+        <activity android:name=".detail.presentation.ui.MedalDetailActivity"
             android:exported="true"
             android:label="scp"
             android:screenOrientation="portrait"
