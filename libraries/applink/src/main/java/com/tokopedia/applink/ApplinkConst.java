@@ -286,6 +286,7 @@ public interface ApplinkConst {
     String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
+    String SELLER_SHOP_OPERATIONAL = "tokopedia://seller/setting/operational-hours";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
     String RESOLUTION_SUCCESS = "tokopedia://resolution/success-create?url={redirect_url}";
@@ -597,6 +598,7 @@ public interface ApplinkConst {
         String SELLER_PERSONA = "sellerapp://seller-persona";
         String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{isVariant}";
 
+        String SELLER_SHOP_HOUR = "sellerapp://shop/operational-hours";
     }
 
     interface TokopediaNow {

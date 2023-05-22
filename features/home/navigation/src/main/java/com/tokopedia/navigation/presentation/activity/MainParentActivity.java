@@ -5,12 +5,10 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
@@ -46,7 +44,6 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -82,24 +79,20 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation.util.FeedCoachMark;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.HomeCoachmarkListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
-import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
@@ -125,7 +118,6 @@ import rx.android.BuildConfig;
 public class MainParentActivity extends BaseActivity implements
         HasComponent,
         MainParentView,
-        ShowCaseListener,
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
@@ -133,7 +125,8 @@ public class MainParentActivity extends BaseActivity implements
         IBottomClickListener,
         MainParentStateListener,
         ITelemetryActivity,
-        InAppCallback
+        InAppCallback,
+        HomeCoachmarkListener
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -216,7 +209,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private ApplicationUpdate appUpdate;
     private LottieBottomNavbar bottomNavigation;
-    private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
@@ -224,7 +216,6 @@ public class MainParentActivity extends BaseActivity implements
     private SparseArray<PerformanceData> fragmentPerformanceDatas = new SparseArray<>();
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
-    private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
@@ -415,9 +406,6 @@ public class MainParentActivity extends BaseActivity implements
 
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
-
-        initNewFeedClickReceiver();
-        registerNewFeedClickedReceiver();
     }
 
     @NotNull
@@ -504,12 +492,6 @@ public class MainParentActivity extends BaseActivity implements
                 bottomNavigation.setSelected(HOME_MENU);
                 break;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unRegisterNewFeedClickedReceiver();
     }
 
     @Override
@@ -734,7 +716,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unRegisterNewFeedClickedReceiver();
         if (presenter != null)
             presenter.get().onDestroy();
     }
@@ -789,12 +770,9 @@ public class MainParentActivity extends BaseActivity implements
         this.notification = notification;
         if (bottomNavigation != null) {
             if (notification.getHaveNewFeed()) {
-                bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
                 Intent intent = new Intent(BROADCAST_FEED);
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            } else {
-                bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
         }
         if (currentFragment != null)
@@ -879,62 +857,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    /**
-     * Show Case on boarding
-     */
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .textSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_text_size)
-                .titleTextSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_title_text_size)
-                .nextStringRes(R.string.navigation_showcase_next)
-                .prevStringRes(R.string.navigation_showcase_prev)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
-    }
-
-    @Override
-    public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
-
-        if (bottomNavigation != null) {
-            final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-            if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
-                    || showCaseObjects == null) {
-                return;
-            }
-
-            showCaseDialog = createShowCase();
-
-            int bottomNavTopPos = bottomNavigation.getTop();
-            int bottomNavBottomPos = bottomNavigation.getBottom();
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                bottomNavBottomPos =
-                        bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-                bottomNavTopPos =
-                        bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-            }
-            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-            showcases.add(new ShowCaseObject(
-                    bottomNavigation,
-                    getString(R.string.title_showcase),
-                    getString(R.string.desc_showcase))
-                    .withCustomTarget(new int[]{
-                            bottomNavigation.getLeft(),
-                            bottomNavTopPos,
-                            bottomNavigation.getRight(),
-                            bottomNavBottomPos}));
-            showcases.addAll(showCaseObjects);
-
-            showCaseDialog.show(this, showCaseTag, showcases);
-        }
-    }
-
     private Boolean isFirstTime() {
         LocalCacheHandler cache = new LocalCacheHandler(this, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
@@ -998,34 +920,6 @@ public class MainParentActivity extends BaseActivity implements
             RouteManager.route(this, applink);
 
             presenter.get().setIsRecurringApplink(true);
-        }
-    }
-
-    private void initNewFeedClickReceiver() {
-        newFeedClickedReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
-                    boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
-                    if (isHaveNewFeed) {
-                        bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
-                    } else {
-                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
-                    }
-                }
-            }
-        };
-    }
-
-    private void registerNewFeedClickedReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
-    }
-
-    private void unRegisterNewFeedClickedReceiver() {
-        if (newFeedClickedReceiver != null) {
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
         }
     }
 
@@ -1339,5 +1233,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onNeedUpdateInApp(DetailUpdate detailUpdate) {
         globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
+    }
+
+    @Override
+    public void onHomeCoachMarkFinished() {
+        View feedIconView = bottomNavigation.findViewById(R.id.menu_feed);
+        new FeedCoachMark(this).show(feedIconView);
     }
 }
