@@ -147,7 +147,6 @@ class PlayWidgetCarouselViewHolder private constructor() {
             }
             upcomingView.setModel(data.channel)
             upcomingView.showReminderButton(data.isSelected)
-            upcomingView.setReminded(data.channel.reminderType.reminded)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {

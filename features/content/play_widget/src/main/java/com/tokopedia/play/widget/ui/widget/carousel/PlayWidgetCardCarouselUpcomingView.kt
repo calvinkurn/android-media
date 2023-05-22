@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,6 +17,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.model.switch
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -59,12 +61,11 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvStartTime.text = model.startTime
         binding.viewPlayWidgetCaption.root.text = model.title
-        binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.imgCover.setImageUrl(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
-        if (model.partner.badgeUrl.isNullOrBlank()) {
+        if (model.partner.badgeUrl.isBlank()) {
             binding.viewPlayWidgetPartnerInfo.imgBadge.hide()
         } else {
             binding.viewPlayWidgetPartnerInfo.imgBadge.setImageUrl(model.partner.badgeUrl)
@@ -75,7 +76,6 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         }
 
         setReminded(model.reminderType.reminded)
-        setRemindedListener(model)
     }
 
     fun setListener(listener: Listener?) {
@@ -95,28 +95,31 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     }
 
     fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
-        val lottieComposition = LottieCompositionFactory.fromUrl(
-            context,
-            context.getString(
-                if (shouldRemind) R.string.lottie_reminder_off_on
-                else R.string.lottie_reminder_on_off
-            )
+        val lottieUrl = context.getString(
+            if (shouldRemind) R.string.lottie_reminder_off_on
+            else R.string.lottie_reminder_on_off
         )
 
-        lottieComposition.addListener { composition ->
-            binding.viewPlayWidgetActionButton.root.setComposition(composition)
+        LottieCompositionFactory.fromUrl(context, lottieUrl)
+            .addFailureListener {
+                binding.viewPlayWidgetActionButton.iconActionFallback.setImage(
+                    if (shouldRemind) IconUnify.BELL_FILLED else IconUnify.BELL
+                )
+                binding.viewPlayWidgetActionButton.iconActionFallback.show()
+            }
+            .addListener { composition ->
+                binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+                binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
 
-            if (animate) binding.viewPlayWidgetActionButton.root.playAnimation()
-            else binding.viewPlayWidgetActionButton.root.progress = 1f
-        }
-    }
+                if (animate) binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+                else binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
+            }
 
-    private fun setRemindedListener(data: PlayWidgetChannelUiModel) {
         binding.viewPlayWidgetActionButton.root.setOnClickListener {
             mListener?.onReminderClicked(
                 this,
-                data,
-                data.reminderType,
+                mModel,
+                mModel.reminderType.switch(),
             )
         }
     }

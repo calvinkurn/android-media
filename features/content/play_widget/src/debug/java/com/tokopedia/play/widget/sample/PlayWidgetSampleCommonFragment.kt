@@ -63,7 +63,7 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
                                 model = state.model.copy(
                                     items = state.model.items.map { item ->
                                         if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
-                                            item.copy(reminderType = reminderType.switch())
+                                            item.copy(reminderType = reminderType)
                                         } else {
                                             item
                                         }

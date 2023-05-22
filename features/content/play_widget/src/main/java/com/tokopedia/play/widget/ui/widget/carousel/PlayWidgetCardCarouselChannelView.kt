@@ -122,7 +122,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
-        if (model.partner.badgeUrl.isNullOrBlank()) {
+        if (model.partner.badgeUrl.isBlank()) {
             binding.viewPlayWidgetPartnerInfo.imgBadge.hide()
         } else {
             binding.viewPlayWidgetPartnerInfo.imgBadge.setImageUrl(model.partner.badgeUrl)
@@ -166,10 +166,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         )
 
         lottieComposition.addListener { composition ->
-            binding.viewPlayWidgetActionButton.root.setComposition(composition)
+            binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
 
-            if (animate) binding.viewPlayWidgetActionButton.root.playAnimation()
-            else binding.viewPlayWidgetActionButton.root.progress = 1f
+            if (animate) binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+            else binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
         }
 
         mPlayer?.mute(shouldMuted)
