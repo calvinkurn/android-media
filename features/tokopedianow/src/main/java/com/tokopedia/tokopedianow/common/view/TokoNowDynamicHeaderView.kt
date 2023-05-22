@@ -83,6 +83,13 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         if (ctaTextLink.isNotBlank()) {
             if (circleSeeAll) {
                 sivCircleSeeAll?.show()
+                sivCircleSeeAll?.setOnClickListener {
+                    listener?.onSeeAllClicked(
+                        context = context,
+                        headerName = title,
+                        appLink =  ctaTextLink
+                    )
+                }
                 tpSeeAll?.hide()
             } else {
                 tpSeeAll?.text = if (ctaText.isNotBlank()) {
@@ -93,6 +100,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                 tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 tpSeeAll?.setOnClickListener {
                     listener?.onSeeAllClicked(
+                        context = context,
                         headerName = title,
                         appLink =  ctaTextLink
                     )
@@ -154,7 +162,11 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     }
 
     interface TokoNowDynamicHeaderListener {
-        fun onSeeAllClicked(headerName: String, appLink: String)
+        fun onSeeAllClicked(
+            context: Context,
+            headerName: String,
+            appLink: String
+        )
         fun onChannelExpired()
     }
 }

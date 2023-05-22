@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
@@ -37,6 +38,7 @@ class CategoryAdapterTypeFactory(
     private val categoryTitleListener: CategoryTitleListener? = null,
     private val categoryNavigationListener: CategoryNavigationListener? = null,
     private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
+    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private val tokoNowView: TokoNowView? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
@@ -76,7 +78,8 @@ class CategoryAdapterTypeFactory(
             )
             CategoryShowcaseViewHolder.LAYOUT -> CategoryShowcaseViewHolder(
                 itemView = view,
-                categoryShowcaseItemListener = categoryShowcaseItemListener
+                categoryShowcaseItemListener = categoryShowcaseItemListener,
+                categoryShowcaseHeaderListener = categoryShowcaseHeaderListener
             )
 
             /* Common Component View Holder */

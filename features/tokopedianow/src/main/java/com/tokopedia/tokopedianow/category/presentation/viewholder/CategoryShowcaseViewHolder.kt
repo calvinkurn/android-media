@@ -15,12 +15,14 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowc
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryShowcaseBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryShowcaseViewHolder(
     itemView: View,
-    private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null
+    private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
+    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
     companion object {
         private const val SPAN_COUNT = 3
@@ -71,6 +73,9 @@ class CategoryShowcaseViewHolder(
                 ctaTextLink = element.seeAllAppLink,
                 circleSeeAll = true
             )
+        )
+        dhvHeader.setListener(
+            headerListener = categoryShowcaseHeaderListener
         )
     }
 

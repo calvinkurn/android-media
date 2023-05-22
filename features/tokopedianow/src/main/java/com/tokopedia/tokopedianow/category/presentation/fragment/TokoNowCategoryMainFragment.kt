@@ -2,8 +2,11 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
@@ -14,11 +17,13 @@ import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigat
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
+import com.tokopedia.tokopedianow.common.constant.RequestCode
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -65,6 +70,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
                 categoryTitleListener = createTitleCallback(),
                 categoryNavigationListener = createCategoryNavigationCallback(),
                 categoryShowcaseItemListener = createCategoryShowcaseItemCallback(),
+                categoryShowcaseHeaderListener = createCategoryShowcaseHeaderCallback(),
                 tokoNowView = createTokoNowViewCallback(),
                 tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
                 tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
@@ -91,32 +97,26 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         observer()
     }
 
-    override fun loadMore(isAtTheBottomOfThePage: Boolean) {
-        viewModel.loadMore(isAtTheBottomOfThePage)
-    }
+    override fun loadMore(isAtTheBottomOfThePage: Boolean) = viewModel.loadMore(isAtTheBottomOfThePage)
 
-    override fun refreshLayout() {
-        viewModel.refreshLayout(
-            navToolbarHeight = navToolbarHeight
-        )
-    }
+    override fun refreshLayout() = viewModel.refreshLayout()
 
-    override fun getMiniCart() {
-        viewModel.getMiniCart()
-    }
+    override fun getMiniCart() = viewModel.getMiniCart()
 
     private fun observer() {
         observeCategoryHeader()
         observeCategoryPage()
-        observeIsScrollNotNeeded()
+        observeScrollNotNeeded()
         observeMiniCart()
         observeAddToCart()
         observeUpdateCartItem()
         observeRemoveCartItem()
-        observeProductRecomAddToCart()
-        observeProductRecomRemoveCartItem()
-        observeProductRecomUpdateCartItem()
         observeToolbarNotification()
+        observeProductRecommendationAddToCart()
+        observeProductRecommendationRemoveCartItem()
+        observeProductRecommendationUpdateCartItem()
+        observeProductRecommendationToolbarNotification()
+        observeRefreshState()
     }
 
     private fun observeCategoryHeader() {
@@ -135,34 +135,32 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     }
 
     private fun observeCategoryPage() {
-        viewModel.categoryPage.observe(viewLifecycleOwner) {
-            when(it) {
+        viewModel.categoryPage.observe(viewLifecycleOwner) { result ->
+            when(result) {
                 is Success -> {
-                    adapter.submitList(it.data)
+                    adapter.submitList(result.data)
                 }
                 is Fail -> {}
             }
         }
     }
 
-    private fun observeIsScrollNotNeeded() {
-        viewModel.isOnScrollNotNeeded.observe(viewLifecycleOwner) { isNotNeeded ->
+    private fun observeScrollNotNeeded() {
+        viewModel.scrollNotNeeded.observe(viewLifecycleOwner) { isNotNeeded ->
             if (isNotNeeded) {
                 binding?.rvCategory?.removeOnScrollListener(onScrollListener)
-            } else {
-                binding?.rvCategory?.addOnScrollListener(onScrollListener)
             }
         }
     }
 
     private fun observeMiniCart() {
-        viewModel.miniCart.observe(viewLifecycleOwner) {
-            when(it) {
+        viewModel.miniCart.observe(viewLifecycleOwner) { result ->
+            when(result) {
                 is Success -> {
-                    val data = it.data
+                    val data = result.data
                     showMiniCart(data)
                     setupPadding(data)
-                    productRecommendationViewModel.updateMiniCartSimplified(it.data)
+                    productRecommendationViewModel.updateMiniCartSimplified(result.data)
                 }
                 is Fail -> {
                     hideMiniCart()
@@ -205,7 +203,13 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         }
     }
 
-    private fun observeProductRecomAddToCart() {
+    private fun observeToolbarNotification() {
+        viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
+            if (needToUpdate) updateToolbarNotification()
+        }
+    }
+
+    private fun observeProductRecommendationAddToCart() {
         productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessAddItemToCart(
@@ -218,7 +222,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         }
     }
 
-    private fun observeProductRecomUpdateCartItem() {
+    private fun observeProductRecommendationUpdateCartItem() {
         productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -233,7 +237,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         }
     }
 
-    private fun observeProductRecomRemoveCartItem() {
+    private fun observeProductRecommendationRemoveCartItem() {
         productRecommendationViewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessRemoveCartItem(
@@ -246,15 +250,31 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         }
     }
 
-    private fun observeToolbarNotification() {
-        viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
+    private fun observeProductRecommendationToolbarNotification() {
+        productRecommendationViewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
             if (needToUpdate) updateToolbarNotification()
+        }
+    }
+
+    private fun observeRefreshState() {
+        viewModel.refreshState.observe(viewLifecycleOwner) {
+            binding?.apply {
+                categoryShimmering.root.show()
+                rvCategory.removeOnScrollListener(onScrollListener)
+                rvCategory.addOnScrollListener(onScrollListener)
+            }
+            viewModel.getCategoryHeader(navToolbarHeight)
         }
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
         showToaster(message = data.second)
         getMiniCart()
+    }
+
+    private fun openLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
     /**
@@ -273,19 +293,25 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         categoryIdL1 = categoryIdL1,
         startActivityForResult = ::startActivityForResult,
         onCartQuantityChangedListener = { position, product, quantity ->
-            viewModel.onCartQuantityChanged(
-                productId = product.productCardModel.productId,
-                quantity = quantity,
-                shopId = shopId,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
-            )
+            if (!viewModel.isLoggedIn()) {
+                openLoginPage()
+            } else {
+                viewModel.onCartQuantityChanged(
+                    productId = product.productCardModel.productId,
+                    quantity = quantity,
+                    shopId = shopId,
+                    layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+                )
+            }
         }
     )
+
+    private fun createCategoryShowcaseHeaderCallback() = CategoryShowcaseHeaderCallback()
 
     private fun createTokoNowViewCallback() = TokoNowViewCallback(
         fragment = this@TokoNowCategoryMainFragment
     ) {
-        viewModel.refreshLayout(navToolbarHeight)
+        viewModel.refreshLayout()
     }
 
     private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback()
@@ -296,8 +322,10 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         productRecommendationViewModel = productRecommendationViewModel,
         activity = activity,
         categoryIdL1 = categoryIdL1,
-        startActivityForResult = ::startActivityForResult,
+        startActivityResult = ::startActivityForResult,
+        openLoginPageListener = ::openLoginPage,
         hideProductRecommendationWidgetListener = {
-        }
+
+        },
     )
 }

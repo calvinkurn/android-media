@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -70,15 +71,18 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     private val layout: MutableList<Visitable<*>> = mutableListOf()
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
-    private var categoryMenu: TokoNowCategoryMenuUiModel? = null
+    private var categoryNavigation: TokoNowCategoryMenuUiModel? = null
+    private var moreShowcaseJob: Job? = null
 
     private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _categoryPage = MutableLiveData<Result<List<Visitable<*>>>>()
-    private val _isOnScrollNotNeeded = MutableLiveData<Boolean>()
+    private val _scrollNotNeeded = MutableLiveData<Boolean>()
+    private val _refreshState = MutableLiveData<Unit>()
 
     val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
     val categoryPage: LiveData<Result<List<Visitable<*>>>> = _categoryPage
-    val isOnScrollNotNeeded: LiveData<Boolean> = _isOnScrollNotNeeded
+    val scrollNotNeeded: LiveData<Boolean> = _scrollNotNeeded
+    val refreshState: LiveData<Unit> = _refreshState
 
     override fun updateProductCartQuantity(
         productId: String,
@@ -107,42 +111,40 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     private suspend fun getCategoryShowcaseAsync(
         categoryL2Model: CategoryL2Model,
         hasAdded: Boolean
-    ): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val categoryPage = getCategoryProductUseCase.execute(
-                chooseAddressData = getAddressData(),
+    ): Deferred<Unit?> = asyncCatchError(block = {
+        val categoryPage = getCategoryProductUseCase.execute(
+            chooseAddressData = getAddressData(),
+            categoryIdL2 = categoryL2Model.id,
+            uniqueId = getUniqueId()
+        )
+
+        categoryL2Models.remove(categoryL2Model)
+
+        if (hasAdded) {
+            layout.mapCategoryShowcase(
+                model = categoryPage,
                 categoryIdL2 = categoryL2Model.id,
-                uniqueId = getUniqueId()
+                title = categoryL2Model.title,
+                seeAllAppLink = categoryL2Model.appLink,
+                miniCartData = miniCartData
             )
-
-            categoryL2Models.remove(categoryL2Model)
-
-            if (hasAdded) {
-                layout.mapCategoryShowcase(
-                    model = categoryPage,
-                    categoryIdL2 = categoryL2Model.id,
-                    title = categoryL2Model.title,
-                    seeAllAppLink = categoryL2Model.appLink,
-                    miniCartData = miniCartData
-                )
-            } else {
-                layout.addCategoryShowcase(
-                    model = categoryPage,
-                    categoryIdL2 = categoryL2Model.id,
-                    title = categoryL2Model.title,
-                    state = TokoNowLayoutState.SHOW,
-                    seeAllAppLink = categoryL2Model.appLink,
-                    miniCartData = miniCartData
-                )
-            }
-
-        }) {
-            categoryL2Models.remove(categoryL2Model)
-
-            layout.removeItem(
-                id = categoryL2Model.id
+        } else {
+            layout.addCategoryShowcase(
+                model = categoryPage,
+                categoryIdL2 = categoryL2Model.id,
+                title = categoryL2Model.title,
+                state = TokoNowLayoutState.SHOW,
+                seeAllAppLink = categoryL2Model.appLink,
+                miniCartData = miniCartData
             )
         }
+
+    }) {
+        categoryL2Models.remove(categoryL2Model)
+
+        layout.removeItem(
+            id = categoryL2Model.id
+        )
     }
 
     private suspend fun getBatchShowcase(
@@ -183,7 +185,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     }
 
     private fun getMoreShowcases() {
-        launch {
+        moreShowcaseJob = launch {
             getBatchShowcase(
                 hasAdded = false
             )
@@ -206,7 +208,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
                 val headerResponse = getCategoryHeaderUseCase.executeOnBackground()
                 val categoryNavigationUiModel = headerResponse.categoryNavigation.mapToCategoryNavigation(categoryIdL1)
-                categoryMenu = headerResponse.categoryNavigation.mapToCategoryMenu()
+                categoryNavigation = headerResponse.categoryNavigation.mapToCategoryMenu()
+
+                layout.clear()
 
                 layout.addHeaderSpace(
                     space = navToolbarHeight,
@@ -250,25 +254,22 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     fun loadMore(
         isAtTheBottomOfThePage: Boolean
     ) {
-        if (categoryL2Models.isEmpty()) {
-            _isOnScrollNotNeeded.value = true
+        if (isAtTheBottomOfThePage && categoryL2Models.isEmpty()) {
+            _scrollNotNeeded.value = true
 
-            categoryMenu?.let {
+            categoryNavigation?.let {
                 layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
                 layout.addCategoryMenu(it)
 
                 _categoryPage.value = Success(layout)
             }
-        } else if (isAtTheBottomOfThePage) {
+        } else if (isAtTheBottomOfThePage && (moreShowcaseJob == null || moreShowcaseJob?.isCompleted == true)) {
             getMoreShowcases()
         }
     }
 
-    fun refreshLayout(
-        navToolbarHeight: Int
-    ) {
-        layout.clear()
-        getCategoryHeader(navToolbarHeight)
-        _isOnScrollNotNeeded.value = false
+    fun refreshLayout() {
+        moreShowcaseJob = null
+        _refreshState.value = Unit
     }
 }

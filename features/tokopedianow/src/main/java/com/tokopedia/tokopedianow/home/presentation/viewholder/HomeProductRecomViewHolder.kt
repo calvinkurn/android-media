@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -72,6 +73,7 @@ class HomeProductRecomViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
         appLink: String
     ) {

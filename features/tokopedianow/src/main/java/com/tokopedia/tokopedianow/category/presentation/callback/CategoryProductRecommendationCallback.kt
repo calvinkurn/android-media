@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.category.presentation.callback
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -21,22 +20,16 @@ import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 class CategoryProductRecommendationCallback(
     private val categoryIdL1: String,
     private val activity: FragmentActivity?,
-    private val startActivityForResult: (Intent, Int) -> Unit,
+    private val startActivityResult: (Intent, Int) -> Unit,
     private val hideProductRecommendationWidgetListener: () -> Unit,
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
+    private val openLoginPageListener: () -> Unit
 ): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
-    companion object {
-        private const val REQUEST_CODE_LOGIN = 69
-    }
-
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
 
     override fun hideProductRecommendationWidget() = hideProductRecommendationWidgetListener()
 
-    override fun openLoginPage() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        activity?.startActivityForResult(intent, REQUEST_CODE_LOGIN)
-    }
+    override fun openLoginPage() = openLoginPageListener()
 
     override fun productCardAddVariantClicked(
         productId: String,
@@ -49,8 +42,8 @@ class CategoryProductRecommendationCallback(
                 pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = shopId,
-                trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, "CategoryIdLv1"),
-                startActivitResult = startActivityForResult,
+                trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdL1),
+                startActivitResult = startActivityResult
             )
         }
     }

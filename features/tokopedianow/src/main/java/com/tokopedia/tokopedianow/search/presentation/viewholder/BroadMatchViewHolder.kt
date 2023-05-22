@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -126,7 +127,7 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onSeeAllClicked(headerName: String, appLink: String) {
+    override fun onSeeAllClicked(context: Context, headerName: String, appLink: String) {
         listener.onBroadMatchSeeAllClicked(
             title = headerName,
             appLink = appLink
