@@ -49,6 +49,7 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
+import com.tokopedia.play.ui.explorewidget.PlayExploreWidget
 import com.tokopedia.play.util.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -2055,7 +2056,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
         playViewModel.submitAction(FetchWidgets)
         eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
-        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
+        PlayExploreWidget.getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
     }
 

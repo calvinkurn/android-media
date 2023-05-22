@@ -33,6 +33,7 @@ import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
@@ -203,15 +204,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (requireParentFragment() is PlayUserInteractionFragment) {
-            val grandParentActivity =
-                ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
 
-            viewModel = ViewModelProvider(
-                grandParentActivity,
-                grandParentActivity.viewModelProviderFactory
-            ).get(PlayViewModel::class.java)
-        }
     }
 
     private var analytic: PlayAnalytic2? = null
@@ -228,10 +221,10 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupHeader()
-        setupView()
-        observeState()
-        observeEvent()
+//        setupHeader()
+//        setupView()
+//        observeState()
+//        observeEvent()
     }
 
     private fun setupHeader() {
@@ -486,12 +479,12 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun dismiss() {
         if (!isVisible) return
-        viewModel.submitAction(DismissExploreWidget)
+//        viewModel.submitAction(DismissExploreWidget)
         super.dismiss()
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        viewModel.submitAction(DismissExploreWidget)
+//        viewModel.submitAction(DismissExploreWidget)
         super.onCancel(dialog)
     }
 
