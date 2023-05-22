@@ -75,7 +75,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
 
                 override fun onTextChanged(notes: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (currentNote?.isBlank() == true) {
-                        buttonSaveNotes.isEnabled = notes?.length ?: Int.ZERO > Int.ZERO
+                        buttonSaveNotes.isEnabled = (notes?.length ?: Int.ZERO) > Int.ZERO
                     } else {
                         buttonSaveNotes.isEnabled = true
                     }

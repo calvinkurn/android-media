@@ -235,8 +235,7 @@ open class TopChatRoomFragment :
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
     ChatTextAreaTabLayoutListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener
-{
+    BannedChatMessageViewHolder.TopChatMessageCensorListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -349,7 +348,6 @@ open class TopChatRoomFragment :
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
-        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
@@ -852,6 +850,7 @@ open class TopChatRoomFragment :
         setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+        initBubbleChatFlag()
     }
 
     private fun setupPostFirstPage() {

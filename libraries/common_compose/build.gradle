@@ -70,9 +70,13 @@ dependencies {
     api rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeCoil
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.principles
 
     // need androidx.core for androidx.core.view.*
     implementation rootProject.ext.supportLibDependencies.design
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {

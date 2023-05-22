@@ -67,6 +67,7 @@ data class PlayWidgetChannelUiModel(
     val recommendationType: String,
     val hasAction: Boolean,
     val products: List<PlayWidgetProduct>,
+    val shouldShowPerformanceDashboard: Boolean,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
     val gridType: PlayGridType = PlayGridType.Unknown,
     val extras: Map<String, Any> = emptyMap(),

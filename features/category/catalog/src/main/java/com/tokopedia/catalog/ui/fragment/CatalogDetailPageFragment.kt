@@ -606,7 +606,8 @@ class CatalogDetailPageFragment :
 
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.resources?.getString(
@@ -974,6 +975,13 @@ class CatalogDetailPageFragment :
         }
     }
 
+    override fun sendWidgetTrackEvent(actionName: String, trackerId: String) {
+        if (!widgetTrackingSet.contains(actionName)) {
+            CatalogDetailAnalytics.sendWidgetTracking(userSession.userId, catalogId, catalogName, actionName, trackerId)
+            widgetTrackingSet.add(actionName)
+        }
+    }
+
     fun onBackPressed() {
         isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -1005,6 +1013,17 @@ class CatalogDetailPageFragment :
         }
     }
 
+    override fun entryPointBannerClicked(categoryName: String) {
+        RouteManager.route(context, "${CatalogConstant.APPLINK_CATALOG_LIBRARY_CATEGORY_LANDING}$catalogDepartmentId")
+        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
+    }
+
+    override fun entryPointBannerImageClicked(appLink: String) {
+        super.entryPointBannerImageClicked(appLink)
+        RouteManager.route(context, appLink)
+        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
+    }
+
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
@@ -1013,5 +1032,10 @@ class CatalogDetailPageFragment :
 
     override fun setIsScrollButtonDown(value: Boolean) {
         isScrollDownButtonClicked = false
+    }
+
+    override fun onReviewClicked(position: Int, productUrl: String, isFromBottomSheet: Boolean) {
+        super.onReviewClicked(position, productUrl, isFromBottomSheet)
+        RouteManager.route(context, productUrl)
     }
 }

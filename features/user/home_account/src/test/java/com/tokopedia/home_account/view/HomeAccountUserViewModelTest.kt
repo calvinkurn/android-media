@@ -8,8 +8,8 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSettingResponse
 import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
@@ -203,7 +203,7 @@ class HomeAccountUserViewModelTest {
             homeAccountRecommendationUseCase.getData(any())
         } returns listOf(recommendationData)
 
-        val expectedResult = RecommendationWidgetWithTDN(recommendationData,null)
+        val expectedResult = RecommendationWidgetWithTDN(recommendationData, null)
 
         viewModel.getFirstRecommendation()
 
@@ -228,10 +228,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -253,10 +253,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data throw error`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -339,7 +339,6 @@ class HomeAccountUserViewModelTest {
 
         assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
     }
-
 
     @Test
     fun `Failed to get first recommendation`() {
@@ -479,7 +478,6 @@ class HomeAccountUserViewModelTest {
             getSafeModeUseCase(Unit)
         } returns getResponse
 
-
         viewModel.setSafeMode(isActive)
 
         verify {
@@ -546,7 +544,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false, AccountConstants.WALLET.GOPAY)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -560,7 +558,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false, AccountConstants.WALLET.GOPAY)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -574,7 +572,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false, AccountConstants.WALLET.GOPAYLATER)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -588,7 +586,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false, AccountConstants.WALLET.GOPAYLATER)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -602,7 +600,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false, AccountConstants.WALLET.OVO)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -616,7 +614,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false, AccountConstants.WALLET.OVO)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -630,7 +628,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetTokopointBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false, AccountConstants.WALLET.TOKOPOINT)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -644,7 +642,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false, AccountConstants.WALLET.TOKOPOINT)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -658,7 +656,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { saldoBalanceUseCase(Unit) } returns successGetSaldoBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false, AccountConstants.WALLET.SALDO)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -672,7 +670,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false, AccountConstants.WALLET.SALDO)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -686,7 +684,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetCoBrandCCBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false, AccountConstants.WALLET.CO_BRAND_CC)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -700,7 +698,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false, AccountConstants.WALLET.CO_BRAND_CC)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -713,7 +711,7 @@ class HomeAccountUserViewModelTest {
     fun `Failed get balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
 
-        viewModel.getBalanceAndPoint("", true)
+        viewModel.getBalanceAndPoint("", true, "")
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
