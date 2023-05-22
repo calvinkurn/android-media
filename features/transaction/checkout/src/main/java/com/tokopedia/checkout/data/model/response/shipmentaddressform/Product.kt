@@ -8,6 +8,8 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddO
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 
 data class Product(
+    @SerializedName("origin_warehouse_ids")
+    val originWarehouseIds: List<Long> = emptyList(),
     @SerializedName("errors")
     val errors: List<String> = emptyList(),
     @SerializedName("product_id")

@@ -275,7 +275,7 @@ class ShipmentMapper @Inject constructor() {
                     shouldShowShopInfo = groupShop2.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
                     shopName = groupShop.shop.shopName,
                     shopTypeInfoData = shopTypeInfoData,
-                    originWarehouseIds = cartDetail.originWarehouseIds
+                    originWarehouseIds = product.originWarehouseIds
                 ).apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         groupShop2,
