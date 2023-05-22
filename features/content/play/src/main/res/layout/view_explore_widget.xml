@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:alpha="0.7"
     android:background="@color/play_dms_explore_widget_icon_bg"
-    app:rcl_bottomRightRadius="@dimen/play_dp_12"
-    app:rcl_topLeftRadius="@dimen/play_dp_12">
+    app:rcl_cornerRadius="@dimen/unify_space_4">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_explore"

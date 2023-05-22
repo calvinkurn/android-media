@@ -221,10 +221,11 @@
         layout="@layout/view_explore_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/play_dp_20"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/view_partner_info"
+        app:layout_constraintBottom_toBottomOf="@+id/view_stats_info"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@+id/view_partner_info"
+        app:layout_constraintTop_toTopOf="@+id/view_stats_info"
         tools:visibility="visible" />
 
     <include
@@ -366,10 +367,10 @@
         android:id="@+id/scrollable_host_engagement"
         android:layout_width="wrap_content"
         android:layout_height="110dp"
-        android:layout_marginEnd="4dp"
         android:maxHeight="110dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        app:layout_constraintTop_toBottomOf="@id/view_explore_widget"
         app:lockScroll="true"
         >
 
