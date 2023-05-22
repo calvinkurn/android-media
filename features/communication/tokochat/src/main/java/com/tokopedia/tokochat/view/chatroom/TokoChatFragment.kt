@@ -190,7 +190,7 @@ open class TokoChatFragment :
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        if (TokoChatValueUtil.shouldShowBubblesAwareness() && viewModel.shouldShowBottomsheetBubblesCache()) {
+        return if (TokoChatValueUtil.shouldShowBubblesAwareness() && viewModel.shouldShowBottomsheetBubblesCache()) {
             showBubblesAwarenessBottomSheet()
             tokoChatAnalytics.viewOnboardingBottomsheet(
                 orderId = viewModel.tkpdOrderId,
@@ -198,8 +198,10 @@ open class TokoChatFragment :
                 role = TokoChatAnalyticsConstants.BUYER
             )
             viewModel.setBubblesBottomSheetOpen()
+            true
+        } else {
+            super.onFragmentBackPressed()
         }
-        return super.onFragmentBackPressed()
     }
 
     private fun updateReplySectionView() {
