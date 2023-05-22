@@ -79,14 +79,14 @@ object ShopLocationQuery {
     """.trimIndent()
 
     val keroGetRolloutEligibility = """
-        query KeroGetRolloutEligibility(${'$'}shop_id: Int, ${'$'}feature_id: String, ${'$'}device: String) {
-          keroGetRolloutEligibility(id: ${'$'}shop_id, feature_id: ${'$'}feature_id, device: ${'$'}device) {
+        query KeroGetRolloutEligibility(${'$'}id: Int!, ${'$'}feature_id: Int!, ${'$'}device: String) {
+          keroGetRolloutEligibility(id: ${'$'}id, feature_id: ${'$'}feature_id, device: ${'$'}device) {
             status
             data {
                 eligibility_state
-            } 
-            shipper_service_error {
-              code
+            }
+            error {
+              id
               detail
             }
           }

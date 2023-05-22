@@ -9,8 +9,8 @@ data class KeroGetRolloutEligibilityResponse(
 
 data class KeroGetRolloutEligibility(
     @SerializedName("status")
-    var status: Int = 0,
-    @SerializedName("shipper_service_error")
+    var status: String = "",
+    @SerializedName("error")
     var shipperServiceError: ShipperServiceError = ShipperServiceError(),
     @SerializedName("data")
     var data: DataEligibility = DataEligibility()
@@ -23,8 +23,8 @@ data class DataEligibility(
 )
 
 data class ShipperServiceError(
-    @SerializedName("code")
-    var code: Int = 0,
+    @SerializedName("id")
+    var id: Int = 0,
     @SerializedName("detail")
-    var detail: Int = 0
+    var detail: String = ""
 )
