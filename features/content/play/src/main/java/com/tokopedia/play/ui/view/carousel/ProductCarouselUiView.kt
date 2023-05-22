@@ -4,12 +4,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
@@ -32,17 +32,14 @@ class ProductCarouselUiView(
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                if (position > lastCompletelyVisible) return
                 listener.onProductClicked(this@ProductCarouselUiView, product, position)
             }
         },
         pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener {
             override fun onClicked(
                 viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product,
-                position: Int,
+                product: PlayProductUiModel.Product
             ) {
-                if (position > lastCompletelyVisible) return
                 listener.onProductClicked(
                     this@ProductCarouselUiView,
                     product,
@@ -68,10 +65,6 @@ class ProductCarouselUiView(
     }
 
     private val defaultItemDecoration = ProductFeaturedItemDecoration(context)
-
-    private val lastCompletelyVisible by lazyThreadSafetyNone {
-        layoutManager.findLastCompletelyVisibleItemPosition()
-    }
 
     init {
         binding.rvProductFeatured.itemAnimator = null
