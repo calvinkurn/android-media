@@ -31,11 +31,13 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_CATEGORY_SLUG = "category_slug"
+        private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
         @JvmStatic
-        fun newInstance(categorySlug : String): PromoVoucherDetailBottomSheet {
+        fun newInstance(categorySlug : String, promoVoucherCode: String): PromoVoucherDetailBottomSheet {
             return PromoVoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_CATEGORY_SLUG, categorySlug)
+                    putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
                 }
             }
         }
@@ -63,6 +65,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[PromoVoucherDetailViewModel::class.java] }
     private val categorySlug by lazy { arguments?.getString(BUNDLE_KEY_CATEGORY_SLUG).orEmpty() }
+    private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +112,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         binding?.run {
             btnUseVoucher.setOnClickListener {
                 binding?.btnUseVoucher?.startLoading()
-                viewModel.useVoucher()
+                viewModel.useVoucher(promoVoucherCode)
             }
 
             btnClaimVoucher.setOnClickListener {

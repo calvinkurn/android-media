@@ -477,10 +477,10 @@ open class ShopPageHomeFragment :
             useDarkBackground = false,
             promoVouchersCategorySlugs = listOf("HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY")
         )
-        bottomsheet.setOnVoucherClaim {
+        bottomsheet.setOnVoucherClaimSuccess {
 
         }
-        bottomsheet.setOnVoucherUse {
+        bottomsheet.setOnVoucherUseSuccess {
 
         }
         bottomsheet.show(childFragmentManager, bottomsheet.tag)

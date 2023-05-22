@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
@@ -23,6 +26,7 @@ import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -46,8 +50,8 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, false).orFalse() }
     private val promoVouchersCategorySlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS)?.toList().orEmpty() }
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
-    private var onVoucherClaim: (ExclusiveLaunchVoucher) -> Unit = {}
-    private var onVoucherUse: (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
+    private var onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherClick: (ExclusiveLaunchVoucher) -> Unit = {}
 
     init {
@@ -58,6 +62,9 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ExclusiveLaunchVoucherListViewModel::class.java] }
@@ -98,6 +105,10 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getExclusiveLaunchVouchers(promoVouchersCategorySlugs)
     }
 
@@ -134,61 +145,72 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         exclusiveLaunchAdapter.apply {
             setUseDarkBackground(useDarkBackground)
             setOnVoucherClick { selectedVoucherPosition ->
-                val selectedVoucher =
-                    exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
-                        ?: return@setOnVoucherClick
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 onVoucherClick(selectedVoucher)
-
                 dismiss()
             }
             setOnVoucherClaimClick { selectedVoucherPosition ->
-                val selectedVoucher =
-                    exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
-                        ?: return@setOnVoucherClaimClick
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClaimClick
                 showVoucherDetailBottomSheet(selectedVoucher)
             }
             setOnVoucherUseClick { selectedVoucherPosition ->
-                val selectedVoucher =
-                    exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition)
-                        ?: return@setOnVoucherUseClick
-                onVoucherUse(selectedVoucher)
-
-                //TODO: Route to "Produk Berkupon Khusus"
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherUseClick
+                redirectToVoucherProductPage(selectedVoucher.id)
                 dismiss()
             }
+        }
+    }
+
+    private fun redirectToVoucherProductPage(voucherId: Long) {
+        val route = UriUtil.buildUri(
+            ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+            userSession.shopId,
+            voucherId.toString()
+        )
+        context?.let {
+            RouteManager.route(context, route)
         }
     }
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
         if (!isAdded) return
+
         val categorySlug = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
             selectedVoucher.source.categorySlug
         } else {
             ""
         }
-        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(categorySlug = categorySlug)
 
-        bottomSheet.setOnVoucherRedeemSuccess { redeemResult ->
-            if (redeemResult.redeemMessage.isNotEmpty()) showToaster(redeemResult.redeemMessage)
+        val promoVoucherCode = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+            selectedVoucher.source.voucherCode
+        } else {
+            ""
         }
-        bottomSheet.setOnVoucherRedeemFailed { throwable ->
-            showToasterError(throwable)
-        }
-        bottomSheet.setOnVoucherUseSuccess {
-            showToaster(context?.getString(R.string.shop_page_use_voucher_success).orEmpty())
-        }
-        bottomSheet.setOnVoucherUseFailed { throwable ->
-            showToasterError(throwable)
+
+        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(
+            categorySlug = categorySlug,
+            promoVoucherCode = promoVoucherCode
+        ).apply {
+            setOnVoucherRedeemSuccess { redeemResult ->
+                dismiss()
+                if (redeemResult.redeemMessage.isNotEmpty()) showToaster(redeemResult.redeemMessage)
+            }
+            setOnVoucherRedeemFailed { throwable -> showToasterError(throwable) }
+            setOnVoucherUseSuccess {
+                dismiss()
+                showToaster(context?.getString(R.string.shop_page_use_voucher_success).orEmpty())
+            }
+            setOnVoucherUseFailed { throwable -> showToasterError(throwable) }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    fun setOnVoucherUse(onVoucherUse: (ExclusiveLaunchVoucher) -> Unit) {
-        this.onVoucherUse = onVoucherUse
+    fun setOnVoucherUseSuccess(onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherUseSuccess = onVoucherUseSuccess
     }
 
-    fun setOnVoucherClaim(onVoucherClaim: (ExclusiveLaunchVoucher) -> Unit) {
-        this.onVoucherClaim = onVoucherClaim
+    fun setOnVoucherClaimSuccess(onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherClaimSuccess = onVoucherClaimSuccess
     }
 
 

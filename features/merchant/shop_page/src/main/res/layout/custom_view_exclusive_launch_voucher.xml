@@ -54,20 +54,20 @@
         android:id="@+id/tpgClaim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="@string/shop_page_claim"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="@+id/tpgMinPurchase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/tpgBenefitName"
         app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/shop_page_claim" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.80" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
