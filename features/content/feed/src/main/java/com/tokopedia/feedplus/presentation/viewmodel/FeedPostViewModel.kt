@@ -137,6 +137,7 @@ class FeedPostViewModel @Inject constructor(
 
                         getRelevantPosts(postId)
                     } catch (e: Throwable) {
+                        Timber.e(e)
                         FeedModel.Empty
                     }.items
                 }

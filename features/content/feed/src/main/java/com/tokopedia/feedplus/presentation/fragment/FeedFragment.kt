@@ -969,7 +969,7 @@ class FeedFragment :
 
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.uiEvent.collect { event ->
                     if (event == null) return@collect
 
