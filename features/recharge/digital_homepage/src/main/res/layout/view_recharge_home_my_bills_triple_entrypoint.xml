@@ -41,7 +41,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:ellipsize="end"
                 android:lines="1"
-                app:typographyType="display_2"
+                app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:text="Bayar Sekaligus" />
 
@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_left"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:typographyType="display_3"
+                app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="2 tagihan siap dibayar" />
 
@@ -116,7 +116,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:ellipsize="end"
                 android:lines="1"
-                app:typographyType="display_2"
+                app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:text="Bayar Otomatis" />
 
@@ -134,7 +134,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_right"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:typographyType="display_3"
+                app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="Aktifkan Bayar Otomatis" />
 
@@ -169,7 +169,7 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toEndOf="@id/iv_product_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_2"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Top Up dan Tagihanku" />
 
@@ -198,7 +198,7 @@
             app:layout_constraintEnd_toStartOf="@id/iv_arrow_right"
             app:layout_constraintStart_toEndOf="@id/iv_product_icon"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
-            app:typographyType="display_3"
+            app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="Cek tagihan dan Bayar Otomatis di sini!" />
 
