@@ -136,20 +136,16 @@
                 app:typographyType="display_1"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgTnc"
+            <com.tokopedia.webview.TkpdWebView
+                android:id="@+id/webViewTnc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/shop_page_promo_period"
-                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelTnc"
-                app:typographyType="paragraph_2"
-                tools:text="1. Cashback OVO Points 100% hingga Rp20.000" />
+                app:layout_constraintTop_toBottomOf="@+id/labelTnc" />
 
             <View
                 android:id="@+id/divider2"
@@ -159,7 +155,7 @@
                 android:background="@color/Unify_NN50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgTnc" />
+                app:layout_constraintTop_toBottomOf="@+id/webViewTnc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelHowToUse"
@@ -175,19 +171,16 @@
                 app:typographyType="display_1"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgHowToUse"
+            <com.tokopedia.webview.TkpdWebView
+                android:id="@+id/webViewHowToUse"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelHowToUse"
-                app:typographyType="paragraph_2"
-                tools:text="1. Masuk ke halaman Kupon Saya dan pilih Kupon." />
+                app:layout_constraintTop_toBottomOf="@+id/labelHowToUse" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
