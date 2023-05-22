@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -38,18 +37,14 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -185,7 +180,6 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -1343,7 +1337,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(context,
+        ImageHandler.loadImageWithTarget(
+            context,
             shopShareData?.shopSnippetURL.orEmpty(),
             object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -1484,18 +1479,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         when (personaStatus) {
             STATUS_PERSONA_NOT_ROLLED_OUT -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId, shouldVisible = false
+                    userId = userSession.userId,
+                    shouldVisible = false
                 )
             }
             STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
                 showPersonaBottomSheet(personaStatus)
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId, shouldVisible = true
+                    userId = userSession.userId,
+                    shouldVisible = true
                 )
             }
             STATUS_PERSONA_SHOW_POPUP -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId, shouldVisible = true
+                    userId = userSession.userId,
+                    shouldVisible = true
                 )
             }
         }
