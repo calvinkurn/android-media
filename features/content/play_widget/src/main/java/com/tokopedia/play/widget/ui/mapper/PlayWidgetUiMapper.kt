@@ -147,7 +147,7 @@ class PlayWidgetUiMapper @Inject constructor(
         name = htmlTextTransformer.transform(partner.name),
         type = PartnerType.getTypeByValue(partner.type),
         avatarUrl = "",
-        badgeUrl = null,
+        badgeUrl = "",
         appLink = "",
     )
 

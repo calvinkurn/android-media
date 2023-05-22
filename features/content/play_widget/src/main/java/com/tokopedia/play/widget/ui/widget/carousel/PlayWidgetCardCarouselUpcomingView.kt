@@ -95,10 +95,12 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     }
 
     fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
-        val lottieComposition = LottieCompositionFactory.fromRawRes(
-            binding.root.context,
-            if (shouldRemind) R.raw.play_widget_lottie_reminder_off_on
-            else R.raw.play_widget_lottie_reminder_on_off
+        val lottieComposition = LottieCompositionFactory.fromUrl(
+            context,
+            context.getString(
+                if (shouldRemind) R.string.lottie_reminder_off_on
+                else R.string.lottie_reminder_on_off
+            )
         )
 
         lottieComposition.addListener { composition ->

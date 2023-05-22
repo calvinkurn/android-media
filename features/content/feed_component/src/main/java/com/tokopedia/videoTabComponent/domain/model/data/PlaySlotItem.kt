@@ -32,7 +32,7 @@ data class PlaySlotItems(
         @SerializedName("video")
         var video: PlayVideoStream = PlayVideoStream(),
         @SerializedName("pinned_product")
-        var pinned_product: List<PlayPinnedProduct> = emptyList(),
+        var pinnedProducts: List<PlayPinnedProduct> = emptyList(),
         @SerializedName("pinned_voucher")
         var pinned_voucher: List<PlayPinnedVoucher> = emptyList(),
         @SerializedName("pinned_message")

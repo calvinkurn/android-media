@@ -81,7 +81,7 @@ object PlayWidgetUiMock {
             "Tokopedia Play",
             PartnerType.Shop,
             "",
-            null,
+            "",
             "",
         ),
         video = getVideoUiModel(channelType),
