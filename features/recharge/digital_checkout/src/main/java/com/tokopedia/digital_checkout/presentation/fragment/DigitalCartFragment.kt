@@ -412,7 +412,7 @@ class DigitalCartFragment :
             if (!digitalSubscriptionParams.isSubscribed) {
                 renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
             }
-            if (cartInfo.collectionPointVersion.isNotEmpty()) {
+            if (cartInfo.collectionPointId.isNotEmpty()) {
                 productCollectionPointMetadata = CollectionPointMetadata(
                     cartInfo.collectionPointId,
                     cartInfo.collectionPointVersion
