@@ -3,7 +3,9 @@ package com.tokopedia.logisticseller.ui.reschedulepickup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import com.tokopedia.common_compose.components.ButtonSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -39,6 +41,7 @@ import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -77,6 +80,7 @@ fun ReschedulePickupScreen(
                     sheetState.show()
                 }
             } else {
+                setRescheduleBottomSheetState(bottomSheetState)
                 sheetState.hide()
             }
         }
@@ -98,12 +102,16 @@ fun ReschedulePickupScreen(
 
     Scaffold(topBar = {
         NestHeader(
-            title = stringResource(id = R.string.title_reschedule_pickup_activity),
-            showBackIcon = true,
-            onBackIconPressed = { onEvent(ReschedulePickupUiEvent.PressBack) }
+            type = NestHeaderType.SingleLine(
+                title = stringResource(id = R.string.title_reschedule_pickup_activity),
+                onBackClicked = {
+                    onEvent(ReschedulePickupUiEvent.PressBack)
+                }
+            )
         )
-    }) {
+    }) { paddingValues ->
         ModalBottomSheetLayout(
+            modifier = Modifier.padding(paddingValues),
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
             sheetContent = {
@@ -198,10 +206,11 @@ fun ReschedulePickupScreenLayout(
         }
         NestButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
+                .fillMaxWidth(),
+            size = ButtonSize.LARGE,
             text = stringResource(id = R.string.title_button_reschedule_pickup),
-            enabled = state.valid
+            isEnabled = state.valid
         ) {
             onEvent(ReschedulePickupUiEvent.SaveReschedule)
         }

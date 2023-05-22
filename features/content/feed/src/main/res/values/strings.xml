@@ -141,5 +141,12 @@ dari Feed.</string>
     <string name="dialog_delete_post_subtitle">Konten ini akan hilang dari Halamanmu jika dihapus, lho.</string>
     <string name="toast_delete_post_success">Konten berhasil dihapus</string>
     <string name="toast_delete_post_failed">Oops, gagal menghapus konten. Coba lagi, ya</string>
+    <string name="feed_reminder_set_success">Yay, kamu akan diingatkan sebelum %s dimulai.</string>
+    <string name="feed_reminder_unset_success">Pengingat telah dibatalkan</string>
+    <string name="feed_cta_ok_toaster">Oke</string>
+    <string name="feed_flash_sale">Flash Sale</string>
+    <string name="feed_special_release">Rilisan Spesial</string>
+    <string name="feed_video_time_less_than_hour">%d:%02d</string>
+    <string name="feed_video_time_hours">%d:%02d:%02d</string>
 
 </resources>

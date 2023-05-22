@@ -16,4 +16,15 @@
 
     <color name="feed_dms_right_overlay_0">#4D2E3137</color>
     <color name="feed_dms_right_overlay_1">#002E3137</color>
+
+    <color name="feed_dms_ribbon_flashsale_start">#D74049</color>
+    <color name="feed_dms_ribbon_flashsale_end">#F56958</color>
+
+    <color name="feed_dms_ribbon_general_start">#008849</color>
+    <color name="feed_dms_ribbon_general_end">#00AA5B</color>
+
+    <color name="feed_dms_ribbon_special_release_start">#4A3576</color>
+    <color name="feed_dms_ribbon_special_release_end">#58BCE4</color>
+
+    <color name="feed_dms_overlay">#B32E3137</color>
 </resources>

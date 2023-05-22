@@ -9,6 +9,7 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_NOT_SELECTED = 1033
     const val FEED_POST_SELECTED = 1044
     const val FEED_POST_FOLLOW_CHANGED = 1055
+    const val FEED_POST_COMMENT_COUNT = 1066
 }
 
 data class FeedViewHolderPayloads(

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/Unify_Static_Black">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_feed_video"
@@ -25,11 +25,10 @@
         layout="@layout/layout_feed_top_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.15"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view_bottom_overlay_bound"
@@ -38,19 +37,17 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         android:id="@+id/overlay_bottom"
         layout="@layout/layout_feed_bottom_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_bottom_overlay_bound"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_bottom_overlay_bound" />
 
     <include
         android:id="@+id/overlay_right"
@@ -58,10 +55,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.3"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_feed_video"
@@ -96,9 +92,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
-        app:layout_constraintEnd_toStartOf="@id/post_like_button"
+        app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
@@ -106,12 +103,14 @@
         android:id="@+id/tv_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
+        android:maxHeight="280dp"
         android:maxLines="2"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
-        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/layout_author_info"
         app:layout_constraintVertical_bias="100"
@@ -150,25 +149,21 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="18dp"
-        app:layout_constraintBottom_toTopOf="@id/comment_button"
+        app:layout_constraintBottom_toTopOf="@id/feed_comment_button"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/comment_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <include
+        android:id="@+id/feed_comment_button"
+        layout="@layout/layout_feed_comment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="18dp"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="CHAT"
         app:layout_constraintBottom_toTopOf="@id/share_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
@@ -200,8 +195,7 @@
         app:layout_constraintEnd_toEndOf="@id/share_button"
         app:layout_constraintStart_toStartOf="@id/share_button"
         app:unify_image_type="circle"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/product_tag_button"
@@ -259,8 +253,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:show_timeout="-1"
-        />
+        app:show_timeout="-1" />
 
     <com.tokopedia.feedplus.presentation.customview.FeedVideoTimeView
         android:id="@+id/video_time_view"
@@ -270,8 +263,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_play"
@@ -284,7 +276,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

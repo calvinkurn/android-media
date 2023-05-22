@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
@@ -50,7 +49,7 @@ class FeedMainViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
-    private val uiEventManager: UiEventManager<FeedMainEvent>,
+    private val uiEventManager: UiEventManager<FeedMainEvent>
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
@@ -59,7 +58,7 @@ class FeedMainViewModel @Inject constructor(
     private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
     val metaData get() = _metaData.asStateFlow()
 
-    private val _isPageResumed = MutableLiveData<Boolean>(false)
+    private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
@@ -75,7 +74,11 @@ class FeedMainViewModel @Inject constructor(
     val currentTabIndex: LiveData<Int>
         get() = _currentTabIndex
 
-    private val _swipeOnboardingState = MutableStateFlow(SwipeOnboardingStateModel.Empty)
+    private val _swipeOnboardingState = MutableStateFlow(
+        SwipeOnboardingStateModel.Empty.copy(
+            hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
+        )
+    )
 
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
@@ -96,6 +99,7 @@ class FeedMainViewModel @Inject constructor(
                     if (!isEligible) return@collectLatest
                     uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
 
+                    if (userSession.isLoggedIn) onboardingPreferences.setHasShownSwipeOnboarding()
                     _swipeOnboardingState.update { it.copy(hasShown = true) }
                 }
         }
@@ -107,6 +111,10 @@ class FeedMainViewModel @Inject constructor(
 
     fun pausePage() {
         _isPageResumed.value = false
+    }
+
+    fun changeCurrentTabByIndex(index: Int) {
+        _currentTabIndex.value = index
     }
 
     fun changeCurrentTabByType(type: String) {
@@ -230,15 +238,10 @@ class FeedMainViewModel @Inject constructor(
             }
         } ?: ""
 
-    fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
+    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                submitReportUseCase.setRequestParams(
-                    FeedComplaintSubmitReportUseCase.createParam(
-                        feedReportRequestParamModel
-                    )
-                )
-                submitReportUseCase.executeOnBackground()
+                submitReportUseCase(feedReportRequestParamModel)
             }
             if (response.data.success.not()) {
                 throw MessageErrorException("Error in Reporting")
@@ -272,11 +275,11 @@ class FeedMainViewModel @Inject constructor(
             creatorList.add(it)
         }
 
-        authorShopDataList?.find {
+        authorUserdataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)
-        } ?: authorUserdataList?.find {
+        } ?: authorShopDataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)

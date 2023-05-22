@@ -12,7 +12,6 @@ import com.tokopedia.people.domains.GetFollowerListUseCase
 import com.tokopedia.people.domains.GetFollowingListUseCase
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserFollowMapper
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

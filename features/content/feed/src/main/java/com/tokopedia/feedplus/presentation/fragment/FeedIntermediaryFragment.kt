@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.feedplus.databinding.FragmentFeedIntermediaryBinding
 import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
+import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
+import timber.log.Timber
 
 /**
  * Created by kenny.hadisaputra on 12/05/23
@@ -76,6 +77,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
                 false
             }
         } catch (t: Throwable) {
+            Timber.e(t)
             true
         }
     }

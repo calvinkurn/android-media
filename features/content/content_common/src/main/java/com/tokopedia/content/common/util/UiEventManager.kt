@@ -11,7 +11,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 17/03/23
  */
-class UiEventManager<T: UiEvent> @Inject constructor() {
+class UiEventManager<T : UiEvent> @Inject constructor() {
     private val mutex = Mutex()
 
     private val _events = MutableStateFlow(emptyList<T>())

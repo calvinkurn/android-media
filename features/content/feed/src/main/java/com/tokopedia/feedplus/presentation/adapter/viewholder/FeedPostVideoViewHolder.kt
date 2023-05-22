@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.LayoutRes
@@ -12,6 +13,9 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
@@ -24,6 +28,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
@@ -35,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 /**
  * Created By : Muhammad Furqan on 09/03/23
  */
+@SuppressLint("ClickableViewAccessibility")
 class FeedPostVideoViewHolder(
     private val binding: ItemFeedPostVideoBinding,
     private val listener: FeedListener,
@@ -49,6 +55,7 @@ class FeedPostVideoViewHolder(
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
+    private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
 
     private var mVideoPlayer: FeedExoPlayer? = null
     private var mData: FeedCardVideoContentModel? = null
@@ -79,6 +86,65 @@ class FeedPostVideoViewHolder(
                 }
             }
         })
+
+        binding.postLikeButton.likeButton.setOnClickListener {
+            val data = mData ?: return@setOnClickListener
+            listener.onLikePostCLicked(
+                data.id,
+                absoluteAdapterPosition,
+                trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                    data
+                ),
+                false
+            )
+        }
+
+        val postGestureDetector = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    val videoPlayer = mVideoPlayer ?: return true
+                    val data = mData ?: return true
+
+                    videoPlayer.getExoPlayer().playWhenReady =
+                        !videoPlayer.getExoPlayer().playWhenReady
+
+                    if (!videoPlayer.getExoPlayer().playWhenReady) {
+                        listener.onPauseVideoPost(
+                            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                                data
+                            )
+                        )
+                    }
+                    return true
+                }
+
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    val data = mData ?: return true
+                    if (data.like.isLiked.not()) {
+                        listener.onLikePostCLicked(
+                            data.id,
+                            absoluteAdapterPosition,
+                            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
+                                data
+                            ),
+                            true
+                        )
+                    }
+                    return true
+                }
+
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                }
+            })
+
+        binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
+            postGestureDetector.onTouchEvent(motionEvent)
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?) {
@@ -87,37 +153,6 @@ class FeedPostVideoViewHolder(
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
 
             with(binding) {
-                val postGestureDetector = GestureDetector(root.context,
-                    object : GestureDetector.SimpleOnGestureListener() {
-                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            return true
-                        }
-
-                        override fun onDoubleTap(e: MotionEvent): Boolean {
-                            if (data.like.isLiked.not()) {
-                                listener.onLikePostCLicked(
-                                    data.id,
-                                    data.like.isLiked,
-                                    absoluteAdapterPosition,
-                                    trackerDataModel
-                                        ?: trackerMapper.transformVideoContentToTrackerModel(data),
-                                    true
-                                )
-                            }
-                            return true
-                        }
-
-                        override fun onDown(e: MotionEvent): Boolean {
-                            return true
-                        }
-
-                        override fun onLongPress(e: MotionEvent) {
-                        }
-                    })
-                playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
-                    postGestureDetector.onTouchEvent(motionEvent)
-                }
-
                 bindAuthor(data)
                 bindCaption(data)
                 bindProductTag(data)
@@ -134,10 +169,7 @@ class FeedPostVideoViewHolder(
                         data.deletable,
                         data.reportable || data.isTypeProductHighlight,
                         FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
+                            data.text, data.id, data.author.id, absoluteAdapterPosition
                         ),
                         trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                             data
@@ -153,17 +185,6 @@ class FeedPostVideoViewHolder(
                         imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
                     )
                 }
-                postLikeButton.likeButton.setOnClickListener {
-                    listener.onLikePostCLicked(
-                        data.id,
-                        data.like.isLiked,
-                        absoluteAdapterPosition,
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        ),
-                        false
-                    )
-                }
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
                 }
@@ -172,23 +193,27 @@ class FeedPostVideoViewHolder(
     }
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
+        mData = element
         element?.let {
-            mData = it
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(it)
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED)) {
+            if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
                 setLikeUnlike(it.like)
             }
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE)) {
+
+            if (payloads.contains(FEED_POST_CLEAR_MODE)) {
                 showClearView()
             }
+
+            if (payloads.contains(FEED_POST_COMMENT_COUNT)) {
+                bindComments(it)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                         it
-                    ),
-                    it.id,
-                    absoluteAdapterPosition
+                    ), it.id, absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
@@ -198,6 +223,7 @@ class FeedPostVideoViewHolder(
                     )
                 )
             }
+
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
                 mVideoPlayer?.pause()
                 mVideoPlayer?.reset()
@@ -205,13 +231,14 @@ class FeedPostVideoViewHolder(
                 campaignView.resetView()
                 hideClearView()
             }
+
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
             }
+
             payloads.forEach { payload ->
                 if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
+                    element, payload.payloads.toMutableList()
                 )
             }
         }
@@ -255,7 +282,7 @@ class FeedPostVideoViewHolder(
     private fun bindLike(data: FeedCardVideoContentModel) {
         val like = data.like
         binding.postLikeButton.likedText.text = like.countFmt
-        likeAnimationView.setIsLiked(like.isLiked)
+        smallLikeAnimationView.setIsLiked(like.isLiked)
     }
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
@@ -309,10 +336,18 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindComments(model: FeedCardVideoContentModel) {
+        commentButtonView.bind(
+            if (model.isPlayContent) model.playChannelId else model.id,
+            model.isPlayContent,
+            model.comments.countFmt,
+            trackerDataModel,
+            absoluteAdapterPosition
+        )
+
         if (model.isTypeProductHighlight) {
-            binding.commentButton.hide()
+            commentButtonView.hide()
         } else {
-            binding.commentButton.show()
+            commentButtonView.show()
         }
     }
 
@@ -343,17 +378,6 @@ class FeedPostVideoViewHolder(
 
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
         binding.playerControl.player = videoPlayer.getExoPlayer()
-        binding.playerFeedVideo.videoSurfaceView?.setOnClickListener {
-            videoPlayer.getExoPlayer().playWhenReady = !videoPlayer.getExoPlayer().playWhenReady
-
-            if (!videoPlayer.getExoPlayer().playWhenReady) {
-                listener.onPauseVideoPost(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        element
-                    )
-                )
-            }
-        }
 
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
@@ -379,7 +403,7 @@ class FeedPostVideoViewHolder(
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
             postLikeButton.root.hide()
-            commentButton.hide()
+            commentButtonView.hide()
             menuButton.hide()
             shareButton.hide()
             overlayTop.root.hide()
@@ -388,8 +412,8 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
 
-        productTagView.showIfPossible()
-        productButtonView.showIfPossible()
+        productTagView.showClearView()
+        productButtonView.showClearView()
     }
 
     private fun hideClearView() {
@@ -397,7 +421,7 @@ class FeedPostVideoViewHolder(
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
             postLikeButton.root.show()
-            commentButton.show()
+            commentButtonView.show()
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
@@ -407,6 +431,9 @@ class FeedPostVideoViewHolder(
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
+
+        productTagView.showIfPossible()
+        productButtonView.showIfPossible()
     }
 
     override fun onViewRecycled() {

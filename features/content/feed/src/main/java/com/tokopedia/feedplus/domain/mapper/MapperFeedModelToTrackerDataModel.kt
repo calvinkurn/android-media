@@ -13,6 +13,10 @@ class MapperFeedModelToTrackerDataModel(
     val entryPoint: String
 ) {
 
+    companion object {
+        private const val DEFAULT_CAMPAIGN_NO_STATUS = "no"
+    }
+
     fun transformVideoContentToTrackerModel(
         model: FeedCardVideoContentModel
     ) =
@@ -28,7 +32,7 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
             entryPoint = entryPoint
         )
 
@@ -47,7 +51,7 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
             entryPoint = entryPoint
         )
 
@@ -67,7 +71,7 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
             entryPoint = entryPoint
         )
 
