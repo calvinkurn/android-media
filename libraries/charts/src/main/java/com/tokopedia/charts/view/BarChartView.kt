@@ -193,6 +193,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             setDrawGridLines(axisConfig.isGridEnabled)
             setDrawLabels(axisConfig.isLabelEnabled)
             setPosition(axisConfig.getLabelPosition())
+            textColor = axisConfig.textColor
         }
     }
 
@@ -207,6 +208,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             granularity = 1f
             setDrawLabels(axisConfig.isLabelEnabled)
             setDrawGridLines(axisConfig.isGridEnabled)
+            textColor = axisConfig.textColor
         }
     }
 }

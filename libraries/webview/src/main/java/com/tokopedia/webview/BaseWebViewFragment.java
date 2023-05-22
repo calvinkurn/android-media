@@ -637,6 +637,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebViewClient extends WebViewClient {
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String title = view.getTitle();
@@ -824,7 +833,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (uri.getPath().endsWith(".pdf") && url.startsWith("http")) {
+        if (handlePdfUri(uri)) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -938,6 +947,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handlePdfUri(Uri uri) {
+        // Handle e-pharmacy pdf & regular pdf url
+        return (uri.getPath().endsWith(".pdf") || url.endsWith(".pdf")) && url.startsWith("http");
     }
 
     private boolean handleWebUrlLogin(Uri uri) {

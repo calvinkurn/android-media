@@ -93,20 +93,20 @@ apply plugin: "org.jetbrains.dokka"
  * @return String
  */
 String generateBaseConfiguration() {
-    String footer = new File("docs/internal/footer.txt")
+    String footer = new File("$rootDir/docs/internal/footer.txt")
             .readLines()
             .join(" ")
             .trim()
             .toString()
 
     return """
-            {
-                "customStyleSheets": ["${file("docs/internal/css/logo-styles.css")}"],
-                "templatesDir": "${file("docs/internal/templates")}",
-                "separateInheritedMembers": true,
-                "footerMessage": "$footer"
-            }
-       """
+        {
+            "customStyleSheets": ["${file("$rootDir/docs/internal/css/logo-styles.css")}"],
+            "templatesDir": "${file("$rootDir/docs/internal/templates")}",
+            "separateInheritedMembers": true,
+            "footerMessage": "$footer"
+        }
+    """
 }
 
 // root module
@@ -123,8 +123,8 @@ tasks.withType(DokkaMultiModuleTask) {
     // Append the default main.css with a custom style.css
     // The style.css contains a custom css style for Tokopedia footer message
     doLast {
-        project.file("docs/styles/main.css").append(
-                project.file("docs/internal/css/style.css").text
+        project.file("$rootDir/docs/styles/main.css").append(
+                project.file("$rootDir/docs/internal/css/style.css").text
         )
     }
 }
