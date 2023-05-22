@@ -432,7 +432,10 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun checkIsUserAffiliate() {
-        if (!selectedAccount.isUser) return
+        if (!selectedAccount.isUser) {
+            _isAffiliate.update { false }
+            return
+        }
         val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
     }
