@@ -14,6 +14,13 @@ buildscript {
 }
 
 android {
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -44,6 +51,12 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
 
