@@ -4,7 +4,7 @@ import android.content.Context
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkConfig
-import com.gojek.onekyc.OneKycSdk
+import com.gojek.OneKycSdk
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider

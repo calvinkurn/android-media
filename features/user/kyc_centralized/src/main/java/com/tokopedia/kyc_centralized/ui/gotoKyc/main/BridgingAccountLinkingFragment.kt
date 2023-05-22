@@ -18,10 +18,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.gojek.kyc.sdk.core.extensions.checkSelfPermissionWithTryCatch
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -37,6 +37,7 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -54,6 +55,9 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[BridgingAccountLinkingViewModel::class.java]
     }
+
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
 
     private val startAccountLinkingForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.checkAccountLinkingStatus()
@@ -253,7 +257,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 viewModel.registerProgressiveUseCase(args.parameter.projectId)
             } else {
                 activity?.let {
-                    if (checkSelfPermissionWithTryCatch(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissionLocation.launch(Manifest.permission.CAMERA)
                     } else {
                         val parameter = CaptureKycDocumentsParam(

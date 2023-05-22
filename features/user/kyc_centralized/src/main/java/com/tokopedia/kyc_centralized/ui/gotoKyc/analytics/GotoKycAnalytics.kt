@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.analytics
 
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.track.builder.Tracker
 
 object GotoKycAnalytics {
@@ -67,20 +68,69 @@ object GotoKycAnalytics {
     private const val ACTION_VIEW_REVIEW_KTP_PAGE = "view on kyc review ktp page"
     private const val ACTION_VIEW_REVIEW_SELFIE_PAGE = "view on kyc review selfie page"
     private const val ACTION_SCAN_KTP_IMAGE = "scan ktp image"
+    private const val EVENT_CLICK_ACCOUNT = "clickAccount"
+    private const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
+    private const val KEY_TRACKER_ID = "trackerId"
+    private const val VALUE_TRACKER_ID_43322 = "43322"
+    private const val VALUE_TRACKER_ID_43323 = "43323"
+    private const val VALUE_TRACKER_ID_43324 = "43324"
+    private const val VALUE_TRACKER_ID_43325 = "43325"
+    private const val VALUE_TRACKER_ID_43327 = "43327"
+    private const val VALUE_TRACKER_ID_43329 = "43329"
+    private const val VALUE_TRACKER_ID_43330 = "43330"
+    private const val VALUE_TRACKER_ID_43333 = "43333"
+    private const val VALUE_TRACKER_ID_43334 = "43334"
+    private const val VALUE_TRACKER_ID_43335 = "43335"
+    private const val VALUE_TRACKER_ID_43337 = "43337"
+    private const val VALUE_TRACKER_ID_43339 = "43339"
+    private const val VALUE_TRACKER_ID_43340 = "43340"
+    private const val VALUE_TRACKER_ID_43341 = "43341"
+    private const val VALUE_TRACKER_ID_43343 = "43343"
+    private const val VALUE_TRACKER_ID_43602 = "43602"
+    private const val VALUE_TRACKER_ID_43603 = "43603"
+    private const val VALUE_TRACKER_ID_43604 = "43604"
+    private const val VALUE_TRACKER_ID_43605 = "43605"
+    private const val VALUE_TRACKER_ID_43606 = "43606"
+    private const val VALUE_TRACKER_ID_43607 = "43607"
+    private const val VALUE_TRACKER_ID_43608 = "43608"
+    private const val VALUE_TRACKER_ID_43609 = "43609"
+    private const val VALUE_TRACKER_ID_43610 = "43610"
+    private const val VALUE_TRACKER_ID_43611 = "43611"
+    private const val VALUE_TRACKER_ID_43612 = "43612"
+    private const val VALUE_TRACKER_ID_43613 = "43613"
+    private const val VALUE_TRACKER_ID_43614 = "43614"
+    private const val VALUE_TRACKER_ID_43615 = "43615"
+    private const val VALUE_TRACKER_ID_43616 = "43616"
+    private const val VALUE_TRACKER_ID_43618 = "43618"
+    private const val VALUE_TRACKER_ID_43620 = "43620"
+    private const val VALUE_TRACKER_ID_43623 = "43623"
+    private const val VALUE_TRACKER_ID_43624 = "43624"
+    private const val VALUE_TRACKER_ID_43625 = "43625"
+    private const val VALUE_TRACKER_ID_43626 = "43626"
+    private const val VALUE_TRACKER_ID_43627 = "43627"
+    private const val VALUE_TRACKER_ID_43628 = "43628"
+    private const val VALUE_TRACKER_ID_43629 = "43629"
+    private const val VALUE_TRACKER_ID_43630 = "43630"
+    private const val VALUE_TRACKER_ID_43631 = "43631"
+    private const val VALUE_TRACKER_ID_43632 = "43632"
+    private const val VALUE_TRACKER_ID_43633 = "43633"
+    private const val VALUE_TRACKER_ID_43634 = "43634"
+    private const val VALUE_TRACKER_ID_43635 = "43635"
     private const val LABEL_PROGRESSIVE = "progressive"
     private const val LABEL_NON_PROGRESSIVE = "non progressive"
-    private const val KEY_PROJECT_ID = "trackerId"
     private const val VALUE_BUSINESS_UNIT = "user platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
+    private const val AUTO = "auto"
+    private const val MANUAL = "manual"
 
-    //A5
+    //A5 , A2i and A3 (A5 wont do)
     fun sendViewKycOnboardingPage(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ONBOARDING_PAGE)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43324)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -90,11 +140,11 @@ object GotoKycAnalytics {
     //A1
     fun sendClickOnButtonAmbilKeuntungan(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_AMBIL_KEUNTUNGAN)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43322)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -104,11 +154,11 @@ object GotoKycAnalytics {
     //1a
     fun sendClickOnButtonBackFromOnboardingPage(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43323)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -118,11 +168,11 @@ object GotoKycAnalytics {
     //A25
     fun sendClickButtonPakaiKtpIni(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_PAKAI_KTP)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId ")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43623)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -132,11 +182,11 @@ object GotoKycAnalytics {
     //1r
     fun sendClickOnButtonTokopediaCareOnboardingPage(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_TOKOPEDIA_CARE)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId ")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43624)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -146,11 +196,11 @@ object GotoKycAnalytics {
     //A4
     fun sendClickOnButtonMulaiVerifikasi(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_MULAI_VERIFIKASI)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId ")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43325)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -158,13 +208,13 @@ object GotoKycAnalytics {
     }
 
     //1b
-    fun sendClickOnButtonClose(projectId: String, kycFlowType: String) {
+    fun sendClickOnButtonCloseOnboardingBottomSheet(projectId: String, kycFlowType: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_CLOSE_BUTTON)
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel("$projectId - $kycFlowType")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertGotoKycFlow(kycFlowType)} - $projectId ")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43630)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -174,11 +224,11 @@ object GotoKycAnalytics {
     //A6i or A6
     fun sendViewPendingPage(processingTime: String, projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_PENDING_PAGE)
             .setEventCategory(CATEGORY_PENDING_PAGE)
             .setEventLabel("$processingTime - $projectId")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43616)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -192,7 +242,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_PENDING_PAGE)
             .setEventLabel("$processingTime - $projectId")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -206,7 +256,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BALIK_HALAMAN_UTAMA)
             .setEventCategory(CATEGORY_PENDING_PAGE)
             .setEventLabel("$processingTime - $projectId")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -216,11 +266,11 @@ object GotoKycAnalytics {
     //A11 or A13
     fun sendViewSuccessPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_SUCCESS_PAGE)
             .setEventCategory(CATEGORY_SUCCESS_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43618)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -234,7 +284,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_SUCCESS_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -249,7 +299,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BALIK_HALAMAN_UTAMA)
             .setEventCategory(CATEGORY_SUCCESS_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -259,11 +309,11 @@ object GotoKycAnalytics {
     //A17 or A14
     fun sendViewRejectPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_REJECT_PAGE)
             .setEventCategory(CATEGORY_REJECT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43620)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -277,7 +327,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_REJECT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -291,7 +341,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_VERIFIKASI_ULANG)
             .setEventCategory(CATEGORY_REJECT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -305,7 +355,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_TOKOPEDIA_CARE)
             .setEventCategory(CATEGORY_REJECT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -315,11 +365,11 @@ object GotoKycAnalytics {
     //A26
     fun sendViewDobPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_DOB_PAGE)
             .setEventCategory(CATEGORY_DOB_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43625)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -333,7 +383,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_DOB_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -347,7 +397,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_CLOSE_CHOOSE_BIRTHDATE)
             .setEventCategory(CATEGORY_DOB_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -361,7 +411,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_CHOOSE_BIRTHDATE)
             .setEventCategory(CATEGORY_DOB_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -371,11 +421,11 @@ object GotoKycAnalytics {
     //A30
     fun sendClickButtonConfirmationDobPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_CONFIRMATION)
             .setEventCategory(CATEGORY_DOB_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43626)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -385,11 +435,11 @@ object GotoKycAnalytics {
     //A31
     fun sendViewDobPageFailed(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_DOB_PAGE_FAILED)
             .setEventCategory(CATEGORY_DOB_PAGE_FAILED)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43627)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -403,7 +453,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BALIK_HALAMAN_UTAMA)
             .setEventCategory(CATEGORY_DOB_PAGE_FAILED)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -413,11 +463,11 @@ object GotoKycAnalytics {
     //A33
     fun sendViewTimeoutPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_TIMEOUT_PAGE)
             .setEventCategory(CATEGORY_TIMEOUT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43628)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -431,7 +481,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_TIMEOUT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -446,7 +496,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_COBA_LAGI)
             .setEventCategory(CATEGORY_TIMEOUT_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -456,11 +506,11 @@ object GotoKycAnalytics {
     //A34
     fun sendViewConnectionIssuePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_CONNECTION_ISSUE_PAGE)
             .setEventCategory(CATEGORY_CONNECTION_ISSUE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43629)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -474,7 +524,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_CONNECTION_ISSUE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -488,7 +538,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_COBA_LAGI)
             .setEventCategory(CATEGORY_CONNECTION_ISSUE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -502,7 +552,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_SETTING)
             .setEventCategory(CATEGORY_CONNECTION_ISSUE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -510,13 +560,13 @@ object GotoKycAnalytics {
     }
 
     //B1
-    fun sendViewKtpPage(projectId: String) {
+    fun sendViewKtpPage(isManual: Boolean, projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_KTP_PAGE)
             .setEventCategory(CATEGORY_KTP_PAGE)
-            .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertCaptureMode(isManual)} - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43327)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -529,7 +579,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_SCAN_KTP_IMAGE)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel("$statusScan - $projectId")
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -543,7 +593,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -557,7 +607,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -571,7 +621,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_TIPS_CLOSE_BUTTON)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -581,11 +631,11 @@ object GotoKycAnalytics {
     //B2
     fun sendViewManualFotoKtpQuestion(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_MANUAL_FOTO_QUESTION)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43329)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -595,11 +645,11 @@ object GotoKycAnalytics {
     //2g
     fun sendClickButtonFotoManualKtpPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BUTTON_MANUAL)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43330)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -613,7 +663,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_BUTTON_OTOMATIS)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -627,7 +677,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_FOTO_MANUAL_CLOSE_BUTTON)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -637,11 +687,11 @@ object GotoKycAnalytics {
     //B3
     fun sendClickOnButtonCaptureKtpPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_CAPTURE)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43333)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -655,7 +705,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK_MANUAL_KTP)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -665,11 +715,11 @@ object GotoKycAnalytics {
     //B4
     fun sendViewGuideSelfiePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_GUIDE_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43334)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -679,11 +729,11 @@ object GotoKycAnalytics {
     //2k
     fun sendClickOnStartSelfie(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BUTTON_MULAI_SELFIE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43335)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -691,13 +741,13 @@ object GotoKycAnalytics {
     }
 
     //B5
-    fun sendViewSelfiePage(projectId: String) {
+    fun sendViewSelfiePage(isManual: Boolean, projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setEventLabel("${convertCaptureMode(isManual)} - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43337)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -711,7 +761,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_BACK_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -725,7 +775,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -739,7 +789,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_TIPS_CLOSE_BUTTON)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -749,11 +799,11 @@ object GotoKycAnalytics {
     //B6
     fun sendViewManualFotoSelfie(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_MANUAL_FOTO_QUESTION)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43339)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -763,11 +813,11 @@ object GotoKycAnalytics {
     //2r
     fun sendClickButtonFotoManualSelfiePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BUTTON_MANUAL)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43340)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -781,7 +831,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_BUTTON_OTOMATIS)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -795,7 +845,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_ON_FOTO_MANUAL_CLOSE_BUTTON)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -805,11 +855,11 @@ object GotoKycAnalytics {
     //B7
     fun sendClickOnButtonCaptureSelfiePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_CAPTURE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43343)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -823,7 +873,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK_MANUAL_SELFIE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -833,11 +883,11 @@ object GotoKycAnalytics {
     //B10
     fun sendViewReviewPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_REVIEW_PAGE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43602)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -851,7 +901,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -861,11 +911,11 @@ object GotoKycAnalytics {
     //2v
     fun sendClickOnKtpImageReviewPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_KTP_IMAGE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43603)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -879,7 +929,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS_KTP)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -889,11 +939,11 @@ object GotoKycAnalytics {
     //2x
     fun sendClickButtonRetakeKtp(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_RETAKE_KTP)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43604)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -903,11 +953,11 @@ object GotoKycAnalytics {
     //2y
     fun sendClickDeleteKtp(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_DELETE_KTP)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43605)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -917,11 +967,11 @@ object GotoKycAnalytics {
     //2z
     fun sendClickSelfieImage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_SELFIE_IMAGE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43606)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -935,7 +985,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS_SELFIE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -945,11 +995,11 @@ object GotoKycAnalytics {
     //2ab
     fun sendClickButtonRetakeSelfie(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_RETAKE_SELFIE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43607)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -959,11 +1009,11 @@ object GotoKycAnalytics {
     //2ac
     fun sendClickDeleteSelfie(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_DELETE_SELFIE)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43608)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -973,11 +1023,11 @@ object GotoKycAnalytics {
     //B11
     fun sendClickButtonKirimDocument(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BUTTON_KIRIM_DOKUMEN)
             .setEventCategory(CATEGORY_REVIEW_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43609)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -991,7 +1041,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_VIEW_REVIEW_KTP_PAGE)
             .setEventCategory(CATEGORY_REVIEW_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1005,7 +1055,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_REVIEW_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1019,7 +1069,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS)
             .setEventCategory(CATEGORY_REVIEW_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1029,11 +1079,11 @@ object GotoKycAnalytics {
     //2af
     fun sendClickOnButtonFotoUlangReviewKtpPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_FOTO_ULANG)
             .setEventCategory(CATEGORY_REVIEW_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43610)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1043,11 +1093,11 @@ object GotoKycAnalytics {
     //2ag
     fun sendClickOnButtonPakaiFotoIniReviewKtpPage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_PAKAI_FOTO_INI)
             .setEventCategory(CATEGORY_REVIEW_KTP_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43611)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1061,7 +1111,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_VIEW_REVIEW_SELFIE_PAGE)
             .setEventCategory(CATEGORY_REVIEW_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1075,7 +1125,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_BACK)
             .setEventCategory(CATEGORY_REVIEW_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1089,7 +1139,7 @@ object GotoKycAnalytics {
             .setEventAction(ACTION_CLICK_BUTTON_LIHAT_TIPS)
             .setEventCategory(CATEGORY_REVIEW_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1099,11 +1149,11 @@ object GotoKycAnalytics {
     //2aj
     fun sendClickOnButtonFotoUlangReviewSelfiePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_FOTO_ULANG)
             .setEventCategory(CATEGORY_REVIEW_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43612)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -1113,15 +1163,37 @@ object GotoKycAnalytics {
     //2ak
     fun sendClickOnButtonPakaiFotoIniReviewSelfiePage(projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_PAKAI_FOTO_INI)
             .setEventCategory(CATEGORY_REVIEW_SELFIE_PAGE)
             .setEventLabel(projectId)
-            .setCustomProperty(KEY_PROJECT_ID, "")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43613)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
             .send()
+    }
+
+    private fun convertCaptureMode(isManual: Boolean): String {
+        return if (isManual) {
+            MANUAL
+        } else {
+            AUTO
+        }
+    }
+
+    private fun convertGotoKycFlow(kycFlowType: String): String {
+        return when (kycFlowType) {
+            KYCConstant.GotoKycFlow.PROGRESSIVE -> {
+                LABEL_PROGRESSIVE
+            }
+            KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
+                LABEL_NON_PROGRESSIVE
+            }
+            else -> {
+                ""
+            }
+        }
     }
 
 }

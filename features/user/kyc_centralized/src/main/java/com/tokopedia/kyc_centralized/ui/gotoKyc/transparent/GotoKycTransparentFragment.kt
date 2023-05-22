@@ -11,7 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.gojek.onekyc.OneKycSdk
+import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -28,7 +28,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -43,12 +43,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var projectIdInterceptor: ProjectIdInterceptor
+    lateinit var kycSharedPreference: KycSharedPreference
 
     @Inject
     lateinit var oneKycSdk: OneKycSdk
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        kycSharedPreference.removeProjectId()
         activity?.setResult(result.resultCode)
         activity?.finish()
     }
@@ -67,7 +68,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
-        projectIdInterceptor.setProjectId(projectId.toString())
+        kycSharedPreference.saveProjectId(projectId.toString())
         validationParameter(projectId = projectId, source = source)
         initObserver()
     }
@@ -75,6 +76,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     private fun validationParameter(projectId: String?, source: String?) {
         if (projectId?.toIntOrNull() == null) {
             // TODO: set toaster why activity finish
+            kycSharedPreference.removeProjectId()
             activity?.finish()
         } else {
             // set value project id
@@ -113,6 +115,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
+                    kycSharedPreference.removeProjectId()
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -129,6 +132,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
+                    kycSharedPreference.removeProjectId()
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -208,6 +212,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         )
 
         onBoardProgressiveBottomSheet.setOnDismissListener {
+            kycSharedPreference.removeProjectId()
             activity?.setResult(Activity.RESULT_CANCELED)
             activity?.finish()
         }
@@ -226,6 +231,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         )
 
         onBoardNonProgressiveBottomSheet.setOnDismissListener {
+            kycSharedPreference.removeProjectId()
             activity?.setResult(Activity.RESULT_CANCELED)
             activity?.finish()
         }
@@ -235,7 +241,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    override fun getScreenName(): String = SCREEN_NAME
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
@@ -244,7 +250,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     companion object {
         private const val TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE = "bottom_sheet_non_progressive"
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
-        private val SCREEN_NAME = GotoKycTransparentFragment::class.java.simpleName
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
     }

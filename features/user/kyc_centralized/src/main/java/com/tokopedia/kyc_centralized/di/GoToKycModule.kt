@@ -1,9 +1,10 @@
 package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.gojek.OneKycSdk
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
-import com.gojek.kyc.plus.card.KycPlusDefaultCard
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
@@ -11,7 +12,6 @@ import com.gojek.kyc.sdk.config.KycSdkConfig
 import com.gojek.kyc.sdk.config.KycSdkUserInfo
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
-import com.gojek.onekyc.OneKycSdk
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
@@ -22,6 +22,8 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -37,6 +39,19 @@ import java.util.concurrent.TimeUnit
 open class GoToKycModule {
 
     private val NET_RETRY = 3
+    private val sharedPreferenceName = "kyc_centralized"
+
+    @ActivityScope
+    @Provides
+    fun provideSharedPreference(
+        @ApplicationContext context: Context
+    ): SharedPreferences = context.getSharedPreferences(sharedPreferenceName, Context.MODE_PRIVATE)
+
+    @ActivityScope
+    @Provides
+    open fun provideKycPrefInterface(pref: SharedPreferences): KycSharedPreference {
+        return KycSharedPreferenceImpl(pref)
+    }
 
     @ActivityScope
     @Provides

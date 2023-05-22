@@ -124,7 +124,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toCaptureKycDocuments)
     }
 
-    override fun getScreenName(): String = SCREEN_NAME
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
@@ -138,6 +138,5 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         const val PAGE_BRIDGING_ACCOUNT_LINKING = "page_bridging_page"
         const val PAGE_DOB_CHALLENGE = "page_challenge"
         const val PARAM_DATA = "parameter"
-        private val SCREEN_NAME = GotoKycRouterFragment::class.java.simpleName
     }
 }

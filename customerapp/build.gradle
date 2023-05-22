@@ -291,7 +291,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
-    implementation("com.gojek.android:kyc-plus-theme:0.1.37Pre19@aar")
+    implementation("com.gojek.android:OneKycResources:0.1.38Pre3@aar")
 
     implementation platform(rootProject.ext.firebase.bom)
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)

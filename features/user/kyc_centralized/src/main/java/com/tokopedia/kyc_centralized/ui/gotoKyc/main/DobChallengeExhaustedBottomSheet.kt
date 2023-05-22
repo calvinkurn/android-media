@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.getFormattedDate
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycDobChallengeFailedBinding
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -15,6 +16,7 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycDobChallengeFailedBinding>()
 
+    private var projectId = ""
     private var source = ""
     private var cooldownTimeInSeconds = ""
     private var maximumAttemptsAllowed = ""
@@ -22,6 +24,7 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
             cooldownTimeInSeconds = it.getString(COOLDOWN_TIME_IN_SECONDS).orEmpty()
             maximumAttemptsAllowed = it.getString(MAXIMUM_ATTEMPTS_ALLOWED).orEmpty()
@@ -42,6 +45,7 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        GotoKycAnalytics.sendViewDobPageFailed(projectId = projectId)
         setUpView()
         initListener()
     }
@@ -77,6 +81,7 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        private const val PROJECT_ID = "projectId"
         private const val SOURCE = "source"
         private const val ONE_SECOND_IN_MILLIS = 1000
         private const val ONE_MINUTE_IN_MILLIS = 60000
@@ -84,9 +89,10 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
         private const val COOLDOWN_TIME_IN_SECONDS = "cooldownTimeInSeconds"
         private const val MAXIMUM_ATTEMPTS_ALLOWED = "maximumAttemptsAllowed"
 
-        fun newInstance(source: String, cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) =
+        fun newInstance(projectId: String, source: String, cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) =
             DobChallengeExhaustedBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
                     putString(COOLDOWN_TIME_IN_SECONDS, cooldownTimeInSeconds)
                     putString(MAXIMUM_ATTEMPTS_ALLOWED, maximumAttemptsAllowed)

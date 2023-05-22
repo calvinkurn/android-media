@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.gojek.kyc.sdk.core.broadcast.KycSdkStatusPublisher
 import com.gojek.kyc.sdk.core.constants.UnifiedKycFlowResult
-import com.gojek.kyc.sdk.core.extensions.checkSelfPermissionWithTryCatch
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
-import com.gojek.onekyc.OneKycSdk
+import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -99,7 +99,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     private fun gotoCaptureKycDocuments() {
         activity?.let {
-            if (checkSelfPermissionWithTryCatch(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             } else {
