@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.di.module.CategoryUseCaseModule.Companion.MAIN_CATEGORY_HEADER_USE_CASE_NAME
@@ -25,12 +26,14 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addReci
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeRecipeProgressBar
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateShowcaseQuantity
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryHeaderUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Result
@@ -96,7 +99,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                     model = categoryPage,
                     categoryIdL2 = categoryL2Model.id,
                     title = categoryL2Model.title,
-                    seeAllAppLink = categoryL2Model.appLink
+                    seeAllAppLink = categoryL2Model.appLink,
+                    miniCartData = miniCartData
                 )
             } else {
                 layout.addCategoryShowcase(
@@ -104,7 +108,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                     categoryIdL2 = categoryL2Model.id,
                     title = categoryL2Model.title,
                     state = TokoNowLayoutState.SHOW,
-                    seeAllAppLink = categoryL2Model.appLink
+                    seeAllAppLink = categoryL2Model.appLink,
+                    miniCartData = miniCartData
                 )
             }
 
@@ -133,7 +138,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         categoryL2Models.take(BATCH_SHOWCASE_TOTAL).forEach { categoryL2Model ->
             layout.addCategoryShowcase(
                 categoryIdL2 = categoryL2Model.id,
-                state = TokoNowLayoutState.LOADING
+                state = TokoNowLayoutState.LOADING,
+                miniCartData = miniCartData
             )
         }
     }
@@ -228,5 +234,16 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         layout.clear()
         getCategoryHeader(navToolbarHeight)
         _isOnScrollNotNeeded.value = false
+    }
+
+    override fun updateProductCartQuantity(productId: String, quantity: Int, layoutType: CategoryLayoutType) {
+        miniCartData?.apply {
+            layout.updateProductQuantity(productId, quantity, layoutType)
+        }
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
+        layout.updateShowcaseQuantity(miniCartData)
     }
 }

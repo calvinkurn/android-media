@@ -50,7 +50,7 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <com.tokopedia.minicart.common.widget.MiniCartWidget
-            android:id="@+id/tokonowSearchCategoryMiniCart"
+            android:id="@+id/mini_cart_widget"
             android:layout_width="0dp"
             android:visibility="gone"
             android:layout_height="wrap_content"

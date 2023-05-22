@@ -4,18 +4,24 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.ProductRecommendationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -46,6 +52,9 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     override val categoryIdL3: String
         get() = String.EMPTY
 
+    override val shopId: String
+        get() = viewModel.getShopId().toString()
+
     override val currentCategoryId: String
         get() = viewModel.categoryIdL1
 
@@ -54,6 +63,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
             typeFactory = CategoryAdapterTypeFactory(
                 categoryTitleListener = createTitleCallback(),
                 categoryNavigationListener = createCategoryNavigationCallback(),
+                categoryShowcaseItemListener = createCategoryShowcaseItemCallback(),
                 tokoNowView = createTokoNowViewCallback(),
                 tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
                 tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
@@ -64,6 +74,11 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     }
 
     override fun initInjector() = getComponent(CategoryComponent::class.java).inject(this)
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel.getMiniCart()
+        productRecommendationViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,10 +100,21 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         )
     }
 
+    override fun getMiniCart() {
+        viewModel.getMiniCart()
+    }
+
     private fun observer() {
         observeCategoryHeader()
         observeCategoryPage()
         observeIsScrollNotNeeded()
+        observeMiniCart()
+        observeAddToCart()
+        observeUpdateCartItem()
+        observeRemoveCartItem()
+        observeProductRecomAddToCart()
+        observeProductRecomRemoveCartItem()
+        observeProductRecomUpdateCartItem()
     }
 
     private fun observeCategoryHeader() {
@@ -127,6 +153,100 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         }
     }
 
+    private fun observeMiniCart() {
+        viewModel.miniCart.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    val data = it.data
+                    showMiniCart(data)
+                    setupPadding(data)
+                    productRecommendationViewModel.updateMiniCartSimplified(it.data)
+                }
+                is Fail -> {
+                    hideMiniCart()
+                    resetPadding()
+                }
+            }
+        }
+    }
+
+    private fun observeAddToCart() {
+        viewModel.addItemToCart.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessAddItemToCart(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+    }
+
+    private fun observeUpdateCartItem() {
+        viewModel.updateCartItem.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val shopIds = listOf(shopId)
+                    binding?.miniCartWidget?.updateData(shopIds)
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeRemoveCartItem() {
+        observe(viewModel.removeCartItem) {
+            when (it) {
+                is Success -> onSuccessRemoveCartItem(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+    }
+
+    private fun observeProductRecomAddToCart() {
+        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessAddItemToCart(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+    }
+
+    private fun observeProductRecomUpdateCartItem() {
+        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val shopIds = listOf(shopId)
+                    binding?.miniCartWidget?.updateData(shopIds)
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeProductRecomRemoveCartItem() {
+        observe(productRecommendationViewModel.removeCartItem) {
+            when (it) {
+                is Success -> onSuccessRemoveCartItem(it.data)
+                is Fail -> showErrorToaster(it)
+            }
+        }
+    }
+
+
+    private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
+        showToaster(message = data.second)
+        getMiniCart()
+    }
+
+
     /**
      * Callback Sections
      */
@@ -138,6 +258,20 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     private fun createCategoryNavigationCallback() = CategoryNavigationCallback()
 
+    private fun createCategoryShowcaseItemCallback() = CategoryShowcaseItemCallback(
+        context = context,
+        shopId = shopId,
+        startActivityForResult = ::startActivityForResult,
+        onCartQuantityChangedListener = { position, product, quantity ->
+            viewModel.onCartQuantityChanged(
+                productId = product.productCardModel.productId,
+                quantity = quantity,
+                shopId = shopId,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            )
+        }
+    )
+
     private fun createTokoNowViewCallback() = TokoNowViewCallback(
         fragment = this@TokoNowCategoryMainFragment
     ) {
@@ -148,7 +282,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     private fun createTokoNowChooseAddressWidgetCallback() = TokoNowChooseAddressWidgetCallback()
 
-    private fun createProductRecommendationCallback() = ProductRecommendationCallback(
+    private fun createProductRecommendationCallback() = CategoryProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         activity = activity,
         startActivityForResult = ::startActivityForResult

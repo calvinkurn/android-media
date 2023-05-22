@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
@@ -18,9 +17,8 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
-import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 
-class ProductRecommendationCallback(
+class CategoryProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val activity: FragmentActivity?,
     private val startActivityForResult: (Intent, Int) -> Unit,
@@ -44,17 +42,17 @@ class ProductRecommendationCallback(
         productId: String,
         shopId: String
     ) {
-//        activity?.apply {
-//            AtcVariantHelper.goToAtcVariant(
-//                context = this,
-//                productId = productId,
-//                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-//                isTokoNow = true,
-//                shopId = shopId,
-//                trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdForTracking),
-//                startActivitResult = startActivityForResult,
-//            )
-//        }
+        activity?.apply {
+            AtcVariantHelper.goToAtcVariant(
+                context = this,
+                productId = productId,
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                isTokoNow = true,
+                shopId = shopId,
+                trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, "CategoryIdLv1"),
+                startActivitResult = startActivityForResult,
+            )
+        }
     }
 
     override fun productCardClicked(
@@ -63,19 +61,7 @@ class ProductRecommendationCallback(
         isLogin: Boolean,
         userId: String
     ) {
-//        val recommendationItem =
-//            ProductRecommendationMapper.mapProductItemToRecommendationItem(product)
-//        SearchResultTracker.trackClickProduct(
-//            position,
-//            eventLabel,
-//            eventActionClicked,
-//            eventCategory,
-//            getListValue(recommendationItem),
-//            userId,
-//            recommendationItem
-//        )
-//
-//        RouteManager.route(activity, product.appLink)
+        RouteManager.route(activity, product.appLink)
     }
 
     override fun productCardImpressed(

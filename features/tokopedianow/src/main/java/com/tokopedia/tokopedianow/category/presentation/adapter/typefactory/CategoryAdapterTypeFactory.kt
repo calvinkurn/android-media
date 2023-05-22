@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiM
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder.CategoryNavigationListener
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder.CategoryTitleListener
@@ -35,6 +36,7 @@ import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategory
 class CategoryAdapterTypeFactory(
     private val categoryTitleListener: CategoryTitleListener? = null,
     private val categoryNavigationListener: CategoryNavigationListener? = null,
+    private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
     private val tokoNowView: TokoNowView? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
@@ -73,7 +75,8 @@ class CategoryAdapterTypeFactory(
                 listener = categoryNavigationListener
             )
             CategoryShowcaseViewHolder.LAYOUT -> CategoryShowcaseViewHolder(
-                itemView = view
+                itemView = view,
+                categoryShowcaseItemListener = categoryShowcaseItemListener
             )
 
             /* Common Component View Holder */

@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryShowcaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
@@ -18,7 +19,8 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryShowcaseBi
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryShowcaseViewHolder(
-    itemView: View
+    itemView: View,
+    private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
     companion object {
         private const val SPAN_COUNT = 3
@@ -79,12 +81,14 @@ class CategoryShowcaseViewHolder(
         rvCategory.show()
         divider.show()
         showcaseShimmering.categoryShimmeringLayout.hide()
-        adapter?.submitList(element.categoryListUiModel.orEmpty())
+        adapter?.submitList(element.productListUiModels.orEmpty())
     }
 
     private fun ItemTokopedianowCategoryShowcaseBinding.initRecyclerView() {
         adapter = CategoryShowcaseAdapter(
-            typeFactory = CategoryShowcaseAdapterTypeFactory(),
+            typeFactory = CategoryShowcaseAdapterTypeFactory(
+                categoryShowcaseItemListener = categoryShowcaseItemListener
+            ),
             differ = CategoryDiffer()
         )
 

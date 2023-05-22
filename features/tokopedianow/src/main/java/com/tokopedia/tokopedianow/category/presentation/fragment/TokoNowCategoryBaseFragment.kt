@@ -10,15 +10,22 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -32,18 +39,21 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     ScreenShotListener,
     ShareBottomsheetListener,
-    PermissionListener
+    PermissionListener,
+    MiniCartWidgetListener
 {
     private companion object {
         const val SCROLL_DOWN_DIRECTION = 1
@@ -60,6 +70,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     abstract val categoryIdL2: String
     abstract val categoryIdL3: String
     abstract val currentCategoryId: String
+    abstract val shopId: String
     abstract val adapter: CategoryAdapter
 
     protected var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
@@ -89,6 +100,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
+        getMiniCart()
         screenshotDetector?.start()
     }
 
@@ -381,4 +393,104 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             }
         }
     }
+
+    protected fun showMiniCart(data: MiniCartSimplifiedData) {
+        val miniCartWidget = binding?.miniCartWidget
+        val showMiniCartWidget = data.isShowMiniCartWidget
+
+        if(showMiniCartWidget) {
+            val pageName = MiniCartAnalytics.Page.HOME_PAGE
+            val shopIds = listOf(shopId)
+            val source = MiniCartSource.TokonowHome
+            miniCartWidget?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = this,
+                pageName = pageName,
+                source = source
+            )
+            miniCartWidget?.show()
+        } else {
+            hideMiniCart()
+        }
+    }
+
+    protected fun setupPadding(data: MiniCartSimplifiedData) {
+        binding?.miniCartWidget?.post {
+            val paddingZero = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+            ).orZero()
+
+            val paddingBottom = if (data.isShowMiniCartWidget) {
+                getMiniCartHeight()
+            } else {
+                paddingZero
+            }
+            binding?.rvCategory?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
+        }
+    }
+
+    private fun getMiniCartHeight(): Int {
+        val space16 = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+        )?.toInt().orZero()
+        return binding?.miniCartWidget?.height.orZero() - space16
+    }
+
+    fun resetPadding() {
+        val paddingZero = context?.resources?.getDimensionPixelSize(
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+        ).orZero()
+        binding?.rvCategory?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
+    }
+
+    fun hideMiniCart() {
+        binding?.miniCartWidget?.hide()
+    }
+
+    abstract fun getMiniCart()
+
+    protected fun onSuccessAddItemToCart(data: AddToCartDataModel) {
+        val message = data.errorMessage.joinToString(separator = ", ")
+        val actionText = getString(R.string.tokopedianow_toaster_see)
+        showToaster(message = message, actionText = actionText, onClickAction = {
+            showMiniCartBottomSheet()
+        })
+        getMiniCart()
+    }
+
+    protected fun showToaster(
+        message: String,
+        duration: Int = Toaster.LENGTH_SHORT,
+        type: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        onClickAction: View.OnClickListener = View.OnClickListener { }
+    ) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = getMiniCartHeight()
+                val toaster = Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = onClickAction
+                )
+                toaster.show()
+            }
+        }
+    }
+
+    protected fun showErrorToaster(error: Fail) {
+        showToaster(
+            message = error.throwable.message.orEmpty(),
+            type = Toaster.TYPE_ERROR
+        )
+    }
+
+    private fun showMiniCartBottomSheet() {
+        binding?.miniCartWidget?.showMiniCartListBottomSheet(this)
+    }
+
 }

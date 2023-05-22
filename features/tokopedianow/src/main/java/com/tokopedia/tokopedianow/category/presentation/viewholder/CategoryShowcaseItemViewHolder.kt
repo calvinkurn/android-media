@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryShowcaseItemViewHolder(
     itemView: View,
-    private var listener: ProductCardCarouselItemListener? = null
+    private var listener: CategoryShowcaseItemListener? = null
 ) : AbstractViewHolder<CategoryShowcaseItemUiModel>(itemView) {
 
     companion object {
@@ -62,7 +62,7 @@ class CategoryShowcaseItemViewHolder(
         }
     }
 
-    interface ProductCardCarouselItemListener {
+    interface CategoryShowcaseItemListener {
         fun onProductCardAddVariantClicked(
             position: Int,
             product: CategoryShowcaseItemUiModel
