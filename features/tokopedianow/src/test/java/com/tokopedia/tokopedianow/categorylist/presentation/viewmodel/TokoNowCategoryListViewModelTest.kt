@@ -4,13 +4,13 @@ import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.data.createCategoryList
 import org.junit.Test
 
-class TokoNowCategoryListViewModelTest: TokoNowCategoryListViewModelTestFixture() {
+class TokoNowCategoryListViewModelTest : TokoNowCategoryListViewModelTestFixture() {
 
     @Test
     fun `when getting categorylist should run and give the success result`() {
         onGetCategoryList_thenReturn(createCategoryList())
 
-        viewModelTokoNow.getCategoryList("1123")
+        viewModelTokoNow.getCategoryList()
 
         verifyGetCategoryListUseCaseCalled()
 
@@ -22,9 +22,8 @@ class TokoNowCategoryListViewModelTest: TokoNowCategoryListViewModelTestFixture(
     fun `when getting categorylist should throw exception and get the failed result`() {
         onGetCategoryList_thenReturn(Exception())
 
-        viewModelTokoNow.getCategoryList("1123")
+        viewModelTokoNow.getCategoryList()
 
         verifyGetCategoryListResponseFail()
     }
-
 }

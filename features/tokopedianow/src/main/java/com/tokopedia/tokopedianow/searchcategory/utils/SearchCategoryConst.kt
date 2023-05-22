@@ -4,6 +4,7 @@ internal const val TOKONOW_QUERY_PARAMS = "tokonow_query_params"
 internal const val CATEGORY_ID = "categoryID"
 internal const val SLUG = "slug"
 internal const val WAREHOUSE_ID = "warehouseID"
+internal const val WAREHOUSES = "warehouses"
 internal const val TYPE = "type"
 
 internal const val TOKONOW = "tokonow"

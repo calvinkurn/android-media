@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -11,12 +12,12 @@ class GetCategoryListUseCase @Inject constructor(
 ) : GraphqlUseCase<GetCategoryListResponse>(graphqlRepository) {
 
     companion object {
-        private const val PARAM_WAREHOUSE_ID = "warehouseID"
+        private const val PARAM_WAREHOUSES = "warehouses"
         private const val PARAM_DEPTH = "depth"
 
         private val QUERY = """
-            query TokonowCategoryTree(${'$'}warehouseID:String!, ${'$'}depth:Int!){
-                TokonowCategoryTree(warehouseID:${'$'}warehouseID, depth:${'$'}depth){
+            query TokonowCategoryTree(${'$'}warehouses:[WarehousePerService!], ${'$'}depth:Int!){
+                TokonowCategoryTree(warehouses:${'$'}warehouses, depth:${'$'}depth){
                     header{
                         process_time
                         messages
@@ -50,9 +51,9 @@ class GetCategoryListUseCase @Inject constructor(
         setTypeClass(GetCategoryListResponse::class.java)
     }
 
-    suspend fun execute(warehouseId: String, depth: Int): GetCategoryListResponse.CategoryListResponse {
+    suspend fun execute(warehouses: List<WarehouseData>, depth: Int): GetCategoryListResponse.CategoryListResponse {
         val requestParams = RequestParams.create().apply {
-            putString(PARAM_WAREHOUSE_ID, warehouseId)
+            putObject(PARAM_WAREHOUSES, warehouses)
             putInt(PARAM_DEPTH, depth)
         }
         setRequestParams(requestParams.parameters)

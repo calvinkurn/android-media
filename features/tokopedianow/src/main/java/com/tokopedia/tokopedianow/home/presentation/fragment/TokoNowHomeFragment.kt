@@ -1958,7 +1958,7 @@ class TokoNowHomeFragment :
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
         return HomeCategoryMenuCallback(
             analytics = analytics,
-            warehouseId = localCacheModel?.warehouse_id.orEmpty(),
+            localCacheModel = localCacheModel,
             viewModel = viewModelTokoNow,
         )
     }

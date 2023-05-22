@@ -32,7 +32,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
@@ -233,7 +232,7 @@ object HomeLayoutMapper {
         firstOrNull { it?.layout is TokoNowCategoryMenuUiModel }?.let {
             val item = it.layout as TokoNowCategoryMenuUiModel
             val newItem = if (!response.isNullOrEmpty()) {
-                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
                 val categoryList = mapToCategoryList(
                     response = response,
                     headerName = item.title,

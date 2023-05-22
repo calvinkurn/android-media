@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesResponseToLocal
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import java.util.*
 import javax.inject.Inject
 
@@ -51,4 +52,6 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     fun getWarehouseId() = localAddressData.warehouse_id.toLongOrZero()
 
     fun getShopId() = localAddressData.shop_id.toLongOrZero()
+
+    fun getWarehousesData() = AddressMapper.mapToWarehousesData(localAddressData)
 }
