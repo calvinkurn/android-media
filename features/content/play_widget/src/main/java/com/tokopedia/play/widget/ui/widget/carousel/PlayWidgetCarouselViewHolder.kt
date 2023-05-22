@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.ext.isMuted
@@ -35,6 +36,13 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     product: PlayWidgetProduct
                 ) {
                     listener.onProductClicked(view, product, absoluteAdapterPosition)
+                }
+
+                override fun onPartnerClicked(
+                    view: PlayWidgetCardCarouselChannelView,
+                    partner: PlayWidgetPartnerUiModel
+                ) {
+                    listener.onPartnerClicked(view, partner, absoluteAdapterPosition)
                 }
             })
         }
@@ -95,6 +103,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 product: PlayWidgetProduct,
                 position: Int,
             )
+
+            fun onPartnerClicked(
+                view: PlayWidgetCardCarouselChannelView,
+                partner: PlayWidgetPartnerUiModel,
+                position: Int,
+            )
         }
     }
 
@@ -116,6 +130,13 @@ class PlayWidgetCarouselViewHolder private constructor() {
                         reminderType,
                         absoluteAdapterPosition
                     )
+                }
+
+                override fun onPartnerClicked(
+                    view: PlayWidgetCardCarouselUpcomingView,
+                    partner: PlayWidgetPartnerUiModel
+                ) {
+                    listener.onPartnerClicked(view, partner, absoluteAdapterPosition)
                 }
             })
         }
@@ -168,6 +189,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
                 position: Int
+            )
+
+            fun onPartnerClicked(
+                view: PlayWidgetCardCarouselUpcomingView,
+                partner: PlayWidgetPartnerUiModel,
+                position: Int,
             )
         }
     }

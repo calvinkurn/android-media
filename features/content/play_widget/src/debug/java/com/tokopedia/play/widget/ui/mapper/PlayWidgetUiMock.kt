@@ -82,6 +82,7 @@ object PlayWidgetUiMock {
             PartnerType.Shop,
             "",
             null,
+            "",
         ),
         video = getVideoUiModel(channelType),
         hasAction = true,

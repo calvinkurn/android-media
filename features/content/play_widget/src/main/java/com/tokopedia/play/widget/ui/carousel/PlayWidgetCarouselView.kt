@@ -11,6 +11,7 @@ import com.tokopedia.play.widget.ui.IPlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -76,6 +77,17 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 product.appLink,
             )
         }
+
+        override fun onPartnerClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            partner: PlayWidgetPartnerUiModel,
+            position: Int
+        ) {
+            mWidgetListener?.onWidgetOpenAppLink(
+                this@PlayWidgetCarouselView,
+                partner.appLink,
+            )
+        }
     }
 
     private val upcomingListener = object : PlayWidgetCarouselViewHolder.UpcomingContent.Listener {
@@ -98,6 +110,17 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 item.channelId,
                 reminderType,
                 position,
+            )
+        }
+
+        override fun onPartnerClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            partner: PlayWidgetPartnerUiModel,
+            position: Int
+        ) {
+            mWidgetListener?.onWidgetOpenAppLink(
+                this@PlayWidgetCarouselView,
+                partner.appLink,
             )
         }
     }

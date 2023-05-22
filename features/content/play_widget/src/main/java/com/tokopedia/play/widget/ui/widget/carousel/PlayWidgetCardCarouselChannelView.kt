@@ -18,6 +18,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductAdapter
 import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductItemDecoration
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -127,6 +128,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             binding.viewPlayWidgetPartnerInfo.imgBadge.setImageUrl(model.partner.badgeUrl)
             binding.viewPlayWidgetPartnerInfo.imgBadge.show()
         }
+        binding.viewPlayWidgetPartnerInfo.root.setOnClickListener {
+            mListener?.onPartnerClicked(this, model.partner)
+        }
+
 
         adapter.submitList(model.products)
 
@@ -188,6 +193,11 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onProductClicked(
             view: PlayWidgetCardCarouselChannelView,
             product: PlayWidgetProduct,
+        )
+
+        fun onPartnerClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            partner: PlayWidgetPartnerUiModel,
         )
     }
 }

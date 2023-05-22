@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselUpcomingBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 
@@ -69,6 +70,9 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
             binding.viewPlayWidgetPartnerInfo.imgBadge.setImageUrl(model.partner.badgeUrl)
             binding.viewPlayWidgetPartnerInfo.imgBadge.show()
         }
+        binding.viewPlayWidgetPartnerInfo.root.setOnClickListener {
+            mListener?.onPartnerClicked(this, model.partner)
+        }
 
         setReminded(model.reminderType.reminded)
         setRemindedListener(model)
@@ -120,6 +124,11 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
             view: PlayWidgetCardCarouselUpcomingView,
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
+        )
+
+        fun onPartnerClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            partner: PlayWidgetPartnerUiModel,
         )
     }
 }

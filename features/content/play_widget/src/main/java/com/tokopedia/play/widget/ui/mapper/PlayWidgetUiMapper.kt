@@ -148,6 +148,7 @@ class PlayWidgetUiMapper @Inject constructor(
         type = PartnerType.getTypeByValue(partner.type),
         avatarUrl = "",
         badgeUrl = null,
+        appLink = "",
     )
 
     private fun mapProducts(products: List<PlayWidgetItemProduct>) = products.map {

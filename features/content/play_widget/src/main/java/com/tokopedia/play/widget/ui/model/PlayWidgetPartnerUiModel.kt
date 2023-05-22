@@ -10,4 +10,5 @@ data class PlayWidgetPartnerUiModel(
     val type: PartnerType,
     val avatarUrl: String,
     val badgeUrl: String?,
+    val appLink: String,
 )
