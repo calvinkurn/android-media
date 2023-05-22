@@ -377,7 +377,8 @@ class InboxDetailViewModel @Inject constructor(
         if (searchIndices.size > SIZE_ZERO) {
             if (next >= INVALID_NUMBER && next < searchIndices.size.minus(INDEX_ONE)) {
                 next += INDEX_ONE
-                _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(searchIndices[next], next + INDEX_ONE)
+                _onFindKeywordAtTicket.value =
+                    OnFindKeywordAtTicket(searchIndices[next], next + INDEX_ONE)
             } else {
                 _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(status = OUT_OF_BOND)
             }
@@ -576,16 +577,14 @@ class InboxDetailViewModel @Inject constructor(
         listOfSecureImageParmeter: ArrayList<SecureImageParameter>
     ): ArrayList<ImageUpload> {
         val list = arrayListOf<ImageUpload>()
-        withContext(coroutineDispatcherProvider.io) {
-            list.addAll(
-                contactUsUploadImageUseCase.uploadFile(
-                    userSession.userId,
-                    imageList,
-                    files,
-                    listOfSecureImageParmeter
-                )
+        list.addAll(
+            contactUsUploadImageUseCase.uploadFile(
+                userSession.userId,
+                imageList,
+                files,
+                listOfSecureImageParmeter
             )
-        }
+        )
         return list
     }
 

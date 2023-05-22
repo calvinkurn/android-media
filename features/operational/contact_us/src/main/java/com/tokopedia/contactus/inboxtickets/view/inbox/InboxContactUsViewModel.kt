@@ -78,8 +78,9 @@ class InboxContactUsViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val topBotStatusResponse = topBotStatusUseCase(Unit)
-                if (topBotStatusResponse.getTopBotStatusInbox()
-                    .getTopBotStatusData().isActive
+                val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
+                if (topBotStatusInbox.getTopBotStatusData().isActive &&
+                    topBotStatusResponse.isStatusTopBotNotError()
                 ) {
                     val messageId =
                         topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
@@ -99,15 +100,14 @@ class InboxContactUsViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    InboxUiState(
+                    _uiState.value = InboxUiState(
                         showChatBotWidget = false,
-                        errorMessageChatBotWidget = topBotStatusResponse.getTopBotStatusInbox().messageError?.firstOrNull()
-                            .orEmpty()
+                        errorMessageChatBotWidget = topBotStatusResponse.getErrorMessage()
                     )
                 }
             },
             onError = {
-                InboxUiState(
+                _uiState.value = InboxUiState(
                     showChatBotWidget = false
                 )
             }

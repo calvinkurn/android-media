@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
@@ -43,14 +42,24 @@ open class NotifcenterDetailUseCase @Inject constructor(
             emptyArray()
         }
         val params = generateParam(
-            filter, role, "", fields
+            filter,
+            role,
+            "",
+            fields
         )
         val needSectionTitle = !hasFilter(filter)
         val needLoadMoreButton = needSectionTitle
         getNotifications(
-            params, onSuccess, onError,
+            params,
+            onSuccess,
+            onError,
             { response ->
-                mapper.mapFirstPage(response, needSectionTitle, needLoadMoreButton)
+                mapper.mapFirstPage(
+                    response = response,
+                    needSectionTitle = needSectionTitle,
+                    needLoadMoreButton = needLoadMoreButton,
+                    needDivider = needDividerOnFirstPage(role)
+                )
             },
             { response ->
                 updateNewPaging(response)
@@ -67,11 +76,16 @@ open class NotifcenterDetailUseCase @Inject constructor(
         onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-            filter, role, pagingNew.lastNotifId, arrayOf("new")
+            filter,
+            role,
+            pagingNew.lastNotifId,
+            arrayOf("new")
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
-            params, onSuccess, onError,
+            params,
+            onSuccess,
+            onError,
             { response ->
                 mapper.mapNewSection(response, false, needLoadMoreButton)
             },
@@ -89,11 +103,16 @@ open class NotifcenterDetailUseCase @Inject constructor(
         onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-            filter, role, pagingEarlier.lastNotifId, emptyArray()
+            filter,
+            role,
+            pagingEarlier.lastNotifId,
+            emptyArray()
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
-            params, onSuccess, onError,
+            params,
+            onSuccess,
+            onError,
             { response ->
                 mapper.mapEarlierSection(response, false, needLoadMoreButton)
             },
@@ -105,6 +124,14 @@ open class NotifcenterDetailUseCase @Inject constructor(
 
     private fun hasFilter(filter: Long): Boolean {
         return filter != FILTER_NONE
+    }
+
+    private fun needDividerOnFirstPage(@RoleType role: Int): Boolean {
+        return when (role) {
+            RoleType.BUYER, RoleType.SELLER -> false
+            RoleType.AFFILIATE -> true
+            else -> false
+        }
     }
 
     private fun getNotifications(
@@ -492,5 +519,4 @@ open class NotifcenterDetailUseCase @Inject constructor(
             }
         """.trimIndent()
     }
-
 }

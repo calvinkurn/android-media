@@ -8,22 +8,24 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home.test.R
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
+import com.tokopedia.home.di.DaggerHomeTestComponent
+import com.tokopedia.home.test.R
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 
-class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
-        MainParentStatusBarListener,
-        EspressoPerformanceActivity,
-        HomePerformanceMonitoringListener,
-        MainParentStateListener
-{
+class InstrumentationHomeRevampTestActivity :
+    AppCompatActivity(),
+    MainParentStatusBarListener,
+    EspressoPerformanceActivity,
+    HomePerformanceMonitoringListener,
+    MainParentStateListener {
 
     private var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var fragmentFramePerformanceIndexMonitoring: FragmentFramePerformanceIndexMonitoring? = null
@@ -32,8 +34,8 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
     override fun requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
             this.window.statusBarColor = Color.TRANSPARENT
         }
@@ -64,11 +66,20 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
         setContentView(R.layout.activity_home_test)
 
         val homeFragment: Fragment = HomeRevampFragment()
+
+        supportFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->
+            if (fragment is HomeRevampFragment) {
+                Thread.sleep(1000) // to make sure the mock injection happens after main app injection
+                DaggerHomeTestComponent.builder().baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+                    .inject(fragment)
+            }
+        }
+
         initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
-                .beginTransaction()
+            .beginTransaction()
         fragmentTransaction
-                .replace(R.id.container_home, homeFragment)
+            .replace(R.id.container_home, homeFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -99,16 +110,12 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
 
     override fun startHomePerformanceMonitoring() {
         pageLoadTimePerformanceInterface = PageLoadTimePerformanceCallback(
-                tagPrepareDuration = "prepare",
-                tagNetworkRequestDuration = "network",
-                tagRenderDuration = "render"
+            tagPrepareDuration = "prepare",
+            tagNetworkRequestDuration = "network",
+            tagRenderDuration = "render"
         )
         pageLoadTimePerformanceInterface?.startMonitoring("start monitoring")
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
-    }
-
-    override fun isOsExperiment(): Boolean {
-        return false
     }
 
     override fun currentVisibleFragment(): String = ""
