@@ -549,7 +549,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent[] intentArray = new Intent[0];
             if(getContext() != null){
                 intentArray = new Intent[1];
-                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
+                    getContext(),
+                    hasVideo(fileChooserParams)
+                );
                 intentArray[0] = mediaPickerIntent;
             }
 
@@ -560,6 +563,22 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
             return true;
 
+        }
+
+        private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
+            String[] acceptTypes = fileChooserParams.getAcceptTypes();
+            boolean hasVideo = false;
+
+            if (acceptTypes != null) {
+                for (String type : acceptTypes) {
+                    if (type != null && type.contains("video")) {
+                        hasVideo = true;
+                        break;
+                    }
+                }
+            }
+
+            return hasVideo;
         }
 
         @Override
@@ -636,6 +655,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     class MyWebViewClient extends WebViewClient {
+        @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
