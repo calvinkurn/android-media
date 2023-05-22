@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.di
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.ShipmentContract.AnalyticsActionListener
@@ -29,51 +30,51 @@ import rx.subscriptions.CompositeSubscription
 class CheckoutModule constructor(private val shipmentFragment: ShipmentFragment) {
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideScheduler(): SchedulerProvider {
         return MainScheduler()
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideAnalyticsListener(): AnalyticsActionListener = shipmentFragment
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideShipmentAdapterActionListener(): ShipmentAdapterActionListener {
         return shipmentFragment
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
         return shipmentFragment
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideUploadPrescriptionListener(): UploadPrescriptionListener {
         return shipmentFragment
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideCheckoutTradeInAnalytics(userSession: UserSessionInterface): CheckoutTradeInAnalytics {
         return CheckoutTradeInAnalytics(userSession.userId)
     }
 
     @Provides
-    @CheckoutScope
+    @ActivityScope
     fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
         return EPharmacyAnalytics(userSession.userId)
     }
