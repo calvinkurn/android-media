@@ -21,9 +21,13 @@ class OnBoardAffiliateUseCase @Inject constructor(
 
     private fun generateParams(params: OnboardAffiliateRequestModel): Map<String, Any> {
         return mapOf(
-            KEY_PARAM_NAME to VALUE_PARAM_NAME,
-            KEY_PARAM_CHANNEL_ID to params.channelID,
-            KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+            KEY_PARAM_CHANNEL to listOf(
+                mapOf(
+                    KEY_PARAM_NAME to VALUE_PARAM_NAME,
+                    KEY_PARAM_CHANNEL_ID to params.channelID,
+                    KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+                )
+            )
         )
     }
 
