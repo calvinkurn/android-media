@@ -417,7 +417,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 Menu.NONE,
                 it.getString(R.string.sah_search)
             )
-            val iconColor = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
+            val iconColor = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             val searchDrawable = getIconUnifyDrawable(
                 context = it,
                 iconId = IconUnify.SEARCH,
