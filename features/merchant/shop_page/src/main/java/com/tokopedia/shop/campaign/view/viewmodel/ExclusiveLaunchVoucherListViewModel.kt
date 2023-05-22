@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherListUseCase
@@ -36,8 +37,8 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
                 val merchantVouchers = merchantVouchersDeferred.await()
                 val promoVouchers = promoVouchersDeferred.await()
 
-                val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > 0 }
-                val availablePromoVouchers = promoVouchers
+                val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > Int.ZERO }
+                val availablePromoVouchers = promoVouchers.filter { it.remainingQuota > Int.ZERO }
                 val exclusiveLaunchVouchers = availableMerchantVouchers + availablePromoVouchers
 
                 _vouchers.postValue(Success(exclusiveLaunchVouchers))
