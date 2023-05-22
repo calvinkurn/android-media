@@ -54,13 +54,10 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     private val clickableTnc = object : ClickableSpan() {
-        /** TODO
-         * change the tnc web-view app link later
-         */
         override fun onClick(p0: View) {
             router.route(
                 requireContext(),
-                generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_tnc_link))
+                generateWebViewApplink(getString(R.string.play_shorts_affiliate_success_tnc_web_link))
             )
         }
 
