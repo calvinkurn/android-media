@@ -258,7 +258,6 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSubmitOnboardAffiliateTnc() {
         viewModelScope.launchCatchErrorWithLoader(block = {
-            _uiEvent.emit(PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(isLoading = true))
 
             val request = OnboardAffiliateRequestModel(
                 channelID = _config.value.shortsId.toLong(),
@@ -268,20 +267,16 @@ class PlayShortsViewModel @Inject constructor(
             val response = repo.submitOnboardAffiliateTnc(request)
             val isSuccess = response.errorMessage.isEmpty()
 
-            _uiEvent.emit(
-                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(
-                    isLoading = false,
-                    throwable = if (isSuccess) null else Throwable(response.errorMessage),
+            if (!isSuccess) {
+                _uiEvent.emit(
+                    PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(Throwable(response.errorMessage))
                 )
-            )
+            }
 
             checkIsSuccessSubmitAffiliate(isSuccess)
         }) {
             _uiEvent.emit(
-                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(
-                    isLoading = false,
-                    throwable = it,
-                )
+                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(it)
             )
         }
     }

@@ -336,11 +336,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                     is PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent -> {
                         val currentBottomSheet = getShortsAffiliateTncBottomSheet()
-                        currentBottomSheet.updateButtonState(event.isLoading)
-                        if (event.isLoading) return@collect
                         if (event.throwable != null) currentBottomSheet.showErrorToast(event.throwable)
                         else {
-                            currentBottomSheet.dismissed()
+                            currentBottomSheet.dismiss()
                             openShortsAffiliateSuccessBottomSheet()
                         }
                     }
@@ -360,6 +358,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                    else -> return@collectLatest
                 }
             }
         }
