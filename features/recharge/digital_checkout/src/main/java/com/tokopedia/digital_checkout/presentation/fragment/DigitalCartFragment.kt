@@ -412,19 +412,11 @@ class DigitalCartFragment :
             if (!digitalSubscriptionParams.isSubscribed) {
                 renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
             }
-            // TODO: [Misael] remove hardcode
-            if (true) {
-                // TODO: [Misael] remove hardcode
-                val dummy = CollectionPointMetadata(
-                    "59085046-f3d3-402f-8ab6-9542dc0761a2",
-                    "1",
-                    ""
+            if (cartInfo.collectionPointVersion.isNotEmpty()) {
+                productCollectionPointMetadata = CollectionPointMetadata(
+                    cartInfo.collectionPointId,
+                    cartInfo.collectionPointVersion
                 )
-                productCollectionPointMetadata = dummy
-//                productCollectionPointMetadata = CollectionPointMetadata(
-//                    cartInfo.collectionPointId,
-//                    cartInfo.collectionPointVersion
-//                )
                 renderProductConsentWidget(productCollectionPointMetadata)
                 it.checkoutBottomViewWidget.showProductConsent()
                 it.checkoutBottomViewWidget.isCheckoutButtonEnabled = false
@@ -713,10 +705,7 @@ class DigitalCartFragment :
             userSession.userId
         )
         binding?.run {
-            // TODO: [Misael] remove hardcode
-            if (true) {
-                handleCrossSellConsent(fintechProduct, isChecked)
-            }
+            handleCrossSellConsent(fintechProduct, isChecked)
             viewModel.onSubscriptionChecked(fintechProduct, isChecked)
         }
     }
@@ -726,16 +715,15 @@ class DigitalCartFragment :
             if (isSubscriptionChecked) {
                 val collectionPointMetadata = getCollectionPointData(fintechProduct)
                 if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
-                    // TODO: [Misael] remove hardcode
-                    if (true) {
+                    if (!hasProductConsent()) {
                         checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                         checkoutBottomViewWidget.showCrossSellConsent()
                     }
-                    renderCrossSellConsentWidget(collectionPointMetadata, hasProductConsent())
+                    renderCrossSellConsentWidget(collectionPointMetadata, !hasProductConsent())
                 }
             } else {
                 renderCrossSellConsentJob?.cancel()
-                if (hasProductConsent()) {
+                if (!hasProductConsent()) {
                     checkoutBottomViewWidget.isCheckoutButtonEnabled = true
                 }
                 checkoutBottomViewWidget.hideCrossSellConsent()

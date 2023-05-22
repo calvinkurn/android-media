@@ -113,6 +113,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                             else -> true
                         }
                     }
+                    removeConsentCollectionObserver()
                 }
             }
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
@@ -138,6 +139,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                         is ConsentType.MultipleChecklist -> false
                         else -> true
                     }
+                    removeConsentCollectionObserver()
                 }
             }
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
