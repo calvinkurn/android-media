@@ -1,5 +1,4 @@
-package com.tokopedia.play.ui.toolbar.model
-
+package com.tokopedia.play.widget.ui.model
 
 /**
  * Created by mzennis on 2019-12-12.
