@@ -51,12 +51,17 @@ class VideoMetaDataExtractorRepositoryImpl @Inject constructor(
     private fun getVideoWidth(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH
-        )?.toInt() ?: 0
+        )?.toInt() ?: MIN_WIDTH
     }
 
     private fun getVideoHeight(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT
-        )?.toInt() ?: 0
+        )?.toInt() ?: MIN_HEIGHT
+    }
+
+    companion object {
+        private const val MIN_WIDTH = 368
+        private const val MIN_HEIGHT = 640
     }
 }
