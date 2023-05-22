@@ -1035,8 +1035,8 @@ class CartItemViewHolder constructor(
         binding.textProductUnavailableAction.apply {
             text = action.message
             setOnClickListener {
-                if (data.shopId.isNotEmpty()) {
-                    actionListener?.onFollowShopClicked(data.shopId, data.errorType)
+                if (data.shopHolderData.shopId.isNotEmpty()) {
+                    actionListener?.onFollowShopClicked(data.shopHolderData.shopId, data.errorType)
                 }
             }
             setTextColor(

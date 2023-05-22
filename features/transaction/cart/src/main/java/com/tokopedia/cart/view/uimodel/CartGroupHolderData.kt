@@ -109,7 +109,7 @@ data class CartGroupHolderData(
         )
     }
 
-    fun isUsingOWOCDesign(): Boolean = uiGroupType == GROUP_TYPE_OWOC
+    fun isUsingOWOCDesign(): Boolean = uiGroupType == UI_GROUP_TYPE_OWOC
 
     fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
 
@@ -119,7 +119,8 @@ data class CartGroupHolderData(
         const val ADD_ON_GIFTING = 1
         const val ADD_ON_EPHARMACY = 2
 
-        private const val GROUP_TYPE_OWOC = 1
+        private const val UI_GROUP_TYPE_OWOC = 1
+        private const val GROUP_TYPE_OWOC = 2
     }
 }
 
