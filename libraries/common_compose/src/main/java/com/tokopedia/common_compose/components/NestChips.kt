@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalViewConfiguration
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +30,6 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.common_compose.utils.NoMinimumTouchViewConfiguration
 import com.tokopedia.iconunify.R as iconUnifyR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 enum class NestChipsState { Default, Selected, Disabled, Alternate }
 
@@ -246,8 +244,8 @@ private fun getSampleVariants(): List<Variant> {
         },
     )
     val lefts = listOf(
-        NestChipsLeft.Color(colorResource(id = unifyR.color.Unify_R400)),
-        NestChipsLeft.Color(colorResource(id = unifyR.color.Unify_R400), isCircle = true),
+        NestChipsLeft.Color(NestTheme.colors.RN._400),
+        NestChipsLeft.Color(NestTheme.colors.RN._400, isCircle = true),
         NestChipsLeft.Painter(
             painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
             Color.Blue,
@@ -278,7 +276,7 @@ private fun getSampleVariants(): List<Variant> {
 @Preview("All Chips Samples")
 @Preview("All Chips Samples (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun AllSamples() {
+private fun AllSamples() {
     val context = LocalContext.current
 
     val variants = getSampleVariants()
