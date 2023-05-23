@@ -92,10 +92,12 @@ class FeedPostImageViewHolder(
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -125,7 +127,8 @@ class FeedPostImageViewHolder(
                 )
             }
 
-            val postGestureDetector = GestureDetector(root.context,
+            val postGestureDetector = GestureDetector(
+                root.context,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                         return true
@@ -153,7 +156,8 @@ class FeedPostImageViewHolder(
 
                     override fun onLongPress(e: MotionEvent) {
                     }
-                })
+                }
+            )
 
             rvFeedPostImageContent.setOnTouchListener { _, event ->
                 when (event.action) {
@@ -212,7 +216,7 @@ class FeedPostImageViewHolder(
                         data.id,
                         data.editable,
                         data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
+                        data.reportable,
                         FeedContentData(
                             data.text,
                             data.id,
@@ -220,9 +224,9 @@ class FeedPostImageViewHolder(
                             absoluteAdapterPosition
                         ),
                         trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data),
+                            ?: trackerMapper.transformImageContentToTrackerModel(data)
 
-                        )
+                    )
                 }
                 shareButton.setOnClickListener {
                     listener.onSharePostClicked(
@@ -285,10 +289,12 @@ class FeedPostImageViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }

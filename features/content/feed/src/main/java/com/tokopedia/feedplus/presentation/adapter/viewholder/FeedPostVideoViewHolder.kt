@@ -64,7 +64,9 @@ class FeedPostVideoViewHolder(
     init {
         binding.playerControl.setListener(object : FeedPlayerControl.Listener {
             override fun onScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
@@ -73,7 +75,9 @@ class FeedPostVideoViewHolder(
             }
 
             override fun onStopScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.hide()
                 hideClearView()
@@ -140,7 +144,8 @@ class FeedPostVideoViewHolder(
 
                 override fun onLongPress(e: MotionEvent) {
                 }
-            })
+            }
+        )
 
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
@@ -167,9 +172,12 @@ class FeedPostVideoViewHolder(
                         data.id,
                         data.editable,
                         data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
+                        data.reportable,
                         FeedContentData(
-                            data.text, data.id, data.author.id, absoluteAdapterPosition
+                            data.text,
+                            data.id,
+                            data.author.id,
+                            absoluteAdapterPosition
                         ),
                         trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                             data
@@ -213,7 +221,9 @@ class FeedPostVideoViewHolder(
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                         it
-                    ), it.id, absoluteAdapterPosition
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
@@ -237,9 +247,12 @@ class FeedPostVideoViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element, payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
@@ -358,7 +371,6 @@ class FeedPostVideoViewHolder(
 
         videoPlayer.setVideoStateListener(object : VideoStateListener {
             override fun onInitialStateLoading() {
-
             }
 
             override fun onBuffering() {
@@ -381,7 +393,7 @@ class FeedPostVideoViewHolder(
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
             false,
-            playWhenReady = false,
+            playWhenReady = false
         )
     }
 
