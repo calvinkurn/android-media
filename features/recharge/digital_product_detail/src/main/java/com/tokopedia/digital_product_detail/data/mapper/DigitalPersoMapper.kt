@@ -3,10 +3,12 @@ package com.tokopedia.digital_product_detail.data.mapper
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoProduct
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoWidget
+import com.tokopedia.digital_product_detail.data.model.data.RechargeSaveTelcoUserBalanceAccessToken
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceOTPBottomSheetModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceProductModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceWidgetModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import javax.inject.Inject
 
@@ -34,6 +36,15 @@ class DigitalPersoMapper @Inject constructor() {
         )
     }
 
+    fun mapSaveAccessTokenToAccessTokenResultModel(
+        response: RechargeSaveTelcoUserBalanceAccessToken
+    ): DigitalSaveAccessTokenResultModel {
+        return DigitalSaveAccessTokenResultModel(
+            isSuccess = response.message.lowercase() == SAVE_ACCESS_TOKEN_SUCCESS,
+            message = response.message
+        )
+    }
+
     private fun mapDigiPersoWidgetToCheckBalanceWidgetModel(
         widgets: List<DigitalPersoWidget>?
     ): List<DigitalCheckBalanceWidgetModel> {
@@ -58,5 +69,9 @@ class DigitalPersoMapper @Inject constructor() {
                 buttonText = it.buttonText
             )
         } ?: emptyList()
+    }
+
+    companion object {
+        const val SAVE_ACCESS_TOKEN_SUCCESS = "success"
     }
 }
