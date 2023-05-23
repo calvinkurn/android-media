@@ -15,6 +15,8 @@ import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.factory.custom_notifications.BubbleChatNotification;
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RollenceKey;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +105,7 @@ public class CMNotificationFactory {
 
     private static boolean isEnableBubble(BaseNotificationModel baseNotificationModel) {
         boolean isEnableBubble = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
-        return isEnableBubble && isTokoChatPNIdExist(baseNotificationModel);
+        return isEnableBubble && getIsBubbleRollenceEnabled() && isTokoChatPNIdExist(baseNotificationModel);
     }
 
     private static boolean isTokoChatPNIdExist(BaseNotificationModel baseNotificationModel) {
@@ -115,6 +117,18 @@ public class CMNotificationFactory {
             tokoChatPNId = "";
         }
         return !tokoChatPNId.isBlank();
+    }
+
+    private static boolean getIsBubbleRollenceEnabled() {
+        boolean isRollenceEnabled;
+        try {
+            isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    RollenceKey.TOKOCHAT_BUBBLES, ""
+            ).equals(RollenceKey.TOKOCHAT_BUBBLES);
+        } catch (Exception exception) {
+            isRollenceEnabled = true;
+        }
+        return isRollenceEnabled;
     }
 
     private static List<BaseNotificationModel> getTokoChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -69,7 +69,7 @@ class TokoChatBubblesAwarenessTickerFragment: Fragment() {
                     applyCustomStyling = {
                         isUnderlineText = false
                         typeface = Typeface.DEFAULT_BOLD
-                        color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                        color = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     },
                     onUrlClicked = { _,_ ->
                         val bubbleChatHelpPageUrl = String.format(

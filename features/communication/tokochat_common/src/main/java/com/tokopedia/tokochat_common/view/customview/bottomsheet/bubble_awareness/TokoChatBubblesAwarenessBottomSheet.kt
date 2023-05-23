@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -20,6 +19,7 @@ import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awarenes
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.fragment.TokoChatBubblesAwarenessTickerFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 
 class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
 
@@ -147,7 +147,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
+                Timber.e(e)
             }
         }
     }

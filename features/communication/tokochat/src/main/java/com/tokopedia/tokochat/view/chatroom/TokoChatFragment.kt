@@ -189,6 +189,27 @@ open class TokoChatFragment :
         updateReplySectionView()
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        val shouldShowBubblesAwarenessBottomSheet =
+            TokoChatValueUtil.shouldShowBubblesAwareness()
+                && (activity?.isFromBubble() == false)
+                && viewModel.shouldShowBottomsheetBubblesCache()
+
+        return if (shouldShowBubblesAwarenessBottomSheet) {
+            showBubblesAwarenessBottomSheet()
+            tokoChatAnalytics.viewOnboardingBottomsheet(
+                orderId = viewModel.tkpdOrderId,
+                source = viewModel.source,
+                role = TokoChatAnalyticsConstants.BUYER
+            )
+            viewModel.setBubblesBottomSheetOpen()
+            addBubbleTicker()
+            true
+        } else {
+            super.onFragmentBackPressed()
+        }
+    }
+
     private fun updateReplySectionView() {
         if (isChannelExpired()) {
             showUnavailableBottomSheet()
@@ -1055,6 +1076,7 @@ open class TokoChatFragment :
                 source = viewModel.source,
                 role = TokoChatAnalyticsConstants.BUYER
             )
+            showBubblesAwarenessBottomSheet()
         }
         if (linkUrl.isNotEmpty()) {
             context?.let {
@@ -1412,6 +1434,12 @@ open class TokoChatFragment :
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
+    }
+
+    private fun showBubblesAwarenessBottomSheet() {
+        TokoChatBubblesAwarenessBottomSheet.createInstance().apply {
+            setListener(this@TokoChatFragment)
+        }.show(childFragmentManager)
     }
 
     override fun onClickContinue() {

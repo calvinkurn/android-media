@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.util
 
 import android.os.Build
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 
 object TokoChatValueUtil {
     /**
@@ -33,7 +34,6 @@ object TokoChatValueUtil {
      * Bubbles
      */
     const val BUBBLES_NOTIF = "bubbles_notif"
-    const val BUBBLES_ROLLENCE = "tokochat_bubbles_rollence"
     const val BUBBLES_PREF = "tokochat_bubbles_awareness"
 
     fun shouldShowBubblesAwareness(): Boolean {
@@ -45,9 +45,9 @@ object TokoChatValueUtil {
     private fun shouldShowBubblesAwarenessRollence(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                BUBBLES_ROLLENCE,
+                RollenceKey.TOKOCHAT_BUBBLES,
                 ""
-            ) == BUBBLES_ROLLENCE
+            ) == RollenceKey.TOKOCHAT_BUBBLES
         } catch (e: Throwable) {
             false
         }
