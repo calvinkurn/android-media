@@ -103,6 +103,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
+        getFilteredRollenceKey()
         applyUnifyBackgroundColor()
         viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
     }
