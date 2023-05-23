@@ -38,7 +38,7 @@ class FlashSaleContainerViewModel @Inject constructor(
 
     sealed class UiEvent {
         object GetPrerequisiteData : UiEvent()
-        object DismissMultiLocationTicker: UiEvent()
+        object DismissMultiLocationTicker : UiEvent()
     }
 
     sealed class UiEffect {
@@ -53,8 +53,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = this._uiEffect.asSharedFlow()
 
-
-    fun processEvent(event : UiEvent) {
+    fun processEvent(event: UiEvent) {
         when (event) {
             is UiEvent.GetPrerequisiteData -> {
                 _uiState.update { it.copy(isLoading = true, error = null) }
@@ -95,14 +94,15 @@ class FlashSaleContainerViewModel @Inject constructor(
                 if (!isEligibleUsingFeature) {
                     _uiEffect.emit(UiEffect.ShowIneligibleAccessWarning)
                 }
-
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
                 _uiEffect.emit(UiEffect.ErrorFetchTabsMetaData(error))
             }
         )
+    }
 
+    private fun getDynamicTickerData(variantValues: List<String>) {
     }
 
     private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
@@ -116,11 +116,13 @@ class FlashSaleContainerViewModel @Inject constructor(
     }
 
     fun getFlashSaleSubmissionProgress() {
-        launchCatchError(dispatchers.io,
+        launchCatchError(
+            dispatchers.io,
             block = {
                 val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse()
                 _uiEffect.emit(UiEffect.FlashSaleSubmissionProgress(flashSaleSubmissionProgress.listCampaign))
-            }) { }
+            }
+        ) { }
     }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {

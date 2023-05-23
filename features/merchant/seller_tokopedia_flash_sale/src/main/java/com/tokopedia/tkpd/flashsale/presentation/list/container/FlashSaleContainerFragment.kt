@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.container
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +18,7 @@ import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -27,6 +26,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -51,11 +52,12 @@ import javax.inject.Inject
 class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val REDIRECTION_DELAY : Long = 500
+        private const val REDIRECTION_DELAY: Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
         private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val INELIGIBLE_ACCESS_IMAGE_URL = TokopediaImageUrl.INELIGIBLE_ACCESS_IMAGE_URL
+
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -88,7 +90,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             .inject(this)
     }
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = StfsFragmentFlashSaleListContainerBinding.inflate(inflater, container, false)
@@ -162,7 +165,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToFlashSaleDetailPage(campaignId : Long) {
+    private fun navigateToFlashSaleDetailPage(campaignId: Long) {
         CampaignDetailActivity.start(context ?: return, campaignId)
     }
 
@@ -198,7 +201,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun renderLoadingState(isLoading: Boolean, error: Throwable?) {
         val isError = error != null
         binding?.shimmer?.content?.isVisible = isLoading && !isError
@@ -225,7 +227,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
             val fragment = FlashSaleListFragment.newInstance(tabId, tabName)
 
-            val displayedTabName = "${currentTab.displayName} (${totalFlashSaleCount})"
+            val displayedTabName = "${currentTab.displayName} ($totalFlashSaleCount)"
             pages.add(Pair(displayedTabName, fragment))
         }
 
@@ -271,15 +273,14 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun handleAutoRedirectionToSpecificTab(currentPosition: Int, targetTabPosition: Int) {
         if (currentPosition == targetTabPosition) {
             focusTo(targetTabPosition)
         }
     }
 
-    private fun focusTo(tabPosition : Int) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+    private fun focusTo(tabPosition: Int) {
+        // Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         doOnDelayFinished(REDIRECTION_DELAY) {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
@@ -314,7 +315,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
             })
 
-
             ticker.addPagerView(tickerAdapter, tickers)
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -324,7 +324,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 override fun onDismiss() {
                     viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
                 }
-
             })
         }
     }
@@ -335,7 +334,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
 
         val lastPathSegment = appLinkData?.lastPathSegment.orEmpty()
-        val tabPosition =  when (lastPathSegment) {
+        val tabPosition = when (lastPathSegment) {
             "upcoming" -> FlashSaleListPageTab.UPCOMING.position
             "registered" -> FlashSaleListPageTab.REGISTERED.position
             "ongoing" -> FlashSaleListPageTab.ONGOING.position
@@ -356,5 +355,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val description = getString(R.string.stfs_multi_location_ticker_description)
         val eventLabel = "$description - $linkUrl"
         tracker.sendClickReadArticleEvent(eventLabel)
+    }
+
+    private fun getFilteredRollenceKey() {
+        val prefixKey = "CT_"
+        val filteredRollenceKeys = getAbTestPLatform().getKeysByPrefix(prefixKey)
+    }
+
+    private fun getAbTestPLatform(): AbTestPlatform {
+        val remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance.abTestPlatform
     }
 }
