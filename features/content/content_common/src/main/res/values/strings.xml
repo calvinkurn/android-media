@@ -272,7 +272,7 @@
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
     <string name="content_product_bs_title">Dalam post ini</string>
-
+    <string name="content_product_bs_title_with_promo">Produk dan promo pilihan</string>
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
@@ -295,7 +295,6 @@
     <string name="kol_action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
     <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
     <string name="feed_header_follow_count_less_text">Rekomendasi</string>
-
 
     <!--REPORT BOTTOM SHEETS ASSETS-->
     <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
@@ -421,4 +420,9 @@ produk eksklusif ini.</string>
 
     <!-- Product Sharing Experience -->
     <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_product_discount_percent">%d%%</string>
+
+    <!-- Product List Bottom Sheet-->
+    <string name="feed_product_add_to_cart">+ Keranjang</string>
+    <string name="feed_product_buy">Beli</string>
 </resources>
