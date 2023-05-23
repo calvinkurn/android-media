@@ -400,7 +400,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizBottomSheetUiState,
         _selectedAccount,
         _accountStateInfo,
-        _bannerPreparation
+        _bannerPreparation,
         _menuListUiState,
         _title,
         _cover,
