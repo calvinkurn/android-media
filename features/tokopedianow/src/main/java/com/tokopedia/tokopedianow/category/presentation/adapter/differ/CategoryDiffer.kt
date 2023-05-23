@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 
 class CategoryDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -12,7 +12,7 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is RecipeUiModel && newItem is RecipeUiModel) {
+        return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
