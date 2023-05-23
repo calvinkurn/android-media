@@ -13,7 +13,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -73,18 +72,10 @@ class UniversalInboxAdapter(
         return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
     }
 
-    fun updateTopAdsBanner(topAdsImageViewModel: List<TopAdsImageViewModel>) {
-        getTopAdsBannerPositionPair()?.let { (index, item) ->
-            item.ads = topAdsImageViewModel
-            notifyItemChanged(index)
-        }
-    }
-
-    private fun getTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
+    fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
         itemList.forEachIndexed { index, item ->
             if (item is UniversalInboxTopAdsBannerUiModel) {
                 return Pair(index, item)
-
             }
         }
         return null

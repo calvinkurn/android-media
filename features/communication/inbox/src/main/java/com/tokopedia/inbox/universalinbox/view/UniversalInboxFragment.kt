@@ -21,7 +21,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_FROM_PDP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
@@ -46,21 +45,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
-import com.tokopedia.topads.sdk.utils.PARAM_EP
-import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.PARAM_ITEM
-import com.tokopedia.topads.sdk.utils.PARAM_PAGE
-import com.tokopedia.topads.sdk.utils.PARAM_SRC
-import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
-import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.utils.UrlParamHelper
-import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
-import com.tokopedia.topads.sdk.utils.VALUE_EP
-import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.VALUE_ITEM
-import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -136,8 +121,8 @@ class UniversalInboxFragment :
         setupRecyclerView()
         setupRecyclerViewLoadMore()
         setupObservers()
-        adapter.addItems(viewModel.dummy())
-        loadTopAdsAndRecommendation()
+        setupInboxMenu()
+        setupListeners()
     }
 
     private fun setupRecyclerView() {
@@ -172,6 +157,20 @@ class UniversalInboxFragment :
     }
 
     private fun setupObservers() {
+        viewModel.inboxMenu.observe(viewLifecycleOwner) {
+            binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
+            when (it) {
+                is Success -> {
+                    adapter.addItems(it.data)
+                    binding?.inboxRv?.post {
+                        adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
+                    }
+                    loadTopAdsAndRecommendation()
+                }
+                is Fail -> {}
+            }
+        }
+
         viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
             removeLoadMoreLoading()
             when (it) {
@@ -201,7 +200,9 @@ class UniversalInboxFragment :
     private fun addRecommendationItem(list: List<RecommendationItem>) {
         val itemCountBefore = adapter.itemCount
         adapter.addItems(list)
-        adapter.notifyItemRangeInserted(itemCountBefore, itemCountBefore + list.size)
+        binding?.inboxRv?.post {
+            adapter.notifyItemRangeInserted(itemCountBefore, itemCountBefore + list.size)
+        }
         setHeadlineAndBannerExperiment()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
@@ -253,7 +254,9 @@ class UniversalInboxFragment :
             position,
             UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
         )
-        adapter.notifyItemInserted(position)
+        binding?.inboxRv?.post {
+            adapter.notifyItemInserted(position)
+        }
         isAdded = true
     }
 
@@ -270,14 +273,23 @@ class UniversalInboxFragment :
                 position,
                 UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
             )
-            adapter.notifyItemInserted(position)
+            binding?.inboxRv?.post {
+                adapter.notifyItemInserted(position)
+            }
             isTopAdsBannerAdded = true
         }
     }
 
+    private fun setupInboxMenu() {
+        binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
+        viewModel.getDummy()
+    }
+
     private fun loadTopAdsAndRecommendation() {
         showLoadMoreLoading()
-        topAdsHeadlineViewModel.getTopAdsHeadlineData(getHeadlineAdsParam(Int.ZERO), { data ->
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(
+            viewModel.getHeadlineAdsParam(Int.ZERO),
+        { data ->
             headlineData = data
             if (data.data.isEmpty()) {
                 return@getTopAdsHeadlineData
@@ -289,26 +301,24 @@ class UniversalInboxFragment :
         })
     }
 
-    private fun getHeadlineAdsParam(topAdsHeadLinePage: Int): String {
-        return UrlParamHelper.generateUrlParamString(
-            mutableMapOf(
-                PARAM_DEVICE to VALUE_DEVICE,
-                PARAM_PAGE to topAdsHeadLinePage,
-                PARAM_EP to VALUE_EP,
-                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-                PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to PAGE_NAME,
-                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userSession.userId
-            )
-        )
-    }
-
     private fun setHeadlineIndexList(data: CpmModel) {
         headlineIndexList = ArrayList()
         val size = data.header.totalData
         for (i in 0 until size) {
             headlineIndexList?.add(data.data[i].cpm.position + adapter.itemCount)
+        }
+    }
+
+    private fun setupListeners() {
+        binding?.inboxLayoutSwipeRefresh?.setColorSchemeResources(
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
+        binding?.inboxLayoutSwipeRefresh?.setOnRefreshListener {
+            isAdded = false
+            isTopAdsBannerAdded = false
+            endlessRecyclerViewScrollListener?.resetState()
+            adapter.clearAllItemsAndAnimateChanges()
+            setupInboxMenu()
         }
     }
 
@@ -319,7 +329,9 @@ class UniversalInboxFragment :
 
     private fun showLoadMoreLoading() {
         adapter.addItem(adapter.getItems().size, UniversalInboxRecommendationLoaderUiModel())
-        adapter.notifyItemInserted(adapter.itemCount)
+        binding?.inboxRv?.post {
+            adapter.notifyItemInserted(adapter.itemCount)
+        }
     }
 
     private fun removeLoadMoreLoading() {
@@ -327,7 +339,9 @@ class UniversalInboxFragment :
             adapter.isRecommendationLoader(adapter.getItems().lastIndex)
         ) {
             adapter.removeItemAt(adapter.getItems().lastIndex)
-            adapter.notifyItemRemoved(adapter.getItems().size)
+            binding?.inboxRv?.post {
+                adapter.notifyItemRemoved(adapter.getItems().size)
+            }
         }
     }
 
@@ -344,7 +358,12 @@ class UniversalInboxFragment :
             setTopAdsBannerExperimentPosition()
         }
         // Notify the first banner below static menu
-        adapter.updateTopAdsBanner(categoriesList[Int.ZERO])
+        adapter.getFirstTopAdsBannerPositionPair()?.let { (index, item) ->
+            item.ads = categoriesList[Int.ZERO]
+            binding?.inboxRv?.post {
+                adapter.notifyItemChanged(index)
+            }
+        }
     }
 
     private fun setTopAdsBannerExperimentPosition() {
@@ -534,7 +553,9 @@ class UniversalInboxFragment :
             if (adapter.getItems()[position] is RecommendationItem) {
                 val recommendation = adapter.getItems()[position] as RecommendationItem
                 recommendation.isWishlist = wishlistStatusFromPdp
-                adapter.notifyItemChanged(position)
+                binding?.inboxRv?.post {
+                    adapter.notifyItemChanged(position)
+                }
             }
         }
         handleProductCardOptionsActivityResult(
@@ -567,7 +588,9 @@ class UniversalInboxFragment :
         val payloads = Bundle().also {
             it.putBoolean(WISHLIST_STATUS_IS_WISHLIST, isAddWishlist)
         }
-        adapter.notifyItemChanged(productCardOptionsModel.productPosition, payloads)
+        binding?.inboxRv?.post {
+            adapter.notifyItemChanged(productCardOptionsModel.productPosition, payloads)
+        }
         if (isAddWishlist) {
             showSuccessAddWishlistV2(wishlistResult = productCardOptionsModel.wishlistResult)
         } else {
