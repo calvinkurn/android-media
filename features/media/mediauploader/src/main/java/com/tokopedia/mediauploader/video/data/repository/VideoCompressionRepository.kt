@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
+import com.tokopedia.mediauploader.tracker.MediaUploaderTracker
 import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
 import com.tokopedia.mediauploader.common.internal.compressor.Compressor
 import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
@@ -26,7 +26,7 @@ interface VideoCompressionRepository {
 class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val metadata: VideoMetaDataExtractor,
-    private val trackerCache: TrackerCacheDataStore
+    private val tracker: MediaUploaderTracker
 ) : VideoCompressionRepository {
 
     override suspend fun compress(
@@ -88,8 +88,8 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 val compressedMetadataInfo = metadata.extract(compressedPath)
 
                 // update the tracker for the compression step
-                val key = trackerCache.key(sourceId, originalPath)
-                trackerCache.set(key) {
+                val key = tracker.key(sourceId, originalPath)
+                tracker.setCompressionTracker(key) {
                     compressedVideoPath = compressedPath
                     startCompressedTime = startCompressionTime
                     endCompressedTime = endCompressionTime
