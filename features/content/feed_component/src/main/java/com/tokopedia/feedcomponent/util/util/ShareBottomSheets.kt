@@ -10,12 +10,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -24,7 +27,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.kotlin.extensions.view.showToast
 
 /**
  * @author by yfsx on 17/05/19.
@@ -169,7 +171,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 override val key: String,
                 override val displayName: String,
                 override val mimeType: MimeType,
-                @DrawableRes val imageResource: Int,
+                val imageResource: Drawable?,
                 val handler: () -> Unit
         ) : ShareType()
     }
@@ -419,8 +421,28 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }
 
-            add(ShareType.ActionShare(KEY_COPY, getString(R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
-            add(ShareType.ActionShare(KEY_OTHER, getString(R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
+            add(
+                ShareType.ActionShare(
+                    KEY_COPY,
+                    getString(R.string.copy),
+                    MimeType.TEXT,
+                    MethodChecker.getDrawable(context, R.drawable.ic_copy_clipboard),
+                    ::actionCopy
+                )
+            )
+            add(
+                ShareType.ActionShare(
+                    KEY_OTHER,
+                    getString(R.string.other),
+                    MimeType.TEXT,
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.MENU_KEBAB_HORIZONTAL,
+                        MethodChecker.getColor(context, R.color.Unify_N700)
+                    ),
+                    ::actionMore
+                )
+            )
         }
                 .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
                 .distinctBy(ShareType::key)
