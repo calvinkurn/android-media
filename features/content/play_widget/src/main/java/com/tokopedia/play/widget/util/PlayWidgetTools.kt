@@ -42,7 +42,11 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
-    suspend fun mapWidgetToModel(widgetResponse: PlayWidget, prevState: PlayWidgetState? = null, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetState {
+    suspend fun mapWidgetToModel(
+        widgetResponse: PlayWidget,
+        prevState: PlayWidgetState? = null,
+        coroutineContext: CoroutineContext = Dispatchers.Default,
+    ): PlayWidgetState {
         return withContext(coroutineContext) {
             val model = mapper.mapWidget(widgetResponse, prevState)
             PlayWidgetState(
@@ -51,7 +55,6 @@ class PlayWidgetTools @Inject constructor(
                 isLoading = false,
             )
         }
-
     }
 
     suspend fun updateToggleReminder(channelId: String,

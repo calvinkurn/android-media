@@ -61,6 +61,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    coreLibraryDesugaring rootProject.ext.miscDependencies.desugarJdk
 }
 
 project.ext {

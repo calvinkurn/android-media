@@ -22,6 +22,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.model.getReminderType
@@ -30,6 +31,11 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.user.session.UserSessionInterface
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -47,6 +53,7 @@ class PlayWidgetUiMapper @Inject constructor(
 
     fun mapWidget(data: PlayWidget, prevState: PlayWidgetState? = null): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
+        val widgetType = PlayWidgetType.getByTypeString(data.meta.template)
 
         return PlayWidgetUiModel(
             title = data.meta.widgetTitle,
@@ -55,7 +62,11 @@ class PlayWidgetUiMapper @Inject constructor(
             isActionVisible = data.meta.isButtonVisible,
             background = widgetBackground,
             config = mapWidgetConfig(data),
-            items = mapWidgetItem(prevState?.model?.items, data.data),
+            items = mapWidgetItem(
+                prevState?.model?.items,
+                data.data,
+                widgetType,
+            ),
         )
     }
 
@@ -77,12 +88,17 @@ class PlayWidgetUiMapper @Inject constructor(
         backgroundUrl = data.meta.widgetBackground
     )
 
-    private fun mapWidgetItem(prevItems: List<PlayWidgetItemUiModel>?, items: List<PlayWidgetItem>): List<PlayWidgetItemUiModel> = items.mapNotNull {
+    private fun mapWidgetItem(
+        prevItems: List<PlayWidgetItemUiModel>?,
+        items: List<PlayWidgetItem>,
+        widgetType: PlayWidgetType,
+    ): List<PlayWidgetItemUiModel> = items.mapNotNull {
         when (it.typename) {
             "PlayWidgetBanner" -> mapWidgetItemBanner(it)
             "PlayWidgetChannel" -> mapWidgetItemChannel(
                 prevItems?.find { prevItem -> prevItem is PlayWidgetChannelUiModel && prevItem.channelId == it.id } as? PlayWidgetChannelUiModel,
-                it
+                it,
+                widgetType,
             )
             else -> null
         }
@@ -93,30 +109,34 @@ class PlayWidgetUiMapper @Inject constructor(
         imageUrl = item.backgroundUrl
     )
 
-    private fun mapWidgetItemChannel(prevItem: PlayWidgetChannelUiModel?, item: PlayWidgetItem): PlayWidgetChannelUiModel {
-        val widgetType = PlayWidgetChannelType.getByValue(item.widgetType)
+    private fun mapWidgetItemChannel(
+        prevItem: PlayWidgetChannelUiModel?,
+        item: PlayWidgetItem,
+        widgetType: PlayWidgetType,
+    ): PlayWidgetChannelUiModel {
+        val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
         return PlayWidgetChannelUiModel(
             channelId = item.id,
             title = item.title,
             appLink = item.appLink,
-            startTime = PlayDateTimeFormatter.formatDate(item.startTime),
+            startTime = mapStartTime(item.startTime, widgetType),
             totalView = mapTotalView(item),
             promoType = mapPromoType(item.config.promoLabels),
             reminderType = getReminderType(item.config.isReminderSet),
             partner = mapPartnerInfo(item.partner),
             video = mapVideo(item.video),
-            channelType = widgetType,
+            channelType = channelType,
             hasGame = mapHasGame(item.config.promoLabels),
             share = mapShare(item.share),
             performanceSummaryLink = item.performanceSummaryPageLink,
             poolType = item.widgetSortingMethod,
             recommendationType = item.recommendationType,
-            hasAction = shouldHaveActionMenu(widgetType, item.partner.id),
+            hasAction = shouldHaveActionMenu(channelType, item.partner.id),
             shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
                 partnerType = item.partner.type,
                 partnerId = item.partner.id,
             ),
-            channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = widgetType),
+            channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
             products = mapProducts(item.products),
         )
     }
@@ -172,6 +192,31 @@ class PlayWidgetUiMapper @Inject constructor(
             fullShareContent = fullShareContent,
             isShow = item.isShowButton && item.redirectUrl.isNotBlank()
         )
+    }
+
+    private fun mapStartTime(time: String, widgetType: PlayWidgetType): String {
+        return when (widgetType) {
+            PlayWidgetType.Carousel -> {
+                val inputFormat = DateTimeFormatter.ofPattern(
+                    PlayDateTimeFormatter.yyyyMMddTHHmmss
+                )
+                val offsetGmt7 = ZoneId.from(ZoneOffset.of("+07:00"))
+                val inputDateTime = ZonedDateTime.of(
+                    LocalDateTime.parse(time, inputFormat),
+                    offsetGmt7,
+                )
+                val outputDateTime = inputDateTime.withZoneSameInstant(
+                    ZoneId.systemDefault()
+                )
+                val outputFormatter = DateTimeFormatter.ofPattern(
+                    "dd MMM yyyy | HH.mm"
+                )
+                outputFormatter.format(outputDateTime)
+            }
+            else -> {
+                PlayDateTimeFormatter.formatDate(time)
+            }
+        }
     }
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {

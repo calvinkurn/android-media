@@ -72,7 +72,7 @@ object PlayWidgetUiMock {
         title = "BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D",
         channelType = channelType,
         appLink = "",
-        startTime = "",
+        startTime = "17 Apr 2023 | 17.00",
         totalView = PlayWidgetTotalView("33.1 rb", true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
