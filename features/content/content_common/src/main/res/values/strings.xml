@@ -12,6 +12,7 @@
     <string name="play_bro_tnc_ok">Oke, Mengerti</string>
 
     <string name="play_cancel_live_stream" tools:ignore="UnusedResources">Batalkan</string>
+    <string name="content_zero">0</string>
 
     <!--CONTENT-->
     <string name="feed_content_position_text" tools:ignore="UnusedResources">Tag produk pada postingan ini %s</string>
@@ -138,6 +139,10 @@
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
 
+    <string name="performance_dashboard_wording_entry_point">Pelajari Wawasan Video</string>
+    <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
+    <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
+
     <!-- Comment   -->
     <string name="content_comment_header">Komentar</string>
     <string name="content_comment_reply">Balas</string>
@@ -155,4 +160,5 @@
     <string name="content_comment_edit_text_hint">Ketik komentarmu…</string>
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>
+
 </resources>

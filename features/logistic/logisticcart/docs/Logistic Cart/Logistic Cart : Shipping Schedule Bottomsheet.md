@@ -1,5 +1,5 @@
 ---
-title: Logistic Cart : Shipping Schedule Bottomsheet
+title: "Logistic Cart : Shipping Schedule Bottomsheet"
 labels:
 - logistic-cart
 - shipping-schedule-bottomsheet
@@ -132,8 +132,8 @@ Model for showing date card
 | isEnabled | Boolean | Flag to define if date has available time slot | true |
 | id | String | id of date |  |
 | isSelected | Boolean | Flag to define if any time slot in this date is selected. | true |
-| availableTime | List<ChooseTimeUiModel> | List of available time slot |  |
-| unavailableTime | List<ChooseTimeUiModel> | List of unavailable time slot |  |
+| availableTime | `List<ChooseTimeUiModel>` | List of available time slot |  |
+| unavailableTime | `List<ChooseTimeUiModel>` | List of unavailable time slot |  |
 
 ### ChooseTimeUiModel
 

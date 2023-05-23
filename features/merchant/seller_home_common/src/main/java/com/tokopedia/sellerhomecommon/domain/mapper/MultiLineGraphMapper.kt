@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.common.const.MetricsType
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 class MultiLineGraphMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>> {
 
@@ -52,9 +54,9 @@ class MultiLineGraphMapper @Inject constructor(
                 type = it.type ?: MetricsType.UNKNOWN,
                 summary = MetricsSummaryUiModel(
                     title = it.summary?.title.orEmpty(),
-                    valueFmt = it.summary?.value.orEmpty(),
+                    valueFmt = darkModeHelper.makeHtmlDarkModeSupport(it.summary?.value.orEmpty()),
                     state = it.summary?.state.orEmpty(),
-                    description = it.summary?.description.orEmpty(),
+                    description = darkModeHelper.makeHtmlDarkModeSupport(it.summary?.description.orEmpty()),
                     lineColor = it.summary?.color.orEmpty()
                 ),
                 yAxis = it.yAxis.orEmpty()

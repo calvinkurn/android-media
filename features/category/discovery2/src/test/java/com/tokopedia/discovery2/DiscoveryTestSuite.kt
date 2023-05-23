@@ -51,6 +51,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModelTest
@@ -92,7 +93,6 @@ import org.junit.runners.Suite
     CategoryNavigationViewModelTest::class,
     ChipsFilterItemViewModelTest::class,
     CircularSliderBannerViewModelTest::class,
-    SliderBannerViewModelTest::class,
     NavigationChipsViewModelTest::class,
     DynamicCategoryItemViewModelTest::class,
     DynamicCategoryViewModelTest::class,
@@ -144,6 +144,7 @@ import org.junit.runners.Suite
     ShopBannerInfiniteItemModelTest::class,
     CategoryBestSellerViewModelTest::class,
     ShopCardInfiniteModelTest::class,
+    SliderBannerViewModelTest::class,
     DiscoveryPlayWidgetViewModelTest::class,
     QuickFilterViewModelTest::class,
     ExplicitWidgetViewModelTest::class,
@@ -155,6 +156,7 @@ import org.junit.runners.Suite
     ContentCardModelTest::class,
     ContentCardItemModelTest::class,
     DiscoveryListViewModelTest::class,
+    ProductHighlightViewModelTest::class,
 )
 
 

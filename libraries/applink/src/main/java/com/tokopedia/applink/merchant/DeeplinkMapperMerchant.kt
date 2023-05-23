@@ -40,6 +40,11 @@ object DeeplinkMapperMerchant {
     private const val FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE = 2
     private const val CAMPAIGN_DETAIL_SEGMENT = "campaign-detail"
 
+    private const val URL_SEGMENT_FLASH_SALE_TOKOPEDIA = "manage-campaign/flash-sale"
+    private const val URL_SEGMENT_FLASH_SALE_TOKO = "flash-sale-toko"
+    private const val URL_SEGMENT_SELLER_MVC = "coupon"
+    private const val URL_SEGMENT_SLASH_PRICE = "pengaturan-diskon"
+
     private const val PARAM_URL = "url"
 
     fun getRegisteredNavigationReputation(deeplink: String): String {
@@ -529,5 +534,49 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerTokopediaFlashSale(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_FLASH_SALE_TOKOPEDIA, false)
+        ) {
+            ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerShopFlashSale(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_FLASH_SALE_TOKO, false)
+        ) {
+            getRegisteredNavigationForSellerShopFlashSale(deepLink)
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerMvc(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_SELLER_MVC, false)
+        ) {
+            getRegisteredNavigationForVoucherProductList(deepLink)
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSlashPrice(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_SLASH_PRICE, false)
+        ) {
+            ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+        } else {
+            ""
+        }
     }
 }
