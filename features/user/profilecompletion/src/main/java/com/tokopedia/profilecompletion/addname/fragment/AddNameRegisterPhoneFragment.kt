@@ -227,7 +227,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ), SPAN_34, SPAN_54, FLAG_0
                 )
@@ -235,7 +235,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ), SPAN_61, SPAN_78, FLAG_0
                 )
@@ -266,7 +266,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                 ds.isUnderlineText = false
                 ds.color = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             }
         }

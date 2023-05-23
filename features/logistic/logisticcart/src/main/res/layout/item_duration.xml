@@ -43,7 +43,7 @@
                     android:layout_marginStart="@dimen/dp_7"
                     android:layout_toEndOf="@id/img_mvc"
                     android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="@id/img_mvc"
                     app:layout_constraintStart_toEndOf="@id/img_mvc"
                     app:layout_constraintTop_toTopOf="@id/img_mvc"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/fl_container"
             android:lineSpacingExtra="@dimen/sp_4"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="@string/tv_duration" />
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbl_cod_available_eta"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_price" />
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbl_ontime_delivery"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_text_desc" />
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tersedia layanan Order Prioritas" />
@@ -141,7 +141,7 @@
             android:layout_below="@+id/tv_order_prioritas"
             android:layout_marginTop="4dp"
             android:text="@string/label_shipping_information"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -152,7 +152,7 @@
             android:layout_below="@+id/tv_shipping_information"
             android:layout_marginTop="4dp"
             android:text="@string/label_shipping_information"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -162,7 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_mvc_error"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_R600"
+            android:textColor="@color/Unify_RN500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_error" />
@@ -184,8 +184,8 @@
             android:layout_alignBaseline="@+id/tv_duration_or_price"
             android:layout_alignParentEnd="true"
             android:contentDescription="@string/content_img_check"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_BIG" />
 
@@ -197,6 +197,6 @@
         android:layout_height="0.5dp"
         android:layout_below="@+id/rl_content"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
 </RelativeLayout>

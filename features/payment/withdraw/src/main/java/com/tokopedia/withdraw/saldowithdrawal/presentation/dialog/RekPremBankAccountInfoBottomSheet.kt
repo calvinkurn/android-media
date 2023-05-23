@@ -103,7 +103,7 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
         if (!::bulletPointSpan.isInitialized) {
             val bulletSpacing = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toInt()
             val bulletRadius = context.resources.getDimension(R.dimen.swd_corner_radius)
-            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             bulletPointSpan = BulletPointSpan(bulletSpacing, bulletRadius, color)
         }
         val charSequence = getString(stringID)

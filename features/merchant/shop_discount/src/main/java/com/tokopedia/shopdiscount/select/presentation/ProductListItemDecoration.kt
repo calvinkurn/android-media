@@ -14,7 +14,7 @@ class ProductListItemDecoration(context: Context) : RecyclerView.ItemDecoration(
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.sd_space_1)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

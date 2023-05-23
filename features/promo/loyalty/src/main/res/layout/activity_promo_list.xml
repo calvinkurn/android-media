@@ -33,7 +33,7 @@
                 android:layout_marginLeft="4dp"
                 android:gravity="center_vertical"
                 android:text="@string/title_activity_promo"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/shimmer_back"
                 app:layout_constraintTop_toTopOf="parent"
@@ -45,10 +45,10 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            app:tabIndicatorColor="@color/Unify_G500"
+            app:tabIndicatorColor="@color/Unify_GN500"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/Unify_G500"
+            app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextAppearance="@style/CustomTitlePageIndicatorLoyalty"
             app:tabTextColor="@color/Unify_NN600"
             tools:visibility="gone" />
@@ -56,7 +56,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Unify_N75" />
+            android:background="@color/Unify_NN50" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

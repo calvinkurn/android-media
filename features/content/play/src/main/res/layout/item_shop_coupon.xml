@@ -24,7 +24,7 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="1"
-        android:textColor="@color/Unify_B500"
+        android:textColor="@color/Unify_BN500"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/iv_shipping"
         app:layout_constraintTop_toTopOf="@+id/iv_shipping"

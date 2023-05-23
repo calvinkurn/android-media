@@ -22,6 +22,6 @@
         app:layout_constraintBottom_toBottomOf="@id/create_collection_image"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        android:textColor="@color/Unify_G500"/>
+        android:textColor="@color/Unify_GN500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

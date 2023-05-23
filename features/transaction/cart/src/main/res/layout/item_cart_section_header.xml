@@ -33,7 +33,7 @@
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:text="@string/label_empty_cart_see_all"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -45,8 +45,8 @@
             android:layout_alignBottom="@+id/label_show_all"
             android:layout_alignParentEnd="true"
             android:paddingEnd="@dimen/spacing_lvl4"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
             app:icon_enable_state="true"
             app:icon_name="CHEVRON_RIGHT" />
 

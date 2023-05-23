@@ -17,9 +17,9 @@
             android:id="@+id/tv_promo_detail_action"
             android:layout_width="match_parent"
             android:layout_height="@dimen/call_to_action_button_height"
-            android:background="@color/Unify_G400"
+            android:background="@color/Unify_GN500"
             android:gravity="center"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             android:textSize="16sp"
             tools:text="Belanja Sekarang" />
     </LinearLayout>

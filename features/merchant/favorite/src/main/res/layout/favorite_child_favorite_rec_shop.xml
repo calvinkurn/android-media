@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_NN0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/favorite_title"
@@ -38,7 +38,7 @@
             android:id="@+id/recShopRecyclerViewContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_NN0">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_shop_recycler_view"
@@ -50,7 +50,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_NN0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/favorite_subtitle"

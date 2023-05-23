@@ -424,14 +424,14 @@ class RegisterInitialFragment :
                 viewBinding?.register?.setColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
             viewBinding?.register?.setBorderColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                 )
             )
             viewBinding?.register?.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
@@ -1632,7 +1632,7 @@ class RegisterInitialFragment :
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             }
         }

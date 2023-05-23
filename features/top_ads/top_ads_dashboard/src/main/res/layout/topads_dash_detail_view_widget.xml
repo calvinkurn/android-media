@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:text="@string/topads_dash_anggaran_harian"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintStart_toStartOf="@id/leftGuide"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 app:typographyType="body_3" />
@@ -85,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintBottom_toBottomOf="@id/daily_budget_spent"
                 app:layout_constraintStart_toEndOf="@+id/daily_budget_spent"
                 app:layout_constraintTop_toTopOf="@id/daily_budget_spent"
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_dash_biaya_pencarian"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintStart_toStartOf="@id/left_guide"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:text="@string/topads_dash_biaya_rekomendasi"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintStart_toStartOf="@id/left_guide"
                 app:layout_constraintTop_toBottomOf="@id/per_click"
                 app:typographyType="body_3" />

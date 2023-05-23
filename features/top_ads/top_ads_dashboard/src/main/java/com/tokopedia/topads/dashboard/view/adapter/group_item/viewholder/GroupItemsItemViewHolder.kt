@@ -98,7 +98,7 @@ class GroupItemsItemViewHolder(
                 checkBox.visibility = View.VISIBLE
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ))
                 imgMenu.visibility = View.VISIBLE
                 checkBox.visibility = View.GONE
@@ -112,7 +112,7 @@ class GroupItemsItemViewHolder(
                 ))
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
+                    com.tokopedia.unifyprinciples.R.color.Unify_BN400_20))
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> label.setLabelType(Label.GENERAL_DARK_GREEN)
@@ -147,7 +147,7 @@ class GroupItemsItemViewHolder(
                     it.isChecked = checkBox.isChecked
                     if (checkBox.isChecked)
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
+                            com.tokopedia.unifyprinciples.R.color.Unify_BN400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_NN0))
@@ -157,7 +157,7 @@ class GroupItemsItemViewHolder(
                 item.isChecked = true
                 checkBox.isChecked = true
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
+                    com.tokopedia.unifyprinciples.R.color.Unify_BN400_20))
                 selectMode.invoke(true)
                 true
             }

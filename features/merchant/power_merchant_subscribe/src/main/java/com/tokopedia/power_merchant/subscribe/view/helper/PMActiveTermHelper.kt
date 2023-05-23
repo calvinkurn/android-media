@@ -50,7 +50,7 @@ object PMActiveTermHelper {
         if (isEligibleShopScore) {
             val textColor = PMCommonUtils.getHexColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
             title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
             description = context.getString(
@@ -60,7 +60,7 @@ object PMActiveTermHelper {
         } else {
             val textColor = PMCommonUtils.getHexColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R600
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
             title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
             description = context.getString(
@@ -175,7 +175,7 @@ object PMActiveTermHelper {
             val textColor =
                 PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             title = context.getString(
                 R.string.pm_number_of_order,
@@ -191,7 +191,7 @@ object PMActiveTermHelper {
             val textColor =
                 PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             title = context.getString(
                 R.string.pm_number_of_order,
@@ -222,7 +222,7 @@ object PMActiveTermHelper {
             val textColor =
                 PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             title = context.getString(R.string.pm_niv_term, textColor, netItemValueFmt)
             description =
@@ -232,7 +232,7 @@ object PMActiveTermHelper {
             val textColor =
                 PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             description =
                 context.getString(R.string.pm_niv_threshold_term, netItemValueThresholdFmt)

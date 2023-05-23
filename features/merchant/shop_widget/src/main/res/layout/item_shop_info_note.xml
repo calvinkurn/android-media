@@ -11,9 +11,9 @@
         android:layout_height="@dimen/dp_64"
         app:shop_lv_title_text_size="14sp"
         app:shop_lv_title="asdadasd"
-        app:shop_lv_title_color="@color/Unify_N600_96"
+        app:shop_lv_title_color="@color/Unify_NN800_96"
         app:shop_lv_content_text_size="14sp"
-        app:shop_lv_content_color="@color/Unify_G400"
+        app:shop_lv_content_color="@color/Unify_GN500"
         app:shop_lv_content="@string/read"/>
 
 </LinearLayout>

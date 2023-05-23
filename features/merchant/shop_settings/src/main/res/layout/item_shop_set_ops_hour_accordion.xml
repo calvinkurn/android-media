@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="340dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_NN0"
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
     android:paddingBottom="8dp">
@@ -71,7 +71,7 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="4dp"
                 app:icon_name="COPY"
-                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
                 app:layout_constraintTop_toBottomOf="@id/text_field_start_time_ops_hour"
                 app:layout_constraintLeft_toLeftOf="@id/text_field_start_time_ops_hour"
                 />
@@ -86,7 +86,7 @@
                 app:layout_constraintLeft_toRightOf="@id/ic_copy_to_all_day"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 android:layout_marginStart="8dp"
                 />
 
@@ -112,7 +112,7 @@
                 android:id="@+id/tv_can_atc_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:paddingStart="32dp"
                 android:paddingEnd="32dp"
                 app:typographyType="body_3"
@@ -145,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shop_operational_hour_holiday_cannot_atc_description"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:paddingStart="32dp"
                 android:paddingEnd="32dp"
                 app:typographyType="body_3"

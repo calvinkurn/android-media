@@ -140,7 +140,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : Ab
         return if (componentItem?.data?.firstOrNull()?.timerFontColor?.isEmpty() == true) {
             componentItem.data!![0].timerFontColor
         } else {
-            context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 
@@ -149,7 +149,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : Ab
         return if (componentItem?.data?.firstOrNull()?.timerBoxColor?.isEmpty() == true) {
             componentItem.data!![0].timerBoxColor
         } else {
-            context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+            context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_YN500)
         }
     }
 }

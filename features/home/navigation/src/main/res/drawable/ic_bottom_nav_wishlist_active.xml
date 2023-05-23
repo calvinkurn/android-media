@@ -12,7 +12,7 @@
       android:strokeLineCap="round"/>
   <path
       android:pathData="M17,9m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
-      android:fillColor="@color/Unify_N0"/>
+      android:fillColor="@color/Unify_NN0"/>
   <path
       android:pathData="M2,19H4"
       android:strokeLineJoin="round"

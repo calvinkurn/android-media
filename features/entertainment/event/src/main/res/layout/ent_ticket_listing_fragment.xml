@@ -31,7 +31,7 @@
                     android:layout_height="@dimen/spacing_lvl1"
                     android:layout_gravity="top"
                     android:alpha="0.12"
-                    android:background="@color/Unify_N700"
+                    android:background="@color/Unify_NN950"
                     android:visibility="gone" />
 
                 <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl1"
             android:alpha="0.12"
-            android:background="@color/Unify_N700"
+            android:background="@color/Unify_NN950"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/containerEventBottom"
             tools:visibility="visible" />
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:text="@string/ent_default_totalPrice"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/total_Harga"
                 app:typographyType="body_1"

@@ -51,7 +51,7 @@
             android:layout_marginBottom="@dimen/deals_dp_12"
             android:layout_marginRight="@dimen/deals_dp_12"
             android:layout_marginEnd="@dimen/deals_dp_12"
-            android:textColor="@color/Unify_N0_96"
+            android:textColor="@color/Unify_NN0_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_3"

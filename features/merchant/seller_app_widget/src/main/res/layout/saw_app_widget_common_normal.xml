@@ -18,7 +18,7 @@
         android:layout_toStartOf="@+id/btnSawNormalRefreshCommon"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="@dimen/unify_font_16"
         android:textStyle="bold"
         tools:text="Masuk ke Tokopedia Seller" />
@@ -37,7 +37,7 @@
         android:layout_below="@+id/tvSawNormalCommonTitle"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:lineSpacingExtra="@dimen/spacing_lvl1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_12"
         tools:text="Check pesanan biar nggak ada pesanan yang terlewat, ya." />
 
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSawNormalCommonDescription"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:textSize="@dimen/unify_font_12"
         android:textStyle="bold"
         tools:text="Masuk sekarang" />

@@ -59,7 +59,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
                 lineWidth = 1.8f,
                 lineColor = item.color,
                 fillColor = ContextCompat.getColor(
-                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_BN50_44
                 )
             )
         )
@@ -95,7 +95,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         val lineChartData = getDataForSingleLine(
             MultiLineGraph(
                 0, ContextCompat.getColor(
-                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_BN50_44
                 )
             )
         )
@@ -112,7 +112,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
                 context?.let {
                     textColor {
                         ContextCompat.getColor(
-                            it, (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                            it, (com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                         )
                     }
                 }

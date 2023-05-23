@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_25"
             android:layout_gravity="top"
-            android:background="@color/Unify_G600_96"
+            android:background="@color/Unify_GN600_96"
             android:visibility="invisible" />
 
         <include

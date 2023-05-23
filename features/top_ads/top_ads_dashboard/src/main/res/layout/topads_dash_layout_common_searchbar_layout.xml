@@ -67,7 +67,7 @@
         android:layout_width="1dp"
         android:layout_height="40dp"
         android:layout_marginStart="4dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/search_filter_layout"
         app:layout_constraintEnd_toStartOf="@id/btnAddItem"

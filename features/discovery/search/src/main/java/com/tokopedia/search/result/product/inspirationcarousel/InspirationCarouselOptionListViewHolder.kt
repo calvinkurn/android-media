@@ -140,15 +140,15 @@ class InspirationCarouselOptionListViewHolder(
     private fun String?.toUnifyTextColor(context: Context): Int {
         return try{
             when(this) {
-                SearchConstant.ProductCardLabel.TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-                SearchConstant.ProductCardLabel.TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
-                SearchConstant.ProductCardLabel.LABEL_INTEGRITY_TYPE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                SearchConstant.ProductCardLabel.TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                SearchConstant.ProductCardLabel.TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                SearchConstant.ProductCardLabel.TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                SearchConstant.ProductCardLabel.LABEL_INTEGRITY_TYPE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+                SearchConstant.ProductCardLabel.TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
                 else -> Color.parseColor(this)
             }
         } catch (throwable: Throwable){
             Timber.w(throwable)
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         }
     }
 }

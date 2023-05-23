@@ -9,8 +9,8 @@
         android:id="@+id/toolbarVideoShopScore"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_N600"
-        app:titleTextColor="@color/Unify_N0"/>
+        android:background="@color/Unify_NN800"
+        app:titleTextColor="@color/Unify_NN0"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"

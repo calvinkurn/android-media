@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -48,7 +48,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:padding="8dp"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="@id/productImage"
@@ -57,7 +57,7 @@
             app:layout_constraintVertical_bias="0.0"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:background="@color/Unify_N700_32"
+            tools:background="@color/Unify_NN950_32"
             tools:text="+220 Produk Lainnya" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -81,7 +81,7 @@
         app:typographyWeight="bold"
         tools:background="@drawable/cashback_text_background"
         tools:text="Cashback 100%"
-        tools:textColor="@color/Unify_G500"
+        tools:textColor="@color/Unify_GN500"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -94,7 +94,7 @@
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="10sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tagTypeText"
@@ -113,7 +113,7 @@
         android:gravity="bottom"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"

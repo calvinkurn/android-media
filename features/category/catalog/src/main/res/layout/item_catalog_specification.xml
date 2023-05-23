@@ -75,7 +75,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             tools:visibility="visible"
             />

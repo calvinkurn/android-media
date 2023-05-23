@@ -36,7 +36,7 @@ class PurposeViewHolder(
                 }, applyCustomStyling = {
                     isUnderlineText = false
                     typeface = Typeface.DEFAULT_BOLD
-                    color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }
             )
             itemTextButton.text = if (isActive) TEXT_ACTIVE else TEXT_NON_ACTIVE

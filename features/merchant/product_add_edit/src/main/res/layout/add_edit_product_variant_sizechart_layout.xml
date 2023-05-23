@@ -19,7 +19,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/label_variant_sizechart"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dividerVariantPhoto"
         app:typographyType="heading_5" />
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:card_type="clear"
-            app:card_background_color="@color/Unify_N50">
+            app:card_background_color="@color/Unify_NN50">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSizechart"
@@ -60,7 +60,7 @@
                 android:layout_height="16dp"
                 android:padding="4dp"
                 android:background="@drawable/oval_transparent_grey"
-                android:tint="@color/Unify_N0_96"
+                android:tint="@color/Unify_NN0_96"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_edit_price" />
 
@@ -73,7 +73,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/label_variant_sizechart_description"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardSizechart"

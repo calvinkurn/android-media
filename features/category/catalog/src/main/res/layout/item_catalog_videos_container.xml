@@ -16,7 +16,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/catalog_video_widget_title"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         />
 
     <androidx.recyclerview.widget.RecyclerView

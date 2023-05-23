@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         tools:text="1."/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,7 +24,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         app:layout_constraintStart_toEndOf="@id/tvNumberItemInfo"

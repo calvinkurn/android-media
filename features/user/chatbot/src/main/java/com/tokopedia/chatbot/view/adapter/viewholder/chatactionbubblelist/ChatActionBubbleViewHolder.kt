@@ -17,7 +17,7 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
 
     override fun bind(element: ChatActionBubbleUiModel, onSelect: (Int) -> Unit) {
         chatActionMessage.text = element.text
-        chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context , (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)))
+        chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context , (com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)))
         customerCareImage.hide()
         if (element.iconUrl.isNotEmpty()) {
             setLiveChatButtonAction(element)

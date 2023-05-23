@@ -107,7 +107,7 @@
         app:typographyType="body_2"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         android:visibility="gone"
         tools:text="85 Produk"
         />
@@ -120,7 +120,7 @@
         app:layout_constraintTop_toBottomOf="@id/ivShowcaseImage"
         app:layout_constraintLeft_toLeftOf="@id/tvShowcaseName"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

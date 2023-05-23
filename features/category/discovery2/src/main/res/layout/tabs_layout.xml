@@ -10,7 +10,7 @@
         android:id="@+id/discovery_tabs_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@color/Unify_N0"
+        app:tabBackground="@color/Unify_NN0"
         app:tabPaddingEnd="0dp"
         app:tabMode="scrollable" />
 </LinearLayout>

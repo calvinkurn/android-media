@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:padding="@dimen/phoneverification_dp_20">
 
         <ImageView
@@ -28,7 +28,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:text="@string/app_share_label_desc"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="@dimen/fontSize_lvl3"
             android:textStyle="normal" />
 
@@ -42,7 +42,7 @@
             android:fontFamily="sans-serif"
             android:gravity="left"
             android:padding="@dimen/phoneverification_dp_15"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             android:textSize="@dimen/fontSize_lvl4"
             android:textStyle="normal" />
 
@@ -52,11 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_phone_number"
             android:layout_marginTop="@dimen/phoneverification_dp_30"
-            android:background="@color/Unify_G500"
+            android:background="@color/Unify_GN500"
             android:gravity="center_horizontal|center_vertical"
             android:padding="@dimen/phoneverification_dp_15"
             android:text="@string/referral_verify_phone_number"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             android:textSize="@dimen/fontSize_lvl3" />
     </RelativeLayout>
 

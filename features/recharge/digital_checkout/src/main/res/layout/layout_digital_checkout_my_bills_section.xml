@@ -9,7 +9,7 @@
         android:id="@+id/seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,7 +19,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/tvCheckoutMyBillsDescription"
         app:layout_constraintEnd_toStartOf="@id/icCheckoutMyBillsInfo"
@@ -68,7 +68,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/unify_space_12"
         android:paddingTop="@dimen/spacing_lvl1"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/bgAdditionalFintechImage"
         app:layout_constraintStart_toStartOf="@id/tvCheckoutMyBillsHeaderTitle"

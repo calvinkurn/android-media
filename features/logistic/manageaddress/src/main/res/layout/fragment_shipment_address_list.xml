@@ -63,7 +63,7 @@
                     android:lineSpacingExtra="0sp"
                     android:text="@string/label_oops"
                     app:typographyType="heading_4"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN950_44"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -74,7 +74,7 @@
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="5sp"
                     android:text="@string/message_address_not_found"
-                    android:textColor="@color/Unify_N700_32"
+                    android:textColor="@color/Unify_NN950_32"
                     android:textSize="14sp"
                     app:typographyType="body_2"
                     android:textStyle="normal" />
@@ -90,7 +90,7 @@
                     android:paddingRight="27dp"
                     android:text="@string/label_button_change_search"
                     android:textAllCaps="false"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 

@@ -9,13 +9,13 @@
     android:layout_marginBottom="@dimen/unify_space_8"
     android:elevation="@dimen/unify_space_4"
     android:padding="@dimen/unify_space_12"
-    app:card_background_color="@color/Unify_N0"
+    app:card_background_color="@color/Unify_NN0"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/digital_recommendation_card_width"
         android:layout_height="@dimen/digital_recommendation_card_height"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loaderTitleDgRecommendation"

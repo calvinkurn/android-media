@@ -33,7 +33,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/banner_see_all"
-        android:textColor="@color/Unify_P600"
+        android:textColor="@color/Unify_PN600"
         android:textSize="13sp"
         app:typographyType="heading_6" />
 

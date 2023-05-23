@@ -99,7 +99,7 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         ds.color = MethodChecker.getColor(context, textColor)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -112,7 +112,7 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
 
 fun String.renderHtmlBold(
     context: Context,
-    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
 ): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)

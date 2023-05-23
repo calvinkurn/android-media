@@ -87,9 +87,9 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                         setTopText(MethodChecker.fromHtml(row.key).toString())
                         setTopTextSize(CATALOG_SPECS_TEXT_SIZE)
                         setBottomLinearLayoutWeight(CATALOG_BOTTOM_LINEAR_WEIGHT)
-                        setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                        setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
                         setBottomTextSize(CATALOG_SPECS_TEXT_SIZE)
-                        setBottomTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                        setBottomTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                         doubleTextView.setBottomTextStyle("")
                         setBottomText(MethodChecker.fromHtml(row.value))
                     }
@@ -102,7 +102,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     val lineView = View(context)
                     val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     lineView.minimumHeight = 2
-                    lineView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                    lineView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
                     if(specs.specificationsRow.size - 1 == index){
                         params.setMargins(0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
                     }else {

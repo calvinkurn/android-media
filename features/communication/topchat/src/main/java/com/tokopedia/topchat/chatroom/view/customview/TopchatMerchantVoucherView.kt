@@ -84,6 +84,6 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
 
     companion object {
         private const val DEFAULT_USE_SHADOW = false
-        private val DEFAULT_VOUCHER_SHADOW_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N150
+        private val DEFAULT_VOUCHER_SHADOW_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN400
     }
 }

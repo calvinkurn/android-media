@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:text="@string/topads_dashboard_all_promo_menu"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@id/txtRingkasan"
         app:layout_constraintStart_toEndOf="@id/txtRingkasan"
         app:layout_constraintTop_toTopOf="@id/txtRingkasan" />
@@ -42,7 +42,7 @@
         android:layout_marginStart="@dimen/topads_dashboard_dp_6"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:text="@string/topads_dashboard_last_update_text"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtRingkasan"
         app:typographyType="body_3"

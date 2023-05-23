@@ -201,7 +201,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
             setProgressBackgroundColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N75
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }

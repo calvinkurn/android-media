@@ -33,7 +33,7 @@ class CatalogInfoViewHolder(private val view: View,
         val imagesPageControl = view.findViewById<PageControl>(R.id.catalog_images_page_control)
         if(!productInfo.images.isNullOrEmpty()){
             imagesAdapter = CatalogImagesAdapter(productInfo.images, catalogDetailListener)
-            imagesPageControl.inactiveColor = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            imagesPageControl.inactiveColor = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
             imagesPageControl.setIndicator(productInfo.images.size)
             imagesRV.apply {
                 adapter = imagesAdapter

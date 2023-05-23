@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Tangerang Selatan" />
@@ -34,7 +34,7 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:text="|"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Pasti tiba 2 jam" />

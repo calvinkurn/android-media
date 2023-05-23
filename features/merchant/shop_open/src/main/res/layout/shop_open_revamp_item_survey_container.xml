@@ -8,7 +8,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_question_title_quisioner_page"
         android:text="@string/text_default_title_quisionaire"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:lineSpacingExtra="6sp"
         android:letterSpacing="0.01"
         android:layout_marginTop="8dp"

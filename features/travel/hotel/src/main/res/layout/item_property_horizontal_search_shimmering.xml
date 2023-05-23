@@ -7,7 +7,7 @@
     app:cardElevation="@dimen/hotel_3dp"
     app:cardPreventCornerOverlap="false"
     android:layout_margin="@dimen/spacing_lvl2"
-    app:cardBackgroundColor="@color/Unify_N0">
+    app:cardBackgroundColor="@color/Unify_NN0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/hotel_300dp"

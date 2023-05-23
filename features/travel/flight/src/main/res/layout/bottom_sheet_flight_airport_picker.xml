@@ -22,6 +22,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/flightAirportSearchBar"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N0"/>
+        android:background="@color/Unify_NN0"/>
 
 </LinearLayout>

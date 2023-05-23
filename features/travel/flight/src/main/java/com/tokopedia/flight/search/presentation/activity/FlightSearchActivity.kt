@@ -285,7 +285,7 @@ open class FlightSearchActivity :
         val subtitle = "$dateString | $passengerString"
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
-        flight_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        flight_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
 
         supportActionBar?.elevation = 0f
     }

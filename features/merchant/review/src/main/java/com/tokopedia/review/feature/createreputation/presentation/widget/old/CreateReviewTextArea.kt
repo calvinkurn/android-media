@@ -56,7 +56,7 @@ class CreateReviewTextArea : BaseCustomView {
             setHintTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                 )
             )
         }

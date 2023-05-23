@@ -37,7 +37,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/layout_lvl1"
       android:text="@string/phone_id_idn"
-      android:textColor="@color/Unify_N400"
+      android:textColor="@color/Unify_NN600"
       app:typographyType="body_1"
       app:typographyWeight="bold"
       app:layout_constraintTop_toTopOf="@+id/imgFlagPhoneNumberView"

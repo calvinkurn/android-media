@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="@dimen/cm_sp_14"
         tools:text="Content Title" />
 
@@ -22,7 +22,7 @@
         android:layout_below="@+id/tvReviewPushTitle"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:textSize="@dimen/cm_sp_13"
         tools:text="Content Text" />
 

@@ -16,6 +16,6 @@ class TalkReadingShimmerViewHolder(view: View) : AbstractViewHolder<LoadingMoreM
     private val binding = ItemTalkReadingShimmerBinding.bind(itemView)
 
     override fun bind(element: LoadingMoreModel) {
-        binding.talkReadingShimmerContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        binding.talkReadingShimmerContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
     }
 }

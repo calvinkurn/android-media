@@ -81,12 +81,12 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             imageHeight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_height, imageWidth.toFloat()).toInt()
             imageMarginRight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_margin_right, resources.getDimension(R.dimen.dp_8)).toInt()
             titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_title)
-            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_sub_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_sub_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
             subTitleText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_sub_title)
             contentText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_content)
             badgeCounter = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_badge, 0)
-            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_content_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_content_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_text_style, Typeface.NORMAL)
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_title_text_style, Typeface.NORMAL)
             maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_max_lines, 1)
@@ -176,9 +176,9 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             contentTextView?.setTextColor(contentColorValue)
             subTitleTextView?.setTextColor(subtitleColorValue)
         } else {
-            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            contentTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            subTitleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
+            contentTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
+            subTitleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
         }
     }
 

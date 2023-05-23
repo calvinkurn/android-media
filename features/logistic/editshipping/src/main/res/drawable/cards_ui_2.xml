@@ -3,7 +3,7 @@
     <item>
         <shape>
             <solid android:color="@color/Unify_Background"/>
-            <stroke android:width="0.9dp" android:color="@color/Unify_N150"/>
+            <stroke android:width="0.9dp" android:color="@color/Unify_NN400"/>
             <corners android:radius="2dp"/>
             <padding android:bottom="1dp" android:left="1dp" android:right="1dp" android:top="1dp"/>
         </shape>

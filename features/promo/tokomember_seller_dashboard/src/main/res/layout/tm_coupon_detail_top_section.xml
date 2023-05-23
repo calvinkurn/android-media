@@ -48,7 +48,7 @@
                     android:layout_width="9dp"
                     android:layout_height="9dp"
                     app:icon_name="SHARE_MOBILE"
-                    app:icon_color_light_enable="@color/Unify_N0"
+                    app:icon_color_light_enable="@color/Unify_NN0"
                     />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -58,7 +58,7 @@
                     app:typographyWeight="bold"
                     android:text="@string/tm_share_text"
                     android:layout_marginStart="7dp"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,7 +111,7 @@
                 android:id="@+id/date_delimiter"
                 android:layout_width="10dp"
                 android:layout_height="1dp"
-                android:background="@color/Unify_N700_96"
+                android:background="@color/Unify_NN950_96"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/coupon_detail_start_period"

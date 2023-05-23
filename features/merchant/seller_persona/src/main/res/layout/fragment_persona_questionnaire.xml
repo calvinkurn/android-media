@@ -54,7 +54,7 @@
         android:layout_marginStart="16dp"
         android:padding="8dp"
         android:text="@string/sp_previous"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/btnSpNext"
         app:layout_constraintStart_toStartOf="parent"

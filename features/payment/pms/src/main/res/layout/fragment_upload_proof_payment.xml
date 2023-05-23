@@ -36,7 +36,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/unify_space_8"
                         android:text="@string/payment_label_help_proof"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyType="body_3" />
 
                     <RelativeLayout
@@ -59,7 +59,7 @@
                             android:layout_marginBottom="@dimen/unify_space_8"
                             android:layout_toEndOf="@+id/circle_green"
                             android:text="@string/payment_label_help_proof_date"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:typographyWeight="bold" />
 
@@ -69,7 +69,7 @@
                             android:layout_below="@id/label_date"
                             android:layout_alignStart="@+id/label_date"
                             android:text="@string/payment_label_help_proof_example_date"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3" />
                     </RelativeLayout>
 
@@ -93,7 +93,7 @@
                             android:layout_marginBottom="@dimen/unify_space_8"
                             android:layout_toEndOf="@+id/circle_green_2"
                             android:text="@string/payment_label_help_proof_success_status"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:typographyWeight="bold" />
 
@@ -103,7 +103,7 @@
                             android:layout_below="@id/label_date_2"
                             android:layout_alignStart="@+id/label_date_2"
                             android:text="@string/payment_label_help_proof_example_success_status"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3" />
                     </RelativeLayout>
 
@@ -127,7 +127,7 @@
                             android:layout_marginBottom="@dimen/unify_space_8"
                             android:layout_toEndOf="@+id/circle_green_3"
                             android:text="@string/payment_label_help_proof_receiver"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:typographyWeight="bold" />
 
@@ -137,7 +137,7 @@
                             android:layout_below="@id/label_date_3"
                             android:layout_alignStart="@+id/label_date_3"
                             android:text="@string/payment_label_help_proof_example_receiver"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3" />
                     </RelativeLayout>
 
@@ -161,7 +161,7 @@
                             android:layout_marginBottom="@dimen/unify_space_8"
                             android:layout_toEndOf="@+id/circle_green_4"
                             android:text="@string/payment_label_help_proof_total_transfer"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:typographyWeight="bold" />
 
@@ -171,7 +171,7 @@
                             android:layout_below="@id/label_date_4"
                             android:layout_alignStart="@+id/label_date_4"
                             android:text="@string/payment_label_help_proof_example_total"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="@dimen/unify_space_16"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:padding="@dimen/unify_space_8">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="@string/payment_label_help_upload_proof"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
             </LinearLayout>
         </RelativeLayout>
@@ -213,7 +213,7 @@
                 android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
                 android:text="@string/payment_label_confirmation_upload_image"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_2" />
 
             <FrameLayout
@@ -238,10 +238,10 @@
                     android:layout_gravity="top|end"
                     android:background="@drawable/pm_circle_white"
                     android:padding="@dimen/pms_dp_5"
-                    app:icon_color_light_disabled="@color/Unify_G500"
-                    app:icon_color_light_enable="@color/Unify_G500"
-                    app:icon_color_night_disabled="@color/Unify_G500"
-                    app:icon_color_night_enable="@color/Unify_G500"
+                    app:icon_color_light_disabled="@color/Unify_GN500"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_color_night_disabled="@color/Unify_GN500"
+                    app:icon_color_night_enable="@color/Unify_GN500"
                     app:icon_name="CHECK_BIG" />
             </FrameLayout>
         </RelativeLayout>
@@ -253,7 +253,7 @@
             android:layout_above="@+id/button_save_choose_another_image"
             android:layout_centerHorizontal="true"
             android:text="@string/payment_label_format_image"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_2" />
 
         <com.tokopedia.unifycomponents.UnifyButton

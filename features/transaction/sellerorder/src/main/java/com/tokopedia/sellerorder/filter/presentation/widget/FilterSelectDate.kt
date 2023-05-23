@@ -32,11 +32,11 @@ class FilterSelectDate: RelativeLayout {
 
     fun setDateLabel(date: String) {
         binding.tvSelectDateText.text = date
-        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
     }
 
     fun setDateLabelEmpty(date: String) {
         binding.tvSelectDateText.text = date
-        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
     }
 }

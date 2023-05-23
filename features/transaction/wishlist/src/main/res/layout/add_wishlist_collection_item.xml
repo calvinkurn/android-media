@@ -31,7 +31,7 @@
         android:layout_alignBottom="@+id/collection_item_image"
         android:layout_toEndOf="@id/collection_item_image"
         android:layout_marginStart="12dp"
-        android:textColor="@color/Unify_N700_68"/>
+        android:textColor="@color/Unify_NN950_68"/>
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_collection_item"
@@ -48,8 +48,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         app:icon_name="CHECK"
-        app:icon_color_light_enable="@color/Unify_G500"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         android:visibility="gone"/>
 
 </RelativeLayout>

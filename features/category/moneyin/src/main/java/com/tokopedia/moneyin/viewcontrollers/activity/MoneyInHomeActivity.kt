@@ -200,11 +200,11 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                                     }
                                     editTextImei?.text.isNullOrEmpty() -> {
                                         typographyImeiDescription?.text = getString(R.string.enter_the_imei_number_text)
-                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                                     }
                                     else -> {
                                         typographyImeiDescription?.text = getString(R.string.wrong_imei_string)
-                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                                     }
                                 }
                             } else {
@@ -395,7 +395,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
     }
 
     private fun showDeviceNotElligiblePopup(messageStringId: Int) {
-        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val foregroundColorSpan = ForegroundColorSpan(greenColor)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -470,7 +470,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         TradeInUtils.setImeiNumber(this, editTextImei?.text.toString())
         getPriceFromSDK(this)
         typographyImeiDescription?.text = getString(R.string.enter_the_imei_number_text)
-        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
     }
 
     override fun onError(error: JSONObject) {
@@ -482,7 +482,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
             e.printStackTrace()
         }
         typographyImeiDescription?.text = errorMessage
-        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
     }
 
     companion object {

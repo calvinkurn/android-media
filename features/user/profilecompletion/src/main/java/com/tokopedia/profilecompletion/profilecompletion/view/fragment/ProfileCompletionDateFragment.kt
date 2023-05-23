@@ -90,7 +90,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
         drawable.setColorFilter(
             MethodChecker.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N200
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
             ), PorterDuff.Mode.SRC_IN
         )
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicWidth)

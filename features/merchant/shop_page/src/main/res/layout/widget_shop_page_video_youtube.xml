@@ -16,7 +16,7 @@
         android:layout_marginTop="12dp"
         android:paddingRight="16dp"
         android:layout_marginBottom="12dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/youtube_home_shop_page"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
-        android:background="@color/Unify_N700"
+        android:background="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page" />
@@ -99,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
         android:text="@string/video_not_found"
-        android:textColor="@color/Unify_N50"
+        android:textColor="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="@+id/ivVideoNotFound"
         app:layout_constraintStart_toStartOf="@+id/ivVideoNotFound"
         app:layout_constraintTop_toBottomOf="@id/ivVideoNotFound" />

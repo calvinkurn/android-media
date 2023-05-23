@@ -39,7 +39,7 @@ class SomDetailShippingViewHolder(
                         show()
                         layoutParamsReceiverName?.topMargin = 6.toPx()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     }
                 } else {
                     layoutParamsReceiverName?.topMargin = 0.toPx()
@@ -50,16 +50,16 @@ class SomDetailShippingViewHolder(
                     tvChevron.showWithCondition(isLogisticInfoNotEmpty)
                     if (isLogisticInfoNotEmpty) {
                         tvShippingName.apply {
-                            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                             setOnClickListener {
                                 actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                             }
                             text = item.dataObject.shippingName
                         }
-                        tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                     } else {
                         tvShippingName.text = item.dataObject.shippingName
-                        tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                        tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                     }
                 }
 

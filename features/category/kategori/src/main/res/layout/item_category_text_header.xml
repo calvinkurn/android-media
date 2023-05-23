@@ -15,7 +15,7 @@
         android:layout_gravity="start"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="yang lagi hits" />

@@ -159,7 +159,7 @@
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Tokopedia Affiliate"/>

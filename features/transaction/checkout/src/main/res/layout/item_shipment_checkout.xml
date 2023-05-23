@@ -65,7 +65,7 @@
                 android:layout_marginEnd="16dp"
                 android:paddingStart="16dp"
                 android:text="@string/checkout_label_see_error_product"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -87,7 +87,7 @@ class FollowerFollowingListingFragment @Inject constructor(
                 activity,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN600
             ),
-            MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
 
         val listOfPages = listOf<Pair<String, Fragment>>(

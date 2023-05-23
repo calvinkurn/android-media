@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ic_location"
             app:layout_constraintEnd_toStartOf="@id/btn_arrow"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -58,7 +58,7 @@
             app:layout_constraintTop_toTopOf="@id/address_district"
             app:layout_constraintBottom_toBottomOf="@id/address_district"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="heading_6"
             android:visibility="gone"
             tools:visibility="visible"

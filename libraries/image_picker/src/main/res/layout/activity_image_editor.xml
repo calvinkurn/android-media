@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
-            app:titleTextColor="@color/Unify_N700"
+            app:titleTextColor="@color/Unify_NN950"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_next_short"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 tools:text="@string/crop"/>
 
         </androidx.appcompat.widget.Toolbar>
@@ -303,7 +303,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700"/>
+                android:textColor="@color/Unify_NN950"/>
 
         </LinearLayout>
 

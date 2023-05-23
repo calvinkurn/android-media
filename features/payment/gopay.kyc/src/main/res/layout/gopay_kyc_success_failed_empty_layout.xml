@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/unify_space_8"
         android:gravity="center"
         android:text="@string/gopay_kyc_upload_failed_description_text"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_2" />
 
 </LinearLayout>

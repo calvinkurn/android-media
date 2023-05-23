@@ -29,7 +29,7 @@ public class CountDrawable extends Drawable {
 
     private void createTextPaint(Context context) {
         textPaint = new Paint();
-        textPaint.setColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        textPaint.setColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0));
         textPaint.setTypeface(Typeface.DEFAULT);
         textPaint.setTextSize(context.getResources().getDimension(R.dimen.sp_8));
         textPaint.setAntiAlias(true);
@@ -38,7 +38,7 @@ public class CountDrawable extends Drawable {
 
     private void createBadgePaint(Context context) {
         badgePaint = new Paint();
-        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y500));
+        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), com.tokopedia.unifyprinciples.R.color.Unify_YN500));
         badgePaint.setAntiAlias(true);
         badgePaint.setStyle(Paint.Style.FILL);
     }

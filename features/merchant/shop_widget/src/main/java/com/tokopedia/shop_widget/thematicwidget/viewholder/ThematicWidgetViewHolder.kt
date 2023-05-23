@@ -313,8 +313,8 @@ class ThematicWidgetViewHolder (
 
     private fun setupBackgroundColor(startBackGroundColor: String?, endBackGroundColor: String?) {
         val colors = intArrayOf(
-            getBackGroundColor(itemView.context, startBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_N75),
-            getBackGroundColor(itemView.context, endBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            getBackGroundColor(itemView.context, startBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_NN50),
+            getBackGroundColor(itemView.context, endBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         viewParallaxBackground?.background = gradientDrawable

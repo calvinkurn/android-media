@@ -16,7 +16,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:lineSpacingExtra="6sp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:text="@string/cb_bot_reason_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

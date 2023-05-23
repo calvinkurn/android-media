@@ -83,7 +83,7 @@ class PromoInputBottomSheet() : BottomSheetUnify() {
                     } else {
                         element.uiState.isButtonSelectEnabled = false
                         btnApplyPromo.isEnabled = false
-                        etInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        etInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     }
                 }
             })
@@ -105,7 +105,7 @@ class PromoInputBottomSheet() : BottomSheetUnify() {
             if (element.uiData.promoCode.isNotBlank()) {
                 etInputPromo.setFirstIcon(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
             } else {
-                etInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                etInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             }
         }
     }

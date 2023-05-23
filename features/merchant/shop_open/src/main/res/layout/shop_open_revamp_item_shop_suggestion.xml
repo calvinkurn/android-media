@@ -18,7 +18,7 @@
         android:layout_marginBottom="6dp"
         android:layout_marginRight="12dp"
         android:layout_marginLeft="12dp"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

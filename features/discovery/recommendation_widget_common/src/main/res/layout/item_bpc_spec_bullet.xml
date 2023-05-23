@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/comparison_bpc_specs_bullet_margin"
         android:ellipsize="end"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_gravity="center_vertical"
         android:singleLine="true"/>
 </LinearLayout>

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
             app:layout_constraintTop_toBottomOf="@id/read_review_satisfaction_rate"
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/review_gallery_header_see_all"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintStart_toStartOf="@id/read_review_rating_and_review_count"
             app:layout_constraintTop_toBottomOf="@id/read_review_rating_and_review_count"
             app:typographyType="body_3"
@@ -124,7 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/read_review_header_barrier" />
 
     <com.tokopedia.sortfilter.SortFilter

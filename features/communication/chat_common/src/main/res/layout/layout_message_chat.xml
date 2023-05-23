@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="display_3"
         tools:text="13:16 wib"/>
 
@@ -27,7 +27,7 @@
         android:layout_alignEnd="@+id/main"
         android:layout_below="@+id/date"
         android:layout_marginStart="@dimen/chatcommon_3dp"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:typographyType="small"
         tools:text="Pengguna"/>
 
@@ -42,7 +42,7 @@
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
         android:text="●"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         android:textSize="@dimen/chatcommon_5sp"
         android:textStyle="normal"/>
 
@@ -53,7 +53,7 @@
         android:layout_below="@+id/date"
         android:layout_marginBottom="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@id/dot"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:typographyType="small"
         tools:text="@tools:sample/lorem/random"/>
 
@@ -71,8 +71,8 @@
             android:linksClickable="true"
             android:maxWidth="@dimen/chat_width"
             android:padding="@dimen/chatcommon_10dp"
-            android:textColor="@color/Unify_N0"
-            android:textColorLink="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
+            android:textColorLink="@color/Unify_NN0"
             android:textIsSelectable="true"
             app:typographyType="display_2"
             tools:text="@tools:sample/lorem"/>
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/chatcommon_3dp"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="small"
         tools:text="10:13 pm"
         tools:visibility="visible" />

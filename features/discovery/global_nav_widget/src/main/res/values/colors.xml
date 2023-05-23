@@ -7,6 +7,6 @@
     <color name="global_nav_widget_card_title">#f531353b</color>
     <color name="global_nav_widget_price">#FA591D</color>
 
-    <color name="global_nav_dms_card_background">@color/Unify_N0</color>
+    <color name="global_nav_dms_card_background">@color/Unify_NN0</color>
 
 </resources>

@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/telco_space_1"
                 android:layout_below="@+id/telco_tab_layout"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardElevation="@dimen/spacing_lvl2">
 
         <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget

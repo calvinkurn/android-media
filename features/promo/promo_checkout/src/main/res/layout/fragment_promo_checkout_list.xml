@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_lvl4"
-                app:cardBackgroundColor="@color/Unify_N0"
+                app:cardBackgroundColor="@color/Unify_NN0"
                 app:cardCornerRadius="@dimen/spacing_lvl2"
                 app:cardElevation="3dp">
 
@@ -55,7 +55,7 @@
                         android:paddingRight="@dimen/spacing_lvl4"
                         android:paddingBottom="@dimen/spacing_lvl3"
                         android:text="@string/promo_label_button_use"
-                        android:textColor="@color/Unify_N0"
+                        android:textColor="@color/Unify_NN0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -81,7 +81,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/promo_title_category"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:visibility="visible"
                     app:typographyType="body_3" />
 
@@ -112,7 +112,7 @@
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:text="@string/promo_label_my_coupon"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_3" />
 
         </LinearLayout>

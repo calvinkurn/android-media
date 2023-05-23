@@ -4,6 +4,6 @@
         parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/Unify_N700_32</item>
+        <item name="android:textColor">@color/Unify_NN950_32</item>
     </style>
 </resources>

@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_location_unmatched"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/tv_location_unmacted_detail"
         android:gravity="center"
         app:typographyType="body_2" />

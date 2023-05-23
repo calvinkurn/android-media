@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_6"
     app:cardPreventCornerOverlap="false"
-    app:cardBackgroundColor="@color/Unify_N0">
+    app:cardBackgroundColor="@color/Unify_NN0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/loaderUnifyGroup3"
             />
@@ -137,7 +137,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/loaderUnifyGroup5"/>
 

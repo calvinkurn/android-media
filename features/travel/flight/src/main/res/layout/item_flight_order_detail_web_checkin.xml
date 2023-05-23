@@ -23,20 +23,20 @@
             android:elevation="@dimen/spacing_lvl2"
             app:tv_anchor1="@id/ticketTopView"
             app:tv_circleRadius="@dimen/spacing_lvl3"
-            app:tv_dashColor="@color/Unify_N100">
+            app:tv_dashColor="@color/Unify_NN200">
 
             <LinearLayout
                 android:id="@+id/ticketTopView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/titleFlightOrderDepartureTicket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N50"
+                    android:background="@color/Unify_NN50"
                     android:orientation="vertical"
                     android:paddingStart="@dimen/spacing_lvl4"
                     android:paddingTop="@dimen/spacing_lvl3"
@@ -47,7 +47,7 @@
                         android:id="@+id/tgFlightOrderWebCheckInTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:typographyType="heading_6"
                         tools:text="Tiket berangkat" />
 
@@ -57,7 +57,7 @@
                     android:id="@+id/containerFlightOrderDepartureTicket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_NN0"
                     android:padding="@dimen/spacing_lvl4">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl3"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderDepartureAirlineLogo"
                         app:layout_constraintLeft_toRightOf="@id/ivFlightOrderDepartureAirlineLogo"
                         app:layout_constraintTop_toTopOf="@id/ivFlightOrderDepartureAirlineLogo"
@@ -102,7 +102,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_lvl3"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintTop_toBottomOf="@id/ivFlightOrderDepartureAirlineLogo"
                         app:typographyType="heading_6"
                         tools:text="Jakarta (CGK) -> Banda Aceh (BTJ)" />
@@ -111,7 +111,7 @@
                         android:id="@+id/tgFlightOrderDepartureAirport"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureJourneyTrip"
                         app:typographyType="body_3"
                         tools:text="Soekarno Hatta Intl (Terminal 2)" />
@@ -120,7 +120,7 @@
                         android:id="@+id/tgFlightOrderDepartureDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureAirport"
                         app:typographyType="body_3"
                         tools:text="Sab, 29 Feb 19 . 13:40 - 12:20 . 2 Transit" />
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/flight_order_detail_booking_code_label"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderDepartureBookingCode"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tgFlightOrderDepartureBookingCode"
@@ -146,7 +146,7 @@
                         android:paddingTop="@dimen/spacing_lvl2"
                         android:paddingRight="@dimen/spacing_lvl3"
                         android:paddingBottom="@dimen/spacing_lvl2"
-                        android:textColor="@color/Unify_G500"
+                        android:textColor="@color/Unify_GN500"
                         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderDepartureBookingCodeLabel"
                         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureDetail"
                         app:typographyType="small"
@@ -168,7 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_lvl5"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureBookingCodeLabel"
                         app:typographyType="body_3"
@@ -192,7 +192,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ticketTopView"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_lvl4">
 

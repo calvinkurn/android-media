@@ -2,13 +2,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:left="2dp" android:top="2dp">
         <shape>
-            <solid android:color="@color/Unify_N100"/>
+            <solid android:color="@color/Unify_NN200"/>
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/Unify_N0"/>
-            <stroke android:width="@dimen/dp_1" android:color="@color/Unify_N150"/>
+            <solid android:color="@color/Unify_NN0"/>
+            <stroke android:width="@dimen/dp_1" android:color="@color/Unify_NN400"/>
         </shape>
     </item>
 </layer-list>

@@ -115,7 +115,7 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
                     this.setTextColor(
                         MethodChecker.getColor(
                             requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         )
                     )
                     this.setPadding(
@@ -151,7 +151,7 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
                 super.updateDrawState(ds)
                 ds.color = MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 ds.isUnderlineText = false
             }

@@ -39,7 +39,7 @@ class VoucherGameProductViewHolder(
                     setStatusOutOfStockColor(
                         status,
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                     )
                 }
 
@@ -52,7 +52,7 @@ class VoucherGameProductViewHolder(
                     setStatusOutOfStockColor(
                         status,
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Y500
+                        com.tokopedia.unifyprinciples.R.color.Unify_YN500
                     )
                 }
 
@@ -67,7 +67,7 @@ class VoucherGameProductViewHolder(
                     setStatusOutOfStockColor(
                         status,
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 }
 
@@ -97,7 +97,7 @@ class VoucherGameProductViewHolder(
                     setStatusOutOfStockColor(
                         status,
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 }
 

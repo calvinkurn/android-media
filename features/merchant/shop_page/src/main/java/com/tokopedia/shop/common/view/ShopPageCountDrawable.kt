@@ -31,7 +31,7 @@ class ShopPageCountDrawable(context: Context) : Drawable() {
 
     private fun createBadgePaint(context: Context) {
         badgePaint = Paint()
-        badgePaint?.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+        badgePaint?.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
         badgePaint?.isAntiAlias = true
         badgePaint?.style = Paint.Style.FILL
     }

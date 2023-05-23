@@ -23,7 +23,7 @@
                 android:id="@+id/order_list_header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:paddingBottom="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -34,7 +34,7 @@
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:text="@string/status"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN950_44"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3" />
 
@@ -55,7 +55,7 @@
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N50"
+                    android:background="@color/Unify_NN50"
                     app:layout_constraintTop_toBottomOf="@id/status_value" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -85,7 +85,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/order_detail_seperator_1dp"
-                    android:background="@color/Unify_N50"
+                    android:background="@color/Unify_NN50"
                     app:layout_constraintTop_toBottomOf="@id/status_detail" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -93,7 +93,7 @@
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/spacing_lvl4"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:layout_constraintEnd_toStartOf="@id/lihat"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/status_detail"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:text="@string/lihat_text"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="@id/invoice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/invoice"
@@ -117,14 +117,14 @@
                 android:id="@+id/orderListSeperator1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@id/order_list_header_layout" />
 
             <LinearLayout
                 android:id="@+id/order_detail_ll_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/spacing_lvl4"
                 android:paddingVertical="@dimen/spacing_lvl4"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:text="@string/lihat_detail"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     android:visibility="gone"
                     app:typographyType="body_2"
                     tools:visibility="visible" />
@@ -172,7 +172,7 @@
                 android:id="@+id/recommend_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/order_detail_ll_details"
@@ -200,14 +200,14 @@
                 android:id="@+id/orderListSeperator2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@id/recommend_items" />
 
             <LinearLayout
                 android:id="@+id/order_detail_payment_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@id/orderListSeperator2">
@@ -233,7 +233,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/order_detail_seperator_1dp"
                     android:layout_marginTop="@dimen/unify_space_12"
-                    android:background="@color/Unify_N50" />
+                    android:background="@color/Unify_NN50" />
 
                 <LinearLayout
                     android:id="@+id/info_value"
@@ -246,7 +246,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/order_detail_seperator_1dp"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N50" />
+                    android:background="@color/Unify_NN50" />
 
                 <LinearLayout
                     android:id="@+id/total_price"
@@ -261,14 +261,14 @@
                 android:id="@+id/orderListSeperator3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@id/order_detail_payment_info" />
 
             <LinearLayout
                 android:id="@+id/actionBtnLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_lvl4"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -322,7 +322,7 @@
         android:id="@+id/stickyButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:elevation="@dimen/spacing_lvl3"
         android:paddingHorizontal="@dimen/spacing_lvl4"
         android:paddingVertical="@dimen/spacing_lvl3"

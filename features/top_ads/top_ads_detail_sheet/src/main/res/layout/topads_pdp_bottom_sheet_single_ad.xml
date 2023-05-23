@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:cardBackgroundColor="@color/Unify_N50_44"
+        app:cardBackgroundColor="@color/Unify_NN50_44"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:card_type="shadow_disabled"
@@ -208,7 +208,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/topads_detail_sheet_dashboard"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 app:typographyType="body_3" />

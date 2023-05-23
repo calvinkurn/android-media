@@ -103,11 +103,11 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun enableResetButton() {
-        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
     }
 
     private fun disableResetButton() {
-        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        setActionTextColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
     }
 
     private fun setActionTextColor(@ColorRes colorId: Int) {

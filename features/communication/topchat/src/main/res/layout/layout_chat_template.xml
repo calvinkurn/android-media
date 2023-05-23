@@ -9,7 +9,7 @@
     android:overScrollMode="never"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:background="@color/Unify_N50"
+    android:background="@color/Unify_NN50"
     tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/item_template_chat_layout"
     tools:orientation="horizontal"

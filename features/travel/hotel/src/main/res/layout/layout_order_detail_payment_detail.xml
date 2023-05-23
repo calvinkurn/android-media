@@ -24,10 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_order_detail_information"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:textColor="@color/Unify_N700_96"
+            tools:textColor="@color/Unify_NN950_96"
             tools:textSize="14sp"
             tools:textStyle="bold" />
 
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             tools:text="Kartu Kredit Anda tidak akan terpotong biaya apapun dikarenakan transaksi gagal."
             tools:textSize="@dimen/sp_12" />
 

@@ -2,26 +2,26 @@
 <resources>
     <style name="AttachProductToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
     </style>
 
     <style name="AttachProductToolbarTitle.SansSerif">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textColor">@color/Unify_NN950_68</item>
     </style>
 
     <style name="AttachProductToolbarSubTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
     </style>
 
     <style name="AttachProductToolbarSubTitle.SansSerif" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/Unify_N700_44</item>
+        <item name="android:textColor">@color/Unify_NN950_44</item>
     </style>
 
     <style name="ChatBotProvideRatingActivityTheme" parent="Theme.White">
-        <item name="colorAccent">@color/Unify_G600</item>
+        <item name="colorAccent">@color/Unify_GN600</item>
     </style>
 </resources>

@@ -25,7 +25,7 @@
             app:typographyWeight="bold"
             android:singleLine="true"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             tools:text="@string/merchant_voucher" />
 
         <View

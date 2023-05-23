@@ -22,7 +22,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="@string/title_requirement_pm_pro_new_seller_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivRequirementPmProNewSeller"

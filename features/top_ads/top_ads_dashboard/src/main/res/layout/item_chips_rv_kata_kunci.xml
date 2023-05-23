@@ -24,7 +24,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="heading_5"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"

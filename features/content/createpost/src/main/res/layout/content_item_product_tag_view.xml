@@ -31,7 +31,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:unify_image_corner_radius="0"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:scaleType="centerCrop"
             android:layout_gravity="center_vertical"
             tools:ignore="ContentDescription"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="Fellow - Stagg EKG Electric Pour Over Kettle jcinecoheh" />

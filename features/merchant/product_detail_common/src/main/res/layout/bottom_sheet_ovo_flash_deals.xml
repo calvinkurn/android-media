@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         tools:text="OVO kamu tidak mencukupi" />
@@ -26,14 +26,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_2"
         tools:text="Segera top-up biar ngga kehabisan dan gunakan pengiriman Bebas Ongkir." />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
@@ -45,7 +45,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/product_detail_price__goods"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold" />
 
@@ -57,7 +57,7 @@
             android:layout_marginBottom="4dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
@@ -71,7 +71,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/product_detail_estimation_price_min"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold" />
 
@@ -84,7 +84,7 @@
             android:layout_marginBottom="4dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
@@ -98,7 +98,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/product_detail_ovo_cash_points"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -110,7 +110,7 @@
             android:layout_marginBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textColor="@color/Unify_R500"
+            android:textColor="@color/Unify_RN500"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="- Rp200.000" />
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/label_cash_and_point"
-            android:background="@color/Unify_N75" />
+            android:background="@color/Unify_NN50" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_need_topup"
@@ -132,7 +132,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/product_detail_total_pay"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold" />
 

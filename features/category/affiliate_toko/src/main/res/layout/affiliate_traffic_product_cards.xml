@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/spacing_lvl3"
     android:layout_marginLeft="@dimen/spacing_lvl3"
     android:layout_marginRight="@dimen/spacing_lvl3"
-    app:card_background_color="@color/Unify_N0"
+    app:card_background_color="@color/Unify_NN0"
     app:card_type="shadow"
     app:layout_constraintTop_toTopOf="parent">
 

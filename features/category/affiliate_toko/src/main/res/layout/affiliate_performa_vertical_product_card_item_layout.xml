@@ -9,7 +9,7 @@
     android:layout_marginRight="8dp"
     android:paddingTop="4dp"
     android:paddingBottom="4dp"
-    app:card_background_color="@color/Unify_N0"
+    app:card_background_color="@color/Unify_NN0"
     app:card_type="shadow"
     app:layout_constraintTop_toTopOf="parent">
 

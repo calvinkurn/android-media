@@ -154,7 +154,7 @@ abstract class BaseNotificationViewHolder constructor(
             shorten = "$shorten... $inFull"
             val spannable = SpannableString(shorten)
 
-            val color = getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            val color = getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             spannable.setSpan(
                     ForegroundColorSpan(color),
                     shorten.indexOf(inFull),
