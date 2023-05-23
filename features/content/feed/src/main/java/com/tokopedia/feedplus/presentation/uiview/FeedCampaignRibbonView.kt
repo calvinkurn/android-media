@@ -48,6 +48,7 @@ class FeedCampaignRibbonView(
 
     private var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
     private var mProduct: FeedCardProductModel? = null
+    private var mAllProducts: List<FeedCardProductModel> = emptyList()
     private var mCampaign: FeedCardCampaignModel? = null
     private var mCta: FeedCardCtaModel? = null
     private var mHasVoucher: Boolean = false
@@ -64,6 +65,7 @@ class FeedCampaignRibbonView(
         campaign: FeedCardCampaignModel,
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
+        allProducts: List<FeedCardProductModel>,
         hasVoucher: Boolean,
         isTypeHighlight: Boolean,
         trackerDataModel: FeedTrackerDataModel,
@@ -76,6 +78,7 @@ class FeedCampaignRibbonView(
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
             mProduct = product
+            mAllProducts = allProducts
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
@@ -281,18 +284,16 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onASGCGeneralClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData
-                                    )
-                                }
+                                listener.onASGCGeneralClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData
+                                )
                             }
                         }
                     }
@@ -300,18 +301,16 @@ class FeedCampaignRibbonView(
                     root.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onASGCGeneralClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData
-                                    )
-                                }
+                                listener.onASGCGeneralClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData
+                                )
                             }
                         }
                     }
@@ -327,40 +326,36 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onOngoingCampaignClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData,
-                                        campaign.shortName,
-                                        feedPosition
-                                    )
-                                }
+                                listener.onOngoingCampaignClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData,
+                                    campaign.shortName,
+                                    feedPosition
+                                )
                             }
                         }
                     }
                     root.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onOngoingCampaignClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData,
-                                        campaign.shortName,
-                                        feedPosition
-                                    )
-                                }
+                                listener.onOngoingCampaignClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData,
+                                    campaign.shortName,
+                                    feedPosition
+                                )
                             }
                         }
                     }

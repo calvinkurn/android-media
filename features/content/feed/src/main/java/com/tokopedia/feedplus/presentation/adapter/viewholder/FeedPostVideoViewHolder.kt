@@ -292,7 +292,6 @@ class FeedPostVideoViewHolder(
             postType = data.typename,
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
-            hasVoucher = data.hasVoucher,
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
@@ -322,11 +321,11 @@ class FeedPostVideoViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
-            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                model
-            ),
+            trackerDataModel ?: trackerMapper
+                .transformVideoContentToTrackerModel(model),
             model.id,
             model.author,
             model.typename,
