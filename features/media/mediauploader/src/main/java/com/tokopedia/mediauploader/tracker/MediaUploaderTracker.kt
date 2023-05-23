@@ -30,13 +30,13 @@ class MediaUploaderTracker @Inject constructor(
         val sizeBefore = File(data.originalVideoPath).length().formattedToMB()
         val sizeAfter = File(data.compressedVideoPath).length().formattedToMB()
         val bitrate = data.compressedVideoMetadata?.bitrate.orZero()
-        val duration = data.originalVideoMetadata?.duration.orZero()
+        val duration = data.originalVideoMetadata?.duration.orZero().fromMillisToSec()
 
         val events = mutableMapOf(
             KEY_EVENT to "viewCommunicationIris",
             KEY_EVENT_CATEGORY to "vod compression",
             KEY_EVENT_ACTION to "user completed video upload",
-            KEY_EVENT_LABEL to "$isCompressed - $isRetryStatus - $uploadType - $uploadTime - $compressionTime - $sizeBefore - $sizeAfter - $bitrate - $duration",
+            KEY_EVENT_LABEL to "$isCompressed - $isRetryStatus - $uploadType - $compressionTime - $uploadTime - $sizeBefore - $sizeAfter - $bitrate - $duration",
             KEY_TRACKER_ID to "43117",
             KEY_CURRENT_SITE to CURRENT_SITE,
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
@@ -47,7 +47,11 @@ class MediaUploaderTracker @Inject constructor(
 
     private fun timeInSec(start: Long?, end: Long?): String {
         val time = end.orZero() - start.orZero()
-        return TimeUnit.MILLISECONDS.toSeconds(time).toString()
+        return time.fromMillisToSec()
+    }
+
+    private fun Number.fromMillisToSec(): String {
+        return TimeUnit.MILLISECONDS.toSeconds(this.toLong()).toString()
     }
 
     private fun uploadTypeLabel(isSimpleUpload: Boolean): String {

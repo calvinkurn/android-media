@@ -35,7 +35,7 @@ object MediaUploaderCommonModule {
     ): TrackerCacheDataStore {
         return TrackerCacheDataStoreImpl(
             metaDataExtractor,
-            object : CacheDataStoreImpl<UploaderTracker>(context, "tracker_cache") {
+            object : CacheDataStoreImpl<UploaderTracker>(context) {
                 override fun default(cache: UploaderTracker.() -> Unit) = UploaderTracker().apply(cache)
                 override fun read(string: String) = Serializer.read<UploaderTracker>(string)
                 override fun write(data: UploaderTracker) = Serializer.write(data)

@@ -1,8 +1,6 @@
 package com.tokopedia.mediauploader.common.data.store.base
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -10,12 +8,10 @@ import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-abstract class CacheDataStoreImpl<T> constructor(
-    private val context: Context,
-    preferencesName: String
-) : CacheDataStore<T> {
+private const val NAME = "media_uploader"
+private val Context.dataStore by preferencesDataStore(NAME)
 
-    private val Context.dataStore by preferencesDataStore(preferencesName)
+abstract class CacheDataStoreImpl<T> constructor(private val context: Context) : CacheDataStore<T> {
 
     override suspend fun get(key: String): T? {
         return context.dataStore.data
