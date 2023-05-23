@@ -10,7 +10,6 @@ import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.tokopedia.media.loader.isImageLoaderV2
-import com.tokopedia.media.loader.modelloader.M3U8ModelLoaderFactory
 import com.tokopedia.media.loader.utils.RemoteConfig
 import java.io.InputStream
 

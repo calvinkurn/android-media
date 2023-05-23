@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.modelloader
+package com.tokopedia.media.loader.module
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
