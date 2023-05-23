@@ -25,8 +25,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ClaimCoupon(R.layout.component_claim_coupon_layout, ComponentNames.ClaimCoupon.componentName),
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
-    ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
-    ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
     Tabs(R.layout.tabs_layout, ComponentNames.Tabs.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName),
     DynamicCategory(R.layout.dynamic_category_layout, ComponentNames.DynamicCategory.componentName),

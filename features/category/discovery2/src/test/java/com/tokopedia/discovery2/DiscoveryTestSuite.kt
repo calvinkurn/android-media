@@ -21,8 +21,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.caro
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner.CircularSliderBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModelTest
@@ -84,7 +82,6 @@ import org.junit.runners.Suite
     BrandRecommendationItemViewModelTest::class,
     CategoryNavigationItemViewModelTest::class,
     CategoryNavigationViewModelTest::class,
-    ChipsFilterItemViewModelTest::class,
     CircularSliderBannerViewModelTest::class,
     NavigationChipsViewModelTest::class,
     DynamicCategoryItemViewModelTest::class,
@@ -129,7 +126,6 @@ import org.junit.runners.Suite
     MixLeftEmptyViewModelTest::class,
     ClaimCouponViewModelTest::class,
     ClaimCouponItemViewModelTest::class,
-    ChipsFilterViewModelTest::class,
     ShopBannerInfiniteModelTest::class,
     ShopBannerInfiniteItemModelTest::class,
     CategoryBestSellerViewModelTest::class,

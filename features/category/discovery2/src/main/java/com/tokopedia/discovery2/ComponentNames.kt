@@ -21,7 +21,6 @@ enum class ComponentNames(val componentName: String) {
     ClaimCouponItem("claim_coupon_item"),
     Margin("margin"),
     ChipsFilter("chips_filter"),
-    ChipsFilterItem("chips_filter_item"),
     Tabs("tabs"),
     TabsItem("tabs_item"),
     DynamicCategory("dynamic_category"),
