@@ -266,14 +266,14 @@ class PlayShortsViewModel @Inject constructor(
 
             if (!isSuccess) {
                 _uiEvent.emit(
-                    PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(Throwable(response.errorMessage))
+                    PlayShortsUiEvent.ErrorOnboardAffiliate(Throwable(response.errorMessage))
                 )
             }
 
             checkIsSuccessSubmitAffiliate(isSuccess)
         }) {
             _uiEvent.emit(
-                PlayShortsUiEvent.SubmitOnboardAffiliateUiEvent(it)
+                PlayShortsUiEvent.ErrorOnboardAffiliate(it)
             )
         }
     }
@@ -438,7 +438,7 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun checkIsSuccessSubmitAffiliate(isSuccess: Boolean) {
         if (!isSuccess) return
         checkIsUserAffiliate()
-        _uiEvent.emit(PlayShortsUiEvent.SuccessSubmitAffiliateTncUiEvent)
+        _uiEvent.emit(PlayShortsUiEvent.SuccessOnboardAffiliate)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
