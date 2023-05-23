@@ -69,7 +69,7 @@ class CartAnalyticsTest {
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp_v3"
+        private const val GET_CART_LIST_KEY = "cart_revamp_v4"
         private const val UPDATE_CART_KEY = "update_cart_v2"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
