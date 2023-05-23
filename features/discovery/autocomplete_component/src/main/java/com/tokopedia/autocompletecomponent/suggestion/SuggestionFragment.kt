@@ -121,8 +121,11 @@ class SuggestionFragment :
     }
 
     override fun onDestroyView() {
+        presenter?.let {
+            it.markSuggestionCoachMark()
+            it.detachView()
+        }
         super.onDestroyView()
-        presenter?.detachView()
     }
 
     override fun getScreenName(): String {
@@ -189,6 +192,10 @@ class SuggestionFragment :
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
 
         presenter?.getSuggestion(searchParameter, activeKeyword)
+    }
+
+    fun hideSuggestionCoachMark() {
+        coachMark?.dismiss()
     }
 
     fun setIsTyping(isTyping: Boolean) {

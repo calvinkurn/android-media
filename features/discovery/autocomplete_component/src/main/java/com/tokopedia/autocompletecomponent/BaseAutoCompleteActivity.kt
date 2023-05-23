@@ -507,6 +507,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             || viewModel?.activeKeyword?.keyword.isNullOrBlank()
 
         if (shouldDisplayInitialState) {
+            getSuggestionFragment()?.hideSuggestionCoachMark()
             getInitialStateFragment()?.show(searchParameterMap)
         } else {
             val activeKeyword = viewModel?.activeKeyword ?: return
