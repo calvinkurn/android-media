@@ -587,7 +587,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
 
             // Travel
-            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT) }, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
             add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL)}, DF_TRAVEL, R.string.title_hotel, {DFWebviewFallbackUrl.TRAVEL_HOTEL}))
 
