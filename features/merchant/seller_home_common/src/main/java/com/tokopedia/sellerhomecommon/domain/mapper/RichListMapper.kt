@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetRichListDataResponse
@@ -30,7 +31,6 @@ class RichListMapper @Inject constructor(
         private const val SECTION_TYPE_RANK = "simpleRank"
         private const val SECTION_TYPE_CAPTION = "tileBox"
         private const val SECTION_TYPE_TICKER = "ticker"
-        private const val LAST_UPDATED_FORMAT = "Update terakhir %s WIB"
         private const val START_DELIMITER_URL = "='"
         private const val END_DELIMITER_URL = "'>"
         private const val START_DELIMITER_CTA_TEXT = ">"
@@ -55,11 +55,14 @@ class RichListMapper @Inject constructor(
     }
 
     private fun getLastUpdated(updateInfoUnix: Long): String {
-        val sdf = SimpleDateFormat(DateTimeUtil.FORMAT_DD_MMMM_YYYY, DateTimeUtil.localeID)
-        sdf.timeZone = TimeZone.getTimeZone(DateTimeUtil.TIME_ZONE)
-        val oneSecInMillis = TimeUnit.SECONDS.toMillis(Int.ONE.toLong())
-        val timeInMillis = updateInfoUnix.times(oneSecInMillis)
-        return String.format(LAST_UPDATED_FORMAT, sdf.format(Date(timeInMillis)))
+        runCatching {
+            val sdf = SimpleDateFormat(DateTimeUtil.FORMAT_DD_MMMM_YYYY, DateTimeUtil.localeID)
+            sdf.timeZone = TimeZone.getTimeZone(DateTimeUtil.TIME_ZONE)
+            val oneSecInMillis = TimeUnit.SECONDS.toMillis(Int.ONE.toLong())
+            val timeInMillis = updateInfoUnix.times(oneSecInMillis)
+            return sdf.format(Date(timeInMillis))
+        }
+        return String.EMPTY
     }
 
     private fun getRichListData(sections: List<RichListSectionModel>): List<BaseRichListItem> {

@@ -91,7 +91,7 @@ class RichListViewHolder(
         return if (getIsEligibleSeller(data)) {
             val rank = getRank(data.richListData)
             val ranking = rank?.rankValue.orEmpty()
-            val point = rank?.subTitle.orEmpty()
+            val point = rank?.title.orEmpty()
             String.format(EVENT_LABEL_FORMAT, point, ranking, data.lastUpdated)
         } else {
             String.EMPTY
@@ -121,11 +121,13 @@ class RichListViewHolder(
 
     private fun setupLastUpdated(lastUpdated: String) {
         with(binding) {
+            val lastUpdatedFmt =
+                root.context.getString(R.string.shc_rich_list_last_updated, lastUpdated)
             if (lastUpdated.isBlank()) {
                 tvShcRichListUpdated.gone()
             } else {
                 tvShcRichListUpdated.visible()
-                tvShcRichListUpdated.text = lastUpdated
+                tvShcRichListUpdated.text = lastUpdatedFmt
             }
         }
     }
