@@ -4,8 +4,6 @@ import com.tokopedia.feedplus.oldFeed.data.repository.FeedPlusRepositoryImpl
 import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
-import com.tokopedia.feedplus.data.repository.FeedPlusRepositoryImpl
-import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import dagger.Binds
 import dagger.Module
 
