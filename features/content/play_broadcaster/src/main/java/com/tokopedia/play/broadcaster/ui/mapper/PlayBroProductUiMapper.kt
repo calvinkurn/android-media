@@ -177,14 +177,14 @@ class PlayBroProductUiMapper @Inject constructor() {
             ProductTagSectionUiModel(
                 name = it.name,
                 campaignStatus = mapCampaignStatusFromType(it.statusFmt),
-                products = it.products.mapIndexed { index, product ->
+                products = it.products.map { product ->
                     ProductUiModel(
                         id = product.productID,
                         name = product.productName,
-                        hasCommission = true,
-                        commissionFmt = "Rp50.000",
-                        commission = 50000,
-                        extraCommission = index % 2 == 0 ,
+                        hasCommission = product.hasCommission,
+                        commissionFmt = product.commissionFmt,
+                        commission = product.commission,
+                        extraCommission = product.extraCommission,
                         imageUrl = product.imageURL,
                         stock = product.quantity.toLong(),
                         price = if(product.discount == "0") {

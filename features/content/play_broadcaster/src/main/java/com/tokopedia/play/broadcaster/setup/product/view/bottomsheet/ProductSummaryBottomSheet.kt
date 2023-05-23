@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -129,7 +127,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
-                when(state.productTagSummary) {
+                when (state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
                         showLoading(true)
                         binding.globalError.visibility = View.GONE
@@ -142,22 +140,24 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin)
-
-                        if(state.productTagSectionList.isEmpty()) {
+                        productSummaryListView.setProductList(
+                            state.productTagSectionList,
+                            viewModel.isEligibleForPin
+                        )
+                        if (state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
                             binding.globalError.visibility = View.VISIBLE
                             binding.flBtnDoneContainer.visibility = View.GONE
                         }
                     }
-                    else -> {}
+                    else -> return@collectLatest
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event) {
+                when (event) {
                     is PlayBroProductChooserEvent.GetDataError -> {
                         toaster.showError(
                             err = event.throwable,
@@ -165,12 +165,18 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin)
+                        productSummaryListView.setProductList(
+                            emptyList(),
+                            viewModel.isEligibleForPin
+                        )
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
                         toaster.showToaster(
-                            message = getString(R.string.play_bro_product_summary_success_delete_product, event.deletedProductCount),
+                            message = getString(
+                                R.string.play_bro_product_summary_success_delete_product,
+                                event.deletedProductCount
+                            ),
                         )
                     }
                     is PlayBroProductChooserEvent.DeleteProductError -> {
@@ -186,30 +192,29 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
                         if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
                         else analytic.onImpressFailPinProductBottomSheet()
-
-                        if(event.throwable is PinnedProductException){
+                        if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
-                        }else {
+                        } else {
                             toaster.showError(
                                 err = event.throwable
                             )
                         }
                     }
+                    else -> return@collect
                 }
             }
         }
     }
 
     private fun showLoading(isShow: Boolean) {
-        if(isShow) {
-            if(!isLoadingDialogVisible())
+        if (isShow) {
+            if (!isLoadingDialogVisible())
                 loadingDialogFragment.show(childFragmentManager)
-        }
-        else if(loadingDialogFragment.isAdded) {
+        } else if (loadingDialogFragment.isAdded) {
             loadingDialogFragment.dismiss()
         }
     }
@@ -219,10 +224,15 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun setTitle(productCount: Int?) {
-        if(productCount != null) {
-            setTitle(getString(R.string.play_bro_product_summary_title_with_count, productCount, viewModel.maxProduct))
-        }
-        else {
+        if (productCount != null) {
+            setTitle(
+                getString(
+                    R.string.play_bro_product_summary_title_with_count,
+                    productCount,
+                    viewModel.maxProduct
+                )
+            )
+        } else {
             setTitle(getString(R.string.play_bro_product_summary_title))
         }
     }
