@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.ads
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.di.scope.SearchScope
@@ -104,8 +105,12 @@ class AdsLowOrganic @Inject constructor(
             searchParameter,
             chooseAddressDelegate.getChooseAddressParams(),
         )
+        val keyword = searchParameter[SearchApiConst.Q] as? String ?: ""
 
-        topAdsUseCase.execute(requestParams, topAdsNextPageSubscriber(productData, onSuccessListener))
+        topAdsUseCase.execute(
+            requestParams,
+            topAdsNextPageSubscriber(productData, onSuccessListener, keyword)
+        )
     }
 
     private fun canLoadNextPage() = isAdsLowOrganicAllowed && canLoadMore && isBelowInjectLimit
@@ -113,6 +118,7 @@ class AdsLowOrganic @Inject constructor(
     private fun topAdsNextPageSubscriber(
         productData: SearchPageProductData,
         onSuccessListener: () -> Unit,
+        keyword: String,
     ) = object : Subscriber<TopAdsModel>() {
         override fun onCompleted() { }
 
@@ -126,14 +132,20 @@ class AdsLowOrganic @Inject constructor(
                 topAdsModel,
                 productData,
                 onSuccessListener,
+                keyword,
             )
         }
+    }
+
+    private fun List<Visitable<*>>?.hasNoAdsLowOrganicTitle() : Boolean {
+        return this?.none { it is AdsLowOrganicTitleDataView } ?: false
     }
 
     private fun onTopAdsNextPageSuccessful(
         topAdsModel: TopAdsModel,
         productData: SearchPageProductData,
         onSuccessListener: () -> Unit,
+        keyword: String,
     ) {
         if (topAdsModel.data.isEmpty()) {
             canLoadMore = false
@@ -146,6 +158,10 @@ class AdsLowOrganic @Inject constructor(
         lastPosition = topAdsProductList.lastOrNull()?.position ?: 0
 
         viewUpdater.removeLoading()
+        val isAdsLowOrganicTitleNotExist = viewUpdater.itemList.hasNoAdsLowOrganicTitle()
+        if (isAdsLowOrganicTitleNotExist) {
+            viewUpdater.appendItems(listOf(AdsLowOrganicTitleDataView.create(keyword)))
+        }
         viewUpdater.appendItems(topAdsProductList)
         injectCount++
         onSuccessListener()
