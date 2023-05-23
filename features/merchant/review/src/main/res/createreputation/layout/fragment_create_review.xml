@@ -113,7 +113,7 @@
                         android:layout_marginTop="@dimen/spacing_lvl2"
                         android:layout_marginEnd="@dimen/layout_lvl3"
                         android:gravity="center"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/animatedReview"
@@ -171,7 +171,7 @@
                         android:layout_marginStart="@dimen/layout_lvl1"
                         android:layout_marginLeft="@dimen/layout_lvl1"
                         android:text="@string/review_create_empty_photo"
-                        android:textColor="@color/Unify_G500"
+                        android:textColor="@color/Unify_GN500"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/create_review_add_photo_icon"
                         app:layout_constraintTop_toTopOf="parent"
@@ -266,7 +266,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/review_create_hide_name"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="body_2" />
 
             </LinearLayout>

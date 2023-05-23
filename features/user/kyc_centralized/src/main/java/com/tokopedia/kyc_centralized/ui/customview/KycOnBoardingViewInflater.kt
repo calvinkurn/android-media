@@ -34,7 +34,7 @@ object KycOnBoardingViewInflater {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             window.statusBarColor = MethodChecker.getColor(activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_T200)
+                com.tokopedia.unifyprinciples.R.color.Unify_TN100)
         }
 
         if(activity != null && activity is AppCompatActivity) {

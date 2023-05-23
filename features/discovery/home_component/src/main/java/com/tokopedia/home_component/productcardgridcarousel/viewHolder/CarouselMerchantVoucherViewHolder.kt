@@ -42,14 +42,14 @@ class CarouselMerchantVoucherViewHolder (
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
         if (itemView.context.isDarkMode()) {
-            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_DARK,
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
         }
         else {
-            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
             binding?.imageBackgroundVoucher?.loadImageNormal(
                 BACKGROUND_MVC_WHITE,
                 com.tokopedia.home_component.R.drawable.placeholder_grey

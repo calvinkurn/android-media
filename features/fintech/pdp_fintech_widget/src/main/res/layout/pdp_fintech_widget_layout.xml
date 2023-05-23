@@ -21,7 +21,7 @@
         android:layout_marginStart="@dimen/pdp_fintech_widget_16_dp"
         android:layout_marginTop="@dimen/pdp_fintech_widget_14_dp"
         android:layout_marginEnd="@dimen/pdp_fintech_widget_16_dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyWeight="bold"
         app:typographyType="display_2"
         tools:text = "Demo Title kjdfnv fkjdsng dlkjfng jfskng kjxfng kjfng"

@@ -61,7 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/order_detail_seperator_1dp"
                         android:layout_marginTop="@dimen/spacing_lvl4"
-                        android:background="@color/Unify_N50" />
+                        android:background="@color/Unify_NN50" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/conditional_info"
@@ -110,7 +110,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:id="@+id/details_section"
@@ -221,7 +221,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/spacing_lvl4"
-                        android:tint="@color/Unify_N400"
+                        android:tint="@color/Unify_NN600"
                         app:icon_name="CHEVRON_RIGHT"/>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
@@ -232,7 +232,7 @@
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/user_label"
@@ -258,7 +258,7 @@
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <RelativeLayout
                 android:id="@+id/actionButton"
@@ -296,7 +296,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/spacing_lvl4"
-                    android:tint="@color/Unify_N700_68"
+                    android:tint="@color/Unify_NN950_68"
                     app:icon_name="CHEVRON_RIGHT" />
 
                 <com.tokopedia.unifycomponents.LoaderUnify
@@ -317,7 +317,7 @@
                 android:visibility="gone"
                 android:layout_height="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -336,7 +336,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -365,7 +365,7 @@
                     android:layout_height="@dimen/order_detail_seperator_1dp"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N50" />
+                    android:background="@color/Unify_NN50" />
 
                 <LinearLayout
                     android:id="@+id/info_value"
@@ -379,7 +379,7 @@
                     android:layout_height="@dimen/order_detail_seperator_1dp"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N50" />
+                    android:background="@color/Unify_NN50" />
 
                 <LinearLayout
                     android:id="@+id/total_price"
@@ -435,7 +435,7 @@
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:layout_marginBottom="@dimen/spacing_lvl5"
-                    android:background="@color/Unify_Y500"
+                    android:background="@color/Unify_YN500"
                     android:gravity="center"
                     android:padding="@dimen/spacing_lvl4"
                     android:text="@string/bottom_btn_text"
@@ -449,7 +449,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_20"
+        android:background="@color/Unify_NN950_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"

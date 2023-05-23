@@ -88,7 +88,7 @@
                     android:layout_width="@dimen/spacing_lvl4"
                     android:layout_height="@dimen/spacing_lvl4"
                     android:layout_marginStart="@dimen/spacing_lvl1"
-                    android:tint="@color/Unify_N700_68"
+                    android:tint="@color/Unify_NN950_68"
                     app:layout_constraintBottom_toBottomOf="@id/txtRewardPending"
                     app:layout_constraintStart_toEndOf="@id/txtRewardPending"
                     app:layout_constraintTop_toTopOf="@id/txtRewardPending"
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_active"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="display_3"
                 app:typographyWeight="bold" />
 

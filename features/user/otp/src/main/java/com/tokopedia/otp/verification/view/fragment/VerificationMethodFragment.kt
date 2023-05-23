@@ -597,7 +597,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     ds.isUnderlineText = false
                     ds.color = MethodChecker.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 }
             }

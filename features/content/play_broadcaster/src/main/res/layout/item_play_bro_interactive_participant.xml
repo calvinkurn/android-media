@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:inputType="textNoSuggestions"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="@id/img_participant"
         app:layout_constraintStart_toEndOf="@id/img_participant"
         app:layout_constraintTop_toTopOf="@id/img_participant"

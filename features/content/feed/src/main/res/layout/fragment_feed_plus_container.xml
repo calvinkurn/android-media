@@ -29,7 +29,7 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg"
-            android:background="@color/Unify_G500"
+            android:background="@color/Unify_GN500"
             android:layout_width="match_parent"
             app:layout_scrollFlags="enterAlways"
             android:layout_height="25dp"/>
@@ -47,7 +47,7 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg2"
-            android:background="@color/Unify_G500"
+            android:background="@color/Unify_GN500"
             android:layout_width="match_parent"
             android:layout_marginTop="-5dp"
             android:layout_height="25dp"/>
@@ -87,7 +87,7 @@
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/Unify_GN500"
                 app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
-                app:tabTextColor="@color/Unify_N700_32" />
+                app:tabTextColor="@color/Unify_NN950_32" />
 
             <View
                 android:layout_width="0dp"

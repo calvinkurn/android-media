@@ -32,7 +32,7 @@
         android:paddingTop="@dimen/unify_space_4"
         android:paddingRight="8dp"
         android:paddingBottom="@dimen/unify_space_4"
-        android:textColor="@color/Unify_Y500"
+        android:textColor="@color/Unify_YN500"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="16:48:40" />

@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_label"
             app:layout_constraintBottom_toBottomOf="@id/tv_label"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 

@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/dp_12"
         android:background="@android:color/transparent"
         android:hint="@string/review_create_text_area_placeholder"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/fontSize_lvl4"
         android:gravity="top"

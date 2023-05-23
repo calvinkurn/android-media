@@ -83,7 +83,7 @@ class KolCommentNewCardView : LinearLayout {
         setBackgroundColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
     }
@@ -218,7 +218,7 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
 
     private fun constructProfileApplink(isShop: Boolean, userId: String): String {
         return if (!isShop) {

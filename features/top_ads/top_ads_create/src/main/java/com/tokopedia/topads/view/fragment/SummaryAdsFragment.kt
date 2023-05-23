@@ -395,7 +395,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             spannableText.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        it, com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -410,7 +410,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 ds.isUnderlineText = false
                 context?.let {
                     ds.color =
-                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
 
                 }
             }

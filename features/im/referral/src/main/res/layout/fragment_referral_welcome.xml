@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Selamat!"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
 
@@ -67,7 +67,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/img_profile"
                     android:text="1. Daftar"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="14dp" />
 
                 <ImageView
@@ -87,7 +87,7 @@
                     android:layout_centerVertical="true"
                     android:text="2. Transaksi Pertama"
                     android:paddingRight="40dp"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="14dp" />
             </RelativeLayout>
 
@@ -112,7 +112,7 @@
                     android:paddingLeft="@dimen/padding_small"
                     android:paddingRight="@dimen/padding_small"
                     android:paddingTop="@dimen/padding_small"
-                    android:textColor="@color/Unify_Y500"
+                    android:textColor="@color/Unify_YN500"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -129,7 +129,7 @@
                     android:paddingLeft="@dimen/margin_xlarge"
                     android:paddingRight="@dimen/margin_large"
                     android:text="@string/menu_copy"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
 
@@ -143,7 +143,7 @@
                     android:layout_marginLeft="@dimen/margin_sm"
                     android:layout_toRightOf="@+id/txtv_referral_code"
                     android:src="@drawable/checked_thin"
-                    android:tint="@color/Unify_G400"
+                    android:tint="@color/Unify_GN500"
                     android:visibility="gone" />
             </RelativeLayout>
 
@@ -156,7 +156,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:padding="15dp"
                 android:text="@string/app_share_explore_btn_label"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 android:textSize="@dimen/fonts" />
         </LinearLayout>
     </ScrollView>
@@ -166,7 +166,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/ll_referral_help_link"
-        android:background="@color/Unify_N100"></View>
+        android:background="@color/Unify_NN200"></View>
 
     <LinearLayout
         android:id="@+id/ll_referral_help_link"
@@ -178,7 +178,7 @@
             android:id="@+id/tv_referral_help_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             android:gravity="center_horizontal"
             android:paddingBottom="12dp"
             android:paddingLeft="32dp"

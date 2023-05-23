@@ -81,7 +81,7 @@ class HomeClaimCouponWidgetItemViewHolder(
             if (isEnabled) {
                 isInverse = true
                 buttonVariant = UnifyButton.Variant.GHOST
-                setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
             else {
                 isInverse = false

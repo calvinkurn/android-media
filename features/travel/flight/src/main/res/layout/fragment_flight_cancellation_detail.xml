@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
@@ -22,14 +22,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/flight_label_status"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/cancellation_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="heading_4" />
 
             <View
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flight_label_cancellation_date"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_2" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +72,7 @@
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     tools:text="1 Sep 2017, 05:00 WIB" />
@@ -83,14 +83,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:orientation="vertical">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view_flight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/flight_dp_20"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:orientation="vertical"
             android:paddingTop="@dimen/flight_dp_10"
             android:paddingBottom="@dimen/flight_dp_10">
@@ -121,7 +121,7 @@
                     android:paddingRight="@dimen/flight_dp_10"
                     android:paddingBottom="@dimen/flight_dp_10"
                     android:text="@string/flight_cancellation_cancelled_passegner_detail"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_4" />
 
                 <com.tokopedia.iconunify.IconUnify
@@ -130,8 +130,8 @@
                     android:layout_height="@dimen/flight_dp_20"
                     android:layout_gravity="center_vertical"
                     app:icon_name="CHEVRON_UP"
-                    app:icon_color_light_enable="@color/Unify_G500"
-                    app:icon_color_night_enable="@color/Unify_G500"/>
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_color_night_enable="@color/Unify_GN500"/>
 
             </LinearLayout>
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/flight_dp_20"
             android:layout_marginBottom="@dimen/flight_dp_20"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
@@ -160,7 +160,7 @@
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingBottom="@dimen/spacing_lvl4"
                 android:text="@string/flight_cancellation_detail_refund_information_label"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:textSize="@dimen/fontSize_lvl6"
                 app:typographyType="body_1"
                 app:typographyWeight="bold" />
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_8"
-                android:background="@color/Unify_N700_20" />
+                android:background="@color/Unify_NN950_20" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_bottom_middle_info"
@@ -194,7 +194,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_8"
                 android:layout_marginBottom="@dimen/margin_8"
-                android:background="@color/Unify_N700_20" />
+                android:background="@color/Unify_NN950_20" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_bottom_bottom_info"

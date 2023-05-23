@@ -61,7 +61,7 @@
                 android:singleLine="false"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textColor="@color/Unify_NN950"
-                android:textCursorDrawable="@color/Unify_N700"
+                android:textCursorDrawable="@color/Unify_NN950"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

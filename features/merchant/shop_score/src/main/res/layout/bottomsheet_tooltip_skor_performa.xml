@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:text="@string/title_calculation_shop_performance"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
-            app:sticky_highlight_color="@color/Unify_G500"
+            app:sticky_highlight_color="@color/Unify_GN500"
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
             tools:visibility="visible" />
 

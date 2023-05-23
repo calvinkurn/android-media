@@ -103,8 +103,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 indicator.apply {
                     visible()
                     setIndicator(productImages.size)
-                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
+                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600_68)
                 }
                 val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 

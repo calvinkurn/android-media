@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.7"
-        android:background="@color/Unify_N700"
+        android:background="@color/Unify_NN950"
         tools:visibility="visible">
 
         <ProgressBar
@@ -25,7 +25,7 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N50">
+        android:background="@color/Unify_NN50">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:text="@string/title_template_chat"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="display_1"
                     app:typographyWeight="bold" />
 
@@ -59,7 +59,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:maxWidth="@dimen/dp_topchat_270"
                     android:text="@string/caption_switch_template"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN950_44"
                     app:typographyType="body_2" />
 
                 <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -95,7 +95,7 @@
                     android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:paddingLeft="@dimen/spacing_lvl4"
                     android:text="@string/title_topchat_list_template"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="display_1"
                     app:typographyWeight="bold" />
 

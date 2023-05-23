@@ -55,16 +55,16 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         context?.let {
             when (FlightOrderDetailStatusMapper.getStatusOrder(statusInt)) {
                 FlightOrderDetailStatusMapper.SUCCESS -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_G200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 }
                 FlightOrderDetailStatusMapper.IN_PROGRESS, FlightOrderDetailStatusMapper.WAITING_FOR_PAYMENT -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_Y200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_YN100)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
                 }
                 FlightOrderDetailStatusMapper.FAILED, FlightOrderDetailStatusMapper.REFUNDED -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_R100)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R400))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_RN100)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_RN400))
                 }
             }
             tgFlightOrderStatus.text = statusStr

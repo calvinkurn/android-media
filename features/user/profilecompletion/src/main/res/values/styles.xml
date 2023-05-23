@@ -2,9 +2,9 @@
 <resources>
 
     <style name="Theme.TextInputLayout" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="android:textColorHint">@color/Unify_N100</item>
+        <item name="android:textColorHint">@color/Unify_NN200</item>
         <item name="android:textSize">16sp</item>
-        <item name="colorControlActivated">@color/Unify_G600</item>
-        <item name="colorControlNormal">@color/Unify_N100</item>
+        <item name="colorControlActivated">@color/Unify_GN600</item>
+        <item name="colorControlNormal">@color/Unify_NN200</item>
     </style>
 </resources>

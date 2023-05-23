@@ -43,7 +43,7 @@
         tools:text="@string/product_price"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_Y500"
+        android:textColor="@color/Unify_YN500"
         android:layout_marginTop="8dp"/>
 
     <com.tokopedia.unifycomponents.Label
@@ -60,7 +60,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:layout_below="@id/iv_product"
         android:layout_marginTop="20dp"/>
 

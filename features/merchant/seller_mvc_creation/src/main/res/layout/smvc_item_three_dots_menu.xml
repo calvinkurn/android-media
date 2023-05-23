@@ -27,7 +27,7 @@
         android:paddingStart="8dp"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

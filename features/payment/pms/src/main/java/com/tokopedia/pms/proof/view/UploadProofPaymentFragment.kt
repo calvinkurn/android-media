@@ -109,7 +109,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
                     IconUnify.CHECK_BIG,
                     ContextCompat.getColor(
                         requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
 

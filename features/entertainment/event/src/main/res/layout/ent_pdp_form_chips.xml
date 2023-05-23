@@ -10,7 +10,7 @@
         android:id="@+id/tg_chips_form_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N400"
+        android:textColor="@color/Unify_NN600"
         app:typographyType="body_3"
         />
 
@@ -25,7 +25,7 @@
         android:id="@+id/tg_chips_form_event_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_R600"
+        android:textColor="@color/Unify_RN500"
         app:typographyType="body_3"
         android:visibility="invisible"
         />

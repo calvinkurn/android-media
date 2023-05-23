@@ -48,7 +48,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     override fun bind(element: TalkReplyUiModel) {
-        binding.talkReplyContainer.setBackgroundColor(ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        binding.talkReplyContainer.setBackgroundColor(ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         element.answer.apply {
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
             showDisplayName(userName, userId, isSeller, element.shopId)
@@ -127,14 +127,14 @@ class TalkReplyViewHolder(view: View,
         if (isMasked) {
             binding.replyMessage.apply {
                 text = if (allowUnmask || isSeller) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
                 show()
             }
             return
         }
         if (answer.isNotEmpty()) {
             binding.replyMessage.apply {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 text = HtmlLinkHelper(context, answer).spannedString
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
@@ -224,8 +224,8 @@ class TalkReplyViewHolder(view: View,
 
     private fun showSmartReplyLabel(isAutoReplied: Boolean) {
         binding.replySmartReplyLabel.apply {
-            setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             showWithCondition(isAutoReplied)
         }
     }

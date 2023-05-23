@@ -41,7 +41,7 @@
         android:layout_marginTop="34dp"
         android:layout_marginEnd="16dp"
         android:text="@string/trx_fee_heading"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.95"
@@ -88,7 +88,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
                 android:text="@string/trx_fee_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_5" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -100,7 +100,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="4dp"
                 android:text="@string/trx_fee_desc"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:textSize="12sp"
                 android:visibility="visible"
                 app:typographyType="body_2" />
@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/trx_fee_date"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/trx_download_date_chevron"
                         app:layout_constraintStart_toEndOf="@id/trx_download_date_icon"
@@ -145,8 +145,8 @@
                         android:id="@+id/trx_download_date_chevron"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        app:icon_color_light_enable="@color/Unify_N500"
-                        app:icon_color_night_enable="@color/Unify_N500"
+                        app:icon_color_light_enable="@color/Unify_NN600"
+                        app:icon_color_night_enable="@color/Unify_NN600"
                         app:icon_name="CHEVRON_RIGHT"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

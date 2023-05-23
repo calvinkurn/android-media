@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape android:shape="line" xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke android:color="@color/Unify_N75" android:dashWidth="@dimen/hotel_5dp" android:dashGap="@dimen/hotel_1dp" android:width="@dimen/hotel_1dp"/>
+    <stroke android:color="@color/Unify_NN50" android:dashWidth="@dimen/hotel_5dp" android:dashGap="@dimen/hotel_1dp" android:width="@dimen/hotel_1dp"/>
 </shape>

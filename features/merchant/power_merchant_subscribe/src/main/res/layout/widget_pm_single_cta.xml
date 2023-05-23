@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="heading_5"
         tools:text="Pelajari Selengkapnya Tentang Power Merchant" />
 </RelativeLayout>

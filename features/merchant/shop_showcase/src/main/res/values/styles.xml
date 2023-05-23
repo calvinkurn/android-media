@@ -6,9 +6,9 @@
     </style>
 
     <style name="TextDarkMode">
-        <item name="android:textColor">@color/Unify_N700</item>
-        <item name="android:textColorPrimary">@color/Unify_N700</item>
-        <item name="android:textColorSecondary">@color/Unify_N500</item>
+        <item name="android:textColor">@color/Unify_NN950</item>
+        <item name="android:textColorPrimary">@color/Unify_NN950</item>
+        <item name="android:textColorSecondary">@color/Unify_NN600</item>
     </style>
 
 </resources>

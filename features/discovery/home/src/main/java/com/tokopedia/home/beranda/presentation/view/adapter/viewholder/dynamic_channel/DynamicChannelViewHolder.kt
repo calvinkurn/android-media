@@ -158,7 +158,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -182,7 +182,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
                     if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE

@@ -34,7 +34,7 @@
             android:paddingTop="@dimen/layout_lvl2"
             android:paddingRight="@dimen/spacing_lvl3"
             android:text="@string/digital_title_details_bills"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_5" />
 
         <LinearLayout

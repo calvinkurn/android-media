@@ -152,7 +152,7 @@ class ProfileViewHolder(
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)),
                     UnifyButton.DrawablePosition.LEFT
                 )
                 setOnClickListener {
@@ -175,7 +175,7 @@ class ProfileViewHolder(
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)),
                     UnifyButton.DrawablePosition.LEFT
                 )
                 setOnClickListener {

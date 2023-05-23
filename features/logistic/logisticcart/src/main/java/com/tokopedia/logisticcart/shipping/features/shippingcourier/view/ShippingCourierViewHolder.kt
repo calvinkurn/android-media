@@ -118,13 +118,13 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                 tvPriceOrDuration.setTextColor(
                     ContextCompat.getColor(
                         tvCourier.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 tvCourier.setTextColor(
                     ContextCompat.getColor(
                         tvCourier.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                     )
                 )
                 itemView.setOnClickListener {
@@ -139,13 +139,13 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                 tvPriceOrDuration.setTextColor(
                     ContextCompat.getColor(
                         tvCourier.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
                 tvCourier.setTextColor(
                     ContextCompat.getColor(
                         tvCourier.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
                 itemView.setOnClickListener(null)
@@ -185,13 +185,13 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             tvPriceOrDuration.setTextColor(
                 ContextCompat.getColor(
                     tvCourier.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             tvCourier.setTextColor(
                 ContextCompat.getColor(
                     tvCourier.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             itemView.setOnClickListener {

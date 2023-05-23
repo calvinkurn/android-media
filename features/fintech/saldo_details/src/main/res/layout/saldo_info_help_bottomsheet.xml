@@ -45,10 +45,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                app:icon_color_light_disabled="@color/Unify_N700"
-                app:icon_color_light_enable="@color/Unify_N700"
-                app:icon_color_night_disabled="@color/Unify_N700"
-                app:icon_color_night_enable="@color/Unify_N700"
+                app:icon_color_light_disabled="@color/Unify_NN950"
+                app:icon_color_light_enable="@color/Unify_NN950"
+                app:icon_color_night_disabled="@color/Unify_NN950"
+                app:icon_color_night_enable="@color/Unify_NN950"
                 app:icon_name="CHEVRON_RIGHT" />
         </RelativeLayout>
 
@@ -86,10 +86,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                app:icon_color_light_disabled="@color/Unify_N700"
-                app:icon_color_light_enable="@color/Unify_N700"
-                app:icon_color_night_disabled="@color/Unify_N700"
-                app:icon_color_night_enable="@color/Unify_N700"
+                app:icon_color_light_disabled="@color/Unify_NN950"
+                app:icon_color_light_enable="@color/Unify_NN950"
+                app:icon_color_night_disabled="@color/Unify_NN950"
+                app:icon_color_night_enable="@color/Unify_NN950"
                 app:icon_name="CHEVRON_RIGHT" />
         </RelativeLayout>
     </com.tokopedia.unifycomponents.CardUnify>

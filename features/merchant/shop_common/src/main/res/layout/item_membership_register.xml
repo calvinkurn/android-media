@@ -17,7 +17,7 @@
             android:id="@+id/bg_image_register"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            tools:background="@color/Unify_N100"
+            tools:background="@color/Unify_NN200"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:contentDescription="@string/register_membership_background_content_description"

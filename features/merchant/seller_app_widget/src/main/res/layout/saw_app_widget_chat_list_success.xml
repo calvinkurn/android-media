@@ -31,7 +31,7 @@
         android:layout_toEndOf="@+id/imgSawChatAppIcon"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_16"
         android:textStyle="bold"
         tools:text="Tomodachi Shop" />
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSawChatShopName"
         android:layout_alignStart="@+id/tvSawChatShopName"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:textSize="@dimen/unify_font_10"
         android:textStyle="bold"
         tools:text="5 Pesanan Baru" />
@@ -65,7 +65,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/unify_space_12"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="@dimen/unify_font_10"
         tools:text="Diperbarui 11.00" />
 
@@ -87,7 +87,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:divider="@null"
-        android:scrollbarThumbVertical="@color/Unify_N700_44"
+        android:scrollbarThumbVertical="@color/Unify_NN950_44"
         tools:itemCount="4"
         tools:listitem="@layout/saw_app_widget_chat_item" />
 </RelativeLayout>

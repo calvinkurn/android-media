@@ -33,7 +33,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyType">body_3</item>
         <item name="typographyWeight">bold</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColor">@color/Unify_NN950_96</item>
     </style>
 
     <style name="CardView.Text">
@@ -41,7 +41,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyWeight">reguler</item>
         <item name="typographyType">small</item>
-        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textColor">@color/Unify_NN950_68</item>
     </style>
 
 

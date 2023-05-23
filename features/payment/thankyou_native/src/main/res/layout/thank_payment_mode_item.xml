@@ -10,7 +10,7 @@
         android:id="@+id/tvInvoicePaymentModeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
@@ -25,8 +25,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="5.5dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N400"
-        app:icon_color_night_enable="@color/Unify_N400"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_color_night_enable="@color/Unify_NN600"
         app:icon_name="INFORMATION" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvInvoicePaymentModeName"
         app:layout_constraintTop_toTopOf="parent"

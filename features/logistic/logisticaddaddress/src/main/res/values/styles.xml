@@ -2,10 +2,10 @@
 <resources>
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/Unify_N0</item></style>
+        <item name="android:textColor">@color/Unify_NN0</item></style>
 
     <style name="LogisticTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/Unify_N0</item>
+        <item name="android:windowBackground">@color/Unify_NN0</item>
     </style>
 
 </resources>

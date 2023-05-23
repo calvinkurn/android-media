@@ -169,7 +169,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             flexboxOrderProductInfo.removeAllViews()
             if (!product.isError && product.wholesalePrice > 0) {
                 val textView = Typography(flexboxOrderProductInfo.context).apply {
-                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     setType(Typography.BODY_3)
                     text = root.context.getString(R.string.lbl_wholesale_product)
                 }
@@ -178,7 +178,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             if (!product.isError && product.productInformation.isNotEmpty()) {
                 for (information in product.productInformation) {
                     val textView = Typography(flexboxOrderProductInfo.context).apply {
-                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         setType(Typography.BODY_3)
                         text = if (flexboxOrderProductInfo.childCount > 0) "$information, " else information
                     }

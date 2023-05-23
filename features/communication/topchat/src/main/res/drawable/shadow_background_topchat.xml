@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/Unify_N150_44"/>
+            <solid android:color="@color/Unify_NN400_44"/>
             <padding android:bottom="2dp" android:left="0dp" android:right="0dp" android:top="0dp"/>
         </shape>
     </item>

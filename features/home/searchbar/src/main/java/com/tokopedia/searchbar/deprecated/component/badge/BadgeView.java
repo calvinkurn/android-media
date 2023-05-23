@@ -121,8 +121,8 @@ public class BadgeView extends View implements Badge {
         mBadgeBackgroundBorderPaint = new Paint();
         mBadgeBackgroundBorderPaint.setAntiAlias(true);
         mBadgeBackgroundBorderPaint.setStyle(Paint.Style.STROKE);
-        mColorBackground = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_R500);
-        mColorBadgeText = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0);
+        mColorBackground = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_RN500);
+        mColorBadgeText = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0);
         mBadgeTextSize = DisplayUtil.dp2px(getContext(), 11);
         mBadgePadding = DisplayUtil.dp2px(getContext(), 5);
         mBadgeNumber = 0;

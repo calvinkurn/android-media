@@ -149,8 +149,8 @@ fun RadioButtonUnify?.setTitle(title: String) {
     this?.context?.let { context ->
         val titleFontSize = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3).toInt()
         val bodyFontSize = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2).toInt()
-        val titleColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val bodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        val titleColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+        val bodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
 
         val span1 = SpannableString(title)
         span1.setSpan(AbsoluteSizeSpan(titleFontSize), Int.ZERO, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -165,7 +165,7 @@ fun RadioButtonUnify?.setTitle(title: String) {
 }
 
 fun UnifyButton.setUnifyDrawableEnd(iconId: Int) {
-    val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N400))
+    val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600))
     val dp8 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).dpToPx()
     val drawable = ScaleDrawable(icon, Int.ZERO, dp8, dp8).drawable
 

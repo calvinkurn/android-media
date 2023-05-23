@@ -78,17 +78,17 @@ class BrandlistAlphabetHeaderAdapter(val listener: BrandlistHeaderBrandInterface
         }
 
         private fun setDefaultText() {
-            chipContainer.background = ContextCompat.getDrawable(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            chipContainer.background = ContextCompat.getDrawable(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         }
 
         private fun isSelectedChips(isSelected: Boolean) {
             if (isSelected) {
                 chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_selected_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else {
                 chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_normal_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
             }
         }
     }

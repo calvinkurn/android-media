@@ -253,7 +253,7 @@ class TicketListAdapter(
                     layoutItemTicket?.setBackgroundColor(
                         MethodChecker.getColor(
                             mContext,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G100_44
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN50_44
                         )
                     )
                     tvTicketTitle?.setWeight(Typography.BOLD)

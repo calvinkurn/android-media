@@ -50,10 +50,10 @@ class ShopInfoViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_seller_menu_shop_info
 
-        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
 
-        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_T500
-        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Y400
+        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_TN500
+        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_YN400
 
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val TICKER_TYPE_WARNING = "warning"
@@ -183,7 +183,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.hide()
@@ -192,7 +192,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.show()
@@ -455,7 +455,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         }
@@ -472,7 +472,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             isClickable = false
@@ -494,7 +494,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         }

@@ -40,14 +40,14 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 app:typographyType="display_1"
-                android:textColor="@color/Unify_N600" />
+                android:textColor="@color/Unify_NN800" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end|right"
-                android:textColor="@color/Unify_G400"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="display_2"
                 android:visibility="gone" />
 
@@ -98,7 +98,7 @@
                 android:maxLines="1"
                 android:visibility="gone"
                 android:text="Harga Barang"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:layout_constraintBottom_toTopOf="@+id/price"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -136,7 +136,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/discount_percentage"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
@@ -156,7 +156,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
@@ -176,7 +176,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

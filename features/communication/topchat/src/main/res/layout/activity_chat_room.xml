@@ -65,6 +65,6 @@
         android:visibility="gone"
         android:paddingBottom="@dimen/dp_topchat_5"
         android:paddingTop="@dimen/dp_topchat_5"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

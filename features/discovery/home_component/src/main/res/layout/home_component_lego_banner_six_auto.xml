@@ -29,7 +29,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/gridHolder"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,5 +71,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 </LinearLayout>

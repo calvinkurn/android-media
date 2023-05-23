@@ -349,7 +349,7 @@
                                         android:layout_height="@dimen/dp_1"
                                         android:layout_below="@id/tv_schedule"
                                         android:layout_marginTop="3dp"
-                                        android:background="@color/Unify_N75"
+                                        android:background="@color/Unify_NN50"
                                         android:visibility="visible" />
 
                                 </RelativeLayout>

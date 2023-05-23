@@ -91,7 +91,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             android:visibility="visible"
             app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
             app:layout_constraintRight_toRightOf="parent"
@@ -137,7 +137,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             android:visibility="visible"
             app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
             app:layout_constraintRight_toRightOf="parent"
@@ -184,7 +184,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             android:visibility="visible"
             app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
             app:layout_constraintRight_toRightOf="parent"
@@ -369,7 +369,7 @@
         android:id="@+id/tab_indicator"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/tab_1" />
 
     <!--  Content 1  -->

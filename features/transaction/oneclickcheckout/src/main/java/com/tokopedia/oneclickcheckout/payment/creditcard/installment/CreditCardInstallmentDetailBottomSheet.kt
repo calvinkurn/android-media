@@ -145,10 +145,10 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
 
     private fun setupTerms(tncInfo: String) {
         binding?.run {
-            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
-            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN800))
+            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             val htmlText = """
 <html>
 	<style>

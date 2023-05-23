@@ -30,7 +30,7 @@ open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListe
             layoutInside?.context?.let { drawableBorder.setColor(MethodChecker.getColor(it,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN300)) }
             layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0)) }
             filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN950)) }
         }

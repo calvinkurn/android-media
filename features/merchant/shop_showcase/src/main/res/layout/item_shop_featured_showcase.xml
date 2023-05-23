@@ -43,7 +43,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginStart="8dp"
             tools:text="16 Produk"
-            android:textColor="@color/Unify_N300"
+            android:textColor="@color/Unify_NN500"
             android:visibility="gone"
             />
 

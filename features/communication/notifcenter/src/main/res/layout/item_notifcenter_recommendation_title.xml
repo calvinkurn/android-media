@@ -8,7 +8,7 @@
     android:paddingHorizontal="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/notif_dp_6"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:typographyType="heading_5"
     app:typographyWeight="bold"
     tools:text="Terbaru" />

@@ -43,7 +43,7 @@
         android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toTopOf="@id/shopBadges"
         app:layout_constraintStart_toEndOf="@id/outerCircle"
         app:layout_constraintTop_toTopOf="@id/innerCircle"
@@ -67,7 +67,7 @@
         android:layout_height="0dp"
         android:gravity="center_vertical"
         android:text="@string/dot_string"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="@id/shopBadges"
         app:layout_constraintStart_toEndOf="@id/shopBadges"
         app:layout_constraintTop_toTopOf="@id/shopBadges"
@@ -79,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="@id/shopBadges"
         app:layout_constraintStart_toEndOf="@id/dot"
         app:layout_constraintTop_toTopOf="@id/shopBadges"
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/seller_menu_shop_score_label"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -111,7 +111,7 @@
             android:id="@+id/shopScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="85" />
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/seller_menu_shop_score_max_label"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -132,7 +132,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginEnd="8dp"
             app:icon_name="CHEVRON_RIGHT"
-            app:icon_color_light_enable="@color/Unify_N400"
+            app:icon_color_light_enable="@color/Unify_NN600"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

@@ -320,7 +320,7 @@ class OrderPreferenceCard(
                                 ForegroundColorSpan(
                                     ContextCompat.getColor(
                                         it,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                                     )
                                 ),
                                 message.length + 1,
@@ -405,7 +405,7 @@ class OrderPreferenceCard(
                                 ForegroundColorSpan(
                                     ContextCompat.getColor(
                                         it,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                                     )
                                 ),
                                 message.length + 1,

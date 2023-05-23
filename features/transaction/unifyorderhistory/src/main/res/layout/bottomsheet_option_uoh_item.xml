@@ -20,7 +20,7 @@
             android:id="@+id/label_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:visibility="gone"
             app:typographyType="heading_5"
             tools:visibility="visible"
@@ -30,7 +30,7 @@
             android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:typographyType="body_3"
             tools:visibility="visible"
@@ -47,7 +47,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
         android:layout_toStartOf="@+id/rb_option"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
         app:typographyType="body_3" />
 
@@ -64,7 +64,7 @@
         android:layout_height="@dimen/dp_1"
         android:layout_below="@id/ll_label_option"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 
     <View
         android:id="@+id/divider_sublabel"
@@ -72,6 +72,6 @@
         android:layout_height="@dimen/dp_1"
         android:layout_below="@id/sublabel_option"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 
 </RelativeLayout>

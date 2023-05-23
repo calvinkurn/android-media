@@ -13,7 +13,7 @@
             android:background="@drawable/background_countdown_unify"
             android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@color/Unify_R400"
+            android:textColor="@color/Unify_RN400"
             android:textSize="12sp"
             android:textStyle="bold"
             app:typographyType="body_3"
@@ -27,7 +27,7 @@
             android:text=":"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_R400" />
+            android:textColor="@color/Unify_RN400" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/minuteView"
@@ -36,7 +36,7 @@
             android:background="@drawable/background_countdown_unify"
             android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@color/Unify_R400"
+            android:textColor="@color/Unify_RN400"
             android:textSize="12sp"
             android:textStyle="bold"
             app:typographyType="body_3"
@@ -50,7 +50,7 @@
             android:text=":"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_R400" />
+            android:textColor="@color/Unify_RN400" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/secondView"
@@ -59,7 +59,7 @@
             android:background="@drawable/background_countdown_unify"
             android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@color/Unify_R400"
+            android:textColor="@color/Unify_RN400"
             android:textSize="12sp"
             android:textStyle="bold"
             app:typographyType="body_3"

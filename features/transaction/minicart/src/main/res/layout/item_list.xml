@@ -9,6 +9,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/Unify_B100" />
+        android:background="@color/Unify_BN50" />
 
 </LinearLayout>

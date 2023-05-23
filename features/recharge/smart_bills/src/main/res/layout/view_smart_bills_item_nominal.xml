@@ -30,7 +30,7 @@
         android:ellipsize="end"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         />
 
     <LinearLayout
@@ -62,7 +62,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:typographyType="small"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             android:visibility="gone"
        />
 

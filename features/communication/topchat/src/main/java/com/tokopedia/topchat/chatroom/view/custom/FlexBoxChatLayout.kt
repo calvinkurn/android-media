@@ -258,10 +258,10 @@ class FlexBoxChatLayout : ViewGroup {
     private fun binDHeaderCtaState(attachment: HeaderCtaButtonAttachment) {
         val ctaColor = when (attachment.ctaButton.status) {
             HeaderCtaMessageAttachment.STATUS_ENABLED ->
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             HeaderCtaMessageAttachment.STATUS_DISABLED ->
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
         }
         val color = ContextCompat.getColor(context, ctaColor)
         headerCta?.setTextColor(color)
@@ -296,7 +296,7 @@ class FlexBoxChatLayout : ViewGroup {
         val textColor = if (msg.isDeleted()) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
         message?.setTextColor(MethodChecker.getColor(context, textColor))
     }

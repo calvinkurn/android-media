@@ -25,7 +25,7 @@
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:background="@color/Unify_Y200"
+            android:background="@color/Unify_YN100"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -113,5 +113,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 </LinearLayout>

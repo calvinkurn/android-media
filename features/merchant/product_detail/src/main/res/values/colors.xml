@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="product_detail_dms_page_control">@color/Unify_N700</color>
+    <color name="product_detail_dms_page_control">@color/Unify_NN950</color>
     <color name="product_detail_dms_cashback_green">#D6FFDE</color>
     <color name="product_detail_dms_discount_red_background">#FFEAEF</color>
     <color name="product_detail_dms_tradein_blue">#32afff</color>

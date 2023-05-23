@@ -11,7 +11,7 @@
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_8"
-    app:cardBackgroundColor="@color/Unify_N0">
+    app:cardBackgroundColor="@color/Unify_NN0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
                 app:typographyType="body_3"
@@ -47,7 +47,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="end"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:text="@string/deadline_review"
                 android:visibility="visible"
                 app:typographyType="body_3"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 tools:text="INV/20170116/XVII/65862137"
                 app:typographyType="body_3"
                 />
@@ -88,7 +88,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 android:padding="@dimen/dp_3"
                 android:visibility="visible"
                 android:ellipsize="end"
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/avatar"
                 tools:text="Pretty Sugar Shop"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:layout_toEndOf="@id/avatar"
                 android:layout_alignTop="@+id/avatar"
                 app:typographyType="body_3"
@@ -148,7 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/Unify_N100"/>
+            android:background="@color/Unify_NN200"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/Unify_G500_96"
+                android:textColor="@color/Unify_GN500_96"
                 android:layout_gravity="center_vertical"
                 android:gravity="end|center_vertical"
                 android:paddingRight="@dimen/dp_10"
@@ -179,6 +179,6 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Unify_N100"/>
+            android:background="@color/Unify_NN200"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

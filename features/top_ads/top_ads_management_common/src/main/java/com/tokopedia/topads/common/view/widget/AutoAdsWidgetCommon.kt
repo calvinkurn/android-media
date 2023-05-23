@@ -211,7 +211,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         val startIndex = 0
         val endIndex = spannableText.length
         spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500)),
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500)),
             startIndex,
             endIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -249,7 +249,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = ContextCompat.getColor(context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
         spannableText.setSpan(clickableSpan,

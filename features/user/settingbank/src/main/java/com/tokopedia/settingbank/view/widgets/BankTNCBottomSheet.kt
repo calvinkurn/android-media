@@ -58,7 +58,7 @@ class BankTNCBottomSheet : BottomSheetUnify() {
     private fun getHTMLTextFromString(text : String) : String{
         val textHexColor = String.format("#%06x",
                 MethodChecker.getColor(context,
-                        com.tokopedia.unifycomponents.R.color.Unify_N700) and 0xffffff)
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950) and 0xffffff)
         return  "<html><head><style type=\"text/css\">" +
                 "   body {" +
                 "      color:${textHexColor}" +

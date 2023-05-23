@@ -28,10 +28,10 @@ class HotelCancellationRefundDetailWidget @JvmOverloads constructor(context: Con
 
         if (isSummary) {
             hotel_cancellation_refund_detail_payment_title.setWeight(Typography.BOLD)
-            hotel_cancellation_refund_detail_payment_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            hotel_cancellation_refund_detail_payment_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
 
             hotel_cancellation_refund_detail_payment_price.setWeight(Typography.BOLD)
-            hotel_cancellation_refund_detail_payment_price.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+            hotel_cancellation_refund_detail_payment_price.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
         }
     }
 }

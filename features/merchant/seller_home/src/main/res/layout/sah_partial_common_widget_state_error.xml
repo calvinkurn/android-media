@@ -27,7 +27,7 @@
         android:maxLines="1"
         android:text="@string/sah_line_graph_error_message"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="14sp"
         app:typographyWeight="bold" />
 </LinearLayout>

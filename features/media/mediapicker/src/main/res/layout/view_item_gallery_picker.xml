@@ -29,8 +29,8 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/bg_picker_circle_white_color"
-        app:icon_color_light_enable="@color/Unify_G500"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_name="CHECK_CIRCLE"
         android:visibility="gone"
         tools:visibility="visible"/>

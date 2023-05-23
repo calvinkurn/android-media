@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         app:typographyWeight="bold"
         app:typographyType="heading_5"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         tools:text="Upload Resep atau Chat Dokter"

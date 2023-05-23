@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="48dp"
-        tools:src="@color/Unify_Y500" />
+        tools:src="@color/Unify_YN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
@@ -29,7 +29,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="6dp"
         android:lines="1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintLeft_toRightOf="@id/image_coupon"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
@@ -45,6 +45,6 @@
         app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         tools:text="Masih ada 6 Kupon Toko lainnya!" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_review"
-        tools:src="@color/Unify_N100"
+        tools:src="@color/Unify_NN200"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"/>

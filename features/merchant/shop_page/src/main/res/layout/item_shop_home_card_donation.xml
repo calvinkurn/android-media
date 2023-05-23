@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
 

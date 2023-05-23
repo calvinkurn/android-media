@@ -259,10 +259,10 @@ class ReadReviewViewHolder(
     private fun setLikeButton(reviewId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
             setThumbLike(true)
-            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         } else {
             setThumbLike(false)
-            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         }
         likeImage?.setOnClickListener {
             readReviewItemListener.onLikeButtonClicked(
@@ -290,10 +290,10 @@ class ReadReviewViewHolder(
     private fun setShopReviewLikeButton(reviewId: String, shopId: String, productId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
             setThumbLike(true)
-            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         } else {
             setThumbLike(false)
-            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         }
         likeImage?.setOnClickListener {
             readReviewItemListener.onShopReviewLikeButtonClicked(reviewId, shopId, productId, likeDislike.likeStatus, adapterPosition)
@@ -383,7 +383,7 @@ class ReadReviewViewHolder(
             }
         } else {
             itemView.context?.let {
-                val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                 likeImage?.setImage(IconUnify.THUMB, greyColor)
             }
         }

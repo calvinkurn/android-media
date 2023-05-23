@@ -44,7 +44,7 @@
         android:gravity="center"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintTop_toBottomOf="@id/incentiveOvoSubmittedTitle"
         tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
 

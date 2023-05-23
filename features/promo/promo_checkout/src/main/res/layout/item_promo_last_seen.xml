@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     android:padding="4dp"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/Unify_NN0"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -25,7 +25,7 @@
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:text="Waktunya Kulineran! Beli Voucher Makannya, Cashback hingga Rp20…" />
 
@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="bold"
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="@string/promo_label_promo_code"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -68,7 +68,7 @@
                 android:id="@+id/voucherCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/Unify_YN500"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="VOUCHER HEMAT" />

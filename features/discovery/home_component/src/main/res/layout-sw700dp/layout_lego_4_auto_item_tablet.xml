@@ -31,7 +31,7 @@
                     android:layout_marginTop="8dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +46,7 @@
                     android:layout_marginBottom="8dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/item_name"
                     app:layout_constraintStart_toStartOf="@+id/item_name"
@@ -84,6 +84,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.06"
-        android:background="@color/Unify_N700" />
+        android:background="@color/Unify_NN950" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

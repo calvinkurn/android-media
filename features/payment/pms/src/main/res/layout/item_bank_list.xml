@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pms_dp_1"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bank_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

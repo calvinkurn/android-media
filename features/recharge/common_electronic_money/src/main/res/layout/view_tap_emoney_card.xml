@@ -39,7 +39,7 @@
         android:gravity="center"
         android:text="@string/emoney_nfc_tap_card_instruction_title"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_2" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/emoney_nfc_tap_card_instruction_message"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton

@@ -29,7 +29,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyWeight="bold"
         android:paddingHorizontal="4dp"
         android:layout_marginTop="2dp"

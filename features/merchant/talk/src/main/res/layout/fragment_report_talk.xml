@@ -34,7 +34,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/report_talk_question"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -57,8 +57,8 @@
                 android:inputType="text"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:textColor="@color/Unify_N700_68"
-                android:textColorHighlight="@color/Unify_G400"
+                android:textColor="@color/Unify_NN950_68"
+                android:textColorHighlight="@color/Unify_GN500"
                 app:layout_constraintTop_toBottomOf="@id/optionRv"
                 app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/talk_hint_input_reason" />
@@ -80,7 +80,7 @@
         android:lineSpacingExtra="@dimen/sp_5"
         android:text="@string/button_send"
         android:textAllCaps="false"
-        android:textColor="@color/Unify_N700_20"
+        android:textColor="@color/Unify_NN950_20"
         android:textSize="14sp"
         android:textStyle="normal"
         tools:visibility="visible" />

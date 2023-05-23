@@ -332,14 +332,14 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
             var colorKtp: Int? = context?.resources?.let {
                 ResourcesCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96,
                     null
                 )
             }
             var colorFace: Int? = context?.resources?.let {
                 ResourcesCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96,
                     null
                 )
             }

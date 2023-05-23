@@ -30,7 +30,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:text="@string/catalog_masih_belum"
             app:typographyType="heading_4"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -42,7 +42,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:text="@string/catalog_lainnya_disini"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.catalog.model.util.OrientationAwareRecyclerView

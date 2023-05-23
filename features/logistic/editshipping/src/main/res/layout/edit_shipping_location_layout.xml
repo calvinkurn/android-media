@@ -14,7 +14,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:text="@string/title_shop_location"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="body_2" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -25,7 +25,7 @@
         android:layout_alignLeft="@id/title_edit_shipping_location"
         android:layout_marginTop="10dp"
         android:hint="@string/title_city"
-        android:textColorHint="@color/Unify_N400_68">
+        android:textColorHint="@color/Unify_NN600_68">
 
         <EditText
             android:id="@+id/text_edit_shipping_city"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="false"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -45,7 +45,7 @@
         android:layout_alignStart="@id/title_edit_shipping_location"
         android:layout_marginTop="10dp"
         android:hint="@string/title_post_code"
-        android:textColorHint="@color/Unify_N400_68">
+        android:textColorHint="@color/Unify_NN600_68">
 
         <AutoCompleteTextView
             android:id="@+id/postal_code"
@@ -55,7 +55,7 @@
             android:digits="1234567890"
             android:inputType="phone"
             android:maxLength="5"
-            android:textColor="@color/Unify_N700" />
+            android:textColor="@color/Unify_NN950" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

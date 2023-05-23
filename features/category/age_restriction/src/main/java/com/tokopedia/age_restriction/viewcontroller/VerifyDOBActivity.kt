@@ -105,7 +105,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             }
         } else {
             group.visibility = View.VISIBLE
-            changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)
+            changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
             tv_update_dob.isClickable = false
             tv_update_dob.isFocusable = false
         }
@@ -165,7 +165,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
                     iv_arrow_down.isClickable = true
-                    changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     tv_update_dob.isClickable = true
                     tv_update_dob.isFocusable = true
                 }

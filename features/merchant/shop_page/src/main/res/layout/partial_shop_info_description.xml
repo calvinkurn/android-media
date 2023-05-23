@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:text="@string/shop_page_label_description" />
     
     <com.tokopedia.unifyprinciples.Typography
@@ -22,7 +22,7 @@
         app:typographyType="body_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:id="@+id/shopInfoDescription"
         tools:text="@string/shop_page_label_favorite"/>
 
@@ -106,7 +106,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             android:id="@+id/shopInfoLocation"
             tools:text="@string/shop_page_label_favorite"/>
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:id="@+id/shopInfoOpenSince"
             tools:text="@string/shop_info_label_open_since_v3"/>
 

@@ -50,7 +50,7 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="00:00" />

@@ -7,7 +7,7 @@
 
     <com.tokopedia.iconunify.IconUnify
         app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_R500"
+        app:icon_color_light_enable="@color/Unify_RN500"
         android:layout_width="12dp"
         android:layout_height="12dp"/>
 
@@ -15,7 +15,7 @@
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_R500"
+        android:textColor="@color/Unify_RN500"
         app:typographyType="small"
         android:layout_marginStart="4dp"/>
 

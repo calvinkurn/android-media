@@ -70,7 +70,7 @@ class InspirationCarouselChipsItemViewHolder(
 
         gradientDrawable.shape = GradientDrawable.OVAL
         gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-        gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+        gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
         gradientDrawable.setColor(safeParseColor(colorString))
 
         return gradientDrawable

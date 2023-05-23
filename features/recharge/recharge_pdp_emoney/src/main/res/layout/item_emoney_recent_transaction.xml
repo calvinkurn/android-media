@@ -38,12 +38,12 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         app:layout_constraintStart_toStartOf="@id/emoneyRecentNumberTitle"
         tools:text="Description"
-        android:textColor="@color/Unify_N700_68" />
+        android:textColor="@color/Unify_NN950_68" />
 
     <View
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="0.5dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/emoneyRecentNumberDescription"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="@id/emoneyRecentNumberTitle"

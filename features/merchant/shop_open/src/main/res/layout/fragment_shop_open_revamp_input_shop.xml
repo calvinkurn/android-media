@@ -45,7 +45,7 @@
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/masukkan_info_toko"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 

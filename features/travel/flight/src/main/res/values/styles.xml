@@ -16,32 +16,32 @@
 
     <style name="FlightChips.Info">
         <item name="android:background">@drawable/flight_bg_flight_chip_info</item>
-        <item name="android:textColor">@color/Unify_B500</item>
+        <item name="android:textColor">@color/Unify_BN500</item>
     </style>
 
     <style name="CardSuccessStatusStyle">
         <item name="android:background">@drawable/flight_bg_card_success</item>
         <item name="android:textSize">@dimen/fontSize_lvl1</item>
-        <item name="android:textColor">@color/Unify_G500</item>
+        <item name="android:textColor">@color/Unify_GN500</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CardFailedStatusStyle">
         <item name="android:background">@drawable/flight_bg_card_failed</item>
         <item name="android:textSize">@dimen/sp_10</item>
-        <item name="android:textColor">@color/Unify_R500</item>
+        <item name="android:textColor">@color/Unify_RN500</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CardProcessStatusStyle">
         <item name="android:background">@drawable/flight_bg_card_process</item>
         <item name="android:textSize">@dimen/fontSize_lvl1</item>
-        <item name="android:textColor">@color/Unify_Y400</item>
+        <item name="android:textColor">@color/Unify_YN400</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">
-        <item name="colorAccent">@color/Unify_G500</item>
+        <item name="colorAccent">@color/Unify_GN500</item>
     </style>
 
 </resources>

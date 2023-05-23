@@ -108,7 +108,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             paymentDetailHeader.isEnabled = false
             paymentDetailSubHeader.isEnabled = false
             radioSelector.isEnabled = false
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
 
         }

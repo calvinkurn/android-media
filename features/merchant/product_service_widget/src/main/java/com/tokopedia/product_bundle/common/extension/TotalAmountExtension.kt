@@ -23,7 +23,7 @@ internal fun TotalAmount.setTitleText(discount: String, slashPrice: String) {
 }
 
 internal fun TotalAmount.setSubtitleText(prefix: String, price: String) {
-    val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+    val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
     val spannable: Spannable = SpannableString("$prefix $price")
     spannable.setSpan(ForegroundColorSpan(color), prefix.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     labelSubTitleView.setText(spannable, TextView.BufferType.SPANNABLE)

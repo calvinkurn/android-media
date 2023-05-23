@@ -9,7 +9,7 @@
         android:id="@+id/common_topupbills_favorite_number_name_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:text_field_input_type="text"
         app:text_field_label="@string/common_topup_fav_number_modify_name" />
 
@@ -17,7 +17,7 @@
         android:id="@+id/common_topupbills_favorite_number_phone_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N75_20"
+        android:textColor="@color/Unify_NN50_20"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:text_field_label_static="true"
         app:text_field_input_type="text"

@@ -1,6 +1,6 @@
 <rotate xmlns:android="http://schemas.android.com/apk/res/android" android:fromDegrees="0" android:pivotX="50%" android:pivotY="50%" android:toDegrees="360">
     <shape android:innerRadiusRatio="3" android:shape="ring" android:thicknessRatio="8" android:useLevel="false">
         <size android:height="76dip" android:width="76dip"/>
-        <gradient android:angle="0" android:endColor="@color/transparent" android:startColor="@color/Unify_N200" android:type="sweep" android:useLevel="false"/>
+        <gradient android:angle="0" android:endColor="@color/transparent" android:startColor="@color/Unify_NN500" android:type="sweep" android:useLevel="false"/>
     </shape>
 </rotate>

@@ -192,7 +192,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
                         "")
             }
         }
-        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val foregroundColorSpan = ForegroundColorSpan(greenColor)
         spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)

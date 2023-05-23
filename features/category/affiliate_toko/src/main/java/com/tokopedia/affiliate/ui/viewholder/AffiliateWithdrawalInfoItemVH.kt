@@ -44,7 +44,7 @@ class AffiliateWithdrawalInfoItemVH(itemView: View) :
                     setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
 

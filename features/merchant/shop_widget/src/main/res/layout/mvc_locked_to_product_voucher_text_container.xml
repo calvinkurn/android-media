@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
         app:unify_image_type="circle"
-        tools:src="@color/Unify_Y500" />
+        tools:src="@color/Unify_YN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_voucher_title"
@@ -32,7 +32,7 @@
         android:layout_marginStart="6dp"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintLeft_toRightOf="@id/image_coupon"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -84,7 +84,7 @@
             android:id="@+id/text_right_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_R600_68"
+            android:textColor="@color/Unify_RN500_68"
             app:layout_constraintBottom_toBottomOf="@id/text_left_subtitle"
             app:layout_constraintLeft_toRightOf="@id/text_dot"
             app:layout_constraintTop_toTopOf="@id/text_left_subtitle"

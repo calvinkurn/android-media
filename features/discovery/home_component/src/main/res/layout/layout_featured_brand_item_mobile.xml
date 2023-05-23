@@ -18,7 +18,7 @@
             android:maxHeight="@dimen/component_featured_brand_image_size"
             app:layout_constraintDimensionRatio="1:1"
             android:scaleType="centerCrop"
-            tools:background="@color/Unify_N200"
+            tools:background="@color/Unify_NN500"
             tools:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:id="@+id/featured_brand_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="heading_4"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:id="@+id/featured_brand_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

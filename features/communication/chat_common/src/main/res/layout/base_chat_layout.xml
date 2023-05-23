@@ -17,7 +17,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:textAllCaps="true"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         android:visibility="gone"
         app:typographyType="display_3"
         tools:text="13:16 wib" />
@@ -35,8 +35,8 @@
         android:paddingTop="@dimen/layout_lvl1"
         android:paddingEnd="@dimen/chatcommon_18dp"
         android:paddingBottom="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_N700_68"
-        android:textColorLink="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
+        android:textColorLink="@color/Unify_NN950_68"
         android:textIsSelectable="true"
         android:visibility="visible"
         app:typographyType="display_2"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/message"
         android:layout_marginTop="@dimen/chatcommon_3dp"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         android:visibility="gone"
         app:typographyType="small"
         tools:text="11:50" />

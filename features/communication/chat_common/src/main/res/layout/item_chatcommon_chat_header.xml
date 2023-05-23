@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/chatcommon_12dp"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

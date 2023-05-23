@@ -22,7 +22,7 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:text="@string/see_more_txt"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:typographyType="heading_5" />

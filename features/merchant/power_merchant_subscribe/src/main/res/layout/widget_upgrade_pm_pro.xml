@@ -181,7 +181,7 @@
                 android:gravity="center"
                 android:padding="4dp"
                 android:text="@string/power_merchant_benefit_learn_more"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
         </LinearLayout>

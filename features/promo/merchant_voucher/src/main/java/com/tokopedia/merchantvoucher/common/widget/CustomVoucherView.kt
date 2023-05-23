@@ -106,7 +106,7 @@ open class CustomVoucherView : FrameLayout {
 
     override fun onDraw(canvas: Canvas) {
         paint.isAntiAlias = true
-        paint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        paint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         paint.strokeWidth = 0f
         paint.style = Paint.Style.FILL_AND_STROKE
         paint.strokeJoin = Paint.Join.BEVEL
@@ -121,7 +121,7 @@ open class CustomVoucherView : FrameLayout {
 
     @ColorInt
     protected open fun getShadowColor(): Int {
-        return androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300)
+        return androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN500)
     }
 
     private fun initDimensionData() {

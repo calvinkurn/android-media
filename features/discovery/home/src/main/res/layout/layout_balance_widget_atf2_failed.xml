@@ -10,7 +10,7 @@
         android:id="@+id/localload_error_balance_widget"
         android:layout_width="0dp"
         android:layout_height="89dp"
-        android:background="@color/Unify_N700_68"
+        android:background="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

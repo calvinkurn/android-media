@@ -197,7 +197,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         window.decorView.setBackgroundColor(
             ContextCompat.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         setupToolbar()
@@ -359,7 +359,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor =
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 

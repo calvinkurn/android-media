@@ -44,7 +44,7 @@
             android:layout_width="1dp"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_centerHorizontal="true"
-            android:background="@color/Unify_N700_20"
+            android:background="@color/Unify_NN950_20"
             app:layout_constraintBottom_toTopOf="@+id/flightSearchLoaderDotArrivalTime"
             app:layout_constraintLeft_toLeftOf="@+id/flightSearchLoaderDotDepartureTime"
             app:layout_constraintRight_toRightOf="@+id/flightSearchLoaderDotDepartureTime"
@@ -127,7 +127,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N700_20"
+        android:background="@color/Unify_NN950_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

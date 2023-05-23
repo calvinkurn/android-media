@@ -43,13 +43,13 @@ class HotelAutoCompleteTextField @JvmOverloads constructor(context: Context, att
 
     fun setError(message: String) {
         til_hotel_autocomplete.error = message
-        til_hotel_autocomplete.setErrorTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)))
+        til_hotel_autocomplete.setErrorTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)))
         til_hotel_autocomplete.isErrorEnabled = true
     }
 
     fun setHelper(message: String) {
         til_hotel_autocomplete.helperText = message
-        til_hotel_autocomplete.setHelperTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)))
+        til_hotel_autocomplete.setHelperTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)))
         til_hotel_autocomplete.isErrorEnabled  = false
     }
 }

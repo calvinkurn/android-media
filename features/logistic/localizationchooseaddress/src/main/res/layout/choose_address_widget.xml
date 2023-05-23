@@ -28,7 +28,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/state_dikirim_ke"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         app:layout_constraintHorizontal_bias="0"

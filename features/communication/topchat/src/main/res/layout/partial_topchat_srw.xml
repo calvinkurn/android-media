@@ -30,7 +30,7 @@
                 android:maxLines="1"
                 android:paddingVertical="@dimen/unify_space_12"
                 android:paddingStart="@dimen/unify_space_16"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:ignore="RtlSymmetry"
@@ -42,7 +42,7 @@
                 android:layout_height="@dimen/unify_space_16"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/unify_space_12"
-                app:icon_color_light_enable="@color/Unify_N700_96"
+                app:icon_color_light_enable="@color/Unify_NN950_96"
                 app:icon_name="CHEVRON_UP" />
         </LinearLayout>
 

@@ -814,11 +814,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G500)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (view.count != 0) {
@@ -858,11 +858,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         if (like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G500)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -943,7 +943,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 name = caption.author.name,
                 colorRes = MethodChecker.getColor(
                     context,
-                    unifyPrinciplesR.color.Unify_N600
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN800
                 ),
                 typeface = getTypeface(
                     context,
@@ -967,7 +967,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ),
                 clickListener = {
                     onHashtagClicked(it, caption)
@@ -984,7 +984,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 label = context.getString(R.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 ),
                 clickListener = {
                     captionText.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -1776,7 +1776,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             primaryColor = Color.parseColor(color),
             secondaryColor = MethodChecker.getColor(
                 context,
-                unifyPrinciplesR.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             ),
         )
     }
@@ -1787,7 +1787,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 colorArray = it,
                 secondaryColor = MethodChecker.getColor(
                     context,
-                    unifyPrinciplesR.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ),
             )
         }
@@ -1798,11 +1798,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                unifyPrinciplesR.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                unifyPrinciplesR.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             ),
         )
     }

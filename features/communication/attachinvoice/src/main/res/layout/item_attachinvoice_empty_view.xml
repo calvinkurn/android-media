@@ -20,6 +20,6 @@
         android:paddingStart="@dimen/dp_28_attachinvoice"
         android:paddingEnd="@dimen/dp_28_attachinvoice"
         android:text="@string/title_attachinvoice_empty_state"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_2" />
 </LinearLayout>

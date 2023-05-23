@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:text="@string/recharge_pdp_emoney_card_number_label" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -69,14 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 tools:text="9930 4903 9403 4903" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/emoneyHeaderViewCardBalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyWeight="bold"
                 app:typographyType="body_2"
                 tools:text="Rp60.000"

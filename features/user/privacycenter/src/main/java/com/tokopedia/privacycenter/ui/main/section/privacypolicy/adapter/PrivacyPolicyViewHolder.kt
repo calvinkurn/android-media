@@ -19,7 +19,7 @@ class PrivacyPolicyViewHolder(
                 if (listener.isFromBottomSheet) {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 } else {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 }
 
                 text = item.sectionTitle

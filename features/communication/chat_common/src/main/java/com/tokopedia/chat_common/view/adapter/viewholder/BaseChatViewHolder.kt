@@ -171,7 +171,7 @@ open class BaseChatViewHolder<T : Visitable<*>>(
                     drawable.mutate()
                     drawable.setColorFilter(
                         ContextCompat.getColor(
-                            it, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                            it, com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         ), PorterDuff.Mode.SRC_ATOP
                     )
                 }
