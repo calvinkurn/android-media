@@ -116,7 +116,7 @@ class CartPageRobot {
         )
     }
 
-    fun assertFirstCartShopViewHolder(
+    fun assertFirstCartGroupViewHolder(
         view: View,
         position: Int,
         shopIndex: Int
@@ -162,7 +162,7 @@ class CartPageRobot {
                         RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(
                             i,
                             object : ViewAction {
-                                override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
+                                override fun getDescription(): String = "performing assertion action on first CartGroupViewHolder"
 
                                 override fun getConstraints(): Matcher<View>? = null
 
@@ -179,7 +179,7 @@ class CartPageRobot {
         childRecyclerView.contentDescription = tempStoreDesc
     }
 
-    fun assertCartShopViewHolderOnPosition(position: Int, func: CartShopViewHolderRobot.() -> Unit) {
+    fun assertCartGroupViewHolderOnPosition(position: Int, func: CartGroupViewHolderRobot.() -> Unit) {
         onView(withId(R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
                 position,
@@ -189,7 +189,7 @@ class CartPageRobot {
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        CartShopViewHolderRobot(view).apply(func)
+                        CartGroupViewHolderRobot(view).apply(func)
                     }
                 }
             )

@@ -6,7 +6,7 @@ import com.tokopedia.unifyprinciples.Typography
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 
-class CartShopViewHolderRobot(private val view: View) {
+class CartGroupViewHolderRobot(private val view: View) {
 
     // Bebas Ongkir Extra
     fun assertShowTokoCabangInfo() {
