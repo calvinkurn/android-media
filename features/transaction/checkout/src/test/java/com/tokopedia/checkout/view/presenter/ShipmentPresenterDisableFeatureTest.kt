@@ -43,8 +43,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    true,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNotNull(presenter.egoldAttributeModel)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
@@ -78,8 +93,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    true,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNotNull(presenter.egoldAttributeModel)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
@@ -113,8 +143,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNull(presenter.egoldAttributeModel.value)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
@@ -148,8 +193,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNotNull(presenter.egoldAttributeModel)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
@@ -183,8 +243,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(false, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    false,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNotNull(presenter.egoldAttributeModel)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
@@ -218,8 +293,23 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel) assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { if (this is ShipmentCartItemModel)assertEquals(true, isOrderPrioritasDisable) }
+        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    true,
+                    isDropshipperDisable
+                )
+            }
+        }
+        presenter.shipmentCartItemModelList.each {
+            if (this is ShipmentCartItemModel) {
+                assertEquals(
+                    true,
+                    isOrderPrioritasDisable
+                )
+            }
+        }
         assertNull(presenter.egoldAttributeModel.value)
         presenter.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {

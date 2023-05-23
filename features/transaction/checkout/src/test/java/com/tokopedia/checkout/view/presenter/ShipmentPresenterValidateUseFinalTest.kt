@@ -170,6 +170,37 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN validate use success but has no applied BBO response THEN should reset courier and show error message`() {
+        // Given
+        val tmpCartString = "123-abc"
+        val code = "code"
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = tmpCartString,
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = code)
+        )
+        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+            add(shipmentCartItemModel)
+        }
+        val message = "error"
+        val promoUiModel = PromoUiModel()
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verifyOrder {
+            view.resetCourier(shipmentCartItemModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
+        }
+    }
+
+    @Test
     fun `WHEN validate use success with ticker data and current ticker not exist THEN should update promo button and update ticker`() {
         // Given
 //        presenter.tickerAnnouncementHolderData = null
