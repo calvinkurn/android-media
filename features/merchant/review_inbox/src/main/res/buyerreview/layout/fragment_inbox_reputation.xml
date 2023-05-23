@@ -5,25 +5,25 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    android:background="@color/Unify_Background">
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:padding="16dp"
+        android:background="@color/Unify_Background"
         app:elevation="0dp">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search"
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/review_search_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/search_review_hint"
-            android:textSize="@dimen/text_small"
-            android:layout_marginRight="@dimen/dp_6"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_6" />
+            app:search_bar_placeholder="@string/search_review_hint"
+            app:search_bar_show_icon="false"
+            app:search_bar_clearable="true"
+            app:search_bar_enable="true"
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/filter_layout"
-        android:layout_below="@id/search"
+        android:layout_below="@id/review_search_invoice"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView

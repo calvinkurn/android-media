@@ -226,9 +226,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-
-    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
-
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
@@ -239,5 +236,11 @@ public class RemoteConfigKey {
 
     public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
 
+    public static final String IS_USING_NEW_FEED = "android_main_app_show_unified_feed";
+
     public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
+
+    public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
+
+    public static final String FEED_NEW_ICON = "FeedNewIcon";
 }

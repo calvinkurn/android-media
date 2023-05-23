@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -24,7 +25,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
         totalView = PlayWidgetTotalView(totalView, true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
-        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
+        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", PartnerType.Shop),
         video = createVideoUiModel(PlayWidgetChannelType.Live),
         hasAction = true,
         share = PlayWidgetShareUiModel(
@@ -36,6 +37,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Live),
+        shouldShowPerformanceDashboard = false
     )
 }
 
