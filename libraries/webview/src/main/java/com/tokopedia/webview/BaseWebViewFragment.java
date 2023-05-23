@@ -1159,6 +1159,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
+        if(isHelpUrl(url)){
+            loadWeb();
+            return;
+        }
         webView.reload();
     }
 
