@@ -508,12 +508,16 @@ class CreateReviewViewModel @Inject constructor(
         isAnyBadRatingCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
     ): CreateReviewProgressBarState {
-        val textAreaFilled = reviewTextAreaTextUiModel.text.isNotBlank()
+        val isTestimonyComplete = if (hasIncentive() || hasOngoingChallenge()) {
+            reviewTextAreaTextUiModel.text.length >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD
+        } else {
+            reviewTextAreaTextUiModel.text.isNotBlank()
+        }
         val badRatingCategoriesShowed = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return CreateReviewProgressBarState(
             isGoodRating = isGoodRating,
             isPhotosFilled = !isMediaEmpty(),
-            isTextAreaFilled = textAreaFilled,
+            isTestimonyComplete = isTestimonyComplete,
             isBadRatingReasonSelected = badRatingCategoriesShowed && isAnyBadRatingCategorySelected
         )
     }

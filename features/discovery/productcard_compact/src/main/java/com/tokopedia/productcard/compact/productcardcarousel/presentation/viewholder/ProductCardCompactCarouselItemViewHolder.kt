@@ -7,11 +7,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.util.ProductCardExtension.setProductCarouselWidth
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardCompactCarouselItemViewHolder(
     view: View,
-    private var listener: TokoNowCarouselProductCardItemListener? = null
+    private var listener: ProductCardCarouselItemListener? = null
 ) : AbstractViewHolder<ProductCardCompactCarouselItemUiModel>(view) {
 
     companion object {
@@ -20,6 +21,10 @@ class ProductCardCompactCarouselItemViewHolder(
     }
 
     private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()
+
+    init {
+        binding?.productCard?.setProductCarouselWidth()
+    }
 
     override fun bind(element: ProductCardCompactCarouselItemUiModel) {
         binding?.productCard?.apply {
@@ -45,6 +50,9 @@ class ProductCardCompactCarouselItemViewHolder(
                     product = element
                 )
             }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -62,7 +70,7 @@ class ProductCardCompactCarouselItemViewHolder(
         }
     }
 
-    interface TokoNowCarouselProductCardItemListener {
+    interface ProductCardCarouselItemListener {
         fun onProductCardAddVariantClicked(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
@@ -80,5 +88,6 @@ class ProductCardCompactCarouselItemViewHolder(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

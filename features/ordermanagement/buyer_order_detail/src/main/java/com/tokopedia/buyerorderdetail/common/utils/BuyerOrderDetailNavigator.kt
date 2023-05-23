@@ -19,6 +19,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
@@ -34,10 +35,6 @@ class BuyerOrderDetailNavigator(
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1
-    }
-
-    private fun composeCallIntentData(phoneNumber: String): Uri {
-        return Uri.parse("$TELEPHONY_URI$phoneNumber")
     }
 
     private fun applyTransition() {
@@ -96,11 +93,9 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToCallingPage(phoneNumber: String) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = composeCallIntentData(phoneNumber)
-        }
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
-        applyTransition()
+        val bottomSheetMaskingPhoneNumber =
+            MaskingPhoneNumberBottomSheet.newInstance(phoneNumber)
+        bottomSheetMaskingPhoneNumber.show(fragment.childFragmentManager)
     }
 
     fun goToRequestCancellationPage(

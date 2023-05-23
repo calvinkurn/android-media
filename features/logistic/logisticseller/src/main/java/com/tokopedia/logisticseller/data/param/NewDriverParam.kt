@@ -5,5 +5,5 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class NewDriverParam(
     @SerializedName("order_id")
-    val orderId: String = "",
+    val orderId: String = ""
 ) : GqlParam
