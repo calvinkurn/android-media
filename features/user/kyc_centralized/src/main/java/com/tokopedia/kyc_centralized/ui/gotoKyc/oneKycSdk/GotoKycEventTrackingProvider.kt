@@ -34,6 +34,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
     }
 
     private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>) {
+        val projectId = kycSharedPreference.getProjectId()
         when (eventName) {
             CAMERA_OPENED -> {
                 when (eventProperties[ACTUAL_USAGE]) {
@@ -42,13 +43,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             KTP -> {
                                 GotoKycAnalytics.sendViewKtpPage(
                                     isManual = false,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                             SELFIE -> {
                                 GotoKycAnalytics.sendViewSelfiePage(
                                     isManual = false,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                         }
@@ -58,13 +59,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             KTP -> {
                                 GotoKycAnalytics.sendViewKtpPage(
                                     isManual = true,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                             SELFIE -> {
                                 GotoKycAnalytics.sendViewSelfiePage(
                                     isManual = true,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                         }
@@ -74,20 +75,20 @@ class GotoKycEventTrackingProvider @Inject constructor(
             IMAGE_CAPTURE_MODE_CHANGE_VIEWED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendViewManualFotoKtpQuestion(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendViewManualFotoKtpQuestion(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendViewManualFotoSelfie(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendViewManualFotoSelfie(projectId)
                     }
                 }
             }
             IMAGE_CAPTURE_MODE_CHANGED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendClickButtonFotoManualKtpPage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickButtonFotoManualKtpPage(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendClickButtonFotoManualSelfiePage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickButtonFotoManualSelfiePage(projectId)
                     }
                 }
             }
@@ -98,13 +99,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             KTP -> {
                                 GotoKycAnalytics.sendScanKtpImage(
                                     statusScan = VALUE_IMAGE_CAPTURED,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                             SELFIE -> {
                                 GotoKycAnalytics.sendScanSelfieImage(
                                     statusScan = VALUE_IMAGE_CAPTURED,
-                                    projectId = kycSharedPreference.getProjectId()
+                                    projectId = projectId
                                 )
                             }
                         }
@@ -112,10 +113,10 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     MANUAL_CAPTURE -> {
                         when (eventProperties[TYPE]) {
                             KTP -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(kycSharedPreference.getProjectId())
+                                GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(projectId)
                             }
                             SELFIE -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(kycSharedPreference.getProjectId())
+                                GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(projectId)
                             }
                         }
                     }
@@ -128,20 +129,20 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             KTP -> {
                                 when (eventProperties[CAPTURE_MODE]) {
                                     AUTO_CAPTURE -> {
-                                        GotoKycAnalytics.sendClickOnButtonBackFromKtpPage(kycSharedPreference.getProjectId())
+                                        GotoKycAnalytics.sendClickOnButtonBackFromKtpPage(projectId)
                                     }
                                     MANUAL_CAPTURE -> {
-                                        GotoKycAnalytics.sendClickOnButtonBackManualKtp(kycSharedPreference.getProjectId())
+                                        GotoKycAnalytics.sendClickOnButtonBackManualKtp(projectId)
                                     }
                                 }
                             }
                             SELFIE -> {
                                 when (eventProperties[CAPTURE_MODE]) {
                                     AUTO_CAPTURE -> {
-                                        GotoKycAnalytics.sendClickOnButtonBackSelfiePage(kycSharedPreference.getProjectId())
+                                        GotoKycAnalytics.sendClickOnButtonBackSelfiePage(projectId)
                                     }
                                     MANUAL_CAPTURE -> {
-                                        GotoKycAnalytics.sendClickOnButtonBackManualSelfie(kycSharedPreference.getProjectId())
+                                        GotoKycAnalytics.sendClickOnButtonBackManualSelfie(projectId)
                                     }
                                 }
                             }
@@ -152,15 +153,15 @@ class GotoKycEventTrackingProvider @Inject constructor(
             CLOSE_BUTTON_CLICKED -> {
                 when (eventProperties[SCREEN_TYPE]) {
                     SCREEN_TYPE_ALL_PREVIEW -> {
-                        GotoKycAnalytics.sendClickOnButtonBackFromReviewPage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnButtonBackFromReviewPage(projectId)
                     }
                     SCREEN_TYPE_DOCUMENT_INFO -> {
                         when (eventProperties[TYPE]) {
                             KTP -> {
-                                GotoKycAnalytics.sendClickOnButtonBackFromReviewKtpPage(kycSharedPreference.getProjectId())
+                                GotoKycAnalytics.sendClickOnButtonBackFromReviewKtpPage(projectId)
                             }
                             SELFIE -> {
-                                GotoKycAnalytics.sendClickOnButtonBackFromReviewSelfiePage(kycSharedPreference.getProjectId())
+                                GotoKycAnalytics.sendClickOnButtonBackFromReviewSelfiePage(projectId)
                             }
                         }
                     }
@@ -198,52 +199,52 @@ class GotoKycEventTrackingProvider @Inject constructor(
             IMAGE_CAPTURE_MODE_BACK_PRESSED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendClickOnFotoManualCloseButtonKtpPage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnFotoManualCloseButtonKtpPage(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendClickOnFotoManualCloseButtonSelfiePage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnFotoManualCloseButtonSelfiePage(projectId)
                     }
                 }
             }
             SELFIE_PREPARE_SCREEN_VIEWED -> {
-                GotoKycAnalytics.sendViewGuideSelfiePage(kycSharedPreference.getProjectId())
+                GotoKycAnalytics.sendViewGuideSelfiePage(projectId)
             }
             SELFIE_PREPARE_READY_CLICKED -> {
-                GotoKycAnalytics.sendClickOnStartSelfie(kycSharedPreference.getProjectId())
+                GotoKycAnalytics.sendClickOnStartSelfie(projectId)
             }
             PREVIEW_ALL_DOCUMENT_VIEWED -> {
-                GotoKycAnalytics.sendViewReviewPage(kycSharedPreference.getProjectId())
+                GotoKycAnalytics.sendViewReviewPage(projectId)
             }
             PREVIEW_ALL_DOCUMENT_CTA_CLICKED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendClickOnKtpImageReviewPage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnKtpImageReviewPage(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendClickSelfieImage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickSelfieImage(projectId)
                     }
                 }
             }
             DOCUMENT_RETAKE -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendClickButtonRetakeKtp(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickButtonRetakeKtp(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendClickButtonRetakeSelfie(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickButtonRetakeSelfie(projectId)
                     }
                 }
             }
             PREVIEW_ALL_DOCUMENT_SUBMITTED -> {
-                GotoKycAnalytics.sendClickButtonKirimDocument(kycSharedPreference.getProjectId())
+                GotoKycAnalytics.sendClickButtonKirimDocument(projectId)
             }
             VIEW_DOCUMENT_LOOKS_GOOD_CLICKED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
-                        GotoKycAnalytics.sendClickOnButtonPakaiFotoIniReviewKtpPage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnButtonPakaiFotoIniReviewKtpPage(projectId)
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendClickOnButtonPakaiFotoIniReviewSelfiePage(kycSharedPreference.getProjectId())
+                        GotoKycAnalytics.sendClickOnButtonPakaiFotoIniReviewSelfiePage(projectId)
                     }
                 }
             }
@@ -252,13 +253,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     KTP -> {
                         GotoKycAnalytics.sendScanKtpImage(
                             statusScan = VALUE_IMAGE_DETECTED_ERROR,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                     SELFIE -> {
                         GotoKycAnalytics.sendScanSelfieImage(
                             statusScan = VALUE_IMAGE_DETECTED_ERROR,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                 }
@@ -268,13 +269,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     KTP -> {
                         GotoKycAnalytics.sendScanKtpImage(
                             statusScan = VALUE_IMAGE_DETECTED,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                     SELFIE -> {
                         GotoKycAnalytics.sendScanSelfieImage(
                             statusScan = VALUE_IMAGE_DETECTED,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                 }
@@ -284,13 +285,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     KTP -> {
                         GotoKycAnalytics.sendScanKtpImage(
                             statusScan = VALUE_IMAGE_DETECTED_GOOD,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                     SELFIE -> {
                         GotoKycAnalytics.sendScanSelfieImage(
                             statusScan = VALUE_IMAGE_DETECTED_GOOD,
-                            projectId = kycSharedPreference.getProjectId()
+                            projectId = projectId
                         )
                     }
                 }
