@@ -113,6 +113,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     }
 
     protected open fun PartialWidgetReviewDetailBasicInfoBinding.setupReviewerProfilePicture(profilePicture: String) {
+        ivReviewDetailReviewerProfilePicture.showWithCondition(profilePicture.isNotEmpty())
         ivReviewDetailReviewerProfilePicture.setImageUrl(profilePicture)
     }
 
