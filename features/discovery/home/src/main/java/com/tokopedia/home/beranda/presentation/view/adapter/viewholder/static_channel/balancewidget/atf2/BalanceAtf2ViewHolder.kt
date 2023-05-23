@@ -169,25 +169,49 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun setFontSubtitle(element: BalanceDrawerItemModel) {
-        if (
-            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
-            element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-        ) {
-            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
-            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        when (element.drawerItemType) {
+            TYPE_SUBSCRIPTION -> {
+                val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
+
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
                 )
-            )
-        } else {
-            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
-            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            }
+            TYPE_REWARDS -> {
+                val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
+
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
                 )
-            )
+            }
+            TYPE_WALLET_APP_NOT_LINKED -> {
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+            }
+            else -> {
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+            }
         }
     }
 

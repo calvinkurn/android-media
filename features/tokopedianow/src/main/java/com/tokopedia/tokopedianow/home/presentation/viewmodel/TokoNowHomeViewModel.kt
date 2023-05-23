@@ -38,11 +38,11 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -419,7 +419,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 response = response,
                 widgetId = widgetId,
                 slugs = slugs,
-                state = TokoNowLayoutState.SHOW,
+                state = TokoNowLayoutState.SHOW
             )
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
@@ -495,20 +495,20 @@ class TokoNowHomeViewModel @Inject constructor(
             stock = stock,
             isVariant = isVariant,
             onSuccessAddToCart = {
-                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateProductCartQuantity(productId, quantity, type)
                 checkRealTimeRecommendation(channelId, productId, type)
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = { miniCartItem, _ ->
                 val cartId = miniCartItem.cartId
-                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateProductCartQuantity(productId, quantity, type)
+                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = { miniCartItem, _ ->
-                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateToolbarNotification()
             },
             onError = {
@@ -558,7 +558,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getRepurchaseProducts(): List<TokoNowProductCardUiModel> {
+    fun getRepurchaseProducts(): List<TokoNowRepurchaseProductUiModel> {
         val item = homeLayoutItemList.firstOrNull { it?.layout is TokoNowRepurchaseUiModel }
         val repurchase = item?.layout as? TokoNowRepurchaseUiModel
         return repurchase?.productList.orEmpty()

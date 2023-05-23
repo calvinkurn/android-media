@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT
@@ -82,7 +81,8 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_117
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_118
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
@@ -165,8 +165,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_BUNDLE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_COUPON_WIDGET
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_MULTIPLE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_SINGLE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_MULTIPLE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
@@ -687,14 +687,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     fun onImpressRepurchase(
         position: Int,
-        data: TokoNowProductCardUiModel
+        data: TokoNowRepurchaseProductUiModel
     ) {
         val items = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
                 id = data.productId,
-                name = data.product.productName,
-                price = data.product.formattedPrice
+                name = data.name,
+                price = data.formattedPrice
             )
         )
 
@@ -710,13 +710,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
-    fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
+    fun onClickRepurchase(position: Int, data: TokoNowRepurchaseProductUiModel) {
         val items = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
                 id = data.productId,
-                name = data.product.productName,
-                price = data.product.formattedPrice
+                name = data.name,
+                price = data.formattedPrice
             )
         )
 
@@ -733,12 +733,12 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+    fun onRepurchaseAddToCart(quantity: Int, data: TokoNowRepurchaseProductUiModel) {
         val items = arrayListOf(
             productCardItemDataLayer(
                 id = data.productId,
-                name = data.product.productName,
-                price = data.product.formattedPrice
+                name = data.name,
+                price = data.formattedPrice
             ).apply {
                 putString(KEY_CATEGORY_ID, "")
                 putString(KEY_QUANTITY, quantity.toString())
@@ -2295,9 +2295,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         return if (parentProductId.isNullOrEmpty()) WITHOUT_VARIANT else WITH_VARIANT
     }
 
-    private fun getProductCardLabel(data: TokoNowProductCardUiModel): String {
-        val halalLabel = getHalalLabel(data.product.labelGroupList)
-        val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
+    private fun getProductCardLabel(data: TokoNowRepurchaseProductUiModel): String {
+        val halalLabel = getHalalLabel(data.labelGroupList)
+        val slashedPriceLabel = getSlashedPriceLabel(data.slashPrice)
         val variantLabel = getVariantLabel(data.parentId)
         return "$halalLabel - $slashedPriceLabel - $variantLabel"
     }

@@ -235,8 +235,7 @@ open class TopChatRoomFragment :
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
     ChatTextAreaTabLayoutListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener
-{
+    BannedChatMessageViewHolder.TopChatMessageCensorListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -349,7 +348,6 @@ open class TopChatRoomFragment :
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
-        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
@@ -852,6 +850,7 @@ open class TopChatRoomFragment :
         setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+        initBubbleChatFlag()
     }
 
     private fun setupPostFirstPage() {
@@ -3416,7 +3415,7 @@ open class TopChatRoomFragment :
 
     override fun trackSeenTicker(element: ReminderTickerUiModel) {
         TopChatAnalyticsKt.eventViewTicker(
-            element.getTickerFeature(),
+            element.featureId,
             isSeller(),
             viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
@@ -3425,7 +3424,7 @@ open class TopChatRoomFragment :
 
     override fun onClickLinkReminderTicker(element: ReminderTickerUiModel, linkUrl: String) {
         TopChatAnalyticsKt.eventClickLinkTicker(
-            element.getTickerFeature(),
+            element.featureId,
             isSeller(),
             viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
@@ -3438,7 +3437,7 @@ open class TopChatRoomFragment :
 
     override fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int) {
         TopChatAnalyticsKt.eventClickCloseTicker(
-            element.getTickerFeature(),
+            element.featureId,
             isSeller(),
             viewModel.roomMetaData.value?.msgId ?: "",
             element.replyId
