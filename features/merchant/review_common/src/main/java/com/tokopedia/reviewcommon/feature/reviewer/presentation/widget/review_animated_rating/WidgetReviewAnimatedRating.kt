@@ -113,9 +113,7 @@ fun WidgetReviewAnimatedRating(
     config: WidgetReviewAnimatedRatingConfig
 ) {
     with(config) {
-        if (rating > STAR_COUNT) throw IllegalStateException("Rating cannot be more than $STAR_COUNT")
-
-        val starStates = remember { mutableStateListOf(*createStarStates(rating)) }
+        val starStates = remember { mutableStateListOf(*createInitialStarStates()) }
         val starTransitions = starStates.createStateTransition()
         val starScaleStates = starTransitions.createScaleAnimation()
         val starColorStates = starTransitions.createColorAnimation()
@@ -125,7 +123,11 @@ fun WidgetReviewAnimatedRating(
             widgetReviewAnimatedRatingConfig = config
         )
 
-        LaunchedEffect(rating) { updateStarStates(rating = rating, starStates = starStates) }
+        LaunchedEffect(rating) {
+            if (rating in Int.ZERO..STAR_COUNT) {
+                updateStarStates(rating = rating, starStates = starStates)
+            }
+        }
 
         WidgetReviewAnimatedStars(modifier = modifier, config = widgetReviewAnimatedStarsConfig)
     }
@@ -172,13 +174,9 @@ private fun List<Transition<WidgetReviewAnimatedRatingState>>.createColorAnimati
     }
 }
 
-private fun createStarStates(rating: Int): Array<WidgetReviewAnimatedRatingState> {
-    return List(STAR_COUNT) { index ->
-        if (rating <= index) {
-            WidgetReviewAnimatedRatingState.Inactive()
-        } else {
-            WidgetReviewAnimatedRatingState.Active()
-        }
+private fun createInitialStarStates(): Array<WidgetReviewAnimatedRatingState> {
+    return List(STAR_COUNT) {
+        WidgetReviewAnimatedRatingState.Inactive()
     }.toTypedArray()
 }
 
@@ -231,6 +229,8 @@ fun WidgetReviewAnimatedRatingPreview() {
         config.configs.forEach { config -> WidgetReviewAnimatedRating(config = config) }
         Button(onClick = ::onEnlargeWidgets) { Text(text = "Enlarge Widgets") }
         Button(onClick = ::onEnlargeSpaceInBetween) { Text(text = "Enlarge Space in Between") }
+        Button(onClick = ::onIncreaseRating) { Text(text = "Increase Ratings") }
+        Button(onClick = ::onDecreaseRating) { Text(text = "Decrease Ratings") }
         Button(onClick = ::onResetRating) { Text(text = "Reset Ratings") }
     }
 }
@@ -301,6 +301,26 @@ private fun onEnlargeSpaceInBetween() {
                         multiplier = it.spaceInBetweenMultiplier.inc()
                     )
                 )
+            }.toMutableList()
+        )
+    }
+}
+
+private fun onIncreaseRating() {
+    previewConfig.value.let {
+        previewConfig.value = it.copy(
+            configs = it.configs.map { config ->
+                config.copy(rating = config.rating.inc())
+            }.toMutableList()
+        )
+    }
+}
+
+private fun onDecreaseRating() {
+    previewConfig.value.let {
+        previewConfig.value = it.copy(
+            configs = it.configs.map { config ->
+                config.copy(rating = config.rating.dec())
             }.toMutableList()
         )
     }
