@@ -16,10 +16,13 @@ abstract class ManageLocationViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
+
     @RelaxedMockK
     lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     @RelaxedMockK
     lateinit var checkDeliveryCoverageUseCase: CheckDeliveryCoverageUseCase
 
@@ -32,11 +35,10 @@ abstract class ManageLocationViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ManageLocationViewModel(
-                keroEditAddressUseCase,
-                getChooseAddressWarehouseLocUseCase,
-                eligibleForAddressUseCase,
-                checkDeliveryCoverageUseCase,
-                CoroutineTestDispatchersProvider
+            keroEditAddressUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            checkDeliveryCoverageUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 }
