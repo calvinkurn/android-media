@@ -19,6 +19,7 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -39,12 +40,8 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayAffiliateTnCBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateSuccessBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateTnCBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
@@ -230,6 +227,16 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayShortsAffiliateTnCBottomSheet -> {
+                childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
+                    override fun onSubmitTnc() {
+                        viewModel.submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
+                    }
+                })
+            }
+            is PlayShortsAffiliateSuccessBottomSheet -> {
+                childFragment.setupData(viewModel.selectedAccount.name)
+            }
         }
     }
 
@@ -242,19 +249,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.toolbar.apply {
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
-        }
-
-        /** TODO
-         * some logic to check whether to show banner affiliate or not
-         * but BE team is not ready yet
-         */
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
-            description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
-            bannerIcon = IconUnify.SALDO
-            setOnClickListener {
-                openShortsAffiliateTncBottomSheet()
-            }
         }
     }
 
@@ -317,6 +311,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
+                renderBannerPreparation(it.prevValue, it.value)
             }
         }
 
@@ -335,6 +330,20 @@ class PlayShortsPreparationFragment @Inject constructor(
                     is PlayShortsUiEvent.SwitchAccount -> {
                         showSwitchAccountBottomSheet()
                     }
+                    is PlayShortsUiEvent.ErrorOnboardAffiliate -> {
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        if (event.error != null) currentBottomSheet.showErrorToast(event.error)
+                    }
+                    is PlayShortsUiEvent.SuccessOnboardAffiliate -> {
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.dismiss()
+                        openShortsAffiliateSuccessBottomSheet()
+
+                        /** TODO show coach-mark product affiliate
+                         * implement the coach-mark after mobile analytic merged
+                         **/
+                        toaster.showToaster("Show CoachMark Product Affiliate")
+                    }
                     else -> {}
                 }
             }
@@ -345,6 +354,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                    else -> return@collectLatest
                 }
             }
         }
@@ -360,6 +370,28 @@ class PlayShortsPreparationFragment @Inject constructor(
             && getSetupTitleBottomSheet().isAdded && getSetupTitleBottomSheet().isVisible) {
             getSetupTitleBottomSheet().dismiss()
         }
+    }
+
+    private fun renderBannerPreparation(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.isAffiliate == curr.isAffiliate) return
+
+        /**
+         * revamp this after mobile analytic merged
+         */
+        if (!curr.isAffiliate) {
+            binding.bannerShorts.apply {
+                title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
+                description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
+                bannerIcon = IconUnify.SALDO
+                setOnClickListener {
+                    openShortsAffiliateTncBottomSheet()
+                }
+                visible()
+            }
+        } else binding.bannerShorts.gone()
     }
 
     private fun setupCoachMark() {
@@ -567,8 +599,15 @@ class PlayShortsPreparationFragment @Inject constructor(
             .show(childFragmentManager)
     }
 
+    private fun getShortsAffiliateTncBottomSheet() = PlayShortsAffiliateTnCBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
     private fun openShortsAffiliateTncBottomSheet() {
-        PlayAffiliateTnCBottomSheet
+        getShortsAffiliateTncBottomSheet().show(childFragmentManager)
+    }
+
+    private fun openShortsAffiliateSuccessBottomSheet() {
+        PlayShortsAffiliateSuccessBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -27,7 +28,11 @@ import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -99,6 +104,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
+    private val _isAffiliate = MutableStateFlow(false)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -141,8 +147,20 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm,
         _productSectionList,
         _tags,
-        _uploadState
-    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, productSectionList, tags, uploadState ->
+        _uploadState,
+        _isAffiliate
+    ) { globalLoader,
+        config,
+        media,
+        accountList,
+        selectedAccount,
+        menuListUiState,
+        titleForm,
+        coverForm,
+        productSectionList,
+        tags,
+        uploadState,
+        isAffiliate ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -154,7 +172,8 @@ class PlayShortsViewModel @Inject constructor(
             coverForm = coverForm,
             productSectionList = productSectionList,
             tags = tags,
-            uploadState = uploadState
+            uploadState = uploadState,
+            isAffiliate = isAffiliate,
         )
     }
 
@@ -197,6 +216,9 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
 
+            /** Shorts x Affiliate */
+            is PlayShortsAction.SubmitOnboardAffiliateTnc -> handleSubmitOnboardAffiliateTnc()
+
             /** Others */
             is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
@@ -224,8 +246,35 @@ class PlayShortsViewModel @Inject constructor(
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             setupConfigurationIfEligible(bestEligibleAccount)
+
+            checkIsUserAffiliate()
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
+        }
+    }
+
+    private fun handleSubmitOnboardAffiliateTnc() {
+        viewModelScope.launchCatchErrorWithLoader(block = {
+
+            val request = OnboardAffiliateRequestModel(
+                channelID = _config.value.shortsId.toLong(),
+                profileID = _selectedAccount.value.id,
+            )
+
+            val response = repo.submitOnboardAffiliateTnc(request)
+            val isSuccess = response.errorMessage.isEmpty()
+
+            if (!isSuccess) {
+                _uiEvent.emit(
+                    PlayShortsUiEvent.ErrorOnboardAffiliate(Throwable(response.errorMessage))
+                )
+            }
+
+            checkIsSuccessSubmitAffiliate(isSuccess)
+        }) {
+            _uiEvent.emit(
+                PlayShortsUiEvent.ErrorOnboardAffiliate(it)
+            )
         }
     }
 
@@ -251,6 +300,8 @@ class PlayShortsViewModel @Inject constructor(
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
+
+            checkIsUserAffiliate()
         }) { throwable ->
             _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
@@ -376,6 +427,18 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSetCoverUploadedSource(source: Int) {
         sharedPref.setUploadedCoverSource(source, selectedAccount.id, SOURCE)
+    }
+
+    private suspend fun checkIsUserAffiliate() {
+        if (!selectedAccount.isUser) return
+        val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
+        _isAffiliate.update { checkIsAffiliate.isAffiliate }
+    }
+
+    private suspend fun checkIsSuccessSubmitAffiliate(isSuccess: Boolean) {
+        if (!isSuccess) return
+        checkIsUserAffiliate()
+        _uiEvent.emit(PlayShortsUiEvent.SuccessOnboardAffiliate)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {

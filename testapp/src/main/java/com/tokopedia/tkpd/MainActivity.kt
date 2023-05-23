@@ -164,6 +164,9 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+
+        val intent = Intent(this, MainParentActivity::class.java)
+        startActivity(intent)
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {

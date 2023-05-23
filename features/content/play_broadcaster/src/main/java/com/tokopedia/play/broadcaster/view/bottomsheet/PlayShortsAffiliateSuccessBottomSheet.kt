@@ -15,46 +15,37 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.setSpanOnText
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayAffiliateTncBinding
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayShortsXAffiliateSuccessBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
-class PlayAffiliateTnCBottomSheet @Inject constructor(
+class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
     private val router: Router,
 ) : BottomSheetUnify() {
 
-    private var _binding: BottomSheetPlayAffiliateTncBinding? = null
-    private val binding: BottomSheetPlayAffiliateTncBinding
+    private var _binding: BottomSheetPlayShortsXAffiliateSuccessBinding? = null
+    private val binding: BottomSheetPlayShortsXAffiliateSuccessBinding
         get() = _binding!!
 
     private val boldSpan = StyleSpan(Typeface.BOLD)
     private val colorSpan: ForegroundColorSpan
-        get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
-
-    private val clickablePolicy = object : ClickableSpan() {
-        override fun onClick(p0: View) {
-            router.route(
+        get() = ForegroundColorSpan(
+            MethodChecker.getColor(
                 requireContext(),
-                generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_privacy_policy_link))
+                unifyPrinciplesR.color.Unify_GN500
             )
-        }
+        )
 
-        override fun updateDrawState(ds: TextPaint) {
-            super.updateDrawState(ds)
-            ds.isUnderlineText = false
-        }
-    }
+    private var mUserName: String = ""
 
-    private val clickableTnc = object : ClickableSpan() {
-        /** TODO
-         * change the tnc web-view app link later
-         */
+    private val clickableLearnMore = object : ClickableSpan() {
         override fun onClick(p0: View) {
             router.route(
                 requireContext(),
-                generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_tnc_link))
+                generateWebViewApplink(getString(R.string.play_shorts_affiliate_success_learn_more_web_link))
             )
         }
 
@@ -84,60 +75,58 @@ class PlayAffiliateTnCBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayAffiliateTncBinding.inflate(
+        _binding = BottomSheetPlayShortsXAffiliateSuccessBinding.inflate(
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)
     }
 
     private fun setupView() {
-        binding.layoutTnc.tvAcceptTnc.apply {
-            text = getTncText()
+        binding.layoutSuccess.tvSuccessShortsAffiliateTitle.text =
+            String.format(getString(R.string.play_shorts_affiliate_success_title), mUserName)
+        binding.tvSuccessShortsAffiliateLearnMore.apply {
+            text = getLearnMoreText()
             movementMethod = LinkMovementMethod.getInstance()
         }
 
-        binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
-            binding.btnContinue.isEnabled = binding.layoutTnc.cbxTnc.isChecked
+        binding.btnNext.setOnClickListener {
+            if (it.isEnabled) dismiss()
         }
-        binding.btnContinue.setOnClickListener {
-            /** TODO
-             * submit the tnc later
-             */
-            if (binding.btnContinue.isEnabled) dismiss()
-        }
+    }
+
+    fun setupData(userName: String) {
+        mUserName = userName
     }
 
     fun show(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
     }
 
-    private fun getTncText(): CharSequence {
+    private fun getLearnMoreText(): CharSequence {
         val result = SpannableStringBuilder()
 
-        val mainText = getString(contentCommonR.string.ugc_onboarding_accept_tnc)
-        val privacyPolicy = getString(contentCommonR.string.ugc_onboarding_accept_tnc_privacy_policy)
-        val terms = getString(contentCommonR.string.ugc_onboarding_accept_tnc_terms)
+        val mainText = getString(R.string.play_shorts_affiliate_success_description_learn_more)
+        val privacyPolicy = getString(R.string.play_shorts_affiliate_success_description_learn_more_action)
 
         result.append(mainText)
-        result.setSpanOnText(privacyPolicy, clickablePolicy, boldSpan, colorSpan)
-        result.setSpanOnText(terms, clickableTnc, boldSpan, colorSpan)
+        result.setSpanOnText(privacyPolicy, clickableLearnMore, boldSpan, colorSpan)
 
         return result
     }
 
     companion object {
-        private const val TAG = "PlayAffiliateTnCBottomSheet"
+        private const val TAG = "PlayShortsXAffiliateSuccessBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayAffiliateTnCBottomSheet {
+        ): PlayShortsAffiliateSuccessBottomSheet {
             val oldInstance =
-                fragmentManager.findFragmentByTag(TAG) as? PlayAffiliateTnCBottomSheet
+                fragmentManager.findFragmentByTag(TAG) as? PlayShortsAffiliateSuccessBottomSheet
             return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayAffiliateTnCBottomSheet::class.java.name
-            ) as PlayAffiliateTnCBottomSheet)
+                PlayShortsAffiliateSuccessBottomSheet::class.java.name
+            ) as PlayShortsAffiliateSuccessBottomSheet)
         }
     }
 }
