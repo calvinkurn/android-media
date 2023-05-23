@@ -59,7 +59,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        tools:text="Dimulai dalam" />
+        tools:text="@string/feed_campaign_start_from_label" />
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/pb_feed_campaign_ribbon"

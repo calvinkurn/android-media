@@ -120,6 +120,7 @@ class FeedCampaignRibbonView(
                 root.context,
                 R.drawable.feed_tag_product_background
             )
+            tyFeedCampaignRibbonSubtitle.text = ""
             resetAnimationBasedOnType()
         }
     }
@@ -367,6 +368,8 @@ class FeedCampaignRibbonView(
 
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
+                    tyFeedCampaignRibbonSubtitle.text =
+                        root.context.getString(R.string.feed_campaign_start_from_label)
                     setupTimer(mCampaign?.startTime ?: "") {}
 
                     if (mCampaign?.isReminderActive == true) {
