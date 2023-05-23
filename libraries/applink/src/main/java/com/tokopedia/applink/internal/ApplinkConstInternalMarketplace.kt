@@ -33,9 +33,6 @@ object ApplinkConstInternalMarketplace {
     // ShipmentActivity
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
 
-    // CartAddressChoiceActivity
-    const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
-
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
     const val ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT = "$INTERNAL_MARKETPLACE/one-click-checkout?" +
