@@ -83,6 +83,7 @@ internal object VisitableMapper {
     fun MutableList<Visitable<*>>.addProductRecommendation(categoryId: List<String>) {
         add(
             TokoNowProductRecommendationUiModel(
+                id = CategoryLayoutType.PRODUCT_RECOMMENDATION.name,
                 requestParam = GetRecommendationRequestParam(
                     queryParam = TOKONOW_CLP,
                     pageName = TOKONOW_CLP,
@@ -284,6 +285,7 @@ internal object VisitableMapper {
         return when (this) {
             is CategoryShowcaseUiModel -> id
             is TokoNowProgressBarUiModel -> id
+            is TokoNowProductRecommendationUiModel -> id
             else -> null
         }
     }

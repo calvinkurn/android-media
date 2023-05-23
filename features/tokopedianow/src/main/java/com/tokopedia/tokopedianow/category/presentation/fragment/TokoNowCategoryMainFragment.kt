@@ -2,8 +2,6 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,22 +12,21 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
-import com.tokopedia.tokopedianow.common.constant.RequestCode
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
+class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
 
     companion object {
         fun newInstance(): TokoNowCategoryMainFragment {
@@ -97,7 +94,8 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         observer()
     }
 
-    override fun loadMore(isAtTheBottomOfThePage: Boolean) = viewModel.loadMore(isAtTheBottomOfThePage)
+    override fun loadMore(isAtTheBottomOfThePage: Boolean) =
+        viewModel.loadMore(isAtTheBottomOfThePage)
 
     override fun refreshLayout() = viewModel.refreshLayout()
 
@@ -120,14 +118,17 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     }
 
     private fun observeCategoryHeader() {
-        viewModel.categoryHeader.observe(viewLifecycleOwner) {
-            when(it) {
+        viewModel.categoryHeader.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is Success -> {
-                    adapter.submitList(it.data)
+                    adapter.submitList(result.data)
 
                     viewModel.getFirstPage()
 
-                    binding?.categoryShimmering?.root?.hide()
+                    binding?.apply {
+                        rvCategory.show()
+                        categoryShimmering.root.hide()
+                    }
                 }
                 is Fail -> {}
             }
@@ -136,7 +137,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     private fun observeCategoryPage() {
         viewModel.categoryPage.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     adapter.submitList(result.data)
                 }
@@ -155,7 +156,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
 
     private fun observeMiniCart() {
         viewModel.miniCart.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     val data = result.data
                     showMiniCart(data)
@@ -186,7 +187,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     private fun observeUpdateCartItem() {
         viewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success ->  onSuccessUpdateCartItem()
+                is Success -> onSuccessUpdateCartItem()
                 is Fail -> showErrorToaster(
                     error = result
                 )
@@ -259,22 +260,13 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
     private fun observeRefreshState() {
         viewModel.refreshState.observe(viewLifecycleOwner) {
             binding?.apply {
+                rvCategory.hide()
                 categoryShimmering.root.show()
                 rvCategory.removeOnScrollListener(onScrollListener)
                 rvCategory.addOnScrollListener(onScrollListener)
             }
             viewModel.getCategoryHeader(navToolbarHeight)
         }
-    }
-
-    private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
-        showToaster(message = data.second)
-        getMiniCart()
-    }
-
-    private fun openLoginPage() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
     /**
@@ -325,7 +317,7 @@ class TokoNowCategoryMainFragment: TokoNowCategoryBaseFragment() {
         startActivityResult = ::startActivityForResult,
         openLoginPageListener = ::openLoginPage,
         hideProductRecommendationWidgetListener = {
-
+            viewModel.removeProductRecommendation()
         },
     )
 }

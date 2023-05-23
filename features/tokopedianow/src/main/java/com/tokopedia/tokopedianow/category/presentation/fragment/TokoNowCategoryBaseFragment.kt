@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -35,6 +36,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
+import com.tokopedia.tokopedianow.common.constant.RequestCode
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
@@ -297,8 +299,18 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         )
     }
 
+    protected fun onSuccessRemoveCartItem(data: Pair<String, String>) {
+        showToaster(message = data.second)
+        getMiniCart()
+    }
+
     protected fun updateToolbarNotification() {
         binding?.navToolbar?.updateNotification()
+    }
+
+    protected fun openLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
     private fun NavToolbar.setupNavigationToolbarInteraction() {

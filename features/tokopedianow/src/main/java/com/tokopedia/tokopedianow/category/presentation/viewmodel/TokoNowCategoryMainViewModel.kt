@@ -257,9 +257,10 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         if (isAtTheBottomOfThePage && categoryL2Models.isEmpty()) {
             _scrollNotNeeded.value = true
 
-            categoryNavigation?.let {
+            categoryNavigation?.let { categoryMenu ->
                 layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
-                layout.addCategoryMenu(it)
+                layout.addCategoryMenu(categoryMenu)
+                categoryNavigation = null
 
                 _categoryPage.value = Success(layout)
             }
@@ -271,5 +272,10 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     fun refreshLayout() {
         moreShowcaseJob = null
         _refreshState.value = Unit
+    }
+
+    fun removeProductRecommendation() {
+        layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
+        _categoryPage.postValue(Success(layout))
     }
 }
