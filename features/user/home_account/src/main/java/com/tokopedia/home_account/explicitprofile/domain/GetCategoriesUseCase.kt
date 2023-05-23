@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.explicitprofile.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -8,10 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class GetCategoriesUseCase @Inject constructor(
-    private val repository: GraphqlRepository
-) : CoroutineUseCase<Unit, CategoriesDataModel>(
-    Dispatchers.IO
-) {
+    @ApplicationContext private val repository: GraphqlRepository
+) : CoroutineUseCase<Unit, CategoriesDataModel>(Dispatchers.IO) {
 
     override suspend fun execute(params: Unit): CategoriesDataModel {
         return repository.request(graphqlQuery(), params)

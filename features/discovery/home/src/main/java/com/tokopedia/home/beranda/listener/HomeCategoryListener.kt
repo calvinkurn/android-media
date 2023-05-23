@@ -137,7 +137,7 @@ interface HomeCategoryListener {
 
     fun dismissTokonowCoachmark(parentPosition: Int)
 
-    fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel)
+    fun showHomeCoachmark(isShowBalanceWidgetCoachmark: Boolean, homeBalanceModel: HomeBalanceModel)
 
     fun refreshBalanceWidget()
 

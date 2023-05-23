@@ -19,29 +19,30 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickup
 fun RescheduleBottomSheetLayout(
     currentScreen: RescheduleBottomSheetState,
     options: ReschedulePickupOptions,
-    onEvent: (ReschedulePickupUiEvent) -> Unit
+    onEvent: (ReschedulePickupUiEvent) -> Unit,
+    onBottomSheetClosed: () -> Unit
 ) {
     NestBottomSheet(
         getBottomSheetTitle(currentScreen),
-        onClosePressed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
+        onClosePressed = onBottomSheetClosed
     ) {
         when (currentScreen) {
             RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
                 items = options.dayOptions,
                 onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectDay(it)) },
-                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
+                onBottomSheetClosed = onBottomSheetClosed
             )
             RescheduleBottomSheetState.TIME -> RescheduleBottomSheetContent(
                 items = options.timeOptions,
                 onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectTime(it)) },
-                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
+                onBottomSheetClosed = onBottomSheetClosed
             )
             RescheduleBottomSheetState.REASON -> RescheduleBottomSheetContent(
                 items = options.reasonOptions,
                 onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectReason(it)) },
-                onBottomSheetClosed = { onEvent(ReschedulePickupUiEvent.CloseBottomSheet) }
+                onBottomSheetClosed = onBottomSheetClosed
             )
-            RescheduleBottomSheetState.NONE -> onEvent(ReschedulePickupUiEvent.CloseBottomSheet)
+            RescheduleBottomSheetState.NONE -> onBottomSheetClosed()
         }
     }
 }
@@ -58,7 +59,7 @@ fun getBottomSheetTitle(currentScreen: RescheduleBottomSheetState): String {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun <T> RescheduleBottomSheetContent(
+private fun <T> RescheduleBottomSheetContent(
     items: List<T>,
     onItemClicked: (T) -> Unit,
     onBottomSheetClosed: () -> Unit
