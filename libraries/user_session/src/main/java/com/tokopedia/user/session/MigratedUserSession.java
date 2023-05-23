@@ -19,7 +19,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.user.session.datastore.DataStorePreference;
 import com.tokopedia.user.session.datastore.UserSessionDataStore;
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
-import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
+import com.tokopedia.user.session.datastore.UserSessionUtils;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.security.GeneralSecurityException;
@@ -58,6 +58,13 @@ public class MigratedUserSession {
         }
         return null;
     }
+
+    protected void logoutDataStoreSession() {
+        if(isEnableDataStore()) {
+            UserSessionUtils.INSTANCE.logoutSession(getDataStore());
+        }
+    }
+
     protected long getLong(String prefName, String keyName, long defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
@@ -110,7 +117,7 @@ public class MigratedUserSession {
     protected void setLong(String prefName, String keyName, long value) {
         if (isEnableDataStore()) {
             try {
-                UserSessionKeyMapper.INSTANCE.mapUserSessionKeyString(
+                UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                         keyName,
                         getDataStore(),
                         String.valueOf(value)
@@ -164,7 +171,7 @@ public class MigratedUserSession {
         if (isEnableDataStore()) {
             try {
                 if (keyName != null && value != null) {
-                    UserSessionKeyMapper.INSTANCE.mapUserSessionKeyString(
+                    UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                             keyName,
                             getDataStore(),
                             value
@@ -388,7 +395,7 @@ public class MigratedUserSession {
         if (isEnableDataStore()) {
             try {
                 if (keyName != null) {
-                    UserSessionKeyMapper.INSTANCE.mapUserSessionKeyBoolean(
+                    UserSessionUtils.INSTANCE.mapUserSessionKeyBoolean(
                             keyName,
                             getDataStore(),
                             value

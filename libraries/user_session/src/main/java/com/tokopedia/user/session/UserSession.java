@@ -535,6 +535,8 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         setString(LOGIN_SESSION, LOGIN_METHOD, "");
         setBoolean(LOGIN_SESSION, TWITTER_SHOULD_POST, false);
         cleanKey(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE);
+
+        logoutDataStoreSession();
     }
 
     /**

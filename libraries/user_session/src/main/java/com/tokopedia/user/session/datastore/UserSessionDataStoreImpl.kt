@@ -268,11 +268,10 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             clearTokenType()
             clearAccessToken()
             clearProfilePicture()
-            clearGcToken()
-            clearShopAvatar()
-            clearIsPowerMerchantIdle()
-            clearTwitterAccessToken()
-            clearLoginMethod()
+            gcToken = ""
+            shopAvatar = ""
+            isPowerMerchantIdle = false
+            loginMethod = ""
             clearTwitterShouldPost()
             clearIsShopOfficialStore()
         }

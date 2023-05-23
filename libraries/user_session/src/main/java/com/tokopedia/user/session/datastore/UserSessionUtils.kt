@@ -1,10 +1,42 @@
 package com.tokopedia.user.session.datastore
 
-import com.tokopedia.user.session.Constants.*
+import android.util.Log
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.user.session.Constants.ACCESS_TOKEN
+import com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA
+import com.tokopedia.user.session.Constants.EMAIL
+import com.tokopedia.user.session.Constants.FULL_NAME
+import com.tokopedia.user.session.Constants.GC_TOKEN
+import com.tokopedia.user.session.Constants.HAS_PASSWORD
+import com.tokopedia.user.session.Constants.IS_AFFILIATE
+import com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT
+import com.tokopedia.user.session.Constants.IS_LOCATION_ADMIN
+import com.tokopedia.user.session.Constants.IS_LOGIN
+import com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED
+import com.tokopedia.user.session.Constants.IS_MULTI_LOCATION_SHOP
+import com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE
+import com.tokopedia.user.session.Constants.IS_SHOP_ADMIN
+import com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE
+import com.tokopedia.user.session.Constants.IS_SHOP_OWNER
+import com.tokopedia.user.session.Constants.LOGIN_ID
+import com.tokopedia.user.session.Constants.LOGIN_METHOD
+import com.tokopedia.user.session.Constants.PHONE_NUMBER
+import com.tokopedia.user.session.Constants.PROFILE_PICTURE
+import com.tokopedia.user.session.Constants.REFRESH_TOKEN
+import com.tokopedia.user.session.Constants.SHOP_AVATAR
+import com.tokopedia.user.session.Constants.SHOP_ID
+import com.tokopedia.user.session.Constants.SHOP_NAME
+import com.tokopedia.user.session.Constants.TEMP_USER_ID
+import com.tokopedia.user.session.Constants.TOKEN_TYPE
+import com.tokopedia.user.session.Constants.UUID_KEY
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
-object UserSessionKeyMapper {
+object UserSessionUtils {
     fun mapUserSessionKeyString(
         key: String,
         userSessionDataStore: UserSessionDataStore?,
@@ -52,6 +84,27 @@ object UserSessionKeyMapper {
                 IS_LOCATION_ADMIN -> userSessionDataStore?.setIsLocationAdmin(value)
                 IS_MULTI_LOCATION_SHOP -> userSessionDataStore?.setIsMultiLocationShop(value)
                 else -> {}
+            }
+        }
+    }
+
+    private const val MAX_STACKTRACE_LENGTH = 1000
+
+    // we use helper to support java code, because we need global scope
+    fun logoutSession(userSessionDataStore: UserSessionDataStore?) {
+        GlobalScope.launch {
+            try {
+                userSessionDataStore?.logoutSession()
+            } catch (e: Exception) {
+                val data = mapOf(
+                    "method" to "logout_datastore_session",
+                    "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
+                )
+                ServerLogger.log(
+                    Priority.P2,
+                    DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+                    data
+                )
             }
         }
     }
