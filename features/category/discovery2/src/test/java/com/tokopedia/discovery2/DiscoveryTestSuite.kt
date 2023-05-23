@@ -17,8 +17,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bran
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetCarouselViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetGridViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModelTest
@@ -32,7 +30,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.comi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatflashsaletimerwidget.LihatFlashSaleTimerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModelTest
@@ -68,8 +65,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tndbanner.DiscoveryTNDBannerViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
@@ -87,8 +82,6 @@ import org.junit.runners.Suite
     BannerCarouselViewModelTest::class,
     BrandRecommendationViewModelTest::class,
     BrandRecommendationItemViewModelTest::class,
-    CarouselBannerViewModelTest::class,
-    CarouselBannerItemViewModelTest::class,
     CategoryNavigationItemViewModelTest::class,
     CategoryNavigationViewModelTest::class,
     ChipsFilterItemViewModelTest::class,
@@ -121,8 +114,6 @@ import org.junit.runners.Suite
     DiscoMerchantVoucherViewModelTest::class,
     TextComponentViewModelTest::class,
     DiscoveryTNDBannerViewModelTest::class,
-    TokopointsViewModelTest::class,
-    TokopointsItemViewModelTest::class,
     SpacingViewModelTest::class,
     TabsViewModelTest::class,
     TabsItemViewModelTest::class,
@@ -136,7 +127,6 @@ import org.junit.runners.Suite
     ProductCardRevampViewModelTest::class,
     EmptyStateViewModelTest::class,
     MixLeftEmptyViewModelTest::class,
-    LihatFlashSaleTimerViewModelTest::class,
     ClaimCouponViewModelTest::class,
     ClaimCouponItemViewModelTest::class,
     ChipsFilterViewModelTest::class,

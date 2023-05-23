@@ -40,7 +40,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 import dagger.Subcomponent
@@ -49,7 +48,6 @@ import dagger.Subcomponent
 @Subcomponent
 interface UIWidgetComponent {
     fun inject(mutliViewModel: MultiBannerViewModel)
-    fun inject(tokopointsViewModel: TokopointsViewModel)
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)
     fun inject(productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel)
     fun inject(productCardRevampViewModel: ProductCardRevampViewModel)

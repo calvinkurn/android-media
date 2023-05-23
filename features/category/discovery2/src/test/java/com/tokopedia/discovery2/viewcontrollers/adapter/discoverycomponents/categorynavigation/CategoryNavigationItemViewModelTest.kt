@@ -3,11 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cat
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.mockk
 import io.mockk.spyk
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

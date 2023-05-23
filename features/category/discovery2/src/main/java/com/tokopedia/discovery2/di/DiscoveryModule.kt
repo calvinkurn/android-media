@@ -47,8 +47,6 @@ import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -110,11 +108,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideClaimCouponRestRepository(): IClaimCouponRepository {
         return ClaimCouponRestRepository()
-    }
-
-    @Provides
-    fun provideTokopointsRestRepository(): TokopointsRepository {
-        return TokopointsRestRepository()
     }
 
     @Provides
