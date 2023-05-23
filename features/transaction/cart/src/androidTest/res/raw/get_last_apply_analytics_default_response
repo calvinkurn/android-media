@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "validate_use_promo_revamp": {
+      "get_last_apply_promo": {
         "status": "OK",
         "message": [],
         "error_code": "200",

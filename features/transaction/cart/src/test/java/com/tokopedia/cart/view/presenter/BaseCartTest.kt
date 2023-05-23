@@ -18,7 +18,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -44,7 +43,6 @@ abstract class BaseCartTest {
     var addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     var updateCartUseCase: UpdateCartUseCase = mockk()
     var updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase = mockk()
-    var getLastApplyPromoUseCase: GetLastApplyPromoUseCase = mockk()
     var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addToWishListV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     var deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
@@ -77,7 +75,7 @@ abstract class BaseCartTest {
             updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
             getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
-            getLastApplyPromoUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
+            setCartlistCheckboxStateUseCase, followShopUseCase,
             cartShopGroupTickerAggregatorUseCase, TestSchedulers, coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs

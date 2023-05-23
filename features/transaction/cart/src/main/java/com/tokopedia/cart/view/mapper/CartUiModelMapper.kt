@@ -166,7 +166,9 @@ object CartUiModelMapper {
                 groupName = availableGroup.groupInformation.name
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
+                isFulfillment = availableGroup.isFulfillment
                 fulfillmentName = availableGroup.groupInformation.description
+                fulfillmentBadgeUrl = availableGroup.groupInformation.descriptionBadgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
                 pinCoachmarkMessage = availableGroup.pinned.coachmarkMessage
@@ -225,9 +227,13 @@ object CartUiModelMapper {
                     content = cartData.coachmark.plus.content
                 )
                 enablerLabel =
-                    if (availableGroup.groupShopCartData.getOrNull(0)?.shop?.enabler?.showLabel == true) availableGroup.groupShopCartData.getOrNull(
-                        0
-                    )?.shop?.enabler?.labelName ?: "" else ""
+                    if (availableGroup.groupShopCartData.getOrNull(0)?.shop?.enabler?.showLabel == true) {
+                        availableGroup.groupShopCartData.getOrNull(
+                            0
+                        )?.shop?.enabler?.labelName ?: ""
+                    } else {
+                        ""
+                    }
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -381,7 +387,7 @@ object CartUiModelMapper {
                     isPartialSelected = false
                     isCollapsible =
                         isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 &&
-                            productUiModelList.size > 1
+                        productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()

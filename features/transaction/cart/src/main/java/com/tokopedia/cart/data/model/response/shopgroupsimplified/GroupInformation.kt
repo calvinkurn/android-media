@@ -10,5 +10,7 @@ data class GroupInformation(
     @SerializedName("app_link")
     val appLink: String = "",
     @SerializedName("description")
-    val description: String = ""
+    val description: String = "",
+    @SerializedName("description_badge_url")
+    val descriptionBadgeUrl: String = ""
 )

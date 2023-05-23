@@ -66,7 +66,9 @@ class UpdateCartAndGetLastApplyTest : BaseCartTest() {
             code = "NEWBOCODE"
         )
 
-        every { view.getAllGroupDataList() } returns listOf(cartGroupHolderData) val updateAndGetLastApplyData = UpdateAndGetLastApplyData().apply {
+        every { view.getAllGroupDataList() } returns listOf(cartGroupHolderData)
+
+        val updateAndGetLastApplyData = UpdateAndGetLastApplyData().apply {
             updateCartData = UpdateCartData().apply {
                 isSuccess = true
             }
