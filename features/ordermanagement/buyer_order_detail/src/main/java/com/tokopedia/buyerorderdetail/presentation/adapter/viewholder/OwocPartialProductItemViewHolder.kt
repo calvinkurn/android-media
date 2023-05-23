@@ -87,7 +87,7 @@ class OwocPartialProductItemViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
+            R.id.itemOwocProductViewStub -> goToProductSnapshotPage()
         }
     }
 }

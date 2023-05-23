@@ -2,58 +2,52 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/owoc_container_product_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="?selectableItemBackground"
     android:paddingHorizontal="16dp"
     android:paddingTop="16dp"
     android:paddingBottom="@dimen/buyer_order_detail_bundling_card_padding_bottom">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/owoc_container_product_info"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_item_owoc_bundling_thumbnail"
+        android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
+        android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_owoc_bundling_product_name"
+        tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/tv_item_owoc_bundling_product_price_quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_item_owoc_bundling_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/iv_item_owoc_bundling_thumbnail"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_item_owoc_bundling_thumbnail"
-            android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
-            android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_item_owoc_bundling_product_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintBottom_toTopOf="@id/tv_item_owoc_bundling_product_price_quantity"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_item_owoc_bundling_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/iv_item_owoc_bundling_thumbnail"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="paragraph_3"
-            app:typographyWeight="bold"
-            tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_item_owoc_bundling_product_price_quantity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_owoc_bundling_thumbnail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_item_owoc_bundling_product_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_item_owoc_bundling_product_name"
-            app:typographyType="display_3"
-            tools:text="2 x Rp 2.000.000" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_owoc_bundling_product_price_quantity"
+        tools:text="2 x Rp 2.000.000"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/iv_item_owoc_bundling_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_item_owoc_bundling_product_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_owoc_bundling_product_name"
+        app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
