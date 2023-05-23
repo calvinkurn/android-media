@@ -25,19 +25,3 @@ class FakeKycActivityComponentFactory : ActivityComponentFactory() {
             .build()
     }
 }
-
-class FakeKycActivityComponentFactorySimulateNullPref : ActivityComponentFactory() {
-    override fun createActivityComponent(activity: Activity): UserIdentificationCommonComponent {
-        return DaggerUserIdentificationCommonComponent.builder()
-            .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
-            .kycUploadImageModule(object : KycUploadImageModule() {
-                override fun provideApi(
-                    okHttpClient: OkHttpClient,
-                    retrofitBuilder: Retrofit.Builder
-                ): KycUploadApi {
-                    return FakeKycUploadApi()
-                }
-            })
-            .build()
-    }
-}
