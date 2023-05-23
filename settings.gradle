@@ -33,5 +33,3 @@ apply from: "buildconfig/appcompile/compile-wearosapp.gradle"
 
 
 apply from: "tools/composite_build_settings.gradle"
-include ':features:promo:scp_rewards'
-include ':features:promo:scp_rewards_widgets'
