@@ -5,12 +5,17 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.extensions.applyIf
 import com.tokopedia.common_compose.extensions.dashedStroke
@@ -68,7 +74,17 @@ sealed interface NestChipsLeft {
     ) : NestChipsLeft
 }
 
-enum class NestChipsSize { Small, Medium, Large }
+enum class NestChipsSize(
+    val height: Dp,
+    val rightSize: Dp,
+    val paddingHorizontal: Dp,
+    val cornerRadius: Dp,
+    val maxLines: Int
+) {
+    Small(32.dp, 16.dp, 8.dp, 10.dp, 1),
+    Medium(40.dp, 16.dp, 8.dp, 12.dp, 1),
+    Large(48.dp, 24.dp, 12.dp, 8.dp, 2),
+}
 
 @Composable
 fun NestChips(
@@ -99,12 +115,6 @@ fun NestChips(
         NestChipsState.Disabled -> NestTheme.colors.NN._50
     }
 
-    val height = when (size) {
-        NestChipsSize.Small -> 32.dp
-        NestChipsSize.Medium -> 40.dp
-        NestChipsSize.Large -> 48.dp
-    }
-    
     val rightPainter = when (right) {
         is NestChipsRight.Chevron -> {
             painterResource(id = iconUnifyR.drawable.iconunify_chevron_down)
@@ -115,19 +125,9 @@ fun NestChips(
         else -> null
     }
 
-    val rightSize = when (size) {
-        NestChipsSize.Small, NestChipsSize.Medium -> 16.dp
-        NestChipsSize.Large -> 24.dp
-    }
-
-    val paddingStart = when {
-        left is NestChipsLeft.NetworkImage -> 4.dp
-        size == NestChipsSize.Large -> 12.dp
-        else -> 8.dp
-    }
-    val paddingEnd = when (size) {
-        NestChipsSize.Large -> 12.dp
-        else -> 8.dp
+    val paddingStart = when (left) {
+        is NestChipsLeft.NetworkImage -> 4.dp
+        else -> size.paddingHorizontal
     }
 
     val chevronColor = if (state == NestChipsState.Selected) {
@@ -136,32 +136,25 @@ fun NestChips(
         NestTheme.colors.NN._900
     }
 
-    val cornerRadius = when (size) {
-        NestChipsSize.Small -> 10.dp
-        NestChipsSize.Medium -> 12.dp
-        NestChipsSize.Large -> 8.dp
-    }
-    val maxLines = if (size == NestChipsSize.Large) 2 else 1
-
     Surface(
         color = backgroundColor,
         modifier = modifier
-            .requiredHeight(height)
+            .requiredHeight(size.height)
             .applyIf(isDashed) {
-                dashedStroke(1.dp, cornerRadius, borderColor, 4.dp)
+                dashedStroke(1.dp, size.cornerRadius, borderColor, 4.dp)
             }
-            .clip(RoundedCornerShape(cornerRadius))
+            .clip(RoundedCornerShape(size.cornerRadius))
             .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = paddingStart, end = paddingEnd),
+            modifier = Modifier.padding(start = paddingStart, end = size.paddingHorizontal),
         ) {
             NestChipsLeft(left = left, chipsSize = size, Modifier.padding(end = 8.dp))
             NestTypography(
                 text = text,
                 textStyle = NestTheme.typography.display2.copy(color = textColor),
-                maxLines = maxLines
+                maxLines = size.maxLines
             )
             if (right != null && rightPainter != null) {
                 CompositionLocalProvider(
@@ -173,7 +166,7 @@ fun NestChips(
                         contentDescription = right.contentDescription,
                         colorFilter = ColorFilter.tint(chevronColor),
                         modifier = Modifier
-                            .requiredSize(rightSize)
+                            .requiredSize(size.rightSize)
                             .noRippleClickable { right.onClicked() }
                     )
                 }
@@ -223,93 +216,166 @@ private fun NestChipsLeft(
     }
 }
 
-private data class Variant(
-    val state: NestChipsState,
-    val right: NestChipsRight,
-    val left: NestChipsLeft,
-    val size: NestChipsSize
-)
-
-@Composable
-private fun getSampleVariants(): List<Variant> {
-    val context = LocalContext.current
-    val states = NestChipsState.values().toList()
-    val sizes = NestChipsSize.values().toList()
-    val rights = listOf(
-        NestChipsRight.Chevron {
-            Toast.makeText(context, "Chevron clicked", Toast.LENGTH_SHORT).show()
-        },
-        NestChipsRight.Clear {
-            Toast.makeText(context, "Clear / Remove clicked", Toast.LENGTH_SHORT).show()
-        },
-    )
-    val lefts = listOf(
-        NestChipsLeft.Color(NestTheme.colors.RN._400),
-        NestChipsLeft.Color(NestTheme.colors.RN._400, isCircle = true),
-        NestChipsLeft.Painter(
-            painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
-            Color.Blue,
-        ),
-        NestChipsLeft.Painter(
-            painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
-            Color.Blue,
-            isCircle = true,
-        ),
-        NestChipsLeft.NetworkImage(url = "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg"),
-        NestChipsLeft.NetworkImage(
-            url = "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg",
-            isCircle = false,
-        ),
-    )
-
-    return states.flatMap { state ->
-        sizes.flatMap { size ->
-            rights.flatMap { right ->
-                lefts.map { left ->
-                    Variant(state, right, left, size)
-                }
-            }
-        }
-    }
-}
-
 @Preview("All Chips Samples")
 @Preview("All Chips Samples (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun AllSamples() {
+private fun AllNewSample() {
     val context = LocalContext.current
 
-    val variants = getSampleVariants()
-
-    var isDashed by remember {
-        mutableStateOf(false)
-    }
+    var size by remember { mutableStateOf(NestChipsSize.Small) }
+    var state by remember { mutableStateOf(NestChipsState.Default) }
+    var isDashed by remember { mutableStateOf(false) }
 
     NestTheme {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.padding(start = 8.dp)
-        ) {
-            Button(onClick = { isDashed = !isDashed }) {
-                NestTypography(text = "Invert Dashed")
+        Column {
+            Text("Size")
+            Row {
+                NestChipsSize.values().forEach {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = it == size,
+                            onClick = {
+                                size = it
+                            })
+                        Text(text = it.name)
+                    }
+                }
             }
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(variants) { variant ->
-                    NestChips(
-                        text = "Chips ${variant.size.name} ${variant.state.name}",
-                        isDashed = isDashed,
-                        state = variant.state,
-                        right = variant.right,
-                        left = variant.left,
-                        size = variant.size,
-                        onClick = {
-                            Toast.makeText(context, "Chips Clicked", Toast.LENGTH_SHORT).show()
-                        }
-                    )
+            Text("State")
+            LazyVerticalGrid(columns = GridCells.Adaptive(130.dp)) {
+                items(NestChipsState.values()) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = it == state,
+                            onClick = {
+                                state = it
+                            })
+                        Text(text = it.name)
+                    }
                 }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Dashed")
+                Checkbox(checked = isDashed, onCheckedChange = { isDashed = !isDashed })
+            }
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                NestChips(
+                    text = "Chips Naked",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    onClick = {
+                        Toast.makeText(context, "Chips Naked Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Right Chevron",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    right = NestChipsRight.Chevron {
+                        Toast.makeText(context, "Chips Right Chevron - Chevron Clicked", Toast.LENGTH_SHORT).show()
+                    },
+                    onClick = {
+                        Toast.makeText(context, "Chips Right Chevron Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Right Clear",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    right = NestChipsRight.Clear {
+                        Toast.makeText(context, "Chips Right Clear - Clear Clicked", Toast.LENGTH_SHORT).show()
+                    },
+                    onClick = {
+                        Toast.makeText(context, "Chips Right Clear Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Color",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.Color(NestTheme.colors.RN._400),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Color Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Color (Circle)",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.Color(NestTheme.colors.RN._400, isCircle = true),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Color (Circle) Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Painter",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.Painter(
+                        painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
+                        Color.Blue
+                    ),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Painter Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Painter",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.Painter(
+                        painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
+                        Color.Blue,
+                        isCircle = true,
+                    ),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Painter (Circle) Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Network Image",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.NetworkImage("https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg"),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Network Image Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
+                NestChips(
+                    text = "Chips Left Network Image (Circle)",
+                    isDashed = isDashed,
+                    state = state,
+                    size = size,
+                    left = NestChipsLeft.NetworkImage(
+                        "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg",
+                        isCircle = true,
+                    ),
+                    onClick = {
+                        Toast.makeText(context, "Chips Left Network Image (Circle) Clicked", Toast.LENGTH_SHORT).show()
+                    }
+                )
             }
         }
     }
