@@ -227,7 +227,7 @@ private fun AllNewSample() {
     var isDashed by remember { mutableStateOf(false) }
 
     NestTheme {
-        Column {
+        Column(Modifier.padding(16.dp)) {
             Text("Size")
             Row {
                 NestChipsSize.values().forEach {
