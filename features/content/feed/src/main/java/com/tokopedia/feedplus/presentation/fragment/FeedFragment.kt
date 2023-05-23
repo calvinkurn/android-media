@@ -1179,7 +1179,8 @@ class FeedFragment :
                         )
                     ),
                     name = getString(feedR.string.feed_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    type = FeedMenuIdentifier.LAPORKAN,
+                    contentData = contentData
                 )
             )
         }
@@ -1195,7 +1196,8 @@ class FeedFragment :
                         )
                     ),
                     name = FeedMenuIdentifier.DELETE.value,
-                    type = FeedMenuIdentifier.DELETE
+                    type = FeedMenuIdentifier.DELETE,
+                    contentData = contentData
                 )
             )
         }
