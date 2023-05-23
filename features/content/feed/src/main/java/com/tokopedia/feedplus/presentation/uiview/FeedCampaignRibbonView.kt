@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.TransitionDrawable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -213,10 +214,11 @@ class FeedCampaignRibbonView(
 
     private fun setBackgroundGradient() {
         with(binding) {
+            val currentColor = root.background
             when {
                 !mCta?.colorGradient.isNullOrEmpty() -> {
                     mCta?.let { cta ->
-                        root.background = GradientDrawable(
+                        val newColor = GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             cta.colorGradient.map {
                                 Color.parseColor(it.color)
@@ -225,25 +227,41 @@ class FeedCampaignRibbonView(
                             shape = GradientDrawable.RECTANGLE
                             cornerRadius = CORNER_RADIUS
                         }
+
+                        val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                        root.background = transitionDrawable
+                        transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                     }
                 }
                 type == FeedCampaignRibbonType.ASGC_GENERAL && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_general_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_special_release_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 else -> {}
             }
@@ -437,6 +455,7 @@ class FeedCampaignRibbonView(
     companion object {
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
+        private const val COLOR_TRANSITION_DURATION = 250
 
         private const val SEVENTY_FIVE_PERCENT = 75
 
