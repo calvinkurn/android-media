@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -125,7 +124,6 @@ class CartListPresenter @Inject constructor(
     private val seamlessLoginUsecase: SeamlessLoginUsecase,
     private val updateCartCounterUseCase: UpdateCartCounterUseCase,
     private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
-    private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
@@ -943,7 +941,7 @@ class CartListPresenter @Inject constructor(
                         view?.let { cartListView ->
                             if (data.status == STATUS_OK) {
                                 if (data.success == 1) {
-                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)  
+                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
                                 } else {
                                     cartListView.showToastMessageRed(data.message)
                                 }
