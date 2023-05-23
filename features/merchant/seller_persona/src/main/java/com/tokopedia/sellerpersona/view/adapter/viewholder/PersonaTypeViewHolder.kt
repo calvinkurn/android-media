@@ -11,14 +11,14 @@ import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.databinding.ItemPersonaTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.utils.resources.isAppDarkMode
 
 /**
  * Created by @ilhamsuaib on 09/02/23.
  */
 
 class PersonaTypeViewHolder(
-    private val listener: Listener,
-    itemView: View
+    private val listener: Listener, itemView: View
 ) : AbstractViewHolder<PersonaUiModel>(itemView) {
 
     companion object {
@@ -64,12 +64,26 @@ class PersonaTypeViewHolder(
 
     private fun showBackground(element: PersonaUiModel) {
         with(binding) {
-            val sectionTextColor = if (element.isSelected) {
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-            } else {
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            var labelTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            var personaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            val sectionTextColor = when {
+                element.isSelected && isAppDarkMode() -> {
+                    labelTextColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_68
+                    personaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96
+                }
+                element.isSelected -> {
+                    labelTextColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                }
+                else -> {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                }
             }
-            tvSpSellerTypeLblInfo.setTextColor(sectionTextColor)
+            val textColor = root.context.getResColor(sectionTextColor)
+            tvSpSellerTypeLblInfo.setTextColor(textColor)
+            tvSpPersonaType.setTextColor(root.context.getResColor(personaTextColor))
+            tvSpSellerTypeLbl.setTextColor(root.context.getResColor(labelTextColor))
 
             val subTitleTextColor = if (element.isSelected) {
                 root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
