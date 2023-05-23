@@ -1,8 +1,5 @@
 package com.tokopedia.play.view.dialog
 
-import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spanned
 import android.text.TextPaint
@@ -11,9 +8,7 @@ import android.text.style.ClickableSpan
 import android.view.*
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,13 +28,10 @@ import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
-import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -55,12 +47,10 @@ import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -72,7 +62,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
     private val trackingQueue: TrackingQueue,
     private val analyticFactory: PlayAnalytic2.Factory
-) : DialogFragment(),
+) : BasePlayFragment(),
     ChipsViewHolder.Chips.Listener,
     PlayWidgetListener,
     PlayWidgetAnalyticListener {
@@ -80,7 +70,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
 
-    private lateinit var viewModel: PlayViewModel
 
     private val coordinator: PlayExploreWidgetCoordinator =
         PlayExploreWidgetCoordinator(this).apply {
@@ -221,17 +210,17 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        setupHeader()
-//        setupView()
-//        observeState()
-//        observeEvent()
+        setupHeader() //TODO(): Move to parent
+        setupView()
+        fetchWidget()
+        observeState()
+        observeEvent()
     }
 
     private fun setupHeader() {
         binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
         binding.widgetHeader.closeListener = View.OnClickListener {
             analytic?.clickCloseExplore()
-            dismiss()
         }
     }
 
@@ -388,15 +377,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        val window = dialog?.window ?: return
-        window.setGravity(Gravity.END)
-        window.setLayout(
-            (getScreenWidth() * EXPLORE_WIDGET_WIDTH_RATIO).roundToInt(),
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
-
         getScreenLocation()
     }
 
@@ -404,7 +384,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         fun setupDraggable() {
             view?.setOnTouchListener { vw, motionEvent ->
                 if (vw.x >= DIALOG_VISIBILITY_THRESHOLD) {
-                    dismiss()
+//                    dismiss()
                     return@setOnTouchListener false
                 }
                 gestureDetector.onTouchEvent(motionEvent)
@@ -420,10 +400,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun showNow(manager: FragmentManager) {
-        if (!isAdded) showNow(manager, TAG)
     }
 
     /**
@@ -477,16 +453,16 @@ class PlayExploreWidgetFragment @Inject constructor(
         )
     }
 
-    override fun dismiss() {
-        if (!isVisible) return
-//        viewModel.submitAction(DismissExploreWidget)
-        super.dismiss()
-    }
+//    override fun dismiss() {
+//        if (!isVisible) return
+////        viewModel.submitAction(DismissExploreWidget)
+//        super.dismiss()
+//    }
 
-    override fun onCancel(dialog: DialogInterface) {
-//        viewModel.submitAction(DismissExploreWidget)
-        super.onCancel(dialog)
-    }
+//    override fun onCancel(dialog: DialogInterface) {
+////        viewModel.submitAction(DismissExploreWidget)
+//        super.onCancel(dialog)
+//    }
 
     private fun showEmpty(needToShow: Boolean) {
         if (needToShow) {
@@ -500,7 +476,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        dismiss()
+//        dismiss()
     }
 
     override fun onDetach() {
@@ -528,6 +504,10 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
         return emptyMap()
+    }
+
+    private fun fetchWidget() {
+        viewModel.submitAction(FetchWidgets)
     }
 
     companion object {

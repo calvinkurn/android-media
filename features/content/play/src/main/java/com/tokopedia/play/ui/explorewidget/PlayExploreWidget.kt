@@ -1,13 +1,17 @@
 package com.tokopedia.play.ui.explorewidget
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import com.tokopedia.play.R as playR
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -30,7 +34,7 @@ class PlayExploreWidget @Inject constructor(
 
     private val fgExplore by lazyThreadSafetyNone {
         PlayExploreWidgetFragment(router, trackingQueue, analyticFactory)
-    } // setup apply here
+    } // TODO() setup apply here only passed router
 
     private val tabs = mapOf<String, Fragment>(
         "Category" to PlayExploreWidgetFragment(router, trackingQueue, analyticFactory),
@@ -38,7 +42,7 @@ class PlayExploreWidget @Inject constructor(
     )
 
     private val vpAdapter by lazyThreadSafetyNone {
-        Adapter(requireActivity(), tabs)
+        Adapter(childFragmentManager, lifecycle, tabs)
     }
 
     private var _binding: PlayDialogExploreWidgetBinding? = null
@@ -59,13 +63,26 @@ class PlayExploreWidget @Inject constructor(
         setupView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val window = dialog?.window ?: return
+        window.setGravity(Gravity.END)
+        window.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
+    }
+
     private fun setupView() {
         binding.vpPlayExploreWidget.adapter = vpAdapter
         TabsUnifyMediator(
             binding.tabPlayExploreWidget,
             binding.vpPlayExploreWidget
         ) { tab, position ->
-            tab.setCustomText(tabs.keys.elementAt(position)) //handle null or else
+            tab.setCustomText(tabs.keys.elementAt(position)) //TODO(): handle null or else
         }
     }
 
@@ -74,14 +91,15 @@ class PlayExploreWidget @Inject constructor(
     }
 
     internal class Adapter(
-        fragment: FragmentActivity,
+        fragment: FragmentManager,
+        lifecycle: Lifecycle,
         private val tabs: Map<String, Fragment>
     ) :
-        FragmentStateAdapter(fragment) {
+        FragmentStateAdapter(fragment, lifecycle) {
         override fun getItemCount(): Int = tabs.size
 
         override fun createFragment(position: Int): Fragment =
-            tabs.values.elementAt(position) //handle null or else
+            tabs.values.elementAt(position) //TODO() handle null or else
     }
 
     companion object {
