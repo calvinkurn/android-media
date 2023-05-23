@@ -32,6 +32,7 @@ class RichListMapper @Inject constructor(
         private const val SECTION_TYPE_RANK = "simpleRank"
         private const val SECTION_TYPE_CAPTION = "tileBox"
         private const val SECTION_TYPE_TICKER = "ticker"
+        private const val CTA_TEXT_PATTERN = "href=.*'>(.*?)<\\/a>"
     }
 
     override fun mapRemoteDataToUiData(
@@ -89,7 +90,7 @@ class RichListMapper @Inject constructor(
 
     private fun getCtaText(caption: String): String {
         runCatching {
-            val regex = "href=.*'>(.*?)<\\/a>".toRegex()
+            val regex = CTA_TEXT_PATTERN.toRegex()
             val result = regex.find(caption)
             return result?.groupValues?.getOrNull(Int.ONE).orEmpty()
         }
