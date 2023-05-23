@@ -2055,7 +2055,8 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+        val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
+        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrder.type.equals(
                     "logistic",
                     ignoreCase = true
@@ -2067,6 +2068,7 @@ class ShipmentPresenter @Inject constructor(
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         if (view != null) {
+                            updatedCartStringGroup.add(voucherOrder.cartStringGroup)
                             view!!.resetCourier(shipmentCartItemModel)
                             view!!.logOnErrorApplyBo(
                                 MessageErrorException(
@@ -2075,10 +2077,16 @@ class ShipmentPresenter @Inject constructor(
                                 shipmentCartItemModel,
                                 voucherOrder.code
                             )
-                            break
+                            break@voucherLoop
                         }
                     }
                 }
+            } else if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals(
+                    "green",
+                    ignoreCase = true
+                )
+            ) {
+                updatedCartStringGroup.add(voucherOrder.cartStringGroup)
             }
         }
         // if not voucher order found for attempted apply BO order,
@@ -2087,7 +2095,7 @@ class ShipmentPresenter @Inject constructor(
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel) {
                 val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
-                if (!code.isNullOrEmpty() && view != null) {
+                if (!code.isNullOrEmpty() && view != null && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
                     view!!.resetCourier(shipmentCartItemModel)
                     view!!.logOnErrorApplyBo(
                         MessageErrorException("voucher order not found"),
