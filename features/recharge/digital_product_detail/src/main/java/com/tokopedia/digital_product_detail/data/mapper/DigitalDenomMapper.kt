@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.data.mapper
 
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
 import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationItem
@@ -60,6 +61,11 @@ class DigitalDenomMapper @Inject constructor() {
             title = data.title,
             recommendations = data.items.map { digiPersoToRecommendationCard(it, isBigRecommendation) }
         )
+    }
+
+    fun mapDigiPersoToMCCMProducts(data: DigitalDigiPersoGetPersonalizedItem): DenomWidgetModel {
+        //TODO MAP perso to mccm
+        return DenomWidgetModel()
     }
 
     private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {

@@ -31,6 +31,8 @@ data class PersoRecommendationItem(
     val mediaURL: String,
     @SerializedName("mediaUrlType")
     val mediaUrlType: String,
+    @SerializedName("mediaURLDarkMode")
+    val mediaURLDarkMode: String,
     @SerializedName("label1")
     val label1: String,
     @SerializedName("label2")
@@ -50,7 +52,9 @@ data class PersoRecommendationItem(
     @SerializedName("backgroundColor")
     val backgroundColor: String,
     @SerializedName("trackingData")
-    val trackingData: TrackingData
+    val trackingData: TrackingData,
+    @SerializedName("descriptions")
+    val descriptions: List<String>,
 )
 
 data class TrackingData(

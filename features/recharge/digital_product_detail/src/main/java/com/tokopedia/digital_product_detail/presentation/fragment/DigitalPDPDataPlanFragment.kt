@@ -295,6 +295,7 @@ class DigitalPDPDataPlanFragment :
                     hideEmptyState()
                     onHideBuyWidget()
                     getRecommendations()
+                    getMCCMProducts()
                     getCatalogProductInputMultiTab(
                         selectedOperator.key,
                         isOperatorChanged,
@@ -307,6 +308,7 @@ class DigitalPDPDataPlanFragment :
                 operator = TelcoOperator()
                 viewModel.run {
                     cancelRecommendationJob()
+                    cancelMCCMProductsJob()
                     cancelCatalogProductJob()
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
@@ -380,6 +382,22 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
                 is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
+            }
+        }
+
+        viewModel.mccmProductsData.observe(viewLifecycleOwner) {
+            when(it) {
+                is RechargeNetworkResult.Success -> {
+                    //TODO UPDATE MCCM
+                }
+
+                is RechargeNetworkResult.Fail -> {
+                    //TODO FAIL MCCM
+                }
+
+                is RechargeNetworkResult.Loading -> {
+                    //TODO Loading MCCM
+                }
             }
         }
 
@@ -549,6 +567,14 @@ class DigitalPDPDataPlanFragment :
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+    }
+
+    private fun getMCCMProducts() {
+        val clientNumbers =
+            listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setMCCMProductsLoading()
+        viewModel.cancelMCCMProductsJob()
+        viewModel.getMCCMProducts(clientNumbers, listOf(categoryId))
     }
 
     private fun getCatalogMenuDetail() {

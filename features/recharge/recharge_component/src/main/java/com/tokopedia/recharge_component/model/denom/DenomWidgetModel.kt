@@ -6,7 +6,10 @@ data class DenomWidgetModel(
    val mainTitle: String = "",
    val subTitle: String = "",
    val listDenomData: List<DenomData> = emptyList(),
-   val isFlashSale: Boolean = false
+   val isFlashSale: Boolean = false,
+   val isHorizontalMCCM: Boolean = true,
+   val imageBackgroundUrl: String? = null,
+   val imageBackgroundUrlDarkMode: String? = null,
 )
 
 data class DenomData(
