@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
-import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
-import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStoreImpl
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

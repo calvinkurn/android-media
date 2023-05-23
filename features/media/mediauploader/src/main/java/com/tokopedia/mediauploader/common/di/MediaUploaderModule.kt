@@ -3,8 +3,8 @@ package com.tokopedia.mediauploader.common.di
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
-import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
-import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStoreImpl
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
