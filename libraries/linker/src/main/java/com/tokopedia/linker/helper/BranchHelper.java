@@ -72,7 +72,7 @@ public class BranchHelper {
 
         // if uri host equals UNSAFE_TOKOPEDIA_HOST it will fail to generate the branch link
         if (isUnsafeDesktopUrl(data.renderShareUri())) {
-            logErrorDesktopUrl(data.renderShareUri());
+            logErrorDesktopUrl(data.renderShareUri(), data.getUri());
         }
         linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
     }
@@ -318,9 +318,14 @@ public class BranchHelper {
         }
     }
 
-    private static void logErrorDesktopUrl(String desktopUrl) {
-        String errorMessage = String.format("Desktop %s Url is not allowed to generate branch link", desktopUrl);
-        branchHelperValidation.sendGenerateBranchErrorLogs(errorMessage);
+    /**
+     *
+     * @param desktopUrl is url with the utm
+     * @param cleanUrl is url without the utm
+     */
+    private static void logErrorDesktopUrl(String desktopUrl, String cleanUrl) {
+        String errorMessage = String.format("Desktop Url: %s  is not allowed to generate branch link", desktopUrl);
+        branchHelperValidation.sendGenerateBranchErrorLogs(errorMessage, cleanUrl);
     }
 
     /**

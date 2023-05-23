@@ -309,10 +309,11 @@ class BranchHelperValidation {
         logging(messageMap)
     }
 
-    fun sendGenerateBranchErrorLogs(errorMsg: String?) {
+    fun sendGenerateBranchErrorLogs(errorMsg: String?, url: String) {
         val messageMap = HashMap<String, String>()
         messageMap[BRANCH_LOG_TYPE] = BRANCH_GENERATE_LINK
         messageMap[BRANCH_ERROR_DATA_MESSAGE] = errorMsg ?: "Empty error message generate branch error"
+        messageMap[DESKTOP_CLEAN_URL] = url
         logging(messageMap)
     }
 
@@ -324,5 +325,6 @@ class BranchHelperValidation {
         private val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
         private val BRANCH_LOG_TYPE = "branch_log_type"
         private val BRANCH_GENERATE_LINK = "branch_generate_link"
+        private val DESKTOP_CLEAN_URL = "desktop_clean_url"
     }
 }
