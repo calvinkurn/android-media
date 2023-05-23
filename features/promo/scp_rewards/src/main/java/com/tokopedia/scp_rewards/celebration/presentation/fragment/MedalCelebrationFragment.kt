@@ -368,7 +368,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         binding?.mainView?.sponsorCard?.hide()
         binding?.mainView?.badgeName?.apply {
             val lp = layoutParams as ConstraintLayout.LayoutParams
-            lp.topMargin = 0
+            lp.topMargin = resources.getDimensionPixelSize(R.dimen.margin_20_dp)
         }
     }
 
@@ -533,19 +533,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             lp.width = newWidth
             lp.height = newHeight
             layoutParams = lp
-//            val newLayoutParams = ConstraintLayout.LayoutParams(
-//              newWidth,newHeight
-//            )
-//            val set = ConstraintSet().apply {
-//                binding?.mainView?.sunflare?.also {
-//                    connect(id,ConstraintSet.TOP,it.id,ConstraintSet.TOP)
-//                    connect(id,ConstraintSet.BOTTOM,it.id,ConstraintSet.BOTTOM)
-//                    connect(id,ConstraintSet.START,it.id,ConstraintSet.START)
-//                    connect(id,ConstraintSet.END,it.id,ConstraintSet.END)
-//                }
-//            }
-//            layoutParams = newLayoutParams
-//            set.applyTo(binding?.mainView?.mainViewContainer)
         }
     }
 

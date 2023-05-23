@@ -4,4 +4,5 @@
     <dimen name="fallback_badge_height">211dp</dimen>
     <dimen name="mdpi_device_top_margin">142dp</dimen>
     <dimen name="heading_2_large">22sp</dimen>
+    <dimen name="margin_20_dp">20dp</dimen>
 </resources>
