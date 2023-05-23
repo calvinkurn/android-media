@@ -16,7 +16,7 @@
         <item name="cornerSize">49%</item>
     </style>
 
-    <style name="roundedTopCornerCategoryNavigation">
+    <style name="roundedTopCategoryNavigation">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">8dp</item>
         <item name="cornerSizeTopLeft">8dp</item>

@@ -16,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/rounded_top_navigation_shimmering"
+        android:id="@+id/rounded_top_category_navigation_shimmering"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        app:shapeAppearanceOverlay="@style/roundedTopCornerCategoryNavigation"
-        android:src="@color/Unify_Background"
+        app:srcCompat="@color/Unify_Background"
+        app:shapeAppearanceOverlay="@style/roundedTopCategoryNavigation"
         app:layout_constraintBottom_toTopOf="@+id/include"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -41,7 +41,7 @@
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/rounded_top_navigation_shimmering"
+        app:layout_constraintBottom_toTopOf="@+id/rounded_top_category_navigation_shimmering"
         app:layout_constraintStart_toStartOf="parent"
         app:loader_type="rect" />
 
