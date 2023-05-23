@@ -167,6 +167,15 @@ class FeedCampaignRibbonView(
         }
     }
 
+    fun bindCampaignReminder(campaign: FeedCardCampaignModel) {
+        mCampaign = campaign
+        if (campaign.isReminderActive) {
+            binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
+        } else {
+            binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
+        }
+    }
+
     private fun runRecursiveDelayDiscount(index: Int) {
         if ((mCta?.texts?.size ?: 0) > index) {
             with(binding) {
