@@ -66,7 +66,7 @@ class CheckoutAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
+        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
         private const val SAVE_SHIPMENT_KEY = "save_shipment"
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
