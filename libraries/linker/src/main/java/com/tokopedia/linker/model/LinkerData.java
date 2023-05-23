@@ -244,15 +244,6 @@ public class LinkerData implements Parcelable {
     }
 
     public String getUri() {
-        Uri uri = Uri.parse(this.uri);
-        if (Objects.equals(uri.getHost(), "tokopedia.com")) {
-            String scheme = uri.getScheme();
-            String host = uri.getHost();
-            String path = uri.getPath();
-            String validUrl = String.format("%s://www.%s/%s", scheme, host, path);
-            return validUrl;
-        }
-
         return this.uri;
     }
 
