@@ -56,6 +56,7 @@ class SwitchAccountTest {
         channelUseCase = mockGetChannelUseCase,
         addedChannelTagsUseCase = mockGetAddedTagUseCase,
         sharedPreferences = mockHydraSharedPreferences,
+        playShortsEntryPointRemoteConfig = mockk(relaxed = true),
     )
 
     init {

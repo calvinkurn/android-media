@@ -62,7 +62,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
+import com.tokopedia.feedplus.oldFeed.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.data.SubmitReportContentResponse
 import com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData
@@ -269,7 +269,8 @@ class FeedViewModelTest {
                     isSuccess = "200",
                     relation = ""
                 ),
-                messages = emptyList(), errorCode = ""
+                messages = emptyList(),
+                errorCode = ""
             )
         )
 
@@ -297,7 +298,8 @@ class FeedViewModelTest {
                     isSuccess = "200",
                     relation = ""
                 ),
-                messages = listOf("Error aja"), errorCode = "404"
+                messages = listOf("Error aja"),
+                errorCode = "404"
             )
         )
 
@@ -340,7 +342,8 @@ class FeedViewModelTest {
                     isSuccess = "1",
                     relation = ""
                 ),
-                messages = listOf("Yeay, success"), errorCode = ""
+                messages = listOf("Yeay, success"),
+                errorCode = ""
             )
         )
 
@@ -369,7 +372,8 @@ class FeedViewModelTest {
                     isSuccess = "200",
                     relation = ""
                 ),
-                messages = listOf("Error Aja"), errorCode = "404"
+                messages = listOf("Error Aja"),
+                errorCode = "404"
             )
         )
 
@@ -531,7 +535,8 @@ class FeedViewModelTest {
                     isSuccess = "200",
                     relation = ""
                 ),
-                messages = emptyList(), errorCode = ""
+                messages = emptyList(),
+                errorCode = ""
             )
         )
 
@@ -560,7 +565,8 @@ class FeedViewModelTest {
                     isSuccess = "",
                     relation = ""
                 ),
-                messages = listOf("Error aja"), errorCode = "404"
+                messages = listOf("Error aja"),
+                errorCode = "404"
             )
         )
 
@@ -606,7 +612,8 @@ class FeedViewModelTest {
                     isSuccess = "1",
                     relation = ""
                 ),
-                messages = listOf("Yeay, success"), errorCode = ""
+                messages = listOf("Yeay, success"),
+                errorCode = ""
             )
         )
 
@@ -634,7 +641,8 @@ class FeedViewModelTest {
                     isSuccess = "200",
                     relation = ""
                 ),
-                messages = listOf("Error aja"), errorCode = "404"
+                messages = listOf("Error aja"),
+                errorCode = "404"
             )
         )
 
@@ -756,7 +764,7 @@ class FeedViewModelTest {
     @Test
     fun `fav shop - success`() {
         val expected = ShopFollowModel(followShop = FollowShop(success = true))
-        coEvery { mockFollowShop.executeOnBackground(any()) } returns expected
+        coEvery { mockFollowShop(any()) } returns expected
 
         create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
@@ -772,7 +780,7 @@ class FeedViewModelTest {
 
     @Test
     fun `fav shop - failed from gql`() {
-        coEvery { mockFollowShop.executeOnBackground(any()) } throws gqlFailed
+        coEvery { mockFollowShop(any()) } throws gqlFailed
 
         create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {

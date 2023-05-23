@@ -20,9 +20,9 @@ import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -42,6 +42,8 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.beautification.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
@@ -97,7 +99,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -133,6 +134,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
@@ -188,6 +190,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -252,6 +256,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
+    private val isAllowToSeePerformanceDashboard: Boolean
+        get() = selectedAccount.isShop
+
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
@@ -263,9 +270,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val authorType: String
         get() = _selectedAccount.value.type
-
-    val isShortVideoAllowed: Boolean
-        get() = _configInfo.value?.shortVideoAllowed.orFalse()
 
     val broadcastingConfig: BroadcastingConfigUiModel
         get() = hydraConfigStore.getBroadcastingConfig()
@@ -294,7 +298,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayChannelUiState(
                 streamAllowed = it.streamAllowed,
                 shortVideoAllowed = it.shortVideoAllowed,
-                tnc = it.tnc
+                hasContent = it.hasContent,
+                tnc = it.tnc,
             )
         }
 
@@ -397,6 +402,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizBottomSheetUiState,
         _selectedAccount,
         _accountStateInfo,
+        _bannerPreparation,
         _menuListUiState,
         _title,
         _cover,
@@ -415,6 +421,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         quizBottomSheetUiState,
         selectedFeedAccount,
         accountStateInfo,
+        bannerPreparation,
         menuListUiState,
         title,
         cover,
@@ -434,6 +441,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
             accountStateInfo = accountStateInfo,
+            bannerPreparation = bannerPreparation,
             menuList = menuListUiState,
             title = title,
             cover = cover,
@@ -550,6 +558,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(event.source)
             is PlayBroadcastAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
+            is PlayBroadcastAction.AddBannerPreparation -> handleAddBannerPreparation(event.data)
+            is PlayBroadcastAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(event.data)
 
             /** Beautification */
             is PlayBroadcastAction.RemoveBeautificationMenu -> handleRemoveBeautificationMenu()
@@ -564,6 +574,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 //no-op
             }
         }
+    }
+
+    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+        }, onError = {})
+    }
+
+    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+        }, onError = {})
     }
 
     private fun handleGetConfiguration(selectedType: String) {
@@ -655,6 +678,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setCoverConfig(configUiModel.coverConfig)
             setDurationConfig(configUiModel.durationConfig)
             setScheduleConfig(configUiModel.scheduleConfig)
+
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
 
             broadcastTimer.setupDuration(
                 configUiModel.durationConfig.remainingDuration,
@@ -1000,6 +1026,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 ),
                 canSchedule = repo.canSchedule()
             )
+        }
+    }
+
+    private fun setupShortEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
+        if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
+            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+        }
+    }
+
+    private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
+        if (isAllowToSeePerformanceDashboard && config.hasContent) {
+            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
         }
     }
 

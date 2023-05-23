@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
-import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
@@ -57,7 +57,7 @@ class FeedPlusTopAdsShopTestCase {
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
-                getWhiteListNewUseCase = mockk(),
+                getWhiteListUseCase = mockk(),
                 sendReportUseCase = mockk(),
                 addToWishlistV2UseCase = mockk(),
                 trackVisitChannelBroadcasterUseCase = mockk(),

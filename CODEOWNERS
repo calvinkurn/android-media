@@ -86,6 +86,7 @@
 /features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
+/libraries/sub_viewmodel/                               @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
