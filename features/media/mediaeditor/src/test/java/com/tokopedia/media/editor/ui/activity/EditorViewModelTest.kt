@@ -12,6 +12,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
@@ -236,7 +237,65 @@ class EditorViewModelTest {
         }
 
         // When
-        every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns addLogoPath
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        }
+        viewModel.saveToGallery(dataList) { _, _ -> }
+
+        // Then
+        verify { saveImageRepo.saveToGallery(any(), any()) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `save image to gallery with overlay text`() {
+        // Given
+        val dataList = createUiModelState(0, -1)
+        dataList.first().apply {
+            editList.add(
+                EditorDetailUiModel(
+                    resultUrl = this.getOriginalUrl(),
+                    editorToolType = EditorToolType.ADD_LOGO,
+                    addTextValue = EditorAddTextUiModel(
+                        textValue = "test",
+                        textImagePath = "temp_url"
+                    )
+                )
+            )
+        }
+
+        // When
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns addLogoPath
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        }
+        viewModel.saveToGallery(dataList) { _, _ -> }
+
+        // Then
+        verify { saveImageRepo.saveToGallery(any(), any()) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `save image to gallery with overlay text path null`() {
+        // Given
+        val dataList = createUiModelState(0, -1)
+        dataList.first().apply {
+            editList.add(
+                EditorDetailUiModel(
+                    resultUrl = this.getOriginalUrl(),
+                    editorToolType = EditorToolType.ADD_LOGO,
+                    addTextValue = EditorAddTextUiModel(
+                        textValue = "test"
+                    )
+                )
+            )
+            backValue = 5
+        }
+
+        // When
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns addLogoPath
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
