@@ -362,7 +362,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun getFilteredRollenceKey() {
         val prefixKey = "CT_"
         val filteredRollenceKeys = getAbTestPlatform()
-            .getFilteredKeyByKeyName(prefixKey)
+            .getKeysByPrefix(prefix = prefixKey)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
