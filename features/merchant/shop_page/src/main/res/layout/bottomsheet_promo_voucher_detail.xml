@@ -49,7 +49,7 @@
                 android:contentDescription="@string/shop_page_clock_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tpgVoucherName"
-                app:srcCompat="@drawable/ic_clock_green" />
+                app:srcCompat="@drawable/ic_clock_green_voucher_period" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelPromoPeriod"
@@ -85,7 +85,7 @@
                 android:contentDescription="@string/shop_page_rupiah_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iconClock"
-                app:srcCompat="@drawable/ic_rupiah_green" />
+                app:srcCompat="@drawable/ic_rupiah_green_voucher_min_transaction" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelMinPurchase"
