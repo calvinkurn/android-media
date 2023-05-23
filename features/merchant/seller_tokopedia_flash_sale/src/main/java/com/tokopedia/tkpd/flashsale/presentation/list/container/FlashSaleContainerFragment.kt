@@ -68,6 +68,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     @Inject
     lateinit var tracker: FlashSaleListPageTracker
 
+    private lateinit var remoteConfig: RemoteConfigInstance
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListContainerBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleContainerViewModel::class.java) }
@@ -360,11 +361,14 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun getFilteredRollenceKey() {
         val prefixKey = "CT_"
-        val filteredRollenceKeys = getAbTestPLatform().getKeysByPrefix(prefixKey)
+        val filteredRollenceKeys = getAbTestPlatform()
+            .getFilteredKeyByKeyName(prefixKey)
     }
 
-    private fun getAbTestPLatform(): AbTestPlatform {
-        val remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        return remoteConfigInstance.abTestPlatform
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfig.isInitialized) {
+            remoteConfig = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfig.abTestPlatform
     }
 }
