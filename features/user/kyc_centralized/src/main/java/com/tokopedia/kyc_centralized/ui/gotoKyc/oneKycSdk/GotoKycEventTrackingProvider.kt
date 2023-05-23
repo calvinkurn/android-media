@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
-import android.util.Log
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
@@ -28,18 +27,47 @@ class GotoKycEventTrackingProvider @Inject constructor(
         eventProperties: Map<String, Any?>,
         productName: String?
     ) {
-        Log.i("Tracker", "track: $eventName ,,,,,,,,, eventProperties: $eventProperties ,,,,,,,,, productName: $productName")
+        sendTracker(
+            eventName = eventName,
+            eventProperties = eventProperties
+        )
     }
 
     private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>) {
         when (eventName) {
             CAMERA_OPENED -> {
-                when (eventProperties[TYPE]) {
-                    KTP -> {
-                        //GotoKycAnalytics.sendViewKtpPage(kycSharedPreference.getProjectId())
+                when (eventProperties[ACTUAL_USAGE]) {
+                    DEEPLEARN_AUTO_CAPTURE -> {
+                        when (eventProperties[TYPE]) {
+                            KTP -> {
+                                GotoKycAnalytics.sendViewKtpPage(
+                                    isManual = false,
+                                    projectId = kycSharedPreference.getProjectId()
+                                )
+                            }
+                            SELFIE -> {
+                                GotoKycAnalytics.sendViewSelfiePage(
+                                    isManual = false,
+                                    projectId = kycSharedPreference.getProjectId()
+                                )
+                            }
+                        }
                     }
-                    SELFIE -> {
-                        //GotoKycAnalytics.sendViewSelfiePage(kycSharedPreference.getProjectId())
+                    CUSTOM -> {
+                        when (eventProperties[TYPE]) {
+                            KTP -> {
+                                GotoKycAnalytics.sendViewKtpPage(
+                                    isManual = true,
+                                    projectId = kycSharedPreference.getProjectId()
+                                )
+                            }
+                            SELFIE -> {
+                                GotoKycAnalytics.sendViewSelfiePage(
+                                    isManual = true,
+                                    projectId = kycSharedPreference.getProjectId()
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -69,6 +97,12 @@ class GotoKycEventTrackingProvider @Inject constructor(
                         when (eventProperties[TYPE]) {
                             KTP -> {
                                 GotoKycAnalytics.sendScanKtpImage(
+                                    statusScan = VALUE_IMAGE_CAPTURED,
+                                    projectId = kycSharedPreference.getProjectId()
+                                )
+                            }
+                            SELFIE -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
                                     statusScan = VALUE_IMAGE_CAPTURED,
                                     projectId = kycSharedPreference.getProjectId()
                                 )
@@ -221,6 +255,12 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             projectId = kycSharedPreference.getProjectId()
                         )
                     }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendScanSelfieImage(
+                            statusScan = VALUE_IMAGE_DETECTED_ERROR,
+                            projectId = kycSharedPreference.getProjectId()
+                        )
+                    }
                 }
             }
             IMAGE_DETECTED -> {
@@ -231,12 +271,24 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             projectId = kycSharedPreference.getProjectId()
                         )
                     }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendScanSelfieImage(
+                            statusScan = VALUE_IMAGE_DETECTED,
+                            projectId = kycSharedPreference.getProjectId()
+                        )
+                    }
                 }
             }
             IMAGE_QUALITY_GOOD_DETECTED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
                         GotoKycAnalytics.sendScanKtpImage(
+                            statusScan = VALUE_IMAGE_DETECTED_GOOD,
+                            projectId = kycSharedPreference.getProjectId()
+                        )
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendScanSelfieImage(
                             statusScan = VALUE_IMAGE_DETECTED_GOOD,
                             projectId = kycSharedPreference.getProjectId()
                         )
@@ -252,11 +304,14 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val SCREEN_TYPE_ALL_PREVIEW = "All Document Preview"
         private const val SCREEN_TYPE_DOCUMENT_INFO = "Captured Document Info"
         private const val CAPTURE_MODE = "CaptureMode"
+        private const val ACTUAL_USAGE = "ActualUsage"
         private const val TYPE = "Type"
         private const val KTP = "KTP"
         private const val SELFIE = "Selfie"
         private const val AUTO_CAPTURE = "Auto-Capture"
         private const val MANUAL_CAPTURE = "Manual"
+        private const val DEEPLEARN_AUTO_CAPTURE = "DeeplearnAutoCapture"
+        private const val CUSTOM = "Custom"
         private const val CAMERA_OPENED = "GP KYC Camera Opened"
         private const val IMAGE_CAPTURE_MODE_CHANGE_VIEWED = "GP KYC Image Capture Mode Change Viewed"
         private const val IMAGE_CAPTURE_MODE_CHANGED = "GP KYC Image Capture Mode Changed"

@@ -68,6 +68,7 @@ object GotoKycAnalytics {
     private const val ACTION_VIEW_REVIEW_KTP_PAGE = "view on kyc review ktp page"
     private const val ACTION_VIEW_REVIEW_SELFIE_PAGE = "view on kyc review selfie page"
     private const val ACTION_SCAN_KTP_IMAGE = "scan ktp image"
+    private const val ACTION_SCAN_SELFIE_IMAGE = "scan selfie image"
     private const val EVENT_CLICK_ACCOUNT = "clickAccount"
     private const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
     private const val KEY_TRACKER_ID = "trackerId"
@@ -720,6 +721,19 @@ object GotoKycAnalytics {
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43334)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    fun sendScanSelfieImage(statusScan: String, projectId: String) {
+        Tracker.Builder()
+            .setEvent("")
+            .setEventAction(ACTION_SCAN_SELFIE_IMAGE)
+            .setEventCategory(CATEGORY_SELFIE_PAGE)
+            .setEventLabel("$statusScan - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, "")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
