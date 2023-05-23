@@ -38,10 +38,4 @@ class PlayBroadcastSetupModule {
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
     }
-
-    @Provides
-    @PlayBroadcastSetupScope
-    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
-    }
 }
