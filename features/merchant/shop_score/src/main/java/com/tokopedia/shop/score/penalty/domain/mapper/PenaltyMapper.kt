@@ -70,9 +70,9 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
                             titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                             isDividerShow = true
                         )
                     )
