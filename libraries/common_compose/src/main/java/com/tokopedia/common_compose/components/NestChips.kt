@@ -191,35 +191,36 @@ private fun NestChipsLeft(
         .clip(if (left?.isCircle == true) CircleShape else RoundedCornerShape(8.dp))
         .requiredSize(leftSize)
 
-    when (left) {
-        is NestChipsLeft.Painter -> {
-            Image(
-                painter = left.painter,
-                colorFilter = left.color?.let { ColorFilter.tint(it) },
-                contentDescription = left.contentDescription,
-                modifier = leftModifier,
-            )
+    left?.let {
+        when (it) {
+            is NestChipsLeft.Painter -> {
+                Image(
+                    painter = it.painter,
+                    colorFilter = it.color?.let { color -> ColorFilter.tint(color) },
+                    contentDescription = it.contentDescription,
+                    modifier = leftModifier,
+                )
+            }
+            is NestChipsLeft.NetworkImage -> {
+                NestImage(
+                    imageUrl = it.url,
+                    modifier = leftModifier
+                )
+            }
+            is NestChipsLeft.Color -> {
+                Surface(
+                    modifier = leftModifier,
+                    color = it.color,
+                ) {}
+            }
         }
-        is NestChipsLeft.NetworkImage -> {
-            NestImage(
-                imageUrl = left.url,
-                modifier = leftModifier
-            )
-        }
-        is NestChipsLeft.Color -> {
-            Surface(
-                modifier = leftModifier,
-                color = left.color,
-            ) {}
-        }
-        else -> {}
     }
 }
 
 @Preview("All Chips Samples")
 @Preview("All Chips Samples (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun AllNewSample() {
+private fun AllSample() {
     val context = LocalContext.current
 
     var size by remember { mutableStateOf(NestChipsSize.Small) }
@@ -227,7 +228,11 @@ private fun AllNewSample() {
     var isDashed by remember { mutableStateOf(false) }
 
     NestTheme {
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
             Text("Size")
             Row {
                 NestChipsSize.values().forEach {
@@ -263,7 +268,9 @@ private fun AllNewSample() {
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
             ) {
                 NestChips(
                     text = "Chips Naked",
