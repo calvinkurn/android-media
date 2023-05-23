@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -212,13 +213,14 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) =
         object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
-            override fun onSeeAllClicked(headerName: String, appLink: String) {
+            override fun onSeeAllClicked(context: Context, headerName: String, appLink: String) {
                 homeLeftCarouselAtcCallback?.onSeeMoreClicked(
                     appLink = appLink,
                     channelId = element.id,
                     headerName = element.header.title
                 )
             }
+
             override fun onChannelExpired() {
                 homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(element.id)
             }
