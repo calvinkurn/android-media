@@ -107,18 +107,21 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
     )
 }
 
-fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false): List<ProductCardModel>{
+fun List<RecommendationItem>.toProductCardModels(
+    hasThreeDots: Boolean = false,
+    hasAtcButton: Boolean = true
+): List<ProductCardModel> {
     return map {
-        it.toProductCardModel(hasThreeDots = hasThreeDots)
+        it.toProductCardModel(hasThreeDots = hasThreeDots, hasAddToCartButton = hasAtcButton)
     }
 }
 
 fun RecommendationItem.toProductCardModel(
-        hasAddToCartButton: Boolean = false,
-        addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-        hasThreeDots: Boolean = false,
-        cardInteraction: Boolean = false
-) : ProductCardModel{
+    hasAddToCartButton: Boolean = false,
+    addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+    hasThreeDots: Boolean = false,
+    cardInteraction: Boolean = false
+): ProductCardModel {
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -128,51 +131,51 @@ fun RecommendationItem.toProductCardModel(
         nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
     }
     return ProductCardModel(
-            slashedPrice = slashedPrice,
-            productName = name,
-            formattedPrice = price,
-            productImageUrl = imageUrl,
-            isTopAds = isTopAds,
-            isWishlistVisible = true,
-            hasThreeDots = hasThreeDotsFinalValue,
-            isWishlisted = isWishlist,
-            discountPercentage = discountPercentage,
-            reviewCount = countReview,
-            ratingCount = rating,
-            shopLocation = location,
-            countSoldRating = ratingAverage,
-            shopBadgeList = badgesUrl.map {
-                ProductCardModel.ShopBadge(imageUrl = it)
-            },
-            freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = isFreeOngkirActive,
-                    imageUrl = freeOngkirImageUrl
-            ),
-            labelGroupList = labelGroupList.map {
-                ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl=it.imageUrl)
-            },
-            hasAddToCartButton = hasAddToCartButton,
-            addToCartButtonType = addToCartButtonType,
-            variant = if (isProductHasParentID()) variant else null,
-            nonVariant = if (isProductHasParentID()) null else nonVariant,
-            cardInteraction = cardInteraction,
+        slashedPrice = slashedPrice,
+        productName = name,
+        formattedPrice = price,
+        productImageUrl = imageUrl,
+        isTopAds = isTopAds,
+        isWishlistVisible = true,
+        hasThreeDots = hasThreeDotsFinalValue,
+        isWishlisted = isWishlist,
+        discountPercentage = discountPercentage,
+        reviewCount = countReview,
+        ratingCount = rating,
+        shopLocation = location,
+        countSoldRating = ratingAverage,
+        shopBadgeList = badgesUrl.map {
+            ProductCardModel.ShopBadge(imageUrl = it)
+        },
+        freeOngkir = ProductCardModel.FreeOngkir(
+            isActive = isFreeOngkirActive,
+            imageUrl = freeOngkirImageUrl
+        ),
+        labelGroupList = labelGroupList.map {
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+        },
+        hasAddToCartButton = hasAddToCartButton,
+        addToCartButtonType = addToCartButtonType,
+        variant = if (isProductHasParentID()) variant else null,
+        nonVariant = if (isProductHasParentID()) null else nonVariant,
+        cardInteraction = cardInteraction
     )
 }
 
-fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData>{
+fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData> {
     return map {
         it.toViewToViewItem()
     }
 }
 
-fun RecommendationItem.toViewToViewItem() : ViewToViewItemData {
+fun RecommendationItem.toViewToViewItem(): ViewToViewItemData {
     return ViewToViewItemData(
         name = name,
         price = price,
         imageUrl = imageUrl,
         departmentId = departmentId.toString(),
         url = url,
-        recommendationData = this,
+        recommendationData = this
     )
 }
 
@@ -182,8 +185,8 @@ val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 val DEFAULT_QTY_0: Int = 0
 val DEFAULT_QTY_1: Int = 1
 
-//tokonow validation
-private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
+// tokonow validation
+private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart(): Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC
 }
 
@@ -191,16 +194,16 @@ private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayout
     return if (this.isRecomCardShouldShowVariantOrCart()) DEFAULT_QTY_0 else DEFAULT_QTY_1
 }
 
-fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
+fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
     return this.any { it.position == LABEL_FULFILLMENT }
 }
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {
         return RecommendationBanner(
-                applink = appLandingPageLink,
-                imageUrl = it.apps,
-                thematicID = thematicID
+            applink = appLandingPageLink,
+            imageUrl = it.apps,
+            thematicID = thematicID
         )
     }
     return null

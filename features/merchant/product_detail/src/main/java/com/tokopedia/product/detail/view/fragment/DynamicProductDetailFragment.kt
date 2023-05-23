@@ -1663,6 +1663,15 @@ open class DynamicProductDetailFragment :
         goToApplink(appLink)
     }
 
+    override fun onRecomAddToCartClick(
+        recommendationWidget: RecommendationWidget,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    ) {
+        viewModel.atcRecomNonVariant(recomItem, recomItem.minOrder)
+    }
+
     override fun onRecomAddToCartNonVariantQuantityChangedClick(
         recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,
@@ -2560,7 +2569,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeATCTokonowData() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
+        viewLifecycleOwner.observe(viewModel.atcRecom) { data ->
             data.doSuccessOrFail({
                 if (it.data.isNotEmpty()) {
                     view?.showToasterSuccess(it.data)
@@ -2576,7 +2585,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeATCRecomSendTracker() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
+        viewLifecycleOwner.observe(viewModel.atcRecomTracker) { data ->
             data.doSuccessOrFail({
                 DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
                     it.data,
@@ -3094,7 +3103,7 @@ open class DynamicProductDetailFragment :
         removeEndlessScrollListener()
     }
 
-    private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
+    private fun showAtcSuccessToaster(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull().orEmpty(),
             ctaText = getString(R.string.label_oke_pdp)
@@ -3106,7 +3115,7 @@ open class DynamicProductDetailFragment :
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            onSuccessAtcTokoNow(result)
+            showAtcSuccessToaster(result)
             return
         }
 
