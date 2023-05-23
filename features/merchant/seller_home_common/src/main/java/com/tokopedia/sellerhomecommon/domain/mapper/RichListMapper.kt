@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetRichListDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.RichListSectionItemsModel
@@ -31,10 +32,6 @@ class RichListMapper @Inject constructor(
         private const val SECTION_TYPE_RANK = "simpleRank"
         private const val SECTION_TYPE_CAPTION = "tileBox"
         private const val SECTION_TYPE_TICKER = "ticker"
-        private const val START_DELIMITER_URL = "='"
-        private const val END_DELIMITER_URL = "'>"
-        private const val START_DELIMITER_CTA_TEXT = ">"
-        private const val END_DELIMITER_CTA_TEXT = "<"
     }
 
     override fun mapRemoteDataToUiData(
@@ -87,12 +84,16 @@ class RichListMapper @Inject constructor(
     }
 
     private fun getURL(caption: String): String {
-        return caption.substringAfter(START_DELIMITER_URL).substringBefore(END_DELIMITER_URL)
+        return SellerHomeCommonUtils.extractUrls(caption).firstOrNull().orEmpty()
     }
 
     private fun getCtaText(caption: String): String {
-        return caption.substringAfter(START_DELIMITER_CTA_TEXT)
-            .substringBefore(END_DELIMITER_CTA_TEXT)
+        runCatching {
+            val regex = "href=.*'>(.*?)<\\/a>".toRegex()
+            val result = regex.find(caption)
+            return result?.groupValues?.getOrNull(Int.ONE).orEmpty()
+        }
+        return String.EMPTY
     }
 
     private fun getTickerItems(items: List<RichListSectionItemsModel>): List<BaseRichListItem> {
