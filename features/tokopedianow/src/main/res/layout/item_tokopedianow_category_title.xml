@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="15dp"
-    android:paddingBottom="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,8 +10,8 @@
         android:id="@+id/tp_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toStartOf="@id/tp_another_category"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,5 +34,17 @@
         app:layout_constraintTop_toTopOf="@+id/tp_title"
         app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/rounded_top_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
+        android:visibility="visible"
+        android:src="@color/Unify_Background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_title"
+        app:shapeAppearanceOverlay="@style/roundedTopCornerCategoryNavigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
