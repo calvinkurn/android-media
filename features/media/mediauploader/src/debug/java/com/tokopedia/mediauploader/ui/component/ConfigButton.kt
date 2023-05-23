@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.ui.component
 
-import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -8,21 +7,17 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.picker.common.MediaPicker
 
 @Composable
-inline fun BrowseFileButton(
+inline fun ConfigButton(
     modifier: Modifier = Modifier,
-    crossinline onClick: (Intent) -> Unit
+    crossinline onClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Button(
         shape = RoundedCornerShape(65.dp),
         colors = ButtonDefaults.buttonColors(
@@ -31,15 +26,11 @@ inline fun BrowseFileButton(
         modifier = modifier
             .padding(6.dp),
         onClick = {
-            onClick(MediaPicker.intent(context) {
-                singleSelectionMode()
-                maxVideoFileSize(262144000)
-                maxVideoDuration(60000)
-            })
+            onClick()
         }
     ) {
         Text(
-            text = "Browse",
+            text = "Config",
             fontWeight = FontWeight.Bold,
             fontSize = 10.sp,
             modifier = Modifier
@@ -49,6 +40,6 @@ inline fun BrowseFileButton(
 
 @Preview
 @Composable
-fun BrowseFileButtonPreview() {
-    BrowseFileButton(onClick = {})
+fun ConfigButtonPreview() {
+    ConfigButton(onClick = {})
 }

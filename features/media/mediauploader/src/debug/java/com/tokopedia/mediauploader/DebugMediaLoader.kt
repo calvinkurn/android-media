@@ -26,6 +26,10 @@ data class DebugMediaLoaderState(
         }
     }
 
+    fun clear() {
+        logs.clear()
+    }
+
     fun updateProgress(type: ProgressType, value: Int) {
         progress = Pair(type, value)
     }

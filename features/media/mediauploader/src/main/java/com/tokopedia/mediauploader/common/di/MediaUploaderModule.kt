@@ -1,18 +1,17 @@
 package com.tokopedia.mediauploader.common.di
 
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
-import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
-import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
-import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
 import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
@@ -80,12 +79,6 @@ abstract class MediaUploaderModule {
     abstract fun provideVideoCompressionRepository(
         impl: VideoCompressionRepositoryImpl
     ): VideoCompressionRepository
-
-    @Binds
-    @MediaUploaderQualifier
-    abstract fun provideVideoCompressionCacheManager(
-        impl: TrackerCacheManager
-    ): TrackerCacheManager
 
     @Binds
     @MediaUploaderQualifier

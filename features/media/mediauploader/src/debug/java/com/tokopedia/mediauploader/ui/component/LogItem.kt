@@ -25,9 +25,9 @@ import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.mediauploader.LogType
 
 @Composable
-fun LogItem(type: String, content: String) {
+fun LogItem(type: String, content: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .border(border = BorderStroke(0.5.dp, NestTheme.colors.NN._300), shape = RoundedCornerShape(8.dp))
             .background(color = Color.White, shape = RoundedCornerShape(8.dp))
             .fillMaxWidth()
@@ -63,20 +63,12 @@ fun LogItem(type: String, content: String) {
 @Preview(showBackground = true)
 @Composable
 fun LogItemPreview() {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        item {
-            LogItem(
-                type = LogType.map(LogType.CompressInfo),
-                content = buildString {
-                    append("foo: bar")
-                    append("\n")
-                    append("loren: ipsum")
-                }
-            )
+    LogItem(
+        type = LogType.map(LogType.CompressInfo),
+        content = buildString {
+            append("foo: bar")
+            append("\n")
+            append("loren: ipsum")
         }
-    }
+    )
 }
