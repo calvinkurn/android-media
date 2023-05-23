@@ -7,12 +7,9 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -37,7 +34,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -87,8 +83,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
     private val calculator: OrderSummaryPageCalculator,
     private val userSession: UserSessionInterface,
-    private val orderSummaryAnalytics: OrderSummaryAnalytics,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+    private val orderSummaryAnalytics: OrderSummaryAnalytics
 ) : BaseViewModel(executorDispatchers.immediate) {
 
     init {
@@ -121,8 +116,6 @@ class OrderSummaryPageViewModel @Inject constructor(
     val globalEvent: OccMutableLiveData<OccGlobalEvent> = OccMutableLiveData(OccGlobalEvent.Normal)
 
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
-
-    val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
 
     val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> = OccMutableLiveData(UploadPrescriptionUiModel())
 
@@ -1088,18 +1081,6 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
-    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-            },
-            {
-                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
-    }
-
     fun generateGoCicilInstallmentRequest(orderCost: OrderCost): GoCicilInstallmentRequest {
         return paymentProcessor.get().generateGoCicilInstallmentRequest(
             orderPayment.value,
@@ -1287,7 +1268,6 @@ class OrderSummaryPageViewModel @Inject constructor(
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         dynamicPaymentFeeJob?.cancel()
-        eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }
 

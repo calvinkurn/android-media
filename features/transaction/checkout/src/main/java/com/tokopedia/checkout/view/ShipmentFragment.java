@@ -1069,18 +1069,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-        if (isEligibleForRevampAna) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
-            intent.putExtra(KERO_TOKEN, token);
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
-            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
-            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-        } else {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-            intent.putExtra(KERO_TOKEN, token);
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
-            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
+        intent.putExtra(KERO_TOKEN, token);
+        intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
+        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
     }
 
     @Override

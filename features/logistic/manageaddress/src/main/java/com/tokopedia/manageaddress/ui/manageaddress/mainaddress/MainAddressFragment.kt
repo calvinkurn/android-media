@@ -28,8 +28,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -160,7 +158,6 @@ class MainAddressFragment :
         observerGetChosenAddress()
         observerSetChosenAddress()
         observerRemovedAddress()
-        observerEligibleForAddressFeature()
     }
 
     private fun initArguments() {
@@ -431,34 +428,6 @@ class MainAddressFragment :
         }
     }
 
-    private fun observerEligibleForAddressFeature() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->
-                                goToEditAddress(
-                                    it.data.eligible,
-                                    recipientAddressModel
-                                )
-                            }
-                        }
-                    }
-                }
-                is Fail -> {
-                    showToaster(
-                        message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
-                        toastType = Toaster.TYPE_ERROR
-                    )
-                }
-            }
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
@@ -499,7 +468,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun goToAddAddress(eligible: Boolean) {
+    private fun goToAddAddress() {
         val token = viewModel.token
         val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
             SCREEN_NAME_CART_EXISTING_USER
@@ -508,20 +477,12 @@ class MainAddressFragment :
         } else {
             SCREEN_NAME_USER_NEW
         }
-        if (eligible) {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        } else {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        }
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(KERO_TOKEN, token)
+        intent.putExtra(EXTRA_REF, screenName)
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
     }
 
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
@@ -645,10 +606,10 @@ class MainAddressFragment :
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         if (data == null) {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            goToAddAddress()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            viewModel.checkUserEligibilityForEditAddressRevamp(data)
+            goToEditAddress(true, data)
         }
     }
 

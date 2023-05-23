@@ -42,7 +42,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -529,31 +528,28 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToPinpointActivity(lat: Double?, long: Double?, warehouseDataModel: Warehouse?) {
         context?.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
-                // go to pinpoint
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                    if (lat != null && long != null) {
-                        putDouble(AddressConstant.EXTRA_LAT, lat)
-                        putDouble(AddressConstant.EXTRA_LONG, long)
-                    }
+            // go to pinpoint
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                if (lat != null && long != null) {
+                    putDouble(AddressConstant.EXTRA_LAT, lat)
+                    putDouble(AddressConstant.EXTRA_LONG, long)
                 }
-                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                    pinpointPageResult.launch(this)
-                }
-            } else {
-                val intent = RouteManager.getIntent(
-                    activity,
-                    ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-                )
-                intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-                intent.putExtra(EXTRA_LAT, lat)
-                intent.putExtra(EXTRA_LONG, long)
-                intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
-                intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
-                pinpointPageResult.launch(intent)
             }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                pinpointPageResult.launch(this)
+            }
+            val intent = RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
+            )
+            intent.putExtra(EXTRA_IS_FULL_FLOW, false)
+            intent.putExtra(EXTRA_LAT, lat)
+            intent.putExtra(EXTRA_LONG, long)
+            intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
+            intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
+            pinpointPageResult.launch(intent)
         }
     }
 

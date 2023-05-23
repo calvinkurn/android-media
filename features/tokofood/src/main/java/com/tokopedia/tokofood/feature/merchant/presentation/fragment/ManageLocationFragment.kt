@@ -172,38 +172,20 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         }
     }
 
+    private fun navigateAddAddress() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
+        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+    }
+
     private fun observeLiveData() {
         observe(viewModel.errorMessage) { message ->
             showToaster(message)
         }
-        observe(viewModel.eligibleForAnaRevamp) {
-            when (it) {
-                is Success -> {
-                    if (it.data.eligible) {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-                    } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-                    }
-                }
-                is Fail -> {
-                    showToaster(it.throwable.message)
-                    logExceptionToServerLogger(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_FOR_ADDRESS,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_FOR_ADDRESS
-                    )
-                }
-            }
-        }
+
         observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) {
                 getChooseAddress()
@@ -288,7 +270,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         binding?.tpgLocationBsDesc?.text = desc
         binding?.btnLocationBsCta?.text = context.getString(R.string.home_no_address_button)
         binding?.btnLocationBsCta?.setOnClickListener {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            navigateAddAddress()
         }
         binding?.tpgLocationBsToHome?.setOnClickListener { navigateToHome() }
     }

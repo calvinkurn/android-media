@@ -54,7 +54,6 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
-import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
@@ -314,9 +313,6 @@ class SearchResultFragment :
 
     override fun onOOCActionButtonClicked(type: Int) {
         when (type) {
-            MerchantSearchOOCUiModel.NO_ADDRESS -> {
-                navigateToAddAddress()
-            }
             MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
                 navigateToAddAddressRevamp()
             }
@@ -759,20 +755,6 @@ class SearchResultFragment :
             )
         }
         refreshAddressData()
-    }
-
-    private fun navigateToAddAddress() {
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-        )
-        intent.putExtra(
-            ChooseAddressBottomSheet.EXTRA_REF,
-            ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-        )
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
     }
 
     private fun navigateToAddAddressRevamp() {
