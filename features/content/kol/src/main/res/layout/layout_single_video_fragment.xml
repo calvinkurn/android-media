@@ -16,7 +16,6 @@
             android:id="@+id/ivClose"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_close_white_24"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/kol_close_btn_content_desc" />
