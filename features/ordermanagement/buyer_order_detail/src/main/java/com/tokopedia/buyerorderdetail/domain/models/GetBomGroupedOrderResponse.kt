@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-
 import com.google.gson.annotations.SerializedName
 
 data class GetBomGroupedOrderResponse(
@@ -11,14 +10,14 @@ data class GetBomGroupedOrderResponse(
         @SerializedName("orders")
         val orders: List<Order> = listOf(),
         @SerializedName("ticker")
-        val ticker: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo = GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo(),
+        val ticker: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo? = GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo(),
         @SerializedName("title")
         val title: String = "",
         @SerializedName("tx_id")
         val txId: String = "0"
     ) {
         data class Order(
-            @SerializedName("button")
+            @SerializedName("buttons")
             val button: Button = Button(),
             @SerializedName("details")
             val details: Details = Details(),
@@ -48,13 +47,13 @@ data class GetBomGroupedOrderResponse(
                 @SerializedName("addon_label")
                 val addonLabel: String = "",
                 @SerializedName("bundle")
-                val bundle: List<Bundle> = listOf(),
+                val bundle: List<Bundle>? = listOf(),
                 @SerializedName("bundle_icon")
                 val bundleIcon: String = "",
                 @SerializedName("non_bundle")
-                val nonBundle: List<NonBundle> = listOf(),
+                val nonBundle: List<NonBundle>? = listOf(),
                 @SerializedName("order_addons")
-                val orderAddons: List<Addon> = listOf()
+                val orderAddons: List<Addon>? = listOf()
             ) {
                 data class Bundle(
                     @SerializedName("bundle_id")
@@ -84,7 +83,7 @@ data class GetBomGroupedOrderResponse(
 
                 data class NonBundle(
                     @SerializedName("addon")
-                    val addon: List<Addon> = listOf(),
+                    val addon: List<Addon>? = listOf(),
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
                     @SerializedName("price_text")

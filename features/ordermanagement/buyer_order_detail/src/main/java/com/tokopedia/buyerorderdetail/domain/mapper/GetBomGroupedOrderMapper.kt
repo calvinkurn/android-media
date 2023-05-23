@@ -1,9 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
-import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.domain.models.GetBomGroupedOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
@@ -13,54 +11,53 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
-//Shop A -> List of OwocSectionGroupUiModel
-//owocProductListUiModel ->  OwocProductListUiModel
-//bundle list = dianggap 1
-//non bundle = list of on bundle
-//add on
 class GetBomGroupedOrderMapper @Inject constructor() {
 
     fun mapToOwocGroupedOrderWrapper(getBomGroupedOrder: GetBomGroupedOrderResponse.GetBomGroupedOrder): OwocGroupedOrderWrapper {
-
         val owocGroupedOrderList = mutableListOf<BaseOwocSectionGroupUiModel>().apply {
-            add(mapToTickerUiModel(getBomGroupedOrder.ticker))
-            addAll(mapToOwocBaseOwocSectionGroupUiModel(
-                getBomGroupedOrder.orders
-            ))
+            mapToTickerUiModel(getBomGroupedOrder.ticker)?.let {
+                add(it)
+            }
+            addAll(
+                mapToOwocBaseOwocSectionGroupUiModel(
+                    getBomGroupedOrder.orders
+                )
+            )
         }
 
         return OwocGroupedOrderWrapper(owocGroupedOrderList, getBomGroupedOrder.title)
     }
 
-    private fun mapToTickerUiModel(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo): OwocTickerUiModel {
-        return OwocTickerUiModel(
-            actionKey = tickerInfo.actionKey,
-            actionText = tickerInfo.actionText,
-            actionUrl = tickerInfo.actionUrl,
-            description = tickerInfo.text,
-            type = tickerInfo.type
-        )
+    private fun mapToTickerUiModel(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo?): OwocTickerUiModel? {
+        return tickerInfo?.let {
+            OwocTickerUiModel(
+                actionKey = tickerInfo.actionKey,
+                actionText = tickerInfo.actionText,
+                actionUrl = tickerInfo.actionUrl,
+                description = tickerInfo.text,
+                type = tickerInfo.type
+            )
+        }
     }
 
     private fun mapToOwocBaseOwocSectionGroupUiModel(
         orders: List<GetBomGroupedOrderResponse.GetBomGroupedOrder.Order>
     ): List<BaseOwocSectionGroupUiModel> {
-
         return orders.mapIndexed { index, it ->
             OwocSectionGroupUiModel(
                 baseOwocProductListUiModel = mutableListOf<BaseOwocVisitableUiModel>().apply {
-
                     add(mapToProductListHeaderUiModel(it))
 
                     val (productBundlingListToShow, productBundlingRest) = mapToSplitProductBundleList(
                         it
                     )
+
                     var remainingSlot = if (productBundlingListToShow.size >= MAX_ORDER_ITEMS) {
                         Int.ZERO
                     } else {
@@ -91,10 +88,8 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                         remainingSlot
                     )
 
-                    remainingSlot = if (addonListToShow.addonsItemList.size >= remainingSlot) {
-                        Int.ZERO
-                    } else {
-                        remainingSlot - addonListToShow.addonsItemList.size
+                    if (addonListToShow.addonsItemList.isNotEmpty()) {
+                        add(addonListToShow)
                     }
 
                     val groupedProductListUiModelRest = mutableListOf<BaseOwocVisitableUiModel>().apply {
@@ -117,7 +112,6 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                         )
                     }
 
-
                     if (index < orders.size - Int.ONE) {
                         add(OwocThickDividerUiModel())
                     }
@@ -129,15 +123,14 @@ class GetBomGroupedOrderMapper @Inject constructor() {
     private fun mapToSplitProductBundleList(
         order: GetBomGroupedOrderResponse.GetBomGroupedOrder.Order
     ): Pair<List<OwocProductListUiModel.ProductBundlingUiModel>, List<OwocProductListUiModel.ProductBundlingUiModel>> {
-
         val orderDetails = order.details
 
-        val (productBundlingListToShow, productBundlingRest) = if (orderDetails.bundle.size >= MAX_ORDER_ITEMS) {
-            orderDetails.bundle.take(MAX_ORDER_ITEMS) to orderDetails.bundle.slice(
+        val (productBundlingListToShow, productBundlingRest) = if (orderDetails.bundle?.size.orZero() >= MAX_ORDER_ITEMS) {
+            orderDetails.bundle?.take(MAX_ORDER_ITEMS).orEmpty() to orderDetails.bundle?.slice(
                 MAX_ORDER_ITEMS..orderDetails.bundle.size - Int.ONE
-            )
+            ).orEmpty()
         } else {
-            orderDetails.bundle to emptyList()
+            orderDetails.bundle.orEmpty() to emptyList()
         }
 
         val mapProductBundlingListToShow = mapToProductBundleListUiModel(
@@ -164,15 +157,14 @@ class GetBomGroupedOrderMapper @Inject constructor() {
         remainingOrderTotal: Int
     ): Pair<List<OwocProductListUiModel.ProductUiModel>,
         List<OwocProductListUiModel.ProductUiModel>> {
-
         val orderDetails = order.details
 
-        val (productNonBundlingListToShow, productNonBundlingListRest) = if (orderDetails.nonBundle.size >= remainingOrderTotal) {
-            orderDetails.nonBundle.take(remainingOrderTotal) to orderDetails.nonBundle.slice(
+        val (productNonBundlingListToShow, productNonBundlingListRest) = if (orderDetails.nonBundle?.size.orZero() >= remainingOrderTotal) {
+            orderDetails.nonBundle?.take(remainingOrderTotal).orEmpty() to orderDetails.nonBundle?.slice(
                 remainingOrderTotal..orderDetails.nonBundle.size - Int.ONE
-            )
+            ).orEmpty()
         } else {
-            orderDetails.nonBundle to emptyList()
+            orderDetails.nonBundle.orEmpty() to emptyList()
         }
 
         val mapProductNonBundlingListToShow = mapToProductNonBundleItemUiModel(
@@ -195,12 +187,11 @@ class GetBomGroupedOrderMapper @Inject constructor() {
     private fun mapToSplitAddonList(
         order: GetBomGroupedOrderResponse.GetBomGroupedOrder.Order,
         remainingOrderTotal: Int
-    ): Pair<OwocAddonsListUiModel, OwocAddonsListUiModel>{
-
+    ): Pair<OwocAddonsListUiModel, OwocAddonsListUiModel> {
         val orderDetails = order.details
 
-        val (addonListToShow, addonListRest) = if (orderDetails.orderAddons.size >= remainingOrderTotal) {
-            orderDetails.orderAddons.take(remainingOrderTotal) to orderDetails.orderAddons.slice(
+        val (addonListToShow, addonListRest) = if (orderDetails.orderAddons?.size.orZero() >= remainingOrderTotal) {
+            orderDetails.orderAddons?.take(remainingOrderTotal) to orderDetails.orderAddons?.slice(
                 remainingOrderTotal..orderDetails.orderAddons.size - Int.ONE
             )
         } else {
@@ -208,9 +199,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
         }
 
         val mapAddonListToShow = mapToAddonsSection(
-                addonLabel = orderDetails.addonLabel,
-                addonIcon = orderDetails.addonIcon,
-                addonList = addonListToShow
+            addonLabel = orderDetails.addonLabel,
+            addonIcon = orderDetails.addonIcon,
+            addonList = addonListToShow
         )
 
         val mapAddonListToRest = mapToAddonsSection(
@@ -265,7 +256,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
         orderId: String,
         addonLabel: String,
         addonIcon: String,
-        detailsNonBundle: List<GetBomGroupedOrderResponse.GetBomGroupedOrder.Order.Details.NonBundle>,
+        detailsNonBundle: List<GetBomGroupedOrderResponse.GetBomGroupedOrder.Order.Details.NonBundle>
     ): List<OwocProductListUiModel.ProductUiModel> {
         return detailsNonBundle.map {
             OwocProductListUiModel.ProductUiModel(
@@ -297,7 +288,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 productId = it.productId,
                 productName = it.productName,
                 productThumbnailUrl = it.thumbnail,
-                quantity = it.quantity,
+                quantity = it.quantity
             )
         }
     }
