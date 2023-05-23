@@ -194,7 +194,7 @@ object TrackingUtil {
         action: String,
         trackerId: String = "",
         eventLabel: String = "",
-        modify: ((MutableMap<String, Any>) -> Unit) = {}
+        modifier: ((MutableMap<String, Any>) -> Unit) = {}
     ) {
         val events = mutableMapOf<String, Any>(
             TrackerConstant.EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PG,
@@ -204,7 +204,7 @@ object TrackingUtil {
             TrackingConstant.Hit.TRACKER_ID to trackerId,
             TrackerConstant.BUSINESS_UNIT to ProductTrackingConstant.Category.PDP,
             TrackerConstant.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
-        ).apply { modify.invoke(this) }
+        ).apply { modifier.invoke(this) }
 
         addComponentTracker(
             mapEvent = events,

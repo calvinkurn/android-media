@@ -5,6 +5,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
@@ -39,6 +40,7 @@ data class PlayBroadcastUiState(
     val quizBottomSheetUiState: QuizBottomSheetUiState,
     val selectedContentAccount: ContentAccountUiModel,
     val accountStateInfo: AccountStateInfo,
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
     val menuList: List<DynamicPreparationMenu>,
     val title: PlayTitleUiModel,
     val cover: PlayCoverUiModel,
@@ -50,6 +52,7 @@ data class PlayBroadcastUiState(
                 channel = PlayChannelUiState(
                     streamAllowed = true,
                     shortVideoAllowed = false,
+                    hasContent = false,
                     tnc = emptyList(),
                 ),
                 pinnedMessage = PinnedMessageUiState(
@@ -68,6 +71,7 @@ data class PlayBroadcastUiState(
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
                 selectedContentAccount = ContentAccountUiModel.Empty,
                 accountStateInfo = AccountStateInfo(),
+                bannerPreparation = emptyList(),
                 menuList = emptyList(),
                 title = PlayTitleUiModel.NoTitle,
                 cover = PlayCoverUiModel.empty(),
@@ -79,6 +83,7 @@ data class PlayBroadcastUiState(
 data class PlayChannelUiState(
     val streamAllowed: Boolean,
     val shortVideoAllowed: Boolean,
+    val hasContent: Boolean,
     val tnc: List<TermsAndConditionUiModel>,
 )
 

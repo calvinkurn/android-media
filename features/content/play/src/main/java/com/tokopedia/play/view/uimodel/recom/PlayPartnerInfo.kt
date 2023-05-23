@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.uimodel.recom
 
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PartnerType
 
 /**
  * Created by jegul on 21/01/21

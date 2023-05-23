@@ -58,7 +58,7 @@ class ProductReportActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
-                LaunchedEffect(key1 = viewModel.uiEffect, block = {
+                LaunchedEffect(key1 = false, block = {
                     viewModel.uiEffect.collectLatest {
                         when (it) {
                             is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()

@@ -31,19 +31,24 @@ class FeedExoPlayer(val context: Context) {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 val isPlaying = playWhenReady && playbackState == Player.STATE_READY
                 val isReadyToPlay = !playWhenReady && playbackState == Player.STATE_READY
+                val isBuffering = playbackState == Player.STATE_BUFFERING
                 val isInitialLoad =
                     (playWhenReady && playbackState != Player.STATE_READY) || (!playWhenReady && playbackState != Player.STATE_READY)
 
                 when {
                     isPlaying || playbackState == Player.STATE_ENDED -> {
-                        videoStateListener?.onVideoReadyToPlay()
+                        videoStateListener?.onVideoReadyToPlay(playWhenReady)
                     }
                     isReadyToPlay -> {
-                        videoStateListener?.onVideoReadyToPlay()
+                        videoStateListener?.onVideoReadyToPlay(false)
+                    }
+                    isBuffering -> {
+                        videoStateListener?.onBuffering()
                     }
                     isInitialLoad -> {
                         videoStateListener?.onInitialStateLoading()
                     }
+
                 }
                 if (!exoPlayer.playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION) {
                     //Track only when video stop
@@ -68,18 +73,18 @@ class FeedExoPlayer(val context: Context) {
         this.videoStateListener = videoStateListener
     }
 
-    fun start(videoUrl: String, isMute: Boolean) {
+    fun start(videoUrl: String, isMute: Boolean, playWhenReady: Boolean = true) {
         if (videoUrl.isBlank()) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
         toggleVideoVolume(isMute)
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
-        exoPlayer.playWhenReady = true
+        exoPlayer.playWhenReady = playWhenReady
         exoPlayer.prepare(mediaSource, true, false)
     }
 
-    fun resume() {
-        reset()
+    fun resume(shouldReset: Boolean = true) {
+        if (shouldReset) reset()
         exoPlayer.playWhenReady = true
     }
     fun replay() {
@@ -98,6 +103,10 @@ class FeedExoPlayer(val context: Context) {
     }
 
     fun destroy() {
+        exoPlayer.release()
+    }
+
+    fun release() {
         exoPlayer.release()
     }
 
@@ -136,6 +145,8 @@ class FeedExoPlayer(val context: Context) {
 
 interface VideoStateListener {
     fun onInitialStateLoading()
-    fun onVideoReadyToPlay()
+    fun onVideoReadyToPlay(isPlaying: Boolean)
+
+    fun onBuffering() {}
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long) //Tracker Purpose
 }
