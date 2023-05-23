@@ -1,4 +1,4 @@
-package com.tokopedia.chooseaccount.viewmodel
+package com.tokopedia.chooseaccount.view.ocl
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,23 +26,23 @@ class OclChooseAccountViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _mainLoader = SingleLiveEvent<Boolean>()
+    private val _mainLoader = MutableLiveData<Boolean>()
     val mainLoader: LiveData<Boolean> = _mainLoader
 
     private val _toasterError = SingleLiveEvent<String>()
     val toasterError: LiveData<String> = _toasterError
 
-    private val _navigateToNormalLogin = SingleLiveEvent<Boolean>()
-    val navigateToNormalLogin: LiveData<Boolean> = _navigateToNormalLogin
+    private val _navigateToNormalLogin = SingleLiveEvent<Unit>()
+    val navigateToNormalLogin: LiveData<Unit> = _navigateToNormalLogin
 
     private val _oclAccounts = MutableLiveData<ArrayList<OclAccount>>()
     val oclAccounts: LiveData<ArrayList<OclAccount>> = _oclAccounts
 
-    private val _navigateToSuccessPage = SingleLiveEvent<Boolean>()
-    val navigateToSuccessPage: LiveData<Boolean> = _navigateToSuccessPage
+    private val _navigateToSuccessPage = SingleLiveEvent<Unit>()
+    val navigateToSuccessPage: LiveData<Unit> = _navigateToSuccessPage
 
-    private val _loginFailedResponse = SingleLiveEvent<String>()
-    val loginFailedResponse: LiveData<String> = _loginFailedResponse
+    private val _loginFailedToaster = SingleLiveEvent<String>()
+    val loginFailedToaster: LiveData<String> = _loginFailedToaster
 
     fun getOclAccounts() {
         _mainLoader.value = true
@@ -57,7 +57,7 @@ class OclChooseAccountViewModel @Inject constructor(
                     _oclAccounts.value = result.users
                     _mainLoader.value = false
                 } else {
-                    _navigateToNormalLogin.value = true
+                    _navigateToNormalLogin.value = Unit
                 }
             } catch (e: Exception) {
                 _mainLoader.value = false
@@ -74,9 +74,9 @@ class OclChooseAccountViewModel @Inject constructor(
                 if (result.accessToken.isNotEmpty()) {
                     getUserInfoAndSaveSessionUseCase(Unit)
                 }
-                _navigateToSuccessPage.value = true
+                _navigateToSuccessPage.value = Unit
             } catch (e: Exception) {
-                _loginFailedResponse.value = e.message
+                _loginFailedToaster.value = e.message
             }
         }
     }
@@ -92,7 +92,7 @@ class OclChooseAccountViewModel @Inject constructor(
                 val newItem = _oclAccounts.value
                 newItem?.remove(user)
                 if (newItem?.isEmpty() == true) {
-                    _navigateToNormalLogin.value = true
+                    _navigateToNormalLogin.value = Unit
                 } else {
                     newItem?.let {
                         _oclAccounts.value = it

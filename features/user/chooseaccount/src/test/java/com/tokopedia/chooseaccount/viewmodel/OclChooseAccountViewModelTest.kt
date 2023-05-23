@@ -6,6 +6,7 @@ import com.tokopedia.chooseaccount.data.GetOclAccountData
 import com.tokopedia.chooseaccount.data.OclAccount
 import com.tokopedia.chooseaccount.domain.usecase.DeleteOclAccountUseCase
 import com.tokopedia.chooseaccount.domain.usecase.GetOclAccountUseCase
+import com.tokopedia.chooseaccount.view.ocl.OclChooseAccountViewModel
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
@@ -68,7 +69,7 @@ class OclChooseAccountViewModelTest {
         verify {
             oclPreference.storeToken("abc123")
         }
-        assert(viewModel.navigateToNormalLogin.getOrAwaitValue())
+        assert(viewModel.navigateToNormalLogin.getOrAwaitValue() == Unit)
     }
 
     @Test
@@ -105,7 +106,7 @@ class OclChooseAccountViewModelTest {
         viewModel.loginOcl("abc123")
 
         coVerify { getUserInfoAndSaveSessionUseCase(Unit) }
-        assert(viewModel.navigateToSuccessPage.getOrAwaitValue())
+        assert(viewModel.navigateToSuccessPage.getOrAwaitValue() == Unit)
     }
 
     @Test
@@ -116,7 +117,7 @@ class OclChooseAccountViewModelTest {
         viewModel.loginOcl("abc123")
 
         coVerify(exactly = 0) { getUserInfoAndSaveSessionUseCase(Unit) }
-        assert(viewModel.navigateToSuccessPage.getOrAwaitValue())
+        assert(viewModel.navigateToSuccessPage.getOrAwaitValue() == Unit)
     }
 
     @Test
@@ -126,7 +127,7 @@ class OclChooseAccountViewModelTest {
         coEvery { loginOclUseCase(any()) } throws mockException
 
         viewModel.loginOcl("abc123")
-        assert(viewModel.loginFailedResponse.getOrAwaitValue() == "Error")
+        assert(viewModel.loginFailedToaster.getOrAwaitValue() == "Error")
     }
 
     @Test
@@ -145,7 +146,7 @@ class OclChooseAccountViewModelTest {
         viewModel.deleteAccount(deletedAcc)
 
         verify { oclPreference.storeToken("abc123") }
-        assert(viewModel.navigateToNormalLogin.getOrAwaitValue())
+        assert(viewModel.navigateToNormalLogin.getOrAwaitValue() == Unit)
     }
 
     @Test

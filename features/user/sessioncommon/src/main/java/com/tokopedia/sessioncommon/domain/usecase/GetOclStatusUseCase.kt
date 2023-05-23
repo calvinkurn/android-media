@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.sessioncommon.data.ocl.GetOclStatusParam
 import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.data.ocl.OclStatusResponse
 import javax.inject.Inject
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class GetOclStatusUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<GetOclStatusParam, OclStatus>(dispatcher.io) {
+) : CoroutineUseCase<String, OclStatus>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         query getOclStatus(${'$'}ocl_jwt_token: String!){
@@ -25,8 +24,9 @@ class GetOclStatusUseCase @Inject constructor(
         }
         """.trimIndent()
 
-    override suspend fun execute(params: GetOclStatusParam): OclStatus {
-        val result: OclStatusResponse = repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): OclStatus {
+        val mapParam = mapOf("ocl_jwt_token" to params)
+        val result: OclStatusResponse = repository.request(graphqlQuery(), mapParam)
         return result.data
     }
 }

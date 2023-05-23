@@ -7,9 +7,26 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
+import com.tokopedia.home_account.data.model.SafeModeParam
+import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
-import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
+import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetSafeModeUseCase
+import com.tokopedia.home_account.domain.usecase.GetSaldoBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.GetTokopointsBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
+import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
+import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
+import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,10 +38,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.data.ocl.GetOclStatusParam
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.ocl.OclStatus
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -159,8 +174,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getOclStatus() {
         launch {
             try {
-                val param = GetOclStatusParam(token = oclPreference.getToken())
-                val result = getOclStatusUseCase(param)
+                val result = getOclStatusUseCase(oclPreference.getToken())
                 _getOclStatus.value = result
             } catch (ignored: Exception) { }
         }

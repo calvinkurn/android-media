@@ -186,6 +186,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
+    @Inject lateinit var oclUtils: OclUtils
+
     var viewBinding by autoClearedNullable<FragmentLoginWithPhoneBinding>()
 
     private var source: String = ""
@@ -342,7 +344,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableDirectBiometric = isEnableDirectBiometric()
         refreshRolloutVariant()
 
-        if(isOclEnabled()) {
+        if (isOclEnabled()) {
             goToOclChooseAccount()
         }
     }
@@ -350,7 +352,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     fun isOclEnabled(): Boolean {
         return oclPreferences.getToken().isNotEmpty() &&
                 arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
-                OclUtils.isOclEnabled()
+            oclUtils.isOclEnabled()
     }
 
     open fun refreshRolloutVariant() {
@@ -1677,8 +1679,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL && resultCode == Activity.RESULT_OK) {
                 viewModel.getUserInfo()
-            }
-            else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {

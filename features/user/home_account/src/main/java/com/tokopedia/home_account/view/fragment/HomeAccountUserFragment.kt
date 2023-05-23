@@ -74,8 +74,8 @@ import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
-import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.data.pref.AccountPreference
+import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
@@ -187,6 +187,9 @@ open class HomeAccountUserFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var oclUtils: OclUtils
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
@@ -1087,7 +1090,7 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (OclUtils.isOclEnabled()) {
+        if (oclUtils.isOclEnabled()) {
             viewModel.getOclStatus()
         }
     }

@@ -25,7 +25,6 @@ import com.tokopedia.chooseaccount.databinding.FragmentOclChooseAccountBinding
 import com.tokopedia.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.chooseaccount.view.adapter.OclAccountAdapter
 import com.tokopedia.chooseaccount.view.listener.OclChooseAccountListener
-import com.tokopedia.chooseaccount.viewmodel.OclChooseAccountViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -118,12 +117,10 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         }
 
         viewModel.navigateToNormalLogin.observe(viewLifecycleOwner) {
-            if(it) {
-                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
-                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
-                startActivity(intent)
-                activity?.finish()
-            }
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, true)
+            startActivity(intent)
+            activity?.finish()
         }
 
         viewModel.oclAccounts.observe(viewLifecycleOwner) {
@@ -131,14 +128,12 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         }
 
         viewModel.navigateToSuccessPage.observe(viewLifecycleOwner) {
-            if(it) {
-                OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
-            }
+            OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
 
-        viewModel.loginFailedResponse.observe(viewLifecycleOwner) {
+        viewModel.loginFailedToaster.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 OclTracker.sendClickOnOneClickLoginEvent("${OclTracker.LABEL_FAILED} - $it")
                 Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()

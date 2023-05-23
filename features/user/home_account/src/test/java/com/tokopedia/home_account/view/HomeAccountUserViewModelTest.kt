@@ -21,6 +21,7 @@ import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
 import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
 import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
@@ -32,7 +33,6 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile

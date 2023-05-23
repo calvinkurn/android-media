@@ -15,6 +15,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
@@ -85,4 +86,11 @@ class HomeAccountUserModules(val context: Context) {
     fun provideFingerprintPrefManager(@ApplicationContext context: Context): FingerprintPreference {
         return FingerprintPreferenceManager(context)
     }
+
+    @Provides
+    @ActivityScope
+    fun provideOclUtils(): OclUtils {
+        return OclUtils()
+    }
+
 }
