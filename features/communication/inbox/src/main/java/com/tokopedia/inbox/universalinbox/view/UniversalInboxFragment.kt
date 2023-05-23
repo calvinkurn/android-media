@@ -231,8 +231,10 @@ class UniversalInboxFragment :
                     headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED
                 index = Int.ONE
             }
-            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED ||
-                    (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT)) &&
+            if ((
+                headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED ||
+                    (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT)
+                ) &&
                 headlineExperimentPosition <= adapter.itemCount &&
                 (!isAdded || (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT))
             ) {
@@ -331,13 +333,17 @@ class UniversalInboxFragment :
 
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
         if (categoriesList.isEmpty()) return
+        // If response size is 2, then there are 2 types of banner (carousel & single)
+        // one below static menu & one in the product recomm
         if (categoriesList.size == TOP_ADS_BANNER_COUNT) {
             topAdsBannerInProductCards = categoriesList[Int.ONE]
             setTopAdsBannerExperimentPosition()
+            // If response first index size is 2, then there are 2 single banners
         } else if (categoriesList[Int.ZERO].size == TOP_ADS_BANNER_COUNT) {
             topAdsBannerInProductCards = listOf(categoriesList[Int.ZERO][Int.ONE])
             setTopAdsBannerExperimentPosition()
         }
+        // Notify the first banner below static menu
         adapter.updateTopAdsBanner(categoriesList[Int.ZERO])
     }
 
