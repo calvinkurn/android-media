@@ -50,13 +50,14 @@ class LargeUploaderManager @Inject constructor(
     suspend operator fun invoke(
         file: File,
         sourceId: String,
-        withTranscode: Boolean
+        withTranscode: Boolean,
+        isRetry: Boolean
     ): UploadResult {
         val policy = policyManager.get()
         val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader
-        getLastState(sourceId, file.name) {
+        getLastState(sourceId, file.name, isRetry) {
             initUpload(sourceId, file)
         }
 
@@ -174,8 +175,18 @@ class LargeUploaderManager @Inject constructor(
         this.progressUploader = progressUploader
     }
 
-    private suspend fun getLastState(sourceId: String, fileName: String, init: suspend () -> Unit) {
+    private suspend fun getLastState(
+        sourceId: String,
+        fileName: String,
+        isRetry: Boolean,
+        init: suspend () -> Unit
+    ) {
         val data = uploadStateManager.get(sourceId, fileName)
+
+        if (isRetry.not()) {
+            init()
+            return
+        }
 
         if (data == null) {
             init()
