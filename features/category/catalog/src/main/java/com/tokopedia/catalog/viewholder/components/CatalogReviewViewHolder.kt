@@ -47,6 +47,9 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         argCatalogName: String = "",
         argCatalogId: String = ""
     ) {
+        view.setOnClickListener {
+            listener?.onReviewClicked(bindingAdapterPosition, model.productUrl ?: "", isFromBottomSheet)
+        }
         isFromBottomSheet = argIsFromBottomSheet
         catalogName = argCatalogName
         catalogId = argCatalogId

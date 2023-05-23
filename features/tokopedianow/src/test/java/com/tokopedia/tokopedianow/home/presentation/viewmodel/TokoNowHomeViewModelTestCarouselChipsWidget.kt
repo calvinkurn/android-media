@@ -709,7 +709,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         name = "Tahu Bulat",
                         isVariant = true,
                         price = "",
-                        orderQuantity = 0,
+                        orderQuantity = 2,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
                         needToChangeMaxLinesName = true,

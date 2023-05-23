@@ -55,6 +55,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.map
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.sortRepurchaseProduct
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
@@ -627,20 +628,13 @@ object HomeLayoutMapper {
             }
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
-            productUiModel?.product?.run {
-                if (hasVariant()) {
-                    copy(variant = variant?.copy(quantity = quantity))
-                } else {
-                    copy(
-                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
-                        nonVariant = nonVariant?.copy(quantity = quantity)
-                    )
-                }
+            productUiModel?.run {
+                copy(orderQuantity = quantity)
             }?.let {
                 updateItemById(layout.getVisitableId()) {
-                    val newProductUiModel = productUiModel.copy(quantity = quantity)
-                    productList[index] = newProductUiModel.copy(product = it)
-                    copy(layout = layoutUiModel.copy(productList = productList))
+                    productList[index] = it
+                    val sortedProductList = sortRepurchaseProduct(productList)
+                    copy(layout = layoutUiModel.copy(productList = sortedProductList))
                 }
             }
         }

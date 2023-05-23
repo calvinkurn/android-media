@@ -42,7 +42,7 @@ class ProductRecommendationViewHolder(
     private val binding = ItemDynamicRecommendationBinding.bind(view)
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
-    
+
     private val lifecycle = ProductCardLifecycleObserver()
 
     init {
@@ -72,18 +72,21 @@ class ProductRecommendationViewHolder(
                                         it.copy(
                                             recommendationFilterChip = it.recommendationFilterChip.copy(
                                                 isActivated =
-                                                annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
-                                                        && !annotationChip.recommendationFilterChip.isActivated
+                                                annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name &&
+                                                    !annotationChip.recommendationFilterChip.isActivated
                                             )
                                         )
                                     } ?: listOf()
                                 )
                                 listener.onChipFilterClicked(
-                                    element, annotationChip.copy(
+                                    element,
+                                    annotationChip.copy(
                                         recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
                                             isActivated = !annotationChip.recommendationFilterChip.isActivated
                                         )
-                                    ), adapterPosition, position
+                                    ),
+                                    adapterPosition,
+                                    position
                                 )
                                 binding.loadingRecom.show()
                                 binding.rvProductRecom.hide()
@@ -116,8 +119,10 @@ class ProductRecommendationViewHolder(
                         listener.onSeeAllRecomClicked(
                             it,
                             pageName,
-                            seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
-                                ?: ""),
+                            seeMoreAppLink + (
+                                element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
+                                    ?: ""
+                                ),
                             getComponentTrackData(element)
                         )
                     }
@@ -151,7 +156,6 @@ class ProductRecommendationViewHolder(
         cardModel: List<ProductCardModel>?,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-
         binding.rvProductRecom.bindCarouselProductCardViewGrid(
             scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
             recyclerViewPool = listener.getParentRecyclerViewPool(),
@@ -220,7 +224,8 @@ class ProductRecommendationViewHolder(
                         annotationChipAdapter?.getSelectedChip()?.value ?: "",
                         carouselProductCardPosition,
                         product.pageName,
-                        product.title, componentTrackDataModel
+                        product.title,
+                        componentTrackDataModel
                     )
                 }
             },
@@ -238,22 +243,6 @@ class ProductRecommendationViewHolder(
                 }
             },
             productCardModelList = cardModel?.toMutableList() ?: listOf(),
-            carouselProductCardOnItemThreeDotsClickListener = object :
-                CarouselProductCardListener.OnItemThreeDotsClickListener {
-                override fun onItemThreeDotsClick(
-                    productCardModel: ProductCardModel,
-                    carouselProductCardPosition: Int
-                ) {
-                    val productRecommendation =
-                        product.recommendationItemList.getOrNull(carouselProductCardPosition)
-                            ?: return
-                    listener.onThreeDotsClick(
-                        productRecommendation,
-                        adapterPosition,
-                        carouselProductCardPosition
-                    )
-                }
-            },
             carouselProductCardOnItemATCNonVariantClickListener = object :
                 CarouselProductCardListener.OnATCNonVariantClickListener {
                 override fun onATCNonVariantClick(
@@ -299,7 +288,8 @@ class ProductRecommendationViewHolder(
             finishCalculate = {
                 binding.rvProductRecom.show()
                 binding.loadingRecom.gone()
-            })
+            }
+        )
     }
 
     private fun productRecommendationApplink(
@@ -315,7 +305,9 @@ class ProductRecommendationViewHolder(
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) =
         ComponentTrackDataModel(
             element?.type
-                ?: "", element?.name ?: "", adapterPosition + 1
+                ?: "",
+            element?.name ?: "",
+            adapterPosition + 1
         )
 
     private fun handleSubtitlePosition(recomSubtitle: String?) = with(binding) {
@@ -399,8 +391,11 @@ class ProductRecommendationViewHolder(
             position: Int,
             payloads: MutableList<Any>
         ) {
-            if (payloads.isNotEmpty()) holder.bind(annotationList[position], payloads)
-            else super.onBindViewHolder(holder, position, payloads)
+            if (payloads.isNotEmpty()) {
+                holder.bind(annotationList[position], payloads)
+            } else {
+                super.onBindViewHolder(holder, position, payloads)
+            }
         }
 
         fun submitList(list: List<AnnotationChip>) {

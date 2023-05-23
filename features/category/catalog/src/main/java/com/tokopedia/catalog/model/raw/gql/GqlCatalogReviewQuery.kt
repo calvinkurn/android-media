@@ -17,6 +17,7 @@ const val GQL_CATALOG_REVIEW_QUERY: String = """query catalogGetProductReview(${
         reviewText
         reviewImageUrl
         reviewId
+        productUrl
       }
     }
   }
