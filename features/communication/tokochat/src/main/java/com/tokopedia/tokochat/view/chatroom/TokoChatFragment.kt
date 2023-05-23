@@ -93,7 +93,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -202,7 +201,7 @@ open class TokoChatFragment :
                 source = viewModel.source,
                 role = TokoChatAnalyticsConstants.BUYER
             )
-            viewModel.setBubblesBottomSheetOpen()
+            viewModel.setBubblesPref(hasShownTicker = false)
             addBubbleTicker()
             true
         } else {
@@ -1091,7 +1090,7 @@ open class TokoChatFragment :
         }
         if (element.tag == BUBBLES_NOTIF) {
             mapper.setBubbleTicker(null)
-            viewModel.setBubblesClose()
+            viewModel.setBubblesPref(hasShownTicker = true)
             tokoChatAnalytics.clickCloseOnBoardingTicker(
                 orderId = viewModel.tkpdOrderId,
                 source = viewModel.source,

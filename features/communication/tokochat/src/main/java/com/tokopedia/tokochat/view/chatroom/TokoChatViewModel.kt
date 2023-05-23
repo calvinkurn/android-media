@@ -56,7 +56,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emptyFlow
@@ -620,24 +619,16 @@ class TokoChatViewModel @Inject constructor(
         return cacheResult == null
     }
 
-    fun setBubblesClose() {
+    fun setBubblesPref(
+        hasShownBottomSheet: Boolean = true,
+        hasShownTicker: Boolean
+    ) {
         cacheManager.saveCache(
             BUBBLES_PREF,
             TokoChatBubblesCache(
                 channelId = channelId,
-                hasShownBottomSheet = true, // Need true to show ticker
-                hasShownTicker = true // Mark the cache as true, so ticker won't show again
-            )
-        )
-    }
-
-    fun setBubblesBottomSheetOpen() {
-        cacheManager.saveCache(
-            BUBBLES_PREF,
-            TokoChatBubblesCache(
-                channelId = channelId,
-                hasShownBottomSheet = true,
-                hasShownTicker = false
+                hasShownBottomSheet = hasShownBottomSheet, // Need true to show ticker
+                hasShownTicker = hasShownTicker // If true, ticker won't show again
             )
         )
     }
