@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "shipment_address_form_v3": {
+      "shipment_address_form_v4": {
         "status": "OK",
         "error_message": [],
         "data": {
@@ -50,8 +50,14 @@
                   "warehouse_id": 0
                 }
               },
-              "group_shop": [
+              "group_shop_v2": [
                 {
+                  "group_type": 1,
+                  "ui_group_type": 0,
+                  "group_information": {
+                    "name": "TokoNow",
+                    "badge_url": "https://images.tokopedia.net/img/cart/toko-cabang/tc-icon.png"
+                  },
                   "errors": [],
                   "errors_unblocking": [],
                   "shipping_id": 0,
@@ -106,34 +112,151 @@
                     "booking_fee": 0,
                     "is_leasing_product": false
                   },
-                  "shop": {
-                    "shop_id": 2538088,
-                    "shop_name": "najajaj",
-                    "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/9/12/2538088/2538088_1bf7af42-c7e7-4da3-8a8d-11bcf69c38d8.jpg",
-                    "shop_url": "https://www.tokopedia.com/nabillashopsd",
-                    "shop_status": 1,
-                    "postal_code": "12910",
-                    "latitude": "-6.227031026858751",
-                    "longitude": "106.8331340700388",
-                    "district_id": 2270,
-                    "district_name": "",
-                    "origin": 0,
-                    "address_street": "",
-                    "province_id": 0,
-                    "city_id": 175,
-                    "city_name": "Jakarta Selatan",
-                    "shop_alert_message": "",
-                    "is_tokonow": false,
-                    "is_gold": 0,
-                    "is_official": 0,
-                    "shop_type_info": {
-                      "shop_tier": 0,
-                      "shop_grade": 0,
-                      "badge": "",
-                      "badge_svg": "",
-                      "title": "Regular Merchant"
+                  "group_shop_v2_saf": [
+                    {
+                      "cart_string_order": "2661965-0-7377294-1232971131",
+                      "shop": {
+                        "shop_id": 2538088,
+                        "shop_name": "najajaj",
+                        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/9/12/2538088/2538088_1bf7af42-c7e7-4da3-8a8d-11bcf69c38d8.jpg",
+                        "shop_url": "https://www.tokopedia.com/nabillashopsd",
+                        "shop_status": 1,
+                        "postal_code": "12910",
+                        "latitude": "-6.227031026858751",
+                        "longitude": "106.8331340700388",
+                        "district_id": 2270,
+                        "district_name": "",
+                        "origin": 0,
+                        "address_street": "",
+                        "province_id": 0,
+                        "city_id": 175,
+                        "city_name": "Jakarta Selatan",
+                        "shop_alert_message": "",
+                        "is_tokonow": false,
+                        "is_gold": 0,
+                        "is_official": 0,
+                        "shop_type_info": {
+                          "shop_tier": 0,
+                          "shop_grade": 0,
+                          "badge": "",
+                          "badge_svg": "",
+                          "title": "Regular Merchant"
+                        }
+                      },
+                      "cart_details": [
+                        {
+                          "errors": [],
+                          "bundle_detail": {
+                            "bundle_description": "",
+                            "bundle_group_id": "",
+                            "bundle_id": 0,
+                            "bundle_max_order": 0,
+                            "bundle_min_order": 0,
+                            "bundle_name": "",
+                            "bundle_original_price": 0,
+                            "bundle_original_price_fmt": "",
+                            "bundle_price": 0,
+                            "bundle_price_fmt": "",
+                            "bundle_qty": 0,
+                            "bundle_quota": 0,
+                            "bundle_status": "",
+                            "bundle_type": "",
+                            "slash_price_label": "",
+                            "bundle_icon_url": ""
+                          },
+                          "products": [
+                            {
+                              "errors": [],
+                              "cart_id": "3171478367",
+                              "product_id": 1422569176,
+                              "product_name": "Sepeda biru",
+                              "product_price_fmt": "Rp10.000",
+                              "product_price": 10000,
+                              "product_original_price": 0,
+                              "product_wholesale_price": 10000,
+                              "product_wholesale_price_fmt": "Rp10.000",
+                              "product_weight_fmt": "1kg",
+                              "product_weight": 1000,
+                              "product_weight_actual": 0,
+                              "product_condition": 1,
+                              "product_url": "https://www.tokopedia.com/nabillashopsd/sepeda-biru",
+                              "product_returnable": 0,
+                              "product_is_free_returns": 0,
+                              "product_is_preorder": 0,
+                              "product_cashback": "",
+                              "product_min_order": 1,
+                              "product_invenage_value": 10,
+                              "product_switch_invenage": 1,
+                              "product_price_currency": 1,
+                              "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                              "product_notes": "",
+                              "product_quantity": 4,
+                              "product_menu_id": 0,
+                              "product_finsurance": 1,
+                              "product_fcancel_partial": 0,
+                              "product_cat_id": 3499,
+                              "product_catalog_id": 0,
+                              "product_category": "Olahraga / Sepeda / Sepeda Gunung",
+                              "purchase_protection_plan_data": {
+                                "protection_available": true,
+                                "protection_type_id": 2562,
+                                "protection_price_per_product": 513,
+                                "protection_price": 2052,
+                                "protection_title": "Proteksi Kerusakan Total",
+                                "protection_subtitle": "Ganti rugi hingga 75% jika barang rusak total akibat pemakaian dalam 90 hari",
+                                "protection_link_text": "Pelajari",
+                                "protection_link_url": "https://www.tokopedia.com/asuransi/proteksi/kerusakan-total/",
+                                "protection_opt_in": false,
+                                "protection_checkbox_disabled": false
+                              },
+                              "product_tracker_data": {
+                                "attribution": "none/other",
+                                "tracker_list_name": "none/other"
+                              },
+                              "product_preorder": {
+                                "duration_text": "",
+                                "duration_day": "0"
+                              },
+                              "trade_in_info": {
+                                "is_valid_trade_in": false,
+                                "new_device_price": 0,
+                                "new_device_price_fmt": "",
+                                "old_device_price": 0,
+                                "old_device_price_fmt": "",
+                                "drop_off_enable": false,
+                                "device_model": "",
+                                "diagnostic_id": 0
+                              },
+                              "free_shipping": {
+                                "eligible": true,
+                                "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
+                              },
+                              "free_shipping_extra": {
+                                "eligible": false,
+                                "badge_url": ""
+                              },
+                              "free_shipping_general": {
+                                "bo_name": "bebas ongkir now",
+                                "bo_type": 3,
+                                "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
+                              },
+                              "product_ticker": {
+                                "show_ticker": false,
+                                "message": ""
+                              },
+                              "variant_description_detail": {
+                                "variant_name": [],
+                                "variant_description": ""
+                              },
+                              "product_alert_message": "",
+                              "product_information": [],
+                              "campaign_id": 0
+                            }
+                          ]
+                        }
+                      ]
                     }
-                  },
+                  ],
                   "shop_shipments": [
                     {
                       "ship_id": 1,
@@ -440,118 +563,6 @@
                     "name": "",
                     "telp_no": ""
                   },
-                  "cart_details": [
-                    {
-                      "errors": [],
-                      "bundle_detail": {
-                        "bundle_description": "",
-                        "bundle_group_id": "",
-                        "bundle_id": 0,
-                        "bundle_max_order": 0,
-                        "bundle_min_order": 0,
-                        "bundle_name": "",
-                        "bundle_original_price": 0,
-                        "bundle_original_price_fmt": "",
-                        "bundle_price": 0,
-                        "bundle_price_fmt": "",
-                        "bundle_qty": 0,
-                        "bundle_quota": 0,
-                        "bundle_status": "",
-                        "bundle_type": "",
-                        "slash_price_label": "",
-                        "bundle_icon_url": ""
-                      },
-                      "products": [
-                        {
-                          "errors": [],
-                          "cart_id": "3171478367",
-                          "product_id": 1422569176,
-                          "product_name": "Sepeda biru",
-                          "product_price_fmt": "Rp10.000",
-                          "product_price": 10000,
-                          "product_original_price": 0,
-                          "product_wholesale_price": 10000,
-                          "product_wholesale_price_fmt": "Rp10.000",
-                          "product_weight_fmt": "1kg",
-                          "product_weight": 1000,
-                          "product_weight_actual": 0,
-                          "product_condition": 1,
-                          "product_url": "https://www.tokopedia.com/nabillashopsd/sepeda-biru",
-                          "product_returnable": 0,
-                          "product_is_free_returns": 0,
-                          "product_is_preorder": 0,
-                          "product_cashback": "",
-                          "product_min_order": 1,
-                          "product_invenage_value": 10,
-                          "product_switch_invenage": 1,
-                          "product_price_currency": 1,
-                          "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "product_notes": "",
-                          "product_quantity": 4,
-                          "product_menu_id": 0,
-                          "product_finsurance": 1,
-                          "product_fcancel_partial": 0,
-                          "product_cat_id": 3499,
-                          "product_catalog_id": 0,
-                          "product_category": "Olahraga / Sepeda / Sepeda Gunung",
-                          "purchase_protection_plan_data": {
-                            "protection_available": true,
-                            "protection_type_id": 2562,
-                            "protection_price_per_product": 513,
-                            "protection_price": 2052,
-                            "protection_title": "Proteksi Kerusakan Total",
-                            "protection_subtitle": "Ganti rugi hingga 75% jika barang rusak total akibat pemakaian dalam 90 hari",
-                            "protection_link_text": "Pelajari",
-                            "protection_link_url": "https://www.tokopedia.com/asuransi/proteksi/kerusakan-total/",
-                            "protection_opt_in": false,
-                            "protection_checkbox_disabled": false
-                          },
-                          "product_tracker_data": {
-                            "attribution": "none/other",
-                            "tracker_list_name": "none/other"
-                          },
-                          "product_preorder": {
-                            "duration_text": "",
-                            "duration_day": "0"
-                          },
-                          "trade_in_info": {
-                            "is_valid_trade_in": false,
-                            "new_device_price": 0,
-                            "new_device_price_fmt": "",
-                            "old_device_price": 0,
-                            "old_device_price_fmt": "",
-                            "drop_off_enable": false,
-                            "device_model": "",
-                            "diagnostic_id": 0
-                          },
-                          "free_shipping": {
-                            "eligible": true,
-                            "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
-                          },
-                          "free_shipping_extra": {
-                            "eligible": false,
-                            "badge_url": ""
-                          },
-                          "free_shipping_general": {
-                            "bo_name": "bebas ongkir now",
-                            "bo_type": 3,
-                            "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
-                          },
-                          "product_ticker": {
-                            "show_ticker": false,
-                            "message": ""
-                          },
-                          "variant_description_detail": {
-                            "variant_name": [],
-                            "variant_description": ""
-                          },
-                          "product_alert_message": "",
-                          "product_information": [],
-                          "campaign_id": 0
-                        }
-                      ]
-                    }
-                  ],
                   "warehouse": {
                     "warehouse_id": 2051993,
                     "city_name": "Jakarta Selatan"
