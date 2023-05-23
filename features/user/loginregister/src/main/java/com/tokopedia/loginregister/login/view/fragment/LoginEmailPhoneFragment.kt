@@ -342,11 +342,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         isEnableDirectBiometric = isEnableDirectBiometric()
-        refreshRolloutVariant()
 
         if (isOclEnabled()) {
             goToOclChooseAccount()
         }
+
+        refreshRolloutVariant()
     }
 
     fun isOclEnabled(): Boolean {
