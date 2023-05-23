@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.widget.carousel
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.widget.FrameLayout
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,6 +25,12 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.util.loadLottieFromUrls
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -42,6 +51,9 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + job)
 
     private val binding = ViewPlayWidgetCardCarouselChannelBinding.inflate(
         LayoutInflater.from(context),
@@ -109,6 +121,11 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mModel.channelType == PlayWidgetChannelType.Vod
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job.cancelChildren()
+    }
+
     fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
         this.mModel = model
         if (invalidate) invalidateUi(model)
@@ -156,21 +173,15 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         }
 
         binding.viewPlayWidgetActionButton.root.showWithCondition(shouldShow)
+
+        if (::mModel.isInitialized && !mModel.isMuted) {
+            showSoundLoopLottie()
+        }
     }
 
     fun setMuted(shouldMuted: Boolean, animate: Boolean = false) {
-        val lottieComposition = LottieCompositionFactory.fromRawRes(
-            binding.root.context,
-            if (shouldMuted) R.raw.play_widget_lottie_sound_on_off
-            else R.raw.play_widget_lottie_sound_off_on
-        )
-
-        lottieComposition.addListener { composition ->
-            binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
-
-            if (animate) binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
-            else binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
-        }
+        if (shouldMuted) setMuteLottie(animate)
+        else setUnMuteLottie(animate)
 
         mPlayer?.mute(shouldMuted)
 
@@ -181,6 +192,103 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 !shouldMuted,
             )
         }
+    }
+
+    private fun setMuteLottie(animate: Boolean) {
+        val lottieUrl = context.getString(R.string.lottie_sound_on_off)
+
+        val fallbackToImage = {
+            binding.viewPlayWidgetActionButton.lottieAction.hide()
+            binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_MUTE)
+            binding.viewPlayWidgetActionButton.iconActionFallback.show()
+        }
+
+        if (!animate) {
+            fallbackToImage()
+            return
+        }
+
+        LottieCompositionFactory.fromUrl(context, lottieUrl)
+            .addFailureListener {
+                fallbackToImage()
+            }
+            .addListener { composition ->
+                binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+                binding.viewPlayWidgetActionButton.lottieAction.show()
+                binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
+                binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
+                binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
+
+                binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+            }
+    }
+
+    private fun setUnMuteLottie(animate: Boolean) {
+        val lottieUrl = context.getString(R.string.lottie_sound_off_on)
+
+        val fallbackToImage = {
+            binding.viewPlayWidgetActionButton.lottieAction.hide()
+            binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
+            binding.viewPlayWidgetActionButton.iconActionFallback.show()
+        }
+
+        if (!animate) {
+            fallbackToImage()
+            return
+        }
+
+        LottieCompositionFactory.fromUrl(context, lottieUrl)
+            .addFailureListener {
+                fallbackToImage()
+            }
+            .addListener { composition ->
+                binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+                binding.viewPlayWidgetActionButton.lottieAction.show()
+                binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
+                binding.viewPlayWidgetActionButton.lottieAction.addAnimatorListener(
+                    object: Animator.AnimatorListener {
+                        override fun onAnimationStart(animator: Animator) {
+
+                        }
+
+                        override fun onAnimationEnd(animator: Animator) {
+                            showSoundLoopLottie()
+                        }
+
+                        override fun onAnimationCancel(animator: Animator) {
+
+                        }
+
+                        override fun onAnimationRepeat(animator: Animator) {
+
+                        }
+                    }
+                )
+                binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
+                binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
+
+                binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+            }
+    }
+
+    private fun showSoundLoopLottie() {
+        val lottieUrl = context.getString(R.string.lottie_sound_on_loop)
+
+        LottieCompositionFactory.fromUrl(context, lottieUrl)
+            .addFailureListener {
+                binding.viewPlayWidgetActionButton.lottieAction.hide()
+                binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
+                binding.viewPlayWidgetActionButton.iconActionFallback.show()
+            }
+            .addListener { composition ->
+                binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+                binding.viewPlayWidgetActionButton.lottieAction.show()
+                binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
+                binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
+                binding.viewPlayWidgetActionButton.lottieAction.repeatCount = LottieDrawable.INFINITE
+
+                binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+            }
     }
 
     interface Listener {
