@@ -48,7 +48,6 @@ import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.UnifyButton
@@ -63,7 +62,8 @@ import javax.inject.Inject
 /**
  * @author by alvinatin on 15/11/18.
  */
-class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
+class UserIdentificationFormFinalFragment :
+    BaseDaggerFragment(),
     UserIdentificationFormActivity.Listener {
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationFinalBinding>()
     private var stepperModel: UserIdentificationStepperModel? = null
@@ -74,17 +74,20 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     private var kycType = ""
     private var projectId = 0
 
-    private lateinit var remoteConfig: RemoteConfig
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var retakeActionCode = NOT_RETAKE
     private var allowedSelfie = false
 
     @Inject
     lateinit var serverLogger: KycServerLogger
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
+
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
 
@@ -111,8 +114,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
             val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
         }
-
-        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,8 +137,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         encryptImage()
         setContentView()
-        if (projectId == TRADE_IN_PROJECT_ID) //TradeIn project Id
+        if (projectId == TRADE_IN_PROJECT_ID) {
+            // TradeIn project Id
             viewBinding?.uploadButton?.setText(R.string.upload_button_tradein)
+        }
 
         analytics?.eventViewFinalForm()
         initObserver()
@@ -216,7 +219,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                 projectId.toString(),
                 throwable
             )
-
         } else {
             serverLogger.selfieUploadResult(
                 "ErrorUpload",
@@ -575,7 +577,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
             throwable,
             ErrorHandler.Builder().apply {
                 className = UserIdentificationFormFinalFragment::class.java.name
-
             }.build()
         )
 
