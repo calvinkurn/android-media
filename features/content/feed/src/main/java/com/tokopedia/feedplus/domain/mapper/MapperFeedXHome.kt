@@ -265,7 +265,7 @@ object MapperFeedHome {
             id = media.id,
             coverUrl = media.coverUrl,
             mediaUrl = media.mediaUrl,
-            applink = media.applink,
+            appLink = media.applink,
             tagging = media.tagging.map { tag ->
                 FeedMediaTagging(
                     tagIndex = tag.tagIndex

@@ -532,7 +532,7 @@ class FeedPostImageViewHolder(
         return if (data.isTopAds) {
             val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
             val appLinkProduct = if (data.media.size > selectedImagePosition) {
-                data.media[selectedImagePosition].applink
+                data.media[selectedImagePosition].appLink
             } else {
                 data.share.appLink
             }

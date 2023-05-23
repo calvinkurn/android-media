@@ -94,7 +94,7 @@ object MapperTopAdsXFeed {
         id = product.id,
         coverUrl = "",
         mediaUrl = product.image.m_url,
-        applink = product.applinks,
+        appLink = product.applinks,
         tagging = listOf(FeedMediaTagging(index))
     )
 
