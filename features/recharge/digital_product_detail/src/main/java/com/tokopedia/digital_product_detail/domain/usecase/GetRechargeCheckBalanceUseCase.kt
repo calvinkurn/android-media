@@ -14,7 +14,7 @@ import javax.inject.Inject
 @GqlQuery(QUERY_NAME_RECHARGE_CHECK_BALANCE, QUERY_RECHARGE_CHECK_BALANCE)
 class GetRechargeCheckBalanceUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<DigitalDigiPersoGetPersonalizedItem>(graphqlRepository) {
+) : GraphqlUseCase<DigitalDigiPersoGetPersonalizedItem>(graphqlRepository) {
 
     init {
         setTypeClass(DigitalDigiPersoGetPersonalizedItem::class.java)
@@ -26,7 +26,7 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>,
         dgOperatorIds: List<Int>,
-        channelName: String,
+        channelName: String
     ) {
         val params = mapOf(
             KEY_DIGI_PERSO_INPUT to DigiPersoRequestParam(
@@ -38,10 +38,6 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
             )
         )
         setRequestParams(params)
-    }
-
-    override suspend fun executeOnBackground(): DigitalDigiPersoGetPersonalizedItem {
-        return super.executeOnBackground()
     }
 
     companion object {
