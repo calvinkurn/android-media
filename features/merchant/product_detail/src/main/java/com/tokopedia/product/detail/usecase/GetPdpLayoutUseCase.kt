@@ -208,6 +208,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataProductDetail {
                       title
                       content {
+                        key
+                        type
+                        action
+                        extParam
                         title
                         subtitle
                         applink
