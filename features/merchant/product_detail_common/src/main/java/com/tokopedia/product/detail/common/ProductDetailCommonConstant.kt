@@ -26,7 +26,7 @@ object ProductDetailCommonConstant {
 
     const val FIELDS_PARAM = "fields"
 
-    //notify me (teaser campaign)
+    // notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
     const val PARAM_TEASER_PRODUCT_ID = "productId"
     const val PARAM_TEASER_PRODUCT_ID_64 = "product_id_64"
@@ -72,11 +72,7 @@ object ProductDetailCommonConstant {
     const val TEXT_REMIND_ME = "Cek Wishlist Kamu"
     const val TEXT_SAVE_ATC = "Simpan Perubahan"
 
-    const val KEY_ETALASE = "etalase"
-    const val KEY_CATEGORY = "kategori"
-    const val KEY_CATALOG = "katalog"
-
-    //Button Action
+    // Button Action
     const val BUY_BUTTON = 1
     const val ATC_BUTTON = 2
     const val OCS_BUTTON = 3
@@ -93,11 +89,11 @@ object ProductDetailCommonConstant {
     const val RQUEST_CODE_UPDATE_FINTECH_WIDGET = 1991
     const val RQUEST_CODE_ACTIVATE_GOPAY = 1992
 
-    //OVO
-    const val OVO_INACTIVE_STATUS = 1;
-    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
+    // OVO
+    const val OVO_INACTIVE_STATUS = 1
+    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2
 
-    //bo type
+    // bo type
     const val NO_BEBAS_ONGKIR = 0
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
@@ -109,12 +105,11 @@ object ProductDetailCommonConstant {
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
     const val VALUE_BOPLUS = "bebas ongkir plus"
-    const val VALUE_NONE_OTHER= "none/other"
+    const val VALUE_NONE_OTHER = "none/other"
 
     const val KEY_PRODUCT_DETAIL = "product detail"
 
-    //shipping error code
+    // shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
     const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
-
 }

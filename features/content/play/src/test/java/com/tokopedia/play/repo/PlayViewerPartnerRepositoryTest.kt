@@ -9,7 +9,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -17,7 +16,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -58,7 +57,7 @@ class PlayViewerPartnerRepositoryTest {
     @Test
     fun `when user has followed shop return true`(){
         //alreadyFavorited = 1 means success
-        runBlockingTest {
+        runTest {
             val response = ShopInfo(
                 favoriteData = ShopInfo.FavoriteData(totalFavorite = 28, alreadyFavorited = 1)
             )
@@ -77,7 +76,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user has not followed shop return false`(){
-        runBlockingTest {
+        runTest {
             val response = ShopInfo(
                 favoriteData = ShopInfo.FavoriteData(totalFavorite = 28, alreadyFavorited = 0)
             )
@@ -96,7 +95,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user follow shop return true`(){
-        runBlockingTest {
+        runTest {
             //this use case returns isFollowing value, if it's a true then the user has followed the shop
             coEvery { postFollowPartnerUseCase.executeOnBackground() } returns true
 
@@ -113,7 +112,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user unfollow shop return false`(){
-        runBlockingTest {
+        runTest {
             //this use case returns isFollowing value, if it's a false then the user has unfollowed the shop
             coEvery { postFollowPartnerUseCase.executeOnBackground() } returns false
 
@@ -130,7 +129,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user enter live room and the streamer is buyer fetch enc userid`(){
-        runBlockingTest {
+        runTest {
             val response = FollowKOL.Response(
                 response = FollowKOL(
                     followedKOLInfo = listOf(
@@ -153,7 +152,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user has followed buyer return true`(){
-        runBlockingTest {
+        runTest {
             val response = FollowKOL.Response(
                 response = FollowKOL(
                     followedKOLInfo = listOf(
@@ -176,7 +175,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user has not followed buyer return false`(){
-        runBlockingTest {
+        runTest {
             val response = FollowKOL.Response(
                 response = FollowKOL(
                     followedKOLInfo = listOf(
@@ -198,7 +197,7 @@ class PlayViewerPartnerRepositoryTest {
     }
     @Test
     fun `when user follow buyer return true`(){
-        runBlockingTest {
+        runTest {
             //this use case returns error message, if it's empty then its true / the op is success
             val response = KOLFollowStatus(
                 followedKOLInfo = FollowInfo(
@@ -221,7 +220,7 @@ class PlayViewerPartnerRepositoryTest {
 
     @Test
     fun `when user unfollow buyer return true`(){
-        runBlockingTest {
+        runTest {
             //this use case returns the operation result value, if isSuccess equals to 1 then it's true
             val response = KOLUnFollowStatus(
                 unFollowedKOLInfo = FollowInfo(

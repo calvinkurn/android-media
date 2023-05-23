@@ -8,6 +8,7 @@ import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -22,6 +23,9 @@ abstract class TokoFoodCategoryViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: TokoFoodCategoryViewModel
 

@@ -1,21 +1,22 @@
 package com.tokopedia.deals.pdp
 
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.pdp.data.DealsProductDetail
-import com.tokopedia.deals.pdp.data.DealsProductEventContent
-import com.tokopedia.deals.pdp.data.DealsRatingResponse
-import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
-import com.tokopedia.deals.pdp.data.DealsTrackingResponse
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import com.tokopedia.deals.pdp.data.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 
 class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `when getting deals pdp data should run and give the success result`() {

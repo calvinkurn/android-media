@@ -15,19 +15,19 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.model.FindingNewDriverModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import javax.inject.Inject
 import com.tokopedia.logisticseller.databinding.BottomsheetFindingNewDriverBinding
 import com.tokopedia.logisticseller.di.findingnewdriver.DaggerFindingNewDriverComponent
 import com.tokopedia.logisticseller.di.findingnewdriver.FindingNewDriverComponent
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverAvailabilityState
 import com.tokopedia.logisticseller.ui.findingnewdriver.viewmodel.FindingNewDriverViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import java.util.*
+import javax.inject.Inject
 
 class FindingNewDriverBottomSheet : BottomSheetUnify() {
 
