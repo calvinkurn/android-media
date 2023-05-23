@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 
@@ -45,6 +46,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private RemoteConfig remoteConfig;
     private BubblesFactory bubblesFactory;
 
+    private Bitmap bubbleBitmap;
+
     private List<HistoryNotification> listHistoryNotification;
 
     public ChatNotificationFactory(Context context) {
@@ -53,6 +56,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if (isEnableBubble()) {
             generateBubbleFactory(context);
         }
+        createNotificationInboxStyle();
     }
 
     @Override
@@ -67,8 +71,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
+
+        builder.setStyle(inboxStyle);
+        PendingIntent pendingContentIntent = createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId, applinkNotificationModel);
+        builder.setContentIntent(pendingContentIntent);
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId, applinkNotificationModel));
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
@@ -147,6 +154,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         }
     }
 
+    public void setBubbleBitmaps(Bitmap bubbleBitmap) {
+        this.bubbleBitmap = bubbleBitmap;
+    }
+
     private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
         try {
             BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
@@ -159,11 +170,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel) {
         listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
         List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
-        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
+        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel, bubbleBitmap);
     }
 
     private void updateBubblesBuilder(NotificationCompat.Builder builder, BubbleNotificationModel bubbleNotificationModel) {
-        bubblesFactory.setupBubble(builder, bubbleNotificationModel);
+        bubblesFactory.setupBubble(builder, bubbleNotificationModel, bubbleBitmap);
     }
 
     private List<BubbleHistoryItemModel> getBubbleHistoryItems(List<HistoryNotification> historyNotificationList) {
@@ -195,7 +206,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getThumbnail(),
                 applinkNotificationModel.getSummary(),
-                applinkNotificationModel.getSentTime()
+                applinkNotificationModel.getSentTime(),
+                //actually from push notifications, this field is always false value. but when the user clicks the open bubble within the app the value will be true
+                false
         );
     }
 
