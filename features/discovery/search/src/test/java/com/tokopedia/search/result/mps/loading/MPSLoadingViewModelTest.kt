@@ -31,7 +31,7 @@ class MPSLoadingViewModelTest {
         )
 
         mpsLoadingViewModel.start()
-        advanceTimeBy(mpsLoadingConfig.delay * 2)
+        testScheduler.apply { advanceTimeBy(mpsLoadingConfig.delay * 2); runCurrent() }
 
         assertThat(loadingValues, `is`(
             listOf(
