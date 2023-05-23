@@ -10,13 +10,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,8 +27,8 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dropoff.R
+import com.tokopedia.dropoff.databinding.ActivityDropoffPickerBinding
 import com.tokopedia.dropoff.di.DaggerDropoffPickerComponent
 import com.tokopedia.dropoff.domain.mapper.GetStoreMapper
 import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity
@@ -41,13 +40,15 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
 import com.tokopedia.logisticCommon.util.getLatLng
-import com.tokopedia.logisticCommon.util.rxPinPoint
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import rx.Subscriber
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 const val REQUEST_CODE_LOCATION: Int = 1
@@ -59,6 +60,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         private const val MAP_CAMERA_ZOOM = 16f
         private const val LATITUDE_KEY = "BUNDLE_LATITUDE"
         private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
+        private const val REVERSE_GEOCODE_DELAY = 1000L
     }
 
     private var mPermissionChecker: PermissionCheckerHelper? = null
@@ -73,9 +75,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
     private val mMarkerList: MutableList<Marker> = arrayListOf()
 
-    private var mDisabledLocationView: View? = null
-    private var mNoPermissionsView: View? = null
-    private var mStoreDetail: LocationDetailBottomSheet? = null
+    private var reverseGeocodeJob: Job? = null
 
     private val storeBitmap: BitmapDescriptor? by lazy {
         bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)
@@ -90,80 +90,90 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
     private val viewModel by lazy {
-        ViewModelProvider(this, factory).get(DropoffPickerViewModel::class.java)
+        ViewModelProvider(this, factory)[DropoffPickerViewModel::class.java]
     }
+
+    private var binding: ActivityDropoffPickerBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dropoff_picker)
+        binding = ActivityDropoffPickerBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         initInjector()
+        setSupportActionBar(binding?.toolbarSearch)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
-        setSupportActionBar(toolbar)
-        mDisabledLocationView = findViewById(R.id.view_gps_empty)
-        mNoPermissionsView = findViewById(R.id.view_no_permissions)
-        with(findViewById<UnifyButton>(R.id.button_activate_gps)) {
+        binding?.viewGpsEmpty?.buttonActivateGps?.apply {
             setOnClickListener {
                 tracker.trackClickActivateGps()
                 checkAndRequestLocation()
             }
         }
-        with(findViewById<UnifyButton>(R.id.button_grant_permission)) {
+
+        binding?.viewNoPermissions?.buttonGrantPermission?.apply {
             setOnClickListener {
                 checkForPermission()
             }
         }
-        mStoreDetail = findViewById(R.id.bottom_sheet_detail)
-        mStoreDetail?.setOnCancelClickListener { _, data ->
-            data?.let { tracker.trackClickBatalOnDetail(it) }
-            mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        }
-        mStoreDetail?.setOnOkClickListener { _, data ->
-            data?.let { tracker.trackClickPilihOnDetail(it) }
-            val resultIntent = Intent().apply {
-                val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
-                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData)
-            }
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-        }
-        val searchInput = findViewById<SearchInputView>(R.id.search_input_dropoff)
-        searchInput.setOnClickListener(goToAutoComplete)
-        with(searchInput.searchTextView) {
-            setOnClickListener(goToAutoComplete)
-            isCursorVisible = false
-            isFocusable = false
-        }
-        with(findViewById<RecyclerView>(R.id.rv_dropoff)) {
-            layoutManager = LinearLayoutManager(this@DropoffPickerActivity)
-            setHasFixedSize(true)
-            addItemDecoration(
-                SimpleVerticalDivider(
-                    this@DropoffPickerActivity,
-                    R.layout.item_nearby_location
-                )
-            )
-            adapter = mNearbyAdapter
-        }
 
-        mNearbyAdapter.setActionListener(adapterListener)
-
-        mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
-        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        mNearbiesBehavior?.setBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(p0: View, p1: Float) {
-                // no op
+        binding?.bottomSheetDetail?.apply {
+            setOnCancelClickListener { _, data ->
+                data?.let { tracker.trackClickBatalOnDetail(it) }
+                mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             }
 
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    tracker.trackExpandList()
+            setOnOkClickListener { _, data ->
+                data?.let { tracker.trackClickPilihOnDetail(it) }
+                val resultIntent = Intent().apply {
+                    val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
+                    putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData)
                 }
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
             }
-        })
+        }
 
-        mStoreDetail?.let {
+        binding?.searchInputDropoff?.apply {
+            setOnClickListener(goToAutoComplete)
+            with(searchTextView) {
+                setOnClickListener(goToAutoComplete)
+                isCursorVisible = false
+                isFocusable = false
+            }
+        }
+
+        binding?.bottomSheetDropoff?.apply {
+            rvDropoff.apply {
+                layoutManager = LinearLayoutManager(this@DropoffPickerActivity)
+                setHasFixedSize(true)
+                addItemDecoration(
+                    SimpleVerticalDivider(
+                        this@DropoffPickerActivity,
+                        R.layout.item_nearby_location
+                    )
+                )
+                adapter = mNearbyAdapter
+            }
+
+            mNearbyAdapter.setActionListener(adapterListener)
+
+            mNearbiesBehavior = BottomSheetBehavior.from(bottomSheet)
+            mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            mNearbiesBehavior?.setBottomSheetCallback(
+                object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(p0: View, p1: Float) {
+                        // no op
+                    }
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            tracker.trackExpandList()
+                        }
+                    }
+                }
+            )
+        }
+
+        binding?.bottomSheetDetail?.let {
             mDetailBehavior = BottomSheetBehavior.from(it)
             mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -214,9 +224,19 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun showDisableLocAndNoPermissionView(
+        isShowDisabledLocationView: Boolean,
+        isShowNoPermissionView: Boolean
+    ) {
+        binding?.viewGpsEmpty?.root?.isVisible = isShowDisabledLocationView
+        binding?.viewNoPermissions?.root?.isVisible = isShowNoPermissionView
+    }
+
     private fun setNoMapsAvailableView() {
-        mDisabledLocationView?.visibility = View.GONE
-        mNoPermissionsView?.visibility = View.GONE
+        showDisableLocAndNoPermissionView(
+            isShowDisabledLocationView = false,
+            isShowNoPermissionView = false
+        )
         mMapFragment?.let {
             supportFragmentManager.beginTransaction().hide(it).commit()
         }
@@ -239,21 +259,23 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             true
         }
         mMap?.let {
-            rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
-                override fun onNext(t: Boolean?) {
-                    val target = it.cameraPosition.target
-                    mLastLocation = getLatLng(target.latitude, target.longitude)
-                    mNearbyAdapter.setStateLoading()
-                    mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                    viewModel.getStores("${target.latitude},${target.longitude}")
-                }
+            it.setupOnCameraMoveListener {
+                val target = it.cameraPosition.target
+                mLastLocation = getLatLng(target.latitude, target.longitude)
+                mNearbyAdapter.setStateLoading()
+                mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                viewModel.getStores("${target.latitude},${target.longitude}")
+            }
+        }
+    }
 
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable?) {
-                }
-            })
+    private fun GoogleMap.setupOnCameraMoveListener(onNext: () -> Unit) {
+        setOnCameraMoveListener {
+            reverseGeocodeJob?.cancel()
+            reverseGeocodeJob = CoroutineScope(Dispatchers.Main).launch {
+                delay(REVERSE_GEOCODE_DELAY)
+                onNext.invoke()
+            }
         }
     }
 
@@ -415,24 +437,30 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         if (mMapFragment?.isVisible == true) {
             supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
         }
-        mDisabledLocationView?.visibility = View.VISIBLE
-        mNoPermissionsView?.visibility = View.GONE
+        showDisableLocAndNoPermissionView(
+            isShowDisabledLocationView = true,
+            isShowNoPermissionView = false
+        )
     }
 
     private fun setNoPermissionsView() {
         if (mMapFragment?.isVisible == true) {
             supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
         }
-        mDisabledLocationView?.visibility = View.GONE
-        mNoPermissionsView?.visibility = View.VISIBLE
+        showDisableLocAndNoPermissionView(
+            isShowDisabledLocationView = false,
+            isShowNoPermissionView = true
+        )
     }
 
     private fun setMapView() {
         if (mMapFragment?.isHidden == true) {
             supportFragmentManager.beginTransaction().show(mMapFragment!!).commit()
         }
-        mDisabledLocationView?.visibility = View.GONE
-        mNoPermissionsView?.visibility = View.GONE
+        showDisableLocAndNoPermissionView(
+            isShowDisabledLocationView = false,
+            isShowNoPermissionView = false
+        )
     }
 
     private fun showStoreDetail(datum: DropoffNearbyModel) {
@@ -446,7 +474,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 }
             }
         }
-        mStoreDetail?.setStore(datum)
+        binding?.bottomSheetDetail?.setStore(datum)
         if (mNearbiesBehavior?.state != BottomSheetBehavior.STATE_HIDDEN) {
             mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -512,7 +540,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private val goToAutoComplete: (View?) -> Unit = {
-        if (mDisabledLocationView?.visibility == View.VISIBLE) {
+        if (binding?.viewGpsEmpty?.root?.visibility == View.VISIBLE) {
             tracker.trackClickSearchBarGpsOff("")
         } else {
             tracker.trackClickSearchBarGpsOn("")

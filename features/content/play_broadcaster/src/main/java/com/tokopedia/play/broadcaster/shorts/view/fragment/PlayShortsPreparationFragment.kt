@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -17,8 +19,11 @@ import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -35,8 +40,11 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
@@ -63,7 +71,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val analytic: PlayShortsAnalytic,
 ) : PlayShortsBaseFragment(),
     PlayBroadcastSetupTitleBottomSheet.Listener,
-    PlayBroadcastSetupCoverBottomSheet.Listener {
+    PlayBroadcastSetupCoverBottomSheet.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
 
@@ -72,6 +81,11 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var _binding: FragmentPlayShortsPreparationBinding? = null
     private val binding: FragmentPlayShortsPreparationBinding get() = _binding!!
 
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter(this)
+    }
+    private var mLayoutManager: LinearLayoutManager? = null
+    private val snapHelper = PagerSnapHelper()
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
@@ -80,7 +94,20 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var exitConfirmationDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
+    private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
+
+    private val scrollListener by lazyThreadSafetyNone {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager?.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position.orZero())
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,12 +140,12 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupView()
         setupListener()
         setupObserver()
-        setupCoachMark()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
         coachMark = null
 
@@ -144,7 +171,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return viewModel.productSectionList
                     }
 
@@ -246,10 +272,51 @@ class PlayShortsPreparationFragment @Inject constructor(
         return true
     }
 
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+    }
+
     private fun setupView() {
+        mLayoutManager = LinearLayoutManager(requireContext())
         binding.toolbar.apply {
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
+        }
+        binding.rvBannerPreparation.apply {
+            layoutManager = mLayoutManager
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
+            addOnScrollListener(scrollListener)
+        }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
+
+        if (!coachMarkSharedPref.hasBeenShown(Key.PlayShortsPreparation, userSession.userId)) {
+            setupCoachMark(
+                CoachMark2Item(
+                    anchorView = binding.preparationMenu,
+                    title = getString(R.string.play_shorts_preparation_coachmark_title),
+                    description = getString(R.string.play_shorts_preparation_coachmark_description),
+                    position = CoachMark2.POSITION_TOP
+                )
+            )
+            coachMarkSharedPref.setHasBeenShown(Key.PlayShortsPreparation, userSession.userId)
+        }
+
+        if (viewModel.isAllowChangeAccount && !coachMarkSharedPref.hasBeenShown(
+                Key.SwitchAccount,
+                userSession.userId
+            )
+        ) {
+            setupCoachMark(
+                CoachMark2Item(
+                    anchorView = binding.toolbar,
+                    title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
+                    description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
+            coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
         }
     }
 
@@ -347,6 +414,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }
@@ -364,59 +434,27 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
-    private fun setupCoachMark() {
-
-        fun onCloseCoachMark() {
+    private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
+        fun onDismissCoachMark() {
             analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMarkItems.contains(coachMarkItem)) return
 
-        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.preparationMenu,
-                        title = getString(R.string.play_shorts_preparation_coachmark_title),
-                        description = getString(R.string.play_shorts_preparation_coachmark_description),
-                        position = CoachMark2.POSITION_TOP
-                    )
-                )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
-            }
+        coachMarkItems.add(coachMarkItem)
 
-            if(viewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.toolbar,
-                        title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
-                        description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM
-                    )
-                )
-                viewModel.submitAction(PlayShortsAction.SetNotFirstSwitchAccount)
-            }
-        }
+        if (coachMark == null) coachMark = CoachMark2(requireContext())
+        coachMark?.showCoachMark(java.util.ArrayList(coachMarkItems))
 
-        if(coachMarkItems.isNotEmpty()) {
-            if(coachMark == null) {
-                coachMark = CoachMark2(requireContext())
-            }
-
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-            if(coachMarkItems.size == 1) {
-                coachMark?.simpleCloseIcon?.setOnClickListener { onCloseCoachMark() }
-            }
-            else {
-                coachMark?.stepCloseIcon?.setOnClickListener { onCloseCoachMark() }
-            }
+        if (coachMarkItems.size == 1) {
+            coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+        } else {
+            coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
     }
 
     private fun setupUiStandby() {
-        Log.d("<LOG>", "Standby")
         binding.preparationMenu.showMenuText(true)
         binding.flBottomBackground.animateShow()
         binding.flTopBackground.animateShow()
@@ -424,7 +462,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupUiIdle() {
-        Log.d("<LOG>", "Idle")
         binding.preparationMenu.showMenuText(false)
         binding.flBottomBackground.animateGone()
         binding.flTopBackground.animateGone()

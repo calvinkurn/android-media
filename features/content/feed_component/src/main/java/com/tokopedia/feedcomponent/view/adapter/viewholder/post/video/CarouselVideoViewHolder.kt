@@ -31,7 +31,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class CarouselVideoViewHolder(
     itemView: View,
-    private val listener: Listener,
+    private val listener: Listener
 ) : BaseViewHolder(itemView) {
 
     private var videoPlayer: FeedExoPlayer? = null
@@ -57,7 +57,6 @@ class CarouselVideoViewHolder(
 
     private val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
         override fun onTick(millisUntilFinished: Long) {
-
         }
 
         override fun onFinish() {
@@ -105,13 +104,12 @@ class CarouselVideoViewHolder(
         llLihatProduct?.setOnClickListener {
             listener.onLihatProductClicked(
                 this,
-                item,
+                item
             )
         }
         volumeIcon.setOnClickListener {
             toggleMute(item)
         }
-
     }
 
     private fun toggleMute(media: FeedXMedia) {
@@ -125,8 +123,11 @@ class CarouselVideoViewHolder(
 
     private fun changeVolumeIcon() {
         volumeIcon.setImageResource(
-            if (isMuted) R.drawable.ic_feed_volume_mute_large
-            else R.drawable.ic_feed_volume_up_large
+            if (isMuted) {
+                R.drawable.ic_feed_volume_mute_large
+            } else {
+                R.drawable.ic_feed_volume_up_large
+            }
         )
     }
 
@@ -159,7 +160,7 @@ class CarouselVideoViewHolder(
                 showVideoLoading()
             }
 
-            override fun onVideoReadyToPlay() {
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideVideoLoading()
                 timerView.visible()
                 var time = videoPlayer?.getExoPlayer()?.duration.orZero() / TIME_SECOND
@@ -236,15 +237,15 @@ class CarouselVideoViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ) = CarouselVideoViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
                     R.layout.item_post_video_new,
                     parent,
-                    false,
+                    false
                 ),
-            listener,
+            listener
         )
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestButton
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -47,7 +48,9 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestHeader(title = "Tokopedia Test App", showBackIcon = false)
+            NestHeader(
+                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
+            )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {

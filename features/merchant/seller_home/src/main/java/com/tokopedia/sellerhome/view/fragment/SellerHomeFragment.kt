@@ -1162,8 +1162,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
 
-        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
-        setViewBackground(isNewSellerState)
+        setViewBackground()
     }
 
     private fun setupEmptyState() {
@@ -1987,7 +1986,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground(isNewSellerState)
+                setViewBackground()
             }
             setSectionWidgetTextColor()
         }
@@ -2019,70 +2018,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
+    private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
             isPowerMerchant -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
             else -> {
-                if (isNewSeller) {
-                    viewBgShopStatus.gone()
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
-                }
+                viewBgShopStatus.gone()
             }
         }
     }
 
-    private fun showRegularHomeBackground(imageUrl: String) {
+    private fun showRegularHomeBackground(backgroundResource: Int) {
         binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.loadImage(imageUrl) {
-                    listener(onSuccess = { _, _ ->
-                        viewBgShopStatus.visible()
-                        setHomeBackgroundRatio()
-                    })
-                }
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
-        }
-    }
-
-    private fun setHomeBackgroundRatio() {
-        binding?.run {
-            viewBgShopStatus.layoutParams.height =
-                (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
+            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+            viewBgShopStatus.layoutParams.height = height
+            viewBgShopStatus.visible()
+            viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
-        }
-    }
-
-    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
-        binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.setImageResource(imageResourceId)
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
         }
     }
 

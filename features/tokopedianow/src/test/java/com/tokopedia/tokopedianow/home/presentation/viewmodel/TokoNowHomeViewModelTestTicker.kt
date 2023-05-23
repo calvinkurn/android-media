@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
@@ -11,12 +10,7 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
-import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
-import com.tokopedia.tokopedianow.data.createDynamicLegoBannerDataModel
-import com.tokopedia.tokopedianow.data.createHomeLayoutList
-import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
-import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
-import com.tokopedia.tokopedianow.data.createTicker
+import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QUANTITY
@@ -25,7 +19,8 @@ import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -90,7 +85,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given ticker response when calling getTicker after getting getLayoutData then it should add ticker widget on home layout list`() = runBlockingTest {
+    fun `given ticker response when calling getTicker after getting getLayoutData then it should add ticker widget on home layout list`() = runTest {
         val repurchaseChannelId = "1001"
         val repurchaseProductId = "1"
         val repurchaseProductPosition = 1
@@ -167,17 +162,12 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = repurchaseChannelId,
                         productId = repurchaseProductId,
-                        quantity = repurchaseProductMaxOrder,
+                        quantity = DEFAULT_QUANTITY,
                         stock = repurchaseProductStock,
-                        product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(
-                                quantity = DEFAULT_QUANTITY,
-                                minQuantity = repurchaseProductMinOrder,
-                                maxQuantity = repurchaseProductMaxOrder
-                            ),
-                            hasAddToCartButton = true
-                        ),
+                        minOrder = repurchaseProductMinOrder,
+                        maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
+                        originalPosition = repurchaseProductPosition,
                         headerName = repurchaseProductTitle
                     )
                 ),
