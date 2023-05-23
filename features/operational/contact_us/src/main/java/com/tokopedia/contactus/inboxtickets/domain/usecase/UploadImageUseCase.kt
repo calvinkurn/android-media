@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import com.tokopedia.contactus.inboxtickets.data.UploadImageResponse
@@ -12,6 +13,9 @@ import com.tokopedia.contactus.inboxtickets.data.model.SecureImageParameter
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -20,6 +24,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.coroutines.CoroutineContext
 
 private const val IMAGE_UPLOAD_PATH = "/upload/attachment"
 private const val ATTACHMENT_TYPE = "fileToUpload\"; filename=\"image.jpg"
@@ -29,10 +34,13 @@ private const val PARAM_ID = "id"
 
 class ContactUsUploadImageUseCase @Inject constructor(
     private val context: Context,
-    private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>
-) {
+    private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
+    private var dispatchers: CoroutineDispatchers,
+) : CoroutineScope {
 
-    fun uploadFile(
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
+
+    suspend fun uploadFile(
         userId: String,
         imageUploads: List<ImageUpload>?,
         files: List<String>,
@@ -40,19 +48,20 @@ class ContactUsUploadImageUseCase @Inject constructor(
     ): List<ImageUpload> {
         val list = ArrayList<ImageUpload>()
         imageUploads?.forEachIndexed { index, imageUpload ->
+            withContext(dispatchers.io) {
+                val params = getParams(userId, files[index])
 
-            val params = getParams(userId, files[index])
+                val response = uploadImageUseCase
+                    .createObservable(params)
+                    .toBlocking()
+                    .first()
+                    .dataResultImageUpload
 
-            val response = uploadImageUseCase
-                .createObservable(params)
-                .toBlocking()
-                .first()
-                .dataResultImageUpload
-
-            imageUpload.picObj = getModifiedPicObj(
-                response.data.picObj,
-                listOfSecureImageParmeter[index]
-            )
+                imageUpload.picObj = getModifiedPicObj(
+                    response.data.picObj,
+                    listOfSecureImageParmeter[index]
+                )
+            }
             list.add(imageUpload)
         }
         return list
