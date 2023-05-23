@@ -34,8 +34,8 @@ sealed interface PlayShortsUiEvent {
         val throwable: Throwable
     ) : PlayShortsUiEvent
 
-    data class SubmitOnboardAffiliateUiEvent(val throwable: Throwable? = null) : PlayShortsUiEvent
+    data class ErrorOnboardAffiliate(val error: Throwable? = null) : PlayShortsUiEvent
 
-    object SuccessSubmitAffiliateTncUiEvent : PlayShortsUiEvent
+    object SuccessOnboardAffiliate : PlayShortsUiEvent
 
 }
