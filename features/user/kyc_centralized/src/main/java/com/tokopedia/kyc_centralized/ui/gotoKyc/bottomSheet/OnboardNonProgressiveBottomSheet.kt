@@ -119,6 +119,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         super.onResume()
         setUpViewKtp()
         setUpViewSelfie()
+        setUpButton()
     }
 
     private fun initUserConsent() {
@@ -231,6 +232,17 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             } else {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
             }
+        }
+    }
+
+    private fun setUpButton() {
+        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
+        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
+
+        binding?.btnSubmit?.text = if (isKtpTaken || isSelfieTaken) {
+            getString(R.string.goto_kyc_continue_verification)
+        } else {
+            getString(R.string.goto_kyc_start_verification)
         }
     }
 

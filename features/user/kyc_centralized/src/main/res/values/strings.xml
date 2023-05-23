@@ -244,8 +244,8 @@
     <string name="goto_kyc_benefit_detail_gopay_title_3">Nikmatin fitur menarik lainnya</string>
     <string name="goto_kyc_benefit_detail_gopay_subtitle_3">Transfer ke bank, tarik tunai dan bayar ke teman &amp; keluarga.</string>
     <string name="goto_kyc_benefit_detail_bottom_sheet_title">Keuntungan setelah verifikasi</string>
-    <string name="goto_kyc_onboard_non_progressive_title">Verifikasi datamu dulu, yuk! Gampang banget, lho~</string>
-    <string name="goto_kyc_onboard_non_progressive_button">Mulai Verifikasi</string>
+    <string name="goto_kyc_onboard_non_progressive_title">Verifikasi datamu dulu, yuk!\nGampang banget, lho~</string>
+    <string name="goto_kyc_start_verification">Mulai Verifikasi</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto KTP</string>
@@ -267,7 +267,7 @@
     <string name="goto_kyc_bridging_not_done_gopay_item_selfie_title">Ambil selfie</string>
     <string name="goto_kyc_bridging_not_done_gopay_item_ktp_number">1</string>
     <string name="goto_kyc_bridging_not_done_gopay_item_selfie_number">2</string>
-    <string name="goto_kyc_bridging_not_done_gopay_button">Lanjut Verifikasi</string>
+    <string name="goto_kyc_continue_verification">Lanjut Verifikasi</string>
     <string name="goto_kyc_bridging_done_gopay_subtitle">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_confirm_KTP_name">Oke, Pakai KTP Ini</string>
     <string name="goto_kyc_question_ktp_issue">Bukan KTP kamu? Hubungi Tokopedia Care</string>
@@ -337,7 +337,7 @@
     <string name="onekyc_zero_clicks_feedback_perfect_autocapture">Lagi ambil foto.. jangan gerak dulu, ya.</string>
     <string name="onekyc_zero_clicks_feedback_perfect_manualcapture">Ambil fotonya kalau udah siap</string>
     <string name="onekyc_review_screen_title">Review &amp; Kirim Dokumen</string>
-    <string name="onekyc_review_document_info">Pastikan foto dokumen kamu terlihat jelas biar bisa langsung dikirim dan diproses, deh.</string>
+    <string name="onekyc_review_document_info">Pastikan foto dokumen kamu terlihat jelas biar bisa langsung dikirim dan diproses.</string>
     <string name="onekyc_review_document_resume_info_part1">You already took photos,</string>
     <string name="onekyc_review_document_resume_info_part2">you just need to submit it</string>
     <string name="onekyc_review_document_resume_info_part3"> and your GoPay will be upgraded to GoPay Plus!</string>
@@ -354,10 +354,10 @@
     <string name="onekyc_review_switch_yes">Yes, I\'m sure</string>
     <string name="onekyc_review_switch_keep_passport">Keep passport</string>
     <string name="onekyc_review_switch_keep_ktp">Keep e-KTP</string>
-    <string name="onekyc_review_document_delete_confirmation_title">Sure you want to delete this photo?</string>
-    <string name="onekyc_review_document_delete_confirmation_description">Once deleted, you\'ll have to start over from the beginning if later you want to upgrade to GoPay Plus.</string>
-    <string name="onekyc_review_document_delete_confirmation_yes">Yes, I\'m sure</string>
-    <string name="onekyc_review_document_delete_confirmation_cancel">Cancel</string>
+    <string name="onekyc_review_document_delete_confirmation_title">Yakin mau hapus fotonya?</string>
+    <string name="onekyc_review_document_delete_confirmation_description">Setelah foto dihapus, kamu bakal perlu ulang dari awal kalau kamu mau verifikasi.</string>
+    <string name="onekyc_review_document_delete_confirmation_yes">Ya, Hapus</string>
+    <string name="onekyc_review_document_delete_confirmation_cancel">Batal</string>
 
     <!-- Zero Click Flow Guideline Dialog-->
     <string name="onekyc_guideline_ktp_title">Tips ambil foto e-KTP</string>
@@ -393,9 +393,9 @@
     <string name="onekyc_review_document_retake">Foto Ulang</string>
 
     <!-- Auto capture exhausted -->
-    <string name="gofin_kyc_auto_capture_exhausted_dialog_title">Mau ambil foto secara manual aja?</string>
-    <string name="gofin_kyc_auto_capture_exhausted_dialog_description">Soalnya udah beberapa kali gagal ambil foto otomatis.</string>
-    <string name="gofin_kyc_auto_capture_continue_cta">Foto otomatis</string>
-    <string name="gofin_kyc_auto_capture_swicth_mode_cta">Foto manual</string>
+    <string name="gofin_kyc_auto_capture_exhausted_dialog_title">Mau coba foto manual aja?</string>
+    <string name="gofin_kyc_auto_capture_exhausted_dialog_description">Sepertinya kamu kesulitan saat ambil foto otomatis, coba foto manual buat lanjutin.</string>
+    <string name="gofin_kyc_auto_capture_continue_cta">Foto Otomatis</string>
+    <string name="gofin_kyc_auto_capture_swicth_mode_cta">Foto Manual</string>
 
 </resources>

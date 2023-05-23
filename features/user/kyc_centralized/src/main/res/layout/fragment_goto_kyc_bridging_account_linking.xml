@@ -91,7 +91,7 @@
         android:id="@+id/btn_confirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/goto_kyc_bridging_not_done_gopay_button"
+        android:text="@string/goto_kyc_continue_verification"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="16dp"
         android:visibility="gone"

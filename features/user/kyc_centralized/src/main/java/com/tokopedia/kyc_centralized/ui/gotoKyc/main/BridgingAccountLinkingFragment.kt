@@ -238,7 +238,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             layoutDoneGopay.root.hide()
             layoutNotDoneGopay.root.show()
 
-            btnConfirm.text = getString(R.string.goto_kyc_bridging_not_done_gopay_button)
+            btnConfirm.text = getString(R.string.goto_kyc_continue_verification)
 
             tvTokopediaCare.hide()
 
