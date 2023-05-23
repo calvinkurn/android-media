@@ -24,10 +24,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
@@ -121,7 +118,7 @@ class FeedPostImageViewHolder(
             }
 
             val postGestureDetector = GestureDetector(
-                    root.context,
+                root.context,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                         return true
@@ -150,7 +147,7 @@ class FeedPostImageViewHolder(
                     override fun onLongPress(e: MotionEvent) {
                     }
                 }
-                )
+            )
 
             rvFeedPostImageContent.setOnTouchListener { _, event ->
                 when (event.action) {
@@ -223,7 +220,7 @@ class FeedPostImageViewHolder(
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(data.share, trackerData)
+                    listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -528,6 +525,23 @@ class FeedPostImageViewHolder(
                     binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
                 }
             }
+        }
+    }
+
+    private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
+        return if (data.isTopAds) {
+            val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
+            val appLinkProduct = if (data.media.size > selectedImagePosition) {
+                data.media[selectedImagePosition].applink
+            } else {
+                data.share.appLink
+            }
+            return data.share.copy(
+                appLink = appLinkProduct,
+                webLink = appLinkProduct
+            )
+        } else {
+            data.share
         }
     }
 
