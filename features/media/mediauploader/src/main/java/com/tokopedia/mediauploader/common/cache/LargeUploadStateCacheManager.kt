@@ -38,6 +38,10 @@ class LargeUploadStateCacheManager @Inject constructor(
         }
     }
 
+    fun isChunkExist(sourceId: String, fileName: String): Boolean {
+        return get(sourceId, fileName)?.partDone?.isNotEmpty() == true
+    }
+
     fun clear() {
         clearCache()
     }
