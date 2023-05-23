@@ -531,14 +531,18 @@ class FeedPostImageViewHolder(
     private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
         return if (data.isTopAds) {
             val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
-            val appLinkProduct = if (data.media.size > selectedImagePosition) {
-                data.media[selectedImagePosition].appLink
+            // intentionally, get data from 'products' instead of 'medias'
+            // as long as products value === medias value (please check the MapperTopAdsFeed.kt)
+            // todo: differentiate TopAds model with the rest
+            val productLink = if (data.products.size > selectedImagePosition) {
+                val productItem = data.products[selectedImagePosition]
+                Pair(productItem.applink, productItem.weblink)
             } else {
-                data.share.appLink
+                Pair(data.share.appLink, data.share.webLink)
             }
             return data.share.copy(
-                appLink = appLinkProduct,
-                webLink = appLinkProduct
+                appLink = productLink.first,
+                webLink = productLink.second
             )
         } else {
             data.share
