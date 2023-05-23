@@ -8,6 +8,8 @@ import com.tokopedia.kyc_centralized.util.CipherProvider
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -44,5 +46,10 @@ class UserIdentificationCommonModule {
     @Provides
     fun provideCipher(): CipherProvider {
         return CipherProviderImpl()
+    }
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }
