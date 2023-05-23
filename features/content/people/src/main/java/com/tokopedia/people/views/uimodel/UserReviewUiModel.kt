@@ -30,11 +30,7 @@ data class UserReviewUiModel(
         val likeDislike: LikeDislike,
         val isReviewTextExpanded: Boolean,
     ) {
-        fun mapToProductReviewMediaGalleryModel(
-            userId: String,
-            userDisplayName: String,
-            userImage: String,
-        ): ProductrevGetReviewMedia {
+        fun mapToProductReviewMediaGalleryModel(): ProductrevGetReviewMedia {
             return ProductrevGetReviewMedia(
                 reviewMedia = attachments.mapIndexed { index, attachment ->
                     val position = index + 1
@@ -75,11 +71,6 @@ data class UserReviewUiModel(
                     mediaCount = attachments.size.toLong(),
                     reviewDetail = listOf(
                         ReviewDetail(
-                            user = ReviewerUserInfo(
-                                userId = userId,
-                                fullName = userDisplayName,
-                                image = userImage,
-                            ),
                             feedbackId = feedbackID,
                             variantName = product.productVariant.variantName,
                             review = reviewText,

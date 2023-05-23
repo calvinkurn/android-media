@@ -160,11 +160,7 @@ class UserProfileReviewFragment @Inject constructor(
                             isFromGallery = false,
                             mediaPosition = event.mediaPosition,
                             showSeeMore = false,
-                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel(
-                                userId = viewModel.profileUserID,
-                                userDisplayName = viewModel.displayName,
-                                userImage = viewModel.profileCover,
-                            )
+                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel()
                         )
 
                         /** TODO: startActivityForResult for handling like dislike inside media gallery */
