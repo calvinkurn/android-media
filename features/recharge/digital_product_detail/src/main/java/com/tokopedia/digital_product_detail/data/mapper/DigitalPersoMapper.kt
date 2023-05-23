@@ -40,7 +40,7 @@ class DigitalPersoMapper @Inject constructor() {
         response: RechargeSaveTelcoUserBalanceAccessToken
     ): DigitalSaveAccessTokenResultModel {
         return DigitalSaveAccessTokenResultModel(
-            isSuccess = response.message.lowercase() == SAVE_ACCESS_TOKEN_SUCCESS,
+            isSuccess = response.grc == SAVE_ACCESS_TOKEN_SUCCESS,
             message = response.message
         )
     }
@@ -72,6 +72,6 @@ class DigitalPersoMapper @Inject constructor() {
     }
 
     companion object {
-        const val SAVE_ACCESS_TOKEN_SUCCESS = "success"
+        const val SAVE_ACCESS_TOKEN_SUCCESS = "E"
     }
 }
