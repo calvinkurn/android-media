@@ -38,7 +38,8 @@ class VideoMetaDataExtractorImpl @Inject constructor(
         return VideoInfo(
             width = getVideoWidth(retriever),
             height = getVideoHeight(retriever),
-            bitrate = getVideoBitrate(retriever)
+            bitrate = getVideoBitrate(retriever),
+            duration = getVideoDuration(retriever)
         )
     }
 
@@ -58,6 +59,12 @@ class VideoMetaDataExtractorImpl @Inject constructor(
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT
         )?.toInt() ?: MIN_HEIGHT
+    }
+
+    private fun getVideoDuration(retriever: MediaMetadataRetriever): Int {
+        return retriever.extractMetadata(
+            MediaMetadataRetriever.METADATA_KEY_DURATION
+        )?.toInt() ?: 0
     }
 
     companion object {
