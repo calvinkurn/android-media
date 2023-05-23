@@ -109,7 +109,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".category.presentation.activity.TokoNowCategoryActivity"
+            android:name=".oldcategory.presentation.view.TokoNowCategoryActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustResize"

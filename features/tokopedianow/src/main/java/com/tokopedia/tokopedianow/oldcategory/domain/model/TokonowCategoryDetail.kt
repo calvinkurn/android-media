@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class TokonowCategoryDetail(
-        @SerializedName("TokonowCategoryDetailResponse")
+        @SerializedName("TokonowCategoryDetail")
         @Expose
         val categoryDetail: CategoryDetail = CategoryDetail(),
 ) {
