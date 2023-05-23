@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel to do widget",
       "eventCategory": "homepage",
-      "eventLabel": ".*_.*_.*_.*_.*_.*",
+      "eventLabel": ".*",
       "trackerId": "41015",
       "businessUnit": "home & browse",
       "channelId": ".*",
@@ -15,8 +15,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel to do widget - banner - .* - .*"
+          "item_id": ".*_.*_.*_.*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel to do widget - banner - .*"
         }
       ],
       "userId": ".*",
@@ -26,7 +26,7 @@
       "event": "select_content",
       "eventAction": "click CTA button on dynamic channel to do widget",
       "eventCategory": "homepage",
-      "eventLabel": ".*_.*_.*_.*_.*_.*",
+      "eventLabel": ".*",
       "trackerId": "41016",
       "businessUnit": "home & browse",
       "campaignCode": ".*",
@@ -36,8 +36,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel to do widget - banner - .* - .*"
+          "item_id": ".*_.*_.*_.*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel to do widget - banner - .*"
         }
       ],
       "userId": ".*",

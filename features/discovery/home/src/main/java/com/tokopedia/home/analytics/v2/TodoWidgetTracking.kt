@@ -28,11 +28,9 @@ object TodoWidgetTracking : BaseTrackerConst() {
             const val EVENT_ACTION_CLICK_CARD = "click on card on dynamic channel to do widget"
             const val EVENT_ACTION_CLICK_CLOSE = "click close button on dynamic channel to do widget"
             const val EVENT_ACTION_IMPRESSION = "impression on banner dynamic channel to do widget"
-            const val DEFAULT_VALUE = ""
-            const val DEFAULT_BANNER_ID = "0"
             const val FORMAT_EVENT_LABEL = "%s_%s_%s_%s_%s_%s"
-            const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
-            const val ITEM_NAME_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_TODO_WIDGET - banner - %s - %s"
+            const val ITEM_ID_FORMAT = "%s_%s_%s_%s_%s_%s_%s"
+            const val ITEM_NAME_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_TODO_WIDGET - banner - %s"
             const val TRACKER_ID_IMPRESSION = "41015"
             const val TRACKER_ID_CLICK_CTA = "41016"
             const val TRACKER_ID_CLICK_CARD = "43721"
@@ -46,13 +44,15 @@ object TodoWidgetTracking : BaseTrackerConst() {
         val itemId = ITEM_ID_FORMAT.format(
             element.channel.id,
             element.channel.channelBanner.id,
-            element.channel.trackingAttributionModel.persoType,
-            element.channel.trackingAttributionModel.categoryId
+            element.dataSource,
+            element.title,
+            element.contextInfo,
+            element.price,
+            element.dueDate
         )
         val itemName = ITEM_NAME_FORMAT.format(
             element.verticalPosition,
-            element.dataSource,
-            element.channel.channelHeader.name
+            element.title
         )
 
         val listPromotions = arrayListOf(
@@ -68,14 +68,7 @@ object TodoWidgetTracking : BaseTrackerConst() {
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_IMPRESSION,
-            eventLabel = FORMAT_EVENT_LABEL.format(
-                element.channel.id,
-                element.dataSource,
-                element.channel.channelHeader.name,
-                element.contextInfo,
-                element.price,
-                element.dueDate
-            ),
+            eventLabel = element.channel.id,
             promotions = listPromotions
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -91,17 +84,7 @@ object TodoWidgetTracking : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK_CTA)
         bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(
-            Label.KEY,
-            FORMAT_EVENT_LABEL.format(
-                element.channel.id,
-                element.dataSource,
-                element.channel.channelHeader.name,
-                element.contextInfo,
-                element.price,
-                element.dueDate
-            )
-        )
+        bundle.putString(Label.KEY, element.channel.id)
         bundle.putString(TrackerId.KEY, TRACKER_ID_CLICK_CTA)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
@@ -116,16 +99,18 @@ object TodoWidgetTracking : BaseTrackerConst() {
                 ITEM_ID_FORMAT.format(
                     element.channel.id,
                     element.channel.channelBanner.id,
-                    element.channel.trackingAttributionModel.persoType,
-                    element.channel.trackingAttributionModel.categoryId
+                    element.dataSource,
+                    element.title,
+                    element.contextInfo,
+                    element.price,
+                    element.dueDate
                 )
             )
             putString(
                 Promotion.ITEM_NAME,
                 ITEM_NAME_FORMAT.format(
                     element.verticalPosition,
-                    element.dataSource,
-                    element.channel.channelHeader.name
+                    element.title
                 )
             )
         }
@@ -143,7 +128,7 @@ object TodoWidgetTracking : BaseTrackerConst() {
             eventLabel = FORMAT_EVENT_LABEL.format(
                 element.channel.id,
                 element.dataSource,
-                element.channel.channelHeader.name,
+                element.title,
                 element.contextInfo,
                 element.price,
                 element.dueDate
@@ -166,7 +151,7 @@ object TodoWidgetTracking : BaseTrackerConst() {
             eventLabel = FORMAT_EVENT_LABEL.format(
                 element.channel.id,
                 element.dataSource,
-                element.channel.channelHeader.name,
+                element.title,
                 element.contextInfo,
                 element.price,
                 element.dueDate
