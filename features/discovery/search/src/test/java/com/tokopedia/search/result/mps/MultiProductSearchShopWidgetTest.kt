@@ -169,7 +169,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
             mpsShopWidgetProductDataView.buttonList,
             shopItemProduct.buttonList,
             shopItem.id,
-            "",
+            "${shopItem.name} ^ 0",
         )
 
         assertThat(mpsShopWidgetProductDataView.labelGroupList.size, `is`(shopItemProduct.labelGroupList.size))
