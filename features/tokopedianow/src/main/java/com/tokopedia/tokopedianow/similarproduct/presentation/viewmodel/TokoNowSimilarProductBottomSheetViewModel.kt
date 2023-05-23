@@ -12,12 +12,14 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.similarproduct.presentation.mapper.TokoNowSimilarProductBottomSheetMapper.updateProductQuantity
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -30,12 +32,16 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -68,6 +74,12 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
         updateProductQuantity(miniCartData)
     }
 
+    fun onViewCreated(productList: List<ProductCardCompactSimilarProductUiModel>) {
+        initAffiliateCookie()
+        addVisitableItems(productList)
+        updateProductQuantity()
+    }
+
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
         launchCatchError(block = {
             layoutItemList.updateProductQuantity(miniCartData)
@@ -98,22 +110,23 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
         return tokonowQueryParam
     }
 
-    fun onViewCreated(productList: List<ProductCardCompactSimilarProductUiModel>) {
-        layoutItemList.addAll(productList)
-
-        miniCartData?.let {
-            updateProductQuantity(it)
-        }
-
-        _visitableItems.postValue(layoutItemList)
-    }
-
     fun getSimilarProductList(productIds: String){
         launchCatchError( block = {
             val response = getSimilarProductUseCase.execute(getUserId().toIntOrZero(), productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation.orEmpty())
         }, onError = {
-        })
 
+        })
+    }
+
+    private fun addVisitableItems(productList: List<ProductCardCompactSimilarProductUiModel>) {
+        layoutItemList.addAll(productList)
+        _visitableItems.postValue(layoutItemList)
+    }
+
+    private fun updateProductQuantity() {
+        miniCartData?.let {
+            updateProductQuantity(it)
+        }
     }
 }

@@ -91,13 +91,15 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
-        textInputCoupon.textFieldInput.setText(promoCode)
-        view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()))
-        // Change last seen promo text style
-        promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)
-        initViewExchangeCoupon(view)
+        context?.let { context ->
+            progressDialog = ProgressDialog(activity)
+            progressDialog.setMessage(context.resources.getString(com.tokopedia.abstraction.R.string.title_loading))
+            textInputCoupon.textFieldInput.setText(promoCode)
+            view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()))
+            // Change last seen promo text style
+            promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)
+            initViewExchangeCoupon(view)
+        }
     }
 
     private fun initViewExchangeCoupon(view: View) {
@@ -242,22 +244,25 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
     }
 
     override fun onResume() {
-
         if (mIsRestoredfromBackStack) {
             isLoadingInitialData = true
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
-            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
+            context?.let { context ->
+                promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, context.resources)
+                promoCheckoutListMarketplacePresenter.getListExchangeCoupon(context.resources)
+            }
         }
         super.onResume()
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive) {
-            pageNo = page
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        context?.let { context ->
+            if (isCouponActive) {
+                pageNo = page
+                promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, context.resources)
+            }
+            promoCheckoutListMarketplacePresenter.getListLastSeen(serviceId, context.resources)
+            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(context.resources)
         }
-        promoCheckoutListMarketplacePresenter.getListLastSeen(serviceId, resources)
-        promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
     }
 
     override fun onStop() {

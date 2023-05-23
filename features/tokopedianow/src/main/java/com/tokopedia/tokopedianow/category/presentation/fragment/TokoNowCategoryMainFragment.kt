@@ -291,6 +291,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
                 viewModel.onCartQuantityChanged(
                     productId = product.productCardModel.productId,
                     quantity = quantity,
+                    stock = product.productCardModel.availableStock,
                     shopId = shopId,
                     layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
                 )

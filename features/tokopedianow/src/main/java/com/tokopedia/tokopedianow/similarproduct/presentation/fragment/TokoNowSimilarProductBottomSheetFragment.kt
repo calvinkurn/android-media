@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -89,9 +90,15 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
         }
     }
 
-    override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onCartQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(viewModel.isLoggedIn()) {
-            viewModel.onCartQuantityChanged(productId, shopId, quantity)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
@@ -126,7 +133,9 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     }
 
     private fun goToProductDetailPage(item: ProductCardCompactSimilarProductUiModel) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val appLink = viewModel.createAffiliateLink(uri)
+        RouteManager.route(context, appLink)
     }
 
     private fun setupBottomSheet() {

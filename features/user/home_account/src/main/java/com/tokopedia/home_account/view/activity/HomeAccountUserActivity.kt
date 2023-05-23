@@ -4,20 +4,19 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.di.*
+import com.tokopedia.home_account.di.ActivityComponentFactory
+import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
-import com.tokopedia.sessioncommon.di.SessionModule
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
+open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
 
     private var homeAccountUserComponents: HomeAccountUserComponents? = null
 
@@ -42,17 +41,11 @@ open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccou
         HomeAccountUserFragment.newInstance(intent?.extras)
 
     protected open fun initializeHomeAccountUserComponents(): HomeAccountUserComponents {
-        return DaggerHomeAccountUserComponents.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .homeAccountUserModules(HomeAccountUserModules(this))
-            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
-            .sessionModule(SessionModule())
-            .build().also {
+        return ActivityComponentFactory.instance.createHomeAccountComponent(this, application)
+            .also {
                 homeAccountUserComponents = it
             }
     }
-
 
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

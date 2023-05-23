@@ -43,6 +43,9 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                     product = element
                 )
             }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -68,5 +71,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             position: Int,
             product: HomeLeftCarouselAtcProductCardUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

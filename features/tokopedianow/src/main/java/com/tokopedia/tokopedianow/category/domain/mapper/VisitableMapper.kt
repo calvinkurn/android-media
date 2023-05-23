@@ -229,6 +229,7 @@ internal object VisitableMapper {
                 productId = productId,
                 quantity = quantity
             )
+            else -> { /* no more layout type */ }
         }
     }
 
@@ -247,6 +248,7 @@ internal object VisitableMapper {
                     }
                 }
             }
+            else -> { /* no more layout type */ }
         }
     }
 

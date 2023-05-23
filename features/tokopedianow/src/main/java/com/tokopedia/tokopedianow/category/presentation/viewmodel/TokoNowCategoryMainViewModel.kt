@@ -32,7 +32,9 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +57,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     dispatchers: CoroutineDispatchers
 ): TokoNowCategoryBaseViewModel(
     userSession = userSession,
@@ -62,6 +66,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     addToCartUseCase = addToCartUseCase,
     updateCartUseCase = updateCartUseCase,
     deleteCartUseCase = deleteCartUseCase,
+    affiliateService = affiliateService,
+    getTargetedTickerUseCase = getTargetedTickerUseCase,
     addressData = addressData,
     dispatchers = dispatchers
 ) {

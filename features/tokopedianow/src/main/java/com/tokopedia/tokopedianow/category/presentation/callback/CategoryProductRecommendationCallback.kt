@@ -76,6 +76,10 @@ class CategoryProductRecommendationCallback(
         directToSeeMorePage(appLink)
     }
 
+    override fun productCardAddToCartBlocked() {
+
+    }
+
     private fun directToSeeMorePage(
         appLink: String
     ) {

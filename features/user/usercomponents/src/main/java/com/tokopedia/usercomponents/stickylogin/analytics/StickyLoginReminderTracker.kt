@@ -1,7 +1,7 @@
 package com.tokopedia.usercomponents.stickylogin.analytics
 
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.Page
 import com.tokopedia.track.TrackApp
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.Page
 
 class StickyLoginReminderTracker {
 
@@ -18,6 +18,9 @@ class StickyLoginReminderTracker {
             Page.SHOP -> {
                 tracker.sendGeneralEvent(EVENT.VIEW_SHOP, CATEGORY.SHOP_PAGE, ACTION.VIEW_STICKY, LABEL.EMPTY)
             }
+            else -> {
+                // no op
+            }
         }
     }
 
@@ -32,6 +35,9 @@ class StickyLoginReminderTracker {
             Page.SHOP -> {
                 tracker.sendGeneralEvent(EVENT.CLICK_SHOP, CATEGORY.SHOP_PAGE, ACTION.CLICK_ON_LOGIN, LABEL.CLICK)
             }
+            else -> {
+                // no op
+            }
         }
     }
 
@@ -45,6 +51,9 @@ class StickyLoginReminderTracker {
             }
             Page.SHOP -> {
                 tracker.sendGeneralEvent(EVENT.CLICK_SHOP, CATEGORY.SHOP_PAGE, ACTION.CLICK_ON_CLOSE, LABEL.EMPTY)
+            }
+            else -> {
+                // no op
             }
         }
     }

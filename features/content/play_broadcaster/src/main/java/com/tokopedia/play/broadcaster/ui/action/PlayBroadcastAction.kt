@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -37,7 +39,7 @@ sealed interface PlayBroadcastAction {
     object GiveawayOngoingEnded : PlayBroadcastAction
     data class CreateGiveaway(
         val title: String,
-        val durationInMs: Long
+        val durationInMs: Long,
     ) : PlayBroadcastAction
 
     /** Quiz */
@@ -71,4 +73,7 @@ sealed interface PlayBroadcastAction {
 
     object SetShowSetupCoverCoachMark: PlayBroadcastAction
     object ResetUploadState: PlayBroadcastAction
+
+    data class AddBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
+    data class RemoveBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
 }

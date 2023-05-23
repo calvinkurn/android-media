@@ -64,7 +64,7 @@ class AffiliateDiscoPromoListFragment :
     private val discoBannerAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(promotionClickInterface = this),
-            source = AffiliateAdapter.SOURCE_DISCO_BANNER_LIST,
+            source = AffiliateAdapter.PageSource.SOURCE_DISCO_BANNER_LIST,
             userId = userSessionInterface?.userId.orEmpty()
         )
     }
@@ -198,6 +198,7 @@ class AffiliateDiscoPromoListFragment :
         commison: String,
         status: String,
         type: String?,
+        appUrl: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
@@ -208,6 +209,7 @@ class AffiliateDiscoPromoListFragment :
                 itemImage,
                 itemURL,
                 itemID,
+                appUrl = appUrl,
                 commission = commison,
                 type = type,
                 isLinkGenerationEnabled = true,

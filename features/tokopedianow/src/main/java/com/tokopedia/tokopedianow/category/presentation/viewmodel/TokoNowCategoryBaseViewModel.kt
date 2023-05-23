@@ -12,6 +12,8 @@ import com.tokopedia.network.authentication.AuthHelper.Companion.getMD5Hash
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,6 +24,8 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    affiliateService: NowAffiliateService,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ): BaseTokoNowViewModel(
@@ -29,6 +33,8 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -55,13 +61,16 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
     fun onCartQuantityChanged(
         productId: String,
         quantity: Int,
+        stock: Int,
         shopId: String,
         layoutType: CategoryLayoutType
     ) {
         onCartQuantityChanged(
+            isVariant = false,
             productId = productId,
             shopId = shopId,
             quantity = quantity,
+            stock = stock,
             onSuccessAddToCart = {
                 updateProductCartQuantity(productId, quantity, layoutType)
                 updateToolbarNotification()

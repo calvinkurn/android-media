@@ -94,6 +94,10 @@ class HomeProductRecomViewHolder(
         )
     }
 
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
+    }
+
     override fun onProductCardClicked(
         position: Int,
         product: ProductCardCompactCarouselItemUiModel
@@ -174,5 +178,6 @@ class HomeProductRecomViewHolder(
             product: ProductCardCompactCarouselItemUiModel,
             position: Int
         )
+        fun onProductCardAddToCartBlocked()
     }
 }
