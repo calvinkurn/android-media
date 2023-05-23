@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.SELLER_TOKOPEDIA_FLASH_SALE_SHARED_PREF_NAME
 import com.tokopedia.user.session.UserSession
@@ -31,5 +33,11 @@ class TokopediaFlashSaleModule {
     @Provides
     internal fun provideFlashSaleTokopediaSharedPrefs(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences(SELLER_TOKOPEDIA_FLASH_SALE_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+    }
+
+    @TokopediaFlashSaleScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }
