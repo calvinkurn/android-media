@@ -15,6 +15,7 @@ import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
@@ -159,12 +160,14 @@ data class FollowPopUpUiState(
 data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
+    val category: List<PlayWidgetItemUiModel>,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
             get() = ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
+                category = emptyList(),
             )
     }
 }

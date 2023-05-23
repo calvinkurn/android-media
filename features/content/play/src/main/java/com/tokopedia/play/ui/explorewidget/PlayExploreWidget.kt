@@ -36,8 +36,12 @@ class PlayExploreWidget @Inject constructor(
         PlayExploreWidgetFragment(router, trackingQueue, analyticFactory)
     } // TODO() setup apply here only passed router
 
+    private val fgCategory by lazyThreadSafetyNone {
+        PlayCategoryWidgetFragment()
+    }
+
     private val tabs = mapOf<String, Fragment>(
-        "Category" to PlayExploreWidgetFragment(router, trackingQueue, analyticFactory),
+        "Category" to fgCategory,
         "Eksplor" to PlayExploreWidgetFragment(router, trackingQueue, analyticFactory),
     )
 
@@ -88,6 +92,11 @@ class PlayExploreWidget @Inject constructor(
 
     fun showNow(manager: FragmentManager) {
         if (!isAdded) showNow(manager, TAG)
+    }
+
+    override fun dismiss() {
+        if (!isVisible) return
+        super.dismiss()
     }
 
     internal class Adapter(

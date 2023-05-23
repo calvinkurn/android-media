@@ -1,0 +1,73 @@
+package com.tokopedia.play.ui.explorewidget
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
+import com.tokopedia.play.ui.explorewidget.adapter.CategoryWidgetAdapter
+import com.tokopedia.play.ui.explorewidget.viewholder.CategoryWidgetViewHolder
+import com.tokopedia.play.util.CachedState
+import com.tokopedia.play.util.isNotChanged
+import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.fragment.BasePlayFragment
+import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import kotlinx.coroutines.flow.collectLatest
+
+/**
+ * @author by astidhiyaa on 23/05/23
+ */
+class PlayCategoryWidgetFragment : BasePlayFragment() {
+
+    private var _binding: FragmentPlayCategoryWidgetBinding? = null
+    private val binding: FragmentPlayCategoryWidgetBinding get() = _binding!!
+
+    private val categoryAdapter by lazyThreadSafetyNone {
+        CategoryWidgetAdapter(object : CategoryWidgetViewHolder.Item.Listener {
+            override fun onClicked(item: PlayWidgetChannelUiModel) {}
+        })
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlayCategoryWidgetBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupView()
+        observeState()
+    }
+
+    private fun setupView() {
+        binding.rvPlayCategoryWidget.adapter = categoryAdapter
+
+        //TODO() temp
+        viewModel.submitAction(
+            FetchWidgets
+        )
+    }
+
+    private fun observeState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.withCache().collectLatest { cachedState ->
+                renderCards(cachedState)
+            }
+        }
+    }
+
+    private fun renderCards(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged { it.exploreWidget.category }) return
+
+        categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category)
+    }
+}

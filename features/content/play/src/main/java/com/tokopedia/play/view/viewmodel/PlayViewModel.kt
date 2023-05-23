@@ -347,7 +347,8 @@ class PlayViewModel @AssistedInject constructor(
             shouldShow = !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
                 !videoPlayer.isYouTube && isExploreWidget,
-            data = widgets
+            data = widgets,
+            category = widgets.widgets.getChannelBlocks.getChannelCards //TODO()temp data structure
         )
     }.flowOn(dispatchers.computation)
 

@@ -107,6 +107,18 @@ val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
         return this.filterIsInstance<WidgetItemUiModel>().distinctBy { it.item.items }
     }
 
+val List<WidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
+    get() {
+        val list = this // TODO() temp
+        return buildList {
+            list.onEach {
+                it.item.items.map {
+                    add(it)
+                }
+            }
+        }
+    }
+
 val List<WidgetUiModel>.getChips: TabMenuUiModel
     get() {
         return this.filterIsInstance<TabMenuUiModel>().firstOrNull() ?: TabMenuUiModel.Empty
@@ -148,4 +160,9 @@ sealed class ExploreWidgetState {
 
     val isEmpty: Boolean
         get() = this is Empty
+}
+
+enum class ExploreWidgetType {
+    Explore,
+    Category;
 }
