@@ -1,16 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductBundlingListItemBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.OwocProductBundlingItemDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.media.loader.loadImage
 
 class OwocProductBundlingItemAdapter(
     private val listener: ViewHolder.Listener
@@ -19,9 +18,8 @@ class OwocProductBundlingItemAdapter(
     private val itemList = arrayListOf<OwocProductListUiModel.ProductUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_owoc_product_bundling_list_item, parent, false)
-        return ViewHolder(view, listener)
+        val binding = ItemOwocProductBundlingListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding, listener)
     }
 
     override fun getItemCount(): Int = itemList.size
@@ -31,10 +29,15 @@ class OwocProductBundlingItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        holder.bind(itemList.getOrNull(position), payloads)
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            holder.bind(itemList.getOrNull(position), payloads)
+        }
     }
 
     fun setItems(newItemList: List<OwocProductListUiModel.ProductUiModel>) {
+        if (newItemList.isEmpty()) return
         val diffCallback = OwocProductBundlingItemDiffUtilCallback(itemList, newItemList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
@@ -43,22 +46,18 @@ class OwocProductBundlingItemAdapter(
     }
 
     class ViewHolder(
-        itemView: View,
+        private val binding: ItemOwocProductBundlingListItemBinding,
         private val listener: Listener
-    ) : AbstractViewHolder<OwocProductListUiModel.ProductUiModel>(itemView) {
-
-        private val bundleItemThumbnailImage: ImageUnify? = itemView.findViewById(R.id.iv_item_owoc_bundling_thumbnail)
-        private val bundleItemProductNameText: Typography? = itemView.findViewById(R.id.tv_item_owoc_bundling_product_name)
-        private val bundleItemProductPriceQuantityText: Typography? = itemView.findViewById(R.id.tv_item_owoc_bundling_product_price_quantity)
+    ) : AbstractViewHolder<OwocProductListUiModel.ProductUiModel>(binding.root) {
 
         private var element: OwocProductListUiModel.ProductUiModel? = null
 
         override fun bind(model: OwocProductListUiModel.ProductUiModel?) {
             model?.let {
                 element = it
-                setBundleItemThumbnail(it.productThumbnailUrl)
                 setBundleItemProductName(it.productName)
                 setBundleItemProductPriceQuantity(it.quantity, it.priceText)
+                setBundleItemThumbnail(it.productThumbnailUrl)
                 setItemOnClickListener(it.orderId, it.orderDetailId)
             }
         }
@@ -69,9 +68,6 @@ class OwocProductBundlingItemAdapter(
                     val (oldItem, newItem) = it
                     if (oldItem is OwocProductListUiModel.ProductUiModel && newItem is OwocProductListUiModel.ProductUiModel) {
                         this.element = newItem
-                        if (oldItem.productThumbnailUrl != newItem.productThumbnailUrl) {
-                            setBundleItemThumbnail(newItem.productThumbnailUrl)
-                        }
                         if (oldItem.productName != newItem.productName) {
                             setBundleItemProductName(newItem.productName)
                         }
@@ -80,6 +76,9 @@ class OwocProductBundlingItemAdapter(
                             oldItem.priceText != newItem.priceText
                         ) {
                             setBundleItemProductPriceQuantity(newItem.quantity, newItem.priceText)
+                        }
+                        if (oldItem.productThumbnailUrl != newItem.productThumbnailUrl) {
+                            setBundleItemThumbnail(newItem.productThumbnailUrl)
                         }
                         if (
                             oldItem.orderId != newItem.orderId ||
@@ -94,19 +93,18 @@ class OwocProductBundlingItemAdapter(
                     }
                 }
             }
-            bind(element)
         }
 
         private fun setBundleItemThumbnail(thumbnailUrl: String) {
-            bundleItemThumbnailImage?.setImageUrl(thumbnailUrl)
+            binding.ivItemOwocBundlingThumbnail.loadImage(thumbnailUrl)
         }
 
         private fun setBundleItemProductName(productName: String) {
-            bundleItemProductNameText?.text = productName
+            binding.tvItemOwocBundlingProductName.text = productName
         }
 
         private fun setBundleItemProductPriceQuantity(quantity: Int, priceText: String) {
-            bundleItemProductPriceQuantityText?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
+            binding.tvItemOwocBundlingProductPriceQuantity.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
         }
 
         private fun setItemOnClickListener(orderId: String, orderDetailId: String) {

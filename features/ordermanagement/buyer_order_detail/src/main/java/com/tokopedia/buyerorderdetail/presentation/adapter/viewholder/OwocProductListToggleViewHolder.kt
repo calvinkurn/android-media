@@ -8,7 +8,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductListToggleBinding
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
+
 
 class OwocProductListToggleViewHolder(
     itemView: View,
@@ -29,8 +29,12 @@ class OwocProductListToggleViewHolder(
     private val binding = ItemOwocProductListToggleBinding.bind(itemView)
     private var animation: ViewPropertyAnimator? = null
 
-    private fun bindToggleText(text: StringRes) = with(binding) {
-        tvOwocProductListToggle.text = text.getStringValueWithDefaultParam(root.context)
+    private fun bindToggleText(isExpanded: Boolean) = with(binding) {
+        tvOwocProductListToggle.text = if (isExpanded) {
+            getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_product_list_collapse)
+        } else {
+            getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_owoc_product_list_expand)
+        }
     }
 
     private fun bindToggleIcon(collapsed: Boolean, animate: Boolean) = with(binding) {
@@ -38,12 +42,21 @@ class OwocProductListToggleViewHolder(
         rotateToggleIcon(getToggleIconRotation(collapsed), animate)
     }
 
-    private fun bindListener(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean) {
+    private fun bindListener(
+        remainingProducts: List<BaseOwocVisitableUiModel>,
+        isExpanded: Boolean
+    ) {
         binding.root.setOnClickListener {
             if (isExpanded) {
-                listener.onExpandProductList(expandedProducts = expandedProducts, isExpanded = isExpanded)
+                listener.onCollapseProductList(
+                    expandedProducts = remainingProducts,
+                    isExpanded = false
+                )
             } else {
-                listener.onCollapseProductList(expandedProducts = expandedProducts, isExpanded = isExpanded)
+                listener.onExpandProductList(
+                    expandedProducts = remainingProducts,
+                    isExpanded = true
+                )
             }
         }
     }
@@ -79,9 +92,9 @@ class OwocProductListToggleViewHolder(
 
     override fun bind(element: OwocProductListUiModel.ProductListToggleUiModel?) {
         if (element == null) return
-        bindToggleText(element.text)
+        bindToggleText(element.isExpanded)
         bindToggleIcon(collapsed = element.isExpanded, animate = false)
-        bindListener(element.expandProductList, element.isExpanded)
+        bindListener(element.remainingProductList, element.isExpanded)
     }
 
     override fun bind(
@@ -92,12 +105,10 @@ class OwocProductListToggleViewHolder(
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is OwocProductListUiModel.ProductListToggleUiModel && newItem is OwocProductListUiModel.ProductListToggleUiModel) {
-                    if (oldItem.text != newItem.text) {
-                        bindToggleText(newItem.text)
-                    }
                     if (oldItem.isExpanded != newItem.isExpanded) {
+                        bindToggleText(newItem.isExpanded)
                         bindToggleIcon(newItem.isExpanded, true)
-                        bindListener(newItem.expandProductList, newItem.isExpanded)
+                        bindListener(newItem.remainingProductList, newItem.isExpanded)
                     }
                     return
                 }
@@ -106,8 +117,15 @@ class OwocProductListToggleViewHolder(
     }
 
     interface Listener {
-        fun onCollapseProductList(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean)
-        fun onExpandProductList(expandedProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean)
+        fun onCollapseProductList(
+            expandedProducts: List<BaseOwocVisitableUiModel>,
+            isExpanded: Boolean
+        )
+
+        fun onExpandProductList(
+            expandedProducts: List<BaseOwocVisitableUiModel>,
+            isExpanded: Boolean
+        )
     }
 }
 

@@ -35,7 +35,8 @@
             app:layout_constraintStart_toEndOf="@id/iv_item_owoc_bundling_thumbnail"
             app:layout_constraintTop_toTopOf="@id/iv_item_owoc_bundling_thumbnail"
             app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="heading_6"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold"
             tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_item_owoc_bundling_product_name"
             app:layout_constraintTop_toBottomOf="@id/tv_item_owoc_bundling_product_name"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="2 x Rp 2.000.000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

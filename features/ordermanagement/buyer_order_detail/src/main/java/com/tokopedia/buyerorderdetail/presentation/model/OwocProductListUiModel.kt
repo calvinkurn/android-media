@@ -76,14 +76,11 @@ data class OwocProductListUiModel(
 
     data class ProductListToggleUiModel(
         val isExpanded: Boolean,
-        val text: StringRes,
-        val shopId: String,
-        val collapsedProductList: List<BaseOwocVisitableUiModel>,
-        val expandProductList: List<BaseOwocVisitableUiModel>
+        val remainingProductList: List<BaseOwocVisitableUiModel>
     ) : BaseOwocVisitableUiModel {
 
         override fun shouldShow(context: Context?): Boolean {
-            return context?.getString(text.id)?.isNotBlank() == true
+            return remainingProductList.isNotEmpty()
         }
 
         override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
