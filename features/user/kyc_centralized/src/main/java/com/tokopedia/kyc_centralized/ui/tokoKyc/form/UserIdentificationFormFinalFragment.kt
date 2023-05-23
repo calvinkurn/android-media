@@ -84,6 +84,9 @@ class UserIdentificationFormFinalFragment :
     lateinit var serverLogger: KycServerLogger
 
     @Inject
+    lateinit var imageEncryptionUtil: ImageEncryptionUtil
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
@@ -647,10 +650,7 @@ class UserIdentificationFormFinalFragment :
     }
 
     private fun isUsingEncrypt(): Boolean {
-        context?.let {
-            return ImageEncryptionUtil.isUsingEncrypt(it)
-        }
-        return false
+        return imageEncryptionUtil.isUsingEncrypt()
     }
 
     companion object {

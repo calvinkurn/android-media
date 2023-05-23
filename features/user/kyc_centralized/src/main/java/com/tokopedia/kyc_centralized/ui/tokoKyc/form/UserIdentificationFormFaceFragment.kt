@@ -56,6 +56,9 @@ class UserIdentificationFormFaceFragment :
     @Inject
     override lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var imageEncryptionUtil: ImageEncryptionUtil
+
     private var analytics: UserIdentificationCommonAnalytics? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,14 +100,12 @@ class UserIdentificationFormFaceFragment :
     override fun getScreenName(): String = ""
 
     override fun encryptImage() {
-        context?.let {
-            if (ImageEncryptionUtil.isUsingEncrypt(it)) {
-                viewBinding?.button?.isEnabled = false
-                kycUploadViewModel.encryptImage(
-                    stepperModel?.ktpFile.toEmptyStringIfNull(),
-                    KYC_IV_KTP_CACHE
-                )
-            }
+        if (imageEncryptionUtil.isUsingEncrypt()) {
+            viewBinding?.button?.isEnabled = false
+            kycUploadViewModel.encryptImage(
+                stepperModel?.ktpFile.toEmptyStringIfNull(),
+                KYC_IV_KTP_CACHE
+            )
         }
     }
 
