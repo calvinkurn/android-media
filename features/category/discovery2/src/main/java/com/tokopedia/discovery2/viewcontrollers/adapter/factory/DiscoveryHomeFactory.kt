@@ -92,6 +92,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
@@ -136,6 +138,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topq
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryHomeFactory {
 
@@ -607,6 +610,11 @@ class DiscoveryHomeFactory {
                 ::ContentCardItemViewHolder,
                 ::ContentCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductHighlight,
+                ::ProductHighlightViewHolder,
+                ::ProductHighlightViewModel
+            )
 
             initializeComponent(
                 ComponentsList.ThematicHeader,
@@ -635,7 +643,9 @@ class DiscoveryHomeFactory {
             viewType: Int,
             fragment: Fragment
         ): AbstractViewHolder? {
-            return componentMapper[viewType]?.getViewHolder(itemView, fragment)
+            return componentMapper[viewType]?.getViewHolder(itemView, fragment)?.apply {
+                uiWidgetComponent = (fragment as DiscoveryFragment).provideSubComponent()
+            }
         }
 
         fun createViewModel(viewType: Int): (application: Application, components: ComponentsItem, position: Int) -> DiscoveryBaseViewModel {

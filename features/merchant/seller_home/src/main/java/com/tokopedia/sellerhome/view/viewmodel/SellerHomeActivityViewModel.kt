@@ -11,11 +11,9 @@ import com.tokopedia.device.info.DeviceInfo.await
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetShopStateUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
-import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopadmin.common.util.AccessId
@@ -40,7 +38,6 @@ class SellerHomeActivityViewModel @Inject constructor(
     private val sellerAdminUseCase: SellerAdminUseCase,
     private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
     private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
-    private val getShopStateUseCase: GetShopStateUseCase,
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
     private val remoteActivityHelper: RemoteActivityHelper,
@@ -51,8 +48,6 @@ class SellerHomeActivityViewModel @Inject constructor(
         private const val SOURCE = "stuart_seller_home"
 
         private const val CAPABILITY_WEAR_APP = "verify_remote_tokopedia_wear_app"
-        private const val SELLER_HOME_PAGE_NAME = "seller-home"
-        private const val SELLER_INFO_STATE_KEY = "shopStateChanged"
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
@@ -63,10 +58,6 @@ class SellerHomeActivityViewModel @Inject constructor(
     private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
         get() = _shopInfo
-
-    private val _shopStateInfo = MutableLiveData<Result<ShopStateInfoUiModel>>()
-    val shopStateInfo: LiveData<Result<ShopStateInfoUiModel>>
-        get() = _shopStateInfo
 
     private val _isRoleEligible = MutableLiveData<Result<Boolean>>()
     val isRoleEligible: LiveData<Result<Boolean>>
@@ -120,14 +111,6 @@ class SellerHomeActivityViewModel @Inject constructor(
                 isShopOwner || !isLocationAdmin
             }
         }
-    }
-
-    fun getShopStateInfo() = executeCall(_shopStateInfo) {
-        getShopStateUseCase.executeInBackground(
-            shopId = userSession.shopId,
-            dataKey = SELLER_INFO_STATE_KEY,
-            pageSource = SELLER_HOME_PAGE_NAME
-        )
     }
 
     fun checkIfWearHasCompanionApp() {

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <com.tokopedia.play_common.view.RoundedConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/feed_dms_upload_progress_background"
+        android:padding="8dp"
+        app:rcl_cornerRadius="8dp"
+        >
+
+        <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/layout_thumbnail"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rfl_cornerRadius="4dp"
+            >
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:unify_image_corner_radius="0"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/feed_dms_upload_failed_img_foreground"
+                />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_retry"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:icon_color_light_disabled="@color/Unify_Static_White"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_disabled="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_Static_White"
+                app:icon_name="RELOAD"
+                />
+
+        </com.tokopedia.play_common.view.RoundedFrameLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_failed_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/feed_upload_failed_title"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/layout_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_close"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="6dp"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_failed_upload"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+
+</merge>

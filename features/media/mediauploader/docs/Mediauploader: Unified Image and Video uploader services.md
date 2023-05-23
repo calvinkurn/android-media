@@ -1,5 +1,5 @@
 ---
-title: Mediauploader: Unified Image and Video uploader services
+title: "Mediauploader: Unified Image and Video uploader services"
 labels:
 - uploader
 - mediaplatform
@@ -7,7 +7,7 @@ labels:
 - mediauploader
 ---
 
-
+<!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence) [Calvin Kurniawan](https://tokopedia.atlassian.net/wiki/people/5c6beecd9170244d98d7d0c4?ref=confluence)  |

@@ -117,3 +117,18 @@ fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier) = th
     if (condition) modifier()
     else this
 )
+
+fun Modifier.clickableWithoutRipple(
+    interactionSource: MutableInteractionSource,
+    onClick: () -> Unit
+) = composed(
+    factory = {
+        this.then(
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
+        )
+    }
+)
