@@ -84,6 +84,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentLoginWithPhoneBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
@@ -120,7 +121,6 @@ import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -563,7 +563,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             when (it) {
                 is Success -> onLocationAdminRedirection()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -612,20 +612,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun handleLoginOption(data: LoginOption) {
         if (data.isEnableSeamless) routeToGojekSeamlessPage()
-        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData)
+        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData, isShowDirectBiometricsPrompt(data.isEnableSeamless))
         hideLoadingOverlay()
     }
 
-    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
+    /**
+     * @param isShowDirectBiometricsPrompt default false means that the param is not called from [handleLoginOption]
+     */
+    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult, isShowDirectBiometricsPrompt: Boolean = false) {
         activity?.let {
             if (isEnableFingerprint && data.isRegistered) {
-                enableFingerprint()
+                enableFingerprint(isShowDirectBiometricsPrompt)
             } else {
                 disableFingerprint()
             }
         }
     }
-
     private fun onSuccessLoginBiometric() {
         analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
@@ -822,12 +824,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewBinding?.fingerprintBtn?.hide()
     }
 
-    private fun enableFingerprint() {
+    private fun enableFingerprint(isShowDirectBiometricsPrompt: Boolean) {
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
 
-            if (isEnableDirectBiometric) {
+            if (isShowDirectBiometricsPrompt) {
                 analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
@@ -843,6 +845,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val value = RemoteConfigInstance.getInstance().abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
         return value.isNotEmpty()
     }
+
+    /**
+     * function to prevent clash biometrics prompt and seamless routing
+     * @param isEnableSeamless value is get from [LoginOption]
+     * @return true if [isEnableDirectBiometric] true && [isEnableSeamless] false
+     * @return false if [isEnableDirectBiometric] true && [isEnableSeamless] true
+     */
+    private fun isShowDirectBiometricsPrompt(isEnableSeamless: Boolean): Boolean = isEnableDirectBiometric && isEnableSeamless.not()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
