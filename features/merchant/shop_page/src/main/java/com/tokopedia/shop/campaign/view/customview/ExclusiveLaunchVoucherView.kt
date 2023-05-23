@@ -17,9 +17,6 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
 
     private var binding: CustomViewExclusiveLaunchVoucherBinding? = null
 
-    companion object {
-        private const val STATIC_COLOR_NN_950 = "#F5F6FF"
-    }
 
     init {
         binding = CustomViewExclusiveLaunchVoucherBinding.inflate(
@@ -57,7 +54,7 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
             tpgBenefitName.setTextColorCompat(R.color.Unify_Static_White)
             tpgMinPurchase.setTextColorCompat(R.color.Unify_Static_White)
             tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
-            tpgClaim.setTextColor(Color.parseColor(STATIC_COLOR_NN_950))
+            tpgClaim.setTextColorCompat(R.color.clr_dms_voucher_claim)
         }
     }
 
