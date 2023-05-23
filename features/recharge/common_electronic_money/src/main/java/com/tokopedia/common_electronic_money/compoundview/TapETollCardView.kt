@@ -58,7 +58,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textTitle.show()
         textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_nfc_reading_card_label_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_nfc_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -73,7 +73,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textTitle.show()
         textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()

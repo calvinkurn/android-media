@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/rl_address_container"
-                android:background="@color/Unify_NN200" />
+                android:background="@color/Unify_N100" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/button_change_address"
@@ -84,7 +84,7 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="@string/change_address"
-                android:textColor="@color/Unify_NN950_32"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="12sp"
                 app:typographyType="body_3" />
 
@@ -107,6 +107,6 @@
         android:textAllCaps="false"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColor="@color/Unify_GN500" />a
+        android:textColor="@color/Unify_G400" />a
 
 </LinearLayout>

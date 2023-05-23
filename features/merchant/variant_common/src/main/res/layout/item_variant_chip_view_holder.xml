@@ -27,7 +27,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:textAlignment="center"
-        android:textColor="@color/Unify_NN950_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         tools:text="S" />
 

@@ -289,7 +289,6 @@ android {
 
 dependencies {
 
-	implementation rootProject.ext.unifyDependencies.principles
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 

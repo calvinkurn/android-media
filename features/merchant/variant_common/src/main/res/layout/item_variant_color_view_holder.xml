@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/variant_empty"
-        android:textColor="@color/Unify_NN0"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:typographyType="body_3" />
 

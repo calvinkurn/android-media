@@ -27,7 +27,7 @@ class FeedCaptionTestActivity : AppCompatActivity() {
             name = "Fellow Official Fellow",
             colorRes = MethodChecker.getColor(
                 this@FeedCaptionTestActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN800
+                com.tokopedia.unifyprinciples.R.color.Unify_N600
             ),
             typeface = getTypeface(this@FeedCaptionTestActivity,
                 "RobotoBold.ttf"
@@ -39,7 +39,7 @@ class FeedCaptionTestActivity : AppCompatActivity() {
         val tagCaption = FeedCaption.Tag(
             colorRes = MethodChecker.getColor(
                 this@FeedCaptionTestActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                com.tokopedia.unifyprinciples.R.color.Unify_G400
             ),
             clickListener = {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
@@ -56,7 +56,7 @@ class FeedCaptionTestActivity : AppCompatActivity() {
             label = getString(R.string.feed_component_read_more_button),
             colorRes = MethodChecker.getColor(
                 this@FeedCaptionTestActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                com.tokopedia.unifyprinciples.R.color.Unify_N400
             ),
             clickListener = {
                 tvCaption.setText(captionBody, TextView.BufferType.SPANNABLE)

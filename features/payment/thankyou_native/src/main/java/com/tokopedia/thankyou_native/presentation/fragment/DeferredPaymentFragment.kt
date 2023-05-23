@@ -119,7 +119,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
             tvTotalAmount.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                    com.tokopedia.unifycomponents.R.color.Unify_N700_96
                 )
             )
             val spannable =
@@ -130,7 +130,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            com.tokopedia.unifycomponents.R.color.Unify_G500
                         )
                     ),
                     startIndex, spannable.length,

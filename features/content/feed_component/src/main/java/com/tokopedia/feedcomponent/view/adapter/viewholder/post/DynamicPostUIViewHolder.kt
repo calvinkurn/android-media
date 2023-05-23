@@ -359,7 +359,7 @@ open class DynamicPostUIViewHolder(
                         "<font color='${
                             ColorUtil.getColorFromResToString(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                com.tokopedia.unifyprinciples.R.color.Unify_G400
                             )
                         }'>" + "<b>"
                     )
@@ -395,7 +395,7 @@ open class DynamicPostUIViewHolder(
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            com.tokopedia.unifyprinciples.R.color.Unify_G400
         )
 
     private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel) {
@@ -621,7 +621,7 @@ open class DynamicPostUIViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
             }
@@ -631,7 +631,7 @@ open class DynamicPostUIViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
             }
@@ -645,7 +645,7 @@ open class DynamicPostUIViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
             }

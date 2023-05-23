@@ -120,14 +120,14 @@ class BrandlistCategoryTabLayout(context: Context, attrs: AttributeSet?) : TabLa
 
     private fun setActiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_PN600))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             setWeight(Typography.BOLD)
         }
     }
 
     private fun setInactiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setWeight(Typography.REGULAR)
         }
     }

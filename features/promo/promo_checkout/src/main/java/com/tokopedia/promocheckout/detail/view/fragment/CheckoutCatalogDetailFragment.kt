@@ -239,7 +239,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
                 if (i == textColorIndex) {
                     //exclusive case for handling font color of second index.
                     context?.run {
-                        upperText.append("<font color='${ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_YN400)}'>" + data.upperTextDesc[i] + "</font>")
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_Y400)}'>" + data.upperTextDesc[i] + "</font>")
                     }
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
@@ -259,10 +259,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled!!) {
             ImageUtil.dimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
 
         if (data.pointsSlash!! <= 0) {

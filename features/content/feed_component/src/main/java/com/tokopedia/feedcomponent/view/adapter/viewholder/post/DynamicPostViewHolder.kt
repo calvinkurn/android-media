@@ -385,7 +385,7 @@ open class DynamicPostViewHolder(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
                 ),
                 clickListener = {
                     onHashtagClicked(it, trackingPostModel)
@@ -402,7 +402,7 @@ open class DynamicPostViewHolder(
                 label = caption.buttonName,
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_N400
                 ),
                 clickListener = {
                     itemView.caption.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -588,7 +588,7 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
             }
@@ -598,7 +598,7 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
             }
@@ -610,7 +610,7 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
             }

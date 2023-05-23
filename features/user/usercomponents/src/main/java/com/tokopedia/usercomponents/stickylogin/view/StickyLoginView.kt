@@ -423,18 +423,18 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     override fun onDarkMode() {
         if (isLoginReminder()) {
-            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
 
-        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN950))
+        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
     }
 
     override fun onLightMode() {
         if (isLoginReminder()) {
-            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         }
 
-        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
     }
 
     companion object {

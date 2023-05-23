@@ -24,39 +24,39 @@ class FlightOrderDetailPassengerCancelStatusViewHolder(val binding: ItemFlightOr
                     tgFlightOrderPassengerCancelStatus.setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
                         )
                     )
                     OrderDetailUtils.changeShapeColor(
                         itemView.context,
                         tgFlightOrderPassengerCancelStatus.background,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN100
+                        com.tokopedia.unifyprinciples.R.color.Unify_G200
                     )
                 }
                 FlightCancellationStatus.ABORTED -> {
                     tgFlightOrderPassengerCancelStatus.setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_R500
                         )
                     )
                     OrderDetailUtils.changeShapeColor(
                         itemView.context,
                         tgFlightOrderPassengerCancelStatus.background,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN100
+                        com.tokopedia.unifyprinciples.R.color.Unify_R100
                     )
                 }
                 else -> {
                     tgFlightOrderPassengerCancelStatus.setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_Y500
                         )
                     )
                     OrderDetailUtils.changeShapeColor(
                         itemView.context,
                         tgFlightOrderPassengerCancelStatus.background,
-                        com.tokopedia.unifyprinciples.R.color.Unify_YN100
+                        com.tokopedia.unifyprinciples.R.color.Unify_Y200
                     )
                 }
             }

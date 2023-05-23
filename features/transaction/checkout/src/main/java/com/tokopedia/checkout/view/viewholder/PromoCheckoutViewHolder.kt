@@ -113,7 +113,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
 
             val label: Typography = Typography(itemView.context).apply {
-                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.description
@@ -128,7 +128,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
             val value: Typography = Typography(itemView.context).apply {
                 id = View.generateViewId()
-                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.amountStr
@@ -149,7 +149,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
             if (lastApplyUsageSummary.currencyDetailsStr.isNotEmpty()) {
                 val currencyValue: Typography = Typography(itemView.context).apply {
-                    setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                    setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setWeight(Typography.REGULAR)
                     setType(Typography.SMALL)
                     gravity = Gravity.END

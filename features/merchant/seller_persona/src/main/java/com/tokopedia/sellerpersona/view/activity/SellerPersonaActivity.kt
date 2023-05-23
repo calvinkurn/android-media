@@ -162,7 +162,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
     }

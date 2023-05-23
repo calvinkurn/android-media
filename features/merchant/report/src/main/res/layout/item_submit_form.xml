@@ -15,8 +15,8 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorLink="@color/Unify_GN500"
-        android:textColor="@color/Unify_NN950_96"
+        android:textColorLink="@color/Unify_G500"
+        android:textColor="@color/Unify_N700_96"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         tools:text="@string/product_report_see_all_types"/>

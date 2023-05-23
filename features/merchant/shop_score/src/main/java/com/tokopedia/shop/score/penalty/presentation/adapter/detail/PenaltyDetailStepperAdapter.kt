@@ -51,7 +51,7 @@ class PenaltyDetailStepperAdapter :
                 root.setBackgroundColor(
                     ContextCompat.getColor(
                         root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
                 if (data.isDividerShow) {

@@ -845,7 +845,7 @@ class AddEditProductPreviewFragment :
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.animateExpand()
             dividerDetail?.hide()
@@ -854,7 +854,7 @@ class AddEditProductPreviewFragment :
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.animateExpand()
         }
@@ -871,14 +871,14 @@ class AddEditProductPreviewFragment :
         addEditProductShipmentTitle?.setTextColor(
             ContextCompat.getColor(
                 context ?: return,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_44
             )
         )
     }
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.animateExpand()
         }

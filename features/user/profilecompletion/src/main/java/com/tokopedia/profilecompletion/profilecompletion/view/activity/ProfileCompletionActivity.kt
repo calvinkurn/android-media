@@ -48,7 +48,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(),
         toolbar.setTitleTextColor(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                com.tokopedia.unifyprinciples.R.color.Unify_N500
             )
         )
         toolbar.elevation = 10f
@@ -59,7 +59,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(),
             upArrow.setColorFilter(
                 MethodChecker.getColor(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_N500
                 ), PorterDuff.Mode.SRC_ATOP
             )
             supportActionBar?.setHomeAsUpIndicator(upArrow)

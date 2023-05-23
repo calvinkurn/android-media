@@ -165,7 +165,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         get() {
             val drawable = context?.let { ProfileCompletionTextDrawable(it) }
             drawable?.text = content?.resources?.getString(R.string.skip_form)
-            drawable?.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            drawable?.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N500)
             return drawable
         }
 
@@ -347,26 +347,26 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
             txtProceed?.background?.setColorFilter(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
                 ), PorterDuff.Mode.SRC_IN
             )
             txtProceed?.setTextColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )
         } else {
             txtProceed?.background?.setColorFilter(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN200
+                    com.tokopedia.unifyprinciples.R.color.Unify_N100
                 ), PorterDuff.Mode.SRC_IN
             )
             txtProceed?.setTextColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200
                 )
             )
         }

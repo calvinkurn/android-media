@@ -74,7 +74,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/Unify_RN500" />
+                app:tint="@color/Unify_R500" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_timer"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
-                android:textColor="@color/Unify_RN500"
+                android:textColor="@color/Unify_R500"
                 app:layout_constraintBottom_toBottomOf="@id/icon_clock"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/icon_clock"

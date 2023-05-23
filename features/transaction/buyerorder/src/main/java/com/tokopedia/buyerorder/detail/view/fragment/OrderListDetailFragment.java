@@ -279,8 +279,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(title.getLabel());
         doubleTextView.setBottomText(title.getValue());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         statusDetail.addView(doubleTextView);
     }
 
@@ -333,8 +333,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
             doubleTextView.setTopText(detail.getLabel());
             doubleTextView.setBottomText(detail.getValue());
-            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
-            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
             detailContent.addView(doubleTextView);
         }
     }
@@ -347,7 +347,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 additionalText.setOnClickListener(null);
                 additionalText.setText(getContext().getResources().getString(R.string.additional_text));
                 additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-                additionalText.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+                additionalText.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 additionalInfoLayout.setVisibility(View.VISIBLE);
             });
         }
@@ -358,8 +358,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(additionalInfo.getLabel());
         doubleTextView.setBottomText(additionalInfo.getValue());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         additionalInfoLayout.addView(doubleTextView);
     }
 
@@ -375,8 +375,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.END);
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         infoValue.addView(doubleTextView);
 
     }
@@ -430,11 +430,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.getLabel());
         doubleTextView.setBottomText(paymentData.getValue());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         if (!paymentData.getTextColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.getTextColor()));
         else
-            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
@@ -456,7 +456,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 if (getContext() != null) {
-                    ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)); // specific color for this link
+                    ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)); // specific color for this link
                 }
             }
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

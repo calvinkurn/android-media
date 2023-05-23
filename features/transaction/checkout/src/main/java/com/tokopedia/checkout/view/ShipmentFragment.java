@@ -521,7 +521,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void setBackground() {
         Activity activity = getActivity();
         if (activity != null) {
-            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_NN50));
+            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N50));
         }
     }
 

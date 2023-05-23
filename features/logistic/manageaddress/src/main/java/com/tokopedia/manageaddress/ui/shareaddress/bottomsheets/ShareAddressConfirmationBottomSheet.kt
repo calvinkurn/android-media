@@ -195,7 +195,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
                         ds.isUnderlineText = false
                         ds.color = ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
                         )
                     }
                 },

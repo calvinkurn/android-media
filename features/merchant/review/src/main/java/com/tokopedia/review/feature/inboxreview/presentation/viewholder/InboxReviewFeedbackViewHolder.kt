@@ -50,7 +50,7 @@ class InboxReviewFeedbackViewHolder(
             if(element.replyText.isNotBlank()) {
                 root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             } else {
-                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
@@ -87,10 +87,10 @@ class InboxReviewFeedbackViewHolder(
             replyFeedbackState.background = ContextCompat.getDrawable(root.context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview.text = getString(R.string.review_not_found)
-                tvFeedbackReview.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                tvFeedbackReview.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             } else {
                 tvFeedbackReview.apply {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR, root.context)
                     setOnClickListener {
                         feedbackInboxReviewListener.onInFullReviewClicked(

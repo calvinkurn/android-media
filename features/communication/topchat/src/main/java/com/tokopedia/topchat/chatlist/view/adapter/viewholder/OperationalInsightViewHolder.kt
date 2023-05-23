@@ -42,7 +42,7 @@ class OperationalInsightViewHolder(
             binding?.layoutTickerChatPerformance?.setBackgroundColor(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_YN50)
+                    com.tokopedia.unifyprinciples.R.color.Unify_Y100)
             )
             binding?.tvTickerChatPerformance?.text = getSpannableString(
                 getString(R.string.chat_performance_ticker),

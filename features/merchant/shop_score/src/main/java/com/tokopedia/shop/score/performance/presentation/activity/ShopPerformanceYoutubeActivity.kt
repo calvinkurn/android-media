@@ -34,7 +34,7 @@ class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInit
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_performance_page_youtube_player)
-        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700))
 
         toolbar = findViewById(R.id.toolbarVideoShopScore)
 

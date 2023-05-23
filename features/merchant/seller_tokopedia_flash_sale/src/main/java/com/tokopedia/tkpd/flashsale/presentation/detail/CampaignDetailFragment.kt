@@ -697,7 +697,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
                     )
                 )
             }
@@ -1268,7 +1268,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
                     )
                 )
             }

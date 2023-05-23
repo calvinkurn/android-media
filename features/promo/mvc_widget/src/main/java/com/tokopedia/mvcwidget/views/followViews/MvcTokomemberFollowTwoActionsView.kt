@@ -71,7 +71,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         iconBackgroundContainer = findViewById(R.id.fm_image)
 
         if (context.isDarkMode()) {
-            iconBackground.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            iconBackground.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         radius = dpToPx(8)
         type = TYPE_LARGE
@@ -91,7 +91,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             val indexMinTransLabel = s.indexOf(minTransLabel)
             if (indexMinTransLabel >= 0) {
                 val highLightColor =
-                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_YN500)
+                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
                 val sb = SpannableStringBuilder(s).replace(
                     indexMinTransLabel,
                     indexMinTransLabel + minTransLabel.length,

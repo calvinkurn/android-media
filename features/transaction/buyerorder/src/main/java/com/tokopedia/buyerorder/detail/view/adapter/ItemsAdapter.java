@@ -242,7 +242,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
         tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
         tapActionTextView.setLayoutParams(params);
-        tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
+        tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         tapActionTextView.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
@@ -250,7 +250,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
         } else {
-            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500));
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
             shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -259,7 +259,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (!actionButton.getActionColor().getTextColor().equals("")) {
             tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
         } else {
-            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
 
 
@@ -345,9 +345,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Map.Entry<String, String> entry = it.next();
                 DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
                 doubleTextView.setTopText(entry.getKey());
-                doubleTextView.setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 doubleTextView.setBottomText(entry.getValue());
-                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
                 statusDetail.addView(doubleTextView);
@@ -883,7 +883,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
             tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -891,7 +891,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -900,7 +900,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 

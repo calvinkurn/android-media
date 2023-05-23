@@ -2468,7 +2468,7 @@ class CartFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                        com.tokopedia.unifyprinciples.R.color.Unify_N50
                     )
                 )
             }
@@ -2476,7 +2476,7 @@ class CartFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    com.tokopedia.unifyprinciples.R.color.Unify_N50
                 )
             )
         }

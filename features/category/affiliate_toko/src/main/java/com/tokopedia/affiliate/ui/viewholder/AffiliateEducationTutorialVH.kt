@@ -50,7 +50,7 @@ class AffiliateEducationTutorialVH(
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
             }

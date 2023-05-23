@@ -822,7 +822,7 @@ class DigitalPDPDataPlanFragment :
             if (denomFull.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 

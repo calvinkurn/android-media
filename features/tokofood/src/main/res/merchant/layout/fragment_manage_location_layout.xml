@@ -95,7 +95,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/home_back_to_home"
-            android:textColor="@color/Unify_NN800"
+            android:textColor="@color/Unify_N600"
             app:typographyType="display_2"
             app:typographyWeight="bold"/>
 

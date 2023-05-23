@@ -144,7 +144,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_NN950_96"
+                android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber"

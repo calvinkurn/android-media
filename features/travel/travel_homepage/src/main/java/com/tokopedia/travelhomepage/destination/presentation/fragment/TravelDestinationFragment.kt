@@ -220,7 +220,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
             val navIcon = travel_homepage_destination_toolbar.navigationIcon
-            navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+            navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
             (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
             collapsing_toolbar.title = ""
@@ -236,11 +236,11 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                     }
                     if (scrollRange + verticalOffset == 0) {
                         collapsing_toolbar.title = cityName
-                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950), PorterDuff.Mode.SRC_ATOP)
+                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
                         isShow = true
                     } else if (isShow) {
                         collapsing_toolbar.title = " "
-                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                         isShow = false
                     }
 

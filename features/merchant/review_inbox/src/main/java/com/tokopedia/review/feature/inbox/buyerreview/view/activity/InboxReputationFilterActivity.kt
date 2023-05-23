@@ -48,7 +48,7 @@ class InboxReputationFilterActivity : BaseSimpleActivity() {
         get() {
             val drawable = TextDrawable(this)
             drawable.text = resources.getString(R.string.reset_title)
-            drawable.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+            drawable.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             return drawable
         }
 

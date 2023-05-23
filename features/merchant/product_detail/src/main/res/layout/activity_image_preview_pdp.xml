@@ -17,7 +17,7 @@
     android:layout_marginBottom="20dp"
     android:gravity="center"
     android:textAllCaps="false"
-    app:backgroundTint="@color/Unify_GN500"
+    app:backgroundTint="@color/Unify_G500"
     app:layout_constraintBottom_toBottomOf="parent"/>
   
   <com.tokopedia.unifycomponents.LoaderUnify

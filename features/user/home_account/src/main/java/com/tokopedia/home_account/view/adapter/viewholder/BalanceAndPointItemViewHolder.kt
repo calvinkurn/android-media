@@ -64,7 +64,7 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointTitle?.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
             )
         )
     }
@@ -78,7 +78,7 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointSubtitle?.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                com.tokopedia.unifyprinciples.R.color.Unify_N700
             )
         )
     }

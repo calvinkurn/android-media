@@ -9,7 +9,7 @@
         android:id="@+id/swipe_refresh_reputation_penalty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN50">
+        android:background="@color/Unify_N50">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_seller_reputation_penalty"

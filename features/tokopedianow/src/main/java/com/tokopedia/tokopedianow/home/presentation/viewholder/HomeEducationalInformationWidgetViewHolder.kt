@@ -109,7 +109,7 @@ class HomeEducationalInformationWidgetViewHolder(
         binding?.apply {
             laChevron.gone()
             sivChevronDown.show()
-            val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
             sivChevronDown.setOnClickListener {
                 showBottomSheet()

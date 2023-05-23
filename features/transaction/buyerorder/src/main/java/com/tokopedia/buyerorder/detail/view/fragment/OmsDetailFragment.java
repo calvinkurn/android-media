@@ -486,7 +486,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)); // specific color for this link
+                        ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
                     }
                 }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 helpLabel.setHighlightColor(Color.TRANSPARENT);
@@ -511,8 +511,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
             shape.setCornerRadius(4);
-            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0));
-            shape.setStroke(2, getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200));
+            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            shape.setStroke(2, getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100));
             primaryActionBtn.setBackground(shape);
             if (isSingleButton) {
                 primaryActionBtn.setLayoutParams(params);
@@ -530,9 +530,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
             shape.setCornerRadius(4);
-            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_YN500));
+            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
             secondaryActionBtn.setBackground(shape);
-            secondaryActionBtn.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0));
+            secondaryActionBtn.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
                 secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
             }
@@ -825,9 +825,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                     DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                     doubleTextView.setTopText(entityPessenger.getTitle());
-                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                     doubleTextView.setBottomText(entityPessenger.getValue());
-                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
                     doubleTextView.setBottomTextStyle("bold");
 
                     userInfo.addView(doubleTextView);
@@ -880,9 +880,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                             DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                             doubleTextView.setTopText(passengerInformation.getTitle());
-                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                             doubleTextView.setBottomText(passengerInformation.getValue());
-                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96));
+                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
                             doubleTextView.setBottomTextStyle("bold");
 
                             userInfo.addView(doubleTextView);
@@ -922,7 +922,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             disableText.setText(header.getStatusLabel());
         }
 
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.unifyprinciples.R.color.Unify_NN50, com.tokopedia.unifyprinciples.R.color.Unify_NN50);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
 
         if (actionButton.getHeaderObject() != null) {
             poweredBy.setText(header.getPoweredBy());

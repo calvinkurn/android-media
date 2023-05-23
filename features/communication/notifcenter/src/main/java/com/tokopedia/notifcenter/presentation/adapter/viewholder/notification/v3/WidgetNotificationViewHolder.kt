@@ -195,10 +195,10 @@ class WidgetNotificationViewHolder constructor(
         @ColorRes val lineColor: Int
         if (element.isLastJourney) {
             icon = R.drawable.ic_notifcenter_success_mark
-            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_G400
         } else {
             icon = R.drawable.ic_notifcenter_on_progress_mark
-            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_N100
         }
         parentIndicatorMark?.setImageResource(icon)
         parentIndicatorLine?.setBackgroundResource(lineColor)
@@ -383,9 +383,9 @@ class TimeLineViewHolder constructor(
 
     private fun bindTopLine(isFirstItem: Boolean, lastJourney: Boolean) {
         if (isFirstItem && !lastJourney) {
-            topLine?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+            topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_N100)
         } else {
-            topLine?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_G400)
         }
     }
 

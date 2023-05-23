@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:textColor="@color/Unify_NN950_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6"
@@ -32,7 +32,7 @@
         android:paddingRight="8dp"
         android:paddingBottom="4dp"
         android:text="@string/label_ticker_trade_in"
-        android:textColor="@color/Unify_BN500"
+        android:textColor="@color/Unify_B500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_order_number"
         app:typographyType="small"
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_shop_name"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
             app:typographyType="body_3"
@@ -126,7 +126,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -145,7 +145,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -164,7 +164,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -175,7 +175,7 @@
             android:gravity="center_vertical"
             android:scaleType="fitStart"
             app:layout_maxWidth="100dp"
-            tools:src="@color/Unify_GN500" />
+            tools:src="@color/Unify_G500" />
 
     </com.google.android.flexbox.FlexboxLayout>
 

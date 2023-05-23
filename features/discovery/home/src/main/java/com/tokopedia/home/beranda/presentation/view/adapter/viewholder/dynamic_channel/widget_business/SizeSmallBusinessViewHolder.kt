@@ -199,7 +199,7 @@ open class SizeSmallBusinessViewHolder(
                         tagLine?.setTextColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                                com.tokopedia.unifyprinciples.R.color.Unify_R500
                             )
                         )
                     }
@@ -211,7 +211,7 @@ open class SizeSmallBusinessViewHolder(
                         tagLine?.setTextColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                com.tokopedia.unifyprinciples.R.color.Unify_G500
                             )
                         )
                     }
@@ -223,7 +223,7 @@ open class SizeSmallBusinessViewHolder(
                         tagLine?.setTextColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_BN500
+                                com.tokopedia.unifyprinciples.R.color.Unify_B500
                             )
                         )
                     }
@@ -235,7 +235,7 @@ open class SizeSmallBusinessViewHolder(
                         tagLine?.setTextColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_YN400
+                                com.tokopedia.unifyprinciples.R.color.Unify_Y400
                             )
                         )
                     }
@@ -247,7 +247,7 @@ open class SizeSmallBusinessViewHolder(
                         tagLine?.setTextColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                             )
                         )
                     }

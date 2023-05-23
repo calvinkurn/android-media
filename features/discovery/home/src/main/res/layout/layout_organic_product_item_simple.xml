@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="1:1"
-        tools:src="@color/Unify_GN600" />
+        tools:src="@color/Unify_G600" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_price_1"
@@ -47,7 +47,7 @@
         android:lineSpacingExtra="4sp"
         android:lines="2"
         android:maxLines="2"
-        android:textColor="@color/Unify_NN950_68"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="12sp"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"

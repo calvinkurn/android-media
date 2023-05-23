@@ -413,7 +413,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
 
         companion object {
-            val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_GN50
+            val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_G100
             var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_Background
 
             const val OPEN = "Tutup"

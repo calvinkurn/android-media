@@ -116,11 +116,11 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)
                 }
             }
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                com.tokopedia.unifycomponents.R.color.Unify_G500)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             tncOvo.movementMethod = LinkMovementMethod.getInstance()
             tncOvo.text = ss

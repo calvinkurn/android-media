@@ -283,7 +283,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                             com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         )
                     )
-                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
                     tippingText.setTextColor(textColor)
                     tippingDescription.setTextColor(textColor)
                 }

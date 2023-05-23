@@ -115,7 +115,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
         })
 
         pageControl?.apply {
-            inactiveColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+            inactiveColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
             setIndicator(tutorialArray.size)
         }
     }
