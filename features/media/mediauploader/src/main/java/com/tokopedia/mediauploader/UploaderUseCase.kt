@@ -28,6 +28,7 @@ class UploaderUseCase @Inject constructor(
     private var withTranscode = true
     private var shouldCompress = false
     private var isSecure = false
+    private var isRetry = true
     private var extraHeader: Map<String, String> = mapOf()
     private var extraBody: Map<String, String> = mapOf()
 
@@ -40,6 +41,7 @@ class UploaderUseCase @Inject constructor(
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
         isSecure = params.getBoolean(PARAM_IS_SECURE, false)
+        isRetry = params.getBoolean(PARAM_IS_RETRY, false)
         extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
 
@@ -60,7 +62,8 @@ class UploaderUseCase @Inject constructor(
                 sourceId,
                 progressUploader,
                 withTranscode,
-                shouldCompress
+                shouldCompress,
+                isRetry
             )
         }
     )
@@ -145,5 +148,6 @@ class UploaderUseCase @Inject constructor(
         const val PARAM_EXTRA_HEADER = "extra_header"
         const val PARAM_EXTRA_BODY = "extra_body"
         const val PARAM_SHOULD_COMPRESS = "should_compress"
+        const val PARAM_IS_RETRY = "is_retry"
     }
 }
