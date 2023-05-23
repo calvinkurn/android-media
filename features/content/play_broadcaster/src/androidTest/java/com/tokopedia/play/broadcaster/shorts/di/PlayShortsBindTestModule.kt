@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
@@ -123,6 +125,10 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayPerformanceDashboardEntryPointAnalytic(playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
 
     @Binds
     @PlayShortsScope

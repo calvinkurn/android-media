@@ -21,7 +21,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     private var isDisableOrderPrioritas = false
-    private var isToggleYearEndPromotionOn = false
 
     init {
         mData = mutableListOf()
@@ -39,10 +38,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
-    }
-
-    fun setToggleYearPromotion(active: Boolean) {
-        this.isToggleYearEndPromotionOn = active
     }
 
     override fun getItemViewType(position: Int): Int = when (mData[position]) {
@@ -67,7 +62,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is PreOrderViewHolder -> holder.bindData(mData[position] as PreOrderModel)
-            is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas, isToggleYearEndPromotionOn)
+            is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
             is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
             is NotifierViewHolder -> holder.bindData(mData[position] as NotifierModel)
         }

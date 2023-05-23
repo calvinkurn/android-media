@@ -1,6 +1,10 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,26 +22,26 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.components.ButtonSize
 import com.tokopedia.common_compose.components.NestBottomSheetShape
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
+import com.tokopedia.common_compose.extensions.clickableWithoutRipple
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
@@ -70,7 +74,7 @@ fun ReschedulePickupScreen(
         mutableStateOf(RescheduleBottomSheetState.NONE)
     }
 
-    fun openBottomSheet(bottomSheetState: RescheduleBottomSheetState) {
+    fun setBottomSheetContentState(bottomSheetState: RescheduleBottomSheetState) {
         scope.launch {
             if (bottomSheetState != RescheduleBottomSheetState.NONE) {
                 if (bottomSheetState != RescheduleBottomSheetState.TIME || input.day.isNotEmpty()) {
@@ -79,20 +83,7 @@ fun ReschedulePickupScreen(
                 }
             } else {
                 sheetState.hide()
-            }
-        }
-    }
-
-    fun dispatchEvent(event: ReschedulePickupUiEvent) {
-        when (event) {
-            is ReschedulePickupUiEvent.OpenBottomSheet -> {
-                openBottomSheet(event.bottomSheetState)
-            }
-            is ReschedulePickupUiEvent.CloseBottomSheet -> {
-                openBottomSheet(RescheduleBottomSheetState.NONE)
-            }
-            else -> {
-                onEvent(event)
+                setRescheduleBottomSheetState(bottomSheetState)
             }
         }
     }
@@ -106,31 +97,35 @@ fun ReschedulePickupScreen(
                 }
             )
         )
-    }) {
+    }) { paddingValues ->
         ModalBottomSheetLayout(
+            modifier = Modifier.padding(paddingValues),
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
             sheetContent = {
                 RescheduleBottomSheetLayout(
                     rescheduleBottomSheetState,
-                    state.options
-                ) { dispatchEvent(it) }
+                    state.options,
+                    onEvent
+                ) { setBottomSheetContentState(RescheduleBottomSheetState.NONE) }
             }
         ) {
             ReschedulePickupScreenLayout(
                 state = state,
                 input = input,
-                onEvent = { dispatchEvent(it) }
+                onEvent = onEvent,
+                onBottomSheetEvent = { setBottomSheetContentState(it) }
             )
         }
     }
 }
 
 @Composable
-fun ReschedulePickupScreenLayout(
+private fun ReschedulePickupScreenLayout(
     state: ReschedulePickupState,
     input: ReschedulePickupInput,
-    onEvent: (ReschedulePickupUiEvent) -> Unit
+    onEvent: (ReschedulePickupUiEvent) -> Unit,
+    onBottomSheetEvent: (RescheduleBottomSheetState) -> Unit
 ) {
     Column {
         Column(
@@ -154,47 +149,25 @@ fun ReschedulePickupScreenLayout(
             ReschedulePickupGuide(guide = state.info.guide)
             InputDay(
                 day = input.day,
-                onOpenBottomSheet = {
-                    onEvent(
-                        ReschedulePickupUiEvent.OpenBottomSheet(
-                            it
-                        )
-                    )
-                }
-
+                onOpenBottomSheet = onBottomSheetEvent
             )
             InputTime(
                 time = input.time,
-                onOpenBottomSheet = {
-                    onEvent(
-                        ReschedulePickupUiEvent.OpenBottomSheet(
-                            it
-                        )
-                    )
-                }
+                onOpenBottomSheet = onBottomSheetEvent
             )
-            if (state.info.summary.isNotEmpty()) {
-                ReschedulePickupSummary(
-                    summary = state.info.summary
-                )
-            }
+            ReschedulePickupSummary(
+                summary = state.info.summary
+            )
             InputReason(
                 reason = state.reason,
-                onOpenBottomSheet = {
-                    onEvent(
-                        ReschedulePickupUiEvent.OpenBottomSheet(
-                            it
-                        )
-                    )
-                }
+                onOpenBottomSheet = onBottomSheetEvent
             )
-            if (state.isCustomReason) {
-                InputCustomReason(
-                    customReason = input.reason,
-                    onOtherReasonChanged = { onEvent(ReschedulePickupUiEvent.CustomReason(it)) },
-                    error = state.customReasonError
-                )
-            }
+            InputCustomReason(
+                customReason = input.reason,
+                onOtherReasonChanged = { onEvent(ReschedulePickupUiEvent.CustomReason(it)) },
+                error = state.customReasonError,
+                shouldRequestFocus = state.isCustomReason
+            )
             RescheduleResultDialog(
                 saveRescheduleModel = state.saveRescheduleModel,
                 onCloseDialog = { onEvent(ReschedulePickupUiEvent.CloseDialog(it)) }
@@ -202,10 +175,11 @@ fun ReschedulePickupScreenLayout(
         }
         NestButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
+                .fillMaxWidth(),
+            size = ButtonSize.LARGE,
             text = stringResource(id = R.string.title_button_reschedule_pickup),
-            enabled = state.valid
+            isEnabled = state.valid
         ) {
             onEvent(ReschedulePickupUiEvent.SaveReschedule)
         }
@@ -282,12 +256,19 @@ private fun InputSectionSubtitle(
     onSubtitleClicked: (String) -> Unit,
     applink: String
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     NestTypography(
-        text = Subtitle(),
+        text = HtmlLinkHelper(
+            LocalContext.current,
+            stringResource(id = R.string.label_subtitle_reschedule_pick_up)
+        ).spannedString?.toAnnotatedString() ?: "",
         textStyle = NestTheme.typography.body3,
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 4.dp)
-            .clickable { onSubtitleClicked(applink) }
+            .clickableWithoutRipple(
+                interactionSource = interactionSource,
+                onClick = { onSubtitleClicked(applink) }
+            )
     )
 }
 
@@ -361,49 +342,54 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
 private fun InputCustomReason(
     customReason: String,
     onOtherReasonChanged: (String) -> Unit,
-    error: String?
+    error: String?,
+    shouldRequestFocus: Boolean
 ) {
-    NestTextField(
-        value = customReason,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
-        onValueChanged = { onOtherReasonChanged(it) },
-        counter = 160,
-        error = error
-    )
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(key1 = shouldRequestFocus, block = {
+        if (shouldRequestFocus) {
+            focusRequester.requestFocus()
+        }
+    })
+    AnimatedVisibility(
+        visible = shouldRequestFocus,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None
+    ) {
+        NestTextField(
+            value = customReason,
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+            label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
+
+            onValueChanged = { onOtherReasonChanged(it) },
+
+            counter = 160,
+            error = error
+        )
+    }
 }
 
 @Composable
 private fun ReschedulePickupSummary(summary: String) {
-    NestTicker(
-        title = "",
-        description = HtmlLinkHelper(
-            LocalContext.current,
-            summary
-        ).spannedString?.toAnnotatedString() ?: "",
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        closeButtonVisibility = false,
-        type = TickerType.ANNOUNCEMENT
-    )
-}
-
-@Composable
-private fun Subtitle(): AnnotatedString {
-    return buildAnnotatedString {
-        withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
-            append(stringResource(id = R.string.label_subtitle_reschedule_pick_up_annotate))
-        }
-        withStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.Bold,
-                color = NestTheme.colors.GN._500
-            )
-        ) {
-            append(stringResource(id = R.string.label_app_link_subtitle_reschedule_pick_up_annotate))
-        }
+    AnimatedVisibility(
+        visible = summary.isNotEmpty(),
+        enter = EnterTransition.None,
+        exit = ExitTransition.None
+    ) {
+        NestTicker(
+            title = "",
+            description = HtmlLinkHelper(
+                LocalContext.current,
+                summary
+            ).spannedString?.toAnnotatedString() ?: "",
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 6.dp),
+            closeButtonVisibility = false,
+            type = TickerType.ANNOUNCEMENT
+        )
     }
 }
 

@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabelsBullet
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -23,6 +24,9 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
         recommendationData.toRecommendationWidget()
     }
 }
+
+const val SPEC_TYPE_TEXT = "text"
+const val SPEC_TYPE_BULLET = "bullet"
 
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget{
     return RecommendationWidget(
@@ -72,8 +76,14 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         specs = recommendation.specificationsLabels.map {
                             RecommendationSpecificationLabels(
                                     specTitle = it.key,
-                                    specSummary = it.value
-                            )
+                                    specSummary = if(it.type == SPEC_TYPE_TEXT) it.value else "",
+                                    recommendationSpecificationLabelsBullet = if(it.type == SPEC_TYPE_BULLET) it.content.map { content ->
+                                        RecommendationSpecificationLabelsBullet(
+                                            specsSummary = content.description,
+                                            icon = content.iconUrl
+                                        )
+                                    } else listOf()
+                             )
                         },
                         parentID = recommendation.parentID,
                         isRecomProductShowVariantAndCart = isRecomCardShouldShowVariantOrCart()

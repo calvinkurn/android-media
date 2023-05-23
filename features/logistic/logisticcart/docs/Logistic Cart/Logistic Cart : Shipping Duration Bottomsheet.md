@@ -1,5 +1,5 @@
 ---
-title: Logistic Cart : Shipping Duration Bottomsheet
+title: "Logistic Cart : Shipping Duration Bottomsheet"
 labels:
 - logistic-cart
 - shipping-duration

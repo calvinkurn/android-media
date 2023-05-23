@@ -1,5 +1,5 @@
 ---
-title: Logistic Address: Share Address
+title: "Logistic Address: Share Address"
 labels:
 - manageaddress
 - shareaddress

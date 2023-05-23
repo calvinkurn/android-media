@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.byteplus.effect.EffectManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -120,6 +121,7 @@ class PlayBroadcastModule(
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+        playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
         beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
@@ -134,6 +136,7 @@ class PlayBroadcastModule(
             pinProductAnalytic,
             accountAnalytic,
             shortsEntryPointAnalytic,
+            playBroadcastPerformanceDashboardEntryPointAnalytic,
             beautificationAnalytic,
         )
     }

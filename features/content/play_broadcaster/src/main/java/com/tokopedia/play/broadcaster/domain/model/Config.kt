@@ -11,6 +11,8 @@ data class Config(
         val streamAllowed: Boolean = false,
         @SerializedName("shortVideoAllowed")
         val shortVideoAllowed: Boolean = false,
+        @SerializedName("hasContent")
+        val hasContent: Boolean = false,
         @SerializedName("active_live_channel")
         val activeLiveChannel: Int = 0,
         @SerializedName("draft_channel")
