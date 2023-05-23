@@ -1,5 +1,6 @@
-package com.tokopedia.mediauploader.common.cache
+package com.tokopedia.mediauploader.common
 
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.di.NetworkModule.Companion.BASE_URL
 import javax.inject.Inject
 

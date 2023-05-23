@@ -1,6 +1,7 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -15,4 +16,8 @@ object MediaUploaderCommonModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideGson() = Gson()
 }

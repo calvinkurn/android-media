@@ -5,6 +5,7 @@ import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class VideoUploaderManager @Inject constructor(
     private val policyManager: SourcePolicyManager,
     private val policyUseCase: GetVideoPolicyUseCase,
+    private val trackerCache: TrackerCacheDataStore,
     private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
     private val largeUploaderManager: LargeUploaderManager
@@ -38,6 +40,10 @@ class VideoUploaderManager @Inject constructor(
         // hit uploader policy
         val policy = policyUseCase(sourceId)
         policyManager.set(policy)
+
+        // init tracker
+        val trackerCacheKey = trackerCache.key(sourceId, file.path)
+        trackerCache.setOriginalVideoInfo(trackerCacheKey, file)
 
         // compress video if needed
         val filePath = getCompressableVideoPath(
@@ -65,13 +71,23 @@ class VideoUploaderManager @Inject constructor(
                 }
                 else -> {
                     isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload.mbToBytes()
-
                     setProgressUploader(loader)
 
-                    if (!isSimpleUpload) {
+                    // start upload time tracker
+                    trackerCache.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
+
+                    val upload = if (!isSimpleUpload) {
                         largeUploaderManager(filePath, sourceId, withTranscode)
                     } else {
                         simpleUploaderManager(filePath, sourceId, withTranscode)
+                    }
+
+                    upload.also {
+                        // end upload time tracker
+                        trackerCache.setEndUploadTime(trackerCacheKey, System.currentTimeMillis())
+
+                        val trackerResult = trackerCache.get(trackerCacheKey)
+                        println("MEDIA-UPLOADER: $trackerResult")
                     }
                 }
             }

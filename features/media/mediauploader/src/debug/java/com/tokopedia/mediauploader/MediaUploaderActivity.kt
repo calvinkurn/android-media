@@ -27,11 +27,11 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.DebugMediaUploaderViewModel.Companion.UploadState
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
-import com.tokopedia.mediauploader.ui.DebugScreen
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.mediauploader.services.UploaderWorker
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_VIDEO_URL
+import com.tokopedia.mediauploader.ui.DebugScreen
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.unifycomponents.ProgressBarUnify

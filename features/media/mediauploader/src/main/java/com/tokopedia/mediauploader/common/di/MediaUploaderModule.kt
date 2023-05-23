@@ -3,14 +3,16 @@ package com.tokopedia.mediauploader.common.di
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
+import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
+import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStoreImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
-import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
-import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepositoryImpl
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
 import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
@@ -34,6 +36,12 @@ abstract class MediaUploaderModule {
     abstract fun provideSourcePolicyManager(
         impl: SourcePolicyManagerImpl
     ): SourcePolicyManager
+
+    @Binds
+    @MediaUploaderQualifier
+    abstract fun provideTrackerCacheDataStore(
+        impl: TrackerCacheDataStoreImpl
+    ): TrackerCacheDataStore
 
     // -- image --
 
@@ -65,8 +73,8 @@ abstract class MediaUploaderModule {
 
     @Binds
     abstract fun provideVideoMetaDataExtractorRepository(
-        impl: VideoMetaDataExtractorRepositoryImpl
-    ): VideoMetaDataExtractorRepository
+        impl: VideoMetaDataExtractorImpl
+    ): VideoMetaDataExtractor
 
     @Binds
     abstract fun provideVideoCompressionRepository(

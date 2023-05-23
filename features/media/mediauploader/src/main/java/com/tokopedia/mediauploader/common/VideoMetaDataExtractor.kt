@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.video.data.repository
+package com.tokopedia.mediauploader.common
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
@@ -8,13 +8,13 @@ import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import timber.log.Timber
 import javax.inject.Inject
 
-interface VideoMetaDataExtractorRepository {
+interface VideoMetaDataExtractor {
     fun extract(path: String): VideoInfo?
 }
 
-class VideoMetaDataExtractorRepositoryImpl @Inject constructor(
+class VideoMetaDataExtractorImpl @Inject constructor(
     @ApplicationContext private val context: Context
-) : VideoMetaDataExtractorRepository {
+) : VideoMetaDataExtractor {
 
     /**
      * This method will extract out the video info based on file path. The method use the MetadataRetriever's API

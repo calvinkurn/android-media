@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.video.data.repository.VideoMetaDataExtractorRepository
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +27,7 @@ import javax.inject.Inject
 * unit test coverage for this module.
 * */
 class DebugMediaUploaderViewModel @Inject constructor(
-    private val videoMetaDataExtractor: VideoMetaDataExtractorRepository,
+    private val videoMetaDataExtractor: VideoMetaDataExtractor,
     private val compressionCacheManager: TrackerCacheManager,
     private val uploaderUseCase: UploaderUseCase
 ) : ViewModel(), DebugMediaUploaderViewModelContract {

@@ -2,12 +2,12 @@ package com.tokopedia.mediauploader.video.data.repository
 
 import android.content.Context
 import android.net.Uri
-import com.abedelazizshe.lightcompressorlibrary.CompressionProgressListener
-import com.abedelazizshe.lightcompressorlibrary.compressor.Compressor
-import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.common.cache.TrackerCacheManager
-import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.data.store.TrackerCacheDataStore
+import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
+import com.tokopedia.mediauploader.common.internal.compressor.Compressor
+import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
@@ -25,8 +25,8 @@ interface VideoCompressionRepository {
 
 class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val metadata: VideoMetaDataExtractorRepository,
-    private val cacheManager: TrackerCacheManager
+    private val metadata: VideoMetaDataExtractor,
+    private val trackerCache: TrackerCacheDataStore
 ) : VideoCompressionRepository {
 
     override suspend fun compress(
@@ -68,22 +68,17 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 videoWidth = generateVideoSize.width.toDouble()
             )
 
-            val compression = Compressor
-                .compressVideo(
-                    index = 0,
-                    context = context,
-                    srcUri = Uri.parse(originalPath),
-                    streamableFile = null,
-                    destination = cacheFile.path,
-                    configuration = config,
-                    listener = object : CompressionProgressListener {
-                        override fun onProgressCancelled(index: Int) {}
-
-                        override fun onProgressChanged(index: Int, percent: Float) {
-                            progressUploader?.onProgress(percent.toInt(), ProgressType.Compression)
-                        }
+            val compression = Compressor.compressVideo(
+                context = context,
+                srcUri = Uri.parse(originalPath),
+                destination = cacheFile.path,
+                configuration = config,
+                listener = object : CompressionProgressListener {
+                    override fun onProgressChanged(percent: Float) {
+                        progressUploader?.onProgress(percent.toInt(), ProgressType.Compression)
                     }
-                )
+                }
+            )
 
             if (compression.success) {
                 val endCompressionTime = System.currentTimeMillis()
@@ -92,20 +87,15 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 // extract the metadata of compressed video file
                 val compressedMetadataInfo = metadata.extract(compressedPath)
 
-                // save the cache for tracker
-                cacheManager.set(
-                    sourceId = sourceId,
-                    data = UploaderTracker(
-                        originalVideoPath = originalPath,
-                        compressedVideoPath = compressedPath,
-                        startCompressedTime = startCompressionTime,
-                        endCompressedTime = endCompressionTime,
-                        videoOriginalSize = File(originalPath).length().toString(),
-                        videoCompressedSize = File(compressedPath).length().toString(),
-                        originalVideoMetadata = videoOriginalInfo,
-                        compressedVideoMetadata = compressedMetadataInfo
-                    )
-                )
+                // update the tracker for the compression step
+                val key = trackerCache.key(sourceId, originalPath)
+                trackerCache.set(key) {
+                    compressedVideoPath = compressedPath
+                    startCompressedTime = startCompressionTime
+                    endCompressedTime = endCompressionTime
+                    videoCompressedSize = File(compressedPath).length().toString()
+                    compressedVideoMetadata = compressedMetadataInfo
+                }
 
                 return compressedPath
             } else {

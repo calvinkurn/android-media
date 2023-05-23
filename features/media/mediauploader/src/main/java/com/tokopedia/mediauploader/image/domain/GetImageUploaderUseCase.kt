@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.image.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.cache.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.MediaUploaderUrl
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
