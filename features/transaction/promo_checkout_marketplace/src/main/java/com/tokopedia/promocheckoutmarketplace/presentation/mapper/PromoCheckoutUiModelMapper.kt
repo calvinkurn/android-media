@@ -190,6 +190,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     paymentOptions = it.methods.joinToString(",")
                 }
                 benefitDetail = couponItem.benefitDetail.firstOrNull() ?: BenefitDetail()
+                benefitAdjustmentMessage = couponItem.benefitAdjustmentMessage
+                secondaryCoupons = couponItem.secondaryCoupons
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isParentEnabled = couponSubSection.isEnabled

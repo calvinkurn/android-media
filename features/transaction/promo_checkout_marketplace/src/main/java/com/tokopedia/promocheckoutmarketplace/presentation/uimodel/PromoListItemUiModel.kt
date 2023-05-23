@@ -7,6 +7,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.SecondaryCoupon
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoListItemUiModel(
@@ -63,7 +64,9 @@ data class PromoListItemUiModel(
         var boClashingInfos: List<BoClashingInfo> = emptyList(),
         // Store BO promo data
         // When user choose BO promo, get unique id and promo code from here
-        var boAdditionalData: List<AdditionalBoData> = emptyList()
+        var boAdditionalData: List<AdditionalBoData> = emptyList(),
+        var benefitAdjustmentMessage: String = "",
+        var secondaryCoupons: List<SecondaryCoupon> = emptyList()
     )
 
     data class UiState(
@@ -77,6 +80,7 @@ data class PromoListItemUiModel(
         var isHighlighted: Boolean = false,
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
-        var isBebasOngkir: Boolean = false
+        var isBebasOngkir: Boolean = false,
+        var isLoading: Boolean = false
     )
 }
