@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.callback
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -13,9 +13,10 @@ import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 class CategoryShowcaseItemCallback(
     private val shopId: String,
     private val categoryIdL1: String,
-    private val startActivityForResult: (Intent, Int) -> Unit,
+    private val onClickProductCard: (appLink: String) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
-    private val onCartQuantityChangedListener: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit
+    private val onProductCartQuantityChanged: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
+    private val startActivityForResult: (Intent, Int) -> Unit,
 ): CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
     override fun onProductCardAddVariantClicked(
         context: Context,
@@ -38,7 +39,11 @@ class CategoryShowcaseItemCallback(
         product: CategoryShowcaseItemUiModel,
         quantity: Int
     ) {
-        onCartQuantityChangedListener(position, product, quantity)
+        onProductCartQuantityChanged(
+            position,
+            product,
+            quantity
+        )
     }
 
     override fun onProductCardClicked(
@@ -46,11 +51,11 @@ class CategoryShowcaseItemCallback(
         position: Int,
         product: CategoryShowcaseItemUiModel
     ) {
-        RouteManager.route(
-            context,
+        val appLink = UriUtil.buildUri(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            product.parentProductId,
+            product.parentProductId
         )
+        onClickProductCard(appLink)
     }
 
     override fun onProductCardImpressed(

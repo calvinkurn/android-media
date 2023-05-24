@@ -20,17 +20,18 @@ import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 class CategoryProductRecommendationCallback(
     private val categoryIdL1: String,
     private val activity: FragmentActivity?,
-    private val startActivityResult: (Intent, Int) -> Unit,
-    private val hideProductRecommendationWidgetListener: () -> Unit,
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
+    private val onHideProductRecommendationWidget: () -> Unit,
+    private val onClickProductCard: (appLink: String) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
-    private val openLoginPageListener: () -> Unit
+    private val onOpenLoginPage: () -> Unit,
+    private val startActivityResult: (Intent, Int) -> Unit,
 ): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
 
-    override fun hideProductRecommendationWidget() = hideProductRecommendationWidgetListener()
+    override fun hideProductRecommendationWidget() = onHideProductRecommendationWidget()
 
-    override fun openLoginPage() = openLoginPageListener()
+    override fun openLoginPage() = onOpenLoginPage()
 
     override fun productCardAddVariantClicked(
         productId: String,
@@ -54,9 +55,7 @@ class CategoryProductRecommendationCallback(
         product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
-    ) {
-        RouteManager.route(activity, product.appLink)
-    }
+    ) = onClickProductCard(product.appLink)
 
     override fun productCardImpressed(
         position: Int,
@@ -82,8 +81,8 @@ class CategoryProductRecommendationCallback(
     private fun directToSeeMorePage(
         appLink: String
     ) {
-        modifySeeMoreAppLink(appLink)
-        RouteManager.route(activity, appLink)
+        val modifiedAppLink = modifySeeMoreAppLink(appLink)
+        RouteManager.route(activity, modifiedAppLink)
     }
 
     private fun modifySeeMoreAppLink(

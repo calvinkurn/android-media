@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,6 +20,7 @@ import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCa
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
@@ -86,11 +88,8 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.getCategoryHeader(
-            navToolbarHeight = navToolbarHeight
-        )
-
+        initAffiliateCookie()
+        getCategoryHeader()
         observer()
     }
 
@@ -100,6 +99,14 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     override fun refreshLayout() = viewModel.refreshLayout()
 
     override fun getMiniCart() = viewModel.getMiniCart()
+
+    private fun getCategoryHeader() {
+        viewModel.getCategoryHeader(
+            navToolbarHeight = navToolbarHeight
+        )
+    }
+
+    private fun initAffiliateCookie() = viewModel.initAffiliateCookie()
 
     private fun observer() {
         observeCategoryHeader()
@@ -269,6 +276,37 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         }
     }
 
+    private fun clickProductCard(
+        appLink: String
+    ) {
+        if (appLink.isNotEmpty()) {
+            val affiliateLink = viewModel.createAffiliateLink(
+                url = appLink
+            )
+            RouteManager.route(context, affiliateLink)
+        }
+    }
+
+    private fun changeProductCardQuantity(
+        position: Int,
+        product: CategoryShowcaseItemUiModel,
+        quantity: Int
+    ) {
+        if (!viewModel.isLoggedIn()) {
+            openLoginPage()
+        } else {
+            viewModel.onCartQuantityChanged(
+                productId = product.productCardModel.productId,
+                quantity = quantity,
+                stock = product.productCardModel.availableStock,
+                shopId = shopId,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            )
+        }
+    }
+
+    private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
+
     /**
      * Callback Sections
      */
@@ -283,21 +321,10 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun createCategoryShowcaseItemCallback() = CategoryShowcaseItemCallback(
         shopId = shopId,
         categoryIdL1 = categoryIdL1,
-        startActivityForResult = ::startActivityForResult,
+        onClickProductCard = ::clickProductCard,
         onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
-        onCartQuantityChangedListener = { position, product, quantity ->
-            if (!viewModel.isLoggedIn()) {
-                openLoginPage()
-            } else {
-                viewModel.onCartQuantityChanged(
-                    productId = product.productCardModel.productId,
-                    quantity = quantity,
-                    stock = product.productCardModel.availableStock,
-                    shopId = shopId,
-                    layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
-                )
-            }
-        }
+        onProductCartQuantityChanged = ::changeProductCardQuantity,
+        startActivityForResult = ::startActivityForResult,
     )
 
     private fun createCategoryShowcaseHeaderCallback() = CategoryShowcaseHeaderCallback()
@@ -316,11 +343,10 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         productRecommendationViewModel = productRecommendationViewModel,
         activity = activity,
         categoryIdL1 = categoryIdL1,
-        startActivityResult = ::startActivityForResult,
-        openLoginPageListener = ::openLoginPage,
+        onClickProductCard = ::clickProductCard,
+        onOpenLoginPage = ::openLoginPage,
         onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
-        hideProductRecommendationWidgetListener = {
-            viewModel.removeProductRecommendation()
-        },
+        onHideProductRecommendationWidget = ::hideProductRecommendationWidget,
+        startActivityResult = ::startActivityForResult
     )
 }
