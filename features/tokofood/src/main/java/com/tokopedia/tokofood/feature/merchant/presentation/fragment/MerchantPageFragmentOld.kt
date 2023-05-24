@@ -115,7 +115,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -1110,20 +1109,22 @@ class MerchantPageFragmentOld : BaseMultiFragment(),
                                 productListAdapter?.getProductUiModel(
                                     dataSetPosition
                                 ) ?: ProductUiModel()
-                            productListAdapter?.updateCartProductUiModel(
-                                cartTokoFood = cartTokoFood,
-                                dataSetPosition = dataSetPosition,
-                                adapterPosition = adapterPosition,
-                                customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                    cartTokoFood,
-                                    productUiModel
+                            binding?.rvProductList?.post {
+                                productListAdapter?.updateCartProductUiModel(
+                                    cartTokoFood = cartTokoFood,
+                                    dataSetPosition = dataSetPosition,
+                                    adapterPosition = adapterPosition,
+                                    customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                                        cartTokoFood,
+                                        productUiModel
+                                    )
                                 )
-                            )
-                            showCustomOrderDetailBottomSheet(
-                                productListAdapter?.getProductUiModel(
-                                    dataSetPosition
-                                ) ?: ProductUiModel(), this
-                            )
+                                showCustomOrderDetailBottomSheet(
+                                    productListAdapter?.getProductUiModel(
+                                        dataSetPosition
+                                    ) ?: ProductUiModel(), this
+                                )
+                            }
                         }
                     }
             }
