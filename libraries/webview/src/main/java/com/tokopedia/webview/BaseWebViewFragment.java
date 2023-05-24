@@ -711,11 +711,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if(webView != null && isHelpUrl(url)){
-                launchWebviewForNewUrl(url);
-                return true;
-            }
-            if (hasCheckOverrideAtInitialization(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -823,6 +819,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+
+        if(webView != null && isHelpUrl(url)){
+            launchWebviewForNewUrl(url);
+            return true;
+        }
+
         if (isBriIntent(uri)) {
             return handlingBriIntent(url);
         }
