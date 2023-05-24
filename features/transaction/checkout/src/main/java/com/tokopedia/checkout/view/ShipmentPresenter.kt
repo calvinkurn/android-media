@@ -2272,24 +2272,24 @@ class ShipmentPresenter @Inject constructor(
         promoCode: String,
         uniqueId: String
     ) {
-        val globalCodes: List<String> = ArrayList()
-        val clearOrders: MutableList<ClearPromoOrder> = ArrayList()
-        val promoCodes: MutableList<String> = ArrayList()
-        promoCodes.add(promoCode)
-        clearOrders.add(
-            ClearPromoOrder(
-                uniqueId,
-                shipmentCartItemModel.shipmentCartData.boMetadata.boType,
-                promoCodes,
-                shipmentCartItemModel.shopId,
-                shipmentCartItemModel.isProductIsPreorder,
-                shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                shipmentCartItemModel.fulfillmentId,
-                shipmentCartItemModel.cartStringGroup
-            )
-        )
         viewModelScope.launch(dispatchers.immediate) {
             try {
+                val globalCodes: List<String> = ArrayList()
+                val clearOrders: MutableList<ClearPromoOrder> = ArrayList()
+                val promoCodes: MutableList<String> = ArrayList()
+                promoCodes.add(promoCode)
+                clearOrders.add(
+                    ClearPromoOrder(
+                        uniqueId,
+                        shipmentCartItemModel.shipmentCartData.boMetadata.boType,
+                        promoCodes,
+                        shipmentCartItemModel.shopId,
+                        shipmentCartItemModel.isProductIsPreorder,
+                        shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
+                        shipmentCartItemModel.fulfillmentId,
+                        shipmentCartItemModel.cartStringGroup
+                    )
+                )
                 val params = ClearPromoRequest(
                     ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                     false,

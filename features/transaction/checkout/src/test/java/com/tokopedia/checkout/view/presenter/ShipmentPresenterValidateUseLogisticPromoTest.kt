@@ -248,6 +248,41 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
     }
 
     @Test
+    fun validateUseErrorWithBoCode_ShouldShowErrorResetCourierAndClearBo() {
+        // Given
+        val errorMessage = "error"
+        val throwable = Throwable(errorMessage)
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
+            throwable
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                boCode = "bo123",
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
+            )
+        )
+        every { view.getShipmentCartItemModel(any()) } returns presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
+            view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+            view.getShipmentCartItemModel(cartPosition)
+            view.logOnErrorApplyBo(match { it.message == throwable.message }, cartPosition, "")
+        }
+        assertEquals("", (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).boCode)
+        assertEquals("", (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).boUniqueId)
+    }
+
+    @Test
     fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
         // Given
         val errorMessage = "error"

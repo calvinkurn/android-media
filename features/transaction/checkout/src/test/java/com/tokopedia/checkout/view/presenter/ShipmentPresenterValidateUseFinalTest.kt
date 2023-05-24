@@ -361,52 +361,31 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         }
     }
 
-//    @Test
-//    fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
-//        // Given
-//        val promoUiModel = PromoUiModel(
-//            voucherOrderUiModels = listOf(
-//                PromoCheckoutVoucherOrdersItemUiModel(
-//                    type = "logistic",
-//                    messageUiModel = MessageUiModel(state = "green")
-//                )
-//            ),
-//            clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
-//                clashMessage = "clash message",
-//                clashReason = "clash reason",
-//                options = ArrayList<PromoClashOptionUiModel>().apply {
-//                    add(
-//                        PromoClashOptionUiModel(
-//                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
-//                                add(PromoClashVoucherOrdersUiModel(code = "123"))
-//                            }
-//                        )
-//                    )
-//                }
-//            )
-//        )
-//        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
-//            ValidateUsePromoRevampUiModel(
-//                status = "OK",
-//                errorCode = "200",
-//                promoUiModel = promoUiModel
-//            )
-//        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
-//            ClearPromoUiModel()
-//
-//        // When
-//        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
-//
-//        // Then
-//        verifySequence {
-//            view.updateButtonPromoCheckout(promoUiModel, false)
-//            view.showLoading()
-//            view.setHasRunningApiCall(true)
-//            view.hideLoading()
-//            view.setHasRunningApiCall(false)
-//            view.showToastNormal("Ada perubahan pada promo yang kamu pakai")
-//        }
-//    }
+    @Test
+    fun `WHEN validate use success with red state global coupon THEN should hit tracker`() {
+        // Given
+        val errorMessage = "error global promo"
+        val promoUiModel = PromoUiModel(
+            codes = listOf("code"),
+            messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+        )
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
+            ClearPromoUiModel()
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verify {
+            shipmentAnalyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(errorMessage)
+        }
+    }
 
     @Test
     fun `WHEN validate use status get error THEN should render error and reset promo benefit`() {

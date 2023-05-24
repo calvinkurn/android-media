@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
+import java.io.IOException
 
 class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
 
@@ -13,6 +14,34 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
     fun `WHEN release booking THEN should hit release booking use case with first productId`() {
         // Given
         coEvery { releaseBookingUseCase(any()) } returns ReleaseBookingResponse()
+        val productId = 300L
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = productId
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = productId + 1
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.releaseBooking()
+
+        // Then
+        coVerify { releaseBookingUseCase(productId) }
+    }
+
+    @Test
+    fun `GIVEN release booking failed WHEN release booking THEN should hit release booking use case with first productId`() {
+        // Given
+        coEvery { releaseBookingUseCase(any()) } throws IOException()
         val productId = 300L
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
