@@ -1,13 +1,7 @@
 package com.tokopedia.media.editor.ui.widget
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -25,6 +19,7 @@ import com.tokopedia.media.editor.utils.toWhite
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
+import com.tokopedia.unifyprinciples.R as principleR
 
 class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -57,7 +52,7 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
         mItemConstraint?.let {
             (it.background as GradientDrawable).apply {
                 mutate()
-                setStroke(2.toPx(), ContextCompat.getColor(context, editorR.color.Unify_GN500))
+                setStroke(2.toPx(), ContextCompat.getColor(context, principleR.color.Unify_GN500))
             }
         }
 
@@ -68,7 +63,7 @@ class AddTextLatarBtmItem(context: Context, attributeSet: AttributeSet) :
         mItemConstraint?.let {
             (it.background as GradientDrawable).apply {
                 mutate()
-                setStroke(2.toPx(), ContextCompat.getColor(context, editorR.color.Unify_NN300))
+                setStroke(2.toPx(), ContextCompat.getColor(context, principleR.color.Unify_NN300))
             }
         }
 
