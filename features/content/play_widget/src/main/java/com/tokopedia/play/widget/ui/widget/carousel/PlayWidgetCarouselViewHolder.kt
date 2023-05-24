@@ -70,8 +70,15 @@ class PlayWidgetCarouselViewHolder private constructor() {
                         channelView.showMuteButton(data.isSelected)
                         if (!data.isSelected) channelView.resetProductPosition()
                     }
+                    PlayWidgetCarouselDiffCallback.PAYLOAD_TOTAL_VIEW_CHANGE -> {
+                        channelView.updateTotalView(data.channel.totalView.totalViewFmt)
+                    }
                 }
             }
+        }
+
+        internal fun onRecycled() {
+            channelView.reset()
         }
 
         companion object {
@@ -164,6 +171,10 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     }
                 }
             }
+        }
+
+        internal fun onRecycled() {
+
         }
 
         companion object {

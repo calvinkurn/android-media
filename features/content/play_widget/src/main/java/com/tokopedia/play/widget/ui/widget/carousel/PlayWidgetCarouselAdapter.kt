@@ -64,34 +64,12 @@ internal class PlayWidgetCarouselAdapter(
         }
     }
 
-    fun setSelected(prevPosition: Int, position: Int) {
-        notifyItemChanged(
-            position,
-            PlayWidgetCarouselDiffCallback.Payloads(
-                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED)
-            )
-        )
-
-//        notifyItemChanged(
-//            position - 1,
-//            PlayWidgetCarouselDiffCallback.Payloads(
-//                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
-//            )
-//        )
-
-//        notifyItemChanged(
-//            position + 1,
-//            PlayWidgetCarouselDiffCallback.Payloads(
-//                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
-//            )
-//        )
-
-        notifyItemChanged(
-            prevPosition,
-            PlayWidgetCarouselDiffCallback.Payloads(
-                listOf(PlayWidgetCarouselDiffCallback.PAYLOAD_NOT_SELECTED)
-            )
-        )
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        when (holder) {
+            is PlayWidgetCarouselViewHolder.VideoContent -> holder.onRecycled()
+            is PlayWidgetCarouselViewHolder.UpcomingContent -> holder.onRecycled()
+        }
     }
 
     companion object {
@@ -135,6 +113,9 @@ internal class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidget
             if (oldItem.isSelected != newItem.isSelected) {
                 add(PAYLOAD_SELECTED_CHANGE)
             }
+            if (oldItem.channel.totalView.totalViewFmt != newItem.channel.totalView.totalViewFmt) {
+                add(PAYLOAD_TOTAL_VIEW_CHANGE)
+            }
         }
 
         return if (payloads.isEmpty()) null else Payloads(payloads)
@@ -144,9 +125,7 @@ internal class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidget
         internal const val PAYLOAD_REMINDED_CHANGE = "reminded_change"
         internal const val PAYLOAD_MUTE_CHANGE = "mute_change"
         internal const val PAYLOAD_SELECTED_CHANGE = "is_selected"
-
-        internal const val PAYLOAD_SELECTED = "selected"
-        internal const val PAYLOAD_NOT_SELECTED = "not_selected"
+        internal const val PAYLOAD_TOTAL_VIEW_CHANGE = "total_view"
     }
 
     data class Payloads(

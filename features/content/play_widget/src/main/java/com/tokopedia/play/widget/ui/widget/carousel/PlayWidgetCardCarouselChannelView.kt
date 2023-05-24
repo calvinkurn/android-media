@@ -25,12 +25,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.util.loadLottieFromUrls
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -51,9 +45,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
-
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Main.immediate + job)
 
     private val binding = ViewPlayWidgetCardCarouselChannelBinding.inflate(
         LayoutInflater.from(context),
@@ -121,9 +112,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mModel.channelType == PlayWidgetChannelType.Vod
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        job.cancelChildren()
+    fun reset() {
+        binding.imgCover.setImageDrawable(null)
     }
 
     fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
@@ -161,6 +151,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     fun resetProductPosition() {
         binding.rvProducts.scrollToPosition(0)
+    }
+
+    fun updateTotalView(totalView: String) {
+        binding.viewPlayWidgetTotalViews.tvTotalViews.text = totalView
     }
 
     fun showMuteButton(shouldShow: Boolean, animate: Boolean = true) {

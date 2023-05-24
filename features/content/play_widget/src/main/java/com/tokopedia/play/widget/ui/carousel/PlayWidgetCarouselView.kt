@@ -146,6 +146,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     init {
         binding.rvChannels.layoutManager = layoutManager
         binding.rvChannels.adapter = adapter
+        binding.rvChannels.itemAnimator = null
         binding.rvChannels.addItemDecoration(itemDecoration)
         snapHelper.attachToRecyclerView(binding.rvChannels)
 
@@ -155,9 +156,6 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
                 if (adapter.itemCount == 0) return
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-
-                val focusedWidgets = getFocusedWidgets(recyclerView)
-                mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
 
                 val snappedView = snapHelper.findSnapView(layoutManager) ?: return
                 val snappedPosition = recyclerView.getChildAdapterPosition(snappedView)
@@ -176,7 +174,8 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val stepToCorrectIndex = stepToOriginalStart + realItemSize - substractBy
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
-                    recyclerView.smoothScrollBy(1, 0) //to trigger onScrollStateChanged again
+                    onWidgetSelected(snappedPosition + stepToCorrectIndex)
+
                 } else if (snappedPosition >= FAKE_COUNT_PER_SIDE + realItemSize) {
                     val stepToOriginalEnd = snappedPosition - FAKE_COUNT_PER_SIDE - realItemSize + 1 //e.g pos 14
                     val modulus = stepToOriginalEnd % realItemSize
@@ -184,16 +183,10 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val stepToCorrectIndex = (-1 * stepToOriginalEnd) - realItemSize + addBy
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
-                    recyclerView.smoothScrollBy(1, 0) //to trigger onScrollStateChanged again
+                    onWidgetSelected(snappedPosition + stepToCorrectIndex)
+                } else {
+                    onWidgetSelected(snappedPosition)
                 }
-
-                if (snappedPosition == mSelectedWidgetPos &&
-                    snappedPosition in FAKE_COUNT_PER_SIDE until FAKE_COUNT_PER_SIDE + realItemSize) {
-                    return
-                }
-
-                onWidgetSelected(snappedPosition)
-                mSelectedWidgetPos = snappedPosition
             }
         })
     }
@@ -202,7 +195,27 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
 
-        updateChannels(mModel, scrollToFirstPosition = adapter.currentList.size == 0)
+        val currPosition = this.mSelectedWidgetPos
+        val currItem = adapter.currentList.getOrNull(currPosition)
+
+        val nextPosition = if (currItem != null) {
+            val currChannelId = currItem.channel.channelId
+            val newDataWithFake = getDataWithFake(mModel)
+            val newIndex = newDataWithFake.indexOfFirst { it.channelId == currChannelId }
+
+            when {
+                newIndex != -1 -> newIndex
+                currPosition in FAKE_COUNT_PER_SIDE until mModel.size -> currPosition
+                else -> FAKE_COUNT_PER_SIDE
+            }
+        } else {
+            FAKE_COUNT_PER_SIDE
+        }
+
+        updateChannels(
+            mModel,
+            selectedPosition = nextPosition,
+        )
     }
 
     fun setWidgetListener(listener: Listener?) {
@@ -216,16 +229,36 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private fun updateChannels(
         channels: List<PlayWidgetChannelUiModel> = mModel,
         selectedPosition: Int = mSelectedWidgetPos,
-        scrollToFirstPosition: Boolean = false
     ) {
-        val dataWithFake = if (channels.isEmpty()) emptyList() else buildList {
+        val dataWithFake = getDataWithFake(channels)
 
+        adapter.submitList(dataWithFake.mapIndexed { index, channel ->
+            val isSelected = index == selectedPosition
+            PlayWidgetCarouselAdapter.Model(
+                channel.setMute(mIsMuted),
+                isSelected,
+            )
+        }) {
+            if (channels.isEmpty()) return@submitList
+            roughlyScrollTo(selectedPosition) {
+                onWidgetSelected(selectedPosition)
+
+                val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+                mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+            }
+        }
+    }
+
+    private fun getDataWithFake(channels: List<PlayWidgetChannelUiModel>): List<PlayWidgetChannelUiModel> {
+        return if (channels.isEmpty()) emptyList() else buildList {
             var leftFakeCount = FAKE_COUNT_PER_SIDE
             do {
                 val takeCount = min(leftFakeCount, channels.size)
                 addAll(
                     0,
-                    channels.takeLast(takeCount)
+                    channels.takeLast(takeCount).map {
+                        it.copy(channelId = "fakeStart-${it.channelId}")
+                    }
                 )
                 leftFakeCount -= takeCount
             } while (leftFakeCount > 0)
@@ -236,25 +269,12 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             do {
                 val takeCount = min(rightFakeCount, channels.size)
                 addAll(
-                    channels.take(takeCount)
+                    channels.take(takeCount).map {
+                        it.copy(channelId = "fakeEnd-${it.channelId}")
+                    }
                 )
                 rightFakeCount -= takeCount
             } while (rightFakeCount > 0)
-        }
-
-        adapter.submitList(dataWithFake.mapIndexed { index, channel ->
-            val isSelected = index == selectedPosition
-            PlayWidgetCarouselAdapter.Model(
-                channel.setMute(mIsMuted),
-                isSelected,
-            )
-        }) {
-            if (channels.isEmpty()) return@submitList
-            if (scrollToFirstPosition) {
-                roughlyScrollTo(FAKE_COUNT_PER_SIDE) {
-                    binding.rvChannels.smoothScrollBy(1, 0)
-                }
-            }
         }
     }
 
@@ -280,6 +300,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     private fun onWidgetSelected(position: Int) {
+        if (mSelectedWidgetPos == position) return
+
+        mSelectedWidgetPos = position
         updateChannels(selectedPosition = position)
     }
 

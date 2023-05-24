@@ -197,14 +197,8 @@ class PlayWidgetUiMapper @Inject constructor(
     private fun mapStartTime(time: String, widgetType: PlayWidgetType): String {
         return when (widgetType) {
             PlayWidgetType.Carousel -> {
-                val inputFormat = DateTimeFormatter.ofPattern(
-                    PlayDateTimeFormatter.yyyyMMddTHHmmss
-                )
-                val offsetGmt7 = ZoneId.from(ZoneOffset.of("+07:00"))
-                val inputDateTime = ZonedDateTime.of(
-                    LocalDateTime.parse(time, inputFormat),
-                    offsetGmt7,
-                )
+                val inputFormat = DateTimeFormatter.ISO_DATE_TIME
+                val inputDateTime = ZonedDateTime.parse(time, inputFormat)
                 val outputDateTime = inputDateTime.withZoneSameInstant(
                     ZoneId.systemDefault()
                 )
