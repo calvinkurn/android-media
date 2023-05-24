@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 interface DebugMediaUploaderViewModelContract {
     val state: StateFlow<DebugMediaLoaderState>
+    val config: StateFlow<DebugUploaderParam>
 
     fun setAction(event: DebugMediaLoaderEvent)
     fun setSourceId(value: String)
@@ -39,7 +40,7 @@ class DebugMediaUploaderViewModel @Inject constructor(
     private val _state = MutableStateFlow(DebugMediaLoaderState())
     override val state: StateFlow<DebugMediaLoaderState> get() = _state
 
-    private val config = MutableStateFlow(DebugUploaderParam.default())
+    override val config = MutableStateFlow(DebugUploaderParam.default())
 
     private var isCompressionLogExist = false
 

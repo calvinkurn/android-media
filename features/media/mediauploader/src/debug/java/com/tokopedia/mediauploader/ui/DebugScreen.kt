@@ -32,6 +32,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.mediauploader.DebugMediaLoaderEvent
 import com.tokopedia.mediauploader.DebugMediaLoaderState
 import com.tokopedia.mediauploader.DebugMediaUploaderViewModelContract
+import com.tokopedia.mediauploader.DebugUploaderParam
 import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.entity.Logs
 import com.tokopedia.mediauploader.ui.component.BrowseFileButton
@@ -49,6 +50,9 @@ val debugViewModel = object : DebugMediaUploaderViewModelContract {
         MutableStateFlow(DebugMediaLoaderState().also {
             it.log(LogType.Welcome, listOf(Logs("Foo", "Bar")))
         })
+
+    override val config: StateFlow<DebugUploaderParam>
+        get() = MutableStateFlow(DebugUploaderParam.default())
 
     override fun setAction(event: DebugMediaLoaderEvent) = Unit
     override fun setSourceId(value: String) = Unit

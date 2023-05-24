@@ -18,6 +18,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -67,6 +68,8 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
     var shouldCompress by remember { mutableStateOf(false) }
     var waitingTranscode by remember { mutableStateOf(false) }
 
+    val config by viewModel.config.collectAsState()
+
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -80,7 +83,7 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
         Spacer(modifier = Modifier.height(24.dp))
 
         NestTextField(
-            value = "exwbZW",
+            value = config.sourceId,
             modifier = Modifier
                 .fillMaxWidth(),
             label = {

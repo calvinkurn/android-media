@@ -9,7 +9,7 @@ data class DebugUploaderParam(
     companion object {
         fun default(): DebugUploaderParam {
             return DebugUploaderParam(
-                sourceId = "exwbZW",
+                sourceId = "exwbZW", // video upload
                 shouldCompress = true,
                 withTranscode = false
             )
