@@ -5,14 +5,14 @@ import android.graphics.drawable.GradientDrawable
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as principleR
 
 class AddTextColorItem(context: Context) : AppCompatImageView(context) {
     private val shapeDrawable = GradientDrawable()
 
-    private val strokeInactiveColor = editorR.color.Unify_NN0
-    private val strokeActiveColor = editorR.color.Unify_GN500
+    private val strokeInactiveColor = principleR.color.Unify_NN0
+    private val strokeActiveColor = principleR.color.Unify_GN500
 
     init {
         val lp = LinearLayout.LayoutParams(
