@@ -41,12 +41,14 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -93,6 +95,8 @@ class UniversalInboxFragment :
     private var headlineExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
     private var isAdded = false
 
+    private var trackingQueue: TrackingQueue? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -115,6 +119,20 @@ class UniversalInboxFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view, savedInstanceState)
+        setupTrackingQueue()
+    }
+
+    private fun setupTrackingQueue() {
+        context?.let {
+            trackingQueue = TrackingQueue(it)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue)
+        topAdsAnalytic.eventInboxTopAdsProductView(trackingQueue)
+        trackingQueue?.sendAll()
     }
 
     private fun initViews(view: View, savedInstanceState: Bundle?) {
