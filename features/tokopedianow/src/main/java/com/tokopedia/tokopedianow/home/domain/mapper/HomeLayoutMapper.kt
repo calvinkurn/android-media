@@ -668,8 +668,8 @@ object HomeLayoutMapper {
                     )
                 }
             }?.let {
-                updateItemById(layout.getVisitableId()) {
-                    productList[index] = productUiModel.copy(product = it)
+                updateItemById(layoutUiModel.id) {
+                    productList[index] = productUiModel.copy(quantity = quantity, product = it)
                     copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
