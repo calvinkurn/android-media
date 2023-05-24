@@ -733,7 +733,7 @@ class FeedBaseFragment :
 
         private const val THRESHOLD_OFFSET_HALF = 0.5f
 
-        private const val COACHMARK_START_DELAY_IN_SEC = 1
+        private const val COACHMARK_START_DELAY_IN_SEC = 3
 
         private const val ONBOARDING_SHOW_DELAY = 500L
     }
