@@ -318,18 +318,17 @@ class PlayFragment @Inject constructor(
 
         if (!forceTop) return
 
-        view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
-            val orientation = playViewModel.videoOrientation
-            val height = if (orientation is VideoOrientation.Horizontal) {
-                val dstStart = ivClose.right + offset16
-                val dstEnd = requireView().right - dstStart
-                val dstWidth = dstEnd - dstStart
-                (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
-            } else {
-                requireView().height - sheetMaxHeight - ivClose.top - offset16
-            }.toInt() + insets.systemWindowInsetBottom
-            onBottomInsetsViewShown(height)
-        }
+        val orientation = playViewModel.videoOrientation
+        val height = if (orientation is VideoOrientation.Horizontal) {
+            val dstStart = ivClose.right + offset16
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - sheetMaxHeight - offset16 - ivClose.top
+        }.toInt()
+
+        onBottomInsetsViewShown(height)
     }
 
     fun onFirstTopBoundsCalculated() {
