@@ -59,6 +59,7 @@ dari Feed.</string>
     <string name="feed_background_image">Feed background image</string>
     <string name="feed_header_mask">searchbar feed header mask</string>
     <string name="feed_fab_shop">Feed Fab Shop</string>
+    <string name="feed_copy_link_success_message">Link berhasil disalin!</string>
 
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
