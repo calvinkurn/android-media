@@ -8,7 +8,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import javax.inject.Inject
 
-
 class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
     private val tracker: PlayAnalyticsTracker,
     private val userSession: UserSessionInterface
