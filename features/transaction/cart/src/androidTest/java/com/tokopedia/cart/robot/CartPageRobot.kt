@@ -25,6 +25,7 @@ import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopBottomViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -43,6 +44,7 @@ class CartPageRobot {
 
     private var cartData: CartData? = null
     private var availableCartList: List<Any> = emptyList()
+    private var unavailableCartList: List<Any> = emptyList()
 
     fun waitForData() {
         Thread.sleep(2000)
@@ -63,6 +65,7 @@ class CartPageRobot {
             ShopGroupSimplifiedGqlResponse::class.java
         ).shopGroupSimplifiedResponse.data
         availableCartList = CartUiModelMapper.mapAvailableGroupUiModel(cartData!!)
+        unavailableCartList = CartUiModelMapper.mapUnavailableShopUiModel(context, cartData!!).first
     }
 
     fun initData(context: Context, cartRawRes: Int) {
@@ -77,6 +80,7 @@ class CartPageRobot {
             ShopGroupSimplifiedGqlResponse::class.java
         ).shopGroupSimplifiedResponse.data
         availableCartList = CartUiModelMapper.mapAvailableGroupUiModel(cartData!!)
+        unavailableCartList = CartUiModelMapper.mapUnavailableShopUiModel(context, cartData!!).first
     }
 
     fun assertMainContent() {
@@ -198,6 +202,54 @@ class CartPageRobot {
         )
     }
 
+    fun assertFirstUnavailableCartGroupViewHolder(
+        view: View,
+        position: Int,
+        shopIndex: Int
+    ) {
+        onView(withId(R.id.rv_cart)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
+                position,
+                object : ViewAction {
+                    override fun getDescription(): String =
+                        "performing assertion action on first unavailable CartGroupViewHolder"
+
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        val cartGroupHolderData =
+                            unavailableCartList[shopIndex] as CartGroupHolderData
+                        assertEquals(
+                            if (cartGroupHolderData.groupBadge.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<View>(R.id.image_shop_badge).visibility
+                        )
+                        assertEquals(
+                            cartGroupHolderData.groupName,
+                            view.findViewById<Typography>(R.id.tv_shop_name).text
+                        )
+                        assertEquals(
+                            cartGroupHolderData.fulfillmentName,
+                            view.findViewById<Typography>(R.id.tv_fulfill_district).text
+                        )
+                        assertEquals(
+                            if (cartGroupHolderData.freeShippingBadgeUrl.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility
+                        )
+                        assertEquals(
+                            if (cartGroupHolderData.isCollapsed) View.VISIBLE else View.GONE,
+                            view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility
+                        )
+                    }
+                }
+            )
+        )
+
+        assertOnEachUnavailableCartItem(
+            shopIndex = shopIndex,
+            position = position
+        )
+    }
+
     fun assertOnEachCartItem(view: View, recyclerViewId: Int, shopIndex: Int, position: Int) {
 //        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
@@ -252,6 +304,38 @@ class CartPageRobot {
 //            }
         }
 //        childRecyclerView.contentDescription = tempStoreDesc
+    }
+
+    fun assertOnEachUnavailableCartItem(shopIndex: Int, position: Int) {
+        val shop = unavailableCartList[shopIndex] as CartGroupHolderData
+
+        for (i in 0 until shop.productUiModelList.size) {
+            onView(withId(R.id.rv_cart))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(
+                        position + 1 + i,
+                        object : ViewAction {
+                            override fun getDescription(): String =
+                                "performing assertion action on first CartShopViewHolder"
+
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val cartItemHolderData = shop.productUiModelList[i]
+                                assertEquals(
+                                    View.GONE,
+                                    view.findViewById<ConstraintLayout>(R.id.ll_shop_header).visibility
+                                )
+
+                                assertEquals(
+                                    cartItemHolderData.productName,
+                                    view.findViewById<Typography>(R.id.text_product_name).text.toString()
+                                )
+                            }
+                        }
+                    )
+                )
+        }
     }
 
     fun assertCartGroupViewHolderOnPosition(
@@ -327,6 +411,26 @@ class CartPageRobot {
                 view?.performClick()
             }
         })
+    }
+
+    fun clickDisabledItemAccordion(
+        position: Int
+    ) {
+        onView(withId(R.id.rv_cart)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<DisabledAccordionViewHolder>(
+                position,
+                object : ViewAction {
+                    override fun getDescription(): String =
+                        "performing assertion action on DisabledAccordionViewHolder position $position"
+
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        view.performClick()
+                    }
+                }
+            )
+        )
     }
 
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
