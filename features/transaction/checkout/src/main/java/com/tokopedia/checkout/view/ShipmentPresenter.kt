@@ -1555,6 +1555,18 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
+    private suspend fun awaitPromoQueue() {
+        if (promoQueue.size == 1) {
+            consumePromoQueue()
+        } else {
+            withContext(dispatchers.default) {
+                while (promoQueue.isNotEmpty()) {
+                    // wait until promo queue is empty
+                }
+            }
+        }
+    }
+
     private suspend fun consumePromoQueue() {
         withContext(dispatchers.immediate) {
             var itemToProcess = promoQueue.peek()
@@ -2914,15 +2926,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3068,15 +3072,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3178,15 +3174,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
@@ -3350,15 +3338,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3502,15 +3482,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3611,15 +3583,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
@@ -4122,15 +4086,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 continue@loopProcess
                                             }
                                         }
