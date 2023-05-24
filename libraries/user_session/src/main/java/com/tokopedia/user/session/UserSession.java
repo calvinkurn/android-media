@@ -309,6 +309,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public void clearToken() {
         setToken(null, null);
+        clearTokenDataStore();
     }
 
     public void setToken(String accessToken, String tokenType) {

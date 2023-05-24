@@ -108,4 +108,13 @@ object UserSessionUtils {
             }
         }
     }
+
+    fun clearTokenDataStore(userSessionDataStore: UserSessionDataStore?) {
+        GlobalScope.launch {
+            try {
+                userSessionDataStore?.clearToken()
+            } catch (ignored: Exception) { }
+        }
+    }
+
 }

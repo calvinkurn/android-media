@@ -65,6 +65,12 @@ public class MigratedUserSession {
         }
     }
 
+    protected void clearTokenDataStore() {
+        if(isEnableDataStore()) {
+            UserSessionUtils.INSTANCE.clearTokenDataStore(getDataStore());
+        }
+    }
+
     protected long getLong(String prefName, String keyName, long defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
