@@ -946,7 +946,6 @@ class ChatbotFragment2 :
             }
         }
 
-        // TODO fix the Video Upload Ui Model here
         viewModel.videoUploadFailure.observe(viewLifecycleOwner) {
             when (it) {
                 is ChatbotVideoUploadFailureState.ChatbotVideoUploadFailure -> {
@@ -2656,8 +2655,10 @@ class ChatbotFragment2 :
         bigReplyBox?.setText(msg)
         if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
             bigReplyBox?.enableSendButton()
+            enableSendButton()
         } else {
             bigReplyBox?.disableSendButton()
+            disableSendButton()
         }
         hideKeyboard()
     }

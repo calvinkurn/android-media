@@ -18,6 +18,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
     private var addAttachmentMenu: ImageView? = null
     private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
+    private var isSendButtonEnabled: Boolean = true
     private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
 
     var sendButtonListener: ChatbotSendButtonListener? = null
@@ -48,7 +49,9 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBoxClickListener?.goToBigReplyBoxBottomSheet()
         }
         sendButton?.setOnClickListener {
-            replyBoxClickListener?.getMessageContentFromBottomSheet(replyBoxText?.text?.toString() ?: "")
+            if (isSendButtonEnabled) {
+                replyBoxClickListener?.getMessageContentFromBottomSheet(replyBoxText?.text?.toString() ?: "")
+            }
         }
     }
 
@@ -59,11 +62,13 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
     fun disableSendButton() {
         sendButtonListener?.disableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        isSendButtonEnabled = false
     }
 
     fun enableSendButton() {
         sendButtonListener?.enableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        isSendButtonEnabled = true
     }
 
     fun setText(text: String) {
