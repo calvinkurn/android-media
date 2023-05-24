@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeTickerBinding
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTickerBinding
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,11 +20,11 @@ class TokoNowTickerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_ticker
+        val LAYOUT = R.layout.item_tokopedianow_ticker
         const val PREFIX_LINK = "tokopedia"
     }
 
-    private var binding: ItemTokopedianowHomeTickerBinding? by viewBinding()
+    private var binding: ItemTokopedianowTickerBinding? by viewBinding()
 
     override fun bind(data: TokoNowTickerUiModel) {
         val adapter = TickerPagerAdapter(itemView.context, data.tickers)
@@ -50,7 +50,7 @@ class TokoNowTickerViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHomeTickerBinding.addPagerView(
+    private fun ItemTokopedianowTickerBinding.addPagerView(
         adapter: TickerPagerAdapter,
         data: TokoNowTickerUiModel
     ) {
@@ -60,7 +60,7 @@ class TokoNowTickerViewHolder(
         )
     }
 
-    private fun ItemTokopedianowHomeTickerBinding.setBackgroundColor(
+    private fun ItemTokopedianowTickerBinding.setBackgroundColor(
         data: TokoNowTickerUiModel
     ) {
         if (data.backgroundColor.isNotBlank()) {
