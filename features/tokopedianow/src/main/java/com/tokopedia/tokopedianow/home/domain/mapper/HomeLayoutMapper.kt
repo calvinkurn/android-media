@@ -501,6 +501,27 @@ object HomeLayoutMapper {
                         }
                     }
                 }
+
+                firstOrNull { it?.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }?.run {
+                    val layout = layout as com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
+                    val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
+                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
+                    }
+                    val deletedProducts = layout.productList.filter { it.productId !in cartProductIds }
+
+                    deletedProducts.forEach { model ->
+                        if (model.parentId != DEFAULT_PARENT_ID) {
+                            val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                            } else {
+                                updateRepurchaseProductQuantity(model.productId, totalQuantity)
+                            }
+                        } else {
+                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                        }
+                    }
+                }
             }
             PRODUCT_RECOM -> {
                 filter { it?.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
