@@ -87,7 +87,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -504,7 +503,7 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         if (it.source == SOURCE) {
-                            (it.data as? Pair<*,*>)?.let { pair ->
+                            (it.data as? Pair<*, *>)?.let { pair ->
                                 (pair.first as? String)?.let { productId ->
                                     (pair.second as? String)?.let { cartId ->
                                         viewBinding?.recyclerViewPurchase?.post {
@@ -812,10 +811,8 @@ class TokoFoodPurchaseFragment :
                         viewModel.updateAddressPinpoint(address.latitude, address.longitude)
                     }
                 } else {
-                    locationPass.let { location ->
-                        showLoadingLayout()
-                        viewModel.updateAddressPinpoint(location.latitude, location.longitude)
-                    }
+                    showLoadingLayout()
+                    viewModel.updateAddressPinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
         }

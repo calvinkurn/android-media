@@ -54,7 +54,6 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
-import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
@@ -82,7 +81,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -723,9 +721,7 @@ class SearchResultFragment :
                         viewModel.updatePinpoint(address.latitude, address.longitude)
                     }
                 } else {
-                    locationPass.let { pass ->
-                        viewModel.updatePinpoint(pass.latitude, pass.longitude)
-                    }
+                    viewModel.updatePinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
         }
