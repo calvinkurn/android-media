@@ -206,7 +206,7 @@ fun updateNonAffectedStarStates(
     }
     val affectedStarRange = currentLastActiveStarPos..config.rating.dec()
     (Int.ZERO until STAR_COUNT).forEach { starPos ->
-        if (starPos !in affectedStarRange) {
+        if (starPos !in affectedStarRange || affectedStarRange.first == affectedStarRange.last) {
             starStates[starPos].value = starStates[starPos].value.update(config, starPos.inc())
         }
     }
