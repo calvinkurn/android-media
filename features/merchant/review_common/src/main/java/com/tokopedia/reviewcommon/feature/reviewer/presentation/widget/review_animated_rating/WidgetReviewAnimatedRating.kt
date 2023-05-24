@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -56,12 +57,12 @@ private fun ReviewStar(state: ReviewStarState) {
      * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
      * We choose color as the determinant because active and inactive state have exactly 1 color representation
      */
-    val starState by remember(state) { mutableStateOf(state.color) }
+    val starState by remember(state) { derivedStateOf { state.color } }
     /**
      * sizeState represent the star size state and it is determined by the size value. It is used to
      * trigger the star size animation
     */
-    val sizeState by remember(state) { mutableStateOf(state.size) }
+    val sizeState by remember(state) { derivedStateOf { state.size } }
     val starStateTransition = updateTransition(starState, label = "star state transition for ${state.contentDescription}")
     val sizeStateTransition = updateTransition(sizeState, label = "size state transition for ${state.contentDescription}")
     val color by starStateTransition.createColorAnimation(label = "color animation for ${state.contentDescription}")
