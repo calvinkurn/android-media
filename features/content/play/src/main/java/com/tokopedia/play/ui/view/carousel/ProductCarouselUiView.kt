@@ -32,8 +32,9 @@ class ProductCarouselUiView(
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                if (position > lastCompletelyVisible) return
-                listener.onProductClicked(this@ProductCarouselUiView, product, position)
+                if (position <= lastCompletelyVisible) {
+                    listener.onProductClicked(this@ProductCarouselUiView, product, position)
+                }
             }
         },
         pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener {
@@ -42,12 +43,13 @@ class ProductCarouselUiView(
                 product: PlayProductUiModel.Product,
                 position: Int,
             ) {
-                if (position > lastCompletelyVisible) return
-                listener.onProductClicked(
-                    this@ProductCarouselUiView,
-                    product,
-                    viewHolder.adapterPosition,
-                )
+                if (position <= lastCompletelyVisible) {
+                    listener.onProductClicked(
+                        this@ProductCarouselUiView,
+                        product,
+                        viewHolder.adapterPosition,
+                    )
+                }
             }
 
             override fun onTransactionClicked(
