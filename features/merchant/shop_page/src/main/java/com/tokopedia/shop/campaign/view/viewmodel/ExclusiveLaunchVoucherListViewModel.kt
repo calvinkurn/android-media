@@ -37,7 +37,7 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
                 val merchantVouchers = merchantVouchersDeferred.await()
                 val promoVouchers = promoVouchersDeferred.await()
 
-                val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > Int.ZERO }
+                val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > Int.ZERO && it.isMerchantLockedToProductVoucher() }
                 val availablePromoVouchers = promoVouchers.filter { it.remainingQuota > Int.ZERO }
                 val exclusiveLaunchVouchers = availableMerchantVouchers + availablePromoVouchers
 
@@ -68,6 +68,14 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
             this.copy(source = newVoucherStatus)
         } else {
             this
+        }
+    }
+
+    private fun ExclusiveLaunchVoucher.isMerchantLockedToProductVoucher(): Boolean {
+        return if (this.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated) {
+            this.source.eligibleProductIds.isNotEmpty()
+        } else {
+            false
         }
     }
 }

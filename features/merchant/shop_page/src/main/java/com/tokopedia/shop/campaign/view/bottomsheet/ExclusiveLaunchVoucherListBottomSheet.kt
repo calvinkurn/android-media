@@ -7,9 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
@@ -18,6 +15,7 @@ import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.isMerchantVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
@@ -172,9 +170,11 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             ""
         }
 
-        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(
+        val isMerchantVoucher = selectedVoucher.isMerchantVoucher()
+        val bottomSheet = VoucherDetailBottomSheet.newInstance(
             slug = selectedVoucher.slug,
-            promoVoucherCode = promoVoucherCode
+            promoVoucherCode = promoVoucherCode,
+            isMerchantVoucher = isMerchantVoucher
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
                 handleRedeemVoucherSuccess(selectedVoucher, redeemResult)

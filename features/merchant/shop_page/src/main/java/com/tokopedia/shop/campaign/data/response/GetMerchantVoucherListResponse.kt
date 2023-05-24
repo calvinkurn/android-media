@@ -19,7 +19,7 @@ data class GetMerchantVoucherListResponse(
             @SerializedName("catalogType")
             val catalogType: Int,
             @SerializedName("eligibleProductIDs")
-            val eligibleProductIDs: List<Any>,
+            val eligibleProductIDs: List<String>,
             @SerializedName("eligibleProductIDsLabel")
             val eligibleProductIDsLabel: String,
             @SerializedName("expiredDate")
@@ -45,7 +45,7 @@ data class GetMerchantVoucherListResponse(
             @SerializedName("slug")
             val slug: String,
             @SerializedName("tagImageURLs")
-            val tagImageURLs: List<Any>,
+            val tagImageURLs: List<String>,
             @SerializedName("title")
             val title: String
         )

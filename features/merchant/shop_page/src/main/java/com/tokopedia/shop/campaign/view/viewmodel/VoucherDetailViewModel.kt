@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
-import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
+import com.tokopedia.shop.campaign.domain.entity.VoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
-import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherDetailUseCase
+import com.tokopedia.shop.campaign.domain.usecase.GetVoucherDetailUseCase
 import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.shop.campaign.domain.usecase.UsePromoVoucherUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,15 +15,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
-class PromoVoucherDetailViewModel @Inject constructor(
+class VoucherDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getPromoVoucherDetailUseCase: GetPromoVoucherDetailUseCase,
+    private val getPromoVoucherDetailUseCase: GetVoucherDetailUseCase,
     private val redeemPromoVoucherUseCase: RedeemPromoVoucherUseCase,
     private val usePromoVoucherUseCase: UsePromoVoucherUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _voucherDetail = MutableLiveData<Result<PromoVoucherDetail>>()
-    val voucherDetail: LiveData<Result<PromoVoucherDetail>>
+    private val _voucherDetail = MutableLiveData<Result<VoucherDetail>>()
+    val voucherDetail: LiveData<Result<VoucherDetail>>
         get() = _voucherDetail
 
     private val _redeemResult = MutableLiveData<Result<RedeemPromoVoucherResult>>()
@@ -34,6 +33,10 @@ class PromoVoucherDetailViewModel @Inject constructor(
     private val _useVoucherResult = MutableLiveData<Result<Boolean>>()
     val useVoucherResult: LiveData<Result<Boolean>>
         get() = _useVoucherResult
+
+    private val _applyMerchantVoucher = MutableLiveData<VoucherDetail?>()
+    val applyMerchantVoucher: LiveData<VoucherDetail?>
+        get() = _applyMerchantVoucher
 
     fun getVoucherDetail(slug: String) {
         launchCatchError(
@@ -48,7 +51,7 @@ class PromoVoucherDetailViewModel @Inject constructor(
         )
     }
 
-    fun redeemVoucher() {
+    fun claimPromoVoucher() {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -63,7 +66,7 @@ class PromoVoucherDetailViewModel @Inject constructor(
         )
     }
 
-    fun useVoucher(voucherCode: String) {
+    fun usePromoVoucher(voucherCode: String) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -82,7 +85,11 @@ class PromoVoucherDetailViewModel @Inject constructor(
         )
     }
 
-    private fun LiveData<Result<PromoVoucherDetail>>.getVoucherDetailOrNull(): PromoVoucherDetail? {
+    fun applyMerchantVoucher() {
+        _applyMerchantVoucher.value = _voucherDetail.getVoucherDetailOrNull()
+    }
+
+    private fun LiveData<Result<VoucherDetail>>.getVoucherDetailOrNull(): VoucherDetail? {
         val voucherDetail = this.value
         return if (voucherDetail is Success) {
             voucherDetail.data

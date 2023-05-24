@@ -14,6 +14,10 @@ data class ExclusiveLaunchVoucher(
      */
     sealed class VoucherSource {
         data class Promo(val isClaimed: Boolean, val voucherCode: String): VoucherSource()
-        object MerchantCreated : VoucherSource()
+        data class MerchantCreated(val eligibleProductIds: List<String>) : VoucherSource()
     }
+}
+
+fun ExclusiveLaunchVoucher.isMerchantVoucher(): Boolean {
+    return this.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated
 }

@@ -15,11 +15,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
-import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
+import com.tokopedia.shop.campaign.domain.entity.VoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
-import com.tokopedia.shop.campaign.view.viewmodel.PromoVoucherDetailViewModel
+import com.tokopedia.shop.campaign.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.shop.common.extension.showToasterError
-import com.tokopedia.shop.databinding.BottomsheetPromoVoucherDetailBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,29 +27,35 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.shop.databinding.BottomsheetVoucherDetailBinding
 import com.tokopedia.user.session.UserSessionInterface
 
-class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
+class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_SLUG = "slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
+        private const val BUNDLE_KEY_IS_MERCHANT_VOUCHER = "is_merchant_voucher"
 
         @JvmStatic
         fun newInstance(
             slug: String,
-            promoVoucherCode: String
-        ): PromoVoucherDetailBottomSheet {
-            return PromoVoucherDetailBottomSheet().apply {
+            promoVoucherCode: String,
+            isMerchantVoucher: Boolean
+        ): VoucherDetailBottomSheet {
+            return VoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SLUG, slug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
+                    putBoolean(BUNDLE_KEY_IS_MERCHANT_VOUCHER, isMerchantVoucher)
                 }
             }
         }
     }
 
-    private var binding by autoClearedNullable<BottomsheetPromoVoucherDetailBinding>()
+    private var binding by autoClearedNullable<BottomsheetVoucherDetailBinding>()
 
     private var onVoucherRedeemSuccess: (RedeemPromoVoucherResult) -> Unit = {}
     private var onVoucherUseSuccess: () -> Unit = {}
@@ -71,9 +76,10 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider[PromoVoucherDetailViewModel::class.java] }
+    private val viewModel by lazy { viewModelProvider[VoucherDetailViewModel::class.java] }
     private val slug by lazy { arguments?.getString(BUNDLE_KEY_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
+    private val isMerchantVoucher by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_MERCHANT_VOUCHER).orFalse() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,12 +103,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
                 .shopCampaignModule(ShopCampaignModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .build()
-                .inject(this@PromoVoucherDetailBottomSheet)
+                .inject(this@VoucherDetailBottomSheet)
         }
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        binding = BottomsheetPromoVoucherDetailBinding.inflate(inflater, container, false)
+        binding = BottomsheetVoucherDetailBinding.inflate(inflater, container, false)
         setChild(binding?.root)
     }
 
@@ -110,22 +116,27 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVoucherDetail()
-        observeRedeemVoucher()
-        observeUseVoucher()
+        observePromoVoucherRedeemResult()
+        observeUseVoucherPromoResult()
+        observeApplyMerchantVoucher()
         viewModel.getVoucherDetail(slug)
     }
 
 
+
     private fun setupView() {
         binding?.run {
-            btnUseVoucher.setOnClickListener {
-                binding?.btnUseVoucher?.startLoading()
-                viewModel.useVoucher(promoVoucherCode)
+            btnUsePromoVoucher.setOnClickListener {
+                binding?.btnUsePromoVoucher?.startLoading()
+                viewModel.usePromoVoucher(promoVoucherCode)
             }
 
-            btnClaimVoucher.setOnClickListener {
-                binding?.btnClaimVoucher?.startLoading()
-                viewModel.redeemVoucher()
+            btnClaimPromoVoucher.setOnClickListener {
+                binding?.btnClaimPromoVoucher?.startLoading()
+                viewModel.claimPromoVoucher()
+            }
+            btnApplyMerchantVoucher.setOnClickListener {
+                viewModel.applyMerchantVoucher()
             }
             imgVoucher.cornerRadius = Int.ZERO
         }
@@ -151,62 +162,89 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun observeRedeemVoucher() {
+    private fun observePromoVoucherRedeemResult() {
         viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showUseVoucherButton()
-                    binding?.btnClaimVoucher?.stopLoading()
+                    showUsePromoVoucherButton()
+                    binding?.btnClaimPromoVoucher?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
                 }
                 is Fail -> {
-                    binding?.btnClaimVoucher?.stopLoading()
-                    showToasterError(binding?.btnClaimVoucher ?: return@observe, result.throwable)
+                    binding?.btnClaimPromoVoucher?.stopLoading()
+                    showToasterError(binding?.btnClaimPromoVoucher ?: return@observe, result.throwable)
                 }
             }
         }
     }
 
-    private fun observeUseVoucher() {
+    private fun observeUseVoucherPromoResult() {
         viewModel.useVoucherResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    binding?.btnUseVoucher?.stopLoading()
+                    binding?.btnUsePromoVoucher?.stopLoading()
                     onVoucherUseSuccess()
                     dismiss()
                 }
                 is Fail -> {
-                    binding?.btnUseVoucher?.stopLoading()
+                    binding?.btnUsePromoVoucher?.stopLoading()
 
-                    showToasterError(binding?.btnUseVoucher ?: return@observe, result.throwable)
+                    showToasterError(binding?.btnUsePromoVoucher ?: return@observe, result.throwable)
                 }
             }
         }
     }
 
-    private fun displayVoucherDetail(voucherDetail: PromoVoucherDetail) {
-        binding?.run {
-            tpgVoucherName.text = voucherDetail.title
-            tpgMinPurchase.text = voucherDetail.minimumUsage
-            webViewTnc.loadPartialWebView(voucherDetail.tnc)
-            imgVoucher.loadImage(voucherDetail.imageUrlMobile)
-            tpgMinPurchase.text = voucherDetail.minimumUsage
-            tpgPromoPeriod.text = voucherDetail.activePeriodDate
-            webViewHowToUse.loadPartialWebView(voucherDetail.howToUse)
-            btnClaimVoucher.text = voucherDetail.buttonLabel
-            btnClaimVoucher.isEnabled = !voucherDetail.isDisabledButton
-            iconClock.isEnabled = !voucherDetail.isDisabledButton
-            iconMinPurchase.isEnabled = !voucherDetail.isDisabledButton
-            tpgVoucherPrice.text = voucherDetail.voucherPrice
-        }
-
-        if (promoVoucherCode.isEmpty()) {
-            showClaimVoucherButton()
-        } else {
-            showUseVoucherButton()
+    private fun observeApplyMerchantVoucher() {
+        viewModel.applyMerchantVoucher.observe(viewLifecycleOwner) { voucherDetail ->
+            if (voucherDetail != null) {
+                redirectToVoucherProductPage(voucherDetail.id)
+            }
         }
     }
 
+    private fun displayVoucherDetail(voucherDetail: VoucherDetail) {
+        binding?.run {
+            imgVoucher.loadImage(voucherDetail.imageUrlMobile)
+
+            tpgVoucherName.text = voucherDetail.title
+            tpgMinPurchase.text = voucherDetail.minimumUsage
+            tpgPromoPeriod.text = voucherDetail.activePeriodDate
+            tpgVoucherPrice.text = voucherDetail.voucherPrice
+
+            webViewTnc.loadPartialWebView(voucherDetail.tnc)
+            webViewHowToUse.isVisible = voucherDetail.howToUse.isNotEmpty()
+            labelHowToUse.isVisible = voucherDetail.howToUse.isNotEmpty()
+            webViewHowToUse.loadPartialWebView(voucherDetail.howToUse)
+
+            btnClaimPromoVoucher.text = voucherDetail.buttonLabel
+            btnClaimPromoVoucher.isEnabled = !voucherDetail.isDisabledButton
+
+            iconClock.isEnabled = !voucherDetail.isDisabledButton
+            iconMinPurchase.isEnabled = !voucherDetail.isDisabledButton
+
+        }
+
+        if (isMerchantVoucher) {
+            handleMerchantVoucher(voucherDetail)
+        } else {
+            handlePromoVoucher(promoVoucherCode)
+        }
+
+    }
+
+    private fun handlePromoVoucher(promoVoucherCode: String) {
+        if (promoVoucherCode.isEmpty()) {
+            showClaimPromoVoucherButton()
+        } else {
+            showUsePromoVoucherButton()
+        }
+    }
+
+    private fun handleMerchantVoucher(voucherDetail: VoucherDetail) {
+        showApplyMerchantVoucherButton()
+        binding?.tpgPromoPeriod?.text = voucherDetail.expired
+    }
 
     private fun UnifyButton.startLoading() {
         this.isLoading = true
@@ -220,22 +258,34 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         this.isClickable = true
     }
 
-    private fun showUseVoucherButton() {
+    private fun showUsePromoVoucherButton() {
         binding?.card?.visible()
 
-        binding?.btnUseVoucher?.visible()
+        binding?.btnUsePromoVoucher?.visible()
+        binding?.btnClaimPromoVoucher?.gone()
+        binding?.btnApplyMerchantVoucher?.gone()
 
-        binding?.btnClaimVoucher?.gone()
         binding?.tpgVoucherPrice?.gone()
     }
 
-    private fun showClaimVoucherButton() {
+    private fun showClaimPromoVoucherButton() {
         binding?.card?.visible()
 
-        binding?.btnUseVoucher?.gone()
+        binding?.btnUsePromoVoucher?.gone()
+        binding?.btnClaimPromoVoucher?.visible()
+        binding?.btnApplyMerchantVoucher?.gone()
 
-        binding?.btnClaimVoucher?.visible()
         binding?.tpgVoucherPrice?.visible()
+    }
+
+    private fun showApplyMerchantVoucherButton() {
+        binding?.card?.visible()
+
+        binding?.btnUsePromoVoucher?.gone()
+        binding?.btnClaimPromoVoucher?.gone()
+        binding?.btnApplyMerchantVoucher?.visible()
+
+        binding?.tpgVoucherPrice?.gone()
     }
 
     fun setOnVoucherRedeemSuccess(onVoucherRedeemSuccess : (RedeemPromoVoucherResult) -> Unit) {

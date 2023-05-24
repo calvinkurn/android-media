@@ -1,6 +1,6 @@
 package com.tokopedia.shop.campaign.domain.entity
 
-data class PromoVoucherDetail(
+data class VoucherDetail(
     val activePeriodDate: String,
     val buttonLabel: String,
     val howToUse: String,
@@ -12,5 +12,6 @@ data class PromoVoucherDetail(
     val title: String,
     val tnc: String,
     val isGift: Int,
-    val voucherPrice: String
+    val voucherPrice: String,
+    val expired: String
 )

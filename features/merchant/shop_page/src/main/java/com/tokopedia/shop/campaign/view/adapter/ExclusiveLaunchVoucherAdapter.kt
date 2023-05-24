@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.databinding.ItemExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
+import com.tokopedia.shop.campaign.domain.entity.isMerchantVoucher
 
 class ExclusiveLaunchVoucherAdapter :
     RecyclerView.Adapter<ExclusiveLaunchVoucherAdapter.ViewHolder>() {
@@ -72,7 +73,7 @@ class ExclusiveLaunchVoucherAdapter :
                 setRemainingQuota(voucher.remainingQuota)
                 setVoucherName(voucher.voucherName)
 
-                val isMerchantCreatedVoucher = voucher.source == ExclusiveLaunchVoucher.VoucherSource.MerchantCreated
+                val isMerchantCreatedVoucher = voucher.isMerchantVoucher()
                 val ctaText = getVoucherClaimStatus(context, voucher)
                 setPrimaryCta(
                     ctaText = ctaText,
