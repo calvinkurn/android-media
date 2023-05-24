@@ -192,7 +192,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
     private fun showToasterError(err: Throwable) {
         if (toasterBottomMargin == 0) {
             val offset8 =
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = btnSet?.height.orZero() + offset8
         }
 
