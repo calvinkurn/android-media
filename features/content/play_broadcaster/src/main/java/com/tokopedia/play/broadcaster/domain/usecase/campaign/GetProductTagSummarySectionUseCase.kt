@@ -36,45 +36,14 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
         private const val PARAM_FETCH_COMMISSION = "fetchCommission"
 
         const val QUERY_NAME = "GetProductTagSummarySectionUseCaseQuery"
-//        const val QUERY = """
-//            query BroadcasterGetProductTagSection(
-//            ${"$${PARAM_CHANNEL_ID}"}: Int64!,
-//            ${"$${PARAM_FETCH_COMMISSION}"}: Boolean,
-//            ) {
-//                broadcasterGetProductTagSection(req: {
-//                    channelID: ${"$${PARAM_CHANNEL_ID}"},
-//                    fetchCommission: ${"$${PARAM_FETCH_COMMISSION}"}
-//                }) {
-//                    sections {
-//                        name
-//                        statusFmt
-//                        products {
-//                            productID
-//                            productName
-//                            hasCommission
-//                            commissionFmt
-//                            commission
-//                            extraCommission
-//                            imageURL
-//                            price
-//                            priceFmt
-//                            discount
-//                            originalPrice
-//                            originalPriceFmt
-//                            quantity
-//                            is_pinned: isPinned
-//                            is_pinnable: isPinnable
-//                        }
-//                    }
-//                }
-//            }
-//        """
         const val QUERY = """
             query BroadcasterGetProductTagSection(
             ${"$${PARAM_CHANNEL_ID}"}: Int64!,
+            ${"$${PARAM_FETCH_COMMISSION}"}: Boolean,
             ) {
                 broadcasterGetProductTagSection(req: {
                     channelID: ${"$${PARAM_CHANNEL_ID}"},
+                    fetchCommission: ${"$${PARAM_FETCH_COMMISSION}"}
                 }) {
                     sections {
                         name
@@ -82,6 +51,10 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
                         products {
                             productID
                             productName
+                            hasCommission
+                            commissionFmt
+                            commission
+                            extraCommission
                             imageURL
                             price
                             priceFmt
