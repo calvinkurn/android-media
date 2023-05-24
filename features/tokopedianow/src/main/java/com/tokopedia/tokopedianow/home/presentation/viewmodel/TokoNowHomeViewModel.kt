@@ -1163,7 +1163,10 @@ class TokoNowHomeViewModel @Inject constructor(
         cartId: String
     ) {
         when (type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
+            REPURCHASE_PRODUCT -> {
+                trackRepurchaseAddToCart(productId, quantity, cartId)
+                trackOldRepurchaseAddToCart(productId, quantity, cartId)
+            }
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
             MIX_LEFT_CAROUSEL_ATC -> trackLeftCarouselAddToCart(productId, quantity, cartId)
             CHIP_CAROUSEL -> trackCarouselChipAddToCart(productId, quantity, cartId)
@@ -1195,6 +1198,19 @@ class TokoNowHomeViewModel @Inject constructor(
         val homeItem = homeLayoutItemList.filterNotNull()
             .firstOrNull { it.layout is TokoNowRepurchaseUiModel }
         val repurchase = homeItem?.layout as? TokoNowRepurchaseUiModel
+        val productList = repurchase?.productList.orEmpty()
+        val product = productList.firstOrNull { it.productId == productId }
+
+        product?.let {
+            val data = HomeAddToCartTracker(product.position, quantity, cartId, it)
+            _homeAddToCartTracker.postValue(data)
+        }
+    }
+
+    private fun trackOldRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
+        val homeItem = homeLayoutItemList.filterNotNull()
+            .firstOrNull { it.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
+        val repurchase = homeItem?.layout as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
         val productList = repurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
 

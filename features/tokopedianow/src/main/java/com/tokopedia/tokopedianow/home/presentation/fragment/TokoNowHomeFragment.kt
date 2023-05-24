@@ -89,6 +89,7 @@ import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
@@ -1011,6 +1012,10 @@ class TokoNowHomeFragment :
                     it.quantity,
                     it.data
                 )
+                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
+                    it.quantity,
+                    it.data
+                )
                 is HomeProductRecomUiModel -> trackProductRecomAddToCart(
                     it.quantity,
                     it.position,
@@ -1294,6 +1299,10 @@ class TokoNowHomeFragment :
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowRepurchaseProductUiModel) {
+        analytics.onRepurchaseAddToCart(quantity, data)
+    }
+
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
         analytics.onRepurchaseAddToCart(quantity, data)
     }
 
