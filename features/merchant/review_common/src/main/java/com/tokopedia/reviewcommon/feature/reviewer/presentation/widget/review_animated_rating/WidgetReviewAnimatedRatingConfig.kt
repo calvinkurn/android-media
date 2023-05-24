@@ -7,6 +7,7 @@ data class WidgetReviewAnimatedRatingConfig(
     val rating: Int = DEFAULT_RATING,
     val starSize: Dp = DEFAULT_STAR_SIZE.dp,
     val spaceInBetween: Dp = DEFAULT_STAR_SPACE_IN_BETWEEN.dp,
+    val skipInitialAnimation: Boolean = false,
     val onStarClicked: (previousRating: Int, currentRating: Int) -> Unit
 ) {
     companion object {

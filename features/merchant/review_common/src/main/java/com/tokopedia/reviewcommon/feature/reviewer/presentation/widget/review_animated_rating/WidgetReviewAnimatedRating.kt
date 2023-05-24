@@ -158,7 +158,15 @@ private fun Transition<ReviewStarState.AnimatedState<Int>>.createColorAnimation(
 private fun createInitialStarStates(
     config: WidgetReviewAnimatedRatingConfig
 ): List<MutableState<ReviewStarState>> = List(STAR_COUNT) { starPos ->
-    mutableStateOf(createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc()))
+    if (config.skipInitialAnimation) {
+        if (config.rating <= starPos) {
+            mutableStateOf(createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc()))
+        } else {
+            mutableStateOf(createActiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc()))
+        }
+    } else {
+        mutableStateOf(createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc()))
+    }
 }
 
 private fun updateStarStates(
