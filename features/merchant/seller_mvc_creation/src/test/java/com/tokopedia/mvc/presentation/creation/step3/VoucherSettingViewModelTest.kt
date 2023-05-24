@@ -10,6 +10,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
@@ -26,7 +27,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -74,7 +74,8 @@ class VoucherSettingViewModelTest {
             val startPeriod = Date().roundTimePerHalfHour().removeTime()
             val expectedVoucherConfiguration = VoucherConfiguration(
                 startPeriod = startPeriod,
-                isFinishFilledStepTwo = true
+                isFinishFilledStepTwo = true,
+                isVoucherPublic = false
             )
 
             val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
@@ -83,11 +84,11 @@ class VoucherSettingViewModelTest {
             }
 
             // When
-            mockVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
 
             // Then
             val actual = emittedValue.last()
-            Assert.assertEquals(expectedVoucherConfiguration, actual.voucherConfiguration)
+            assertEquals(expectedVoucherConfiguration, actual.voucherConfiguration)
 
             job.cancel()
         }
@@ -107,7 +108,7 @@ class VoucherSettingViewModelTest {
             }
 
             // When
-            mockVoucherConfigurationInitiation()
+            mockProductVoucherConfigurationInitiation()
 
             // Then
             val actual = emittedValue.last().isDiscountPromoTypeEnabled
@@ -154,7 +155,7 @@ class VoucherSettingViewModelTest {
     fun `when handling navigation to previous step, should emit the correct action accordingly`() {
         runBlockingTest {
             // Given
-            mockVoucherConfigurationInitiation()
+            mockProductVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val voucherConfiguration = viewModel.getCurrentVoucherConfiguration()
@@ -182,9 +183,7 @@ class VoucherSettingViewModelTest {
     fun `when handling navigation to next step, should emit the correct action accordingly`() {
         runBlockingTest {
             // Given
-            val pageMode = PageMode.CREATE
-
-            mockVoucherConfigurationInitiation()
+            mockProductVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val voucherConfiguration = viewModel.getCurrentVoucherConfiguration()
@@ -218,7 +217,8 @@ class VoucherSettingViewModelTest {
             // Given
             val promoType = PromoType.DISCOUNT
 
-            mockVoucherConfigurationInitiation()
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
 
             val expectedPromoType = PromoType.DISCOUNT
 
@@ -244,7 +244,8 @@ class VoucherSettingViewModelTest {
             // Given
             val benefitType = BenefitType.NOMINAL
 
-            mockVoucherConfigurationInitiation()
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
 
             val expectedBenefitType = BenefitType.NOMINAL
 
@@ -264,12 +265,259 @@ class VoucherSettingViewModelTest {
         }
     }
 
-    private fun mockVoucherConfigurationInitiation() {
+    @Test
+    fun `when handling nominal input change, should set voucher configuration with corresponding nominal data`() {
+        runBlockingTest {
+            // Given
+            val nominalInput = 10000L
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedNominal = 10000L
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputNominalChanged(nominalInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedNominal, actual.voucherConfiguration.benefitIdr)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handling percentage input change, should set voucher configuration with corresponding percentage data`() {
+        runBlockingTest {
+            // Given
+            val percentageInput = 15L
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedPercentage = 15
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputPercentageChanged(percentageInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedPercentage, actual.voucherConfiguration.benefitPercent)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handling max deduction input change, should set voucher configuration with corresponding max deduction data`() {
+        runBlockingTest {
+            // Given
+            val maxDeductionInput = 10000L
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedMaxDeduction = 10000L
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(maxDeductionInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedMaxDeduction, actual.voucherConfiguration.benefitMax)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handling minimum purchase input change, should set voucher configuration with corresponding minimum purchase data`() {
+        runBlockingTest {
+            // Given
+            val minPurchaseInput = 5000L
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedMinPurchase = 5000L
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(minPurchaseInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedMinPurchase, actual.voucherConfiguration.minPurchase)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handling quota input change, should set voucher configuration with corresponding quota data`() {
+        runBlockingTest {
+            // Given
+            val quotaInput = 100L
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedQuota = 100L
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputQuotaChanged(quotaInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedQuota, actual.voucherConfiguration.quota)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handling target buyer selection, should set voucher configuration with corresponding target buyer data`() {
+        runBlockingTest {
+            // Given
+            val targetBuyerInput = VoucherTargetBuyer.ALL_BUYER
+
+            mockProductVoucherConfigurationInitiation()
+            mockVoucherValidationPartialGQLCall()
+
+            val expectedTargetBuyer = VoucherTargetBuyer.ALL_BUYER
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.ChooseTargetBuyer(targetBuyerInput))
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedTargetBuyer, actual.voucherConfiguration.targetBuyer)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handleCoachmark() is called, should emit the correct action accordingly`() {
+        runBlockingTest {
+            // Given
+            val expectedEmittedAction = VoucherCreationStepThreeAction.ShowCoachmark
+
+            viewModel.setSharedPrefCoachMarkAlreadyShown()
+
+            val emittedAction = arrayListOf<VoucherCreationStepThreeAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedAction)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.HandleCoachMark)
+
+            // Then
+            val actual = emittedAction.last()
+            assertEquals(expectedEmittedAction, actual)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when reseting input, should set nominal, percentage, max deduction, min purchase and quota back to zero`() {
+        runBlockingTest {
+            // Given
+            val expectedVoucherConfiguration = VoucherConfiguration()
+
+            mockProductVoucherConfigurationInitiation()
+            viewModel.processEvent(VoucherCreationStepThreeEvent.ChoosePromoType(PromoType.FREE_SHIPPING))
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputNominalChanged(1000L))
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputPercentageChanged(10))
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(500))
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(850))
+            viewModel.processEvent(VoucherCreationStepThreeEvent.OnInputQuotaChanged(100))
+
+            val emittedValue = arrayListOf<VoucherCreationStepThreeUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(VoucherCreationStepThreeEvent.ResetInput)
+
+            // Then
+            val actual = emittedValue.last()
+            assertEquals(expectedVoucherConfiguration.promoType, actual.voucherConfiguration.promoType)
+            assertEquals(expectedVoucherConfiguration.benefitIdr, actual.voucherConfiguration.benefitIdr)
+            assertEquals(expectedVoucherConfiguration.benefitPercent, actual.voucherConfiguration.benefitPercent)
+            assertEquals(expectedVoucherConfiguration.minPurchase, actual.voucherConfiguration.minPurchase)
+            assertEquals(expectedVoucherConfiguration.benefitMax, actual.voucherConfiguration.benefitMax)
+            assertEquals(expectedVoucherConfiguration.quota, actual.voucherConfiguration.quota)
+
+            job.cancel()
+        }
+    }
+
+    private fun mockProductVoucherConfigurationInitiation() {
         val pageMode = PageMode.CREATE
         val startPeriod = Date().roundTimePerHalfHour().removeTime()
 
         val voucherConfiguration =
-            VoucherConfiguration(startPeriod = startPeriod, isFinishFilledStepTwo = true)
+            VoucherConfiguration(
+                startPeriod = startPeriod,
+                isFinishFilledStepTwo = true,
+                isVoucherProduct = true,
+                promoType = PromoType.DISCOUNT
+            )
+
+        viewModel.processEvent(
+            VoucherCreationStepThreeEvent.InitVoucherConfiguration(
+                pageMode,
+                voucherConfiguration
+            )
+        )
+        mockGetVoucherCreationMetadataGQLCall()
+    }
+
+    private fun mockShopVoucherConfigurationInitiation() {
+        val pageMode = PageMode.CREATE
+        val startPeriod = Date().roundTimePerHalfHour().removeTime()
+
+        val voucherConfiguration =
+            VoucherConfiguration(
+                startPeriod = startPeriod,
+                isFinishFilledStepTwo = true,
+                isVoucherProduct = false,
+                isVoucherPublic = false
+            )
 
         viewModel.processEvent(
             VoucherCreationStepThreeEvent.InitVoucherConfiguration(
