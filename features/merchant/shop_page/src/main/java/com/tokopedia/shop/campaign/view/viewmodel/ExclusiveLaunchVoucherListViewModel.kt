@@ -38,8 +38,7 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
                 val promoVouchers = promoVouchersDeferred.await()
 
                 val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > Int.ZERO && it.isMerchantLockedToProductVoucher() }
-                val availablePromoVouchers = promoVouchers.filter { it.remainingQuota > Int.ZERO }
-                val exclusiveLaunchVouchers = availableMerchantVouchers + availablePromoVouchers
+                val exclusiveLaunchVouchers = availableMerchantVouchers + promoVouchers
 
                 _vouchers.postValue(Success(exclusiveLaunchVouchers))
             },
