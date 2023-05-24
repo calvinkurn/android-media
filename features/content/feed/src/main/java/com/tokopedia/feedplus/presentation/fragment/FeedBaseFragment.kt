@@ -597,7 +597,9 @@ class FeedBaseFragment :
         mCoachMarkJob?.cancel()
         mCoachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(ONBOARDING_SHOW_DELAY)
-            mOnboarding?.dismiss()
+//            mOnboarding?.dismiss()
+            if (mOnboarding?.isShowing() == true) return@launch
+
             mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
                 .setCreateContentView(
                     if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
