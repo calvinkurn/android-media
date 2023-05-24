@@ -10,6 +10,7 @@ import com.tokopedia.mediauploader.common.internal.compressor.Compressor
 import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
+import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.utils.file.FileUtil
@@ -26,6 +27,7 @@ interface VideoCompressionRepository {
 class VideoCompressionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val metadata: VideoMetaDataExtractor,
+    private val cacheData: TrackerCacheDataStore,
     private val tracker: MediaUploaderTracker
 ) : VideoCompressionRepository {
 
@@ -38,9 +40,10 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         // start track the compress time
         val startCompressionTime = System.currentTimeMillis()
 
-        val cache = cacheManager.get(sourceId, originalPath)
-
         // if the same video already compressed, return the compressedVideoPath (if exist)
+        val key = cacheData.key(sourceId, originalPath)
+        val cache = cacheData.getData(key)
+
         if (cache != null && cache.isCompressedFileExist()) return cache.compressedVideoPath
 
         // get the video info of originalVideoPath, return the originalPath if couldn't get the video info
