@@ -8,11 +8,11 @@ const val TELEMETRY_REMOTE_CONFIG_KEY = "android_customer_telemetry_config"
 
 data class ConfigItem(
     @SerializedName("rate")
-    var rate: Float = 100.0F,
+    var rate: Float = 50.0F,
     @SerializedName("cnt")
-    var count: Int = 3,
+    var count: Int = 10,
     @SerializedName("itv")
-    var interval: Int = 3600
+    var interval: Int = 300
 )
 
 data class TelemetryConfig(

@@ -135,10 +135,10 @@ class TelemetryActLifecycleCallback(
         }
         if (configCount >= 0 && configInterval >= 20) {
             // do checking count and interval
-            var telemetryInPage = mapSectionToCount.getOrDefault(
-                sectionName to teleType,
-                CapturedTelemetry(0, 0)
-            )
+            var telemetryInPage = mapSectionToCount[sectionName to teleType]
+            if (telemetryInPage == null) {
+                telemetryInPage = CapturedTelemetry(0, 0)
+            }
             val now: Int = (System.currentTimeMillis() / 1000L).toInt()
             if (now - telemetryInPage.capturedTime > configInterval) {
                 //reset
