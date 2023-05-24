@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.ItemFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -19,23 +20,38 @@ class FeedMenuViewHolder(
 
     fun bind(item: FeedMenuItem) {
         binding.apply {
-            tvName.text = item.name
-            if (item.drawable != null) ivIcon.setImageDrawable(item.drawable)
-            if (item.type == FeedMenuIdentifier.Report) {
-                tvName.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        unifyR.color.Unify_RN500
-                    )
-                )
+            val context = itemView.context
+
+            tvName.text = context.getString(item.name)
+            val textColorInt = if (item.type == FeedMenuIdentifier.Report) {
+                unifyR.color.Unify_RN500
             } else {
-                tvName.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        unifyR.color.Unify_NN950
-                    )
-                )
+                unifyR.color.Unify_NN950
             }
+            tvName.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    textColorInt
+                )
+            )
+
+            val iconColorInt = when(item.type) {
+                FeedMenuIdentifier.Report, FeedMenuIdentifier.Delete -> {
+                    unifyR.color.Unify_RN500
+                }
+                else -> {
+                    com.tokopedia.iconunify.R.color.icon_enable_default_color
+                }
+            }
+            val iconDrawable = getIconUnifyDrawable(
+                context,
+                item.iconUnify,
+                MethodChecker.getColor(
+                    itemView.context,
+                    iconColorInt
+                )
+            )
+            if (iconDrawable != null) ivIcon.setImageDrawable(iconDrawable)
 
             root.setOnClickListener {
                 listener.onClick(item)

@@ -1,10 +1,10 @@
 package com.tokopedia.content.common.report_content.model
 
-import android.graphics.drawable.Drawable
+import androidx.annotation.StringRes
 
 data class FeedMenuItem(
-    val name: String,
-    val drawable: Drawable?,
+    @StringRes val name: Int,
+    val iconUnify: Int,
     val type: FeedMenuIdentifier,
     val contentData: FeedContentData? = null
 )

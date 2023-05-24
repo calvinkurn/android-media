@@ -18,7 +18,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -60,7 +59,6 @@ import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -83,7 +81,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Muhammad Furqan on 01/02/23
@@ -1038,11 +1035,8 @@ class FeedFragment :
         if (editable) {
             items.add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.EDIT
-                    ),
-                    name = getString(com.tokopedia.feedcomponent.R.string.feed_component_edit),
+                    iconUnify = IconUnify.EDIT,
+                    name = com.tokopedia.feedcomponent.R.string.feed_component_edit,
                     type = FeedMenuIdentifier.Edit,
                     contentData = contentData
                 )
@@ -1050,23 +1044,16 @@ class FeedFragment :
         }
         items.add(
             FeedMenuItem(
-                drawable = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY),
-                name = getString(feedR.string.feed_watch_mode),
+                iconUnify = IconUnify.VISIBILITY,
+                name = feedR.string.feed_watch_mode,
                 type = FeedMenuIdentifier.WatchMode
             )
         )
         if (reportable) {
             items.add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(feedR.string.feed_report),
+                    iconUnify = IconUnify.WARNING,
+                    name = com.tokopedia.content.common.R.string.content_common_menu_report,
                     type = FeedMenuIdentifier.Report
                 )
             )
@@ -1074,15 +1061,8 @@ class FeedFragment :
         if (deletable) {
             items.add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.DELETE,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(feedR.string.feed_delete),
+                    iconUnify = IconUnify.DELETE,
+                    name = com.tokopedia.content.common.R.string.content_common_menu_delete,
                     type = FeedMenuIdentifier.Delete
                 )
             )

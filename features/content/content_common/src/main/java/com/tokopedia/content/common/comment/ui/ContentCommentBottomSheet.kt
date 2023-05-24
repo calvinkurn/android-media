@@ -533,11 +533,8 @@ class ContentCommentBottomSheet @Inject constructor(
         if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
-                    name = getString(R.string.content_common_menu_delete),
-                    drawable = getIconUnifyDrawable(
-                        context = requireContext(),
-                        iconId = IconUnify.DELETE
-                    ),
+                    name = R.string.content_common_menu_delete,
+                    iconUnify = IconUnify.DELETE,
                     type = FeedMenuIdentifier.Delete
                 )
             )
@@ -545,15 +542,8 @@ class ContentCommentBottomSheet @Inject constructor(
         if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(R.string.content_common_menu_report),
+                    iconUnify = IconUnify.WARNING,
+                    name = R.string.content_common_menu_report,
                     type = FeedMenuIdentifier.Report
                 )
             )
